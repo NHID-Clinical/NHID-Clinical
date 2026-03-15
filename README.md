@@ -313,5 +313,3 @@ Special thanks to the healthcare IT community for feedback during early drafts, 
 **Built with ❤️ by someone who spent too many hours asking "Wait, am I talking to a robot?"**
 
 *Let's make healthcare AI transparent, trustworthy, and a little less frustrating.*
-
-              
