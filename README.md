@@ -54,42 +54,7 @@ The standard addresses a documented gap between existing consumer-protection law
 
 ## 💡 How NHID-Clinical Works
 
-```mermaid
-flowchart TD
-    A([📞 Call Initiated]) --> B{Identity Disclosed\nat Greeting?}
-
-    B -->|❌ No| FAIL[⚠️ Impersonation Latency\nWasted Time · Trust Erosion · Compliance Risk]
-
-    B -->|✅ Yes| GATE[🚪 Pre-Data Exchange Gate\nPassed]
-
-    GATE --> DATA[📋 Data Exchange\nNPI · Member ID · Claim #]
-
-    DATA --> ESC{Human Escalation\nRequested?}
-
-    ESC -->|No| DONE[✅ Call Complete\nAudit Log Generated]
-
-    ESC -->|Yes| FAILOVER[🆘 Safe Failover Triggered]
-
-    FAILOVER --> AVAIL{Staff\nAvailable?}
-
-    AVAIL -->|✅ Yes| WARM[🤝 Warm Transfer\nwith Reference ID]
-    AVAIL -->|🌙 After Hours| COLD[📅 State Hours +\nSchedule Callback]
-
-    WARM --> DONE
-    COLD --> DONE
-
-    style A        fill:#0d1b2a,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style B        fill:#1b2a3b,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style FAIL     fill:#5c1010,color:#ffffff,stroke:#ff4444,stroke-width:2px
-    style GATE     fill:#003d80,color:#ffffff,stroke:#66aaff,stroke-width:2px
-    style DATA     fill:#1a3a5c,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style ESC      fill:#1b2a3b,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style FAILOVER fill:#1a3a5c,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style AVAIL    fill:#1b2a3b,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style WARM     fill:#0d3320,color:#ffffff,stroke:#44cc77,stroke-width:2px
-    style COLD     fill:#2a3d10,color:#ffffff,stroke:#99cc33,stroke-width:2px
-    style DONE     fill:#0d3320,color:#ffffff,stroke:#44cc77,stroke-width:2px
-```
+![NHID-Clinical Call Workflow](nhid-workflow.svg)
 
 **The "Green Lane" Principle:** When AI agents identify themselves upfront and follow the rules, everyone wins:
 - **Providers** save time (no "are you human?" loops)
