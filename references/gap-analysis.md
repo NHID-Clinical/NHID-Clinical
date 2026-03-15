@@ -41,4 +41,31 @@ A targeted review of current U.S. regulatory frameworks was conducted to determi
 ### HIPAA / CMS guidance
 - Focuses on PHI protection, security safeguards, and coverage decisions
 - Does not require AI agents to disclose non-human identity during administrative calls
-- Addresses outcomes,
+- Addresses outcomes, not the identity of the calling entity
+
+**Result:** Out of scope for this use case
+
+### TCPA / FCC Regulations
+- Governs consent and disclosure requirements for *outbound* automated calling
+- Primarily a consumer protection framework
+- Does not address inbound B2B calls where a human provider reaches an AI-operated payer system
+
+**Result:** Out of scope for this use case
+
+### NIST AI RMF 1.0
+- Provides a voluntary governance framework for AI risk management
+- Covers GOVERN, MAP, MEASURE, and MANAGE functions at a high level
+- Does not define operational controls for voice-based non-human identity disclosure
+- Requires operationalization by domain-specific standards to be actionable
+
+**Result:** Provides the governance scaffolding; NHID-Clinical operationalizes it for this use case
+
+---
+
+## Conclusion
+
+No existing U.S. regulatory framework explicitly requires proactive non-human identity disclosure in inbound B2B healthcare administrative voice calls.
+
+The gap is not a failure of intent — it is a failure of scope. Most frameworks were written before AI voice agents were deployed at scale in healthcare operations.
+
+NHID-Clinical was developed to fill this specific, bounded gap with a practical, testable control baseline.
