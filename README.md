@@ -41,16 +41,6 @@ The standard addresses a documented gap between existing consumer-protection law
 
 ---
 
-## 📰 In the Media
-
-**The Next Gen Tech Insider** | January 12, 2026  
-[**"NHID-Clinical v1.1 Addresses AI Agent Challenges in Healthcare Payer Interactions"**](https://thenextgentechinsider.com/pulse/nhid-clinical-v11-addresses-ai-agent-challenges-in-healthcare-payer-interactions)  
-
-> *"A new open-source governance standard... aims to resolve operational and compliance challenges in AI agent interactions... tackling risks of unauthorized access to patient data."*
-
-**Recognition:** Featured by Aaira AI Research Assistant as a notable innovation in healthcare AI governance.
-
----
 
 ## 💡 How NHID-Clinical Works
 
@@ -79,7 +69,7 @@ In current healthcare operations, AI voice agents are commonly deployed for elig
 * **No Deceptive Artifacts:** No fake breathing, typing sounds, or misleading human names
 * **Clear Escalation Path:** When humans need humans, there's a guaranteed way out
 
-**The Cost:** Healthcare providers report authentication failures cost the industry **$40M+ annually** in wasted operational time and blocked AI deployments.
+**The Cost:** Operational estimates suggest authentication failures and impersonation latency may cost the industry **$40M+ annually** in wasted time and blocked AI deployments — a figure that warrants structured measurement as adoption scales.
 
 ---
 
