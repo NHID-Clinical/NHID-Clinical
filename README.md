@@ -1,17 +1,12 @@
-# NHID-Clinical v1.1
+# NHID-Clinical v1.2
 
 **Non-Human Identity Disclosure Standard for Healthcare Voice Workflows**
 
 ![License](https://img.shields.io/badge/License-CC--BY--4.0-blue)
-![Status](https://img.shields.io/badge/Status-Active%20Draft-green)
+![Status](https://img.shields.io/badge/Status-Released-brightgreen)
 ![Compliance](https://img.shields.io/badge/Compliance-HIPAA--Aligned-orange)
-[![Version](https://img.shields.io/badge/version-1.1_candidate-blue)](https://github.com/thankcheeses/NHID-Clinical)
+[![Version](https://img.shields.io/badge/version-1.2-blue)](https://github.com/thankcheeses/NHID-Clinical)
 [![Domain](https://img.shields.io/badge/domain-AI_Governance_%7C_Operational_Risk-0052CC)](https://github.com/thankcheeses/NHID-Clinical)
-
-> [!IMPORTANT]
-> **🚧 v1.2 Drafting in Progress**
-> We are currently resolving architectural gaps identified in v1.1, including SIP Header Identity, Failover Logging, and Bot-to-Bot Deadlocks.
-> [**View the v1.2 Working Draft**](v1.2-draft.md) to see the proposed technical specifications.
 
 ---
 
@@ -41,55 +36,10 @@ The standard addresses a documented gap between existing consumer-protection law
 
 ---
 
-## 📰 In the Media
-
-**The Next Gen Tech Insider** | January 12, 2026  
-[**"NHID-Clinical v1.1 Addresses AI Agent Challenges in Healthcare Payer Interactions"**](https://thenextgentechinsider.com/pulse/nhid-clinical-v11-addresses-ai-agent-challenges-in-healthcare-payer-interactions)  
-
-> *"A new open-source governance standard... aims to resolve operational and compliance challenges in AI agent interactions... tackling risks of unauthorized access to patient data."*
-
-**Recognition:** Featured by Aaira AI Research Assistant as a notable innovation in healthcare AI governance.
-
----
 
 ## 💡 How NHID-Clinical Works
 
-```mermaid
-flowchart TD
-    A([📞 Call Initiated]) --> B{Identity Disclosed\nat Greeting?}
-
-    B -->|❌ No| FAIL[⚠️ Impersonation Latency\nWasted Time · Trust Erosion · Compliance Risk]
-
-    B -->|✅ Yes| GATE[🚪 Pre-Data Exchange Gate\nPassed]
-
-    GATE --> DATA[📋 Data Exchange\nNPI · Member ID · Claim #]
-
-    DATA --> ESC{Human Escalation\nRequested?}
-
-    ESC -->|No| DONE[✅ Call Complete\nAudit Log Generated]
-
-    ESC -->|Yes| FAILOVER[🆘 Safe Failover Triggered]
-
-    FAILOVER --> AVAIL{Staff\nAvailable?}
-
-    AVAIL -->|✅ Yes| WARM[🤝 Warm Transfer\nwith Reference ID]
-    AVAIL -->|🌙 After Hours| COLD[📅 State Hours +\nSchedule Callback]
-
-    WARM --> DONE
-    COLD --> DONE
-
-    style A        fill:#0d1b2a,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style B        fill:#1b2a3b,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style FAIL     fill:#5c1010,color:#ffffff,stroke:#ff4444,stroke-width:2px
-    style GATE     fill:#003d80,color:#ffffff,stroke:#66aaff,stroke-width:2px
-    style DATA     fill:#1a3a5c,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style ESC      fill:#1b2a3b,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style FAILOVER fill:#1a3a5c,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style AVAIL    fill:#1b2a3b,color:#ffffff,stroke:#4a9eff,stroke-width:2px
-    style WARM     fill:#0d3320,color:#ffffff,stroke:#44cc77,stroke-width:2px
-    style COLD     fill:#2a3d10,color:#ffffff,stroke:#99cc33,stroke-width:2px
-    style DONE     fill:#0d3320,color:#ffffff,stroke:#44cc77,stroke-width:2px
-```
+![NHID-Clinical Call Workflow](nhid-workflow.svg)
 
 **The "Green Lane" Principle:** When AI agents identify themselves upfront and follow the rules, everyone wins:
 - **Providers** save time (no "are you human?" loops)
@@ -114,7 +64,7 @@ In current healthcare operations, AI voice agents are commonly deployed for elig
 * **No Deceptive Artifacts:** No fake breathing, typing sounds, or misleading human names
 * **Clear Escalation Path:** When humans need humans, there's a guaranteed way out
 
-**The Cost:** Healthcare providers report authentication failures cost the industry **$40M+ annually** in wasted operational time and blocked AI deployments.
+**The Cost:** Operational estimates suggest authentication failures and impersonation latency may cost the industry **$40M+ annually** in wasted time and blocked AI deployments — a figure that warrants structured measurement as adoption scales.
 
 ---
 
@@ -268,21 +218,17 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 
 ---
 
-## 🗺️ v1.2 Roadmap
-
-Based on community feedback, here's what we're tackling next:
+## 🗺️ v1.3 Roadmap
 
 | Issue | Category | Priority | Why It Matters |
-|-------|----------|---------|---------------|
-| **Bot-to-Bot Standoff** | Architecture | 🔴 High | What happens when two AI agents call each other? (Spoiler: infinite loop) |
-| **Technical Signaling** | Optimization | 🟡 Medium | SIP headers could make disclosure machine-readable |
-| **Interrupt/Barge-In** | Operational | 🔴 High | Common real-world failure: "LET ME TALK TO A HUMAN!" |
-| **Context Preservation** | Operational | 🟡 Medium | Passing conversation history to human agents |
-| **Failover Liability** | Compliance | 🔴 High | Who's responsible if AI fails to escalate properly? |
+|-------|----------|----------|----------------|
+| **SIP Header Adoption Feedback** | Optimization | 🟡 Medium | Determine if Section 4.3 headers are feasible for community stacks |
+| **Multilingual Support** | Accessibility | 🟡 Medium | Extend standard to non-English B2B workflows |
+| **Outbound Call Guidance** | Scope Expansion | 🔴 High | Payer-initiated calls currently out of scope |
+| **Certification Framework** | Enforcement | 🔴 High | Formal audit and adoption incentive structure |
 
-**📅 Target Release:** Q2 2026 (after 30-60 days of public comment on v1.1)
-
-**🐛 Track Progress:** [View v1.2 Issues](https://github.com/thankcheeses/NHID-Clinical/issues)
+**📅 Target Release:** Q3–Q4 2026  
+**🐛 Track Progress:** [View Issues](https://github.com/thankcheeses/NHID-Clinical/issues)
 
 ---
 
@@ -321,7 +267,14 @@ This work is licensed under **Creative Commons Attribution 4.0 International (CC
 
 ## 📚 Changelog
 
-### v1.1 (Current - Candidate)
+### v1.2 (Current)
+- 🤖 Added Bot-to-Bot Interaction Workflow (Section 1.5) — deadlock prevention
+- 📞 Added IVR Interruption & Resilience Mode (Section 1.3.1)
+- 📋 Added Failover Confirmation Logging with Callback Ticket ID (Section 2.4.1)
+- 🔀 Defined Escalation Transfer Tiers — Type A (Warm) and Type B (Cold) (Section 3.2)
+- 🔐 Introduced optional Network-Layer Identity via SIP headers (Section 4.3)
+
+### v1.1
 - ✨ Shifted from "3-second window" to **"Pre-Data Exchange gate"** for better auditability
 - 📝 Added "Known Gaps & Future Scope" for transparency
 - 🎯 Refined positioning to emphasize governance best practice over regulatory equivalence

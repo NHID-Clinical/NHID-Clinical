@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 600" width="860" height="600" font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <defs>
+    <marker id="ab" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#4a9eff"/>
+    </marker>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#ff4444"/>
+    </marker>
+    <marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0,8 3,0 6" fill="#44cc77"/>
+    </marker>
+    <filter id="glow-red">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-green">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="860" height="600" fill="#0a1628" rx="16"/>
+
+  <!-- Subtle grid lines for depth -->
+  <g stroke="#0d2040" stroke-width="1">
+    <line x1="0" y1="75"  x2="860" y2="75"/>
+    <line x1="0" y1="150" x2="860" y2="150"/>
+    <line x1="0" y1="225" x2="860" y2="225"/>
+    <line x1="0" y1="300" x2="860" y2="300"/>
+    <line x1="0" y1="375" x2="860" y2="375"/>
+    <line x1="0" y1="450" x2="860" y2="450"/>
+    <line x1="0" y1="525" x2="860" y2="525"/>
+    <line x1="215" y1="0"  x2="215" y2="600"/>
+    <line x1="430" y1="0"  x2="430" y2="600"/>
+    <line x1="645" y1="0"  x2="645" y2="600"/>
+  </g>
+
+  <!-- Title -->
+  <text x="430" y="26" text-anchor="middle" fill="#3a6080" font-size="11" letter-spacing="3" font-weight="600">NHID-CLINICAL  ·  CALL WORKFLOW</text>
+
+  <!-- ── NODE 1: Call Initiated ── -->
+  <rect x="262" y="38" width="256" height="40" rx="20" fill="#1a3a5c" stroke="#4a9eff" stroke-width="2"/>
+  <text x="390" y="63" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="600">📞  Call Initiated</text>
+
+  <!-- Arrow ↓ -->
+  <line x1="390" y1="78" x2="390" y2="115" stroke="#4a9eff" stroke-width="2" marker-end="url(#ab)"/>
+
+  <!-- ── NODE 2: Decision — Identity Disclosed? ── -->
+  <polygon points="390,117 540,156 390,195 240,156" fill="#0e1e30" stroke="#4a9eff" stroke-width="2"/>
+  <text x="390" y="151" text-anchor="middle" fill="#cce0ff" font-size="12">Identity Disclosed</text>
+  <text x="390" y="167" text-anchor="middle" fill="#cce0ff" font-size="12">at Greeting?</text>
+
+  <!-- Arrow ❌ No → FAIL -->
+  <line x1="540" y1="156" x2="596" y2="156" stroke="#ff4444" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="563" y="148" text-anchor="middle" fill="#ff6666" font-size="11" font-weight="600">❌ No</text>
+
+  <!-- Arrow ✅ Yes ↓ -->
+  <line x1="390" y1="195" x2="390" y2="228" stroke="#4a9eff" stroke-width="2" marker-end="url(#ab)"/>
+  <text x="413" y="215" fill="#44cc77" font-size="11" font-weight="600">✅ Yes</text>
+
+  <!-- ── FAIL BOX (dead-end) ── -->
+  <rect x="596" y="124" width="236" height="64" rx="8" fill="#3a0808" stroke="#ff4444" stroke-width="2" filter="url(#glow-red)"/>
+  <text x="714" y="147" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="700">⚠️  Impersonation Latency</text>
+  <text x="714" y="164" text-anchor="middle" fill="#ffaaaa" font-size="11">Wasted Time  ·  Trust Erosion</text>
+  <text x="714" y="180" text-anchor="middle" fill="#ffaaaa" font-size="11">Compliance Risk</text>
+
+  <!-- ── NODE 3: Pre-Data Exchange Gate ── -->
+  <rect x="240" y="228" width="300" height="40" rx="8" fill="#003d80" stroke="#66aaff" stroke-width="2"/>
+  <text x="390" y="253" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="600">🚪  Pre-Data Exchange Gate</text>
+
+  <!-- Arrow ↓ -->
+  <line x1="390" y1="268" x2="390" y2="305" stroke="#4a9eff" stroke-width="2" marker-end="url(#ab)"/>
+
+  <!-- ── NODE 4: Data Exchange ── -->
+  <rect x="228" y="305" width="324" height="48" rx="8" fill="#1a3a5c" stroke="#4a9eff" stroke-width="2"/>
+  <text x="390" y="326" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="600">📋  Data Exchange</text>
+  <text x="390" y="344" text-anchor="middle" fill="#aaccff" font-size="11">NPI  ·  Member ID  ·  Claim #</text>
+
+  <!-- Arrow ↓ -->
+  <line x1="390" y1="353" x2="390" y2="390" stroke="#4a9eff" stroke-width="2" marker-end="url(#ab)"/>
+
+  <!-- ── NODE 5: Decision — Escalation? ── -->
+  <polygon points="390,392 540,431 390,470 240,431" fill="#0e1e30" stroke="#4a9eff" stroke-width="2"/>
+  <text x="390" y="426" text-anchor="middle" fill="#cce0ff" font-size="12">Human Escalation</text>
+  <text x="390" y="442" text-anchor="middle" fill="#cce0ff" font-size="12">Requested?</text>
+
+  <!-- Arrow Yes → FAILOVER -->
+  <line x1="540" y1="431" x2="596" y2="431" stroke="#4a9eff" stroke-width="2" marker-end="url(#ab)"/>
+  <text x="563" y="423" text-anchor="middle" fill="#aaaaff" font-size="11" font-weight="600">Yes</text>
+
+  <!-- Arrow No ↓ DONE -->
+  <line x1="390" y1="470" x2="390" y2="508" stroke="#44cc77" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="413" y="493" fill="#44cc77" font-size="11" font-weight="600">No</text>
+
+  <!-- ── FAILOVER BOX ── -->
+  <rect x="596" y="399" width="236" height="64" rx="8" fill="#1a3a5c" stroke="#66aaff" stroke-width="2"/>
+  <text x="714" y="422" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="700">🆘  Safe Failover</text>
+  <text x="714" y="440" text-anchor="middle" fill="#aaccff" font-size="11">Warm Transfer  or  Callback</text>
+  <text x="714" y="455" text-anchor="middle" fill="#aaccff" font-size="11">+ Reference ID Generated</text>
+
+  <!-- Failover path → DONE -->
+  <path d="M714,463 L714,490 L490,490 L490,508" stroke="#44cc77" stroke-width="2" fill="none" marker-end="url(#ag)"/>
+  <text x="604" y="484" text-anchor="middle" fill="#44aa66" font-size="10">ref #</text>
+
+  <!-- ── NODE 6: Call Complete ── -->
+  <rect x="270" y="508" width="310" height="52" rx="26" fill="#0a2e18" stroke="#44cc77" stroke-width="2.5" filter="url(#glow-green)"/>
+  <text x="425" y="530" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">✅  Call Complete</text>
+  <text x="425" y="549" text-anchor="middle" fill="#88ddaa" font-size="11">Audit Log Generated</text>
+
+  <!-- ── LEGEND ── -->
+  <rect x="16" y="552" width="200" height="34" rx="6" fill="#0d1e30" stroke="#1e3a55" stroke-width="1"/>
+  <rect x="26" y="563" width="12" height="12" rx="2" fill="#3a0808" stroke="#ff4444" stroke-width="1"/>
+  <text x="44" y="573" fill="#ff8888" font-size="10">Non-Compliant Path</text>
+  <rect x="116" y="563" width="12" height="12" rx="2" fill="#0a2e18" stroke="#44cc77" stroke-width="1"/>
+  <text x="134" y="573" fill="#88ddaa" font-size="10">Compliant Path</text>
+</svg>
