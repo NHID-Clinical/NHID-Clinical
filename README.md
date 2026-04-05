@@ -268,11 +268,11 @@ This work is licensed under **Creative Commons Attribution 4.0 International (CC
 ## 📚 Changelog
 
 ### v1.2 (Current)
-- 🤖 Added bot-to-bot interaction workflow with deadlock prevention (Section 1.5)
-- ⏱️ Added IVR interruption handling and "Combined Turn" Resilience Mode (Section 1.3.1)
-- 📋 Added failover confirmation logging requirements — Callback Ticket ID, SIP response codes (Section 2.4.1)
-- 🔀 Defined Escalation Transfer Tiers: Type A (Warm) and Type B (Cold + Verbal Handoff) (Section 3.2)
-- 🔒 Introduced optional SIP/VoIP header-based identity assertion as Tier 3 evidence (Section 4.3)
+- 🤖 Added Bot-to-Bot Interaction Workflow (Section 1.5) — deadlock prevention
+- 📞 Added IVR Interruption & Resilience Mode (Section 1.3.1)
+- 📋 Added Failover Confirmation Logging with Callback Ticket ID (Section 2.4.1)
+- 🔀 Defined Escalation Transfer Tiers — Type A (Warm) and Type B (Cold) (Section 3.2)
+- 🔐 Introduced optional Network-Layer Identity via SIP headers (Section 4.3)
 
 ### v1.1
 - ✨ Shifted from "3-second window" to **"Pre-Data Exchange gate"** for better auditability
