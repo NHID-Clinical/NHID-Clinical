@@ -1,17 +1,12 @@
-# NHID-Clinical v1.1
+# NHID-Clinical v1.2
 
 **Non-Human Identity Disclosure Standard for Healthcare Voice Workflows**
 
 ![License](https://img.shields.io/badge/License-CC--BY--4.0-blue)
-![Status](https://img.shields.io/badge/Status-Active%20Draft-green)
+![Status](https://img.shields.io/badge/Status-Released-brightgreen)
 ![Compliance](https://img.shields.io/badge/Compliance-HIPAA--Aligned-orange)
-[![Version](https://img.shields.io/badge/version-1.1_candidate-blue)](https://github.com/thankcheeses/NHID-Clinical)
+[![Version](https://img.shields.io/badge/version-1.2-blue)](https://github.com/thankcheeses/NHID-Clinical)
 [![Domain](https://img.shields.io/badge/domain-AI_Governance_%7C_Operational_Risk-0052CC)](https://github.com/thankcheeses/NHID-Clinical)
-
-> [!IMPORTANT]
-> **🚧 v1.2 Drafting in Progress**
-> We are currently resolving architectural gaps identified in v1.1, including SIP Header Identity, Failover Logging, and Bot-to-Bot Deadlocks.
-> [**View the v1.2 Working Draft**](v1.2-draft.md) to see the proposed technical specifications.
 
 ---
 
@@ -223,21 +218,17 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 
 ---
 
-## 🗺️ v1.2 Roadmap
-
-Based on community feedback, here's what we're tackling next:
+## 🗺️ v1.3 Roadmap
 
 | Issue | Category | Priority | Why It Matters |
-|-------|----------|---------|---------------|
-| **Bot-to-Bot Standoff** | Architecture | 🔴 High | What happens when two AI agents call each other? (Spoiler: infinite loop) |
-| **Technical Signaling** | Optimization | 🟡 Medium | SIP headers could make disclosure machine-readable |
-| **Interrupt/Barge-In** | Operational | 🔴 High | Common real-world failure: "LET ME TALK TO A HUMAN!" |
-| **Context Preservation** | Operational | 🟡 Medium | Passing conversation history to human agents |
-| **Failover Liability** | Compliance | 🔴 High | Who's responsible if AI fails to escalate properly? |
+|-------|----------|----------|----------------|
+| **SIP Header Adoption Feedback** | Optimization | 🟡 Medium | Determine if Section 4.3 headers are feasible for community stacks |
+| **Multilingual Support** | Accessibility | 🟡 Medium | Extend standard to non-English B2B workflows |
+| **Outbound Call Guidance** | Scope Expansion | 🔴 High | Payer-initiated calls currently out of scope |
+| **Certification Framework** | Enforcement | 🔴 High | Formal audit and adoption incentive structure |
 
-**📅 Target Release:** Q2 2026 (after 30-60 days of public comment on v1.1)
-
-**🐛 Track Progress:** [View v1.2 Issues](https://github.com/thankcheeses/NHID-Clinical/issues)
+**📅 Target Release:** Q3–Q4 2026  
+**🐛 Track Progress:** [View Issues](https://github.com/thankcheeses/NHID-Clinical/issues)
 
 ---
 
