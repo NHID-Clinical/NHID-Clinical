@@ -92,7 +92,7 @@ NHID-Clinical operates at the **operational layer**, complementing existing lega
 |-----------|-------------|----------------------|
 | **HIPAA** | Protects patient health information | NHID ensures the "Minimum Necessary" standard applies to the *correct entity type* (human vs. machine) |
 | **TCPA / FCC** | Governs outbound call consent | NHID manages *inbound* handshake content to prevent deceptive practices in B2B calls |
-| **California B.O.T. Act** | Requires bot disclosure in consumer contexts | NHID extends this spirit to private healthcare administrative channels not explicitly covered |
+| **California B.O.T. Act** | Requires bot disclosure in online/social media contexts (Bus. & Prof. Code §17940–17945) | NHID applies analogous disclosure principles to B2B voice workflows — a channel the Act does not explicitly govern. This is alignment in intent, not statutory coverage. |
 | **NIST AI RMF** | Framework for AI risk management | NHID operationalizes GOVERN, MAP, MEASURE, and MANAGE functions (see alignment table below) |
 
 ---
@@ -165,7 +165,7 @@ When a human stakeholder explicitly requests a transfer or indicates the agent i
 When a healthcare provider deploys an AI agent to call a payer or clearinghouse:
 
 **Mandatory Identity Disclosure**
-- AI must state "I am an automated system" within the first 10 seconds
+- AI must state "I am an automated system" before any exchange of operational data (NPI, Member ID, Claim Number, or equivalent identifiers)
 - AI must state the authorizing provider's name and NPI
 - Example: "Hello, this is an automated system calling on behalf of Dr. Smith's Dental Office, NPI 1234567890."
 
@@ -220,19 +220,19 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 | :--- | :--- | :--- | :--- |
 | **Proactive Identity Assertion (PIA)** | **MEAS 2.6** (Transparency)<br>**MAP 3.4** (Context) | **A.7.2** (System Transparency)<br>**B.9.1** (Communication) | Ensures stakeholders know they are interacting with an AI system *before* risk exposure. |
 | **The "Turing Boundary"** (No Deception) | **GOV 1.5** (Risk Mgmt)<br>**MAP 3.4** (Human-AI Interaction) | **A.5.8** (Safety & Trust)<br>**A.9.2** (AI System Impact) | Prevents manipulative design patterns (e.g., fake breathing) that erode trust. |
-| **Pre-Data Exchange Gate** | **MAN 1.2** (Risk Treatment)<br>**GOV 5.1** (Legal Compliance) | **A.6.2** (Data Management)<br>**A.8.2** (Data Privacy) | Enforces "Minimum Necessary" data access by verifying identity *before* PHI intake. |
-| **Safe Failover / Escalation** | **MAN 4.2** (Human Oversight)<br>**GOV 5.2** (Feedback Loops) | **A.8.3** (Human Oversight)<br>**A.6.3** (Incident Management) | Guarantees a "Human-in-the-Loop" fallback when AI fails or trust is broken. |
-| **Audit Logging** | **MAN 4.1** (Monitoring)<br>**MEAS 2.2** (Validation) | **A.4.2** (Documentation)<br>**A.9.3** (Performance Eval) | Provides the evidentiary chain required for compliance audits. |
+| **Pre-Data Exchange Gate** | **MANAGE 1.2** (Risk Treatment)<br>**GOV 5.1** (Legal Compliance) | **A.6.2** (Data Management)<br>**A.8.2** (Data Privacy) | Enforces "Minimum Necessary" data access by verifying identity *before* PHI intake. |
+| **Safe Failover / Escalation** | **MANAGE 4.2** (Human Oversight)<br>**GOV 5.2** (Feedback Loops) | **A.8.3** (Human Oversight)<br>**A.6.3** (Incident Management) | Guarantees a "Human-in-the-Loop" fallback when AI fails or trust is broken. |
+| **Audit Logging** | **MANAGE 4.1** (Monitoring)<br>**MEAS 2.2** (Validation) | **A.4.2** (Documentation)<br>**A.9.3** (Performance Eval) | Provides the evidentiary chain required for compliance audits. |
 
 
 ---
 
 ## 🚧 Known Gaps & Future Scope
 
-**What v1.1 DOES NOT Cover (yet):**
+**What v1.2 DOES NOT Cover (yet):**
 
 - ⏳ **Patient-facing workflows:** Direct-to-consumer or clinical triage
-- 📞 **Outbound calls:** Payer-initiated or proactive agent calls  
+- 📞 **Outbound calls (payer-initiated):** Proactive outbound calls originated by payers are not covered. Provider-initiated outbound calls to payers are addressed in Section 4.  
 - 🌍 **International compliance:** GDPR or non-U.S. regulatory contexts
 - ♿ **Accessibility:** Multilingual support, deaf/hard-of-hearing accommodations
 - 🔗 **Multi-entity integrations:** Complex scenarios with multiple payers/vendors
