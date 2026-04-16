@@ -218,11 +218,11 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 
 | NHID-Clinical Control | NIST AI RMF 1.0 (US) | ISO/IEC 42001:2023 (Global) | Operational Function |
 | :--- | :--- | :--- | :--- |
-| **Proactive Identity Assertion (PIA)** | **MEAS 2.6** (Transparency)<br>**MAP 3.4** (Context) | **A.7.2** (System Transparency)<br>**B.9.1** (Communication) | Ensures stakeholders know they are interacting with an AI system *before* risk exposure. |
+| **Proactive Identity Assertion (PIA)** | **MEASURE 2.6** (Transparency)<br>**MAP 3.4** (Context) | **A.7.2** (System Transparency)<br>**B.9.1** (Communication) | Ensures stakeholders know they are interacting with an AI system *before* risk exposure. |
 | **The "Turing Boundary"** (No Deception) | **GOV 1.5** (Risk Mgmt)<br>**MAP 3.4** (Human-AI Interaction) | **A.5.8** (Safety & Trust)<br>**A.9.2** (AI System Impact) | Prevents manipulative design patterns (e.g., fake breathing) that erode trust. |
 | **Pre-Data Exchange Gate** | **MANAGE 1.2** (Risk Treatment)<br>**GOV 5.1** (Legal Compliance) | **A.6.2** (Data Management)<br>**A.8.2** (Data Privacy) | Enforces "Minimum Necessary" data access by verifying identity *before* PHI intake. |
 | **Safe Failover / Escalation** | **MANAGE 4.2** (Human Oversight)<br>**GOV 5.2** (Feedback Loops) | **A.8.3** (Human Oversight)<br>**A.6.3** (Incident Management) | Guarantees a "Human-in-the-Loop" fallback when AI fails or trust is broken. |
-| **Audit Logging** | **MANAGE 4.1** (Monitoring)<br>**MEAS 2.2** (Validation) | **A.4.2** (Documentation)<br>**A.9.3** (Performance Eval) | Provides the evidentiary chain required for compliance audits. |
+| **Audit Logging** | **MANAGE 4.1** (Monitoring)<br>**MEASURE 2.2** (Validation) | **A.4.2** (Documentation)<br>**A.9.3** (Performance Eval) | Provides the evidentiary chain required for compliance audits. |
 
 
 ---
@@ -238,7 +238,7 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 - 🔗 **Multi-entity integrations:** Complex scenarios with multiple payers/vendors
 - 🏛️ **Enforcement mechanisms:** Certification, audit standards, adoption incentives
 
-**Translation:** This is v1.1, not the final word on AI identity in healthcare. We're building iteratively based on real operational feedback.
+**Translation:** This is v1.2, not the final word on AI identity in healthcare. We're building iteratively based on real operational feedback.
 
 ---
 
