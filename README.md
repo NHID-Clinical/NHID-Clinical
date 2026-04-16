@@ -160,6 +160,30 @@ When a human stakeholder explicitly requests a transfer or indicates the agent i
 
 ---
 
+### 4. Outbound AI Agent Disclosure (B2B Healthcare Calls)
+
+When a healthcare provider deploys an AI agent to call a payer or clearinghouse:
+
+**Mandatory Identity Disclosure**
+- AI must state "I am an automated system" within the first 10 seconds
+- AI must state the authorizing provider's name and NPI
+- Example: "Hello, this is an automated system calling on behalf of Dr. Smith's Dental Office, NPI 1234567890."
+
+**Prohibition of Deceptive Audio Artifacts**
+- AI agents must not use simulated presence cues (breathing sounds, typing, artificial hesitation) designed to imply human presence
+- Natural speech pacing and prosody are permitted
+- Deceptive audio artifacts create unnecessary trust assumptions that can compromise security
+
+**Authentication Best Practice**
+- Human operators should verify provider identity before exchanging sensitive data
+- Organizations are recommended to implement verifiable digital tokens or BAA-linked reference codes rather than relying solely on public identifiers (NPI, EIN)
+- Recommended but not mandated at this release; future versions will provide technical specifications for digital token and BAA-linked authentication protocols
+
+**Rationale:**
+B2B healthcare calls present a unique threat vector. Unlike consumer-facing AI (regulated by TCPA/FCC), healthcare provider-to-payer calls currently operate in a regulatory gray area. HIPAA requires security and audit trails, but does not specify audio disclosure timing or authentication methods for non-human actors. This section provides operational guidance aligned with 2026 security best practices.
+
+---
+
 ## 📊 Audit & Evidence Requirements
 
 **You don't need fancy compliance software.** Here's what counts as proof:
