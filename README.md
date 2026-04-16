@@ -177,7 +177,7 @@ When a healthcare provider deploys an AI agent to call a payer or clearinghouse:
 **Authentication Best Practice**
 - Human operators should verify provider identity before exchanging sensitive data
 - Organizations are recommended to implement verifiable digital tokens or BAA-linked reference codes rather than relying solely on public identifiers (NPI, EIN)
-- Recommended but not mandated in v1.1; v1.2 will provide technical specifications
+- Recommended but not mandated at this release; future versions will provide technical specifications for digital token and BAA-linked authentication protocols
 
 **Rationale:**
 B2B healthcare calls present a unique threat vector. Unlike consumer-facing AI (regulated by TCPA/FCC), healthcare provider-to-payer calls currently operate in a regulatory gray area. HIPAA requires security and audit trails, but does not specify audio disclosure timing or authentication methods for non-human actors. This section provides operational guidance aligned with 2026 security best practices.
