@@ -237,6 +237,7 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 - ♿ **Accessibility:** Multilingual support, deaf/hard-of-hearing accommodations
 - 🔗 **Multi-entity integrations:** Complex scenarios with multiple payers/vendors
 - 🏛️ **Enforcement mechanisms:** Certification, audit standards, adoption incentives
+- 🔧 **Technical implementation bindings:** Runtime enforcement specifications, event schemas (e.g., OpenTelemetry), and policy engine integrations (e.g., OPA/Cedar) are intentionally out of scope for v1.x. NHID-Clinical defines the governance layer — how systems should behave. Implementation specs for how systems enforce that behavior in code are candidates for a companion technical specification or community extension.
 
 **Translation:** This is v1.2, not the final word on AI identity in healthcare. We're building iteratively based on real operational feedback.
 
