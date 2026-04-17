@@ -51,7 +51,7 @@ The standard addresses a documented gap between existing consumer-protection law
 
 ## 🚨 The Problem Statement
 
-**The scenario:** A healthcare provider hires a vendor (like SuperDial) to handle their administrative calls. That vendor deploys an AI voice agent to call an insurance company and check claim status or verify eligibility. A payer customer service rep answers. They spend 3–5 minutes gathering information — NPI, date of birth, member ID, social security number, date of service. Then something doesn't add up. They ask: *"Are you a real person?"* They find out they've been talking to an AI the entire time.
+**The scenario:** A provider office deploys a third-party AI voice agent platform to call insurance companies on their behalf — handling eligibility checks, claim status inquiries, and administrative follow-ups. A payer customer service rep answers. They spend 3–5 minutes gathering information — NPI, member ID, date of service, patient information. Then something doesn't add up. They ask: *"Are you a real person?"* They find out they've been talking to an AI the entire time.
 
 **The payer's current response:** Terminate the call. Read from a script: *"We do not speak with AI agents. Please have a human representative call back."*
 
@@ -89,6 +89,8 @@ That call is dead. The provider's workflow is broken. And nobody has written dow
 - ❌ A certification program (yet—though that's on the roadmap)
 
 **Think of it like this:** HIPAA says "protect patient data." NHID-Clinical says "here's *exactly* how to do that when AI agents are involved in voice workflows."
+
+This standard is informed by real payer-side enforcement practices where calls are terminated when non-human or unverifiable entities attempt to access protected operational data.
 
 ---
 
