@@ -5,26 +5,25 @@ Non-Human Identity Disclosure Control Framework for Healthcare Voice AI
 
 ---
 
-1. Purpose
+## 1. Purpose
 
-NHID-Clinical defines a minimum operational control layer for healthcare voice workflows that use AI agents.
+NHID-Clinical defines a minimum operational control layer for healthcare voice workflows where AI agents initiate calls on behalf of provider organizations.
+
+The core problem this addresses: A provider office deploys a third-party AI voice agent platform to call insurance companies about claims. The payer's customer service rep answers. They spend 3–5 minutes gathering sensitive identifiers — NPI, member ID, date of service, patient information — only to realize they were talking to an AI that never disclosed itself.
+
+The payer's current response is to terminate the call and read a script: "We do not speak with AI agents. Please have a human representative call back."
+
+NHID-Clinical standardizes that manual enforcement control — replacing ad-hoc termination policies with a clear, testable baseline for what a compliant AI-initiated B2B healthcare call looks like.
 
 Its purpose is to ensure:
-
-AI systems do not impersonate humans
-
-Identity is disclosed before any patient or operational data exchange
-
-Organizations maintain audit-ready evidence of AI interactions
-
+- AI systems disclose non-human identity before any data exchange
+- Payers have a standard for accepting compliant AI calls rather than defaulting to blanket rejection
+- Organizations maintain audit-ready evidence of AI interactions
 
 This reduces:
-
-operational delays caused by identity confusion
-
-compliance risk from non-disclosed automation
-
-failed or rejected payer/provider calls involving AI systems
+- Compliance risk from undisclosed AI actors accessing protected operational data
+- Operational waste from calls terminated due to unverifiable AI identity
+- Payer liability from unknowingly disclosing PHI to unidentified automated systems
 
 
 
