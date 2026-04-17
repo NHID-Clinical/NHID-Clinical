@@ -12,17 +12,19 @@
 
 ## 🎯 What Problem Does This Solve?
 
-Picture this: You're a medical office assistant calling an insurance company to check a claim status. A friendly voice answers: *"Hi, this is Sarah!"* You spend 3 minutes explaining the situation. "Sarah" keeps saying *"Mmm-hmm, let me check that..."* with realistic typing sounds in the background.
+Picture this: You're a customer service rep at an insurance company. A call comes in from what sounds like a medical office — they need a claim status update. You spend 3–5 minutes gathering information. NPI. Member ID. Date of service. Patient details.
 
-Then suddenly: *"I'm sorry, I didn't understand. Can you repeat the member ID?"*
+Then something feels off. You ask: "Am I speaking with a real person?"
 
-**Plot twist: "Sarah" was an AI agent the entire time.**
+Silence. Then: "I am an automated assistant."
 
-You just wasted 3 billable minutes—and you're frustrated, confused, and now questioning if your data was even recorded correctly.
+You just spent 3–5 minutes providing protected operational data to an AI agent that never disclosed itself. Your company has no standard for this. So you do what you're trained to do: terminate the call and read the script.
+
+*"We do not speak with AI agents. Please have a human representative call back."*
 
 **This happens thousands of times per day across healthcare.**
 
-Welcome to **"Impersonation Latency"**—the operational black hole where nobody knows who (or what) they're talking to.
+Welcome to **"Impersonation Latency"** — the compliance and operational black hole where payer systems have no standard for what a legitimate AI-initiated call looks like, so they reject all of them.
 
 ---
 
