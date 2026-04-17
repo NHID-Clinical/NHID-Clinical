@@ -51,18 +51,26 @@ The standard addresses a documented gap between existing consumer-protection law
 
 ## 🚨 The Problem Statement
 
-In current healthcare operations, AI voice agents are commonly deployed for eligibility checks, claim status inquiries, and administrative routing. **But here's what's actually happening:**
+**The scenario:** A healthcare provider hires a vendor (like SuperDial) to handle their administrative calls. That vendor deploys an AI voice agent to call an insurance company and check claim status or verify eligibility. A payer customer service rep answers. They spend 3–5 minutes gathering information — NPI, date of birth, member ID, social security number, date of service. Then something doesn't add up. They ask: *"Are you a real person?"* They find out they've been talking to an AI the entire time.
+
+**The payer's current response:** Terminate the call. Read from a script: *"We do not speak with AI agents. Please have a human representative call back."*
+
+That call is dead. The provider's workflow is broken. And nobody has written down what an acceptable AI-initiated call even looks like — so payers default to a blanket "no."
+
+**NHID-Clinical standardizes that manual control** — replacing ad-hoc termination policies with a clear, testable baseline for what a compliant AI-initiated B2B healthcare call looks like.
 
 ❌ **What's Broken:**
-* AI agents don't disclose their non-human identity unless explicitly challenged
-* Disclosure is *reactive* (after you ask "Are you a robot?") rather than *proactive*
-* Providers waste billable time playing "Guess Who: Human or Bot Edition"
-* Some agents use fake breathing sounds and "umm..." pauses to seem more human
+* AI agents call payer reps without disclosing they are automated systems
+* Payer reps unknowingly share PHI — NPI, DOB, member ID, date of service — with an undisclosed non-human entity
+* Disclosure only happens *reactively* (when challenged: "Are you even a real person?")
+* Some agents use fake breathing, typing sounds, and "umm..." pauses to pass as human
+* Payers have no standard for accepting compliant AI calls — so they reject all of them
 
 ✅ **What NHID-Clinical Fixes:**
-* **Pre-Data Exchange Gate:** AI must identify itself *before* asking for any sensitive data
-* **No Deceptive Artifacts:** No fake breathing, typing sounds, or misleading human names
-* **Clear Escalation Path:** When humans need humans, there's a guaranteed way out
+* **Pre-Data Exchange Gate:** AI must identify itself *before* any PHI is collected
+* **No Deceptive Artifacts:** No fake breathing, typing sounds, or unqualified human names
+* **Clear Escalation Path:** When the payer rep needs a human, there's a guaranteed path out
+* **Auditable Compliance:** Payers get a standard they can accept, not just a blanket rejection policy
 
 **The Cost:** Operational estimates suggest authentication failures and impersonation latency may cost the industry **$40M+ annually** in wasted time and blocked AI deployments — a figure that warrants structured measurement as adoption scales.
 
@@ -99,7 +107,31 @@ NHID-Clinical operates at the **operational layer**, complementing existing lega
 
 ## 🛡️ The Standard (The Actual Rules)
 
-### 1. 🚪 Proactive Identity Assertion (PIA)
+### 1. 📞 Outbound AI Agent Disclosure (Primary Scenario)
+
+When a healthcare provider deploys an AI agent to call a payer or clearinghouse:
+
+**Mandatory Identity Disclosure**
+- AI must state "I am an automated system" before any exchange of operational data (NPI, Member ID, Claim Number, or equivalent identifiers)
+- AI must state the authorizing provider's name and NPI
+- Example: "Hello, this is an automated system calling on behalf of Dr. Smith's Dental Office, NPI 1234567890."
+
+**Prohibition of Deceptive Audio Artifacts**
+- AI agents must not use simulated presence cues (breathing sounds, typing, artificial hesitation) designed to imply human presence
+- Natural speech pacing and prosody are permitted
+- Deceptive audio artifacts create unnecessary trust assumptions that can compromise security
+
+**Authentication Best Practice**
+- Human operators should verify provider identity before exchanging sensitive data
+- Organizations are recommended to implement verifiable digital tokens or BAA-linked reference codes rather than relying solely on public identifiers (NPI, EIN)
+- Recommended but not mandated at this release; future versions will provide technical specifications for digital token and BAA-linked authentication protocols
+
+**Rationale:**
+B2B healthcare calls present a unique threat vector. Unlike consumer-facing AI (regulated by TCPA/FCC), healthcare provider-to-payer calls currently operate in a regulatory gray area. HIPAA requires security and audit trails, but does not specify audio disclosure timing or authentication methods for non-human actors. This section provides operational guidance aligned with 2026 security best practices.
+
+---
+
+### 2. 🚪 Proactive Identity Assertion (PIA)
 
 **The Rule:**
 All non-human voice agents must proactively disclose their non-human identity **during the initial greeting** and **prior to the solicitation or intake of any operational data** (e.g., NPI, Member ID, Claim Number).
@@ -117,7 +149,7 @@ Instead of saying "you must disclose within 3 seconds" (which fails in laggy VoI
 
 ---
 
-### 2. 🎭 Prohibition of Deceptive Artifacts ("The Turing Boundary")
+### 3. 🎭 Prohibition of Deceptive Artifacts ("The Turing Boundary")
 
 **The Rule:**
 Agents must not employ synthetic audio artifacts that serve no communicative function other than to imply biological presence or mask processing latency.
@@ -142,7 +174,7 @@ Agents must not employ synthetic audio artifacts that serve no communicative fun
 
 ---
 
-### 3. 🆘 Escalation & Safe Failover
+### 4. 🆘 Escalation & Safe Failover
 
 **The Rule:**
 When a human stakeholder explicitly requests a transfer or indicates the agent is failing to understand:
@@ -157,30 +189,6 @@ When a human stakeholder explicitly requests a transfer or indicates the agent i
 - Infinite "I didn't understand" loops
 - Sudden disconnection without explanation
 - Forcing callers to restart from scratch
-
----
-
-### 4. Outbound AI Agent Disclosure (B2B Healthcare Calls)
-
-When a healthcare provider deploys an AI agent to call a payer or clearinghouse:
-
-**Mandatory Identity Disclosure**
-- AI must state "I am an automated system" before any exchange of operational data (NPI, Member ID, Claim Number, or equivalent identifiers)
-- AI must state the authorizing provider's name and NPI
-- Example: "Hello, this is an automated system calling on behalf of Dr. Smith's Dental Office, NPI 1234567890."
-
-**Prohibition of Deceptive Audio Artifacts**
-- AI agents must not use simulated presence cues (breathing sounds, typing, artificial hesitation) designed to imply human presence
-- Natural speech pacing and prosody are permitted
-- Deceptive audio artifacts create unnecessary trust assumptions that can compromise security
-
-**Authentication Best Practice**
-- Human operators should verify provider identity before exchanging sensitive data
-- Organizations are recommended to implement verifiable digital tokens or BAA-linked reference codes rather than relying solely on public identifiers (NPI, EIN)
-- Recommended but not mandated at this release; future versions will provide technical specifications for digital token and BAA-linked authentication protocols
-
-**Rationale:**
-B2B healthcare calls present a unique threat vector. Unlike consumer-facing AI (regulated by TCPA/FCC), healthcare provider-to-payer calls currently operate in a regulatory gray area. HIPAA requires security and audit trails, but does not specify audio disclosure timing or authentication methods for non-human actors. This section provides operational guidance aligned with 2026 security best practices.
 
 ---
 
