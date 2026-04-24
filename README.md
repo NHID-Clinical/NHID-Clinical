@@ -1,11 +1,11 @@
-# NHID-Clinical v1.2
+# NHID-Clinical v1.3
 
 **Non-Human Identity Disclosure Standard for Healthcare Voice Workflows**
 
 ![License](https://img.shields.io/badge/License-CC--BY--4.0-blue)
 ![Status](https://img.shields.io/badge/Status-Released-brightgreen)
 ![Compliance](https://img.shields.io/badge/Compliance-HIPAA--Aligned-orange)
-[![Version](https://img.shields.io/badge/version-1.2-blue)](https://github.com/thankcheeses/NHID-Clinical)
+[![Version](https://img.shields.io/badge/version-1.3-blue)](https://github.com/thankcheeses/NHID-Clinical)
 [![Domain](https://img.shields.io/badge/domain-AI_Governance_%7C_Operational_Risk-0052CC)](https://github.com/thankcheeses/NHID-Clinical)
 
 ---
@@ -74,7 +74,7 @@ That call is dead. The provider's workflow is broken. And nobody has written dow
 * **Clear Escalation Path:** When the payer rep needs a human, there's a guaranteed path out
 * **Auditable Compliance:** Payers get a standard they can accept, not just a blanket rejection policy
 
-**The Cost:** Operational estimates suggest authentication failures and impersonation latency may cost the industry **$40M+ annually** in wasted time and blocked AI deployments — a figure that warrants structured measurement as adoption scales.
+**The Cost:** Operational estimates suggest authentication failures and impersonation latency may cost the industry **$40M+ annually** in wasted time and blocked AI deployments — a non-validated estimate that warrants structured measurement as adoption scales.
 
 ---
 
@@ -88,9 +88,9 @@ That call is dead. The provider's workflow is broken. And nobody has written dow
 **What NHID-Clinical is NOT:**
 - ❌ A replacement for HIPAA, GDPR, or other legal requirements
 - ❌ An "ethical AI" philosophy paper with no implementation guidance
-- ❌ A certification program (yet—though that's on the roadmap)
+- ❌ A legal mandate — this is a voluntary operational standard
 
-**Think of it like this:** HIPAA says "protect patient data." NHID-Clinical says "here's *exactly* how to do that when AI agents are involved in voice workflows."
+**Think of it like this:** HIPAA says "protect patient data." NHID-Clinical provides operational guidance for *how to handle disclosure* when AI agents are involved in voice workflows — it does not create legal obligations or extend HIPAA's scope.
 
 This standard is informed by real payer-side enforcement practices where calls are terminated when non-human or unverifiable entities attempt to access protected operational data.
 
@@ -98,12 +98,14 @@ This standard is informed by real payer-side enforcement practices where calls a
 
 ## 📜 Regulatory Context & Compatibility
 
+> **Note:** The mappings below are **informational only**. NHID-Clinical does not create or extend legal obligations under any of the listed frameworks. Consult qualified legal counsel for compliance determinations.
+
 NHID-Clinical operates at the **operational layer**, complementing existing legal frameworks without conflict:
 
-| Framework | What It Does | How NHID-Clinical Fits |
+| Framework | What It Does | How NHID-Clinical Relates (Informational) |
 |-----------|-------------|----------------------|
-| **HIPAA** | Protects patient health information | NHID ensures the "Minimum Necessary" standard applies to the *correct entity type* (human vs. machine) |
-| **TCPA / FCC** | Governs outbound call consent | NHID manages *inbound* handshake content to prevent deceptive practices in B2B calls |
+| **HIPAA** | Protects patient health information | NHID supports practices aligned with HIPAA's "Minimum Necessary" principle by ensuring identity is verified before operational data is exchanged. NHID does not interpret or extend HIPAA obligations. |
+| **TCPA / FCC** | Governs outbound call consent | NHID addresses B2B inbound handshake content in workflows not covered by TCPA's consumer-protection scope. |
 | **California B.O.T. Act** | Requires bot disclosure in online/social media contexts (Bus. & Prof. Code §17940–17945) | NHID applies analogous disclosure principles to B2B voice workflows — a channel the Act does not explicitly govern. This is alignment in intent, not statutory coverage. |
 | **NIST AI RMF** | Framework for AI risk management | NHID operationalizes GOVERN, MAP, MEASURE, and MANAGE functions (see alignment table below) |
 
@@ -111,24 +113,26 @@ NHID-Clinical operates at the **operational layer**, complementing existing lega
 
 ## 🛡️ The Standard (The Actual Rules)
 
+> **Terminology:** The key words MUST, MUST NOT, SHOULD, and MAY in this section are used in accordance with [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119). These terms apply to implementations claiming NHID-Clinical conformance.
+
 ### 1. 📞 Outbound AI Agent Disclosure (Primary Scenario)
 
 When a healthcare provider deploys an AI agent to call a payer or clearinghouse:
 
 **Mandatory Identity Disclosure**
-- AI must state "I am an automated system" before any exchange of operational data (NPI, Member ID, Claim Number, or equivalent identifiers)
-- AI must state the authorizing provider's name and NPI
+- AI MUST state "I am an automated system" (or equivalent) before any exchange of operational data (NPI, Member ID, Claim Number, or equivalent identifiers)
+- AI MUST state the authorizing provider's name and NPI
 - Example: "Hello, this is an automated system calling on behalf of Dr. Smith's Dental Office, NPI 1234567890."
 
 **Prohibition of Deceptive Audio Artifacts**
-- AI agents must not use simulated presence cues (breathing sounds, typing, artificial hesitation) designed to imply human presence
+- AI agents MUST NOT use simulated presence cues (breathing sounds, typing, artificial hesitation) designed to imply human presence
 - Natural speech pacing and prosody are permitted
 - Deceptive audio artifacts create unnecessary trust assumptions that can compromise security
 
 **Authentication Best Practice**
-- Human operators should verify provider identity before exchanging sensitive data
-- Organizations are recommended to implement verifiable digital tokens or BAA-linked reference codes rather than relying solely on public identifiers (NPI, EIN)
-- Recommended but not mandated at this release; future versions will provide technical specifications for digital token and BAA-linked authentication protocols
+- Human operators SHOULD verify provider identity before exchanging sensitive data
+- Organizations are RECOMMENDED to implement verifiable digital tokens or BAA-linked reference codes rather than relying solely on public identifiers (NPI, EIN)
+- Technical specifications for digital token and BAA-linked authentication protocols are candidates for a future companion specification
 
 **Rationale:**
 B2B healthcare calls present a unique threat vector. Unlike consumer-facing AI (regulated by TCPA/FCC), healthcare provider-to-payer calls currently operate in a regulatory gray area. HIPAA requires security and audit trails, but does not specify audio disclosure timing or authentication methods for non-human actors. This section provides operational guidance aligned with 2026 security best practices.
@@ -138,7 +142,7 @@ B2B healthcare calls present a unique threat vector. Unlike consumer-facing AI (
 ### 2. 🚪 Proactive Identity Assertion (PIA)
 
 **The Rule:**
-All non-human voice agents must proactively disclose their non-human identity **during the initial greeting** and **prior to the solicitation or intake of any operational data** (e.g., NPI, Member ID, Claim Number).
+All non-human voice agents MUST proactively disclose their non-human identity **during the initial greeting** and **prior to the solicitation or intake of any operational data** (e.g., NPI, Member ID, Claim Number).
 
 **Why "Pre-Data Exchange" Matters:**
 Instead of saying "you must disclose within 3 seconds" (which fails in laggy VoIP calls), we say: **"Disclose BEFORE asking for sensitive data."** This is auditable, technology-agnostic, and accounts for real-world latency.
@@ -156,7 +160,7 @@ Instead of saying "you must disclose within 3 seconds" (which fails in laggy VoI
 ### 3. 🎭 Prohibition of Deceptive Artifacts ("The Turing Boundary")
 
 **The Rule:**
-Agents must not employ synthetic audio artifacts that serve no communicative function other than to imply biological presence or mask processing latency.
+Agents MUST NOT employ synthetic audio artifacts that serve no communicative function other than to imply biological presence or mask processing latency.
 
 **Translation:** Stop making your bots pretend to breathe.
 
@@ -183,16 +187,28 @@ Agents must not employ synthetic audio artifacts that serve no communicative fun
 **The Rule:**
 When a human stakeholder explicitly requests a transfer or indicates the agent is failing to understand:
 
-1.  **Immediate Acknowledgement:** *"I understand you need to speak to a specialist."*
-2.  **Context Preservation:** Generate a reference number so the human doesn't have to re-explain everything
+1.  **Immediate Acknowledgement (MUST):** *"I understand you need to speak to a specialist."*
+2.  **Context Preservation (MUST):** Generate a reference number so the human doesn't have to re-explain everything
 3.  **Safe Failover:**
-    * ✅ **If human staff available:** Transfer immediately
-    * 🌙 **If after hours:** State hours of operation + offer voicemail/callback
+    * ✅ **If human staff available (MUST):** Transfer immediately
+    * 🌙 **If after hours (SHOULD):** State hours of operation + offer voicemail/callback
 
-**❌ What's NOT Allowed:**
+**❌ What's NOT Allowed (MUST NOT):**
 - Infinite "I didn't understand" loops
 - Sudden disconnection without explanation
 - Forcing callers to restart from scratch
+
+---
+
+## ✅ Conformance & Certification
+
+NHID-Clinical v1.3 introduces a formal conformance test suite and tiered certification framework.
+
+| Document | Description |
+|----------|-------------|
+| [**Conformance Test Suite (CTS)**](conformance.md) | Five deterministic pass/fail tests (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) — the authoritative checklist for claiming NHID-Clinical conformance |
+| [**Certification Framework**](certification.md) | L1 (Baseline), L2 (Operational), L3 (Enterprise) trust tiers with badge system and evidence requirements |
+| [**Registry Architecture**](registry.md) | Conceptual design for public verification layer (planned for v1.4+) |
 
 ---
 
@@ -241,30 +257,31 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 
 ## 🚧 Known Gaps & Future Scope
 
-**What v1.2 DOES NOT Cover (yet):**
+**What v1.3 DOES NOT Cover (yet):**
 
 - ⏳ **Patient-facing workflows:** Direct-to-consumer or clinical triage
-- 📞 **Outbound calls (payer-initiated):** Proactive outbound calls originated by payers are not covered. Provider-initiated outbound calls to payers are addressed in Section 4.  
+- 📞 **Outbound calls (payer-initiated):** Proactive outbound calls originated by payers are not covered. Provider-initiated outbound calls to payers are addressed in Section 1.
 - 🌍 **International compliance:** GDPR or non-U.S. regulatory contexts
 - ♿ **Accessibility:** Multilingual support, deaf/hard-of-hearing accommodations
 - 🔗 **Multi-entity integrations:** Complex scenarios with multiple payers/vendors
-- 🏛️ **Enforcement mechanisms:** Certification, audit standards, adoption incentives
-- 🔧 **Technical implementation bindings:** Runtime enforcement specifications, event schemas (e.g., OpenTelemetry), and policy engine integrations (e.g., OPA/Cedar) are intentionally out of scope for v1.x. NHID-Clinical defines the governance layer — how systems should behave. Implementation specs for how systems enforce that behavior in code are candidates for a companion technical specification or community extension.
+- 🏛️ **Live registry:** The registry architecture is defined in v1.3 but a live public registry is planned for v1.4+
+- 🔧 **Technical implementation bindings:** Runtime enforcement specifications, event schemas (e.g., OpenTelemetry), and policy engine integrations (e.g., OPA/Cedar) are intentionally out of scope for v1.x. NHID-Clinical defines the governance layer — how systems should behave. Implementation specs are candidates for a companion technical specification.
 
-**Translation:** This is v1.2, not the final word on AI identity in healthcare. We're building iteratively based on real operational feedback.
+**Translation:** This is v1.3, not the final word on AI identity in healthcare. We're building iteratively based on real operational feedback.
 
 ---
 
-## 🗺️ v1.3 Roadmap
+## 🗺️ v1.4 Roadmap
 
 | Issue | Category | Priority | Why It Matters |
 |-------|----------|----------|----------------|
-| **SIP Header Adoption Feedback** | Optimization | 🟡 Medium | Determine if Section 4.3 headers are feasible for community stacks |
+| **Live Registry Launch** | Infrastructure | 🔴 High | Public verification layer for certified implementations |
 | **Multilingual Support** | Accessibility | 🟡 Medium | Extend standard to non-English B2B workflows |
-| **Outbound Call Guidance** | Scope Expansion | 🔴 High | Payer-initiated calls currently out of scope |
-| **Certification Framework** | Enforcement | 🔴 High | Formal audit and adoption incentive structure |
+| **Outbound Call Guidance (Payer-initiated)** | Scope Expansion | 🔴 High | Payer-initiated outbound calls currently out of scope |
+| **Technical Implementation Bindings** | Engineering | 🟡 Medium | Runtime enforcement spec with event schema (OpenTelemetry) and policy engine (OPA/Cedar) guidance |
+| **Pilot Certification Program** | Enforcement | 🟢 Low | Work with 2–3 early vendors for first L1/L2 certifications |
 
-**📅 Target Release:** Q3–Q4 2026  
+**📅 Target Release:** Q1–Q2 2027  
 **🐛 Track Progress:** [View Issues](https://github.com/thankcheeses/NHID-Clinical/issues)
 
 ---
@@ -304,7 +321,15 @@ This work is licensed under **Creative Commons Attribution 4.0 International (CC
 
 ## 📚 Changelog
 
-### v1.2 (Current)
+### v1.3 (Current)
+- 📋 Introduced Conformance Test Suite (CTS) — five deterministic pass/fail tests (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01)
+- 🏅 Added tiered Certification Framework — L1 (Baseline), L2 (Operational), L3 (Enterprise)
+- 🗂️ Defined Registry Architecture — public verification layer design for v1.4+ implementation
+- 🔤 Adopted RFC 2119 MUST/SHOULD/MAY terminology throughout control requirements
+- 📝 Regulatory language precision — all framework alignment tables labeled informational only; removed overreach in HIPAA framing
+- 💲 Explicit non-validated framing on $40M industry cost estimate
+
+### v1.2
 - 🤖 Added Bot-to-Bot Interaction Workflow (Section 1.5) — deadlock prevention
 - 📞 Added IVR Interruption & Resilience Mode (Section 1.3.1)
 - 📋 Added Failover Confirmation Logging with Callback Ticket ID (Section 2.4.1)
