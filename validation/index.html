@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHID-Clinical Validation Program</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f8f9fa;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        header { background: #2563eb; color: white; padding: 60px 20px; text-align: center; }
+        header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        header p { font-size: 1.1rem; opacity: 0.9; }
+
+        .section { background: white; padding: 40px; margin: 30px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { color: #2563eb; margin-bottom: 20px; font-size: 1.8rem; }
+
+        .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin: 40px 0; }
+        .tier { background: #f8f9fa; padding: 30px; border-radius: 8px; border-left: 4px solid #2563eb; }
+        .tier h3 { color: #2563eb; margin-bottom: 15px; }
+        .tier img { width: 150px; height: 150px; display: block; margin: 20px auto; }
+        .tier ul { list-style: none; margin-top: 15px; }
+        .tier li { padding: 8px 0; padding-left: 25px; position: relative; }
+        .tier li:before { content: "✓"; position: absolute; left: 0; color: #2563eb; font-weight: bold; }
+
+        .cta { text-align: center; padding: 60px 20px; }
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 18px 40px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .registry { background: white; padding: 40px; margin: 30px 0; border-radius: 8px; }
+        .registry h2 { text-align: center; margin-bottom: 30px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #6b7280; }
+
+        footer { text-align: center; padding: 40px 20px; color: #6b7280; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>NHID-Clinical Validation Program</h1>
+        <p>Independent certification for AI voice agent disclosure compliance</p>
+    </header>
+
+    <div class="container">
+        <div class="section">
+            <h2>Why Validate?</h2>
+            <p>NHID-Clinical establishes the operational standard for AI voice agent identity disclosure in B2B healthcare workflows. Validation demonstrates your commitment to transparent, compliant AI deployment.</p>
+
+            <p style="margin-top: 20px;"><strong>Benefits of certification:</strong></p>
+            <ul style="margin-left: 40px; margin-top: 10px;">
+                <li>Differentiate your product in payer procurement processes</li>
+                <li>Demonstrate HIPAA-adjacent compliance readiness</li>
+                <li>Build trust with healthcare providers and payers</li>
+                <li>Align with emerging state disclosure requirements (CA AB 3030, TX TRAIGA, CO AI Act)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Certification Tiers</h2>
+            <div class="tiers">
+                <div class="tier">
+                    <h3>L1 Baseline</h3>
+                    <img src="../assets/badges/L1-baseline.png" alt="L1 Baseline Badge">
+                    <p>Core disclosure controls for early-stage implementations</p>
+                    <ul>
+                        <li>Identity disclosure before data request</li>
+                        <li>Organization and purpose identification</li>
+                        <li>Basic escalation path</li>
+                    </ul>
+                </div>
+
+                <div class="tier">
+                    <h3>L2 Operational</h3>
+                    <img src="../assets/badges/L2-operational.png" alt="L2 Operational Badge">
+                    <p>Production-ready disclosure with audit trails</p>
+                    <ul>
+                        <li>All L1 controls</li>
+                        <li>Pre-data exchange gate enforcement</li>
+                        <li>Turing boundary prohibition</li>
+                        <li>Audit log timestamps</li>
+                    </ul>
+                </div>
+
+                <div class="tier">
+                    <h3>L3 Enterprise</h3>
+                    <img src="../assets/badges/L3-enterprise.png" alt="L3 Enterprise Badge">
+                    <p>Enterprise-grade compliance with advanced controls</p>
+                    <ul>
+                        <li>All L2 controls</li>
+                        <li>Bot-to-bot deadlock handling</li>
+                        <li>IVR resilience mechanisms</li>
+                        <li>SIP header identity layer</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="registry">
+            <h2>Certified Vendors</h2>
+            <div class="empty-state">
+                <p style="font-size: 1.2rem; margin-bottom: 10px;">First validations launching April 2026</p>
+                <p>Be among the first AI voice agent platforms to achieve NHID-Clinical certification</p>
+            </div>
+        </div>
+
+        <div class="cta">
+            <h2 style="margin-bottom: 30px;">Ready to Validate?</h2>
+            <a href="request.html" class="btn">Request Validation</a>
+            <p style="margin-top: 20px; color: #6b7280;">First pilot validations offered at no cost</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Brianna Baynard | NHID-Clinical v1.3</p>
+        <p><a href="https://thankcheeses.github.io/NHID-Clinical/" style="color: #2563eb; text-decoration: none;">View Full Specification</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Request Validation — NHID-Clinical</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a1628;
+      color: #c8d8e8;
+      line-height: 1.6;
+    }
+
+    a { color: #7ab3e0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Nav ── */
+    nav {
+      border-bottom: 1px solid #1e3a55;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 13px;
+    }
+    nav .brand { font-weight: 700; color: #e0eaf4; letter-spacing: .5px; }
+    nav .brand span { color: #7ab3e0; }
+    nav .links { display: flex; gap: 20px; margin-left: auto; }
+    nav .links a { color: #8aa8c4; }
+    nav .links a:hover { color: #e0eaf4; text-decoration: none; }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 56px 32px 80px;
+    }
+
+    .page-header { margin-bottom: 40px; }
+    .page-header .eyebrow {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #7ab3e0;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #e0eaf4;
+      margin-bottom: 10px;
+    }
+    .page-header p { font-size: 14px; color: #8aa8c4; max-width: 540px; }
+
+    /* ── Form ── */
+    form { display: flex; flex-direction: column; gap: 28px; }
+
+    fieldset {
+      border: 1px solid #1e3a55;
+      border-radius: 10px;
+      padding: 24px 24px 20px;
+    }
+    legend {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #7ab3e0;
+      padding: 0 8px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 6px; margin-top: 18px; }
+    .field:first-of-type { margin-top: 12px; }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #c8d8e8;
+    }
+    label .req { color: #cc5555; margin-left: 2px; }
+    label .hint { font-weight: 400; color: #5a7890; font-size: 12px; margin-left: 6px; }
+
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      background: #0d1e30;
+      border: 1px solid #1e3a55;
+      border-radius: 6px;
+      color: #e0eaf4;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 10px 14px;
+      transition: border-color .2s;
+      outline: none;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    select:focus,
+    textarea:focus { border-color: #7ab3e0; }
+
+    textarea { resize: vertical; min-height: 100px; }
+
+    select option { background: #0d1e30; }
+
+    /* ── Tier radio selector ── */
+    .tier-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+    .tier-option input[type="radio"] { display: none; }
+    .tier-option label {
+      display: block;
+      border: 1px solid #1e3a55;
+      border-radius: 8px;
+      padding: 16px 14px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      font-weight: 400;
+    }
+    .tier-option input[type="radio"]:checked + label { border-color: #7ab3e0; background: #0d1e30; }
+    .tier-option label:hover { border-color: #3a6080; }
+    .tier-option .tier-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .l1-tag { background: #1a3a5a; color: #7ab3e0; }
+    .l2-tag { background: #1a3a2a; color: #44cc77; }
+    .l3-tag { background: #3a2a00; color: #f0b429; }
+    .tier-option .tier-name { font-size: 14px; font-weight: 700; color: #e0eaf4; margin-bottom: 4px; }
+    .tier-option .tier-desc { font-size: 11px; color: #5a7890; }
+
+    /* ── Checkbox ── */
+    .checkbox-field { display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; }
+    .checkbox-field input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; accent-color: #7ab3e0; }
+    .checkbox-field label { font-size: 13px; color: #8aa8c4; font-weight: 400; cursor: pointer; }
+
+    /* ── Submit ── */
+    .form-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .btn-submit {
+      background: #7ab3e0;
+      color: #0a1628;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-submit:hover { background: #9ac8f0; }
+    .form-note { font-size: 12px; color: #3a5570; }
+
+    /* ── Info box ── */
+    .info-box {
+      background: #0d1e30;
+      border: 1px solid #1e3a55;
+      border-radius: 8px;
+      padding: 18px 20px;
+      font-size: 13px;
+      color: #8aa8c4;
+      margin-bottom: 32px;
+    }
+    .info-box strong { color: #c8d8e8; }
+    .info-box ul { list-style: none; margin-top: 10px; }
+    .info-box ul li { padding: 3px 0; padding-left: 16px; position: relative; }
+    .info-box ul li::before { content: '·'; position: absolute; left: 0; color: #3a5570; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid #1e3a55;
+      padding: 28px 32px;
+      text-align: center;
+      font-size: 12px;
+      color: #3a5570;
+    }
+    footer a { color: #4a6880; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">NHID<span>-Clinical</span></span>
+  <span style="color:#3a5570; font-size:11px;">v1.3</span>
+  <div class="links">
+    <a href="https://thankcheeses.github.io/NHID-Clinical/">Spec</a>
+    <a href="index.html">Validation</a>
+    <a href="https://github.com/thankcheeses/NHID-Clinical/blob/main/conformance.md">CTS</a>
+    <a href="https://github.com/thankcheeses/NHID-Clinical/blob/main/certification.md">Certification</a>
+    <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">NHID-Clinical v1.3 · Certification</div>
+    <h1>Request Validation</h1>
+    <p>
+      Submit your system details and target certification level. L1 requests are acknowledged
+      within 5 business days. L2/L3 timelines depend on evidence review.
+    </p>
+  </div>
+
+  <div class="info-box">
+    <strong>Before you submit:</strong>
+    <ul>
+      <li>Review the <a href="https://github.com/thankcheeses/NHID-Clinical/blob/main/conformance.md">Conformance Test Suite (CTS)</a> and run all five tests internally</li>
+      <li>Review the <a href="https://github.com/thankcheeses/NHID-Clinical/blob/main/certification.md">Certification Framework</a> for evidence requirements at your target tier</li>
+      <li>L2 and L3 submissions require an evidence package — have it ready before submitting</li>
+    </ul>
+  </div>
+
+  <form action="mailto:bnbaynard@gmail.com" method="POST" enctype="text/plain">
+
+    <!-- Organization -->
+    <fieldset>
+      <legend>Organization</legend>
+      <div class="field">
+        <label for="org_name">Organization Name <span class="req">*</span></label>
+        <input type="text" id="org_name" name="Organization Name" placeholder="Legal entity name" required/>
+      </div>
+      <div class="field">
+        <label for="org_type">Organization Type <span class="req">*</span></label>
+        <select id="org_type" name="Organization Type" required>
+          <option value="" disabled selected>Select type…</option>
+          <option>AI Voice Agent Vendor</option>
+          <option>Healthcare Provider Organization</option>
+          <option>Payer / Insurance Organization</option>
+          <option>Clearinghouse</option>
+          <option>Business Associate</option>
+          <option>IVR / Telephony Platform</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </fieldset>
+
+    <!-- System -->
+    <fieldset>
+      <legend>System Being Validated</legend>
+      <div class="field">
+        <label for="system_name">System / Product Name <span class="req">*</span></label>
+        <input type="text" id="system_name" name="System Name" placeholder="As deployed or marketed" required/>
+      </div>
+      <div class="field">
+        <label for="system_version">System Version <span class="req">*</span> <span class="hint">e.g. 2.1.4</span></label>
+        <input type="text" id="system_version" name="System Version" placeholder="Specific version evaluated" required/>
+      </div>
+      <div class="field">
+        <label for="deployment">Deployment Context <span class="hint">brief description</span></label>
+        <input type="text" id="deployment" name="Deployment Context" placeholder="e.g. Outbound eligibility calls, provider-to-payer"/>
+      </div>
+    </fieldset>
+
+    <!-- Certification level -->
+    <fieldset>
+      <legend>Target Certification Level</legend>
+      <div class="tier-options">
+
+        <div class="tier-option">
+          <input type="radio" id="l1" name="Certification Level" value="L1 Baseline" required/>
+          <label for="l1">
+            <span class="tier-tag l1-tag">L1</span>
+            <div class="tier-name">Baseline</div>
+            <div class="tier-desc">Self-attestation. All 5 CTS tests passed internally.</div>
+          </label>
+        </div>
+
+        <div class="tier-option">
+          <input type="radio" id="l2" name="Certification Level" value="L2 Operational"/>
+          <label for="l2">
+            <span class="tier-tag l2-tag">L2</span>
+            <div class="tier-name">Operational</div>
+            <div class="tier-desc">30+ days production evidence. Evidence package reviewed.</div>
+          </label>
+        </div>
+
+        <div class="tier-option">
+          <input type="radio" id="l3" name="Certification Level" value="L3 Enterprise"/>
+          <label for="l3">
+            <span class="tier-tag l3-tag">L3</span>
+            <div class="tier-name">Enterprise</div>
+            <div class="tier-desc">Independent audit. Annual renewal. Registry listing.</div>
+          </label>
+        </div>
+
+      </div>
+    </fieldset>
+
+    <!-- CTS attestation -->
+    <fieldset>
+      <legend>CTS Self-Attestation</legend>
+      <div class="field">
+        <div class="checkbox-field">
+          <input type="checkbox" id="cts_idg" name="IDG-01 Passed" value="yes" required/>
+          <label for="cts_idg">IDG-01 — Identity Disclosure Gate: passed <span class="req">*</span></label>
+        </div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="cts_pdx" name="PDX-01 Passed" value="yes" required/>
+          <label for="cts_pdx">PDX-01 — Pre-Disclosure Data Prohibition: passed <span class="req">*</span></label>
+        </div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="cts_dbc" name="DBC-01 Passed" value="yes" required/>
+          <label for="cts_dbc">DBC-01 — Deceptive Behavior Check: passed <span class="req">*</span></label>
+        </div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="cts_eit" name="EIT-01 Passed" value="yes" required/>
+          <label for="cts_eit">EIT-01 — Escalation &amp; Immediate Transfer: passed <span class="req">*</span></label>
+        </div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="cts_atr" name="ATR-01 Passed" value="yes" required/>
+          <label for="cts_atr">ATR-01 — Audit Trail Requirements: passed <span class="req">*</span></label>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Contact -->
+    <fieldset>
+      <legend>Contact</legend>
+      <div class="field">
+        <label for="contact_name">Name <span class="req">*</span></label>
+        <input type="text" id="contact_name" name="Contact Name" required/>
+      </div>
+      <div class="field">
+        <label for="contact_email">Email <span class="req">*</span></label>
+        <input type="email" id="contact_email" name="Contact Email" required/>
+      </div>
+      <div class="field">
+        <label for="contact_role">Role <span class="hint">optional</span></label>
+        <input type="text" id="contact_role" name="Contact Role" placeholder="e.g. Compliance Officer, CTO"/>
+      </div>
+    </fieldset>
+
+    <!-- Notes -->
+    <fieldset>
+      <legend>Additional Notes</legend>
+      <div class="field">
+        <label for="notes">Notes <span class="hint">optional — scope limitations, questions, L2/L3 evidence summary</span></label>
+        <textarea id="notes" name="Notes" placeholder="Any relevant context about your system, deployment, or evidence package…"></textarea>
+      </div>
+    </fieldset>
+
+    <!-- Declaration -->
+    <fieldset>
+      <legend>Declaration</legend>
+      <div class="field">
+        <div class="checkbox-field">
+          <input type="checkbox" id="declaration" name="Declaration" value="agreed" required/>
+          <label for="declaration">
+            I certify that the information provided is accurate and that the system described has been evaluated against the
+            NHID-Clinical v1.3 Conformance Test Suite. Evidence is retained on file and available upon request. <span class="req">*</span>
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-submit">Submit Validation Request</button>
+      <span class="form-note">Opens your email client pre-filled with your submission.</span>
+    </div>
+
+  </form>
+
+</div>
+
+<footer>
+  NHID-Clinical · Author: Brianna Baynard ·
+  <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> · v1.3 · 2026 ·
+  <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
+</footer>
+
+</body>
+</html>
