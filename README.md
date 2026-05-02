@@ -74,7 +74,19 @@ That call is dead. The provider's workflow is broken. And nobody has written dow
 * **Clear Escalation Path:** When the payer rep needs a human, there's a guaranteed path out
 * **Auditable Compliance:** Payers get a standard they can accept, not just a blanket rejection policy
 
-**The Cost:** Operational estimates suggest authentication failures and impersonation latency may cost the industry **$40M+ annually** in wasted time and blocked AI deployments — a non-validated estimate that warrants structured measurement as adoption scales.
+**The Cost:** The administrative cost of bot-to-bot healthcare transactions is rising, not falling. U.S. health system administrative complexity already costs $350B annually (Health Affairs, 2025). AI-driven prior authorization and billing conflicts are increasing this burden — payers and providers deploy AI against each other, creating higher transaction volumes and costly manual review processes.
+
+The Peterson Health Technology Institute found that while AI speeds up prior authorization and billing, it does not lower the average cost per claim when AI solution costs are factored in.
+
+Specific cost drivers include:
+- Human reviewer time for queries flagged as suspicious (potential bot-driven)
+- Appeal cycle management (82% overturn rate in some Medicare Advantage plans)
+- Downcoding review processes responding to AI-generated upcoding
+- Operational infrastructure to detect AI-generated fraudulent or excessive billing
+
+While some insurers report 30-40% reductions in routine claims processing costs, overall system costs are inflated by AI-vs-AI conflict.
+
+NHID-Clinical addresses one friction point: eliminating wasted operational time when payer representatives cannot immediately distinguish AI voice agents from human callers during B2B workflows.
 
 ---
 
