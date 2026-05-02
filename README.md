@@ -74,7 +74,27 @@ That call is dead. The provider's workflow is broken. And nobody has written dow
 * **Clear Escalation Path:** When the payer rep needs a human, there's a guaranteed path out
 * **Auditable Compliance:** Payers get a standard they can accept, not just a blanket rejection policy
 
-**The Cost:** Operational estimates suggest authentication failures and impersonation latency may cost the industry **$40M+ annually** in wasted time and blocked AI deployments — a non-validated estimate that warrants structured measurement as adoption scales.
+The administrative cost of AI-driven healthcare transactions is rising, not falling.
+
+U.S. health system administrative complexity costs $350 billion annually (Health Affairs, 2025). AI deployment in prior authorization and billing has created "adversarial AI friction" — payers and providers use AI against each other, increasing transaction volumes rather than reducing costs.
+
+The Peterson Health Technology Institute (April 2026) found that while AI speeds up individual tasks, it does not lower the average cost per claim once AI solution costs are factored in. The system is doing "more work faster," not "less work."
+
+Key cost drivers:
+
+**Transaction Volume Inflation:** A single claim now cycles through 3-4x more automated loops (appeals, resubmissions, denials) than in 2024. Even if cost per transaction drops, total cost per claim rises.
+
+**Verification Overhead:** Payers allocate 30-40% of administrative time for complex claims to human oversight of AI-generated billing and appeals. This "verification tax" includes:
+- Manual review of queries flagged as suspicious or bot-driven
+- Appeal cycle management (82% overturn rate in Medicare Advantage plans as of Q2 2026)
+- Downcoding review processes responding to AI-generated upcoding
+- Forensic analysis to detect AI hallucinations in clinical documentation
+
+**AI Governance Liability:** New insurance and legal exposure costs for AI systems that deny necessary care.
+
+While some insurers report 30-40% reductions in routine claims processing costs, overall system costs are inflated by AI-vs-AI conflict.
+
+**NHID-Clinical addresses one friction point:** eliminating wasted operational time when payer representatives cannot immediately distinguish AI voice agents from human callers during B2B workflows.
 
 ---
 
