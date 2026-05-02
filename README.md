@@ -289,6 +289,12 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 
 **Translation:** This is v1.3, not the final word on AI identity in healthcare. We're building iteratively based on real operational feedback.
 
+### Deliberate Scope Choice
+
+NHID-Clinical v1.3 intentionally focuses exclusively on B2B administrative workflows. This is not a limitation — it is a deliberate strategy to achieve deep validation in the highest-value, highest-compliance segment before any expansion.
+
+B2C/patient-facing use cases involve materially different regulatory, technical, and ethical considerations (FCC TCPA consent requirements, consumer protection laws, patient harm liability, accessibility standards) and will be addressed in a future major version once B2B adoption and certification are proven.
+
 ---
 
 ## 🗺️ v1.4 Roadmap
