@@ -54,54 +54,11 @@ The standard addresses a documented gap between existing consumer-protection law
 
 ### ✅ Compliant Call Flow
 
-```mermaid
-sequenceDiagram
-    participant AI as AI Voice Agent
-    participant Payer as Payer Representative
-
-    Note over AI,Payer: NHID-Clinical Compliant Call Flow
-
-    AI->>Payer: "Hello, I am an automated system calling<br/>on behalf of Dr. Smith's Dental Office, NPI 1234567890"
-    Note right of AI: ✅ Identity Disclosure<br/>(BEFORE data request)
-
-    Payer->>AI: "Thank you. How can I help you?"
-
-    AI->>Payer: "I need to check claim status.<br/>May I have the member ID?"
-    Note right of Payer: Data exchange authorized<br/>after identity verified
-
-    Payer->>AI: "Member ID 12345678"
-
-    AI->>Payer: "Claim processed on 04/15/2026,<br/>payment pending"
-
-    alt Human Escalation Needed
-        Payer->>AI: "I need to speak with a human"
-        AI->>Payer: "I understand. Your reference number is<br/>REF-2026-001. Transferring now..."
-        Note over AI,Payer: ✅ Safe Failover with Context Preservation
-    end
-```
+![Compliant Call Flow](assets/diagrams/compliant-call-flow.svg)
 
 ### ❌ Non-Compliant Call Flow
 
-```mermaid
-sequenceDiagram
-    participant AI as AI Voice Agent
-    participant Payer as Payer Representative
-
-    Note over AI,Payer: ❌ Non-Compliant Call Flow
-
-    AI->>Payer: "Hello, this is Sarah.<br/>Can I get the member ID?"
-    Note right of AI: ❌ No disclosure<br/>❌ Unqualified human name<br/>❌ Data requested BEFORE identity
-
-    Payer->>AI: "Member ID 12345678"
-    Note right of Payer: PHI shared with<br/>undisclosed AI agent
-
-    Payer->>AI: "Wait... are you a real person?"
-
-    AI->>Payer: "I am an automated assistant"
-
-    Payer->>AI: "We do not speak with AI agents.<br/>Please have a human call back."
-    Note over AI,Payer: ❌ Call terminated<br/>Workflow broken
-```
+![Non-Compliant Call Flow](assets/diagrams/non-compliant-call-flow.svg)
 
 **The "Green Lane" Principle:** When AI agents identify themselves upfront and follow the rules, everyone wins:
 - **Providers** save time (no "are you human?" loops)
