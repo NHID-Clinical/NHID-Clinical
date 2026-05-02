@@ -89,23 +89,18 @@ sequenceDiagram
 
     Note over AI,Payer: ❌ Non-Compliant Call Flow
 
-    AI->>Payer: "Hi, can I get the member ID for patient Smith?"
-    Note right of AI: ❌ Data requested BEFORE<br/>any identity disclosure
+    AI->>Payer: "Hello, this is Sarah.<br/>Can I get the member ID?"
+    Note right of AI: ❌ No disclosure<br/>❌ Unqualified human name<br/>❌ Data requested BEFORE identity
 
-    Payer->>AI: "Sure, that's 12345678"
-    Note right of Payer: PHI exchanged with<br/>unidentified entity
+    Payer->>AI: "Member ID 12345678"
+    Note right of Payer: PHI shared with<br/>undisclosed AI agent
 
-    AI->>Payer: "And the NPI for the provider?"
+    Payer->>AI: "Wait... are you a real person?"
 
-    Payer->>AI: "1234567890"
+    AI->>Payer: "I am an automated assistant"
 
-    Payer->>AI: "Wait — are you actually a real person?"
-    Note right of AI: ❌ Disclosure only when<br/>directly challenged
-
-    AI->>Payer: "I am an automated system."
-
-    Note over AI,Payer: ❌ Call Terminated — PHI Already Disclosed
-    Payer->>AI: "We do not speak with AI agents.<br/>Please have a human representative call back."
+    Payer->>AI: "We do not speak with AI agents.<br/>Please have a human call back."
+    Note over AI,Payer: ❌ Call terminated<br/>Workflow broken
 ```
 
 **The "Green Lane" Principle:** When AI agents identify themselves upfront and follow the rules, everyone wins:
