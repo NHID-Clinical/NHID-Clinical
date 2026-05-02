@@ -52,7 +52,61 @@ The standard addresses a documented gap between existing consumer-protection law
 
 ## 💡 How NHID-Clinical Works
 
-![NHID-Clinical Call Workflow](nhid-workflow.svg)
+### ✅ Compliant Call Flow
+
+```mermaid
+sequenceDiagram
+    participant AI as AI Voice Agent
+    participant Payer as Payer Representative
+
+    Note over AI,Payer: NHID-Clinical Compliant Call Flow
+
+    AI->>Payer: "Hello, I am an automated system calling<br/>on behalf of Dr. Smith's Dental Office, NPI 1234567890"
+    Note right of AI: ✅ Identity Disclosure<br/>(BEFORE data request)
+
+    Payer->>AI: "Thank you. How can I help you?"
+
+    AI->>Payer: "I need to check claim status.<br/>May I have the member ID?"
+    Note right of Payer: Data exchange authorized<br/>after identity verified
+
+    Payer->>AI: "Member ID 12345678"
+
+    AI->>Payer: "Claim processed on 04/15/2026,<br/>payment pending"
+
+    alt Human Escalation Needed
+        Payer->>AI: "I need to speak with a human"
+        AI->>Payer: "I understand. Your reference number is<br/>REF-2026-001. Transferring now..."
+        Note over AI,Payer: ✅ Safe Failover with Context Preservation
+    end
+```
+
+### ❌ Non-Compliant Call Flow
+
+```mermaid
+sequenceDiagram
+    participant AI as AI Voice Agent
+    participant Payer as Payer Representative
+
+    Note over AI,Payer: ❌ Non-Compliant Call Flow
+
+    AI->>Payer: "Hi, can I get the member ID for patient Smith?"
+    Note right of AI: ❌ Data requested BEFORE<br/>any identity disclosure
+
+    Payer->>AI: "Sure, that's 12345678"
+    Note right of Payer: PHI exchanged with<br/>unidentified entity
+
+    AI->>Payer: "And the NPI for the provider?"
+
+    Payer->>AI: "1234567890"
+
+    Payer->>AI: "Wait — are you actually a real person?"
+    Note right of AI: ❌ Disclosure only when<br/>directly challenged
+
+    AI->>Payer: "I am an automated system."
+
+    Note over AI,Payer: ❌ Call Terminated — PHI Already Disclosed
+    Payer->>AI: "We do not speak with AI agents.<br/>Please have a human representative call back."
+```
 
 **The "Green Lane" Principle:** When AI agents identify themselves upfront and follow the rules, everyone wins:
 - **Providers** save time (no "are you human?" loops)
