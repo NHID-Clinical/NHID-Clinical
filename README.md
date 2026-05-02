@@ -2,11 +2,22 @@
 
 **Non-Human Identity Disclosure Standard for Healthcare Voice Workflows**
 
-![License](https://img.shields.io/badge/License-CC--BY--4.0-blue)
-![Status](https://img.shields.io/badge/Status-Released-brightgreen)
-![Compliance](https://img.shields.io/badge/Compliance-HIPAA--Aligned-orange)
-[![Version](https://img.shields.io/badge/version-1.3-blue)](https://github.com/thankcheeses/NHID-Clinical)
-[![Domain](https://img.shields.io/badge/domain-AI_Governance_%7C_Operational_Risk-0052CC)](https://github.com/thankcheeses/NHID-Clinical)
+![License](https://img.shields.io/badge/License-CC--BY--4.0-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Released-brightgreen?style=for-the-badge)
+![Compliance](https://img.shields.io/badge/Compliance-HIPAA--Aligned-orange?style=for-the-badge)
+[![Version](https://img.shields.io/badge/version-1.3-blue?style=for-the-badge)](https://github.com/thankcheeses/NHID-Clinical)
+[![Domain](https://img.shields.io/badge/domain-AI_Governance-0052CC?style=for-the-badge)](https://github.com/thankcheeses/NHID-Clinical)
+[![Validation](https://img.shields.io/badge/Validation-Now_Live-brightgreen?style=for-the-badge)](https://thankcheeses.github.io/NHID-Clinical/validation/)
+
+---
+
+## 🎯 **NEW: Pilot Validation Program Now Live**
+
+[![Validation Program](https://img.shields.io/badge/🎯_Pilot_Validation-Now_Live-brightgreen?style=for-the-badge)](https://thankcheeses.github.io/NHID-Clinical/validation/)
+
+**First validations offered at no cost** for AI voice agent platforms in healthcare.
+
+[**→ Request Validation**](https://thankcheeses.github.io/NHID-Clinical/validation/) | [View Conformance Test Suite](conformance.md) | [Certification Framework](certification.md)
 
 ---
 
@@ -84,7 +95,7 @@ That call is dead. The provider's workflow is broken. And nobody has written dow
 * **Clear Escalation Path:** When the payer rep needs a human, there's a guaranteed path out
 * **Auditable Compliance:** Payers get a standard they can accept, not just a blanket rejection policy
 
-The administrative cost of AI-driven healthcare transactions is rising, not falling.
+> 💡 **Key Insight:** The administrative cost of AI-driven healthcare transactions is rising, not falling.
 
 U.S. health system administrative complexity costs $350 billion annually (Health Affairs, 2025). AI deployment in prior authorization and billing has created "adversarial AI friction" — payers and providers use AI against each other, increasing transaction volumes rather than reducing costs.
 
