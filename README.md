@@ -10,6 +10,16 @@
 
 ---
 
+## 🎯 **NEW: Pilot Validation Program Now Live**
+
+[![Validation Program](https://img.shields.io/badge/🎯_Pilot_Validation-Now_Live-brightgreen?style=for-the-badge)](https://thankcheeses.github.io/NHID-Clinical/validation/)
+
+**First validations offered at no cost** for AI voice agent platforms in healthcare.
+
+[**→ Request Validation**](https://thankcheeses.github.io/NHID-Clinical/validation/) | [View Conformance Test Suite](conformance.md) | [Certification Framework](certification.md)
+
+---
+
 ## 🎯 What Problem Does This Solve?
 
 Picture this: You're a customer service rep at an insurance company. A call comes in from what sounds like a medical office — they need a claim status update. You spend 3–5 minutes gathering information. NPI. Member ID. Date of service. Patient details.

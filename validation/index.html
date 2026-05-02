@@ -5,35 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NHID-Clinical Pilot Validation Program</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: { 50:'#eff6ff', 100:'#dbeafe', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e40af', 900:'#1e3a8a', 950:'#172554' }
-          }
-        }
-      }
+  <style>
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
-  </script>
+    .animated-gradient {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af, #172554, #1e3a8a, #1d4ed8);
+      background-size: 300% 300%;
+      animation: gradientShift 8s ease infinite;
+    }
+    .card-glow-blue:hover   { box-shadow: 0 20px 60px -10px rgba(37,99,235,0.25); }
+    .card-glow-teal:hover   { box-shadow: 0 20px 60px -10px rgba(20,184,166,0.25); }
+    .card-glow-indigo:hover { box-shadow: 0 20px 60px -10px rgba(99,102,241,0.25); }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+      70%  { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+    }
+    .btn-pulse { animation: pulse-ring 2.5s ease-out infinite; }
+  </style>
 </head>
 <body class="bg-slate-50 text-gray-800 antialiased">
 
   <!-- Header -->
-  <header class="bg-gradient-to-br from-blue-800 to-blue-950 text-white">
-    <div class="max-w-5xl mx-auto px-6 py-16 text-center">
-      <p class="text-blue-300 text-xs font-semibold tracking-widest uppercase mb-3">NHID-Clinical v1.3</p>
-      <h1 class="text-4xl font-extrabold tracking-tight mb-3">Pilot Validation Program</h1>
-      <p class="text-blue-200 text-lg max-w-xl mx-auto">Conformance testing for AI voice agent disclosure compliance in B2B healthcare workflows.</p>
+  <header class="animated-gradient text-white">
+    <div class="max-w-5xl mx-auto px-6 py-20 text-center">
+      <p class="text-blue-300 text-xs font-semibold tracking-widest uppercase mb-4">NHID-Clinical v1.3</p>
+      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-4 drop-shadow-lg">Pilot Validation Program</h1>
+      <p class="text-blue-200 text-lg max-w-xl mx-auto leading-relaxed">Conformance testing for AI voice agent disclosure compliance in B2B healthcare workflows.</p>
+      <div class="mt-4 w-16 h-0.5 bg-blue-400/50 mx-auto rounded-full"></div>
       <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-        <a href="request.html" class="inline-block bg-white text-blue-800 font-bold px-8 py-3 rounded-lg shadow hover:bg-blue-50 transition-colors">Request Validation</a>
-        <a href="https://thankcheeses.github.io/NHID-Clinical/" class="inline-block border border-blue-400 text-blue-100 font-semibold px-8 py-3 rounded-lg hover:border-white hover:text-white transition-colors">View Full Spec →</a>
+        <a href="request.html" class="btn-pulse inline-block bg-white text-blue-800 font-bold px-10 py-4 rounded-lg shadow-xl hover:bg-blue-50 hover:shadow-2xl transition-all duration-300">Request Validation</a>
+        <a href="https://thankcheeses.github.io/NHID-Clinical/" class="inline-block border border-blue-400 text-blue-100 font-semibold px-8 py-4 rounded-lg hover:border-white hover:text-white hover:bg-white/10 transition-all duration-300">View Full Spec →</a>
       </div>
     </div>
   </header>
 
   <!-- Nav breadcrumb -->
-  <div class="border-b border-gray-200 bg-white">
+  <div class="border-b border-gray-200 bg-white shadow-sm">
     <div class="max-w-5xl mx-auto px-6 py-3 flex gap-4 text-sm text-gray-500">
       <a href="https://thankcheeses.github.io/NHID-Clinical/" class="hover:text-blue-600 transition-colors">Spec</a>
       <span class="text-gray-300">/</span>
@@ -42,27 +53,27 @@
     </div>
   </div>
 
-  <main class="max-w-5xl mx-auto px-6 py-12 space-y-8">
+  <main class="max-w-5xl mx-auto px-6 py-14 space-y-10">
 
     <!-- Why Validate -->
-    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8">
+    <div class="bg-white rounded-2xl shadow-xl border-l-4 border-blue-500 border border-gray-100 p-8 transition-all duration-300 hover:shadow-2xl">
       <h2 class="text-2xl font-bold text-blue-700 mb-3">Why Validate?</h2>
-      <p class="text-gray-600 mb-5">NHID-Clinical establishes the operational standard for AI voice agent identity disclosure in B2B healthcare workflows. Validation demonstrates your commitment to transparent, compliant AI deployment.</p>
-      <p class="font-semibold text-gray-700 mb-3">Benefits of validation:</p>
+      <p class="text-gray-600 mb-6">NHID-Clinical establishes the operational standard for AI voice agent identity disclosure in B2B healthcare workflows. Validation demonstrates your commitment to transparent, compliant AI deployment.</p>
+      <p class="font-semibold text-gray-700 mb-4">Benefits of validation:</p>
       <ul class="space-y-2">
-        <li class="flex items-start gap-3">
+        <li class="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
           <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">✓</span>
           <span class="text-gray-600">Differentiate your product in payer procurement processes</span>
         </li>
-        <li class="flex items-start gap-3">
+        <li class="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
           <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">✓</span>
           <span class="text-gray-600">Demonstrate HIPAA-adjacent compliance readiness</span>
         </li>
-        <li class="flex items-start gap-3">
+        <li class="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
           <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">✓</span>
           <span class="text-gray-600">Build trust with healthcare providers and payers</span>
         </li>
-        <li class="flex items-start gap-3">
+        <li class="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
           <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">✓</span>
           <span class="text-gray-600">Align with emerging state disclosure requirements (CA AB 3030, TX TRAIGA, CO AI Act)</span>
         </li>
@@ -70,19 +81,18 @@
     </div>
 
     <!-- Validation Levels -->
-    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8">
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 transition-all duration-300 hover:shadow-2xl">
       <h2 class="text-2xl font-bold text-blue-700 mb-2">Validation Levels</h2>
       <p class="text-gray-500 text-sm mb-8">Three progressive conformance tiers. Each builds on the last.</p>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <!-- L1 -->
-        <div class="group relative bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-200 hover:-translate-y-1 overflow-hidden">
-          <div class="h-1.5 bg-blue-500 w-full"></div>
+        <div class="card-glow-blue group relative bg-white border-t-4 border-blue-500 border border-gray-200 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
           <div class="p-6">
             <span class="inline-block text-xs font-bold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-3">L1</span>
             <h3 class="text-lg font-bold text-gray-900 mb-1">Baseline</h3>
-            <img src="../assets/badges/L1-baseline.png" alt="L1 Baseline Badge" class="w-28 h-28 mx-auto my-4 object-contain"/>
+            <img src="../assets/badges/L1-baseline.png" alt="L1 Baseline Badge" class="w-36 h-36 mx-auto my-5 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"/>
             <p class="text-gray-500 text-sm mb-4">Core disclosure controls for early-stage implementations</p>
             <ul class="space-y-2 text-sm text-gray-600">
               <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">✓</span>Identity disclosure before data request</li>
@@ -93,12 +103,11 @@
         </div>
 
         <!-- L2 -->
-        <div class="group relative bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-200 hover:-translate-y-1 overflow-hidden">
-          <div class="h-1.5 bg-teal-500 w-full"></div>
+        <div class="card-glow-teal group relative bg-white border-t-4 border-teal-500 border border-gray-200 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
           <div class="p-6">
             <span class="inline-block text-xs font-bold tracking-widest uppercase text-teal-700 bg-teal-50 px-3 py-1 rounded-full mb-3">L2</span>
             <h3 class="text-lg font-bold text-gray-900 mb-1">Operational</h3>
-            <img src="../assets/badges/L2-operational.png" alt="L2 Operational Badge" class="w-28 h-28 mx-auto my-4 object-contain"/>
+            <img src="../assets/badges/L2-operational.png" alt="L2 Operational Badge" class="w-36 h-36 mx-auto my-5 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"/>
             <p class="text-gray-500 text-sm mb-4">Production-ready disclosure with audit trails</p>
             <ul class="space-y-2 text-sm text-gray-600">
               <li class="flex items-start gap-2"><span class="text-teal-500 font-bold mt-0.5">✓</span>All L1 controls</li>
@@ -110,12 +119,11 @@
         </div>
 
         <!-- L3 -->
-        <div class="group relative bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-200 hover:-translate-y-1 overflow-hidden">
-          <div class="h-1.5 bg-indigo-500 w-full"></div>
+        <div class="card-glow-indigo group relative bg-white border-t-4 border-indigo-500 border border-gray-200 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
           <div class="p-6">
             <span class="inline-block text-xs font-bold tracking-widest uppercase text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full mb-3">L3</span>
             <h3 class="text-lg font-bold text-gray-900 mb-1">Enterprise</h3>
-            <img src="../assets/badges/L3-enterprise.png" alt="L3 Enterprise Badge" class="w-28 h-28 mx-auto my-4 object-contain"/>
+            <img src="../assets/badges/L3-enterprise.png" alt="L3 Enterprise Badge" class="w-36 h-36 mx-auto my-5 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"/>
             <p class="text-gray-500 text-sm mb-4">Enterprise-grade compliance with advanced controls</p>
             <ul class="space-y-2 text-sm text-gray-600">
               <li class="flex items-start gap-2"><span class="text-indigo-500 font-bold mt-0.5">✓</span>All L2 controls</li>
@@ -130,22 +138,22 @@
     </div>
 
     <!-- Validated Implementations -->
-    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8">
+    <div class="bg-white rounded-2xl shadow-xl border-l-4 border-gray-300 border border-gray-100 p-8 transition-all duration-300 hover:shadow-2xl">
       <h2 class="text-2xl font-bold text-blue-700 text-center mb-6">Validated Implementations</h2>
-      <div class="border-2 border-dashed border-gray-200 rounded-xl py-16 px-8 text-center bg-gray-50">
-        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4">
+      <div class="border-2 border-dashed border-gray-200 rounded-xl py-16 px-8 text-center bg-blue-50/30">
+        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
           <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         </div>
-        <p class="text-gray-700 font-semibold text-lg mb-1">First validations launching April 2026</p>
+        <p class="text-gray-700 font-semibold text-lg mb-1">Validation program launched May 2026</p>
         <p class="text-gray-400 text-sm">Be among the first AI voice agent platforms to complete NHID-Clinical validation</p>
       </div>
     </div>
 
     <!-- CTA -->
-    <div class="bg-gradient-to-br from-blue-700 to-blue-900 rounded-2xl shadow-lg p-10 text-center text-white">
-      <h2 class="text-2xl font-bold mb-2">Ready to Validate?</h2>
-      <p class="text-blue-200 mb-6 text-sm">First pilot validations offered at no cost.</p>
-      <a href="request.html" class="inline-block bg-white text-blue-800 font-bold px-10 py-3 rounded-lg shadow hover:bg-blue-50 transition-colors">Request Validation</a>
+    <div class="animated-gradient rounded-2xl shadow-2xl p-14 text-center text-white">
+      <h2 class="text-3xl font-bold mb-3 drop-shadow-md">Ready to Validate?</h2>
+      <p class="text-blue-200 mb-8 text-sm">First pilot validations offered at no cost.</p>
+      <a href="request.html" class="btn-pulse inline-block bg-white text-blue-800 font-bold px-10 py-4 rounded-lg shadow-xl hover:bg-blue-50 hover:shadow-2xl transition-all duration-300">Request Validation</a>
     </div>
 
   </main>
