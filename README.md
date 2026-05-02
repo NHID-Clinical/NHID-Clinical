@@ -387,10 +387,7 @@ This work is licensed under **Creative Commons Attribution 4.0 International (CC
 
 ## 🙏 Acknowledgments
 
-This standard was developed based on operational experience at:
-- **United Concordia Dental / Highmark Health** (TRICARE/ADDP operations)
-- **Pennsylvania Higher Education Assistance Agency** (Federal Student Aid compliance)
-- **Scientific Games** (Regulated gaming systems)
+This standard was developed based on operational experience in payer-side HIPAA enforcement, federal compliance systems, and regulated healthcare workflows.
 
 Special thanks to the healthcare IT community for feedback during early drafts, and to the NIST AI RMF team for providing the governance framework that made this operationalization possible.
 
