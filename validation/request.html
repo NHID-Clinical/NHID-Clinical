@@ -1,130 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Request NHID-Clinical Validation</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            line-height: 1.6;
-            color: #1a1a1a;
-            background: #f8f9fa;
-        }
-        .container { max-width: 700px; margin: 60px auto; padding: 0 20px; }
-        .card { background: white; padding: 50px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h1 { color: #2563eb; margin-bottom: 10px; }
-        .subtitle { color: #6b7280; margin-bottom: 40px; }
-
-        .form-group { margin-bottom: 25px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; }
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-family: inherit;
-        }
-        textarea { min-height: 120px; resize: vertical; }
-        select { cursor: pointer; }
-
-        .submit-btn {
-            background: #2563eb;
-            color: white;
-            padding: 14px 30px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.3s;
-        }
-        .submit-btn:hover { background: #1d4ed8; }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 30px;
-            color: #2563eb;
-            text-decoration: none;
-        }
-        .back-link:hover { text-decoration: underline; }
-
-        .success-message {
-            display: none;
-            background: #10b981;
-            color: white;
-            padding: 20px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Request NHID-Clinical Validation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <a href="index.html" class="back-link">← Back to Validation Program</a>
+<body class="bg-slate-50 text-gray-800 antialiased min-h-screen">
 
-        <div class="card">
-            <h1>Request Validation</h1>
-            <p class="subtitle">Join the pilot validation program. We'll review your request and send the conformance test within 3 business days.</p>
+  <!-- Top bar -->
+  <div class="border-b border-gray-200 bg-white">
+    <div class="max-w-2xl mx-auto px-6 py-3 flex gap-4 text-sm text-gray-500">
+      <a href="https://thankcheeses.github.io/NHID-Clinical/" class="hover:text-blue-600 transition-colors">Spec</a>
+      <span class="text-gray-300">/</span>
+      <a href="index.html" class="hover:text-blue-600 transition-colors">Validation Program</a>
+      <span class="text-gray-300">/</span>
+      <span class="text-gray-800 font-medium">Request Validation</span>
+      <a href="https://github.com/thankcheeses/NHID-Clinical" class="ml-auto hover:text-blue-600 transition-colors">GitHub ↗</a>
+    </div>
+  </div>
 
-            <div class="success-message" id="successMessage">
-                Thank you! Your validation request has been submitted. Check your email for next steps.
-            </div>
+  <div class="max-w-2xl mx-auto px-6 py-10">
 
-            <form id="validationForm" action="https://formspree.io/f/mbdwrbwg" method="POST">
-                <div class="form-group">
-                    <label for="company">Company Name *</label>
-                    <input type="text" id="company" name="company" required>
-                </div>
+    <a href="index.html" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline mb-6">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      Back to Validation Program
+    </a>
 
-                <div class="form-group">
-                    <label for="email">Contact Email *</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 sm:p-10">
 
-                <div class="form-group">
-                    <label for="name">Contact Name *</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
+      <!-- Header -->
+      <div class="mb-8">
+        <p class="text-xs font-semibold tracking-widest uppercase text-blue-600 mb-2">NHID-Clinical v1.3</p>
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Request Validation</h1>
+        <p class="text-gray-500">Join the pilot validation program. We'll review your request and send the conformance test within 3 business days.</p>
+      </div>
 
-                <div class="form-group">
-                    <label for="tier">Target Validation Level *</label>
-                    <select id="tier" name="tier" required>
-                        <option value="">Select a tier...</option>
-                        <option value="L1">L1 Baseline</option>
-                        <option value="L2">L2 Operational</option>
-                        <option value="L3">L3 Enterprise</option>
-                    </select>
-                </div>
+      <!-- Success message -->
+      <div id="successMessage" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-5 py-4 mb-6 flex items-start gap-3">
+        <svg class="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="font-medium">Thank you! Your validation request has been submitted. Check your email for next steps.</span>
+      </div>
 
-                <div class="form-group">
-                    <label for="description">Brief description of your AI voice agent system *</label>
-                    <textarea id="description" name="description" placeholder="What does your system do? What workflows does it handle?" required></textarea>
-                </div>
+      <form id="validationForm" action="https://formspree.io/f/mbdwrbwg" method="POST" class="space-y-6">
 
-                <div class="form-group">
-                    <label for="timeline">Desired validation timeline (optional)</label>
-                    <input type="text" id="timeline" name="timeline" placeholder="e.g., 'ASAP' or 'Q3 2026'">
-                </div>
-
-                <button type="submit" class="submit-btn">Submit Request</button>
-            </form>
+        <div>
+          <label for="company" class="block text-sm font-semibold text-gray-700 mb-1.5">Company Name <span class="text-red-500">*</span></label>
+          <input type="text" id="company" name="company" required
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"/>
         </div>
+
+        <div>
+          <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">Contact Email <span class="text-red-500">*</span></label>
+          <input type="email" id="email" name="email" required
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"/>
+        </div>
+
+        <div>
+          <label for="name" class="block text-sm font-semibold text-gray-700 mb-1.5">Contact Name <span class="text-red-500">*</span></label>
+          <input type="text" id="name" name="name" required
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"/>
+        </div>
+
+        <div>
+          <label for="tier" class="block text-sm font-semibold text-gray-700 mb-1.5">Target Validation Level <span class="text-red-500">*</span></label>
+          <select id="tier" name="tier" required
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition cursor-pointer">
+            <option value="">Select a tier...</option>
+            <option value="L1">L1 Baseline</option>
+            <option value="L2">L2 Operational</option>
+            <option value="L3">L3 Enterprise</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="description" class="block text-sm font-semibold text-gray-700 mb-1.5">Brief description of your AI voice agent system <span class="text-red-500">*</span></label>
+          <textarea id="description" name="description" required rows="4"
+            placeholder="What does your system do? What workflows does it handle?"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"></textarea>
+        </div>
+
+        <div>
+          <label for="timeline" class="block text-sm font-semibold text-gray-700 mb-1.5">Desired validation timeline <span class="text-gray-400 font-normal">(optional)</span></label>
+          <input type="text" id="timeline" name="timeline"
+            placeholder="e.g., 'ASAP' or 'Q3 2026'"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"/>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-sm text-sm mt-2">
+          Submit Request
+        </button>
+
+      </form>
+
     </div>
 
-    <script>
-        document.getElementById('validationForm').addEventListener('submit', function(e) {
-            // Form will submit to Formspree
-            // Show success message after submission
-            setTimeout(function() {
-                document.getElementById('successMessage').style.display = 'block';
-                document.getElementById('validationForm').reset();
-            }, 1000);
-        });
-    </script>
+    <p class="text-center text-xs text-gray-400 mt-6">First pilot validations offered at no cost · <a href="https://github.com/thankcheeses/NHID-Clinical" class="hover:text-blue-500 transition-colors">NHID-Clinical on GitHub</a></p>
+
+  </div>
+
+  <script>
+    document.getElementById('validationForm').addEventListener('submit', function() {
+      setTimeout(function() {
+        document.getElementById('successMessage').classList.remove('hidden');
+        document.getElementById('successMessage').classList.add('flex');
+        document.getElementById('validationForm').reset();
+      }, 1000);
+    });
+  </script>
+
 </body>
 </html>
