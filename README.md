@@ -264,6 +264,190 @@ NHID-Clinical v1.3 introduces a formal conformance test suite and tiered certifi
 
 ---
 
+## 🔗 FHIR Technical Mapping (Companion Guidance)
+
+**NHID-Clinical v1.3** is fundamentally an **operational governance standard** focused on real-time voice/agent behavior in B2B healthcare workflows. This section provides **recommended technical bindings** to HL7 FHIR for implementers who want to align with modern interoperability and audit requirements.
+
+This mapping is **informative** and does not change the core conformance requirements of NHID-Clinical. It is designed to make adoption easier in FHIR-native environments while preserving the original intent: eliminating impersonation latency through clear, upfront, non-deceptive disclosure.
+
+### Why FHIR Mapping?
+
+- Many payers and large providers are moving to FHIR-based systems for audit, provenance, and security logging
+- Supports stronger evidence for L2/L3 certification and HIPAA-adjacent audit readiness
+- Enables future interoperability with broader HL7 AI transparency efforts
+
+### Core Mappings
+
+| NHID-Clinical Concept | Primary FHIR Resource | Recommended Usage | Notes / Extensions |
+|----------------------|----------------------|-------------------|-------------------|
+| **Proactive Identity Assertion (PIA)** & Mandatory Disclosure | `AuditEvent` + `Provenance` | Record the disclosure event with timestamp. Link to subsequent data requests. | Use `AuditEvent.occurredPeriod` to prove disclosure happened *before* data exchange |
+| **Pre-Data Exchange Gate** | `AuditEvent` (sequence of events) | Two correlated events: (1) disclosure, (2) data request | Critical for auditability. `AuditEvent.entity.detail` can log the spoken disclosure text |
+| **Agent & Organization Identification** (NPI, etc.) | `AuditEvent.agent` | `agent.who` reference to `Practitioner` or `Organization` with NPI identifier | Use standard NPI system URI: `http://hl7.org/fhir/sid/us-npi` |
+| **Prohibition of Deceptive Artifacts** ("Turing Boundary") | `AuditEvent` + Extension | Custom extension: `nhid-deceptiveArtifacts` (boolean + description) | Flag compliance with natural prosody only |
+| **Escalation & Safe Failover** | `AuditEvent` + `Task` / `Communication` | Log escalation request, reference ID, and outcome | `Task` for tracking human handoff with context preservation |
+| **Audit Trail Requirements (All Tiers)** | `AuditEvent` (primary) | Structured logging for every interaction (L1 minimum) | Aligns with ATR-01 test |
+
+### Example FHIR `AuditEvent` Records
+
+**1. Compliant Disclosure + Data Request (Green Lane)**
+
+```json
+{
+  "resourceType": "AuditEvent",
+  "id": "nhid-compliant-call-20260503-001",
+  "meta": {
+    "profile": ["https://nhid-clinical.org/fhir/StructureDefinition/nhid-auditevent-disclosure"]
+  },
+  "action": "E",
+  "recorded": "2026-05-03T14:22:45.123Z",
+  "agent": [
+    {
+      "type": {
+        "coding": [{ "code": "automated-voice-agent", "display": "Automated Voice Agent" }]
+      },
+      "who": {
+        "identifier": {
+          "system": "https://nhid-clinical.org/agent",
+          "value": "agent-xyz-789"
+        }
+      },
+      "requestor": false,
+      "extension": [
+        {
+          "url": "https://nhid-clinical.org/fhir/Extension/nhid-compliance-level",
+          "valueCode": "L2"
+        }
+      ]
+    }
+  ],
+  "entity": [
+    {
+      "type": { "text": "VoiceCallSession" },
+      "detail": [
+        {
+          "type": "nhidDisclosureStatement",
+          "valueString": "Hello, this is an automated system calling on behalf of Dr. Smith's Dental Office, NPI 1234567890."
+        },
+        {
+          "type": "nhidDisclosureTimestamp",
+          "valueDateTime": "2026-05-03T14:22:41Z"
+        },
+        {
+          "type": "nhidFirstDataRequestTimestamp",
+          "valueDateTime": "2026-05-03T14:22:48Z"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**2. Escalation Event**
+
+```json
+{
+  "resourceType": "AuditEvent",
+  "id": "nhid-escalation-001",
+  "action": "E",
+  "recorded": "2026-05-03T14:25:12Z",
+  "entity": [
+    {
+      "type": { "text": "VoiceCallSession" },
+      "detail": [
+        {
+          "type": "nhidEscalationTrigger",
+          "valueString": "Caller requested: Transfer me to a human"
+        },
+        {
+          "type": "nhidReferenceID",
+          "valueString": "ESC-REF-784291"
+        },
+        {
+          "type": "nhidEscalationOutcome",
+          "valueString": "Warm transfer completed with full context"
+        },
+        {
+          "type": "nhidContextPreserved",
+          "valueBoolean": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+**3. Non-Compliant Detection (Red Lane)**
+
+```json
+{
+  "resourceType": "AuditEvent",
+  "id": "nhid-noncompliant-deceptive-001",
+  "action": "E",
+  "recorded": "2026-05-03T09:15:33Z",
+  "outcome": "8",
+  "agent": [
+    {
+      "type": { "text": "Suspected AI Agent" },
+      "name": "Sarah (unqualified)",
+      "extension": [
+        {
+          "url": "https://nhid-clinical.org/fhir/Extension/nhid-deceptive-flag",
+          "valueBoolean": true
+        }
+      ]
+    }
+  ],
+  "entity": [
+    {
+      "detail": [
+        {
+          "type": "nhidDisclosureStatement",
+          "valueString": "Hi, this is Sarah. Can I please have your NPI number?"
+        },
+        {
+          "type": "nhidViolationDetected",
+          "valueString": "Data requested before disclosure + deceptive unqualified name"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**4. After-Hours Failover**
+
+```json
+{
+  "resourceType": "AuditEvent",
+  "action": "E",
+  "recorded": "2026-05-03T22:45:10Z",
+  "entity": [
+    {
+      "detail": [
+        {
+          "type": "nhidEscalationTrigger",
+          "valueString": "After-hours human request"
+        },
+        {
+          "type": "nhidReferenceID",
+          "valueString": "CB-20260503-3341"
+        },
+        {
+          "type": "nhidFailoverAction",
+          "valueString": "Callback offered for next business day"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Implementation Note
+
+Systems claiming NHID-Clinical conformance MAY use FHIR resources for logging. Use of FHIR is not required for L1 Baseline but is strongly recommended for L2/L3 production evidence and audit packages. This mapping is compatible with the AI Transparency on FHIR IG and standard `AuditEvent` / `Provenance` patterns.
+
+---
+
 ## 📈 Success Metrics
 
 How do you know if NHID-Clinical is working?
