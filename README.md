@@ -23,19 +23,31 @@
 
 ## 🎯 What Problem Does This Solve?
 
-Picture this: You're a customer service rep at an insurance company. A call comes in from what sounds like a medical office — they need a claim status update. You spend 3–5 minutes gathering information. NPI. Member ID. Date of service. Patient details.
+Picture this: You're a customer service rep at an insurance company. A call comes in from what sounds like a provider office. They need claim status or eligibility information.
 
-Then something feels off. You ask: "Am I speaking with a real person?"
+You follow your script: "Thank you for calling. Can I have your NPI number please?"
 
-Silence. Then: "I am an automated assistant."
+They provide it. NPI. Member ID. Date of service. All the standard authentication details. The voice sounds natural — there are typing sounds in the background, call center noise, even the occasional "umm" while they pause to look something up.
 
-You just spent 3–5 minutes providing protected operational data to an AI agent that never disclosed itself. Your company has no standard for this. So you do what you're trained to do: terminate the call and read the script.
+You start providing information. Claim status. Appeal updates. Eligibility details.
 
-*"We do not speak with AI agents. Please have a human representative call back."*
+3–5 minutes in, something feels off. The cadence is too consistent. The pauses are too perfect.
 
-**This happens thousands of times per day across healthcare.**
+You ask: "Am I speaking with a real person?"
 
-Welcome to **"Impersonation Latency"** — the compliance and operational black hole where payer systems have no standard for what a legitimate AI-initiated call looks like, so they reject all of them.
+Silence. Then: "I am a virtual assistant calling on behalf of Dr. Smith's Dental Office."
+
+You just spent 3–5 minutes sharing protected operational data with an undisclosed AI agent. And even now that it's disclosed, you have **no way to verify** it's actually authorized by the provider it claims to represent.
+
+Your company has no standard for this. So you do what you're trained to do: terminate the call and read the script.
+
+"We do not speak with AI agents. Please have a human representative call back."
+
+The AI calls back 10 minutes later. Same cycle.
+
+This happens thousands of times per day across healthcare.
+
+Welcome to "Impersonation Latency" — the compliance and operational black hole where payer systems have no standard for what a legitimate AI-initiated call looks like, **and no way to verify AI caller authorization**, so they reject all of them.
 
 ---
 
@@ -70,26 +82,34 @@ The standard addresses a documented gap between existing consumer-protection law
 
 ## 🚨 The Problem Statement
 
-**The scenario:** A provider office deploys a third-party AI voice agent platform to call insurance companies on their behalf — handling eligibility checks, claim status inquiries, and administrative follow-ups. A payer customer service rep answers. They spend 3–5 minutes gathering information — NPI, member ID, date of service, patient information. Then something doesn't add up. They ask: *"Are you a real person?"* They find out they've been talking to an AI the entire time.
+**The scenario:** A provider office deploys a third-party AI voice agent platform to call insurance companies on their behalf — handling eligibility checks, claim status inquiries, and administrative follow-ups.
+
+**What actually happens:**
+
+❌ **What's Broken:**
+
+1. **AI provides authentication first** — The AI gives NPI, Member ID, and other provider identifiers to establish legitimacy
+2. **Payer rep shares protected data** — Thinking it's a legitimate provider office, the rep provides claim status, appeal details, eligibility information
+3. **Disclosure only happens when challenged** — Rep gets suspicious, asks "Are you a real person?", AI finally admits it's automated
+4. **Authorization gap remains** — Even after disclosure, there's no way to verify the AI is actually authorized by the provider it claims to represent
+5. **Spoofing vulnerability** — AI could be malicious, falsely claiming provider authorization to extract operational data
+6. **Deceptive artifacts** — Fake breathing, typing sounds, "umm" pauses, call center background noise designed to pass as human
+7. **Call loops** — AI repeatedly calls back after termination, creating operational burden
+8. **Blanket rejection policy** — Payers have no standard for accepting compliant AI calls, so they reject all of them
 
 **The payer's current response:** Terminate the call. Read from a script: *"We do not speak with AI agents. Please have a human representative call back."*
 
-That call is dead. The provider's workflow is broken. And nobody has written down what an acceptable AI-initiated call even looks like — so payers default to a blanket "no."
-
-**NHID-Clinical standardizes that manual control** — replacing ad-hoc termination policies with a clear, testable baseline for what a compliant AI-initiated B2B healthcare call looks like.
-
-❌ **What's Broken:**
-* AI agents call payer reps without disclosing they are automated systems
-* Payer reps unknowingly share PHI — NPI, DOB, member ID, date of service — with an undisclosed non-human entity
-* Disclosure only happens *reactively* (when challenged: "Are you even a real person?")
-* Some agents use fake breathing, typing sounds, and "umm..." pauses to pass as human
-* Payers have no standard for accepting compliant AI calls — so they reject all of them
+That call is dead. The provider's workflow is broken. And nobody has written down what an acceptable AI-initiated call even looks like — **or how to verify AI caller authorization** — so payers default to a blanket "no."
 
 ✅ **What NHID-Clinical Fixes:**
-* **Pre-Data Exchange Gate:** AI must identify itself *before* any PHI is collected
-* **No Deceptive Artifacts:** No fake breathing, typing sounds, or unqualified human names
-* **Clear Escalation Path:** When the payer rep needs a human, there's a guaranteed path out
-* **Auditable Compliance:** Payers get a standard they can accept, not just a blanket rejection policy
+
+1. **Pre-Data Exchange Gate:** AI must identify itself **before** any operational data is shared (not just when challenged)
+2. **Authorization Verification:** Validated AI agents in a trusted registry that payers can verify
+3. **No Deceptive Artifacts:** No fake breathing, typing sounds, or human name with no AI qualifier
+4. **Clear Escalation Path:** When the payer rep needs a human, there's a guaranteed path out
+5. **Auditable Compliance:** Payers get a standard they can accept, not just a blanket rejection policy
+6. **Certification Framework:** L1/L2/L3 validation tiers that create trust layers
+7. **Registry Architecture:** Public verification layer (planned v1.4+) for checking AI caller credentials
 
 > 💡 **Key Insight:** The administrative cost of AI-driven healthcare transactions is rising, not falling.
 
@@ -161,6 +181,27 @@ When a healthcare provider deploys an AI agent to call a payer or clearinghouse:
 - AI MUST state the authorizing provider's name and NPI
 - Example: "Hello, this is an automated system calling on behalf of Dr. Smith's Dental Office, NPI 1234567890."
 
+**Authorization Verification**
+
+**The Problem:** Disclosure alone is insufficient. An AI agent can claim "I'm calling on behalf of Dr. Smith's Dental Office, NPI 1234567890" — but the payer rep has no way to verify this claim is legitimate.
+
+**Recommended Best Practice:**
+
+- Organizations SHOULD implement verifiable digital tokens or BAA-linked reference codes rather than relying solely on public identifiers (NPI, EIN)
+- AI agents claiming provider authorization SHOULD present a credential that can be validated against a trusted registry
+- Payers SHOULD verify AI caller authorization before exchanging sensitive operational data
+
+**Future Scope:**
+- Registry architecture defined in v1.3 (planned implementation v1.4+)
+- Technical specifications for digital token and BAA-linked authentication protocols are candidates for a future companion specification
+- Live public registry for checking AI caller credentials
+
+**Rationale:** The authorization gap creates two risks:
+1. **Operational risk** — Legitimate AI agents are rejected because payers can't verify authorization
+2. **Security risk** — Malicious AI agents could spoof provider identity to extract operational data
+
+NHID-Clinical's validation and certification framework provides the trust infrastructure to close this gap.
+
 **Prohibition of Deceptive Audio Artifacts**
 - AI agents MUST NOT use simulated presence cues (breathing sounds, typing, artificial hesitation) designed to imply human presence
 - Natural speech pacing and prosody are permitted
@@ -208,7 +249,7 @@ Agents MUST NOT employ synthetic audio artifacts that serve no communicative fun
 | **Synthetic Breathing** | Implies biological life functions | Natural prosody and pacing |
 | **Fake Typing Sounds** | Deceptively implies human physical work | "Searching the system..." |
 | **Scripted "Umm / Ahh"** | Masks processing latency deceptively | "One moment while I retrieve that..." |
-| **Unqualified Human Name** | Creates false assumption of humanity | "This is Alex, an automated assistant..." |
+| **Human Name with No AI Qualifier** | Creates false assumption of humanity | "This is Alex, an automated assistant..." |
 
 **✅ What's ALLOWED (and encouraged):**
 - Natural prosody and conversational tone
@@ -388,7 +429,7 @@ This mapping is **informative** and does not change the core conformance require
   "agent": [
     {
       "type": { "text": "Suspected AI Agent" },
-      "name": "Sarah (unqualified)",
+      "name": "Sarah (no AI qualifier)",
       "extension": [
         {
           "url": "https://nhid-clinical.org/fhir/Extension/nhid-deceptive-flag",
@@ -406,7 +447,7 @@ This mapping is **informative** and does not change the core conformance require
         },
         {
           "type": "nhidViolationDetected",
-          "valueString": "Data requested before disclosure + deceptive unqualified name"
+          "valueString": "Data requested before disclosure + human name with no AI qualifier"
         }
       ]
     }

@@ -1,72 +1,73 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" width="800" height="460"
-     font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
-
-  <!-- Background -->
-  <rect width="800" height="460" fill="#0a1628" rx="14"/>
-
-  <!-- Title bar -->
-  <rect width="800" height="40" fill="#1a0a0a" rx="14"/>
-  <rect width="800" height="20" y="20" fill="#1a0a0a"/>
-  <text x="400" y="26" text-anchor="middle" fill="#cc5555" font-size="11" font-weight="700" letter-spacing="2">❌  NON-COMPLIANT CALL FLOW — NHID VIOLATION</text>
-
-  <!-- Column headers -->
-  <rect x="60" y="52" width="180" height="36" rx="6" fill="#3a1a1a" stroke="#6a2a2a" stroke-width="1"/>
-  <text x="150" y="75" text-anchor="middle" fill="#cc5555" font-size="11" font-weight="700">AI VOICE AGENT</text>
-
-  <rect x="560" y="52" width="180" height="36" rx="6" fill="#1a1a3a" stroke="#3a3a6a" stroke-width="1"/>
-  <text x="650" y="75" text-anchor="middle" fill="#7ab3e0" font-size="11" font-weight="700">PAYER REP</text>
-
-  <!-- Lifelines -->
-  <line x1="150" y1="88" x2="150" y2="420" stroke="#3a1a1a" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <line x1="650" y1="88" x2="650" y2="420" stroke="#2a2a4a" stroke-width="1.5" stroke-dasharray="4,3"/>
-
-  <!-- ── Step 1: AI requests data with no disclosure ── -->
-  <line x1="150" y1="130" x2="638" y2="130" stroke="#cc5555" stroke-width="1.5" marker-end="url(#ar)"/>
-  <rect x="165" y="108" width="280" height="36" rx="6" fill="#2a0a0a" stroke="#6a2020" stroke-width="1"/>
-  <text x="305" y="122" text-anchor="middle" fill="#cc5555" font-size="9" font-weight="600">"Hello, this is Sarah.</text>
-  <text x="305" y="136" text-anchor="middle" fill="#cc5555" font-size="9">Can I get the member ID?"</text>
-  <!-- Violation tags -->
-  <rect x="455" y="104" width="200" height="46" rx="4" fill="#2a0808" stroke="#cc5555" stroke-width="1"/>
-  <text x="555" y="116" text-anchor="middle" fill="#cc5555" font-size="8" font-weight="700">❌ No identity disclosure</text>
-  <text x="555" y="128" text-anchor="middle" fill="#cc5555" font-size="8">❌ Unqualified human name</text>
-  <text x="555" y="140" text-anchor="middle" fill="#cc5555" font-size="8">❌ Data requested first</text>
-
-  <!-- ── Step 2: Payer provides PHI ── -->
-  <line x1="650" y1="185" x2="162" y2="185" stroke="#7ab3e0" stroke-width="1.5" marker-end="url(#ab)"/>
-  <rect x="305" y="172" width="210" height="22" rx="5" fill="#0d1e30" stroke="#2a4a6a" stroke-width="1"/>
-  <text x="410" y="187" text-anchor="middle" fill="#8aa8c4" font-size="9">"Member ID 12345678"</text>
-  <!-- Warning -->
-  <rect x="460" y="172" width="184" height="22" rx="4" fill="#2a0808" stroke="#cc5555" stroke-width="1"/>
-  <text x="552" y="186" text-anchor="middle" fill="#cc5555" font-size="8">⚠ PHI shared with undisclosed AI</text>
-
-  <!-- ── Step 3: Payer challenges ── -->
-  <line x1="650" y1="235" x2="162" y2="235" stroke="#7ab3e0" stroke-width="1.5" marker-end="url(#ab)"/>
-  <rect x="305" y="222" width="210" height="22" rx="5" fill="#0d1e30" stroke="#2a4a6a" stroke-width="1"/>
-  <text x="410" y="237" text-anchor="middle" fill="#e0c870" font-size="9">"Wait... are you a real person?"</text>
-
-  <!-- ── Step 4: Late disclosure ── -->
-  <line x1="150" y1="278" x2="638" y2="278" stroke="#cc5555" stroke-width="1.5" marker-end="url(#ar)"/>
-  <rect x="165" y="265" width="260" height="22" rx="5" fill="#2a0a0a" stroke="#6a2020" stroke-width="1"/>
-  <text x="295" y="280" text-anchor="middle" fill="#cc5555" font-size="9">"I am an automated assistant"</text>
-  <rect x="440" y="265" width="204" height="22" rx="4" fill="#2a0808" stroke="#cc5555" stroke-width="1"/>
-  <text x="542" y="279" text-anchor="middle" fill="#cc5555" font-size="8">❌ Disclosure only when challenged</text>
-
-  <!-- ── Step 5: Termination ── -->
-  <line x1="650" y1="325" x2="162" y2="325" stroke="#cc5555" stroke-width="1.5" marker-end="url(#ar)"/>
-  <rect x="200" y="310" width="340" height="24" rx="5" fill="#2a0a0a" stroke="#6a2020" stroke-width="1"/>
-  <text x="370" y="326" text-anchor="middle" fill="#cc5555" font-size="9" font-weight="600">"We do not speak with AI agents. Have a human call back."</text>
-
-  <!-- ── Outcome ── -->
-  <rect x="80" y="358" width="640" height="42" rx="8" fill="#2a0808" stroke="#cc5555" stroke-width="2"/>
-  <text x="400" y="374" text-anchor="middle" fill="#cc5555" font-size="11" font-weight="700">❌ CALL TERMINATED — Workflow Broken</text>
-  <text x="400" y="390" text-anchor="middle" fill="#aa4444" font-size="9">PHI was disclosed. Provider must restart. No audit trail.</text>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 750">
   <defs>
-    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0,8 3,0 6" fill="#cc5555"/>
-    </marker>
-    <marker id="ab" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <polygon points="0 0,8 3,0 6" fill="#7ab3e0"/>
+    <linearGradient id="warningGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#991b1b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#dc2626" />
     </marker>
   </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="800" height="60" fill="url(#warningGrad)"/>
+  <text x="400" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">
+    ❌ Non-Compliant Call Flow
+  </text>
+
+  <!-- Step 1: Call Initiated -->
+  <rect x="50" y="90" width="700" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="70" y="115" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 1: Call Initiated</text>
+  <text x="70" y="140" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">AI agent calls payer without disclosure</text>
+
+  <!-- Dashed Arrow 1 -->
+  <line x1="400" y1="160" x2="400" y2="190" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+
+  <!-- Step 2: Deceptive Greeting -->
+  <rect x="50" y="190" width="700" height="90" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="70" y="215" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 2: Deceptive Greeting + Authentication</text>
+  <text x="70" y="240" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">"Hi, this is Sarah. I'm calling about a claim for patient [name]."</text>
+  <text x="70" y="260" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Uses human name with no AI qualifier + fake typing/call center sounds</text>
+
+  <!-- Dashed Arrow 2 -->
+  <line x1="400" y1="280" x2="400" y2="310" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+
+  <!-- Step 3: Rep Requests Authentication -->
+  <rect x="50" y="310" width="700" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="70" y="335" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 3: Rep Follows Script</text>
+  <text x="70" y="360" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">"Can I have your NPI number and Member ID please?"</text>
+
+  <!-- Dashed Arrow 3 -->
+  <line x1="400" y1="380" x2="400" y2="410" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+
+  <!-- Step 4: AI Provides Authentication -->
+  <rect x="50" y="410" width="700" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="70" y="435" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 4: AI Provides Authentication Convincingly</text>
+  <text x="70" y="460" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Gives NPI, Member ID, DOB with natural pauses and "umm" sounds</text>
+
+  <!-- Dashed Arrow 4 -->
+  <line x1="400" y1="480" x2="400" y2="510" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+
+  <!-- Step 5: PHI Exposure Risk -->
+  <rect x="50" y="510" width="700" height="90" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+  <text x="70" y="535" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">⚠️ Step 5: Rep Shares Protected Data (Unknowingly)</text>
+  <text x="70" y="560" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Rep provides claim status, appeal updates, eligibility details</text>
+  <text x="70" y="580" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">thinking they're speaking with a legitimate provider office</text>
+
+  <!-- Dashed Arrow 5 -->
+  <line x1="400" y1="600" x2="400" y2="630" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+
+  <!-- Step 6: Detection (Too Late) -->
+  <rect x="50" y="630" width="700" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="70" y="655" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 6: Detection (After 3–5 Minutes)</text>
+  <text x="70" y="680" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Rep: "Are you a real person?" — AI finally discloses, but data already shared</text>
+
+  <!-- Step 7: Call Termination -->
+  <rect x="50" y="700" width="700" height="50" rx="8" fill="#7f1d1d" stroke="#991b1b" stroke-width="3" filter="url(#shadow)"/>
+  <text x="400" y="732" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">
+    ❌ CALL TERMINATED — Workflow Broken + Authorization Gap Remains
+  </text>
 </svg>
