@@ -122,7 +122,7 @@ Certification does not create legal obligations. It signals operational commitme
 2. Document results (test ID, date, tester, pass/fail outcome, notes)
 3. Sign and retain the L1 declaration statement
 4. Add the L1 badge to your product documentation or README
-5. Optionally: notify NHID-Clinical maintainer at [bnbaynard@gmail.com](mailto:bnbaynard@gmail.com) to be acknowledged in the community
+5. Optionally: notify NHID-Clinical maintainer at [validation@nhid-clinical.org](mailto:validation@nhid-clinical.org) to be acknowledged in the community
 
 ### L2 Process
 
@@ -140,7 +140,7 @@ Certification does not create legal obligations. It signals operational commitme
 4. Work with NHID-Clinical maintainer on formal review process
 5. Upon verification, receive L3 designation and registry listing (v1.4+)
 
-> **Note:** The L3 formal review process is being defined as part of the v1.4 roadmap. Early adopters interested in L3 pilot certification should contact [bnbaynard@gmail.com](mailto:bnbaynard@gmail.com).
+> **Note:** The L3 formal review process is being defined as part of the v1.4 roadmap. Early adopters interested in L3 pilot certification should contact [validation@nhid-clinical.org](mailto:validation@nhid-clinical.org).
 
 ---
 

@@ -136,7 +136,7 @@ Payers and procurement teams should treat registry entries as a starting point f
 
 ## Interested in Early Registration?
 
-If your organization is implementing NHID-Clinical and interested in being among the first registry entries, contact: [bnbaynard@gmail.com](mailto:bnbaynard@gmail.com)
+If your organization is implementing NHID-Clinical and interested in being among the first registry entries, contact: [validation@nhid-clinical.org](mailto:validation@nhid-clinical.org)
 
 Early registrants will receive a `registry_id` in the `NHID-00X` range and acknowledgement in the v1.4 release notes.
 

@@ -152,4 +152,4 @@ v1.3 planning is open. We are specifically seeking feedback on:
 
 **Author:** Brianna Baynard  
 **License:** CC-BY 4.0 — use freely, give credit  
-**Contact:** bnbaynard@gmail.com
+**Contact:** validation@nhid-clinical.org

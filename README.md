@@ -7,17 +7,17 @@
 ![Compliance](https://img.shields.io/badge/Compliance-HIPAA--Aligned-orange?style=for-the-badge)
 [![Version](https://img.shields.io/badge/version-1.3-blue?style=for-the-badge)](https://github.com/thankcheeses/NHID-Clinical)
 [![Domain](https://img.shields.io/badge/domain-AI_Governance-0052CC?style=for-the-badge)](https://github.com/thankcheeses/NHID-Clinical)
-[![Validation](https://img.shields.io/badge/Validation-Now_Live-brightgreen?style=for-the-badge)](https://thankcheeses.github.io/NHID-Clinical/validation/)
+[![Validation](https://img.shields.io/badge/Validation-Now_Live-brightgreen?style=for-the-badge)](https://nhid-clinical.org/validation/)
 
 ---
 
 ## 🎯 **NEW: Pilot Validation Program Now Live**
 
-[![Validation Program](https://img.shields.io/badge/🎯_Pilot_Validation-Now_Live-brightgreen?style=for-the-badge)](https://thankcheeses.github.io/NHID-Clinical/validation/)
+[![Validation Program](https://img.shields.io/badge/🎯_Pilot_Validation-Now_Live-brightgreen?style=for-the-badge)](https://nhid-clinical.org/validation/)
 
 **First validations offered at no cost** for AI voice agent platforms in healthcare.
 
-[**→ Request Validation**](https://thankcheeses.github.io/NHID-Clinical/validation/) | [View Conformance Test Suite](conformance.md) | [Certification Framework](certification.md)
+[**→ Request Validation**](https://nhid-clinical.org/validation/) | [View Conformance Test Suite](conformance.md) | [Certification Framework](certification.md)
 
 ---
 
@@ -342,7 +342,7 @@ This is an **open standard**—your input makes it better.
 **How to participate:**
 1. 🗣️ [Open a GitHub Discussion](https://github.com/thankcheeses/NHID-Clinical/discussions) for questions
 2. 🐛 [File an Issue](https://github.com/thankcheeses/NHID-Clinical/issues) for specific problems
-3. 📧 Email feedback to: [bnbaynard@gmail.com](mailto:bnbaynard@gmail.com)
+3. 📧 Email feedback to: [validation@nhid-clinical.org](mailto:validation@nhid-clinical.org)
 
 ---
 
