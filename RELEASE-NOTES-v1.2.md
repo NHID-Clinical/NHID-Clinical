@@ -105,7 +105,7 @@ These headers provide cryptographic, machine-readable proof of identity that doe
 The following core requirements remain identical to v1.1:
 
 - Proactive disclosure **before** any PHI or operational data exchange
-- Prohibition on deceptive audio artifacts (no fake breathing, typing sounds, unqualified human names)
+- Prohibition on deceptive audio artifacts (no fake breathing, typing sounds, human names with no AI qualifier)
 - Pre-Data Exchange Gate as the primary compliance boundary
 - Emphasis on auditability and escalation to human agents
 - Voluntary, open-source, B2B healthcare administrative focus

@@ -87,7 +87,7 @@ That call is dead. The provider's workflow is broken. And nobody has written dow
 
 ✅ **What NHID-Clinical Fixes:**
 * **Pre-Data Exchange Gate:** AI must identify itself *before* any PHI is collected
-* **No Deceptive Artifacts:** No fake breathing, typing sounds, or unqualified human names
+* **No Deceptive Artifacts:** No fake breathing, typing sounds, or human names with no AI qualifier
 * **Clear Escalation Path:** When the payer rep needs a human, there's a guaranteed path out
 * **Auditable Compliance:** Payers get a standard they can accept, not just a blanket rejection policy
 
@@ -208,7 +208,7 @@ Agents MUST NOT employ synthetic audio artifacts that serve no communicative fun
 | **Synthetic Breathing** | Implies biological life functions | Natural prosody and pacing |
 | **Fake Typing Sounds** | Deceptively implies human physical work | "Searching the system..." |
 | **Scripted "Umm / Ahh"** | Masks processing latency deceptively | "One moment while I retrieve that..." |
-| **Unqualified Human Name** | Creates false assumption of humanity | "This is Alex, an automated assistant..." |
+| **Human Name with No AI Qualifier** | Creates false assumption of humanity | "This is Alex, an automated assistant..." |
 
 **✅ What's ALLOWED (and encouraged):**
 - Natural prosody and conversational tone

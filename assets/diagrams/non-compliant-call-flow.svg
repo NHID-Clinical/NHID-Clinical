@@ -28,7 +28,7 @@
   <!-- Violation tags -->
   <rect x="455" y="104" width="200" height="46" rx="4" fill="#2a0808" stroke="#cc5555" stroke-width="1"/>
   <text x="555" y="116" text-anchor="middle" fill="#cc5555" font-size="8" font-weight="700">❌ No identity disclosure</text>
-  <text x="555" y="128" text-anchor="middle" fill="#cc5555" font-size="8">❌ Unqualified human name</text>
+  <text x="555" y="128" text-anchor="middle" fill="#cc5555" font-size="8">❌ Human name with no AI qualifier</text>
   <text x="555" y="140" text-anchor="middle" fill="#cc5555" font-size="8">❌ Data requested first</text>
 
   <!-- ── Step 2: Payer provides PHI ── -->
