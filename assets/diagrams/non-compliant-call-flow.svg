@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 750">
   <defs>
     <linearGradient id="warningGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" style="stop-color:#dc2626;stop-opacity:1" />
@@ -26,36 +26,48 @@
   <!-- Dashed Arrow 1 -->
   <line x1="400" y1="160" x2="400" y2="190" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
 
-  <!-- Step 2: Greeting -->
-  <rect x="50" y="190" width="700" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
-  <text x="70" y="215" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 2: Deceptive Greeting</text>
-  <text x="70" y="240" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">"Hi, this is Sarah. Can I get your NPI?" — Human name with no AI qualifier</text>
+  <!-- Step 2: Deceptive Greeting -->
+  <rect x="50" y="190" width="700" height="90" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="70" y="215" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 2: Deceptive Greeting + Authentication</text>
+  <text x="70" y="240" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">"Hi, this is Sarah. I'm calling about a claim for patient [name]."</text>
+  <text x="70" y="260" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Uses human name with no AI qualifier + fake typing/call center sounds</text>
 
   <!-- Dashed Arrow 2 -->
-  <line x1="400" y1="260" x2="400" y2="290" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+  <line x1="400" y1="280" x2="400" y2="310" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
 
-  <!-- Step 3: PHI Exposure Risk -->
-  <rect x="50" y="290" width="700" height="70" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
-  <text x="70" y="315" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">⚠️ Step 3: PHI Exposure Risk</text>
-  <text x="70" y="340" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Payer rep unknowingly shares NPI, Member ID, DOB with undisclosed AI</text>
+  <!-- Step 3: Rep Requests Authentication -->
+  <rect x="50" y="310" width="700" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="70" y="335" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 3: Rep Follows Script</text>
+  <text x="70" y="360" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">"Can I have your NPI number and Member ID please?"</text>
 
   <!-- Dashed Arrow 3 -->
-  <line x1="400" y1="360" x2="400" y2="390" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+  <line x1="400" y1="380" x2="400" y2="410" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
 
-  <!-- Step 4: Detection -->
-  <rect x="50" y="390" width="700" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
-  <text x="70" y="415" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 4: Detection (Too Late)</text>
-  <text x="70" y="440" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Rep asks: "Are you a real person?" — Disclosure only when challenged</text>
+  <!-- Step 4: AI Provides Authentication -->
+  <rect x="50" y="410" width="700" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="70" y="435" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 4: AI Provides Authentication Convincingly</text>
+  <text x="70" y="460" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Gives NPI, Member ID, DOB with natural pauses and "umm" sounds</text>
 
   <!-- Dashed Arrow 4 -->
-  <line x1="400" y1="460" x2="400" y2="490" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+  <line x1="400" y1="480" x2="400" y2="510" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
 
-  <!-- Step 5: Call Termination -->
-  <rect x="50" y="490" width="700" height="70" rx="8" fill="#7f1d1d" stroke="#991b1b" stroke-width="3" filter="url(#shadow)"/>
-  <text x="400" y="520" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">
-    ❌ CALL TERMINATED — Workflow Broken
-  </text>
-  <text x="400" y="545" font-family="Arial, sans-serif" font-size="13" fill="#fee2e2" text-anchor="middle">
-    "We do not speak with AI agents. Please have a human representative call back."
+  <!-- Step 5: PHI Exposure Risk -->
+  <rect x="50" y="510" width="700" height="90" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="3" filter="url(#shadow)"/>
+  <text x="70" y="535" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">⚠️ Step 5: Rep Shares Protected Data (Unknowingly)</text>
+  <text x="70" y="560" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Rep provides claim status, appeal updates, eligibility details</text>
+  <text x="70" y="580" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">thinking they're speaking with a legitimate provider office</text>
+
+  <!-- Dashed Arrow 5 -->
+  <line x1="400" y1="600" x2="400" y2="630" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowRed)"/>
+
+  <!-- Step 6: Detection (Too Late) -->
+  <rect x="50" y="630" width="700" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="70" y="655" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#991b1b">Step 6: Detection (After 3–5 Minutes)</text>
+  <text x="70" y="680" font-family="Arial, sans-serif" font-size="13" fill="#7f1d1d">Rep: "Are you a real person?" — AI finally discloses, but data already shared</text>
+
+  <!-- Step 7: Call Termination -->
+  <rect x="50" y="700" width="700" height="50" rx="8" fill="#7f1d1d" stroke="#991b1b" stroke-width="3" filter="url(#shadow)"/>
+  <text x="400" y="732" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">
+    ❌ CALL TERMINATED — Workflow Broken + Authorization Gap Remains
   </text>
 </svg>

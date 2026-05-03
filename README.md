@@ -429,7 +429,7 @@ This mapping is **informative** and does not change the core conformance require
   "agent": [
     {
       "type": { "text": "Suspected AI Agent" },
-      "name": "Sarah (unqualified)",
+      "name": "Sarah (no AI qualifier)",
       "extension": [
         {
           "url": "https://nhid-clinical.org/fhir/Extension/nhid-deceptive-flag",
@@ -447,7 +447,7 @@ This mapping is **informative** and does not change the core conformance require
         },
         {
           "type": "nhidViolationDetected",
-          "valueString": "Data requested before disclosure + deceptive unqualified name"
+          "valueString": "Data requested before disclosure + human name with no AI qualifier"
         }
       ]
     }
