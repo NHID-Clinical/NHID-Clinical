@@ -2,7 +2,7 @@
 
 *By Brianna Baynard*
 
-I used to work at United Concordia's customer service operation. Here's what I saw almost every day:
+I used to work at a dental health insurer's customer service operation. Here's what I saw almost every day:
 
 A provider's office would call in with a routine eligibility question. An AI agent would answer on their end—handling the initial intake, gathering basic info. Then it would try to transfer the call to us.
 
