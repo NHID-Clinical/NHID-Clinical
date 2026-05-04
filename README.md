@@ -61,6 +61,39 @@ The standard addresses a documented gap between existing consumer-protection law
 
 ---
 
+## 📋 Document Layers
+
+This specification contains three distinct layers:
+
+### 1. Normative Requirements (v1.3)
+Enforceable rules using MUST / MUST NOT terminology per RFC 2119. These requirements define the minimum baseline for claiming NHID-Clinical conformance.
+
+**Includes:**
+- Core disclosure rules (Sections 1-4)
+- Conformance Test Suite (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01)
+- Certification tier requirements (L1/L2/L3)
+
+### 2. Recommended Practices
+SHOULD / MAY guidance that provides implementation flexibility while maintaining the intent of the standard.
+
+**Includes:**
+- Authorization verification best practices
+- Audit logging recommendations
+- Escalation UX patterns
+
+### 3. Informative / Future Scope
+Non-normative content that supports adoption, provides technical bindings, or describes planned future capabilities.
+
+**Includes:**
+- FHIR Technical Mapping (companion technical layer)
+- Badge Schema & Verification Model (trust infrastructure design)
+- Registry architecture (v1.4+)
+- JWT handshake implementation (v1.4+)
+
+Organizations claiming NHID-Clinical v1.3 conformance are **required** to meet all normative requirements (Layer 1) and **encouraged** to implement recommended practices (Layer 2). Informative content (Layer 3) is provided for context and future-proofing but is not required for certification.
+
+---
+
 
 ## 💡 How NHID-Clinical Works
 
@@ -170,6 +203,8 @@ NHID-Clinical operates at the **operational layer**, complementing existing lega
 
 ## 🛡️ The Standard (The Actual Rules)
 
+**Normative Requirements (Layer 1):** The requirements in this section use RFC 2119 terminology (MUST, MUST NOT, SHOULD, MAY). These are the enforceable baseline for NHID-Clinical v1.3 conformance.
+
 > **Terminology:** The key words MUST, MUST NOT, SHOULD, and MAY in this section are used in accordance with [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119). These terms apply to implementations claiming NHID-Clinical conformance.
 
 ### 1. 📞 Outbound AI Agent Disclosure (Primary Scenario)
@@ -200,7 +235,7 @@ When a healthcare provider deploys an AI agent to call a payer or clearinghouse:
 1. **Operational risk** — Legitimate AI agents are rejected because payers can't verify authorization
 2. **Security risk** — Malicious AI agents could spoof provider identity to extract operational data
 
-NHID-Clinical's validation and certification framework provides the trust infrastructure to close this gap.
+NHID-Clinical's validation and certification framework is designed to close this gap.
 
 **Prohibition of Deceptive Audio Artifacts**
 - AI agents MUST NOT use simulated presence cues (breathing sounds, typing, artificial hesitation) designed to imply human presence
@@ -305,7 +340,7 @@ NHID-Clinical v1.3 introduces a formal conformance test suite and tiered certifi
 
 ---
 
-## 🔗 FHIR Technical Mapping (Companion Guidance)
+## 🔗 FHIR Technical Mapping (Informative - Layer 3)
 
 **NHID-Clinical v1.3** is fundamentally an **operational governance standard** focused on real-time voice/agent behavior in B2B healthcare workflows. This section provides **recommended technical bindings** to HL7 FHIR for implementers who want to align with modern interoperability and audit requirements.
 
@@ -517,7 +552,7 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 
 ---
 
-## 🚧 Known Gaps & Future Scope
+## 🚧 Known Gaps & Future Scope (Informative - Layer 3)
 
 **What v1.3 DOES NOT Cover (yet):**
 
