@@ -1111,6 +1111,7 @@ textarea { resize: vertical; min-height: 120px; }
   nav[aria-label="Main navigation"] { display: none; }
   .hamburger { display: flex; }
   .mobile-menu a { padding-inline: 32px; }
+  .request-layout { grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 600px) {
@@ -1121,7 +1122,7 @@ textarea { resize: vertical; min-height: 120px; }
   .page-hero { padding: 40px 0; }
   .benefits-band { padding: 48px 0; }
   .cards-grid { grid-template-columns: 1fr; }
-  .tier-grid { grid-template-columns: 1fr; }
+  .tier-grid, .tiers-grid { grid-template-columns: 1fr; }
   .community-grid { grid-template-columns: 1fr; }
   .spec-cards { grid-template-columns: 1fr; }
   .spec-card { border-right: none; border-bottom: 1px solid var(--border); }
