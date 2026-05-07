@@ -57,6 +57,7 @@ body {
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 img { display: block; max-width: 100%; }
@@ -81,8 +82,7 @@ p { max-width: 72ch; }
 
 /* ── Layout ──────────────────────────────────────────────────────────────── */
 .container {
-  width: 100%;
-  max-width: 1200px;
+  width: min(100% - 2rem, 1320px);
   margin-inline: auto;
   padding-inline: 60px;
 }
@@ -98,13 +98,14 @@ p { max-width: 72ch; }
 
 .nav-container {
   display: flex;
+  min-height: 5rem;
   align-items: center;
   gap: 2rem;
   height: var(--nav-h);
 }
 
-.logo {
-  display: flex;
+.brand {
+  display: inline-flex;
   align-items: center;
   gap: 0.625rem;
   text-decoration: none;
@@ -241,11 +242,11 @@ nav[aria-label="Main navigation"] { margin-left: auto; }
   text-decoration: none;
 }
 
-.btn-group {
+.hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: center;
+  gap: 1rem;
+  margin-top: 2.25rem;
 }
 
 /* ── Section kicker / shared ─────────────────────────────────────────────── */
@@ -484,7 +485,30 @@ nav[aria-label="Main navigation"] { margin-left: auto; }
   border-bottom: 1px solid var(--border);
 }
 
-.cards-grid {
+.download-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--blue);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.license-badge {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--mist);
+  border: 1px solid var(--line);
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--body);
+}
+
+/* ── Standards section ──────────────────────────────────────────────────── */
+.standards-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
@@ -1048,8 +1072,8 @@ textarea { resize: vertical; min-height: 120px; }
   flex-wrap: wrap;
 }
 
-.footer-brand {
-  display: flex;
+.news-badge {
+  display: inline-flex;
   align-items: center;
   gap: 0.625rem;
 }

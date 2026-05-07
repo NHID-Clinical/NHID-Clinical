@@ -5,15 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="description" content="Download NHID-Clinical v1.3 Core Specification and NHID-Auth v1.0 Specification — open governance standards for AI voice agent disclosure in healthcare."/>
   <title>Download Specifications | NHID-Clinical</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
 </head>
 <body>
 
 <header class="site-header">
-  <div class="container nav-container">
-    <a href="/" class="logo" aria-label="NHID-Clinical home">
-      <div class="logo-mark" aria-hidden="true">NH</div>
-      <span class="logo-text">NHID-Clinical</span>
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+          <path d="m9 12 2 2 4-5"/>
+        </svg>
+        <span class="brand-wave"><span></span><span></span><span></span></span>
+      </span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
     </a>
     <nav aria-label="Main navigation">
       <ul class="nav-links">
@@ -28,12 +40,9 @@
       </ul>
     </nav>
     <div class="nav-actions">
-      <button class="icon-btn" data-theme-toggle aria-label="Switch to dark mode">
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-      <button class="icon-btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <a class="primary-pill" href="/validation.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-site-menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
   </div>
@@ -43,89 +52,87 @@
     <a href="/conformance.html">Conformance</a>
     <a href="/specs/">Download</a>
     <a href="/certification.html">Certification</a>
-    <a href="/validation/">Validation</a>
+    <a href="/validation.html">Validation</a>
     <a href="/news.html">News</a>
     <a href="/community.html">Community</a>
-  </div>
-</header>
+  </nav>
+</div>
 
 <main>
-  <section class="page-hero">
+  <section class="inner-hero">
     <div class="container">
-      <p class="section-kicker">Specification documents</p>
+      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Download</span></div>
+      <p class="eyebrow">Specification documents</p>
       <h1>Download the Standard</h1>
-      <p>NHID-Clinical and NHID-Auth are open governance specifications published under CC BY 4.0. Download, implement, and share freely.</p>
+      <p class="lede">NHID-Clinical and NHID-Auth are open governance specifications published under CC BY 4.0. Download, implement, and share freely.</p>
     </div>
   </section>
 
-  <section class="download-section" style="border-bottom:none">
+  <section class="page-section">
     <div class="container">
-      <div class="download-grid">
-
-        <article class="download-card">
-          <div class="download-card-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-          </div>
-          <div class="download-card-body">
+      <div class="download-grid" style="margin-top:0">
+        <div class="download-header">
+          <svg class="download-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <h2>Open governance specifications</h2>
+          <p style="color:var(--body);font-size:.95rem;line-height:1.7;margin:0">Both specifications are published under Creative Commons Attribution 4.0 International. Free to use, implement, and redistribute with attribution.</p>
+          <a class="outline-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0 →</a>
+        </div>
+        <div class="download-cards">
+          <article class="download-card">
             <h3>NHID-Clinical v1.3 Core Specification</h3>
-            <p>Complete technical specification including conformance test suite and certification framework.</p>
-            <a class="btn-primary" href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download>Download PDF →</a>
-            <p class="download-meta">CC BY 4.0 · Published May 2026</p>
-          </div>
-        </article>
-
-        <article class="download-card">
-          <div class="download-card-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-          </div>
-          <div class="download-card-body">
+            <p>Complete technical specification including five CTS conformance tests (IDG-01 through ATR-01), L1/L2/L3 certification tiers, FHIR AuditEvent mapping, and NHID-Auth companion spec reference.</p>
+            <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
+            <span class="license-badge">CC BY 4.0 · Published May 2026</span>
+          </article>
+          <article class="download-card">
             <h3>NHID-Auth v1.0 Specification</h3>
-            <p>Authorization layer companion specification for delegated authority verification.</p>
-            <a class="btn-primary" href="/specs/NHID-Auth-v1.0-Specification.pdf" download>Download PDF →</a>
-            <p class="download-meta">CC BY 4.0 · Published May 2026</p>
-          </div>
-        </article>
-
+            <p>Authorization layer companion specification for delegated authority verification. Defines authorization attestation format, scope, duration, and revocation handling.</p>
+            <a href="/specs/NHID-Auth-v1.0-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
+            <span class="license-badge">CC BY 4.0 · Published May 2026</span>
+          </article>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="content-section">
+  <section class="page-section-alt">
     <div class="container">
       <p class="section-kicker">About these documents</p>
-      <h2 class="section-title">What's in each specification</h2>
-      <div class="cards-grid" style="margin-top:2rem">
-        <div class="card">
-          <div class="card-icon" aria-hidden="true">▣</div>
+      <h2>What's in each specification</h2>
+      <div class="content-cards" style="margin-top:2rem">
+        <div class="content-card">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">▣</div>
           <h3>NHID-Clinical v1.3</h3>
           <p>Five CTS conformance tests (IDG-01 through ATR-01), L1/L2/L3 certification tiers, FHIR AuditEvent mapping, and NHID-Auth companion spec reference.</p>
-          <a class="card-link" href="/conformance.html">View CTS tests →</a>
+          <a class="card-action" href="/conformance.html">View CTS tests →</a>
         </div>
-        <div class="card">
-          <div class="card-icon" aria-hidden="true">◎</div>
+        <div class="content-card">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">◎</div>
           <h3>NHID-Auth v1.0</h3>
           <p>Delegated authority model for AI agents calling on behalf of providers. Defines authorization attestation format, scope, duration, and revocation handling.</p>
-          <a class="card-link" href="/about.html">Learn more →</a>
+          <a class="card-action" href="/about.html">Learn more →</a>
         </div>
-        <div class="card">
-          <div class="card-icon" aria-hidden="true">⚖️</div>
+        <div class="content-card">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">⚖️</div>
           <h3>License</h3>
           <p>Both specifications are published under Creative Commons Attribution 4.0 International. Free to use, implement, and redistribute with attribution.</p>
-          <a class="card-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0 →</a>
+          <a class="card-action" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0 →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="cta-section">
-    <div class="container">
-      <p class="section-kicker">Ready to certify?</p>
-      <h2>Apply for pilot validation.</h2>
-      <p>First validations are offered at no cost. Download the spec, then request validation to get your L1/L2/L3 certification.</p>
-      <div class="btn-group" style="justify-content:center">
-        <a class="btn-primary" href="/validation/">Request Validation →</a>
-        <a class="btn-secondary" href="/conformance.html">View CTS Tests</a>
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Ready to certify?</p>
+        <h2>Apply for pilot validation.</h2>
+        <p>First validations are offered at no cost. Download the spec, then request validation to get your L1/L2/L3 certification.</p>
       </div>
+      <a class="closing-button" href="/validation.html">Request Validation →</a>
     </div>
   </section>
 </main>
