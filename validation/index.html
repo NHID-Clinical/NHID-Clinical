@@ -1,82 +1,182 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Pilot validation program for AI voice agent disclosure conformance." />
-    <title>NHID-Clinical Pilot Validation Program</title>
-    <link rel="stylesheet" href="/nhid-clinical-ui.css" />
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <nav class="container nav" aria-label="Primary navigation">
-        <a class="brand" href="/" aria-label="NHID-Clinical home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg><span class="brand-wave"><span></span><span></span><span></span></span></span><span><strong>NHID-Clinical</strong><small>Healthcare Voice AI Disclosure</small></span></a>
-        <div class="nav-links"><a class="" href="/">Home</a><a class="" href="/about/">About</a><a class="" href="/#standard">Standard</a><a class="is-active" href="/validation/">Validation</a><a class="" href="/news/">News</a><a class="" href="/community/">Community</a><a class="" href="#contact">Contact</a></div>
-        <div class="nav-actions"><a class="primary-pill" href="/validation/">Validate</a><button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-site-menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
-      </nav>
-    </header>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Pilot Validation Program — first validations at no cost for AI voice agent platforms in healthcare."/>
+  <title>Pilot Validation | NHID-Clinical</title>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+</head>
+<body>
 
-    <div class="mobile-menu-panel" id="mobile-site-menu" hidden>
-      <div class="mobile-menu-backdrop" data-menu-close></div>
-      <nav class="mobile-menu-card" aria-label="Mobile navigation">
-        <div class="mobile-menu-header">
-          <strong>NHID-Clinical</strong>
-          <button class="icon-button mobile-menu-close" type="button" aria-label="Close menu" data-menu-close>&times;</button>
-        </div>
-        <a href="/">Home</a>
-        <a href="/about/">About</a>
-        <a href="/#standard">Standard</a>
-        <a href="/validation/">Validation</a>
-        <a href="/news/">News</a>
-        <a href="/community/">Community</a>
-        <a href="/conformance/">Conformance</a>
-        <a href="/certification/">Certification</a>
-        <a href="/#contact">Contact</a>
-      </nav>
+<header class="site-header">
+  <div class="container nav-container">
+    <a href="/" class="logo" aria-label="NHID-Clinical home">
+      <div class="logo-mark" aria-hidden="true">NH</div>
+      <span class="logo-text">NHID-Clinical</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/conformance.html">Conformance</a></li>
+        <li><a href="/certification.html">Certification</a></li>
+        <li><a href="/validation/">Validation</a></li>
+        <li><a href="/news.html">News</a></li>
+        <li><a href="/community.html">Community</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" data-theme-toggle aria-label="Switch to dark mode">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
     </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/">Home</a><a href="/about.html">About</a><a href="/conformance.html">Conformance</a>
+    <a href="/certification.html">Certification</a><a href="/validation/">Validation</a>
+    <a href="/news.html">News</a><a href="/community.html">Community</a>
+  </div>
+</header>
 
-    <main id="main">
-      <section class="inner-hero"><div class="container inner-hero-grid"><div><div class="crumbs"><a href="/">Home</a><span>/</span><span>Validation</span></div><p class="eyebrow"><span class="status-dot"></span>Pilot validation program</p><h1>Get L1 certification for your AI voice platform.</h1><p class="lede">First 10 L1 certifications are offered at no cost to qualifying platforms. Validation demonstrates that your AI voice agent discloses before data exchange and follows the NHID-Clinical behavioral baseline.</p><div class="hero-actions"><a class="cta-button" href="/validation/request.html">Apply Now →</a><a class="secondary-button" href="/conformance/">Read the Tests →</a></div></div><aside class="hero-summary-card"><strong>Simple process</strong><p>Submit request, receive the conformance suite, execute pass/fail tests, submit evidence, and receive a badge or gap feedback.</p></aside></div></section>
-      <section class="container page-section"><div class="card-grid"><article class="tier-card"><span class="tier-label">1</span><h3>Submit Request</h3><p>Complete the request form with system details and target validation level.</p></article><article class="tier-card"><span class="tier-label">2</span><h3>Run Tests</h3><p>Use the NHID-Clinical conformance suite to evaluate disclosure, data exchange, deceptive behavior, escalation, and audit trails.</p></article><article class="tier-card"><span class="tier-label">3</span><h3>Submit Evidence</h3><p>Provide test results and evidence based on the L1, L2, or L3 certification level.</p></article></div></section>
-      <section class="container page-section" style="padding-top:0"><div class="tier-page-grid"><article class="tier-card"><span class="tier-label">L1 Baseline</span><h3>Core disclosure controls</h3><ul class="detail-list"><li>Identity disclosure before data request.</li><li>Organization and purpose identification.</li><li>Basic escalation path.</li></ul></article><article class="tier-card"><span class="tier-label">L2 Operational</span><h3>Production audit readiness</h3><ul class="detail-list"><li>All L1 controls.</li><li>Pre-data exchange gate enforcement.</li><li>Audit log timestamps and operational evidence.</li></ul></article><article class="tier-card"><span class="tier-label">L3 Enterprise</span><h3>Advanced controls</h3><ul class="detail-list"><li>All L2 controls.</li><li>Bot-to-bot deadlock handling.</li><li>IVR resilience and identity-layer readiness.</li></ul></article></div></section>
-      <section class="container closing-section"><div class="closing-panel"><div><p class="section-kicker">Ready to validate?</p><h2>First 10 L1 certifications free.</h2><p>Start with the baseline if your platform is ready to demonstrate disclosure before data exchange.</p></div><a class="closing-button" href="/validation/request.html">Request Validation →</a></div></section>
-    </main>
-    <footer id="contact" class="site-footer">
-      <div class="container footer-inner enterprise-footer">
-        <div><p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0.</p><p>Published NIST public comment: <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a></p></div>
-        <div><a class="footer-cta" href="/validation/">Ready to validate? First 10 L1 certifications free →</a><a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a><a href="https://nhid-clinical.org">nhid-clinical.org</a></div>
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <p class="hero-eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Now open · May 2026</p>
+      <h1>Pilot Validation Program</h1>
+      <p>First validations offered at no cost for AI voice agent platforms in healthcare. We'll review your system and send the conformance test within 3 business days.</p>
+      <div class="btn-group" style="margin-top:1.25rem">
+        <a class="btn-primary" href="request.html">Request Validation →</a>
+        <a class="btn-secondary" href="/conformance.html">View CTS Tests</a>
       </div>
-    </footer>
+    </div>
+  </section>
 
-    <script>
-      (function () {
-        var menu = document.getElementById('mobile-site-menu');
-        var button = document.querySelector('.menu-button');
-        if (!menu || !button) return;
-        var closeTargets = menu.querySelectorAll('[data-menu-close]');
-        function openMenu() {
-          menu.hidden = false;
-          document.body.classList.add('mobile-menu-open');
-          button.setAttribute('aria-expanded', 'true');
-          var firstLink = menu.querySelector('a');
-          if (firstLink) firstLink.focus();
-        }
-        function closeMenu() {
-          menu.hidden = true;
-          document.body.classList.remove('mobile-menu-open');
-          button.setAttribute('aria-expanded', 'false');
-          button.focus();
-        }
-        button.addEventListener('click', function () {
-          if (menu.hidden) openMenu(); else closeMenu();
-        });
-        closeTargets.forEach(function (target) { target.addEventListener('click', closeMenu); });
-        menu.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', closeMenu); });
-        document.addEventListener('keydown', function (event) {
-          if (event.key === 'Escape' && !menu.hidden) closeMenu();
-        });
-      })();
-    </script>
-  </body>
+  <section class="content-section">
+    <div class="container">
+      <p class="section-kicker">Why validate?</p>
+      <h2 class="section-title">What validation gives you</h2>
+      <div class="cards-grid" style="margin-top:2rem">
+        <div class="card">
+          <div class="card-icon" aria-hidden="true">✓</div>
+          <h3>Payer acceptance</h3>
+          <p>Give payer operations teams a standard they can accept. Certified AI callers bypass "are you human?" challenge cycles.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" aria-hidden="true">🔖</div>
+          <h3>Certification badge</h3>
+          <p>Display L1/L2/L3 certification in product documentation, marketing, and payer agreements to signal compliance.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" aria-hidden="true">📋</div>
+          <h3>Audit readiness</h3>
+          <p>Structured evidence package aligned with FHIR AuditEvent patterns. Ready for HIPAA-adjacent audit review.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" style="background:var(--bg-2)">
+    <div class="container">
+      <p class="section-kicker">Process</p>
+      <h2 class="section-title">How validation works</h2>
+      <div class="cards-grid" style="margin-top:2rem">
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">1</div>
+          <h3>Submit request</h3>
+          <p>Fill out the validation request form with your company name, contact, target tier, and a brief description of your AI voice agent system.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">2</div>
+          <h3>Receive CTS</h3>
+          <p>Within 3 business days, we send you the Conformance Test Suite and evidence requirements for your target tier.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">3</div>
+          <h3>Run tests</h3>
+          <p>Execute the five CTS tests (IDG-01 through ATR-01) against your system. Compile your evidence package per tier requirements.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">4</div>
+          <h3>Submit evidence</h3>
+          <p>Send your evidence package for review. We confirm pass/fail on each test and issue your certification.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">5</div>
+          <h3>Receive badge</h3>
+          <p>On confirmation, receive your L1/L2/L3 certification badge for use in documentation and payer agreements.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">→</div>
+          <h3>Timeline</h3>
+          <p>L1: typically 1–2 weeks. L2/L3 depends on evidence collection and review complexity.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <p class="section-kicker">Validation tiers</p>
+      <h2 class="section-title">Choose your target tier</h2>
+      <div class="tiers-grid" style="margin-top:2rem">
+        <div class="tier-card l1">
+          <div class="tier-badge">L1</div>
+          <h3>Baseline</h3>
+          <p>Self-attestation. Internal QA. Best starting point for most organizations.</p>
+          <ul><li>Signed declaration</li><li>Script documentation</li><li>Call logs with timestamps</li></ul>
+        </div>
+        <div class="tier-card l2">
+          <div class="tier-badge">L2</div>
+          <h3>Operational</h3>
+          <p>30+ days production evidence. DFR &lt; 2%. Evidence review by NHID-Clinical.</p>
+          <ul><li>Production call records</li><li>DFR calculation</li><li>Evidence package review</li></ul>
+        </div>
+        <div class="tier-card l3">
+          <div class="tier-badge">L3</div>
+          <h3>Enterprise</h3>
+          <p>Independent auditor. Continuous monitoring. Contact us before applying.</p>
+          <ul><li>Third-party audit</li><li>Continuous monitoring</li><li>Annual renewal</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <p class="section-kicker">Ready to start?</p>
+      <h2>Request your validation today.</h2>
+      <p>First validations are offered at no cost. Questions? Email us before submitting.</p>
+      <div class="btn-group" style="justify-content:center">
+        <a class="btn-primary" href="request.html">Request Validation →</a>
+        <a class="btn-secondary" href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-mark" aria-hidden="true">NH</div>
+        <span style="font-weight:700;color:var(--text)">NHID-Clinical</span>
+        <span class="badge badge-blue" style="margin-left:.5rem">v1.3</span>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
+        <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+        <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      </div>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard · NHID-Clinical v1.3 · CC-BY 4.0</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
 </html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="About NHID-Clinical — why this standard exists, the problem it solves, and how it's structured."/>
+  <title>About | NHID-Clinical</title>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav-container">
+    <a href="/" class="logo" aria-label="NHID-Clinical home">
+      <div class="logo-mark" aria-hidden="true">NH</div>
+      <span class="logo-text">NHID-Clinical</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/conformance.html">Conformance</a></li>
+        <li><a href="/certification.html">Certification</a></li>
+        <li><a href="/validation/">Validation</a></li>
+        <li><a href="/news.html">News</a></li>
+        <li><a href="/community.html">Community</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" data-theme-toggle aria-label="Switch to dark mode">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/">Home</a><a href="/about.html">About</a><a href="/conformance.html">Conformance</a>
+    <a href="/certification.html">Certification</a><a href="/validation/">Validation</a>
+    <a href="/news.html">News</a><a href="/community.html">Community</a>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <p class="section-kicker">About NHID-Clinical</p>
+      <h1>The standard payer operations needed.</h1>
+      <p>A minimum control baseline for non-human identity disclosure in B2B healthcare voice interactions — built from the inside of a payer operation, not from a conference room.</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <p class="section-kicker">The problem</p>
+      <h2 class="section-title">Impersonation Latency</h2>
+      <p style="max-width:68ch;margin-top:.5rem;color:var(--text-muted);line-height:1.8">AI voice agents are calling payer customer service lines on behalf of providers — requesting claim status, eligibility details, and prior authorization updates. The agents give NPI numbers and member IDs to authenticate. Payer reps, following their script, provide the information. 3–5 minutes later, something feels off. The rep asks: "Are you a real person?" The AI admits it's automated.</p>
+      <p style="max-width:68ch;margin-top:1rem;color:var(--text-muted);line-height:1.8">The call is terminated. Protected operational data was already shared. There's no audit trail. The AI calls back 10 minutes later. Same cycle.</p>
+      <p style="max-width:68ch;margin-top:1rem;color:var(--text-muted);line-height:1.8">This is <strong style="color:var(--text)">Impersonation Latency</strong> — the compliance and operational gap where payer systems have no standard for what a legitimate AI-initiated call looks like, and no way to verify AI caller authorization, so they reject all of them.</p>
+    </div>
+  </section>
+
+  <section class="content-section" style="background:var(--bg-2)" id="practices">
+    <div class="container">
+      <p class="section-kicker">Document layers</p>
+      <h2 class="section-title">Three layers. Clear separation.</h2>
+      <div class="cards-grid" style="margin-top:2rem">
+        <div class="card">
+          <span class="badge badge-blue" style="margin-bottom:.75rem">Layer 1 — Normative</span>
+          <h3>Mandatory requirements</h3>
+          <p>MUST/MUST NOT rules using RFC 2119 terminology. Five CTS tests (IDG-01 through ATR-01). The enforceable baseline for claiming conformance.</p>
+          <a class="card-link" href="/conformance.html">View CTS tests →</a>
+        </div>
+        <div class="card">
+          <span class="badge" style="background:var(--teal);color:#fff;margin-bottom:.75rem;display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase">Layer 2 — Recommended</span>
+          <h3>Best practices</h3>
+          <p>SHOULD/MAY guidance for authorization verification, audit logging recommendations, and escalation UX patterns. Not required for certification but encouraged.</p>
+        </div>
+        <div class="card">
+          <span class="badge" style="background:var(--bg-3);color:var(--text-muted);margin-bottom:.75rem;display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase">Layer 3 — Informative</span>
+          <h3>Future scope</h3>
+          <p>FHIR technical mapping, badge schema, NHID-Auth companion spec, registry architecture (v1.4+), and JWT handshake implementation. Not required for v1.3 conformance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <p class="section-kicker">Scope</p>
+      <h2 class="section-title">What NHID-Clinical covers</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1.5rem">
+        <div>
+          <h3 style="color:var(--teal);margin-bottom:.75rem;font-size:1rem">✓ In scope</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--text-muted);line-height:1.9;font-size:.95rem">
+            <li>B2B administrative voice workflows</li>
+            <li>Provider-to-payer AI agent calls</li>
+            <li>Claim status, eligibility, prior auth inquiries</li>
+            <li>Business Associate-to-payer workflows</li>
+            <li>Outbound AI agent disclosure requirements</li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="color:var(--text-muted);margin-bottom:.75rem;font-size:1rem">✗ Not in scope (v1.3)</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--text-muted);line-height:1.9;font-size:.95rem">
+            <li>Direct-to-consumer or patient-facing calls</li>
+            <li>Clinical triage or diagnostic AI</li>
+            <li>Inbound call center AI (payer-to-provider)</li>
+            <li>Cryptographic handshake protocols (v1.4+)</li>
+            <li>Live public registry (v1.4+)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <p class="section-kicker">Get started</p>
+      <h2>Read the standard or request validation.</h2>
+      <p>The full specification is in the GitHub repository. The pilot validation program is open now, at no cost.</p>
+      <div class="btn-group" style="justify-content:center">
+        <a class="btn-primary" href="/conformance.html">View Conformance Tests →</a>
+        <a class="btn-secondary" href="/validation/">Request Validation</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-mark" aria-hidden="true">NH</div>
+        <span style="font-weight:700;color:var(--text)">NHID-Clinical</span>
+        <span class="badge badge-blue" style="margin-left:.5rem">v1.3</span>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
+        <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+        <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      </div>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard · NHID-Clinical v1.3 · CC-BY 4.0</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>
