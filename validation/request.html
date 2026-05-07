@@ -1,114 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Request NHID-Clinical Validation</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-50 text-gray-800 antialiased min-h-screen">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Request NHID-Clinical pilot validation for a healthcare AI voice agent system." />
+    <title>Request NHID-Clinical Validation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/nhid-clinical-ui.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <nav class="container nav" aria-label="Primary navigation">
+        <a class="brand" href="/" aria-label="NHID-Clinical home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-5" /></svg>
+            <span class="brand-wave"><span></span><span></span><span></span></span>
+          </span>
+          <span><strong>NHID-Clinical</strong><small>Building Trust in Healthcare Voice AI</small></span>
+        </a>
+        <div class="nav-links">
+          <a href="/">Home</a>
+          <a href="/about/">About</a>
+          <a href="/#standard">Standard</a>
+          <a href="/certification/">Certification</a>
+          <a class="is-active" href="/validation/">Validation</a>
+          <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
+        </div>
+        <div class="nav-actions">
+          <a class="primary-pill" href="/validation/">Get Involved</a>
+          <button class="icon-button menu-button" aria-label="Open menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
+        </div>
+      </nav>
+    </header>
 
-  <!-- Top bar -->
-  <div class="border-b border-gray-200 bg-white">
-    <div class="max-w-2xl mx-auto px-6 py-3 flex gap-4 text-sm text-gray-500">
-      <a href="https://nhid-clinical.org/" class="hover:text-blue-600 transition-colors">Spec</a>
-      <span class="text-gray-300">/</span>
-      <a href="index.html" class="hover:text-blue-600 transition-colors">Validation Program</a>
-      <span class="text-gray-300">/</span>
-      <span class="text-gray-800 font-medium">Request Validation</span>
-      <a href="https://github.com/thankcheeses/NHID-Clinical" class="ml-auto hover:text-blue-600 transition-colors">GitHub ↗</a>
-    </div>
-  </div>
+    <main id="main">
+      <section class="inner-hero">
+        <div class="container inner-hero-grid">
+          <div>
+            <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/validation/">Validation</a><span>/</span><span>Request</span></div>
+            <p class="eyebrow"><span class="status-dot"></span>Request validation</p>
+            <h1>Submit your AI voice agent for pilot validation.</h1>
+            <p class="lede">Share your system details and target validation level. The NHID-Clinical maintainer will review the request and follow up with next steps.</p>
+          </div>
+          <aside class="hero-summary-card"><strong>Before you submit</strong><p>Review the certification framework if you are unsure whether L1, L2, or L3 is the right starting point.</p><a class="outline-link" href="/certification/">View tiers →</a></aside>
+        </div>
+      </section>
 
-  <div class="max-w-2xl mx-auto px-6 py-10">
-
-    <a href="index.html" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline mb-6">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-      Back to Validation Program
-    </a>
-
-    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 sm:p-10">
-
-      <!-- Header -->
-      <div class="mb-8">
-        <p class="text-xs font-semibold tracking-widest uppercase text-blue-600 mb-2">NHID-Clinical v1.3</p>
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Request Validation</h1>
-        <p class="text-gray-500">Join the pilot validation program. We'll review your request and send the conformance test within 3 business days.</p>
+      <section class="container page-section">
+        <form id="validationForm" class="form-card form-grid" action="https://formspree.io/f/mbdwrbwg" method="POST">
+          <div class="field"><label for="company">Company Name *</label><input type="text" id="company" name="company" required /></div>
+          <div class="field"><label for="name">Contact Name *</label><input type="text" id="name" name="name" required /></div>
+          <div class="field"><label for="email">Contact Email *</label><input type="email" id="email" name="email" required /></div>
+          <div class="field"><label for="tier">Target Validation Level *</label><select id="tier" name="tier" required><option value="">Select a tier...</option><option value="L1">L1 Baseline</option><option value="L2">L2 Operational</option><option value="L3">L3 Enterprise</option></select></div>
+          <div class="field full-width"><label for="description">Brief description of your AI voice agent system *</label><textarea id="description" name="description" rows="5" required placeholder="What does your system do? What healthcare administrative workflows does it handle?"></textarea></div>
+          <div class="field full-width"><label for="notes">Additional notes</label><textarea id="notes" name="notes" rows="4" placeholder="Share anything else that would help with the validation review."></textarea></div>
+          <div class="full-width"><button class="cta-button" type="submit">Submit validation request →</button><a class="outline-link" href="/validation/">Back to validation</a></div>
+        </form>
+      </section>
+    </main>
+    <footer id="contact" class="site-footer">
+      <div class="container footer-inner">
+        <p>© 2026 NHID-Clinical. Non-Human Identity Disclosure Standard for Healthcare Voice Workflows.</p>
+        <div>
+          <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
+          <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+          <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
+        </div>
       </div>
-
-      <!-- Success message -->
-      <div id="successMessage" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-5 py-4 mb-6 flex items-start gap-3">
-        <svg class="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <span class="font-medium">Thank you! Your validation request has been submitted. Check your email for next steps.</span>
-      </div>
-
-      <form id="validationForm" action="https://formspree.io/f/mbdwrbwg" method="POST" class="space-y-6">
-
-        <div>
-          <label for="company" class="block text-sm font-semibold text-gray-700 mb-1.5">Company Name <span class="text-red-500">*</span></label>
-          <input type="text" id="company" name="company" required
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"/>
-        </div>
-
-        <div>
-          <label for="email" class="block text-sm font-semibold text-gray-700 mb-1.5">Contact Email <span class="text-red-500">*</span></label>
-          <input type="email" id="email" name="email" required
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"/>
-        </div>
-
-        <div>
-          <label for="name" class="block text-sm font-semibold text-gray-700 mb-1.5">Contact Name <span class="text-red-500">*</span></label>
-          <input type="text" id="name" name="name" required
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"/>
-        </div>
-
-        <div>
-          <label for="tier" class="block text-sm font-semibold text-gray-700 mb-1.5">Target Validation Level <span class="text-red-500">*</span></label>
-          <select id="tier" name="tier" required
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition cursor-pointer">
-            <option value="">Select a tier...</option>
-            <option value="L1">L1 Baseline</option>
-            <option value="L2">L2 Operational</option>
-            <option value="L3">L3 Enterprise</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="description" class="block text-sm font-semibold text-gray-700 mb-1.5">Brief description of your AI voice agent system <span class="text-red-500">*</span></label>
-          <textarea id="description" name="description" required rows="4"
-            placeholder="What does your system do? What workflows does it handle?"
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"></textarea>
-        </div>
-
-        <div>
-          <label for="timeline" class="block text-sm font-semibold text-gray-700 mb-1.5">Desired validation timeline <span class="text-gray-400 font-normal">(optional)</span></label>
-          <input type="text" id="timeline" name="timeline"
-            placeholder="e.g., 'ASAP' or 'Q3 2026'"
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"/>
-        </div>
-
-        <button type="submit"
-          class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-sm text-sm mt-2">
-          Submit Request
-        </button>
-
-      </form>
-
-    </div>
-
-    <p class="text-center text-xs text-gray-400 mt-6">First pilot validations offered at no cost · <a href="https://github.com/thankcheeses/NHID-Clinical" class="hover:text-blue-500 transition-colors">NHID-Clinical on GitHub</a></p>
-
-  </div>
-
-  <script>
-    document.getElementById('validationForm').addEventListener('submit', function() {
-      setTimeout(function() {
-        document.getElementById('successMessage').classList.remove('hidden');
-        document.getElementById('successMessage').classList.add('flex');
-        document.getElementById('validationForm').reset();
-      }, 1000);
-    });
-  </script>
-
-</body>
+    </footer>
+  </body>
 </html>
