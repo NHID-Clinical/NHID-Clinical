@@ -721,6 +721,85 @@ h1:first-child, h2:first-child, h3:first-child { margin-top: 0; }
   transition: color var(--transition);
 }
 
+/* ─── Download Section ──────────────────────────────────────────────────────── */
+
+.download-section {
+  background: #EFF6FF;
+  padding-block: 3.75rem;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+
+[data-theme="dark"] .download-section {
+  background: #1E293B;
+}
+
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.download-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  transition: background var(--transition), border-color var(--transition),
+              transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.download-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+
+.download-card-icon {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-sm);
+  background: var(--primary-lt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  transition: background var(--transition);
+}
+
+.download-card-body { flex: 1; }
+
+.download-card-body h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  transition: color var(--transition);
+}
+
+.download-card-body p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  transition: color var(--transition);
+}
+
+.download-meta {
+  font-size: 0.82rem !important;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  margin-bottom: 0 !important;
+  opacity: 0.8;
+}
+
 /* ─── Footer ────────────────────────────────────────────────────────────────── */
 
 .site-footer {
@@ -836,10 +915,14 @@ h1:first-child, h2:first-child, h3:first-child { margin-top: 0; }
   .hero,
   .built-by,
   .standards-section,
+  .download-section,
   .content-section,
   .page-hero,
   .cta-section,
   .benefits-band { padding-block: 2.5rem; }
+
+  .download-grid { grid-template-columns: 1fr; }
+  .download-card { flex-direction: column; gap: 1rem; }
 
   .card,
   .tier-card,
