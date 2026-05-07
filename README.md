@@ -87,6 +87,7 @@ Non-normative content that supports adoption, provides technical bindings, or de
 **Includes:**
 - FHIR Technical Mapping (companion technical layer)
 - Badge Schema & Verification Model (trust infrastructure design)
+- [NHID-Auth v1.0](NHID-AUTH.md) (delegated authorization layer - companion spec)
 - Registry architecture (v1.4+)
 - JWT handshake implementation (v1.4+)
 
@@ -227,9 +228,13 @@ When a healthcare provider deploys an AI agent to call a payer or clearinghouse:
 - Payers SHOULD verify AI caller authorization before exchanging sensitive operational data
 
 **Future Scope:**
-- Registry architecture defined in v1.3 (planned implementation v1.4+)
-- Technical specifications for digital token and BAA-linked authentication protocols are candidates for a future companion specification
-- Live public registry for checking AI caller credentials
+
+**NHID-Auth v1.0** (companion specification) addresses the authorization gap:
+- Delegated authority model (who authorized this AI to call?)
+- Scope, duration, revocation, attestation
+- See [NHID-Auth specification](NHID-AUTH.md) for full details
+
+Registry architecture and JWT implementation planned for v1.4+
 
 **Rationale:** The authorization gap creates two risks:
 1. **Operational risk** — Legitimate AI agents are rejected because payers can't verify authorization
@@ -322,6 +327,7 @@ NHID-Clinical v1.3 introduces a formal conformance test suite and tiered certifi
 | [**Conformance Test Suite (CTS)**](conformance.md) | Five deterministic pass/fail tests (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) — the authoritative checklist for claiming NHID-Clinical conformance |
 | [**Certification Framework**](certification.md) | L1 (Baseline), L2 (Operational), L3 (Enterprise) trust tiers with badge system and evidence requirements |
 | [**Registry Architecture**](registry.md) | Conceptual design for public verification layer (planned for v1.4+) |
+| [**NHID-Auth v1.0**](NHID-AUTH.md) | Delegated authorization layer - addresses NPI spoofing and permission verification (optional, external to v1.3 conformance) |
 
 ---
 
@@ -562,6 +568,7 @@ NHID-Clinical is designed to operationalize high-level governance requirements i
 - ♿ **Accessibility:** Multilingual support, deaf/hard-of-hearing accommodations
 - 🔗 **Multi-entity integrations:** Complex scenarios with multiple payers/vendors
 - 🏛️ **Live registry:** The registry architecture is defined in v1.3 but a live public registry is planned for v1.4+
+- 🔐 **Authorization verification:** NHID-Auth v1.0 companion spec addresses delegated authority model - see [NHID-Auth.md](NHID-AUTH.md)
 - 🔧 **Technical implementation bindings:** Runtime enforcement specifications, event schemas (e.g., OpenTelemetry), and policy engine integrations (e.g., OPA/Cedar) are intentionally out of scope for v1.x. NHID-Clinical defines the governance layer — how systems should behave. Implementation specs are candidates for a companion technical specification.
 
 **Translation:** This is v1.3, not the final word on AI identity in healthcare. We're building iteratively based on real operational feedback.
