@@ -1261,3 +1261,39 @@ body {
   .cta-button, .secondary-button, .primary-pill, .closing-button, .inline-button, .outline-link, .resource-link { width: 100%; }
   .creator-photo { width: 180px; height: 180px; }
 }
+
+
+/* Final simplified hero polish */
+.hero-grid-simple {
+  grid-template-columns: minmax(0, 860px);
+  justify-content: center;
+  text-align: left;
+}
+.simplified-hero .hero-copy {
+  max-width: 860px;
+}
+.simplified-hero .hero-body {
+  color: var(--body);
+  font-weight: 600;
+}
+.markdown-body > h1:first-child {
+  display: none;
+}
+.markdown-body hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 2rem 0;
+}
+.markdown-body pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #F1F5F9;
+}
+.markdown-body blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid var(--green);
+  background: #ECFDF5;
+  color: var(--ink);
+}
