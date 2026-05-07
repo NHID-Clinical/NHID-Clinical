@@ -46,7 +46,7 @@ body {
   color: var(--text);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 1.125rem;
-  line-height: 1.7;
+  line-height: 1.8;
   transition: background var(--transition), color var(--transition);
   -webkit-font-smoothing: antialiased;
 }
@@ -56,9 +56,21 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; border: none; background: none; }
 ul, ol { list-style: none; }
 
+/* Prose typography spacing */
+p { margin-bottom: 1.5rem; }
+p:last-child { margin-bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+h1:first-child, h2:first-child, h3:first-child { margin-top: 0; }
+
 .container {
-  width: min(100% - 2rem, 1200px);
+  width: 100%;
+  max-width: 1200px;
   margin-inline: auto;
+  padding-inline: 3.75rem;
 }
 
 /* ─── Header ────────────────────────────────────────────────────────────────── */
@@ -81,8 +93,9 @@ ul, ol { list-style: none; }
 .nav-container {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  height: 4rem;
+  gap: 2.5rem;
+  height: auto;
+  padding-block: 1.5rem;
 }
 
 .logo {
@@ -117,7 +130,7 @@ ul, ol { list-style: none; }
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 1rem;
   flex: 1;
 }
 
@@ -242,7 +255,7 @@ ul, ol { list-style: none; }
 /* ─── Hero ──────────────────────────────────────────────────────────────────── */
 
 .hero {
-  padding-block: 5rem 4rem;
+  padding-block: 5rem;
   border-bottom: 1px solid var(--border);
 }
 
@@ -272,7 +285,7 @@ ul, ol { list-style: none; }
 .hero h1 {
   font-size: clamp(2.5rem, 7vw, 3.5rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.2;
   letter-spacing: -0.04em;
   color: var(--text);
   max-width: 20ch;
@@ -282,9 +295,9 @@ ul, ol { list-style: none; }
 .hero-subtitle {
   font-size: clamp(1rem, 2.5vw, 1.25rem);
   color: var(--text-muted);
-  max-width: 50ch;
+  max-width: 720px;
   margin-top: 1rem;
-  line-height: 1.5;
+  line-height: 1.8;
   transition: color var(--transition);
 }
 
@@ -295,7 +308,7 @@ ul, ol { list-style: none; }
 /* ─── "Built by" ────────────────────────────────────────────────────────────── */
 
 .built-by {
-  padding-block: 3rem;
+  padding-block: 5rem;
   border-bottom: 1px solid var(--border);
   background: var(--bg-2);
   transition: background var(--transition);
@@ -336,7 +349,7 @@ ul, ol { list-style: none; }
 /* ─── Standards Cards ───────────────────────────────────────────────────────── */
 
 .standards-section {
-  padding-block: 4rem;
+  padding-block: 5rem;
 }
 
 .section-kicker {
@@ -353,12 +366,13 @@ ul, ol { list-style: none; }
   font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--text);
+  margin-bottom: 0;
   transition: color var(--transition);
 }
 
 .section-desc {
   color: var(--text-muted);
-  max-width: 60ch;
+  max-width: 720px;
   margin-top: 0.5rem;
   transition: color var(--transition);
 }
@@ -366,7 +380,7 @@ ul, ol { list-style: none; }
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+  gap: 1.5rem;
   margin-top: 2rem;
 }
 
@@ -374,7 +388,7 @@ ul, ol { list-style: none; }
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.75rem;
+  padding: 2.5rem;
   box-shadow: var(--shadow);
   transition: background var(--transition), border-color var(--transition),
               transform 0.2s ease, box-shadow 0.2s ease;
@@ -385,6 +399,8 @@ ul, ol { list-style: none; }
   box-shadow: var(--shadow-lg);
   border-color: var(--primary);
 }
+
+.card p { margin-bottom: 0; }
 
 .card-icon {
   width: 3rem;
@@ -404,6 +420,7 @@ ul, ol { list-style: none; }
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);
+  margin-top: 0;
   margin-bottom: 0.5rem;
   transition: color var(--transition);
 }
@@ -411,7 +428,7 @@ ul, ol { list-style: none; }
 .card p {
   color: var(--text-muted);
   font-size: 0.95rem;
-  line-height: 1.65;
+  line-height: 1.7;
   transition: color var(--transition);
 }
 
@@ -432,7 +449,7 @@ ul, ol { list-style: none; }
 
 .benefits-band {
   background: var(--primary);
-  padding-block: 2.5rem;
+  padding-block: 5rem;
   transition: background var(--transition);
 }
 
@@ -456,7 +473,7 @@ ul, ol { list-style: none; }
 .benefit span {
   font-size: 0.9rem;
   opacity: 0.8;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 /* ─── CTA Section ───────────────────────────────────────────────────────────── */
@@ -474,13 +491,14 @@ ul, ol { list-style: none; }
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--text);
+  margin-top: 0;
   margin-bottom: 0.75rem;
   transition: color var(--transition);
 }
 
 .cta-section p {
   color: var(--text-muted);
-  max-width: 48ch;
+  max-width: 720px;
   margin-inline: auto;
   margin-bottom: 2rem;
   font-size: 1.05rem;
@@ -490,41 +508,48 @@ ul, ol { list-style: none; }
 /* ─── Page Hero (inner pages) ───────────────────────────────────────────────── */
 
 .page-hero {
-  padding-block: 3.5rem;
+  padding-block: 5rem;
   border-bottom: 1px solid var(--border);
 }
 
 .page-hero h1 {
   font-size: clamp(1.8rem, 5vw, 2.75rem);
   font-weight: 800;
+  line-height: 1.2;
   letter-spacing: -0.04em;
   color: var(--text);
+  margin-top: 0;
   transition: color var(--transition);
 }
 
 .page-hero p {
   color: var(--text-muted);
-  max-width: 60ch;
-  margin-top: 0.75rem;
+  max-width: 720px;
+  margin-top: 1rem;
   font-size: 1.05rem;
+  line-height: 1.8;
   transition: color var(--transition);
 }
 
 /* ─── Content Sections ──────────────────────────────────────────────────────── */
 
 .content-section {
-  padding-block: 4rem;
+  padding-block: 5rem;
   border-bottom: 1px solid var(--border);
 }
 
 .content-section:last-child { border-bottom: none; }
+
+.content-section p {
+  max-width: 720px;
+}
 
 /* ─── Badge Tiles (L1/L2/L3) ────────────────────────────────────────────────── */
 
 .tiers-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+  gap: 1.5rem;
   margin-top: 2rem;
 }
 
@@ -532,7 +557,7 @@ ul, ol { list-style: none; }
   background: var(--card);
   border: 2px solid var(--border);
   border-radius: var(--radius);
-  padding: 2rem;
+  padding: 2.5rem;
   box-shadow: var(--shadow);
   transition: background var(--transition), border-color var(--transition);
 }
@@ -560,6 +585,7 @@ ul, ol { list-style: none; }
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);
+  margin-top: 0;
   margin-bottom: 0.5rem;
   transition: color var(--transition);
 }
@@ -567,7 +593,8 @@ ul, ol { list-style: none; }
 .tier-card p {
   color: var(--text-muted);
   font-size: 0.92rem;
-  line-height: 1.6;
+  line-height: 1.7;
+  margin-bottom: 0;
   transition: color var(--transition);
 }
 
@@ -577,7 +604,7 @@ ul, ol { list-style: none; }
   margin-top: 0.75rem;
   color: var(--text-muted);
   font-size: 0.9rem;
-  line-height: 1.7;
+  line-height: 1.8;
   transition: color var(--transition);
 }
 
@@ -588,8 +615,8 @@ ul, ol { list-style: none; }
   border: 1px solid var(--border);
   border-left: 4px solid var(--primary);
   border-radius: var(--radius);
-  padding: 1.75rem;
-  margin-bottom: 1.25rem;
+  padding: 2.5rem;
+  margin-bottom: 1.5rem;
   box-shadow: var(--shadow);
   transition: background var(--transition), border-color var(--transition);
 }
@@ -607,6 +634,7 @@ ul, ol { list-style: none; }
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);
+  margin-top: 0;
   margin-bottom: 0.75rem;
   transition: color var(--transition);
 }
@@ -658,7 +686,7 @@ ul, ol { list-style: none; }
 .community-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
+  gap: 1.5rem;
   margin-top: 2rem;
 }
 
@@ -666,7 +694,7 @@ ul, ol { list-style: none; }
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 2rem;
+  padding: 2.5rem;
   box-shadow: var(--shadow);
   transition: background var(--transition), border-color var(--transition),
               transform 0.2s ease;
@@ -681,6 +709,7 @@ ul, ol { list-style: none; }
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--text);
+  margin-top: 0;
   margin-bottom: 0.5rem;
   transition: color var(--transition);
 }
@@ -780,6 +809,8 @@ ul, ol { list-style: none; }
 /* ─── Responsive ─────────────────────────────────────────────────────────────── */
 
 @media (max-width: 900px) {
+  .container { padding-inline: 2rem; }
+
   .nav-links { display: none; }
   .hamburger { display: flex; }
 
@@ -796,12 +827,24 @@ ul, ol { list-style: none; }
 }
 
 @media (max-width: 600px) {
+  .container { padding-inline: 1.5rem; }
+
   .cards-grid,
   .tiers-grid,
   .benefits-grid { grid-template-columns: 1fr; }
 
-  .hero { padding-block: 3rem 2.5rem; }
-  .standards-section, .content-section { padding-block: 2.5rem; }
+  .hero,
+  .built-by,
+  .standards-section,
+  .content-section,
+  .page-hero,
+  .cta-section,
+  .benefits-band { padding-block: 2.5rem; }
+
+  .card,
+  .tier-card,
+  .test-card,
+  .community-card { padding: 1.5rem; }
 
   .footer-inner { flex-direction: column; align-items: flex-start; }
   .footer-links { gap: 1rem; }
