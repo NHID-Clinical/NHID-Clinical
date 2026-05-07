@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Certification Framework — L1 Baseline, L2 Operational, and L3 Enterprise trust tiers with evidence requirements and badge system."/>
+  <title>Certification Framework | NHID-Clinical</title>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav-container">
+    <a href="/" class="logo" aria-label="NHID-Clinical home">
+      <div class="logo-mark" aria-hidden="true">NH</div>
+      <span class="logo-text">NHID-Clinical</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/conformance.html">Conformance</a></li>
+        <li><a href="/certification.html">Certification</a></li>
+        <li><a href="/validation/">Validation</a></li>
+        <li><a href="/news.html">News</a></li>
+        <li><a href="/community.html">Community</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" data-theme-toggle aria-label="Switch to dark mode">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/">Home</a><a href="/about.html">About</a><a href="/conformance.html">Conformance</a>
+    <a href="/certification.html">Certification</a><a href="/validation/">Validation</a>
+    <a href="/news.html">News</a><a href="/community.html">Community</a>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <p class="section-kicker">Certification framework</p>
+      <h1>Three tiers. Progressive trust.</h1>
+      <p>L1 through L3 define escalating levels of evidence, oversight, and auditability. All tiers require passing all five CTS tests. Tiers differ in evidence depth and verification method.</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div class="tiers-grid">
+
+        <div class="tier-card l1">
+          <div class="tier-badge">L1</div>
+          <h3>Baseline</h3>
+          <p>Self-attestation. Internal QA. Entry point for organizations demonstrating disclosure compliance with minimal operational overhead.</p>
+          <ul>
+            <li>Signed self-attestation declaration</li>
+            <li>Internal QA documentation (script, logs)</li>
+            <li>All 5 CTS tests must pass</li>
+            <li>No external review required</li>
+            <li>Valid until major system change</li>
+          </ul>
+        </div>
+
+        <div class="tier-card l2">
+          <div class="tier-badge">L2</div>
+          <h3>Operational</h3>
+          <p>Production evidence reviewed. 30+ days of live call data demonstrating conformance. DFR must be below 2%.</p>
+          <ul>
+            <li>30+ days of production call records</li>
+            <li>DFR &lt; 2% (Disclosure Failure Rate)</li>
+            <li>Evidence package review by NHID-Clinical</li>
+            <li>Audio sample review (optional but recommended)</li>
+            <li>Annual renewal</li>
+          </ul>
+        </div>
+
+        <div class="tier-card l3">
+          <div class="tier-badge">L3</div>
+          <h3>Enterprise</h3>
+          <p>Independent auditor. Continuous monitoring. Registry listing. Designed for large-scale deployments requiring the highest trust assurance.</p>
+          <ul>
+            <li>Independent third-party auditor</li>
+            <li>Continuous monitoring evidence</li>
+            <li>Public registry listing (v1.4+)</li>
+            <li>Annual renewal with audit</li>
+            <li>L3 pilot contact required</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" style="background:var(--bg-2)">
+    <div class="container">
+      <p class="section-kicker">How it works</p>
+      <h2 class="section-title">Certification process</h2>
+      <div class="cards-grid" style="margin-top:2rem">
+        <div class="card">
+          <div class="card-icon" style="font-size:1.5rem">1</div>
+          <h3>Request validation</h3>
+          <p>Submit your system description and target tier through the validation request form. First validations are offered at no cost.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.5rem">2</div>
+          <h3>Receive CTS</h3>
+          <p>We send the conformance test suite within 3 business days. You run the tests against your system and compile the evidence package.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.5rem">3</div>
+          <h3>Submit evidence</h3>
+          <p>Submit your evidence package (call logs, transcripts, audio samples depending on tier). We review and confirm pass/fail on each test.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.5rem">4</div>
+          <h3>Receive badge</h3>
+          <p>On confirmation, you receive your certification badge for use in product documentation, marketing, and payer agreements.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.5rem">5</div>
+          <h3>Maintain compliance</h3>
+          <p>L1: re-certify on major system changes. L2/L3: annual renewal with updated evidence. L3 requires annual third-party audit.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.5rem">6</div>
+          <h3>Registry listing (v1.4+)</h3>
+          <p>L3 certified organizations will be listed in the public NHID-Clinical registry for payer verification. Planned for v1.4+.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <p class="section-kicker">Scope &amp; limitations</p>
+      <h2 class="section-title">What certification covers</h2>
+      <p class="section-desc">Certification confirms that the tested system configuration passed all CTS tests during the evidence period. It does not:</p>
+      <ul style="list-style:disc;padding-left:1.5rem;color:var(--text-muted);margin-top:1rem;line-height:1.9;max-width:60ch">
+        <li>Guarantee ongoing compliance after the evidence period</li>
+        <li>Cover workflows not described in the system submission</li>
+        <li>Create legal obligations or extend HIPAA scope</li>
+        <li>Replace BAA agreements between parties</li>
+        <li>Certify third-party vendors used by the certified system</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <p class="section-kicker">Start today</p>
+      <h2>Apply for pilot validation.</h2>
+      <p>First validations are offered at no cost. Select your target tier and we'll guide you through the process.</p>
+      <div class="btn-group" style="justify-content:center">
+        <a class="btn-primary" href="/validation/">Request Validation →</a>
+        <a class="btn-secondary" href="/conformance.html">View CTS Tests</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-mark" aria-hidden="true">NH</div>
+        <span style="font-weight:700;color:var(--text)">NHID-Clinical</span>
+        <span class="badge badge-blue" style="margin-left:.5rem">v1.3</span>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
+        <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+        <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      </div>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard · NHID-Clinical v1.3 · CC-BY 4.0</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>

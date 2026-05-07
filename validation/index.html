@@ -1,228 +1,182 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NHID-Clinical Pilot Validation Program</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @keyframes gradientShift {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .animated-gradient {
-      background: linear-gradient(135deg, #1d4ed8, #1e40af, #172554, #1e3a8a, #1d4ed8);
-      background-size: 300% 300%;
-      animation: gradientShift 8s ease infinite;
-    }
-    .card-glow-blue:hover   { box-shadow: 0 20px 60px -10px rgba(37,99,235,0.25); }
-    .card-glow-teal:hover   { box-shadow: 0 20px 60px -10px rgba(20,184,166,0.25); }
-    .card-glow-indigo:hover { box-shadow: 0 20px 60px -10px rgba(99,102,241,0.25); }
-    @keyframes pulse-ring {
-      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-      70%  { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
-      100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
-    }
-    .btn-pulse { animation: pulse-ring 2.5s ease-out infinite; }
-  </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Pilot Validation Program — first validations at no cost for AI voice agent platforms in healthcare."/>
+  <title>Pilot Validation | NHID-Clinical</title>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
 </head>
-<body class="bg-slate-50 text-gray-800 antialiased">
+<body>
 
-  <!-- Header -->
-  <header class="animated-gradient text-white">
-    <div class="max-w-5xl mx-auto px-6 py-20 text-center">
-      <p class="text-blue-300 text-xs font-semibold tracking-widest uppercase mb-4">NHID-Clinical v1.3</p>
-      <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-4 drop-shadow-lg">Pilot Validation Program</h1>
-      <p class="text-blue-200 text-lg max-w-xl mx-auto leading-relaxed">Conformance testing for AI voice agent disclosure compliance in B2B healthcare workflows.</p>
-      <div class="mt-4 w-16 h-0.5 bg-blue-400/50 mx-auto rounded-full"></div>
-      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-        <a href="request.html" class="btn-pulse inline-block bg-white text-blue-800 font-bold px-10 py-4 rounded-lg shadow-xl hover:bg-blue-50 hover:shadow-2xl transition-all duration-300">Request Validation</a>
-        <a href="https://nhid-clinical.org/" class="inline-block border border-blue-400 text-blue-100 font-semibold px-8 py-4 rounded-lg hover:border-white hover:text-white hover:bg-white/10 transition-all duration-300">View Full Spec →</a>
-      </div>
-    </div>
-  </header>
-
-  <!-- Nav breadcrumb -->
-  <div class="border-b border-gray-200 bg-white shadow-sm">
-    <div class="max-w-5xl mx-auto px-6 py-3 flex gap-4 text-sm text-gray-500">
-      <a href="https://nhid-clinical.org/" class="hover:text-blue-600 transition-colors">Spec</a>
-      <span class="text-gray-300">/</span>
-      <span class="text-gray-800 font-medium">Validation Program</span>
-      <a href="https://github.com/thankcheeses/NHID-Clinical" class="ml-auto hover:text-blue-600 transition-colors">GitHub ↗</a>
+<header class="site-header">
+  <div class="container nav-container">
+    <a href="/" class="logo" aria-label="NHID-Clinical home">
+      <div class="logo-mark" aria-hidden="true">NH</div>
+      <span class="logo-text">NHID-Clinical</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/conformance.html">Conformance</a></li>
+        <li><a href="/certification.html">Certification</a></li>
+        <li><a href="/validation/">Validation</a></li>
+        <li><a href="/news.html">News</a></li>
+        <li><a href="/community.html">Community</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" data-theme-toggle aria-label="Switch to dark mode">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
     </div>
   </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/">Home</a><a href="/about.html">About</a><a href="/conformance.html">Conformance</a>
+    <a href="/certification.html">Certification</a><a href="/validation/">Validation</a>
+    <a href="/news.html">News</a><a href="/community.html">Community</a>
+  </div>
+</header>
 
-  <main class="max-w-5xl mx-auto px-6 py-14 space-y-10">
-
-    <!-- Why Validate -->
-    <div class="bg-white rounded-2xl shadow-xl border-l-4 border-blue-500 border border-gray-100 p-8 transition-all duration-300 hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-blue-700 mb-3">Why Validate?</h2>
-      <p class="text-gray-600 mb-6">NHID-Clinical establishes the operational standard for AI voice agent identity disclosure in B2B healthcare workflows. Validation demonstrates your commitment to transparent, compliant AI deployment.</p>
-      <p class="font-semibold text-gray-700 mb-4">Benefits of validation:</p>
-      <ul class="space-y-2">
-        <li class="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
-          <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">✓</span>
-          <span class="text-gray-600">Differentiate your product in payer procurement processes</span>
-        </li>
-        <li class="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
-          <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">✓</span>
-          <span class="text-gray-600">Demonstrate HIPAA-adjacent compliance readiness</span>
-        </li>
-        <li class="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
-          <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">✓</span>
-          <span class="text-gray-600">Build trust with healthcare providers and payers</span>
-        </li>
-        <li class="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
-          <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">✓</span>
-          <span class="text-gray-600">Align with emerging state disclosure requirements (CA AB 3030, TX TRAIGA, CO AI Act)</span>
-        </li>
-      </ul>
-    </div>
-
-    <!-- How Validation Works -->
-    <div class="bg-white rounded-2xl shadow-xl border-l-4 border-teal-500 border border-gray-100 p-8 transition-all duration-300 hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-blue-700 mb-3">How Validation Works</h2>
-      <p class="text-gray-500 text-sm mb-6">Simple, transparent process.</p>
-      <ol class="space-y-5">
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm flex items-center justify-center shadow-sm">1</span>
-          <div>
-            <p class="font-semibold text-gray-900">Submit Request</p>
-            <p class="text-gray-500 text-sm mt-0.5">Complete the request form with your system details and target validation level.</p>
-          </div>
-        </li>
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm flex items-center justify-center shadow-sm">2</span>
-          <div>
-            <p class="font-semibold text-gray-900">Receive Test Suite</p>
-            <p class="text-gray-500 text-sm mt-0.5">We send you the NHID-Clinical Conformance Test Suite (CTS) with 5 binary pass/fail tests.</p>
-          </div>
-        </li>
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm flex items-center justify-center shadow-sm">3</span>
-          <div>
-            <p class="font-semibold text-gray-900">Execute Tests</p>
-            <p class="text-gray-500 text-sm mt-0.5">Run the tests internally with your QA team (L1) or against production traffic (L2/L3).</p>
-          </div>
-        </li>
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm flex items-center justify-center shadow-sm">4</span>
-          <div>
-            <p class="font-semibold text-gray-900">Submit Evidence</p>
-            <p class="text-gray-500 text-sm mt-0.5">Provide your evidence package based on target tier:</p>
-            <ul class="mt-2 space-y-1 text-sm text-gray-500">
-              <li class="flex items-start gap-2"><span class="text-blue-400 font-bold mt-0.5">·</span><span><strong class="text-gray-700">L1:</strong> Test results + signed attestation</span></li>
-              <li class="flex items-start gap-2"><span class="text-teal-400 font-bold mt-0.5">·</span><span><strong class="text-gray-700">L2:</strong> L1 evidence + 30 days production logs + DFR &lt; 2%</span></li>
-              <li class="flex items-start gap-2"><span class="text-indigo-400 font-bold mt-0.5">·</span><span><strong class="text-gray-700">L3:</strong> L2 evidence + third-party auditor attestation</span></li>
-            </ul>
-          </div>
-        </li>
-        <li class="flex items-start gap-4">
-          <span class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm flex items-center justify-center shadow-sm">5</span>
-          <div>
-            <p class="font-semibold text-gray-900">Receive Badge</p>
-            <p class="text-gray-500 text-sm mt-0.5">Upon verification, receive your validation badge and certification code to display in your product documentation.</p>
-          </div>
-        </li>
-      </ol>
-      <div class="mt-8 pt-5 border-t border-gray-100 flex flex-col sm:flex-row gap-3 text-sm text-gray-500">
-        <span>⏱ <strong class="text-gray-700">Timeline:</strong> L1 typically 1–2 weeks. L2/L3 depends on evidence collection.</span>
-        <span class="sm:ml-auto flex flex-col sm:flex-row gap-2 text-right">
-          <a href="mailto:help@nhid-clinical.org" class="text-blue-600 hover:underline">General questions: help@nhid-clinical.org</a>
-          <span class="hidden sm:inline text-gray-300">·</span>
-          <a href="mailto:validation@nhid-clinical.org" class="text-blue-600 hover:underline">Validation: validation@nhid-clinical.org</a>
-        </span>
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <p class="hero-eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Now open · May 2026</p>
+      <h1>Pilot Validation Program</h1>
+      <p>First validations offered at no cost for AI voice agent platforms in healthcare. We'll review your system and send the conformance test within 3 business days.</p>
+      <div class="btn-group" style="margin-top:1.25rem">
+        <a class="btn-primary" href="request.html">Request Validation →</a>
+        <a class="btn-secondary" href="/conformance.html">View CTS Tests</a>
       </div>
     </div>
+  </section>
 
-    <!-- Validation Levels -->
-    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 transition-all duration-300 hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-blue-700 mb-2">Validation Levels</h2>
-      <p class="text-gray-500 text-sm mb-8">Three progressive conformance tiers. Each builds on the last.</p>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <!-- L1 -->
-        <div class="card-glow-blue group relative bg-white border-t-4 border-blue-500 border border-gray-200 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
-          <div class="p-6">
-            <span class="inline-block text-xs font-bold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-3">L1</span>
-            <h3 class="text-lg font-bold text-gray-900 mb-1">Baseline</h3>
-            <img src="../assets/badges/L1-baseline.png" alt="L1 Baseline Badge" class="w-36 h-36 mx-auto my-5 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"/>
-            <p class="text-gray-500 text-sm mb-4">Core disclosure controls for early-stage implementations</p>
-            <ul class="space-y-2 text-sm text-gray-600">
-              <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">✓</span>Identity disclosure before data request</li>
-              <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">✓</span>Organization and purpose identification</li>
-              <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">✓</span>Basic escalation path</li>
-            </ul>
-          </div>
+  <section class="content-section">
+    <div class="container">
+      <p class="section-kicker">Why validate?</p>
+      <h2 class="section-title">What validation gives you</h2>
+      <div class="cards-grid" style="margin-top:2rem">
+        <div class="card">
+          <div class="card-icon" aria-hidden="true">✓</div>
+          <h3>Payer acceptance</h3>
+          <p>Give payer operations teams a standard they can accept. Certified AI callers bypass "are you human?" challenge cycles.</p>
         </div>
-
-        <!-- L2 -->
-        <div class="card-glow-teal group relative bg-white border-t-4 border-teal-500 border border-gray-200 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
-          <div class="p-6">
-            <span class="inline-block text-xs font-bold tracking-widest uppercase text-teal-700 bg-teal-50 px-3 py-1 rounded-full mb-3">L2</span>
-            <h3 class="text-lg font-bold text-gray-900 mb-1">Operational</h3>
-            <img src="../assets/badges/L2-operational.png" alt="L2 Operational Badge" class="w-36 h-36 mx-auto my-5 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"/>
-            <p class="text-gray-500 text-sm mb-4">Production-ready disclosure with audit trails</p>
-            <ul class="space-y-2 text-sm text-gray-600">
-              <li class="flex items-start gap-2"><span class="text-teal-500 font-bold mt-0.5">✓</span>All L1 controls</li>
-              <li class="flex items-start gap-2"><span class="text-teal-500 font-bold mt-0.5">✓</span>Pre-data exchange gate enforcement</li>
-              <li class="flex items-start gap-2"><span class="text-teal-500 font-bold mt-0.5">✓</span>Turing boundary prohibition</li>
-              <li class="flex items-start gap-2"><span class="text-teal-500 font-bold mt-0.5">✓</span>Audit log timestamps</li>
-            </ul>
-          </div>
+        <div class="card">
+          <div class="card-icon" aria-hidden="true">🔖</div>
+          <h3>Certification badge</h3>
+          <p>Display L1/L2/L3 certification in product documentation, marketing, and payer agreements to signal compliance.</p>
         </div>
-
-        <!-- L3 -->
-        <div class="card-glow-indigo group relative bg-white border-t-4 border-indigo-500 border border-gray-200 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
-          <div class="p-6">
-            <span class="inline-block text-xs font-bold tracking-widest uppercase text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full mb-3">L3</span>
-            <h3 class="text-lg font-bold text-gray-900 mb-1">Enterprise</h3>
-            <img src="../assets/badges/L3-enterprise.png" alt="L3 Enterprise Badge" class="w-36 h-36 mx-auto my-5 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"/>
-            <p class="text-gray-500 text-sm mb-4">Enterprise-grade compliance with advanced controls</p>
-            <ul class="space-y-2 text-sm text-gray-600">
-              <li class="flex items-start gap-2"><span class="text-indigo-500 font-bold mt-0.5">✓</span>All L2 controls</li>
-              <li class="flex items-start gap-2"><span class="text-indigo-500 font-bold mt-0.5">✓</span>Bot-to-bot deadlock handling</li>
-              <li class="flex items-start gap-2"><span class="text-indigo-500 font-bold mt-0.5">✓</span>IVR resilience mechanisms</li>
-              <li class="flex items-start gap-2"><span class="text-indigo-500 font-bold mt-0.5">✓</span>SIP header identity layer</li>
-            </ul>
-          </div>
+        <div class="card">
+          <div class="card-icon" aria-hidden="true">📋</div>
+          <h3>Audit readiness</h3>
+          <p>Structured evidence package aligned with FHIR AuditEvent patterns. Ready for HIPAA-adjacent audit review.</p>
         </div>
-
       </div>
     </div>
+  </section>
 
-    <!-- Validated Implementations -->
-    <div class="bg-white rounded-2xl shadow-xl border-l-4 border-gray-300 border border-gray-100 p-8 transition-all duration-300 hover:shadow-2xl">
-      <h2 class="text-2xl font-bold text-blue-700 text-center mb-6">Validated Implementations</h2>
-      <div class="border-2 border-dashed border-gray-200 rounded-xl py-16 px-8 text-center bg-blue-50/30">
-        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-          <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  <section class="content-section" style="background:var(--bg-2)">
+    <div class="container">
+      <p class="section-kicker">Process</p>
+      <h2 class="section-title">How validation works</h2>
+      <div class="cards-grid" style="margin-top:2rem">
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">1</div>
+          <h3>Submit request</h3>
+          <p>Fill out the validation request form with your company name, contact, target tier, and a brief description of your AI voice agent system.</p>
         </div>
-        <p class="text-gray-700 font-semibold text-lg mb-1">Validation program launched May 2026</p>
-        <p class="text-gray-400 text-sm">Be among the first AI voice agent platforms to complete NHID-Clinical validation</p>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">2</div>
+          <h3>Receive CTS</h3>
+          <p>Within 3 business days, we send you the Conformance Test Suite and evidence requirements for your target tier.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">3</div>
+          <h3>Run tests</h3>
+          <p>Execute the five CTS tests (IDG-01 through ATR-01) against your system. Compile your evidence package per tier requirements.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">4</div>
+          <h3>Submit evidence</h3>
+          <p>Send your evidence package for review. We confirm pass/fail on each test and issue your certification.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">5</div>
+          <h3>Receive badge</h3>
+          <p>On confirmation, receive your L1/L2/L3 certification badge for use in documentation and payer agreements.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="font-size:1.4rem">→</div>
+          <h3>Timeline</h3>
+          <p>L1: typically 1–2 weeks. L2/L3 depends on evidence collection and review complexity.</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- CTA -->
-    <div class="animated-gradient rounded-2xl shadow-2xl p-14 text-center text-white">
-      <h2 class="text-3xl font-bold mb-3 drop-shadow-md">Ready to Validate?</h2>
-      <p class="text-blue-200 mb-8 text-sm">First pilot validations offered at no cost.</p>
-      <a href="request.html" class="btn-pulse inline-block bg-white text-blue-800 font-bold px-10 py-4 rounded-lg shadow-xl hover:bg-blue-50 hover:shadow-2xl transition-all duration-300">Request Validation</a>
+  <section class="content-section">
+    <div class="container">
+      <p class="section-kicker">Validation tiers</p>
+      <h2 class="section-title">Choose your target tier</h2>
+      <div class="tiers-grid" style="margin-top:2rem">
+        <div class="tier-card l1">
+          <div class="tier-badge">L1</div>
+          <h3>Baseline</h3>
+          <p>Self-attestation. Internal QA. Best starting point for most organizations.</p>
+          <ul><li>Signed declaration</li><li>Script documentation</li><li>Call logs with timestamps</li></ul>
+        </div>
+        <div class="tier-card l2">
+          <div class="tier-badge">L2</div>
+          <h3>Operational</h3>
+          <p>30+ days production evidence. DFR &lt; 2%. Evidence review by NHID-Clinical.</p>
+          <ul><li>Production call records</li><li>DFR calculation</li><li>Evidence package review</li></ul>
+        </div>
+        <div class="tier-card l3">
+          <div class="tier-badge">L3</div>
+          <h3>Enterprise</h3>
+          <p>Independent auditor. Continuous monitoring. Contact us before applying.</p>
+          <ul><li>Third-party audit</li><li>Continuous monitoring</li><li>Annual renewal</li></ul>
+        </div>
+      </div>
     </div>
+  </section>
 
-  </main>
+  <section class="cta-section">
+    <div class="container">
+      <p class="section-kicker">Ready to start?</p>
+      <h2>Request your validation today.</h2>
+      <p>First validations are offered at no cost. Questions? Email us before submitting.</p>
+      <div class="btn-group" style="justify-content:center">
+        <a class="btn-primary" href="request.html">Request Validation →</a>
+        <a class="btn-secondary" href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+      </div>
+    </div>
+  </section>
+</main>
 
-  <footer class="border-t border-gray-200 mt-8 py-8 text-center text-sm text-gray-400">
-    <p>&copy; 2026 Brianna Baynard | NHID-Clinical v1.3</p>
-    <p class="mt-1"><a href="https://nhid-clinical.org/" class="text-blue-500 hover:underline">View Full Specification</a></p>
-    <p class="mt-1">
-      <a href="mailto:help@nhid-clinical.org" class="text-blue-500 hover:underline">help@nhid-clinical.org</a>
-      <span class="mx-2 text-gray-300">·</span>
-      <a href="mailto:validation@nhid-clinical.org" class="text-blue-500 hover:underline">validation@nhid-clinical.org</a>
-    </p>
-  </footer>
+<footer id="contact" class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-mark" aria-hidden="true">NH</div>
+        <span style="font-weight:700;color:var(--text)">NHID-Clinical</span>
+        <span class="badge badge-blue" style="margin-left:.5rem">v1.3</span>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
+        <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+        <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      </div>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard · NHID-Clinical v1.3 · CC-BY 4.0</p>
+  </div>
+</footer>
 
+<script src="/site.js"></script>
 </body>
 </html>
