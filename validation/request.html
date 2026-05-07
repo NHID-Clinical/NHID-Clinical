@@ -5,131 +5,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="description" content="Request NHID-Clinical pilot validation for a healthcare AI voice agent system."/>
   <title>Request Validation | NHID-Clinical</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
 </head>
 <body>
 
 <header class="site-header">
-  <div class="container nav-container">
-    <a href="/" class="logo" aria-label="NHID-Clinical home">
-      <div class="logo-mark" aria-hidden="true">NH</div>
-      <span class="logo-text">NHID-Clinical</span>
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+          <path d="m9 12 2 2 4-5"/>
+        </svg>
+        <span class="brand-wave"><span></span><span></span><span></span></span>
+      </span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
     </a>
-    <nav aria-label="Main navigation">
-      <ul class="nav-links">
-        <li><a href="/">Home</a></li>
-        <li><a href="/about.html">About</a></li>
-        <li><a href="/conformance.html">Conformance</a></li>
-        <li><a href="/specs/">Download</a></li>
-        <li><a href="/certification.html">Certification</a></li>
-        <li><a href="/validation/">Validation</a></li>
-        <li><a href="/news.html">News</a></li>
-        <li><a href="/community.html">Community</a></li>
-      </ul>
-    </nav>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/conformance.html">Conformance</a>
+      <a href="/#download">Download</a>
+      <a href="/certification.html">Certification</a>
+      <a href="/validation.html">Validation</a>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+    </div>
     <div class="nav-actions">
-      <button class="icon-btn" data-theme-toggle aria-label="Switch to dark mode">
-        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-      <button class="icon-btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <a class="primary-pill" href="/validation.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-site-menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
-  </div>
-  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+  </nav>
+</header>
+
+<div class="mobile-menu-panel" id="mobile-site-menu" hidden>
+  <div class="mobile-menu-backdrop" data-menu-close></div>
+  <nav class="mobile-menu-card" aria-label="Mobile navigation">
+    <div class="mobile-menu-header">
+      <strong>NHID-Clinical</strong>
+      <button class="icon-button mobile-menu-close" type="button" aria-label="Close menu" data-menu-close>&times;</button>
+    </div>
     <a href="/">Home</a>
     <a href="/about.html">About</a>
     <a href="/conformance.html">Conformance</a>
-    <a href="/specs/">Download</a>
+    <a href="/#download">Download</a>
     <a href="/certification.html">Certification</a>
-    <a href="/validation/">Validation</a>
+    <a href="/validation.html">Validation</a>
     <a href="/news.html">News</a>
     <a href="/community.html">Community</a>
-  </div>
-</header>
+  </nav>
+</div>
 
-<main>
-  <section class="page-hero">
-    <div class="container">
-      <p class="section-kicker">Pilot validation program</p>
-      <h1>Request Validation</h1>
-      <p>Share your system details and target tier. We'll review your request and follow up with next steps within 3 business days. First validations are offered at no cost.</p>
+<main id="main">
+  <section class="inner-hero">
+    <div class="container inner-hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/validation.html">Validation</a><span>/</span><span>Request</span></div>
+        <p class="eyebrow">Request validation</p>
+        <h1>Submit your AI voice agent for pilot validation.</h1>
+        <p class="lede">Share your system details and target validation level. The NHID-Clinical maintainer will review and follow up with next steps within 3 business days.</p>
+      </div>
+      <aside class="hero-summary-card">
+        <strong>Before you submit</strong>
+        <p>Review the conformance tests if you're unsure whether your platform is ready for L1 validation.</p>
+        <a class="outline-link" href="/conformance.html">Review tests →</a>
+      </aside>
     </div>
   </section>
 
-  <section class="form-section">
+  <section class="page-section">
     <div class="container">
-      <div class="request-layout" style="display:grid;grid-template-columns:1fr 340px;gap:4rem;align-items:start">
+      <div style="display:grid;grid-template-columns:1fr 300px;gap:3rem;align-items:start">
 
-        <div class="form-wrap" style="max-width:none">
-          <form id="validationForm" action="https://formspree.io/f/mbdwrbwg" method="POST">
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
-              <div class="form-group">
-                <label for="company">Company Name <span aria-hidden="true">*</span></label>
-                <input type="text" id="company" name="company" required placeholder="Acme Health AI"/>
-              </div>
-              <div class="form-group">
-                <label for="name">Contact Name <span aria-hidden="true">*</span></label>
-                <input type="text" id="name" name="name" required placeholder="Jane Smith"/>
-              </div>
-            </div>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
-              <div class="form-group">
-                <label for="email">Contact Email <span aria-hidden="true">*</span></label>
-                <input type="email" id="email" name="email" required placeholder="jane@example.com"/>
-              </div>
-              <div class="form-group">
-                <label for="tier">Target Validation Level <span aria-hidden="true">*</span></label>
-                <select id="tier" name="tier" required>
-                  <option value="">Select a tier…</option>
-                  <option value="L1">L1 Baseline — self-attestation</option>
-                  <option value="L2">L2 Operational — production evidence</option>
-                  <option value="L3">L3 Enterprise — independent audit</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="description">Brief description of your AI voice agent system <span aria-hidden="true">*</span></label>
-              <textarea id="description" name="description" rows="5" required placeholder="What does your system do? What healthcare administrative workflows does it handle?"></textarea>
-              <span class="field-hint">Describe the call types, payer workflows, and any identity disclosure mechanisms already in place.</span>
-            </div>
-
-            <div class="form-group">
-              <label for="notes">Additional notes</label>
-              <textarea id="notes" name="notes" rows="4" placeholder="Anything else that would help with the validation review."></textarea>
-            </div>
-
-            <div class="btn-group" style="margin-top:.5rem">
-              <button class="btn-primary" type="submit">Submit Request →</button>
-              <a class="btn-secondary" href="/validation/">Back to Validation</a>
-            </div>
-
-          </form>
-        </div>
-
-        <aside>
-          <div class="card" style="margin-bottom:1.25rem">
-            <h3>Before you submit</h3>
-            <p>Review the five CTS conformance tests to confirm your system is ready for validation at your target tier.</p>
-            <a class="card-link" href="/conformance.html">View CTS tests →</a>
+        <form id="validationForm" class="form-card form-grid" action="https://formspree.io/f/mbdwrbwg" method="POST">
+          <div class="field">
+            <label for="company">Company Name *</label>
+            <input type="text" id="company" name="company" required placeholder="Acme Health AI"/>
           </div>
-          <div class="card" style="margin-bottom:1.25rem">
-            <h3>Tier guidance</h3>
-            <p><strong>L1</strong> — self-attestation, internal logs. Good starting point for most.</p>
-            <p style="margin-top:.5rem"><strong>L2</strong> — 30+ days production records, DFR &lt; 2%.</p>
-            <p style="margin-top:.5rem"><strong>L3</strong> — independent auditor required. Contact us first.</p>
-            <a class="card-link" href="/certification.html">Compare tiers →</a>
+          <div class="field">
+            <label for="name">Contact Name *</label>
+            <input type="text" id="name" name="name" required placeholder="Jane Smith"/>
           </div>
-          <div class="card">
+          <div class="field">
+            <label for="email">Contact Email *</label>
+            <input type="email" id="email" name="email" required placeholder="jane@example.com"/>
+          </div>
+          <div class="field">
+            <label for="tier">Target Validation Level *</label>
+            <select id="tier" name="tier" required>
+              <option value="">Select a tier…</option>
+              <option value="L1">L1 Baseline — self-attestation</option>
+              <option value="L2">L2 Operational — production evidence</option>
+              <option value="L3">L3 Enterprise — independent audit</option>
+            </select>
+          </div>
+          <div class="field full-width">
+            <label for="description">Brief description of your AI voice agent system *</label>
+            <textarea id="description" name="description" rows="5" required placeholder="What does your system do? What healthcare administrative workflows does it handle?"></textarea>
+            <span class="field-hint">Describe the call types, payer workflows, and any identity disclosure mechanisms already in place.</span>
+          </div>
+          <div class="field full-width">
+            <label for="notes">Additional notes</label>
+            <textarea id="notes" name="notes" rows="4" placeholder="Anything else that would help with the validation review."></textarea>
+          </div>
+          <div class="full-width" style="display:flex;gap:1rem;flex-wrap:wrap">
+            <button class="cta-button" type="submit" style="border:none;cursor:pointer">Submit request →</button>
+            <a class="secondary-button" href="/validation.html">Back to Validation</a>
+          </div>
+        </form>
+
+        <div style="display:flex;flex-direction:column;gap:1.25rem">
+          <div class="content-card">
+            <h3>L1 Baseline</h3>
+            <p>Self-attestation + internal logs. Good starting point for most organizations.</p>
+          </div>
+          <div class="content-card">
+            <h3>L2 Operational</h3>
+            <p>30+ days production records, DFR &lt; 2%, evidence package review.</p>
+          </div>
+          <div class="content-card">
+            <h3>L3 Enterprise</h3>
+            <p>Independent auditor required. <a href="mailto:validation@nhid-clinical.org" style="color:var(--blue);font-weight:600">Contact us first.</a></p>
+          </div>
+          <div class="content-card">
             <h3>Questions?</h3>
-            <p>Email us before submitting if you're unsure about tier requirements or evidence packaging.</p>
-            <a class="card-link" href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+            <p><a href="mailto:validation@nhid-clinical.org" style="color:var(--blue);font-weight:600">validation@nhid-clinical.org</a></p>
           </div>
-        </aside>
+        </div>
 
       </div>
     </div>
@@ -137,19 +147,12 @@
 </main>
 
 <footer id="contact" class="site-footer">
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="logo-mark" aria-hidden="true">NH</div>
-        <span>NHID-Clinical</span>
-        <span class="badge badge-blue" style="margin-left:.5rem">v1.3</span>
-      </div>
-      <div class="footer-links">
-        <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
-        <a href="https://nhid-clinical.org">nhid-clinical.org</a>
-      </div>
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0. Published NIST public comment: NIST-2025-0035-0026</p>
+    <div>
+      <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
     </div>
-    <p class="footer-copy">© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0. Published NIST public comment: NIST-2025-0035-0026 | validation@nhid-clinical.org | nhid-clinical.org</p>
   </div>
 </footer>
 

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Certification Framework — L1 Baseline, L2 Operational, and L3 Enterprise trust tiers with evidence requirements and badge system."/>
-  <title>Certification Framework | NHID-Clinical</title>
+  <meta name="description" content="NHID-Clinical Pilot Validation Program — first validations at no cost for AI voice agent platforms in healthcare."/>
+  <title>Pilot Validation | NHID-Clinical</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -38,7 +38,7 @@
       <a href="/community.html">Community</a>
     </div>
     <div class="nav-actions">
-      <a class="primary-pill" href="/validation.html">Get Involved</a>
+      <a class="primary-pill" href="/validation/request.html">Apply Now</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-site-menu">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -68,102 +68,108 @@
   <section class="inner-hero">
     <div class="container inner-hero-grid">
       <div>
-        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Certification</span></div>
-        <p class="eyebrow">Certification framework</p>
-        <h1>Three tiers. Progressive trust.</h1>
-        <p class="lede">L1 through L3 define escalating levels of evidence, oversight, and auditability. All tiers require passing all five CTS tests. Tiers differ in evidence depth and verification method.</p>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Validation</span></div>
+        <p class="eyebrow"><span class="status-dot"></span>Now open · May 2026</p>
+        <h1>Pilot Validation Program</h1>
+        <p class="lede">First validations offered at no cost for AI voice agent platforms in healthcare. We'll review your system and send the conformance test within 3 business days.</p>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem">
+          <a class="cta-button" href="/validation/request.html">Request Validation →</a>
+          <a class="secondary-button" href="/conformance.html">View CTS Tests</a>
+        </div>
       </div>
       <aside class="hero-summary-card">
-        <strong>All five CTS tests required</strong>
-        <p>IDG-01, PDX-01, DBC-01, EIT-01, and ATR-01 must all pass regardless of tier.</p>
-        <a class="outline-link" href="/conformance.html">View CTS tests →</a>
+        <strong>Before you submit</strong>
+        <p>Review the conformance tests if you're unsure whether your platform is ready for L1 validation.</p>
+        <a class="outline-link" href="/conformance.html">Review tests →</a>
       </aside>
     </div>
   </section>
 
   <section class="page-section">
     <div class="container">
-      <p class="section-kicker">Certification tiers</p>
-      <h2>Choose your level</h2>
-      <div class="cert-tiers">
-
-        <div class="cert-card">
-          <div class="cert-label">L1</div>
-          <h3>Baseline</h3>
-          <p>Self-attestation. Internal QA. Entry point for organizations demonstrating disclosure compliance with minimal operational overhead.</p>
-          <ul>
-            <li>Signed self-attestation declaration</li>
-            <li>Internal QA documentation (script, logs)</li>
-            <li>All 5 CTS tests must pass</li>
-            <li>No external review required</li>
-            <li>Valid until major system change</li>
-          </ul>
+      <p class="section-kicker">Why validate?</p>
+      <h2>What validation gives you</h2>
+      <div class="content-cards" style="margin-top:2rem">
+        <div class="content-card">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">✓</div>
+          <h3>Payer acceptance</h3>
+          <p>Give payer operations teams a standard they can accept. Certified AI callers bypass "are you human?" challenge cycles.</p>
         </div>
-
-        <div class="cert-card">
-          <div class="cert-label">L2</div>
-          <h3>Operational</h3>
-          <p>Production evidence reviewed. 30+ days of live call data demonstrating conformance. DFR must be below 2%.</p>
-          <ul>
-            <li>30+ days of production call records</li>
-            <li>DFR &lt; 2% (Disclosure Failure Rate)</li>
-            <li>Evidence package review by NHID-Clinical</li>
-            <li>Audio sample review (optional but recommended)</li>
-            <li>Annual renewal</li>
-          </ul>
+        <div class="content-card">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">🔖</div>
+          <h3>Certification badge</h3>
+          <p>Display L1/L2/L3 certification in product documentation, marketing, and payer agreements to signal compliance.</p>
         </div>
-
-        <div class="cert-card">
-          <div class="cert-label">L3</div>
-          <h3>Enterprise</h3>
-          <p>Independent auditor. Continuous monitoring. Registry listing. Designed for large-scale deployments requiring the highest trust assurance.</p>
-          <ul>
-            <li>Independent third-party auditor</li>
-            <li>Continuous monitoring evidence</li>
-            <li>Public registry listing (v1.4+)</li>
-            <li>Annual renewal with audit</li>
-            <li>L3 pilot contact required</li>
-          </ul>
+        <div class="content-card">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">📋</div>
+          <h3>Audit readiness</h3>
+          <p>Structured evidence package aligned with FHIR AuditEvent patterns. Ready for HIPAA-adjacent audit review.</p>
         </div>
-
       </div>
     </div>
   </section>
 
   <section class="page-section-alt">
     <div class="container">
-      <p class="section-kicker">How it works</p>
-      <h2>Certification process</h2>
+      <p class="section-kicker">Process</p>
+      <h2>How validation works</h2>
       <div class="content-cards" style="margin-top:2rem">
         <div class="content-card">
           <div style="font-family:var(--display);font-size:1.5rem;color:var(--blue);font-weight:700;margin-bottom:.5rem">1</div>
-          <h3>Request validation</h3>
-          <p>Submit your system description and target tier through the validation request form. First validations are offered at no cost.</p>
+          <h3>Submit request</h3>
+          <p>Fill out the validation request form with your company name, contact, target tier, and a brief system description.</p>
         </div>
         <div class="content-card">
           <div style="font-family:var(--display);font-size:1.5rem;color:var(--blue);font-weight:700;margin-bottom:.5rem">2</div>
           <h3>Receive CTS</h3>
-          <p>We send the conformance test suite within 3 business days. You run the tests against your system and compile the evidence package.</p>
+          <p>Within 3 business days, we send you the Conformance Test Suite and evidence requirements for your target tier.</p>
         </div>
         <div class="content-card">
           <div style="font-family:var(--display);font-size:1.5rem;color:var(--blue);font-weight:700;margin-bottom:.5rem">3</div>
-          <h3>Submit evidence</h3>
-          <p>Submit your evidence package (call logs, transcripts, audio samples depending on tier). We review and confirm pass/fail on each test.</p>
+          <h3>Run tests</h3>
+          <p>Execute the five CTS tests (IDG-01 through ATR-01) against your system and compile your evidence package.</p>
         </div>
         <div class="content-card">
           <div style="font-family:var(--display);font-size:1.5rem;color:var(--blue);font-weight:700;margin-bottom:.5rem">4</div>
-          <h3>Receive badge</h3>
-          <p>On confirmation, you receive your certification badge for use in product documentation, marketing, and payer agreements.</p>
+          <h3>Submit evidence</h3>
+          <p>Send your evidence package for review. We confirm pass/fail on each test and issue your certification.</p>
         </div>
         <div class="content-card">
           <div style="font-family:var(--display);font-size:1.5rem;color:var(--blue);font-weight:700;margin-bottom:.5rem">5</div>
-          <h3>Maintain compliance</h3>
-          <p>L1: re-certify on major system changes. L2/L3: annual renewal with updated evidence. L3 requires annual third-party audit.</p>
+          <h3>Receive badge</h3>
+          <p>On confirmation, receive your L1/L2/L3 certification badge for use in documentation and payer agreements.</p>
         </div>
         <div class="content-card">
           <div style="font-family:var(--display);font-size:1.5rem;color:var(--blue);font-weight:700;margin-bottom:.5rem">→</div>
-          <h3>Registry listing (v1.4+)</h3>
-          <p>L3 certified organizations will be listed in the public NHID-Clinical registry for payer verification. Planned for v1.4+.</p>
+          <h3>Timeline</h3>
+          <p>L1: typically 1–2 weeks. L2/L3 depends on evidence collection and review complexity.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">Validation tiers</p>
+      <h2>Choose your target tier</h2>
+      <div class="cert-tiers">
+        <div class="cert-card">
+          <div class="cert-label">L1</div>
+          <h3>Baseline</h3>
+          <p>Self-attestation. Internal QA. Best starting point for most organizations.</p>
+          <ul><li>Signed declaration</li><li>Script documentation</li><li>Call logs with timestamps</li></ul>
+        </div>
+        <div class="cert-card">
+          <div class="cert-label">L2</div>
+          <h3>Operational</h3>
+          <p>30+ days production evidence. DFR &lt; 2%. Evidence review by NHID-Clinical.</p>
+          <ul><li>Production call records</li><li>DFR calculation</li><li>Evidence package review</li></ul>
+        </div>
+        <div class="cert-card">
+          <div class="cert-label">L3</div>
+          <h3>Enterprise</h3>
+          <p>Independent auditor. Continuous monitoring. Contact us before applying.</p>
+          <ul><li>Third-party audit</li><li>Continuous monitoring</li><li>Annual renewal</li></ul>
         </div>
       </div>
     </div>
@@ -172,11 +178,11 @@
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Start today</p>
-        <h2>Apply for pilot validation.</h2>
-        <p>First validations are offered at no cost. Select your target tier and we'll guide you through the process.</p>
+        <p class="section-kicker">Ready to start?</p>
+        <h2>Request your validation today.</h2>
+        <p>First validations are offered at no cost. Questions? Email us before submitting.</p>
       </div>
-      <a class="closing-button" href="/validation.html">Request Validation →</a>
+      <a class="closing-button" href="/validation/request.html">Apply Now →</a>
     </div>
   </section>
 </main>
