@@ -163,7 +163,8 @@ Therefore:
 **v1.0 Status:** Conceptual framework
 **Future Work:** Registry architecture, JWT implementation, real-time revocation protocols
 
-For pilot implementations, contact: validation@nhid-clinical.org
+For pilot implementations, contact: [validation@nhid-clinical.org](mailto:validation@nhid-clinical.org)
+General questions: [help@nhid-clinical.org](mailto:help@nhid-clinical.org)
 
 ---
 
