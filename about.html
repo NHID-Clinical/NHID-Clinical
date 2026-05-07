@@ -20,7 +20,7 @@
         <li><a href="/">Home</a></li>
         <li><a href="/about.html">About</a></li>
         <li><a href="/conformance.html">Conformance</a></li>
-        <li><a href="/specs/">Download Spec</a></li>
+        <li><a href="/specs/">Download</a></li>
         <li><a href="/certification.html">Certification</a></li>
         <li><a href="/validation/">Validation</a></li>
         <li><a href="/news.html">News</a></li>
@@ -37,10 +37,15 @@
       </button>
     </div>
   </div>
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="/">Home</a><a href="/about.html">About</a><a href="/conformance.html">Conformance</a>
-    <a href="/certification.html">Certification</a><a href="/validation/">Validation</a>
-    <a href="/news.html">News</a><a href="/community.html">Community</a>
+  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <a href="/">Home</a>
+    <a href="/about.html">About</a>
+    <a href="/conformance.html">Conformance</a>
+    <a href="/specs/">Download</a>
+    <a href="/certification.html">Certification</a>
+    <a href="/validation/">Validation</a>
+    <a href="/news.html">News</a>
+    <a href="/community.html">Community</a>
   </div>
 </header>
 
@@ -75,12 +80,12 @@
           <a class="card-link" href="/conformance.html">View CTS tests →</a>
         </div>
         <div class="card">
-          <span class="badge" style="background:var(--teal);color:#fff;margin-bottom:.75rem;display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase">Layer 2 — Recommended</span>
+          <span class="badge badge-teal" style="margin-bottom:.75rem">Layer 2 — Recommended</span>
           <h3>Best practices</h3>
           <p>SHOULD/MAY guidance for authorization verification, audit logging recommendations, and escalation UX patterns. Not required for certification but encouraged.</p>
         </div>
         <div class="card">
-          <span class="badge" style="background:var(--bg-3);color:var(--text-muted);margin-bottom:.75rem;display:inline-block;padding:.2rem .6rem;border-radius:999px;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase">Layer 3 — Informative</span>
+          <span class="badge badge-gray" style="margin-bottom:.75rem">Layer 3 — Informative</span>
           <h3>Future scope</h3>
           <p>FHIR technical mapping, badge schema, NHID-Auth companion spec, registry architecture (v1.4+), and JWT handshake implementation. Not required for v1.3 conformance.</p>
         </div>
@@ -135,16 +140,15 @@
     <div class="footer-inner">
       <div class="footer-brand">
         <div class="logo-mark" aria-hidden="true">NH</div>
-        <span style="font-weight:700;color:var(--text)">NHID-Clinical</span>
+        <span>NHID-Clinical</span>
         <span class="badge badge-blue" style="margin-left:.5rem">v1.3</span>
       </div>
       <div class="footer-links">
-        <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
         <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
         <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       </div>
     </div>
-    <p class="footer-copy">© 2026 Brianna Baynard · NHID-Clinical v1.3 · CC-BY 4.0</p>
+    <p class="footer-copy">© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0. Published NIST public comment: NIST-2025-0035-0026 | validation@nhid-clinical.org | nhid-clinical.org</p>
   </div>
 </footer>
 
