@@ -3,107 +3,25 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Styled NHID-Clinical certification framework for L1, L2, and L3 conformance tiers." />
-    <title>NHID-Clinical Certification Framework</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <meta name="description" content="NHID-Clinical L1, L2, and L3 certification framework." />
+    <title>Certification Framework | NHID-Clinical</title>
     <link rel="stylesheet" href="/nhid-clinical-ui.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <nav class="container nav" aria-label="Primary navigation">
-        <a class="brand" href="/" aria-label="NHID-Clinical home">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-5" /></svg>
-            <span class="brand-wave"><span></span><span></span><span></span></span>
-          </span>
-          <span><strong>NHID-Clinical</strong><small>Building Trust in Healthcare Voice AI</small></span>
-        </a>
-        <div class="nav-links">
-          <a href="/">Home</a>
-          <a href="/about/">About</a>
-          <a href="/#standard">Standard</a>
-          <a class="is-active" href="/certification/">Certification</a>
-          <a href="/validation/">Validation</a>
-          <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
-        </div>
-        <div class="nav-actions">
-          <a class="primary-pill" href="/validation/">Get Involved</a>
-          <button class="icon-button menu-button" aria-label="Open menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
-        </div>
+        <a class="brand" href="/" aria-label="NHID-Clinical home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg><span class="brand-wave"><span></span><span></span><span></span></span></span><span><strong>NHID-Clinical</strong><small>Healthcare Voice AI Disclosure</small></span></a>
+        <div class="nav-links"><a class="" href="/">Home</a><a class="" href="/about/">About</a><a class="" href="/#standard">Standard</a><a class="is-active" href="/validation/">Validation</a><a class="" href="/news/">News</a><a class="" href="/community/">Community</a><a class="" href="#contact">Contact</a></div>
+        <div class="nav-actions"><a class="primary-pill" href="/validation/">Validate</a><button class="icon-button menu-button" aria-label="Open menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
       </nav>
     </header>
 
-    <main id="main">
-      <section class="inner-hero">
-        <div class="container inner-hero-grid">
-          <div>
-            <div class="crumbs"><a href="/">Home</a><span>/</span><span>Certification</span></div>
-            <p class="eyebrow"><span class="status-dot"></span>Certification framework</p>
-            <h1>Tiered trust levels for healthcare AI voice systems.</h1>
-            <p class="lede">The NHID-Clinical Certification Framework provides three progressive trust tiers for AI voice systems operating in B2B healthcare administrative workflows. Certification is voluntary and additive: L2 requires L1, and L3 requires L2.</p>
-          </div>
-          <aside class="hero-summary-card">
-            <strong>Source document</strong>
-            <p>This page presents the certification framework in the site design. The original markdown remains available in GitHub.</p>
-            <a class="outline-link" href="https://github.com/thankcheeses/NHID-Clinical/blob/main/certification.md">Open certification.md →</a>
-          </aside>
-        </div>
-      </section>
-
-      <section class="container page-section">
-        <div class="tier-page-grid">
-          <article class="tier-card"><span class="tier-label">L1 Baseline</span><h3>Minimum conformance</h3><p>The system passes all five Conformance Test Suite tests under controlled evaluation conditions. This is the entry point for claiming NHID-Clinical alignment.</p><ul class="detail-list"><li>All five CTS tests passed.</li><li>Internal QA team self-attestation.</li><li>Signed declaration and retained evidence.</li><li>Tier 1 structured logs present and verifiable.</li></ul></article>
-          <article class="tier-card"><span class="tier-label">L2 Operational</span><h3>Production-ready evidence</h3><p>The system maintains CTS conformance in production, with structured evidence of ongoing operational compliance and review readiness.</p><ul class="detail-list"><li>All L1 requirements.</li><li>Minimum 30 days of production audit logs.</li><li>Disclosure Failure Rate under 2%.</li><li>Evidence package review by NHID-Clinical maintainer.</li></ul></article>
-          <article class="tier-card"><span class="tier-label">L3 Enterprise</span><h3>Independent verification</h3><p>Full independent verification of CTS conformance and operational evidence by a qualified third-party auditor.</p><ul class="detail-list"><li>All L1 and L2 requirements.</li><li>Third-party auditor evaluation.</li><li>Tier 3 analytics reporting.</li><li>Annual renewal and registry listing when available.</li></ul></article>
-        </div>
-      </section>
-
-      <section class="container page-section" style="padding-top:0">
-        <article class="prose-card">
-          <h2>How to claim certification</h2>
-          <h3>L1 process</h3>
-          <p>Run all five CTS tests internally, document results, sign and retain the L1 declaration statement, then add the L1 badge to product documentation. Organizations may notify the NHID-Clinical maintainer at <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a> for community acknowledgement.</p>
-          <h3>L2 process</h3>
-          <p>Complete L1, operate in production for at least 30 days, collect Tier 1 and Tier 2 evidence, and submit an evidence summary for informal review before adding the L2 badge.</p>
-          <h3>L3 process</h3>
-          <p>Complete L1 and L2, engage a qualified third-party auditor, submit the full evidence package including auditor attestation, and work with the maintainer on formal review and registry listing as the v1.4 roadmap matures.</p>
-        </article>
-      </section>
-
-      <section class="container page-section" style="padding-top:0">
-        <div class="comparison-wrap">
-          <table class="comparison-table">
-            <thead><tr><th>Requirement</th><th>L1 Baseline</th><th>L2 Operational</th><th>L3 Enterprise</th></tr></thead>
-            <tbody>
-              <tr><td>CTS all five tests passed</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
-              <tr><td>Self-attestation declaration</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
-              <tr><td>Production evidence, 30+ days</td><td>No</td><td>Yes</td><td>Yes</td></tr>
-              <tr><td>Disclosure Failure Rate below 2%</td><td>No</td><td>Yes</td><td>Yes</td></tr>
-              <tr><td>Independent third-party audit</td><td>No</td><td>No</td><td>Yes</td></tr>
-              <tr><td>Annual renewal required</td><td>No</td><td>No</td><td>Yes</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="container closing-section">
-        <div class="closing-panel">
-          <div><p class="section-kicker">Ready to validate?</p><h2>Use certification to make compliant AI voice behavior legible.</h2><p>Validation gives healthcare AI voice platforms a clear path to demonstrate disclosure, authorization-readiness, and escalation controls.</p></div>
-          <a class="closing-button" href="/validation/">Start validation →</a>
-        </div>
-      </section>
-    </main>
+    <main id="main"><section class="inner-hero"><div class="container inner-hero-grid"><div><div class="crumbs"><a href="/">Home</a><span>/</span><span>Certification</span></div><p class="eyebrow"><span class="status-dot"></span>Certification framework</p><h1>Tiered trust levels for AI voice systems.</h1><p class="lede">NHID-Clinical certification provides L1, L2, and L3 trust levels for organizations implementing disclosure, escalation, audit, and operational evidence controls.</p></div><aside class="hero-summary-card"><strong>Start with L1</strong><p>The first 10 L1 certifications are free for qualifying platforms during the pilot.</p><a class="resource-link" href="/validation/">Validate →</a></aside></div></section><section class="container page-section"><div class="tier-page-grid"><article class="tier-card"><span class="tier-label">L1 Baseline</span><h3>Minimum conformance</h3><p>The system passes all five conformance tests under controlled evaluation conditions.</p><ul class="detail-list"><li>All five CTS tests passed.</li><li>Internal QA self-attestation.</li><li>Signed declaration and retained evidence.</li></ul></article><article class="tier-card"><span class="tier-label">L2 Operational</span><h3>Production evidence</h3><p>The system maintains conformance in production with structured operational evidence.</p><ul class="detail-list"><li>All L1 requirements.</li><li>Minimum 30 days production logs.</li><li>Disclosure Failure Rate below 2%.</li></ul></article><article class="tier-card"><span class="tier-label">L3 Enterprise</span><h3>Independent verification</h3><p>Full independent verification by a qualified third-party auditor.</p><ul class="detail-list"><li>All L1 and L2 requirements.</li><li>Auditor attestation.</li><li>Annual renewal and registry listing when available.</li></ul></article></div></section><section class="container page-section" style="padding-top:0"><div class="comparison-wrap"><table class="comparison-table"><thead><tr><th>Requirement</th><th>L1</th><th>L2</th><th>L3</th></tr></thead><tbody><tr><td>CTS all five tests passed</td><td>Yes</td><td>Yes</td><td>Yes</td></tr><tr><td>Self-attestation declaration</td><td>Yes</td><td>Yes</td><td>Yes</td></tr><tr><td>Production evidence, 30+ days</td><td>No</td><td>Yes</td><td>Yes</td></tr><tr><td>Independent third-party audit</td><td>No</td><td>No</td><td>Yes</td></tr><tr><td>Annual renewal required</td><td>No</td><td>No</td><td>Yes</td></tr></tbody></table></div></section><section class="container closing-section"><div class="closing-panel"><div><p class="section-kicker">Ready to validate?</p><h2>Make compliant AI voice behavior procurement-readable.</h2><p>Certification gives buyers and implementers a shared language for disclosure and operational trust.</p></div><a class="closing-button" href="/validation/">Start validation →</a></div></section></main>
     <footer id="contact" class="site-footer">
-      <div class="container footer-inner">
-        <p>© 2026 NHID-Clinical. Non-Human Identity Disclosure Standard for Healthcare Voice Workflows.</p>
-        <div>
-          <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
-          <a href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
-          <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
-        </div>
+      <div class="container footer-inner enterprise-footer">
+        <div><p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0.</p><p>Published NIST public comment: <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a></p></div>
+        <div><a class="footer-cta" href="/validation/">Ready to validate? First 10 L1 certifications free →</a><a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a><a href="https://nhid-clinical.org">nhid-clinical.org</a></div>
       </div>
     </footer>
   </body>
