@@ -3,45 +3,68 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Why NHID-Clinical exists and who built it." />
-    <title>About | NHID-Clinical</title>
-    <link rel="stylesheet" href="../nhid-clinical-ui.css" />
+    <meta name="description" content="About Brianna Baynard, creator of NHID-Clinical, and why the standard exists." />
+    <title>About Brianna Baynard | NHID-Clinical</title>
+    <link rel="stylesheet" href="/nhid-clinical-ui.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <nav class="container nav" aria-label="Primary navigation">
         <a class="brand" href="/" aria-label="NHID-Clinical home">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-5" /></svg>
-            <span class="brand-wave"><span></span><span></span><span></span></span>
-          </span>
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg><span class="brand-wave"><span></span><span></span><span></span></span></span>
           <span><strong>NHID-Clinical</strong><small>Healthcare Voice AI Disclosure</small></span>
         </a>
         <div class="nav-links"><a class="" href="/">Home</a><a class="is-active" href="/about/">About</a><a class="" href="/#standard">Standard</a><a class="" href="/validation/">Validation</a><a class="" href="/news/">News</a><a class="" href="/community/">Community</a><a class="" href="#contact">Contact</a></div>
-        <div class="nav-actions">
-          <a class="primary-pill" href="/validation/">Validate</a>
-          <button class="icon-button menu-button" aria-label="Open menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
-        </div>
+        <div class="nav-actions"><a class="primary-pill" href="/validation/">Validate</a><button class="icon-button menu-button" aria-label="Open menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
       </nav>
     </header>
 
     <main id="main">
-      <section class="inner-hero"><div class="container inner-hero-grid"><div><div class="crumbs"><a href="/">Home</a><span>/</span><span>About</span></div><p class="eyebrow"><span class="status-dot"></span>About NHID-Clinical</p><h1>Built from the moment the script stopped working.</h1><p class="lede">NHID-Clinical exists because healthcare administrative voice workflows now receive AI callers that sound human, act at scale, and often disclose too late.</p></div><aside class="hero-summary-card"><strong>Built by Brianna Baynard</strong><p>Created from direct experience answering AI voice agent calls in payer-provider administrative workflows.</p></aside></div></section>
-      <section class="built-by-section"><div class="container built-by-inner"><div class="creator-photo">BB</div><div><p class="section-kicker">Built by</p><h2>Built by someone who answered thousands of AI voice agent calls at a TRICARE dental insurer.</h2><blockquote>“I spent 8 months hanging up on undisclosed AI agents. This standard defines what should have happened instead.”</blockquote><p>— Brianna Baynard, Creator</p></div></div></section>
-      <section class="container page-section content-grid"><article class="prose-card"><h2>The problem is the workflow, not the AI.</h2><p>Healthcare should not simply ban automation from administrative work. Eligibility checks, claim status calls, prior authorization follow-up, and billing tasks are repetitive workflows where automation can reduce burden. The issue is that AI voice agents have entered a trust-based channel without a basic trust model.</p><p>NHID-Clinical defines the minimum behavioral baseline for that channel. If the caller is automated, it should say so before asking for data. If it represents a provider, it should identify the organization and purpose of the call. If the call cannot continue, it should hand off to a human cleanly with a reference ID.</p><h3>Why the scope is narrow</h3><p>This is not a full AI law, a HIPAA replacement, or a general identity platform. It addresses one concrete moment: an automated voice agent calls a payer, says it represents a provider, and asks for administrative information.</p><h3>Source context</h3><p>This page is informed by the essay “When an AI Agent Calls About a Claim, Who Is It Really Representing?”</p><a class="inline-button" href="https://medium.com/@bnbaynard/when-an-ai-agent-calls-about-a-claim-who-is-it-really-representing-e021e12e4c1b">Read the essay →</a></article><aside class="side-stack"><section class="resource-card"><h2>Start here</h2><p>Review the native conformance tests and certification framework.</p><a class="outline-link" href="/conformance/">Conformance →</a><a class="outline-link" href="/certification/">Certification →</a></section></aside></section>
+      <section class="inner-hero">
+        <div class="container inner-hero-grid">
+          <div>
+            <div class="crumbs"><a href="/">Home</a><span>/</span><span>About</span></div>
+            <p class="eyebrow"><span class="status-dot"></span>About the creator</p>
+            <h1>About Brianna Baynard</h1>
+            <p class="lede">TRICARE Dental → WGU Cybersecurity → NHID-Clinical</p>
+          </div>
+          <aside class="hero-summary-card"><strong>Why it exists</strong><p>NHID-Clinical was built from the operational reality of answering AI voice agent calls before the industry had a practical disclosure standard.</p></aside>
+        </div>
+      </section>
+
+      <section class="built-by-section">
+        <div class="container built-by-inner">
+          <div class="creator-photo" aria-label="Photo placeholder for Brianna Baynard">BB</div>
+          <div>
+            <h2>“I hung up on 1000+ AI agents. Built this standard so it stops happening.”</h2>
+            <blockquote>“I spent 8 months hanging up on undisclosed AI agents. This standard defines what should have happened instead.”</blockquote>
+            <p>— Brianna Baynard, Creator</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="container page-section content-grid">
+        <article class="prose-card">
+          <h2>From payer-side calls to a practical standard.</h2>
+          <p>Brianna Baynard created NHID-Clinical after seeing a recurring payer-provider workflow failure from the receiving side: AI voice agents were calling about claims, eligibility, appeals, and administrative follow-up without disclosing automation at the start of the call.</p>
+          <p>The issue was not that automation existed. The issue was that a trust-based healthcare workflow had no shared rule for what an acceptable AI-initiated call should look like. Representatives were left to decide, in real time, whether a caller was a person, a tool, a vendor, or an undisclosed automated system.</p>
+          <h3>TRICARE Dental → WGU Cybersecurity → NHID-Clinical</h3>
+          <p>The standard connects practical call-center experience with cybersecurity and governance discipline. NHID-Clinical narrows the problem into something testable: disclose automation before data exchange, avoid deceptive human mimicry, and provide a clean human escalation path.</p>
+          <h3>Why the standard stays narrow</h3>
+          <p>NHID-Clinical does not attempt to regulate every use of AI in healthcare. It focuses on one concrete moment: an AI voice agent calls a payer, says it represents a provider, and asks for administrative information. That moment needs rules before it becomes normal.</p>
+          <a class="inline-button" href="/conformance/">Read the v1.3 core tests →</a>
+        </article>
+        <aside class="side-stack">
+          <section class="resource-card"><h2>Read the origin essay</h2><p>The public essay explains the workflow problem behind NHID-Clinical and why disclosure before data exchange matters.</p><a class="outline-link" href="https://medium.com/@bnbaynard/when-an-ai-agent-calls-about-a-claim-who-is-it-really-representing-e021e12e4c1b">Medium article →</a></section>
+          <section class="resource-card"><h2>Validate a platform</h2><p>If your product can pass the baseline behavior tests, start with L1 validation.</p><a class="outline-link" href="/validation/">Validation →</a></section>
+        </aside>
+      </section>
     </main>
     <footer id="contact" class="site-footer">
       <div class="container footer-inner enterprise-footer">
-        <div>
-          <p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0.</p>
-          <p>Published NIST public comment: <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a></p>
-        </div>
-        <div>
-          <a class="footer-cta" href="/validation/">Ready to validate? First 10 L1 certifications free →</a>
-          <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
-          <a href="https://nhid-clinical.org">nhid-clinical.org</a>
-        </div>
+        <div><p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0.</p><p>Published NIST public comment: <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a></p></div>
+        <div><a class="footer-cta" href="/validation/">Ready to validate? First 10 L1 certifications free →</a><a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a><a href="https://nhid-clinical.org">nhid-clinical.org</a></div>
       </div>
     </footer>
   </body>

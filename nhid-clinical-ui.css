@@ -1297,3 +1297,17 @@ body {
   background: #ECFDF5;
   color: var(--ink);
 }
+
+
+/* Audit polish for About and News */
+.news-list {
+  max-width: 980px;
+  margin-inline: auto;
+}
+.news-item {
+  position: relative;
+}
+.news-item time {
+  display: inline-flex;
+  margin-bottom: 0.75rem;
+}
