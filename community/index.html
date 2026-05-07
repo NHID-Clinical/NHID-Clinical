@@ -3,16 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Request NHID-Clinical pilot validation for a healthcare AI voice agent system." />
-    <title>Request NHID-Clinical Validation</title>
+    <meta name="description" content="Community resources for NHID-Clinical implementers and validators." />
+    <title>Community | NHID-Clinical</title>
     <link rel="stylesheet" href="/nhid-clinical-ui.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <nav class="container nav" aria-label="Primary navigation">
-        <a class="brand" href="/" aria-label="NHID-Clinical home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg><span class="brand-wave"><span></span><span></span><span></span></span></span><span><strong>NHID-Clinical</strong><small>Healthcare Voice AI Disclosure</small></span></a>
-        <div class="nav-links"><a class="" href="/">Home</a><a class="" href="/about/">About</a><a class="" href="/#standard">Standard</a><a class="is-active" href="/validation/">Validation</a><a class="" href="/news/">News</a><a class="" href="/community/">Community</a><a class="" href="#contact">Contact</a></div>
+        <a class="brand" href="/" aria-label="NHID-Clinical home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg>
+            <span class="brand-wave"><span></span><span></span><span></span></span>
+          </span>
+          <span><strong>NHID-Clinical</strong><small>Healthcare Voice AI Disclosure</small></span>
+        </a>
+        <div class="nav-links"><a class="" href="/">Home</a><a class="" href="/about/">About</a><a class="" href="/#standard">Standard</a><a class="" href="/validation/">Validation</a><a class="" href="/news/">News</a><a class="is-active" href="/community/">Community</a><a class="" href="#contact">Contact</a></div>
         <div class="nav-actions"><a class="primary-pill" href="/validation/">Validate</a><button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-site-menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
       </nav>
     </header>
@@ -36,7 +42,14 @@
       </nav>
     </div>
 
-    <main id="main"><section class="inner-hero"><div class="container inner-hero-grid"><div><div class="crumbs"><a href="/">Home</a><span>/</span><a href="/validation/">Validation</a><span>/</span><span>Request</span></div><p class="eyebrow"><span class="status-dot"></span>Request validation</p><h1>Submit your AI voice agent for pilot validation.</h1><p class="lede">Share your system details and target validation level. The NHID-Clinical maintainer will review the request and follow up with next steps.</p></div><aside class="hero-summary-card"><strong>Before you submit</strong><p>Review the conformance tests if you are unsure whether your platform is ready for L1 validation.</p><a class="outline-link" href="/conformance/">Review tests →</a></aside></div></section><section class="container page-section"><form id="validationForm" class="form-card form-grid" action="https://formspree.io/f/mbdwrbwg" method="POST"><div class="field"><label for="company">Company Name *</label><input type="text" id="company" name="company" required /></div><div class="field"><label for="name">Contact Name *</label><input type="text" id="name" name="name" required /></div><div class="field"><label for="email">Contact Email *</label><input type="email" id="email" name="email" required /></div><div class="field"><label for="tier">Target Validation Level *</label><select id="tier" name="tier" required><option value="">Select a tier...</option><option value="L1">L1 Baseline</option><option value="L2">L2 Operational</option><option value="L3">L3 Enterprise</option></select></div><div class="field full-width"><label for="description">Brief description of your AI voice agent system *</label><textarea id="description" name="description" rows="5" required placeholder="What does your system do? What healthcare administrative workflows does it handle?"></textarea></div><div class="field full-width"><label for="notes">Additional notes</label><textarea id="notes" name="notes" rows="4" placeholder="Share anything else that would help with the validation review."></textarea></div><div class="full-width"><button class="cta-button" type="submit">Submit validation request →</button><a class="outline-link" href="/validation/">Back to validation</a></div></form></section></main>
+    <main id="main">
+      <section class="inner-hero"><div class="container inner-hero-grid"><div><div class="crumbs"><a href="/">Home</a><span>/</span><span>Community</span></div><p class="eyebrow"><span class="status-dot"></span>Community</p><h1>Community</h1><p class="lede">Connect with implementers, ask questions, and participate in technical discussions.</p></div><aside class="hero-summary-card"><strong>Implementation questions?</strong><p>Use the community channels for discussion and the validation inbox for certification-specific questions.</p></aside></div></section>
+      <section class="container page-section"><div class="card-grid">
+        <article class="tier-card"><span class="tier-label">Join the Discussion</span><h3>Connect with implementers</h3><p>Connect with implementers, ask questions, and participate in technical discussions.</p><div class="hero-actions"><a class="inline-button" href="https://discord.gg/eP8FxXkGU6">Discord →</a><a class="outline-link" href="https://www.reddit.com/r/NonHumanAuth/">Reddit →</a></div></article>
+        <article class="tier-card"><span class="tier-label">Validation Program</span><h3>Get L1 certification</h3><p>Get L1 certification for your platform. First 10 certifications free.</p><a class="inline-button" href="/validation/">Apply Now →</a></article>
+        <article class="tier-card"><span class="tier-label">Contact</span><h3>Ask certification questions</h3><p>Questions about implementation or certification?</p><a class="outline-link" href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a></article>
+      </div></section>
+    </main>
     <footer id="contact" class="site-footer">
       <div class="container footer-inner enterprise-footer">
         <div><p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0.</p><p>Published NIST public comment: <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a></p></div>
