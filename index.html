@@ -77,6 +77,13 @@
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
   <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
 </nav>
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
@@ -209,30 +216,19 @@
 
   <section id="download" class="download-section">
     <div class="container">
-      <div class="download-grid">
-        <div class="download-header">
-          <svg class="download-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-          </svg>
-          <h2>Download the Standard</h2>
-          <p style="color:var(--body);font-size:.95rem;line-height:1.7;margin:0">Both specifications are published under Creative Commons Attribution 4.0 International. Free to use, implement, and redistribute with attribution.</p>
-          <a class="outline-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0 →</a>
-        </div>
-        <div class="download-cards">
-          <article class="download-card">
-            <h3>NHID-Clinical v1.3 Core Specification</h3>
-            <p>Complete technical specification including five CTS conformance tests, L1/L2/L3 certification tiers, FHIR AuditEvent mapping, and NHID-Auth companion spec reference.</p>
-            <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
-            <span class="license-badge">CC BY 4.0 · Published May 2026</span>
-          </article>
-          <article class="download-card">
-            <h3>NHID-Auth v1.0 Specification</h3>
-            <p>Authorization layer companion specification for delegated authority verification. Defines authorization attestation format, scope, duration, and revocation handling.</p>
-            <a href="/specs/NHID-Auth-v1.0-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
-            <span class="license-badge">CC BY 4.0 · Published May 2026</span>
-          </article>
-        </div>
+      <div class="download-cards">
+        <article class="download-card">
+          <h3>NHID-Clinical v1.3 Core Specification</h3>
+          <p>Complete technical specification including five CTS conformance tests, L1/L2/L3 certification tiers, FHIR AuditEvent mapping, and NHID-Auth companion spec reference.</p>
+          <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0 · Published May 2026</span>
+        </article>
+        <article class="download-card">
+          <h3>NHID-Auth v1.0 Specification</h3>
+          <p>Authorization layer companion specification for delegated authority verification. Defines authorization attestation format, scope, duration, and revocation handling.</p>
+          <a href="/specs/NHID-Auth-v1.0-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0 · Published May 2026</span>
+        </article>
       </div>
     </div>
   </section>

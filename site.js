@@ -3,19 +3,20 @@
   'use strict';
 
   /* ── Dark mode ─────────────────────────────────────────────────────────── */
-  var themeToggle = document.getElementById('theme-toggle');
-
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     try { localStorage.setItem('nhid-theme', theme); } catch (e) {}
+    document.querySelectorAll('.mobile-theme-label').forEach(function (el) {
+      el.textContent = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+    });
   }
 
-  if (themeToggle) {
-    themeToggle.addEventListener('click', function () {
+  document.querySelectorAll('.theme-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
       var current = document.documentElement.getAttribute('data-theme') || 'light';
       applyTheme(current === 'dark' ? 'light' : 'dark');
     });
-  }
+  });
 
   /* ── Mobile navigation drawer ─────────────────────────────────────────── */
   var mobileNav   = document.getElementById('mobile-nav');
