@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical FAQ — frequently asked questions about the non-human identity disclosure standard for healthcare voice AI."/>
+  <title>FAQ | NHID-Clinical</title>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+          <path d="m9 12 2 2 4-5"/>
+        </svg>
+        <span class="brand-wave"><span></span><span></span><span></span></span>
+      </span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/conformance.html">Conformance</a>
+      <a href="/#download">Download</a>
+      <a href="/certification.html">Certification</a>
+      <a href="/validation.html">Validation</a>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/validation.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-site-menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu-panel" id="mobile-site-menu" hidden>
+  <div class="mobile-menu-backdrop" data-menu-close></div>
+  <nav class="mobile-menu-card" aria-label="Mobile navigation">
+    <div class="mobile-menu-header">
+      <strong>NHID-Clinical</strong>
+      <button class="icon-button mobile-menu-close" type="button" aria-label="Close menu" data-menu-close>&times;</button>
+    </div>
+    <a href="/">Home</a>
+    <a href="/about.html">About</a>
+    <a href="/conformance.html">Conformance</a>
+    <a href="/#download">Download</a>
+    <a href="/certification.html">Certification</a>
+    <a href="/validation.html">Validation</a>
+    <a href="/news.html">News</a>
+    <a href="/community.html">Community</a>
+    <a href="/faq.html">FAQ</a>
+  </nav>
+</div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><span>FAQ</span></div>
+      <p class="eyebrow">Frequently Asked Questions</p>
+      <h1>NHID-Clinical FAQ</h1>
+      <p class="lede">Common questions about the standard, certification, HIPAA, NIST, and how to get involved.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:860px">
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <h3>What is NHID-Clinical?</h3>
+          <p>NHID-Clinical v1.3 is an open-source governance standard for <strong>non-human identity disclosure</strong> in B2B healthcare voice workflows.</p>
+          <p><strong>The one rule:</strong> AI voice agents must disclose "automated system" status <strong>before</strong> requesting any operational data (NPI, member ID, claim #, DOB).</p>
+          <p>3 behavioral controls. 3 pass/fail tests. L1 self-certification free.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Who is this for?</h3>
+          <ul>
+            <li><strong>Payers</strong> receiving AI calls from providers/vendors</li>
+            <li><strong>Providers</strong> using AI voice agents for claims, eligibility, and authorization</li>
+            <li><strong>AI vendors</strong> building healthcare voice platforms</li>
+            <li><strong>Compliance teams</strong> needing measurable AI governance</li>
+          </ul>
+          <p><strong>Not for:</strong> Patient-facing calls, general IAM, or clinical AI.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>What's the core problem it solves?</h3>
+          <p><strong>Impersonation latency</strong> — the 2–5 minutes call center staff waste verifying whether Dr. Smith's office is human or AI before sharing operational data.</p>
+          <p><strong>Real example:</strong> AI asks for member ID → you disclose → 3 minutes later it reveals it's automated. Data already shared.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>NHID-Core v1.3 vs NHID-Auth v1.0?</h3>
+          <pre class="faq-code">NHID-Core v1.3 (Stable)
+├── 3 disclosure rules
+├── 3 pass/fail tests
+└── L1 self-cert free
+
+NHID-Auth v1.0 (Companion)
+├── "Who authorized this bot for that NPI?"
+├── Scope / duration / revocation
+└── Enterprise opt-in</pre>
+          <p><strong>Core ships now. Auth when you're ready.</strong></p>
+        </div>
+
+        <div class="faq-item">
+          <h3>What are the 3 pass/fail tests?</h3>
+          <table class="faq-table">
+            <thead>
+              <tr><th>Test</th><th>Pass Criteria</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>IDG-01</strong></td><td>Disclosure BEFORE data request</td></tr>
+              <tr><td><strong>PDX-01</strong></td><td>No data accepted pre-disclosure</td></tr>
+              <tr><td><strong>EIT-01</strong></td><td>Human escalation in 1 turn</td></tr>
+            </tbody>
+          </table>
+          <p><strong>Hard fail on any = non-conformance.</strong></p>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I get certified?</h3>
+          <pre class="faq-code">L1 Baseline (Free — first 10)
+1. Run 3 tests internally
+2. Self-attest + signed checklist
+3. Get L1 badge + cert code
+
+L2 Operational ($500):  +30 days production logs
+L3 Enterprise (Custom): Third-party audit</pre>
+          <p><a href="/validation.html" style="color:var(--blue);font-weight:700">Apply now at nhid-clinical.org/validation →</a></p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Why not just use voice biometrics?</h3>
+          <p>Voice biometrics detect <strong>human vs synthetic</strong>. NHID-Clinical standardizes <strong>authorized non-human vs unauthorized non-human</strong>.</p>
+          <p><strong>Payers want:</strong> "This AI is legitimately calling for Dr. Smith"<br/>
+          <strong>Biometrics give:</strong> "This sounds synthetic"</p>
+          <p>Different problems.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Don't HIPAA/TCPA already cover this?</h3>
+          <table class="faq-table">
+            <thead>
+              <tr><th>Regulation</th><th>What it covers</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="faq-check">✅ HIPAA</span></td><td>Protects PHI once disclosed</td></tr>
+              <tr><td><span class="faq-check">✅ TCPA</span></td><td>Consumer call consent</td></tr>
+              <tr><td><span class="faq-cross">❌ Gap</span></td><td>B2B payer-provider voice agent disclosure</td></tr>
+            </tbody>
+          </table>
+          <p><strong>The gap:</strong> No standard exists for legitimate AI calling legitimate providers.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Is this mandatory?</h3>
+          <p>No. <strong>Voluntary governance standard.</strong> Published CC BY 4.0.</p>
+          <p>But: payers are increasingly blocking non-disclosing AI, and procurements are beginning to ask for compliance proof.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>What's the background behind this standard?</h3>
+          <p>TRICARE dental call center → WGU Cybersecurity bachelor's → NHID-Clinical creator.</p>
+          <p><em>"I hung up on 1000+ undisclosed AI agents. Built this so it stops happening."</em></p>
+        </div>
+
+        <div class="faq-item">
+          <h3>What's the NIST connection?</h3>
+          <p><strong>NIST AI Agent RFI 2025-0035</strong> public comment published April 2026:</p>
+          <pre class="faq-code">Comment ID: NIST-2025-0035-0026</pre>
+          <p>Federal agencies see the same delegation gaps that call center staff encounter when taking AI calls.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I contribute?</h3>
+          <pre class="faq-code">GitHub Discussions   → Technical questions
+validation@nhid-clinical.org → Certification
+GitHub Issues        → Spec improvements</pre>
+          <p>First 10 L1 certifications are free. <a href="/validation.html" style="color:var(--blue);font-weight:700">Submit a validation request →</a></p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Ready to get certified?</p>
+        <h2>Apply for pilot validation.</h2>
+        <p>First validations are offered at no cost. Run the 3 conformance tests, then submit your request.</p>
+      </div>
+      <a class="closing-button" href="/validation.html">Request Validation →</a>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0. Published NIST public comment: NIST-2025-0035-0026</p>
+    <div>
+      <a href="mailto:validation@nhid-clinical.org">Validation</a>
+      <a href="mailto:help@nhid-clinical.org">Help</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>
