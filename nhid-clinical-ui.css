@@ -2040,6 +2040,92 @@ textarea { resize: vertical; min-height: 120px; }
   .nav-backdrop { transition: none; }
 }
 
+/* ── NIST Provenance Card ─────────────────────────────────────────────────── */
+.nist-provenance-section {
+  padding-block: 2.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.nist-provenance-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem;
+  align-items: start;
+  padding: 1.75rem 2rem;
+  border: 1px solid rgba(11, 110, 188, 0.28);
+  border-left: 4px solid var(--blue);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, var(--blue-soft) 0%, rgba(248,252,254,0.5) 100%);
+  box-shadow: 0 8px 30px rgba(11, 110, 188, 0.07);
+}
+
+.nist-gov-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, var(--blue), var(--teal));
+  color: white;
+  font-family: var(--display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.nist-heading {
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+  margin: 0.45rem 0 0.6rem;
+  color: var(--ink);
+  font-family: var(--display);
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+}
+
+.nist-body {
+  color: var(--body);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin: 0 0 0.65rem;
+  max-width: 72ch;
+}
+
+.nist-meta {
+  color: var(--body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 0 0 0.65rem;
+  letter-spacing: 0.01em;
+}
+
+.nist-link {
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.nist-link:hover { text-decoration: underline; }
+
+[data-theme="dark"] .nist-provenance-card {
+  border-color: rgba(30, 80, 120, 0.45);
+  border-left-color: var(--blue);
+  background: linear-gradient(135deg, rgba(10, 25, 48, 0.85) 0%, rgba(9, 21, 36, 0.55) 100%);
+}
+
+.nist-provenance-card {
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+@media (max-width: 720px) {
+  .nist-provenance-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 /* ── Specification page ──────────────────────────────────────────────────── */
 .spec-badges {
   display: flex;
