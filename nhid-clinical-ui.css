@@ -1373,6 +1373,18 @@ body, .site-header, .mobile-nav, .site-footer,
 }
 
 /* ── Certification cards ─────────────────────────────────────────────────── */
+.cert-badges-img {
+  margin-block: 2rem 0;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.cert-badges-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .cert-tiers {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

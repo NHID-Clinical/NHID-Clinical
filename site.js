@@ -3,13 +3,26 @@
   'use strict';
 
   /* ── Dark mode ─────────────────────────────────────────────────────────── */
+  function syncThemeImages(theme) {
+    document.querySelectorAll('.theme-img-light').forEach(function (img) {
+      img.style.display = theme === 'dark' ? 'none' : 'block';
+    });
+    document.querySelectorAll('.theme-img-dark').forEach(function (img) {
+      img.style.display = theme === 'dark' ? 'block' : 'none';
+    });
+  }
+
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     try { localStorage.setItem('nhid-theme', theme); } catch (e) {}
     document.querySelectorAll('.mobile-theme-label').forEach(function (el) {
       el.textContent = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
     });
+    syncThemeImages(theme);
   }
+
+  /* Set correct images on initial load */
+  syncThemeImages(document.documentElement.getAttribute('data-theme') || 'light');
 
   document.querySelectorAll('.theme-toggle').forEach(function (btn) {
     btn.addEventListener('click', function () {
