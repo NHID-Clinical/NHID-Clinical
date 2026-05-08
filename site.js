@@ -188,7 +188,7 @@
 
   /* ── Active nav link ───────────────────────────────────────────────────── */
   var path  = window.location.pathname.replace(/\/$/, '') || '/';
-  var links = document.querySelectorAll('.nav-links a, .mobile-menu-card a');
+  var links = document.querySelectorAll('.nav-links a, .mobile-nav a');
   links.forEach(function (a) {
     var href = (a.getAttribute('href') || '').split('#')[0].replace(/\/$/, '') || '/';
     if (href === path || (href.length > 1 && path.startsWith(href))) {
