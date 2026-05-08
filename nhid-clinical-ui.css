@@ -1588,6 +1588,12 @@ body, .site-header, .mobile-nav, .site-footer,
   background: var(--mist);
 }
 
+.download-section .download-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
 /* ── Download grid ───────────────────────────────────────────────────────── */
 .download-grid {
   display: grid;
