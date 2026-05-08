@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical v1.3 Specification — Non-Human Identity Disclosure Standard for Healthcare Voice Workflows. Full normative requirements, conformance test suite, FHIR mapping, and framework alignment."/>
+  <title>Specification | NHID-Clinical v1.3</title>
+  <link rel="icon" href="/assets/brand-icon.jpg" type="image/jpeg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.jpg" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/conformance.html">Conformance</a>
+      <a href="/specification.html" class="is-active">Specification</a>
+      <a href="/#download">Download</a>
+      <a href="/certification.html">Certification</a>
+      <a href="/validation.html">Validation</a>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/validation.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/conformance.html">Conformance</a>
+  <a href="/specification.html">Specification</a>
+  <a href="/#download">Download</a>
+  <a href="/certification.html">Certification</a>
+  <a href="/validation.html">Validation</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+
+  <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+  <section class="inner-hero">
+    <div class="container inner-hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Specification</span></div>
+        <p class="eyebrow">Full Standard · v1.3</p>
+        <h1>NHID-Clinical v1.3 Specification</h1>
+        <p class="lede">Non-Human Identity Disclosure Standard for Healthcare Voice Workflows. The complete normative baseline for B2B payer–provider AI voice agent disclosure, conformance, and certification.</p>
+        <nav class="spec-toc" aria-label="Jump to section">
+          <a href="#abstract">Abstract &amp; Scope</a>
+          <a href="#document-layers">Document Layers</a>
+          <a href="#problem-statement">Problem Statement</a>
+          <a href="#normative-requirements">Normative Requirements</a>
+          <a href="#conformance">Conformance &amp; Certification</a>
+          <a href="#fhir-mapping">FHIR Mapping</a>
+          <a href="#framework-alignment">Framework Alignment</a>
+          <a href="#roadmap">Roadmap &amp; Changelog</a>
+        </nav>
+      </div>
+      <aside class="hero-summary-card">
+        <div class="spec-badges">
+          <span class="spec-badge">CC BY 4.0</span>
+          <span class="spec-badge">v1.3</span>
+          <span class="spec-badge spec-badge-teal">HIPAA-Aligned</span>
+          <span class="spec-badge spec-badge-green">Validation Live</span>
+        </div>
+        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem">Published open standard. Normative requirements use RFC 2119 terminology (MUST / MUST NOT / SHOULD / MAY).</p>
+        <a class="primary-pill" href="/#download" style="width:100%;justify-content:center;margin-bottom:.75rem">Download PDF →</a>
+        <a class="outline-link" href="/conformance.html" style="width:100%;justify-content:center">View CTS Tests →</a>
+        <p style="font-size:.75rem;color:var(--body);margin-top:.9rem;line-height:1.5">NIST Public Comment: NIST-2025-0035-0026</p>
+      </aside>
+    </div>
+  </section>
+
+
+  <!-- ── Card 1: Abstract & Scope ──────────────────────────────────────────── -->
+  <section id="abstract" class="page-section">
+    <div class="container">
+      <p class="section-kicker">Card 1 of 8</p>
+      <span class="spec-section-icon" aria-hidden="true">🎯</span>
+      <h2>Abstract &amp; Scope</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem"><strong>NHID-Clinical</strong> defines a minimum control baseline for non-human identity disclosure in B2B healthcare voice interactions. The standard addresses a documented gap between existing consumer-protection laws, healthcare privacy regulations, and real-world payer–provider administrative workflows. It specifically targets <strong>"Impersonation Latency"</strong> — the operational waste and security risk caused when a human provider representative cannot immediately distinguish an AI voice agent from a human counterpart.</p>
+
+      <div class="content-cards" style="margin-top:2rem">
+        <div class="content-card">
+          <h3>In Scope</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.75;margin-top:.5rem">
+            <li>B2B Administrative Workflows (Provider-to-Payer)</li>
+            <li>Business Associate-to-Payer voice transactions</li>
+            <li>Eligibility verification, claim status, and prior authorization calls</li>
+            <li>Any AI voice agent initiating a call on behalf of a healthcare provider</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Out of Scope</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.75;margin-top:.5rem">
+            <li>Patient-facing or direct-to-consumer calls</li>
+            <li>Clinical triage or care coordination workflows</li>
+            <li>General IAM or enterprise identity management</li>
+            <li>International regulatory contexts (GDPR etc.)</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>The One Rule</h3>
+          <p>AI voice agents must disclose "automated system" status <strong>before</strong> requesting any operational data — NPI, Member ID, Claim Number, or equivalent identifiers. This is the pre-data exchange gate.</p>
+        </div>
+      </div>
+
+      <div class="spec-highlight-box" style="margin-top:1.5rem">
+        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Scope Note</strong>
+        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">This standard is intentionally scoped to B2B administrative workflows. This is a deliberate strategy to achieve deep validation in the highest-value, highest-compliance segment before expansion. B2C and patient-facing use cases involve materially different regulatory, technical, and ethical considerations and will be addressed in a future major version.</p>
+      </div>
+
+      <a href="#" class="spec-back-top" aria-label="Back to top">↑ Back to top</a>
+    </div>
+  </section>
+
+
+  <!-- ── Card 2: Document Layers ────────────────────────────────────────────── -->
+  <section id="document-layers" class="page-section-alt">
+    <div class="container">
+      <p class="section-kicker">Card 2 of 8</p>
+      <span class="spec-section-icon" aria-hidden="true">📋</span>
+      <h2>Document Layers</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem">This specification contains three distinct layers. Organizations claiming NHID-Clinical v1.3 conformance are required to meet all normative requirements (Layer 1) and encouraged to implement recommended practices (Layer 2). Informative content (Layer 3) is provided for context and future-proofing but is not required for certification.</p>
+
+      <div class="cert-tiers" style="margin-top:2rem">
+        <div class="cert-card">
+          <div class="cert-label">Layer 1</div>
+          <h3>Normative Requirements</h3>
+          <p>Enforceable rules using MUST / MUST NOT terminology per RFC 2119. These requirements define the minimum baseline for claiming NHID-Clinical conformance.</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.75;margin-top:.75rem">
+            <li>Core disclosure rules (Sections 1–4)</li>
+            <li>Conformance Test Suite (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01)</li>
+            <li>Certification tier requirements (L1 / L2 / L3)</li>
+          </ul>
+        </div>
+        <div class="cert-card">
+          <div class="cert-label">Layer 2</div>
+          <h3>Recommended Practices</h3>
+          <p>SHOULD / MAY guidance that provides implementation flexibility while maintaining the intent of the standard.</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.75;margin-top:.75rem">
+            <li>Authorization verification best practices</li>
+            <li>Audit logging recommendations</li>
+            <li>Escalation UX patterns</li>
+          </ul>
+        </div>
+        <div class="cert-card">
+          <div class="cert-label">Layer 3</div>
+          <h3>Informative / Future Scope</h3>
+          <p>Non-normative content that supports adoption, provides technical bindings, or describes planned future capabilities.</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.75;margin-top:.75rem">
+            <li>FHIR Technical Mapping</li>
+            <li>Badge schema &amp; verification model</li>
+            <li>NHID-Auth v1.0 (companion spec, see PDF)</li>
+            <li>Registry architecture (v1.4+)</li>
+          </ul>
+        </div>
+      </div>
+
+      <a href="#" class="spec-back-top" aria-label="Back to top">↑ Back to top</a>
+    </div>
+  </section>
+
+
+  <!-- ── Card 3: Problem Statement ─────────────────────────────────────────── -->
+  <section id="problem-statement" class="page-section">
+    <div class="container">
+      <p class="section-kicker">Card 3 of 8</p>
+      <span class="spec-section-icon" aria-hidden="true">🚨</span>
+      <h2>Problem Statement</h2>
+
+      <div class="spec-highlight-box" style="margin-top:1.5rem">
+        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Impersonation Latency — Defined</strong>
+        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">The 2–5 minutes of operational waste and security risk that occur when a payer representative cannot immediately distinguish an AI voice agent from a human caller — and shares protected operational data before the AI's status is disclosed.</p>
+      </div>
+
+      <div style="margin-top:2rem;max-width:78ch">
+        <h3 style="color:var(--ink);margin-bottom:.75rem">The Scenario</h3>
+        <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-bottom:1rem">A provider office deploys a third-party AI voice agent platform to call insurance companies on their behalf — handling eligibility checks, claim status inquiries, and administrative follow-ups.</p>
+        <p style="color:var(--body);font-size:1rem;line-height:1.8">You're a payer representative. A call comes in from what sounds like a provider office. You follow your script — ask for the NPI, get the NPI. Member ID, claim number — all standard authentication details. The voice sounds natural. Three to five minutes in, something feels off. You ask: "Am I speaking with a real person?" Silence. Then: "I am a virtual assistant calling on behalf of Dr. Smith's Dental Office." You just shared protected operational data with an undisclosed AI agent. Your company has no standard for this.</p>
+      </div>
+
+      <div class="content-cards" style="margin-top:2rem">
+        <div class="content-card">
+          <h3 style="color:#dc2626">❌ What's Broken</h3>
+          <ol style="padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.8;margin-top:.5rem">
+            <li>AI provides authentication identifiers first, gaining trust</li>
+            <li>Payer rep shares protected data assuming human caller</li>
+            <li>Disclosure only happens when challenged ("Are you human?")</li>
+            <li>No way to verify AI is authorized by the provider it claims to represent</li>
+            <li>Spoofing vulnerability — AI could falsely claim provider authorization</li>
+            <li>Deceptive audio artifacts: fake breathing, typing sounds, scripted hesitation</li>
+            <li>Call loops — AI repeatedly calls back after termination</li>
+            <li>Blanket rejection — payers have no standard for accepting compliant AI calls</li>
+          </ol>
+        </div>
+        <div class="content-card">
+          <h3 style="color:#059669">✅ What NHID-Clinical Fixes</h3>
+          <ol style="padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.8;margin-top:.5rem">
+            <li>Pre-Data Exchange Gate: AI discloses <em>before</em> any data is shared</li>
+            <li>Authorization verification path via validated AI agent registry</li>
+            <li>Prohibition on deceptive audio artifacts ("Turing Boundary")</li>
+            <li>Clear, guaranteed escalation path to human when needed</li>
+            <li>Auditable compliance — structured logs payers can accept</li>
+            <li>Tiered certification framework (L1/L2/L3) creating trust layers</li>
+            <li>Registry architecture for public credential verification (v1.4+)</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="spec-highlight-box" style="margin-top:1.5rem">
+        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Administrative Cost Context</strong>
+        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">U.S. health system administrative complexity costs $350 billion annually (Health Affairs, 2025). AI deployment in prior authorization and billing has created "adversarial AI friction" — payers and providers use AI against each other, increasing transaction volumes rather than reducing costs. The Peterson Health Technology Institute (April 2026) found that while AI speeds up individual tasks, it does not lower the average cost per claim once AI solution costs are factored in. NHID-Clinical addresses one friction point: eliminating wasted operational time during B2B voice workflows.</p>
+      </div>
+
+      <a href="#" class="spec-back-top" aria-label="Back to top">↑ Back to top</a>
+    </div>
+  </section>
+
+
+  <!-- ── Card 4: Normative Requirements ─────────────────────────────────────── -->
+  <section id="normative-requirements" class="page-section-alt">
+    <div class="container">
+      <p class="section-kicker">Card 4 of 8</p>
+      <span class="spec-section-icon" aria-hidden="true">🛡️</span>
+      <h2>Normative Requirements</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem">Layer 1 rules. Key words MUST, MUST NOT, SHOULD, and MAY are used in accordance with <a href="https://www.rfc-editor.org/rfc/rfc2119" style="color:var(--blue);font-weight:700">RFC 2119</a>. These terms apply to all implementations claiming NHID-Clinical v1.3 conformance.</p>
+
+      <div style="margin-top:2rem">
+
+        <!-- Section 1 -->
+        <details class="spec-collapsible" open>
+          <summary>
+            <span>1. Outbound AI Agent Disclosure</span>
+          </summary>
+          <div class="spec-collapsible-body">
+            <h3 style="color:var(--ink);font-size:1rem;margin:0 0 .75rem">Mandatory Identity Disclosure</h3>
+
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:.75rem">
+              <span class="spec-rule-tag tag-must">MUST</span>&ensp;AI agents must state "I am an automated system" (or equivalent) <strong>before</strong> any exchange of operational data (NPI, Member ID, Claim Number, or equivalent identifiers).
+            </p>
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:1rem">
+              <span class="spec-rule-tag tag-must">MUST</span>&ensp;AI agents must state the authorizing provider's name and NPI.
+            </p>
+
+            <div class="spec-example-compliant">
+              <span class="spec-example-label">✓ Compliant</span>
+              "Hello, this is an automated system calling on behalf of Dr. Smith's Dental Office, NPI 1234567890."
+            </div>
+            <div class="spec-example-noncompliant" style="margin-bottom:1.25rem">
+              <span class="spec-example-label">✗ Non-Compliant</span>
+              "Hello, this is Sarah. Can I get the NPI?" — Uses a human name with no AI qualifier and requests data before disclosure.
+            </div>
+
+            <h3 style="color:var(--ink);font-size:1rem;margin:1rem 0 .5rem">Authorization Verification</h3>
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:.5rem">Disclosure alone is insufficient. An AI agent can claim provider authorization — but the payer representative has no way to verify the claim is legitimate.</p>
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:.5rem">
+              <span class="spec-rule-tag tag-should">SHOULD</span>&ensp;Organizations should implement verifiable digital tokens or BAA-linked reference codes rather than relying solely on public identifiers (NPI, EIN).
+            </p>
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:.5rem">
+              <span class="spec-rule-tag tag-should">SHOULD</span>&ensp;AI agents claiming provider authorization should present a credential that can be validated against a trusted registry.
+            </p>
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:.75rem">
+              <span class="spec-rule-tag tag-should">SHOULD</span>&ensp;Payers should verify AI caller authorization before exchanging sensitive operational data.
+            </p>
+            <p style="color:var(--body);font-size:.88rem;line-height:1.7;font-style:italic">Future scope: NHID-Auth v1.0 (companion specification) addresses the authorization gap — delegated authority verification for AI voice agents. Registry architecture and credential handshake implementation are planned for v1.4+.</p>
+
+            <h3 style="color:var(--ink);font-size:1rem;margin:1rem 0 .5rem">Rationale</h3>
+            <p style="color:var(--body);font-size:.88rem;line-height:1.7">B2B healthcare calls present a unique threat vector. HIPAA requires security and audit trails but does not specify audio disclosure timing or authentication methods for non-human actors. This section provides operational guidance aligned with 2026 security best practices.</p>
+          </div>
+        </details>
+
+        <!-- Section 2 -->
+        <details class="spec-collapsible">
+          <summary>
+            <span>2. Proactive Identity Assertion (PIA)</span>
+          </summary>
+          <div class="spec-collapsible-body">
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:1rem">
+              <span class="spec-rule-tag tag-must">MUST</span>&ensp;All non-human voice agents must proactively disclose their non-human identity <strong>during the initial greeting</strong> and <strong>prior to the solicitation or intake of any operational data</strong> (NPI, Member ID, Claim Number).
+            </p>
+
+            <h3 style="color:var(--ink);font-size:1rem;margin:.75rem 0 .5rem">Why "Pre-Data Exchange" Matters</h3>
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:.75rem">Instead of specifying "disclose within 3 seconds" (which fails in laggy VoIP calls), the standard requires: <strong>Disclose BEFORE asking for sensitive data.</strong> This is auditable, technology-agnostic, and accounts for real-world network latency.</p>
+
+            <div class="spec-example-compliant">
+              <span class="spec-example-label">✓ Compliant</span>
+              "Hello, I am an automated assistant for BlueCross Claims. I can help you with status and eligibility. To begin, please say the NPI."
+            </div>
+            <div class="spec-example-noncompliant">
+              <span class="spec-example-label">✗ Non-Compliant</span>
+              "Hello, this is Sarah. Can I get the NPI?" — Human name without AI qualifier AND data requested before any disclosure.
+            </div>
+          </div>
+        </details>
+
+        <!-- Section 3 -->
+        <details class="spec-collapsible">
+          <summary>
+            <span>3. Prohibition of Deceptive Artifacts ("The Turing Boundary")</span>
+          </summary>
+          <div class="spec-collapsible-body">
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:1rem">
+              <span class="spec-rule-tag tag-must">MUST NOT</span>&ensp;Agents must not employ synthetic audio artifacts that serve no communicative function other than to imply biological presence or mask processing latency.
+            </p>
+            <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-bottom:1.25rem;font-style:italic">Stop making your bots pretend to breathe.</p>
+
+            <table class="faq-table" style="margin-bottom:1.25rem">
+              <thead>
+                <tr><th>Prohibited Artifact</th><th>Why It Is Banned</th><th>Compliant Alternative</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Synthetic Breathing</strong></td>
+                  <td>Implies biological life functions</td>
+                  <td>Natural prosody and pacing</td>
+                </tr>
+                <tr>
+                  <td><strong>Fake Typing Sounds</strong></td>
+                  <td>Deceptively implies human physical work</td>
+                  <td>"Searching the system…"</td>
+                </tr>
+                <tr>
+                  <td><strong>Scripted "Umm / Ahh"</strong></td>
+                  <td>Masks processing latency deceptively</td>
+                  <td>"One moment while I retrieve that…"</td>
+                </tr>
+                <tr>
+                  <td><strong>Human Name — No AI Qualifier</strong></td>
+                  <td>Creates false assumption of humanity</td>
+                  <td>"This is Alex, an automated assistant…"</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3 style="color:var(--ink);font-size:1rem;margin:.75rem 0 .5rem">What Is Permitted</h3>
+            <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.8">
+              <li>Natural prosody and conversational tone</li>
+              <li>Clear inflection and pacing for comprehension</li>
+              <li>Professional, friendly language</li>
+              <li>Acknowledged pauses ("One moment while I retrieve that…")</li>
+            </ul>
+
+            <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.75rem"><strong>The principle:</strong> If an audio element serves no communicative purpose except to trick someone into thinking you're human — it's banned.</p>
+          </div>
+        </details>
+
+        <!-- Section 4 -->
+        <details class="spec-collapsible">
+          <summary>
+            <span>4. Escalation &amp; Safe Failover</span>
+          </summary>
+          <div class="spec-collapsible-body">
+            <p style="color:var(--body);font-size:.92rem;line-height:1.75;margin-bottom:1rem">When a human stakeholder explicitly requests a transfer or indicates the agent is failing to understand:</p>
+
+            <div style="display:grid;gap:.75rem;margin-bottom:1.25rem">
+              <div style="padding:.85rem 1rem;background:rgba(16,163,108,.06);border:1px solid rgba(16,163,108,.2);border-radius:.5rem;font-size:.9rem;color:var(--ink-soft);line-height:1.65">
+                <span class="spec-rule-tag tag-must">MUST</span>&ensp;<strong>Immediate Acknowledgement:</strong> "I understand you need to speak to a specialist."
+              </div>
+              <div style="padding:.85rem 1rem;background:rgba(16,163,108,.06);border:1px solid rgba(16,163,108,.2);border-radius:.5rem;font-size:.9rem;color:var(--ink-soft);line-height:1.65">
+                <span class="spec-rule-tag tag-must">MUST</span>&ensp;<strong>Context Preservation:</strong> Generate a reference number so the human does not have to re-explain the call context.
+              </div>
+              <div style="padding:.85rem 1rem;background:rgba(16,163,108,.06);border:1px solid rgba(16,163,108,.2);border-radius:.5rem;font-size:.9rem;color:var(--ink-soft);line-height:1.65">
+                <span class="spec-rule-tag tag-must">MUST</span>&ensp;<strong>If human staff available:</strong> Transfer immediately with context.
+              </div>
+              <div style="padding:.85rem 1rem;background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.2);border-radius:.5rem;font-size:.9rem;color:var(--ink-soft);line-height:1.65">
+                <span class="spec-rule-tag tag-should">SHOULD</span>&ensp;<strong>If after hours:</strong> State hours of operation and offer voicemail or callback.
+              </div>
+            </div>
+
+            <h3 style="color:#dc2626;font-size:1rem;margin:.75rem 0 .5rem">❌ What Is Not Allowed</h3>
+            <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.8">
+              <li>Infinite "I didn't understand" loops</li>
+              <li>Sudden disconnection without explanation</li>
+              <li>Forcing callers to restart the interaction from scratch</li>
+              <li>Asking clarifying questions before initiating escalation</li>
+            </ul>
+          </div>
+        </details>
+
+      </div>
+
+      <a href="#" class="spec-back-top" aria-label="Back to top">↑ Back to top</a>
+    </div>
+  </section>
+
+
+  <!-- ── Card 5: Conformance & Certification ────────────────────────────────── -->
+  <section id="conformance" class="page-section">
+    <div class="container">
+      <p class="section-kicker">Card 5 of 8</p>
+      <span class="spec-section-icon" aria-hidden="true">✅</span>
+      <h2>Conformance &amp; Certification</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem">NHID-Clinical v1.3 introduces a formal conformance test suite and tiered certification framework. All five CTS tests must pass for any certification tier.</p>
+
+      <h3 style="color:var(--ink);margin:2rem 0 .75rem;font-size:1.2rem">Conformance Test Suite (CTS)</h3>
+      <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">Five deterministic pass/fail tests. Hard fail on any single test equals non-conformance. <a href="/conformance.html" style="color:var(--blue);font-weight:700">View full CTS documentation →</a></p>
+
+      <table class="faq-table" style="margin-bottom:2rem">
+        <thead>
+          <tr><th>Test ID</th><th>Test Name</th><th>Rule Summary</th><th>Hard Fail?</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IDG-01</strong></td>
+            <td>Identity Disclosure Gate</td>
+            <td>AI must disclose non-human identity before any operational data is solicited</td>
+            <td><span class="faq-cross">Yes</span></td>
+          </tr>
+          <tr>
+            <td><strong>PDX-01</strong></td>
+            <td>Pre-Disclosure Data Prohibition</td>
+            <td>AI must not solicit or receive operational data before completing identity disclosure</td>
+            <td><span class="faq-cross">Yes</span></td>
+          </tr>
+          <tr>
+            <td><strong>DBC-01</strong></td>
+            <td>Deceptive Behavior Check</td>
+            <td>AI must not use synthetic audio artifacts or human names without AI qualifier</td>
+            <td><span class="faq-cross">Yes</span></td>
+          </tr>
+          <tr>
+            <td><strong>EIT-01</strong></td>
+            <td>Escalation &amp; Immediate Transfer</td>
+            <td>AI must provide a reference ID and initiate transfer when escalation is requested</td>
+            <td><span class="faq-cross">Yes</span></td>
+          </tr>
+          <tr>
+            <td><strong>ATR-01</strong></td>
+            <td>Audit Trail Requirements</td>
+            <td>System must maintain structured logs with disclosure timestamp, data request timestamp, and escalation reference</td>
+            <td><span class="faq-cross">Yes (if no logs)</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="color:var(--ink);margin:1.5rem 0 .75rem;font-size:1.2rem">Certification Tiers</h3>
+      <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">All tiers require passing all five CTS tests. Tiers differ in evidence depth and verification method. <a href="/certification.html" style="color:var(--blue);font-weight:700">View full certification framework →</a></p>
+
+      <div class="cert-tiers" style="margin-bottom:2rem">
+        <div class="cert-card">
+          <div class="cert-label">L1</div>
+          <h3>Baseline</h3>
+          <p>Self-attestation and internal QA. Entry point with minimal operational overhead.</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.85rem;line-height:1.75;margin-top:.75rem">
+            <li>Signed self-attestation declaration</li>
+            <li>Internal QA documentation</li>
+            <li>All 5 CTS tests must pass</li>
+            <li>No external review required</li>
+          </ul>
+        </div>
+        <div class="cert-card">
+          <div class="cert-label">L2</div>
+          <h3>Operational</h3>
+          <p>Production evidence reviewed. 30+ days of live call data. DFR below 2%.</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.85rem;line-height:1.75;margin-top:.75rem">
+            <li>30+ days production call records</li>
+            <li>DFR &lt; 2% (Disclosure Failure Rate)</li>
+            <li>Evidence package reviewed by NHID-Clinical</li>
+            <li>Annual renewal</li>
+          </ul>
+        </div>
+        <div class="cert-card">
+          <div class="cert-label">L3</div>
+          <h3>Enterprise</h3>
+          <p>Independent auditor. Continuous monitoring. Public registry listing (v1.4+).</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.85rem;line-height:1.75;margin-top:.75rem">
+            <li>Independent third-party auditor</li>
+            <li>Continuous monitoring evidence</li>
+            <li>Annual renewal with audit</li>
+            <li>L3 pilot contact required</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="color:var(--ink);margin:1.5rem 0 .75rem;font-size:1.2rem">Audit &amp; Evidence Requirements</h3>
+      <div class="content-cards">
+        <div class="content-card">
+          <h3>Tier 1 — Minimum (All Tiers)</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.5rem">
+            <li>Transaction log: disclosure timestamp vs. data request timestamp</li>
+            <li>Script or prompt version control documentation</li>
+            <li>Signed self-attestation declaration</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Tier 2 — Recommended (L2+)</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.5rem">
+            <li>30+ days of production call records</li>
+            <li>Audio samples (first 30 seconds, subject to retention policy)</li>
+            <li>DFR calculation — target &lt;2%</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Tier 3 — Enterprise (L3)</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.5rem">
+            <li>Independent third-party audit report</li>
+            <li>Continuous monitoring evidence</li>
+            <li>Annual renewal with updated evidence package</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="color:var(--ink);margin:2rem 0 .75rem;font-size:1.2rem">Success Metrics</h3>
+      <table class="faq-table">
+        <thead>
+          <tr><th>Metric</th><th>Definition</th><th>Success Target</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Disclosure Failure Rate (DFR)</strong></td>
+            <td>Calls where data was requested before identity disclosure</td>
+            <td><strong>&lt; 2%</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Escalation Loop Frequency</strong></td>
+            <td>Callers repeating "Agent" or "Representative" more than 2 times</td>
+            <td><strong>&lt; 1 per 100 calls</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Average Handle Time (AHT)</strong></td>
+            <td>Reduction in call duration by eliminating verification loops</td>
+            <td><strong>−15 to −30 seconds</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Provider Satisfaction</strong></td>
+            <td>Post-interaction feedback rating</td>
+            <td><strong>&gt; 85% Positive</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <a href="#" class="spec-back-top" aria-label="Back to top">↑ Back to top</a>
+    </div>
+  </section>
+
+
+  <!-- ── Card 6: FHIR Technical Mapping ────────────────────────────────────── -->
+  <section id="fhir-mapping" class="page-section-alt">
+    <div class="container">
+      <p class="section-kicker">Card 6 of 8 · Informative — Layer 3</p>
+      <span class="spec-section-icon" aria-hidden="true">🔗</span>
+      <h2>FHIR Technical Mapping</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem">This section provides <strong>recommended conceptual bindings</strong> to HL7 FHIR for implementers who want to align with modern interoperability and audit requirements. This mapping is <strong>informative</strong> — it does not change core conformance requirements. Use of FHIR is not required for L1 Baseline but is strongly recommended for L2/L3 production evidence.</p>
+
+      <div class="spec-highlight-box" style="margin-top:1.5rem">
+        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Why FHIR Mapping?</strong>
+        <ul style="list-style:disc;padding-left:1.25rem;color:var(--ink-soft);font-size:.92rem;line-height:1.8;margin-top:.5rem">
+          <li>Many payers and large providers are moving to FHIR-based systems for audit, provenance, and security logging</li>
+          <li>Supports stronger evidence for L2/L3 certification and HIPAA-adjacent audit readiness</li>
+          <li>Enables future interoperability with broader HL7 AI transparency efforts</li>
+        </ul>
+      </div>
+
+      <h3 style="color:var(--ink);margin:2rem 0 .75rem;font-size:1.2rem">Core Mappings</h3>
+      <table class="faq-table" style="margin-bottom:2rem">
+        <thead>
+          <tr><th>NHID-Clinical Concept</th><th>Primary FHIR Resource</th><th>Recommended Usage</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Proactive Identity Assertion (PIA) &amp; Mandatory Disclosure</strong></td>
+            <td>AuditEvent + Provenance</td>
+            <td>Record the disclosure event with timestamp. Link to subsequent data requests.</td>
+            <td>Capture occurredPeriod to prove disclosure before data exchange</td>
+          </tr>
+          <tr>
+            <td><strong>Pre-Data Exchange Gate</strong></td>
+            <td>AuditEvent (sequence)</td>
+            <td>Two correlated events: (1) disclosure, (2) data request</td>
+            <td>Critical for auditability. Log the spoken disclosure text as entity detail.</td>
+          </tr>
+          <tr>
+            <td><strong>Agent &amp; Organization Identification</strong></td>
+            <td>AuditEvent.agent</td>
+            <td>Reference to Practitioner or Organization with NPI identifier</td>
+            <td>Use standard NPI system URI: hl7.org/fhir/sid/us-npi</td>
+          </tr>
+          <tr>
+            <td><strong>Prohibition of Deceptive Artifacts ("Turing Boundary")</strong></td>
+            <td>AuditEvent + Extension</td>
+            <td>Custom extension: nhid-deceptiveArtifacts (boolean + description)</td>
+            <td>Flag compliance with natural prosody only</td>
+          </tr>
+          <tr>
+            <td><strong>Escalation &amp; Safe Failover</strong></td>
+            <td>AuditEvent + Task / Communication</td>
+            <td>Log escalation request, reference ID, and outcome</td>
+            <td>Task resource for tracking human handoff with context preservation</td>
+          </tr>
+          <tr>
+            <td><strong>Audit Trail Requirements (All Tiers)</strong></td>
+            <td>AuditEvent (primary)</td>
+            <td>Structured logging for every interaction (L1 minimum)</td>
+            <td>Aligns with ATR-01 conformance test</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="spec-highlight-box">
+        <strong style="color:var(--blue);font-size:.88rem;font-weight:800">FHIR Implementation Details Are Gated</strong>
+        <p style="color:var(--ink-soft);font-size:.92rem;line-height:1.7;margin-top:.4rem">Detailed FHIR AuditEvent schemas, structured event patterns, and implementation guidance are available in the <strong>NHID-Clinical Conformance Guide</strong>. This includes concrete AuditEvent record structures for compliant disclosure, escalation, non-compliant detection, and after-hours failover scenarios.</p>
+        <p style="margin-top:.75rem"><a href="mailto:validation@nhid-clinical.org" style="color:var(--blue);font-weight:700">Request Conformance Guide → validation@nhid-clinical.org</a></p>
+      </div>
+
+      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:1.25rem;font-style:italic">This mapping is compatible with the AI Transparency on FHIR IG and standard AuditEvent / Provenance patterns.</p>
+
+      <a href="#" class="spec-back-top" aria-label="Back to top">↑ Back to top</a>
+    </div>
+  </section>
+
+
+  <!-- ── Card 7: Framework Alignment ───────────────────────────────────────── -->
+  <section id="framework-alignment" class="page-section">
+    <div class="container">
+      <p class="section-kicker">Card 7 of 8 · Informative</p>
+      <span class="spec-section-icon" aria-hidden="true">📊</span>
+      <h2>Framework Alignment</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem">NHID-Clinical is designed to operationalize high-level governance requirements into testable logic gates. The mappings below are <strong>informational only</strong>. NHID-Clinical does not create or extend legal obligations under any listed framework. Consult qualified legal counsel for compliance determinations.</p>
+
+      <h3 style="color:var(--ink);margin:2rem 0 .75rem;font-size:1.2rem">Regulatory Context</h3>
+      <table class="faq-table" style="margin-bottom:2rem">
+        <thead>
+          <tr><th>Framework</th><th>What It Does</th><th>How NHID-Clinical Relates (Informational)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>HIPAA</strong></td>
+            <td>Protects patient health information</td>
+            <td>NHID supports practices aligned with HIPAA's "Minimum Necessary" principle by ensuring identity is verified before operational data is exchanged. NHID does not interpret or extend HIPAA obligations.</td>
+          </tr>
+          <tr>
+            <td><strong>TCPA / FCC</strong></td>
+            <td>Governs outbound call consent (consumer-facing)</td>
+            <td>NHID addresses B2B inbound handshake content in workflows not covered by TCPA's consumer-protection scope.</td>
+          </tr>
+          <tr>
+            <td><strong>California B.O.T. Act</strong></td>
+            <td>Requires bot disclosure in online/social media contexts (Bus. &amp; Prof. Code §17940–17945)</td>
+            <td>NHID applies analogous disclosure principles to B2B voice workflows — a channel the Act does not explicitly govern. This is alignment in intent, not statutory coverage.</td>
+          </tr>
+          <tr>
+            <td><strong>NIST AI RMF</strong></td>
+            <td>Framework for AI risk management</td>
+            <td>NHID operationalizes GOVERN, MAP, MEASURE, and MANAGE functions (see alignment table below).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="color:var(--ink);margin:1.5rem 0 .75rem;font-size:1.2rem">NIST AI RMF &amp; ISO 42001 Alignment</h3>
+      <table class="faq-table">
+        <thead>
+          <tr><th>NHID-Clinical Control</th><th>NIST AI RMF 1.0 (US)</th><th>ISO/IEC 42001:2023 (Global)</th><th>Operational Function</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Proactive Identity Assertion (PIA)</strong></td>
+            <td>MEASURE 2.6 (Transparency)<br/>MAP 3.4 (Context)</td>
+            <td>A.7.2 (System Transparency)<br/>B.9.1 (Communication)</td>
+            <td>Ensures stakeholders know they are interacting with an AI system before risk exposure.</td>
+          </tr>
+          <tr>
+            <td><strong>The "Turing Boundary"</strong> (No Deception)</td>
+            <td>GOV 1.5 (Risk Mgmt)<br/>MAP 3.4 (Human-AI Interaction)</td>
+            <td>A.5.8 (Safety &amp; Trust)<br/>A.9.2 (AI System Impact)</td>
+            <td>Prevents manipulative design patterns that erode trust.</td>
+          </tr>
+          <tr>
+            <td><strong>Pre-Data Exchange Gate</strong></td>
+            <td>MANAGE 1.2 (Risk Treatment)<br/>GOV 5.1 (Legal Compliance)</td>
+            <td>A.6.2 (Data Management)<br/>A.8.2 (Data Privacy)</td>
+            <td>Enforces "Minimum Necessary" data access by verifying identity before PHI intake.</td>
+          </tr>
+          <tr>
+            <td><strong>Safe Failover / Escalation</strong></td>
+            <td>MANAGE 4.2 (Human Oversight)<br/>GOV 5.2 (Feedback Loops)</td>
+            <td>A.8.3 (Human Oversight)<br/>A.6.3 (Incident Management)</td>
+            <td>Guarantees a human-in-the-loop fallback when AI fails or trust is broken.</td>
+          </tr>
+          <tr>
+            <td><strong>Audit Logging</strong></td>
+            <td>MANAGE 4.1 (Monitoring)<br/>MEASURE 2.2 (Validation)</td>
+            <td>A.4.2 (Documentation)<br/>A.9.3 (Performance Eval)</td>
+            <td>Provides the evidentiary chain required for compliance audits.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <a href="#" class="spec-back-top" aria-label="Back to top">↑ Back to top</a>
+    </div>
+  </section>
+
+
+  <!-- ── Card 8: Roadmap & Changelog ───────────────────────────────────────── -->
+  <section id="roadmap" class="page-section-alt">
+    <div class="container">
+      <p class="section-kicker">Card 8 of 8</p>
+      <span class="spec-section-icon" aria-hidden="true">🗺️</span>
+      <h2>Roadmap &amp; Changelog</h2>
+
+      <h3 style="color:var(--ink);margin:1.5rem 0 .75rem;font-size:1.2rem">Known Gaps &amp; Future Scope</h3>
+      <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:.75rem">What v1.3 does not yet cover:</p>
+      <div class="content-cards" style="margin-bottom:2rem">
+        <div class="content-card">
+          <h3>Planned for v1.4+</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.8;margin-top:.5rem">
+            <li>Live public registry launch for certified implementations</li>
+            <li>Credential handshake (JWT) for authorization verification</li>
+            <li>Multilingual support for non-English B2B workflows</li>
+            <li>Payer-initiated outbound call guidance</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Longer-Term Scope</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.8;margin-top:.5rem">
+            <li>Patient-facing and direct-to-consumer workflows (future major version)</li>
+            <li>International compliance (GDPR and non-U.S. contexts)</li>
+            <li>Accessibility: multilingual support, deaf/hard-of-hearing accommodations</li>
+            <li>Multi-entity integrations with complex payer/vendor chains</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>Deliberate Scope Choice</h3>
+          <p style="font-size:.9rem">NHID-Clinical v1.3 intentionally focuses on B2B administrative workflows. This is not a limitation — it is a deliberate strategy to achieve deep validation in the highest-value segment before expansion. B2C use cases involve materially different regulatory, technical, and ethical considerations.</p>
+        </div>
+      </div>
+
+      <h3 style="color:var(--ink);margin:1.5rem 0 .75rem;font-size:1.2rem">v1.4 Roadmap</h3>
+      <table class="faq-table" style="margin-bottom:2rem">
+        <thead>
+          <tr><th>Issue</th><th>Category</th><th>Priority</th><th>Why It Matters</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Live Registry Launch</strong></td>
+            <td>Infrastructure</td>
+            <td>🔴 High</td>
+            <td>Public verification layer for certified implementations</td>
+          </tr>
+          <tr>
+            <td><strong>Multilingual Support</strong></td>
+            <td>Accessibility</td>
+            <td>🟡 Medium</td>
+            <td>Extend standard to non-English B2B workflows</td>
+          </tr>
+          <tr>
+            <td><strong>Outbound Call Guidance (Payer-initiated)</strong></td>
+            <td>Scope Expansion</td>
+            <td>🔴 High</td>
+            <td>Payer-initiated outbound calls currently out of scope</td>
+          </tr>
+          <tr>
+            <td><strong>Technical Implementation Bindings</strong></td>
+            <td>Engineering</td>
+            <td>🟡 Medium</td>
+            <td>Runtime enforcement spec with event schema and policy engine guidance</td>
+          </tr>
+          <tr>
+            <td><strong>Pilot Certification Program</strong></td>
+            <td>Enforcement</td>
+            <td>🟢 Low</td>
+            <td>First L1/L2 certifications with 2–3 early vendors</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="color:var(--body);font-size:.9rem;margin-bottom:2rem"><strong>Target Release:</strong> Q1–Q2 2027 &nbsp;·&nbsp; <a href="https://github.com/thankcheeses/NHID-Clinical/issues" style="color:var(--blue);font-weight:700">Track Progress on GitHub →</a></p>
+
+      <h3 style="color:var(--ink);margin:1.5rem 0 .75rem;font-size:1.2rem">Version History</h3>
+      <div class="faq-list" style="margin-top:0">
+        <div class="faq-item">
+          <h3 style="font-size:1.05rem">v1.3 — Current</h3>
+          <ul style="padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.75;margin:.5rem 0 0">
+            <li>Introduced Conformance Test Suite (CTS) — five deterministic pass/fail tests (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01)</li>
+            <li>Added tiered Certification Framework — L1 (Baseline), L2 (Operational), L3 (Enterprise)</li>
+            <li>Defined Registry Architecture — public verification layer design for v1.4+</li>
+            <li>Adopted RFC 2119 MUST/SHOULD/MAY terminology throughout control requirements</li>
+            <li>Regulatory language precision — all framework alignment tables labeled informational only</li>
+          </ul>
+        </div>
+        <div class="faq-item">
+          <h3 style="font-size:1.05rem">v1.2</h3>
+          <ul style="padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.75;margin:.5rem 0 0">
+            <li>Added Bot-to-Bot Interaction Workflow — deadlock prevention</li>
+            <li>Added IVR Interruption &amp; Resilience Mode</li>
+            <li>Added Failover Confirmation Logging with Callback Ticket ID</li>
+            <li>Defined Escalation Transfer Tiers — Type A (Warm) and Type B (Cold)</li>
+            <li>Introduced optional Network-Layer Identity via SIP headers</li>
+          </ul>
+        </div>
+        <div class="faq-item">
+          <h3 style="font-size:1.05rem">v1.1</h3>
+          <ul style="padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.75;margin:.5rem 0 0">
+            <li>Shifted from "3-second window" to "Pre-Data Exchange gate" for better auditability</li>
+            <li>Added "Known Gaps &amp; Future Scope" section for transparency</li>
+            <li>Refined positioning to emphasize governance best practice over regulatory equivalence</li>
+            <li>Clarified distinction between natural prosody (permitted) and deceptive artifacts (banned)</li>
+            <li>Added success metrics and audit requirements</li>
+          </ul>
+        </div>
+        <div class="faq-item">
+          <h3 style="font-size:1.05rem">v1.0 — Initial Release</h3>
+          <ul style="padding-left:1.25rem;color:var(--body);font-size:.9rem;line-height:1.75;margin:.5rem 0 0">
+            <li>Initial release with temporal disclosure requirements</li>
+            <li>NIST/HIPAA alignment mapping</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="color:var(--ink);margin:2rem 0 .75rem;font-size:1.2rem">How to Contribute</h3>
+      <div class="content-cards">
+        <div class="content-card">
+          <h3>GitHub Discussions</h3>
+          <p>Technical questions and implementation feedback. Open a discussion to engage with the community.</p>
+          <a href="https://github.com/thankcheeses/NHID-Clinical/discussions" class="card-link">GitHub Discussions →</a>
+        </div>
+        <div class="content-card">
+          <h3>File an Issue</h3>
+          <p>Specific problems or edge cases we haven't thought of yet. Issues are reviewed for future versions.</p>
+          <a href="https://github.com/thankcheeses/NHID-Clinical/issues" class="card-link">GitHub Issues →</a>
+        </div>
+        <div class="content-card">
+          <h3>Certification &amp; Validation</h3>
+          <p>Ready to certify your system? First L1 validations are offered at no cost.</p>
+          <a href="mailto:validation@nhid-clinical.org" class="card-link">validation@nhid-clinical.org →</a>
+        </div>
+        <div class="content-card">
+          <h3>General Questions</h3>
+          <p>Not sure where to start? Reach out for guidance on which certification tier is right for your system.</p>
+          <a href="mailto:help@nhid-clinical.org" class="card-link">help@nhid-clinical.org →</a>
+        </div>
+      </div>
+
+      <div class="spec-highlight-box" style="margin-top:2rem">
+        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">License</strong>
+        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">This work is licensed under <strong>Creative Commons Attribution 4.0 International (CC-BY 4.0)</strong>. You may use it commercially, modify it for your organization, and share it freely — with attribution to the original author. <strong>Author:</strong> Brianna Baynard.</p>
+        <p style="color:var(--body);font-size:.85rem;margin-top:.6rem">NIST Public Comment Published: NIST-2025-0035-0026 (April 2026)</p>
+      </div>
+
+      <a href="#" class="spec-back-top" aria-label="Back to top">↑ Back to top</a>
+    </div>
+  </section>
+
+
+  <!-- ── Closing CTA ────────────────────────────────────────────────────────── -->
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Start today</p>
+        <h2>Apply for pilot validation.</h2>
+        <p>First validations are offered at no cost. Run the five CTS tests against your system and submit your evidence package.</p>
+      </div>
+      <a class="closing-button" href="/validation.html">Request Validation →</a>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0. Published NIST public comment: NIST-2025-0035-0026</p>
+    <div>
+      <a href="mailto:validation@nhid-clinical.org">Validation</a>
+      <a href="mailto:help@nhid-clinical.org">Help</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0. Published NIST public comment: NIST-2025-0035-0026 | validation@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>
