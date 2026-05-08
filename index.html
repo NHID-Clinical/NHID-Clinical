@@ -77,7 +77,7 @@
     <a href="/">Home</a>
     <a href="/about.html">About</a>
     <a href="/conformance.html">Conformance</a>
-    <a href="/#download">Download</a>
+    <a href="/specs/">Download</a>
     <a href="/certification.html">Certification</a>
     <a href="/validation.html">Validation</a>
     <a href="/news.html">News</a>
@@ -88,43 +88,37 @@
 
 <main id="top">
 
-  <section class="hero-section">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot"></span>Pilot validation program now live</p>
-        <h1>NHID-Clinical</h1>
-        <p class="hero-subtitle">Non-Human Identity Disclosure Standard for Healthcare Voice Workflows</p>
-        <p class="hero-body">Establishing transparency, trust, and accountability for AI and automated systems interacting through voice in healthcare.</p>
-        <div class="hero-actions">
-          <a class="cta-button" href="/conformance.html">Explore the Standard <span aria-hidden="true">→</span></a>
-          <a class="secondary-button" href="/about.html">Learn More <span aria-hidden="true">→</span></a>
+  <!-- ── Hero ───────────────────────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <p class="hero-eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Pilot validation now live · First validations at no cost</p>
+          <h1 id="hero-heading">Non-Human Identity Disclosure Standard</h1>
+          <p class="hero-subtitle">An open governance standard that closes the gap between AI voice agents and payer verification — before sensitive data is exchanged.</p>
+          <div class="hero-actions btn-group">
+            <a class="btn-primary" href="/conformance.html">Explore the Standard →</a>
+            <a class="btn-secondary" href="/about.html">Learn More</a>
+          </div>
         </div>
-      </div>
-      <div class="hero-art" aria-label="Voice verification illustration">
-        <img
-          src="https://d2xsxph8kpxj0f.cloudfront.net/310519663636277123/ZAxaAnRFfjr6xZezCPCdSJ/nhid-hero-voice-trust-dgN2r48e9nUvrmM4v57WHe.webp"
-          alt="Abstract microphone and verification field for healthcare voice AI"
-          width="800" height="600" loading="eager"
-        />
-        <span class="floating-note note-one">✓ Disclosure first</span>
-        <span class="floating-note note-two">✓ Verified caller</span>
+        <div class="hero-image-wrap" aria-hidden="true">
+          <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663636277123/ZAxaAnRFfjr6xZezCPCdSJ/nhid-hero-voice-trust-dgN2r48e9nUvrmM4v57WHe.webp" alt="" width="800" height="600" loading="eager"/>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="download" class="container download-section">
-    <div class="download-grid">
-      <div class="download-header">
-        <svg class="download-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-        </svg>
-        <h2>Download the Standard</h2>
-        <p style="color:var(--body);font-size:.95rem;line-height:1.7;margin:0">Open governance specifications published under CC BY 4.0. Download, implement, and share freely.</p>
-      </div>
-      <div class="download-cards">
-        <article class="download-card">
-          <h3>NHID-Clinical v1.3 Core Specification</h3>
+  <!-- ── Spec Download ──────────────────────────────────────────────────────── -->
+  <section class="spec-download" aria-labelledby="spec-heading">
+    <div class="container">
+      <p class="section-kicker">Specification documents</p>
+      <h2 class="section-title" id="spec-heading">Download the Standard</h2>
+      <p class="section-desc">NHID-Clinical and NHID-Auth are open governance specifications published under CC BY 4.0. Download, implement, and share freely.</p>
+      <div class="spec-cards">
+
+        <div class="spec-card">
+          <span class="spec-card-version">NHID-Clinical v1.3</span>
+          <h3>Core Specification</h3>
           <p>Complete technical specification including five CTS conformance tests, L1/L2/L3 certification tiers, FHIR AuditEvent mapping, and NHID-Auth companion reference.</p>
           <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
           <span class="license-badge">CC BY 4.0 · Published May 2026</span>
@@ -230,6 +224,35 @@
             <h3>Disclose before data exchange</h3>
             <p>AI callers identify themselves clearly before operational or protected workflow details are shared.</p>
           </div>
+          <span class="download-meta">CC BY 4.0 · Published May 2026</span>
+        </div>
+
+        <div class="spec-card">
+          <span class="spec-card-version">NHID-Auth v1.0</span>
+          <h3>Authorization Companion</h3>
+          <p>Delegated authority model for AI agents calling on behalf of providers. Defines authorization attestation format, scope, duration, and revocation handling.</p>
+          <div class="btn-group">
+            <a class="btn-primary" href="/specs/NHID-Auth-v1.0-Specification.pdf" download>Download PDF →</a>
+          </div>
+          <span class="download-meta">CC BY 4.0 · Published May 2026</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Standards Cards ────────────────────────────────────────────────────── -->
+  <section class="standards-section" aria-labelledby="standards-heading">
+    <div class="container">
+      <p class="section-kicker">The specification</p>
+      <h2 class="section-title" id="standards-heading">Three layers. One baseline.</h2>
+      <p class="section-desc">NHID-Clinical separates enforceable rules from recommended practices and informative guidance so organizations can adopt a practical minimum while preparing for deeper verification.</p>
+      <div class="cards-grid">
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">▣</div>
+          <h3>Normative Requirements</h3>
+          <p>Mandatory MUST/MUST NOT rules using RFC 2119 terminology. The enforceable baseline for claiming NHID-Clinical v1.3 conformance.</p>
+          <a class="card-link" href="/conformance.html">View requirements →</a>
         </article>
         <article>
           <span>02</span>
@@ -249,14 +272,20 @@
     </div>
   </section>
 
-  <section id="resources" class="split-section blue-section">
-    <div class="container split-grid reverse">
-      <div class="image-card badge-card">
-        <img
-          src="https://d2xsxph8kpxj0f.cloudfront.net/310519663636277123/ZAxaAnRFfjr6xZezCPCdSJ/nhid-trust-badge-system-m5EWBVLhdroscBq8Kccdrc.webp"
-          alt="Abstract NHID-Clinical certification and registry illustration"
-          width="800" height="600" loading="lazy"
-        />
+  <!-- ── Benefits ───────────────────────────────────────────────────────────── -->
+  <div class="benefits-band" role="region" aria-label="Key benefits">
+    <div class="container benefits-grid">
+      <div class="benefit">
+        <strong>Eliminate impersonation latency</strong>
+        <span>Disclose AI identity before operational data is exchanged — not when challenged.</span>
+      </div>
+      <div class="benefit">
+        <strong>Protect payer operations</strong>
+        <span>Give representatives a standard they can accept instead of a blanket rejection policy.</span>
+      </div>
+      <div class="benefit">
+        <strong>Auditable compliance</strong>
+        <span>Structured logging for every interaction, aligned with FHIR AuditEvent patterns.</span>
       </div>
       <div>
         <p class="section-kicker">Certification framework</p>
@@ -272,12 +301,71 @@
     </div>
   </section>
 
-  <section id="community" class="container closing-section">
-    <div class="closing-panel">
+  <!-- ── Problem statement ──────────────────────────────────────────────────── -->
+  <section class="built-by" aria-labelledby="built-by-heading">
+    <div class="container built-by-inner">
       <div>
-        <p class="section-kicker">Pilot validation</p>
-        <h2>Help define what acceptable healthcare AI voice calls look like.</h2>
-        <p>First validations are offered at no cost for AI voice agent platforms in healthcare. The pilot helps organizations demonstrate disclosure, authorization, and escalation controls.</p>
+        <p class="built-by-label">Built from experience</p>
+        <h2 id="built-by-heading">The problem was real before the standard existed.</h2>
+      </div>
+      <div>
+        <p>This standard was built by someone who worked in payer-side healthcare administration — fielding calls in a TRICARE-adjacent benefit system where AI voice agents were already calling in, providing NPI numbers, and requesting protected operational data from representatives who had no framework to distinguish an authorized AI caller from a spoofed one.</p>
+        <p style="margin-top:.75rem">When those calls were terminated — which they routinely were — both sides lost. Providers restarted workflows. Payers logged wasted handle time. No audit trail. No standard. NHID-Clinical is the operational baseline that should have existed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Validation flow image ──────────────────────────────────────────────── -->
+  <section class="validation-section" aria-labelledby="validation-heading">
+    <div class="container">
+      <div class="split-inner">
+        <div class="split-text">
+          <p class="section-kicker">How it works</p>
+          <h2 id="validation-heading">A clear lane for authorized AI callers.</h2>
+          <p>NHID-Clinical defines exactly what an AI voice agent must disclose at call initiation — before any operational data changes hands. Payer representatives get a verifiable identity signal. Providers get a channel that won't be terminated on first contact.</p>
+          <p>Five CTS conformance tests (IDG-01 through ATR-01) cover identity declaration, delegation, data minimization, escalation, and audit — the complete surface of a compliant interaction.</p>
+          <div class="btn-group">
+            <a class="btn-primary" href="/conformance.html">View CTS Tests →</a>
+            <a class="btn-secondary" href="/specs/">Download Spec</a>
+          </div>
+        </div>
+        <div class="split-image" aria-hidden="true">
+          <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663636277123/ZAxaAnRFfjr6xZezCPCdSJ/nhid-validation-flow-joa8aoxQePSVf8udKPM8co.webp" alt="" width="800" height="600" loading="lazy"/>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── L1/L2/L3 Certification ─────────────────────────────────────────────── -->
+  <section class="cert-section" aria-labelledby="cert-heading">
+    <div class="container">
+      <div class="split-inner reverse">
+        <div class="split-text">
+          <p class="section-kicker">Certification tiers</p>
+          <h2 id="cert-heading">L1 Baseline. L2 Operational. L3 Enterprise.</h2>
+          <p>Three certification tiers let organizations adopt what they can operationalize now and build toward deeper verification over time. Each tier has defined evidence requirements and a badge system for signaling compliance to payer partners.</p>
+          <p>Pilot validation is offered at no cost. Apply, receive your CTS review within 3 business days, and use your certification badge in payer-facing materials.</p>
+          <div class="btn-group">
+            <a class="btn-primary" href="/certification.html">View Certification Tiers →</a>
+            <a class="btn-secondary" href="/validation/">Apply for Validation</a>
+          </div>
+        </div>
+        <div class="split-image" aria-hidden="true">
+          <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663636277123/ZAxaAnRFfjr6xZezCPCdSJ/nhid-trust-badge-system-m5EWBVLhdroscBq8Kccdrc.webp" alt="" width="800" height="600" loading="lazy"/>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ───────────────────────────────────────────────────────────────── -->
+  <section class="cta-section" aria-labelledby="cta-heading">
+    <div class="container">
+      <p class="section-kicker">Pilot validation program</p>
+      <h2 id="cta-heading">First validations offered at no cost.</h2>
+      <p>AI voice agent platforms in healthcare are invited to participate in the pilot validation program. We'll review your system and issue the conformance test within 3 business days.</p>
+      <div class="btn-group" style="justify-content:center">
+        <a class="btn-primary" href="/validation/">Request Validation →</a>
+        <a class="btn-secondary" href="mailto:help@nhid-clinical.org">General Questions</a>
       </div>
       <a class="closing-button" href="/validation.html">Request Validation →</a>
     </div>
@@ -293,6 +381,7 @@
       <a href="mailto:help@nhid-clinical.org">Help</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
     </div>
+    <p class="footer-copy">© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0. Published NIST public comment: NIST-2025-0035-0026 | validation@nhid-clinical.org | nhid-clinical.org</p>
   </div>
 </footer>
 

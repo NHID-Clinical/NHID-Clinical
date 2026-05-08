@@ -5,28 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="description" content="Request NHID-Clinical pilot validation for a healthcare AI voice agent system."/>
   <title>Request Validation | NHID-Clinical</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
 </head>
 <body>
 
 <header class="site-header">
-  <nav class="container nav" aria-label="Primary navigation">
-    <a class="brand" href="/" aria-label="NHID-Clinical home">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
-          <path d="m9 12 2 2 4-5"/>
-        </svg>
-        <span class="brand-wave"><span></span><span></span><span></span></span>
-      </span>
-      <span>
-        <strong>NHID-Clinical</strong>
-        <small>Building Trust in Healthcare Voice AI</small>
-      </span>
+  <div class="container nav-container">
+    <a href="/" class="logo" aria-label="NHID-Clinical home">
+      <div class="logo-mark" aria-hidden="true">NH</div>
+      <span class="logo-text">NHID-Clinical</span>
     </a>
     <div class="nav-links">
       <a href="/">Home</a>
@@ -77,91 +65,96 @@
     <a href="/">Home</a>
     <a href="/about.html">About</a>
     <a href="/conformance.html">Conformance</a>
-    <a href="/#download">Download</a>
+    <a href="/specs/">Download</a>
     <a href="/certification.html">Certification</a>
-    <a href="/validation.html">Validation</a>
+    <a href="/validation/">Validation</a>
     <a href="/news.html">News</a>
     <a href="/community.html">Community</a>
     <a href="/faq.html">FAQ</a>
   </nav>
 </div>
 
-<main id="main">
-  <section class="inner-hero">
-    <div class="container inner-hero-grid">
-      <div>
-        <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/validation.html">Validation</a><span>/</span><span>Request</span></div>
-        <p class="eyebrow">Request validation</p>
-        <h1>Submit your AI voice agent for pilot validation.</h1>
-        <p class="lede">Share your system details and target validation level. The NHID-Clinical maintainer will review and follow up with next steps within 3 business days.</p>
-      </div>
-      <aside class="hero-summary-card">
-        <strong>Before you submit</strong>
-        <p>Review the conformance tests if you're unsure whether your platform is ready for L1 validation.</p>
-        <a class="outline-link" href="/conformance.html">Review tests →</a>
-      </aside>
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <p class="section-kicker">Pilot validation program</p>
+      <h1>Request Validation</h1>
+      <p>Share your system details and target tier. We'll review your request and follow up with next steps within 3 business days. First validations are offered at no cost.</p>
     </div>
   </section>
 
-  <section class="page-section">
+  <section class="form-section">
     <div class="container">
-      <div style="display:grid;grid-template-columns:1fr 300px;gap:3rem;align-items:start">
+      <div class="request-layout" style="display:grid;grid-template-columns:1fr 340px;gap:4rem;align-items:start">
 
-        <form id="validationForm" class="form-card form-grid" action="https://formspree.io/f/mbdwrbwg" method="POST">
-          <div class="field">
-            <label for="company">Company Name *</label>
-            <input type="text" id="company" name="company" required placeholder="Acme Health AI"/>
-          </div>
-          <div class="field">
-            <label for="name">Contact Name *</label>
-            <input type="text" id="name" name="name" required placeholder="Jane Smith"/>
-          </div>
-          <div class="field">
-            <label for="email">Contact Email *</label>
-            <input type="email" id="email" name="email" required placeholder="jane@example.com"/>
-          </div>
-          <div class="field">
-            <label for="tier">Target Validation Level *</label>
-            <select id="tier" name="tier" required>
-              <option value="">Select a tier…</option>
-              <option value="L1">L1 Baseline — self-attestation</option>
-              <option value="L2">L2 Operational — production evidence</option>
-              <option value="L3">L3 Enterprise — independent audit</option>
-            </select>
-          </div>
-          <div class="field full-width">
-            <label for="description">Brief description of your AI voice agent system *</label>
-            <textarea id="description" name="description" rows="5" required placeholder="What does your system do? What healthcare administrative workflows does it handle?"></textarea>
-            <span class="field-hint">Describe the call types, payer workflows, and any identity disclosure mechanisms already in place.</span>
-          </div>
-          <div class="field full-width">
-            <label for="notes">Additional notes</label>
-            <textarea id="notes" name="notes" rows="4" placeholder="Anything else that would help with the validation review."></textarea>
-          </div>
-          <div class="full-width" style="display:flex;gap:1rem;flex-wrap:wrap">
-            <button class="cta-button" type="submit" style="border:none;cursor:pointer">Submit request →</button>
-            <a class="secondary-button" href="/validation.html">Back to Validation</a>
-          </div>
-        </form>
+        <div class="form-wrap" style="max-width:none">
+          <form id="validationForm" action="https://formspree.io/f/mbdwrbwg" method="POST">
 
-        <div style="display:flex;flex-direction:column;gap:1.25rem">
-          <div class="content-card">
-            <h3>L1 Baseline</h3>
-            <p>Self-attestation + internal logs. Good starting point for most organizations.</p>
-          </div>
-          <div class="content-card">
-            <h3>L2 Operational</h3>
-            <p>30+ days production records, DFR &lt; 2%, evidence package review.</p>
-          </div>
-          <div class="content-card">
-            <h3>L3 Enterprise</h3>
-            <p>Independent auditor required. <a href="mailto:validation@nhid-clinical.org" style="color:var(--blue);font-weight:600">Contact us first.</a></p>
-          </div>
-          <div class="content-card">
-            <h3>Questions?</h3>
-            <p><a href="mailto:validation@nhid-clinical.org" style="color:var(--blue);font-weight:600">validation@nhid-clinical.org</a></p>
-          </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+              <div class="form-group">
+                <label for="company">Company Name <span aria-hidden="true">*</span></label>
+                <input type="text" id="company" name="company" required placeholder="Acme Health AI"/>
+              </div>
+              <div class="form-group">
+                <label for="name">Contact Name <span aria-hidden="true">*</span></label>
+                <input type="text" id="name" name="name" required placeholder="Jane Smith"/>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+              <div class="form-group">
+                <label for="email">Contact Email <span aria-hidden="true">*</span></label>
+                <input type="email" id="email" name="email" required placeholder="jane@example.com"/>
+              </div>
+              <div class="form-group">
+                <label for="tier">Target Validation Level <span aria-hidden="true">*</span></label>
+                <select id="tier" name="tier" required>
+                  <option value="">Select a tier…</option>
+                  <option value="L1">L1 Baseline — self-attestation</option>
+                  <option value="L2">L2 Operational — production evidence</option>
+                  <option value="L3">L3 Enterprise — independent audit</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Brief description of your AI voice agent system <span aria-hidden="true">*</span></label>
+              <textarea id="description" name="description" rows="5" required placeholder="What does your system do? What healthcare administrative workflows does it handle?"></textarea>
+              <span class="field-hint">Describe the call types, payer workflows, and any identity disclosure mechanisms already in place.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="notes">Additional notes</label>
+              <textarea id="notes" name="notes" rows="4" placeholder="Anything else that would help with the validation review."></textarea>
+            </div>
+
+            <div class="btn-group" style="margin-top:.5rem">
+              <button class="btn-primary" type="submit">Submit Request →</button>
+              <a class="btn-secondary" href="/validation/">Back to Validation</a>
+            </div>
+
+          </form>
         </div>
+
+        <aside>
+          <div class="card" style="margin-bottom:1.25rem">
+            <h3>Before you submit</h3>
+            <p>Review the five CTS conformance tests to confirm your system is ready for validation at your target tier.</p>
+            <a class="card-link" href="/conformance.html">View CTS tests →</a>
+          </div>
+          <div class="card" style="margin-bottom:1.25rem">
+            <h3>Tier guidance</h3>
+            <p><strong>L1</strong> — self-attestation, internal logs. Good starting point for most.</p>
+            <p style="margin-top:.5rem"><strong>L2</strong> — 30+ days production records, DFR &lt; 2%.</p>
+            <p style="margin-top:.5rem"><strong>L3</strong> — independent auditor required. Contact us first.</p>
+            <a class="card-link" href="/certification.html">Compare tiers →</a>
+          </div>
+          <div class="card">
+            <h3>Questions?</h3>
+            <p>Email us before submitting if you're unsure about tier requirements or evidence packaging.</p>
+            <a class="card-link" href="mailto:validation@nhid-clinical.org">validation@nhid-clinical.org</a>
+          </div>
+        </aside>
 
       </div>
     </div>
@@ -176,6 +169,7 @@
       <a href="mailto:help@nhid-clinical.org">Help</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
     </div>
+    <p class="footer-copy">© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0. Published NIST public comment: NIST-2025-0035-0026 | validation@nhid-clinical.org | nhid-clinical.org</p>
   </div>
 </footer>
 
