@@ -977,6 +977,12 @@ p { margin: 0; }
 
 [data-theme="dark"] .hero-art img { mix-blend-mode: screen; opacity: 0.85; }
 
+/* Theme-aware image pairs: show light in light mode, dark in dark mode */
+.theme-img-dark { display: none; }
+[data-theme="dark"] .theme-img-light { display: none; }
+[data-theme="dark"] .theme-img-dark { display: block; }
+[data-theme="dark"] .hero-art .theme-img-dark { mix-blend-mode: normal; opacity: 1; }
+
 [data-theme="dark"] .floating-note {
   background: rgba(10, 25, 45, 0.92);
   border-color: rgba(30, 80, 120, 0.6);
