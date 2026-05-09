@@ -197,6 +197,19 @@ p { margin: 0; }
   transform: scaleX(1);
 }
 
+/* nav layer separator */
+.nav-sep {
+  display: inline-block;
+  width: 1px;
+  height: 1.05rem;
+  background: var(--line);
+  margin: 0 0.3rem;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+[data-theme="dark"] .nav-sep { background: rgba(30, 65, 100, 0.65); }
+
 .nav-actions {
   display: flex;
   align-items: center;
