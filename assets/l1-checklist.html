@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>NHID-Clinical L1 Evidence Checklist</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Raleway', system-ui, sans-serif;
+      font-size: 11pt;
+      line-height: 1.55;
+      color: #1a2a3a;
+      background: #fff;
+      padding: 2.5rem 3rem;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .doc-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      border-bottom: 3px solid #0b6ebc;
+      padding-bottom: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .doc-header-brand { font-size: 1.15rem; font-weight: 800; color: #082a5b; letter-spacing: -0.03em; }
+    .doc-header-sub { font-size: 0.75rem; color: #5d6b7a; margin-top: 0.2rem; }
+    .doc-header-badge {
+      background: #0b6ebc;
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.65rem;
+      border-radius: 4px;
+    }
+
+    h1 { font-size: 1.3rem; font-weight: 800; color: #082a5b; letter-spacing: -0.03em; margin-bottom: 0.4rem; }
+    .doc-intro { font-size: 0.85rem; color: #5d6b7a; margin-bottom: 1.75rem; line-height: 1.65; }
+
+    .checklist-table { width: 100%; border-collapse: collapse; }
+    .checklist-table th {
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #5d6b7a;
+      padding: 0.5rem 0.75rem;
+      background: #eaf5fb;
+      border-bottom: 2px solid #c8e0ec;
+    }
+
+    .checklist-table td {
+      padding: 0.85rem 0.75rem;
+      vertical-align: top;
+      border-bottom: 1px solid #d8eaf5;
+      font-size: 0.85rem;
+    }
+
+    .check-cell { width: 2rem; text-align: center; }
+
+    .checkbox {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #0b6ebc;
+      border-radius: 3px;
+    }
+
+    .item-num {
+      width: 1.6rem;
+      height: 1.6rem;
+      background: #188eaa;
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 800;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .item-title { font-weight: 700; color: #082a5b; display: block; margin-bottom: 0.25rem; }
+    .item-desc { color: #5d6b7a; font-size: 0.8rem; line-height: 1.6; }
+    .optional-tag {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #188eaa;
+      background: rgba(24,142,170,0.1);
+      padding: 0.08rem 0.35rem;
+      border-radius: 3px;
+      margin-left: 0.4rem;
+    }
+
+    .attestation-section {
+      margin-top: 2rem;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid #c8e0ec;
+      border-left: 4px solid #0b6ebc;
+      border-radius: 6px;
+      background: #f8fbfd;
+    }
+
+    .attestation-section h2 {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #082a5b;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .attestation-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      margin-bottom: 0.6rem;
+      font-size: 0.82rem;
+      color: #5d6b7a;
+    }
+
+    .sig-line { border-bottom: 1px solid #c8e0ec; height: 1.75rem; flex: 1; }
+
+    .doc-footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #d8eaf5;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: #8a9aaa;
+    }
+
+    @media print {
+      body { padding: 1.5rem 2rem; }
+      .no-print { display: none; }
+      a { text-decoration: none; color: inherit; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div>
+    <div class="doc-header-brand">NHID-Clinical</div>
+    <div class="doc-header-sub">Non-Human Identity Disclosure Standard for Healthcare Voice Workflows</div>
+  </div>
+  <div class="doc-header-badge">L1 Baseline</div>
+</div>
+
+<h1>L1 Minimum Evidence Checklist</h1>
+<p class="doc-intro">Use this checklist to prepare your L1 validation submission. All four items are required (item 4 is strongly encouraged but optional during the pilot program). Submit completed evidence to <strong>validation@nhid-clinical.org</strong> after requesting validation at nhid-clinical.org/validation.html.</p>
+
+<table class="checklist-table">
+  <thead>
+    <tr>
+      <th class="check-cell">Done</th>
+      <th style="width:2.5rem">#</th>
+      <th>Evidence Item</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="check-cell"><span class="checkbox" aria-label="checkbox"></span></td>
+      <td><span class="item-num">1</span></td>
+      <td>
+        <span class="item-title">Transcript or call log with disclosure timestamp</span>
+        <span class="item-desc">Sample call transcript or structured log showing non-human identity disclosure before first data request (NPI, member ID, claim number, or any identifier). Timestamp granularity to the second preferred. At least one representative sample required; 3–5 samples recommended.</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="check-cell"><span class="checkbox" aria-label="checkbox"></span></td>
+      <td><span class="item-num">2</span></td>
+      <td>
+        <span class="item-title">Prompt or flow documentation (version-controlled)</span>
+        <span class="item-desc">The agent's opening script or decision flow in a version-controlled record. A Git commit hash, internal version number, or document revision date is sufficient. Must show the disclosure is systematic — not incidental — and was in effect during the sampled calls.</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="check-cell"><span class="checkbox" aria-label="checkbox"></span></td>
+      <td><span class="item-num">3</span></td>
+      <td>
+        <span class="item-title">Signed self-attestation declaration</span>
+        <span class="item-desc">Completed attestation form (template provided after validation request) confirming your system meets all five CTS requirements (IDG-01 through ATR-01) as of submission date. Must be signed by an authorized representative of the submitting organization.</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="check-cell"><span class="checkbox" aria-label="checkbox"></span></td>
+      <td><span class="item-num">4</span></td>
+      <td>
+        <span class="item-title">Audio sample — first 30 seconds <span class="optional-tag">Optional · Pilot</span></span>
+        <span class="item-desc">Representative audio recording from call connect through first data solicitation. Optional during the pilot program. MP3, WAV, or secure shared link accepted. Strongly encouraged when transcript evidence alone is limited or ambiguous.</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="attestation-section">
+  <h2>Submission Information</h2>
+  <div class="attestation-row">
+    <span style="width:9rem;flex-shrink:0;font-weight:600;color:#082a5b">Organization:</span>
+    <span class="sig-line"></span>
+  </div>
+  <div class="attestation-row">
+    <span style="width:9rem;flex-shrink:0;font-weight:600;color:#082a5b">Contact name:</span>
+    <span class="sig-line"></span>
+  </div>
+  <div class="attestation-row">
+    <span style="width:9rem;flex-shrink:0;font-weight:600;color:#082a5b">Contact email:</span>
+    <span class="sig-line"></span>
+  </div>
+  <div class="attestation-row">
+    <span style="width:9rem;flex-shrink:0;font-weight:600;color:#082a5b">Target tier:</span>
+    <span style="font-size:.82rem;color:#082a5b;font-weight:700;margin-right:1.5rem">☐ L1</span>
+    <span style="font-size:.82rem;color:#5d6b7a;margin-right:1.5rem">☐ L2</span>
+    <span style="font-size:.82rem;color:#5d6b7a">☐ L3</span>
+  </div>
+  <div class="attestation-row">
+    <span style="width:9rem;flex-shrink:0;font-weight:600;color:#082a5b">Submission date:</span>
+    <span class="sig-line"></span>
+  </div>
+</div>
+
+<div class="doc-footer">
+  <span>NHID-Clinical v1.3 &nbsp;·&nbsp; CC BY 4.0 &nbsp;·&nbsp; NIST-2025-0035-0026</span>
+  <span>validation@nhid-clinical.org &nbsp;·&nbsp; nhid-clinical.org</span>
+</div>
+
+<p class="no-print" style="margin-top:2rem;font-size:.8rem;color:#8a9aaa;text-align:center">
+  <a href="javascript:window.print()" style="color:#0b6ebc;font-weight:600">Print this checklist</a> &nbsp;·&nbsp;
+  <a href="/certification.html" style="color:#0b6ebc">Back to Certification →</a>
+</p>
+
+</body>
+</html>
