@@ -123,8 +123,9 @@
 
         <div class="faq-item">
           <h3>What's the core problem it solves?</h3>
-          <p><strong>Impersonation latency</strong> — the 2–5 minutes call center staff waste verifying whether Dr. Smith's office is human or AI before sharing operational data.</p>
-          <p><strong>Real example:</strong> AI asks for member ID → you disclose → 3 minutes later it reveals it's automated. Data already shared.</p>
+          <p><strong>Impersonation latency</strong> — the gap between when an AI voice agent begins a call and when staff realize they are not speaking to a human.</p>
+          <p><strong>The specific pattern:</strong> An AI calls as "Sarah from Dr. Smith's office," collects NPI and member ID over 3–5 minutes of normal-sounding workflow, then admits "I'm an automated system" only when the rep gets suspicious. By then, protected operational data has been exchanged with an undisclosed system — no consent given, no audit trail.</p>
+          <p style="margin-top:.5rem">This is the pattern NHID-Clinical was built to prevent. It fails three CTS tests simultaneously: <strong>IDG-01</strong> (no upfront disclosure), <strong>PDX-01</strong> (data before disclosure), and <strong>DBC-01</strong> (human name, no AI qualifier).</p>
         </div>
 
         <div class="faq-item">
