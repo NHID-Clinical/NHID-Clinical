@@ -2666,3 +2666,88 @@ textarea { resize: vertical; min-height: 120px; }
 }
 
 @media (max-width: 720px) { .positioning-grid { grid-template-columns: 1fr; } }
+
+/* ── Impersonation latency dialogue transcript ───────────────────────────── */
+.script-fail-severe-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #991b1b;
+  background: rgba(220,38,38,0.1);
+  border: 1px solid rgba(220,38,38,0.3);
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+}
+
+.script-dialogue {
+  border-left: 3px solid #dc2626;
+  background: rgba(220,38,38,0.05);
+  border-radius: 0 0.65rem 0.65rem 0;
+  padding: 1rem 1.25rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.dialogue-turn {
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.dialogue-speaker {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.dialogue-speaker-agent { color: #dc2626; }
+.dialogue-speaker-rep   { color: var(--body); }
+
+.dialogue-text-agent {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.dialogue-text-rep {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.dialogue-system-note {
+  display: block;
+  font-size: 0.78rem;
+  font-style: normal;
+  color: var(--body);
+  background: rgba(0,0,0,0.04);
+  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+  margin-top: 0.1rem;
+}
+
+.script-fail-multi {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--body);
+  line-height: 1.65;
+  padding: 0.75rem 1rem;
+  background: rgba(220,38,38,0.06);
+  border-radius: 0.5rem;
+}
+
+.script-fail-multi strong { color: #991b1b; }
+
+[data-theme="dark"] .script-dialogue { background: rgba(80,10,10,0.3); }
+[data-theme="dark"] .dialogue-system-note { background: rgba(255,255,255,0.04); }
+[data-theme="dark"] .script-fail-multi { background: rgba(80,10,10,0.25); }
+[data-theme="dark"] .script-fail-severe-label {
+  background: rgba(220,38,38,0.18);
+  border-color: rgba(220,38,38,0.4);
+  color: #fca5a5;
+}
