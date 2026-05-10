@@ -28,6 +28,7 @@
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/conformance.html">Conformance</a>
+      <a href="/script-examples.html">Script Examples</a>
       <a href="/certification.html">Certification</a>
       <a href="/validation.html">Validation</a>
       <span class="nav-sep" aria-hidden="true"></span>
@@ -70,6 +71,7 @@
   <a href="/">Home</a>
   <a href="/about.html">About</a>
   <a href="/conformance.html">Conformance</a>
+  <a href="/script-examples.html">Script Examples</a>
   <a href="/specification.html">Specification</a>
   <a href="/#download">Download</a>
   <a href="/certification.html">Certification</a>
@@ -192,6 +194,50 @@
           <h3>Registry listing (v1.4+)</h3>
           <p>L3 certified organizations will be listed in the public NHID-Clinical registry for payer verification. Planned for v1.4+.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" id="l1-checklist">
+    <div class="container">
+      <p class="section-kicker">L1 evidence</p>
+      <h2>L1 Minimum Evidence Checklist</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:44rem">To submit for L1 validation, provide the following items. L1 is self-attestation — no external audit required. All evidence is reviewed internally by NHID-Clinical before certification is issued.</p>
+
+      <div class="checklist-section">
+        <div class="checklist-item">
+          <div class="checklist-num" aria-hidden="true">1</div>
+          <div>
+            <strong>Transcript or call log showing disclosure timestamp</strong>
+            <p>A sample call transcript or structured log demonstrating that the non-human identity disclosure occurs before the first data request (NPI, member ID, claim number, or any identifier). Timestamp granularity to the second preferred.</p>
+          </div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-num" aria-hidden="true">2</div>
+          <div>
+            <strong>Prompt or flow documentation</strong>
+            <p>Documentation of the agent's opening script or decision flow — the version-controlled record that governs what the agent says. A Git commit hash, version number, or equivalent record is sufficient. Demonstrates the disclosure is systematic, not incidental.</p>
+          </div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-num" aria-hidden="true">3</div>
+          <div>
+            <strong>Signed self-attestation declaration</strong>
+            <p>A completed attestation form confirming that your system meets the five CTS requirements (IDG-01 through ATR-01) as of the submission date. Template is provided after you submit a validation request — it maps each CTS test to a yes/no declaration and a supporting evidence reference.</p>
+          </div>
+        </div>
+        <div class="checklist-item">
+          <div class="checklist-num" aria-hidden="true">4</div>
+          <div>
+            <strong>Audio sample of first 30 seconds <span class="checklist-optional">Optional — Pilot</span></strong>
+            <p>A representative audio recording of the agent's opening — from call connect through the first data solicitation. Audio review is optional during the pilot program but strongly encouraged for L1 submissions where transcript evidence is limited.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:1rem;margin-top:1.75rem;flex-wrap:wrap;align-items:center">
+        <a href="/assets/l1-checklist.html" class="outline-link" target="_blank">View printable checklist →</a>
+        <span style="font-size:.85rem;color:var(--body)">Self-attestation form template sent after validation request is submitted.</span>
       </div>
     </div>
   </section>

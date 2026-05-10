@@ -2337,3 +2337,332 @@ textarea { resize: vertical; min-height: 120px; }
 .spec-example-compliant, .spec-example-noncompliant {
   transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
+
+/* ── Expected Impact card ────────────────────────────────────────────────── */
+.impact-section {
+  padding-block: 2.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.impact-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+  padding: 2rem 2.25rem;
+  border: 1px solid rgba(11,110,188,0.2);
+  border-left: 4px solid var(--blue);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, var(--blue-soft) 0%, rgba(248,252,254,0.4) 100%);
+}
+
+.impact-card-main h2 {
+  font-family: var(--display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0.5rem 0 0.875rem;
+}
+
+.impact-metrics {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.impact-metric {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(11,110,188,0.15);
+  border-radius: 0.65rem;
+}
+
+.impact-metric-icon {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.impact-metric-icon.green { background: #059669; }
+.impact-metric-icon.teal  { background: var(--teal); }
+
+.impact-metric-body strong {
+  display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+
+.impact-metric-body span { font-size: 0.83rem; color: var(--body); line-height: 1.5; }
+
+.impact-green-lane {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: rgba(5,150,105,0.07);
+  border: 1px solid rgba(5,150,105,0.2);
+  border-left: 3px solid #059669;
+  border-radius: 0 0.65rem 0.65rem 0;
+  font-size: 0.875rem;
+  color: var(--body);
+  line-height: 1.65;
+}
+
+.impact-green-lane strong { color: #059669; }
+
+.impact-footnote {
+  margin-top: 0.875rem;
+  font-size: 0.77rem;
+  color: var(--body);
+  opacity: 0.75;
+}
+
+@media (max-width: 800px) {
+  .impact-card { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+
+[data-theme="dark"] .impact-card {
+  background: linear-gradient(135deg, rgba(10,25,48,0.8) 0%, rgba(9,21,36,0.5) 100%);
+  border-color: rgba(30,80,120,0.4);
+}
+
+[data-theme="dark"] .impact-metric {
+  background: rgba(9,21,36,0.65);
+  border-color: rgba(30,80,120,0.35);
+}
+
+[data-theme="dark"] .impact-green-lane {
+  background: rgba(5,80,50,0.2);
+  border-color: rgba(5,150,105,0.3);
+}
+
+/* ── Script Examples page ────────────────────────────────────────────────── */
+.script-example-block {
+  margin-bottom: 1.5rem;
+}
+
+.script-example-block h4 {
+  font-family: var(--display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-soft);
+  margin: 0 0 0.5rem;
+}
+
+.script-quote {
+  padding: 1rem 1.25rem;
+  border-radius: 0 0.65rem 0.65rem 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.script-quote-pass {
+  border-left: 3px solid #059669;
+  background: rgba(16,163,108,0.06);
+}
+
+.script-quote-fail {
+  border-left: 3px solid #dc2626;
+  background: rgba(220,38,38,0.05);
+}
+
+.script-fail-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #dc2626;
+  font-style: normal;
+  margin-bottom: 0.4rem;
+}
+
+.script-fail-reason {
+  display: block;
+  font-style: normal;
+  font-size: 0.78rem;
+  color: var(--body);
+  margin-top: 0.5rem;
+}
+
+.out-of-scope-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.out-of-scope-list li {
+  padding: 0.75rem 1rem;
+  background: var(--mist);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--body);
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.out-of-scope-list li::before {
+  content: "—";
+  color: var(--body);
+  opacity: 0.45;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .out-of-scope-list li {
+  background: rgba(9,21,36,0.55);
+  border-color: rgba(30,65,100,0.5);
+}
+
+[data-theme="dark"] .script-quote-pass { background: rgba(5,80,50,0.25); }
+[data-theme="dark"] .script-quote-fail { background: rgba(60,10,10,0.3); }
+
+/* ── L1 Evidence Checklist ───────────────────────────────────────────────── */
+.checklist-section {
+  padding: 2rem 2.25rem;
+  border: 1px solid rgba(11,110,188,0.2);
+  border-left: 4px solid var(--teal);
+  border-radius: 1rem;
+  background: var(--blue-soft);
+  margin-top: 2rem;
+}
+
+.checklist-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(11,110,188,0.12);
+}
+
+.checklist-item:last-child { border-bottom: none; }
+
+.checklist-num {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.checklist-item strong {
+  display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+.checklist-item p {
+  font-size: 0.87rem;
+  color: var(--body);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.checklist-optional {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal);
+  background: rgba(24,142,170,0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  margin-left: 0.5rem;
+}
+
+[data-theme="dark"] .checklist-section {
+  background: rgba(9,21,36,0.65);
+  border-color: rgba(24,142,170,0.3);
+}
+
+[data-theme="dark"] .checklist-item { border-bottom-color: rgba(25,60,95,0.5); }
+
+/* ── What NHID-Clinical Does (about page) ────────────────────────────────── */
+.positioning-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  margin-top: 1.75rem;
+  align-items: start;
+}
+
+.positioning-not-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.positioning-not-list li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--body);
+  line-height: 1.6;
+}
+
+.positioning-not-list li::before {
+  content: "✗";
+  color: var(--body);
+  opacity: 0.5;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.positioning-does-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.positioning-does-list li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--body);
+  line-height: 1.6;
+}
+
+.positioning-does-list li::before {
+  content: "✓";
+  color: var(--teal);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+@media (max-width: 720px) { .positioning-grid { grid-template-columns: 1fr; } }
