@@ -27,10 +27,8 @@
       <a href="/">Home</a>
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/conformance.html">Conformance</a>
+      <a href="/conformance.html">Proposed Requirements</a>
       <a href="/script-examples.html">Script Examples</a>
-      <a href="/certification.html">Certification</a>
-      <a href="/validation.html">Validation</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/specification.html">Specification</a>
       <a href="/#download">Download</a>
@@ -47,7 +45,7 @@
         <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="primary-pill" href="/validation.html">Get Involved</a>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -70,12 +68,10 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/conformance.html">Conformance</a>
+  <a href="/conformance.html">Proposed Requirements</a>
   <a href="/script-examples.html">Script Examples</a>
   <a href="/specification.html">Specification</a>
   <a href="/#download">Download</a>
-  <a href="/certification.html">Certification</a>
-  <a href="/validation.html">Validation</a>
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
   <a href="/faq.html">FAQ</a>
@@ -93,14 +89,15 @@
   <section class="hero-section">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot"></span>Pilot validation program now live</p>
         <h1>NHID-Clinical</h1>
-        <p class="hero-subtitle">Non-human identity disclosure standard for healthcare voice calls.</p>
-        <p class="hero-body">NHID-Clinical requires AI callers to identify themselves, prove authorization, and leave an auditable trail before exchanging patient data.</p>
-        <div class="hero-actions">
-          <a class="cta-button" href="/validation.html">Request NHID-Clinical validation <span aria-hidden="true">→</span></a>
+        <p class="hero-subtitle">An open proposal for transparent AI voice agents in healthcare payer–provider calls.</p>
+        <p class="hero-body">NHID-Clinical proposes that AI voice agents clearly identify themselves as non-human, verify authorization, and create an auditable trail before exchanging operational data in B2B workflows — claims, eligibility, prior auth, and similar interactions.</p>
+        <div class="hero-notice" role="note">Initiated by Brianna Baynard-Malone. This is <strong>not</strong> an official standard, accredited certification body, or regulatory requirement. It is a voluntary open governance proposal open for feedback, testing, and early adoption.</div>
+        <div class="hero-actions" style="flex-wrap:wrap;gap:.75rem">
+          <a class="cta-button" href="/conformance.html">View the Proposed Requirements <span aria-hidden="true">→</span></a>
+          <a class="secondary-button" href="/script-examples.html">See Script Examples <span aria-hidden="true">→</span></a>
         </div>
-        <p class="hero-helper">Pilot program for payers, vendors, and health systems using AI voice agents in claims, eligibility, or prior auth.</p>
+        <p class="hero-helper"><a href="/specification.html" style="color:var(--blue);font-weight:600">Read the full proposal →</a></p>
       </div>
       <div class="hero-art" aria-label="NHID-Clinical logo">
         <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure Standard for Trusted Healthcare Voice AI" />
@@ -115,48 +112,9 @@
         <div class="nist-gov-badge" aria-hidden="true">NIST</div>
         <div>
           <p class="eyebrow">NIST AI Safety Institute Submission</p>
-          <h2 class="nist-heading">NHID-Clinical Submitted as Federal Governance Standard</h2>
-          <p class="nist-body">NHID-Clinical was submitted to the National Institute of Standards and Technology as a governance standard for healthcare voice AI. The submission addresses impersonation latency through mandatory pre-data-exchange disclosure controls for AI voice agents in B2B payer–provider workflows.</p>
+          <h2 class="nist-heading">NHID-Clinical Submitted as a Public Comment to NIST</h2>
+          <p class="nist-body">NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security), proposing a voluntary governance framework for healthcare voice AI disclosure. This is a voluntary industry proposal designed to complement — not replace — existing rules around HIPAA, TCPA, and emerging AI transparency guidelines.</p>
           <p class="nist-meta">NIST Docket: NIST-2025-0035-0026 &nbsp;·&nbsp; Submitted: January 12, 2026</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="impact-section">
-    <div class="container">
-      <div class="impact-card">
-        <div class="impact-card-main">
-          <p class="eyebrow">Expected Impact</p>
-          <h2>What changes when AI callers disclose upfront.</h2>
-          <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem">A mid-sized payer processing 5,000 AI voice calls per month could see measurable operational improvements within the first 90 days of adoption.</p>
-          <div class="impact-green-lane">
-            <strong>Green Lane Benefit:</strong> Compliant calls get faster handling by providers who trust transparent workflows — bypassing the "are you human?" challenge cycle entirely.
-          </div>
-          <p class="impact-footnote">Projections based on industry admin waste benchmarks. Pilot data available under NDA.</p>
-        </div>
-        <div class="impact-metrics">
-          <div class="impact-metric">
-            <div class="impact-metric-icon green" aria-hidden="true">↓</div>
-            <div class="impact-metric-body">
-              <strong>Disclosure Failure Rate: 15–25% → &lt;2%</strong>
-              <span>DFR measures how often agents fail to disclose before a data request. NHID-Clinical conformance targets sub-2% DFR for L2 certification.</span>
-            </div>
-          </div>
-          <div class="impact-metric">
-            <div class="impact-metric-icon teal" aria-hidden="true">⏱</div>
-            <div class="impact-metric-body">
-              <strong>~120 staff hours saved per month</strong>
-              <span>Fewer "are you human?" challenge cycles per rep per shift, compounded across a full operations team over 30 days.</span>
-            </div>
-          </div>
-          <div class="impact-metric">
-            <div class="impact-metric-icon" aria-hidden="true">🛡</div>
-            <div class="impact-metric-body">
-              <strong>Reduced PHI exposure in the first 10 seconds</strong>
-              <span>Impersonation latency creates a window where protected operational data is shared before identity is confirmed. Upfront disclosure closes that window.</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -165,9 +123,9 @@
   <section class="split-section white-section">
     <div class="container">
       <div class="section-heading">
-        <p class="section-kicker">The governance layer</p>
-        <h2>Governance Infrastructure for Voice AI Platforms</h2>
-        <p>NHID-Clinical defines the behavioral requirements healthcare voice agents must meet — disclosure timing, authorization verification, and escalation protocols. Voice platforms provide the engine. NHID-Clinical provides the safety layer. Platforms built to meet NHID-Clinical standards can demonstrate legitimate, auditable workflows that payers and providers can trust.</p>
+        <p class="section-kicker">The proposal</p>
+        <h2>A shared framework for transparent voice AI workflows</h2>
+        <p>NHID-Clinical proposes behavioral requirements for AI voice agents in healthcare — disclosure timing, authorization verification, and escalation protocols. The goal is a shared vocabulary that payers, providers, and platforms can reference when evaluating AI caller behavior.</p>
       </div>
     </div>
   </section>
@@ -216,9 +174,9 @@
     </article>
     <article class="standard-card tone-indigo">
       <div class="card-icon" aria-hidden="true">◇</div>
-      <h2>Certification Framework</h2>
-      <p>Enable conformance review and certification to demonstrate compliance with NHID-Clinical standards.</p>
-      <a href="/certification.html">Learn About Certification <span aria-hidden="true">→</span></a>
+      <h2>Script Examples</h2>
+      <p>See compliant and non-compliant script patterns to understand how disclosure requirements apply in real call scenarios.</p>
+      <a href="/script-examples.html">View Script Examples <span aria-hidden="true">→</span></a>
     </article>
   </section>
 
@@ -234,7 +192,7 @@
       <div>
         <p class="section-kicker">What problem does this solve?</p>
         <h2>Reduce impersonation latency before sensitive workflow data is exchanged.</h2>
-        <p>NHID-Clinical defines a minimum control baseline for AI voice agents in B2B healthcare administrative workflows. The standard gives payers, providers, and platforms a shared way to disclose automation, verify authorization, and escalate to a human when needed.</p>
+        <p>NHID-Clinical defines a minimum control baseline for AI voice agents in B2B healthcare administrative workflows. This proposal gives payers, providers, and platforms a shared way to disclose automation, verify authorization, and escalate to a human when needed.</p>
       </div>
       <div class="problem-panel">
         <div>AI voice call enters the workflow</div>
@@ -263,25 +221,6 @@
     </div>
   </section>
 
-  <section class="split-section blue-section">
-    <div class="container split-grid reverse">
-      <div class="image-card badge-card">
-        <img class="theme-img theme-img-light" src="/assets/badges-light.jpg" alt="NHID-Clinical L1 Verified, L2 Certified, L3 Trust Certified badges" />
-        <img class="theme-img theme-img-dark" src="/assets/badges-dark.jpg" alt="NHID-Clinical L1 Verified, L2 Certified, L3 Trust Certified badges" />
-      </div>
-      <div>
-        <p class="section-kicker">Certification framework</p>
-        <h2>Make legitimate AI callers recognizable and reviewable.</h2>
-        <p>The standard separates enforceable requirements from recommended practices and future registry architecture, allowing organizations to adopt a practical baseline while preparing for deeper verification layers.</p>
-        <div class="tier-grid">
-          <div><strong>L1</strong><span>Disclosure baseline</span></div>
-          <div><strong>L2</strong><span>Authorization review</span></div>
-          <div><strong>L3</strong><span>Registry-ready controls</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section id="download" class="download-section">
     <div class="container">
       <div class="download-cards">
@@ -304,11 +243,11 @@
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Pilot validation</p>
-        <h2>Help define what acceptable healthcare AI voice calls look like.</h2>
-        <p>First validations are offered at no cost for AI voice agent platforms in healthcare. The pilot helps organizations demonstrate disclosure, authorization, and escalation controls.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Help shape what this proposal becomes.</h2>
+        <p>NHID-Clinical is an early-stage open governance proposal. If you work in healthcare voice AI — as a payer, provider, or platform — your feedback and implementation experience will directly improve it.</p>
       </div>
-      <a class="closing-button" href="/validation.html">Request Validation →</a>
+      <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>
