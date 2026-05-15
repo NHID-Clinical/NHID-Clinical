@@ -226,12 +226,20 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
         <div>
           <div class="problem-panel" style="font-size:.9rem">
-            <div style="font-weight:700;color:var(--ink)">AI calls as “Sarah from Dr. Smith’s office.”</div>
-            <div class="warn">The payer representative collects the NPI, member ID, and other workflow details over 3–5 minutes of normal‑sounding conversation.</div>
-            <div class="warn">The rep becomes suspicious and asks, “Wait — are you an AI?”</div>
-            <div class="warn">The agent discloses only when directly challenged: “Yes, I’m an automated system.”</div>
-            <div class="warn">At that point, NPI, member ID, and potentially other patient‑identifiable data have already been disclosed to an undisclosed system, with no informed consent and no reliable audit trail.</div>
+            <div style="font-weight:700;color:var(--ink)">AI calls as "Sarah from Dr. Smith's office"</div>
+            <div class="warn">The payer representative provides NPI, member ID, and workflow details over 3–5 minutes of normal-sounding conversation</div>
+            <div class="warn">Rep becomes suspicious: "Wait — are you an AI?"</div>
+            <div class="warn">Agent discloses only when directly challenged: "Yes, I'm an automated system."</div>
+            <div class="warn" style="line-height:1.7">Already disclosed to an undisclosed system, with no informed consent and no audit trail:
+              <ul style="list-style:disc;padding-left:1.25rem;margin-top:.5rem;color:inherit">
+                <li>National Provider Identifier (NPI)</li>
+                <li>Member ID</li>
+                <li>Date of service or claim details</li>
+                <li>Potentially other patient-identifiable workflow data</li>
+              </ul>
+            </div>
           </div>
+          <p style="font-size:.8rem;color:var(--body);margin-top:.75rem;line-height:1.6">No way to determine what the receiving system was authorized to access or retain.</p>
         </div>
         <div style="display:grid;gap:1rem">
           <div class="content-card" style="padding:1rem 1.25rem">
@@ -256,10 +264,10 @@
     <div class="container">
       <p class="section-kicker">Evidence requirements</p>
       <h2>What counts as proof</h2>
-      <p>Evidence requirements increase by level. All levels require L1 minimum evidence.</p>
+      <p>Evidence requirements increase by tier. All tiers require Tier 1 minimum evidence.</p>
       <div class="content-cards" style="margin-top:2rem">
         <div class="content-card">
-          <h3>L1 — Baseline (all levels)</h3>
+          <h3>Tier 1 — Minimum (all tiers)</h3>
           <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.95rem;line-height:1.7;margin-top:.5rem">
             <li>Transaction log showing disclosure timestamp vs. data request timestamp</li>
             <li>Script or prompt version control documentation</li>
@@ -267,7 +275,7 @@
           </ul>
         </div>
         <div class="content-card">
-          <h3>L2 — Operational (L2+)</h3>
+          <h3>Tier 2 — Recommended (L2+)</h3>
           <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.95rem;line-height:1.7;margin-top:.5rem">
             <li>30+ days of production call records</li>
             <li>Audio samples (first 30 seconds, subject to retention policy)</li>
@@ -275,7 +283,7 @@
           </ul>
         </div>
         <div class="content-card">
-          <h3>L3 — Enterprise (L3)</h3>
+          <h3>Tier 3 — Enterprise (L3)</h3>
           <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.95rem;line-height:1.7;margin-top:.5rem">
             <li>Independent third-party audit report</li>
             <li>Continuous monitoring evidence</li>

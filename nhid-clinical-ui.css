@@ -2751,3 +2751,13 @@ textarea { resize: vertical; min-height: 120px; }
   border-color: rgba(220,38,38,0.4);
   color: #fca5a5;
 }
+
+/* ── Hero helper text ────────────────────────────────────────────────────── */
+.hero-helper {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--body);
+  line-height: 1.65;
+  max-width: 30rem;
+  opacity: 0.85;
+}
