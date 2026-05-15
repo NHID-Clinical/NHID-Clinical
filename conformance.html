@@ -227,11 +227,19 @@
         <div>
           <div class="problem-panel" style="font-size:.9rem">
             <div style="font-weight:700;color:var(--ink)">AI calls as "Sarah from Dr. Smith's office"</div>
-            <div class="warn">Collects NPI and member ID over 3–5 minutes of normal-sounding workflow</div>
+            <div class="warn">The payer representative provides NPI, member ID, and workflow details over 3–5 minutes of normal-sounding conversation</div>
             <div class="warn">Rep becomes suspicious: "Wait — are you an AI?"</div>
-            <div class="warn">Agent admits: "Yes, I'm an automated system." — only when directly challenged</div>
-            <div class="warn">NPI and member ID already exposed to an undisclosed system. No consent. No audit trail.</div>
+            <div class="warn">Agent discloses only when directly challenged: "Yes, I'm an automated system."</div>
+            <div class="warn" style="line-height:1.7">Already disclosed to an undisclosed system, with no informed consent and no audit trail:
+              <ul style="list-style:disc;padding-left:1.25rem;margin-top:.5rem;color:inherit">
+                <li>National Provider Identifier (NPI)</li>
+                <li>Member ID</li>
+                <li>Date of service or claim details</li>
+                <li>Potentially other patient-identifiable workflow data</li>
+              </ul>
+            </div>
           </div>
+          <p style="font-size:.8rem;color:var(--body);margin-top:.75rem;line-height:1.6">No way to determine what the receiving system was authorized to access or retain.</p>
         </div>
         <div style="display:grid;gap:1rem">
           <div class="content-card" style="padding:1rem 1.25rem">
