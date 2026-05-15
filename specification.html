@@ -29,8 +29,6 @@
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/conformance.html">Conformance</a>
       <a href="/script-examples.html">Script Examples</a>
-      <a href="/certification.html">Certification</a>
-      <a href="/validation.html">Validation</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/specification.html" class="is-active">Specification</a>
       <a href="/#download">Download</a>
@@ -47,7 +45,7 @@
         <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="primary-pill" href="/validation.html">Get Involved</a>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -74,8 +72,6 @@
   <a href="/script-examples.html">Script Examples</a>
   <a href="/specification.html">Specification</a>
   <a href="/#download">Download</a>
-  <a href="/certification.html">Certification</a>
-  <a href="/validation.html">Validation</a>
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
   <a href="/faq.html">FAQ</a>
@@ -98,7 +94,7 @@
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>Specification</span></div>
         <p class="eyebrow">Full Standard · v1.3</p>
         <h1>NHID-Clinical v1.3 Specification</h1>
-        <p class="lede">Non-Human Identity Disclosure Standard for Healthcare Voice Workflows. The complete normative baseline for B2B payer–provider AI voice agent disclosure, conformance, and certification.</p>
+        <p class="lede">Non-Human Identity Disclosure Standard for Healthcare Voice Workflows. The proposed framework for B2B payer–provider AI voice agent disclosure, conformance, and implementation.</p>
         <nav class="spec-toc" aria-label="Jump to section">
           <a href="#abstract">Abstract &amp; Scope</a>
           <a href="#document-layers">Document Layers</a>
@@ -115,7 +111,7 @@
           <span class="spec-badge">CC BY 4.0</span>
           <span class="spec-badge">v1.3</span>
           <span class="spec-badge spec-badge-teal">HIPAA-Aligned</span>
-          <span class="spec-badge spec-badge-green">Validation Live</span>
+          <span class="spec-badge spec-badge-green">Open Proposal</span>
         </div>
         <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem">Published open standard. Normative requirements use RFC 2119 terminology (MUST / MUST NOT / SHOULD / MAY).</p>
         <a class="primary-pill" href="/#download" style="width:100%;justify-content:center;margin-bottom:.75rem">Download PDF →</a>
@@ -132,7 +128,7 @@
       <p class="section-kicker">Card 1 of 8</p>
       <span class="spec-section-icon" aria-hidden="true">🎯</span>
       <h2>Abstract &amp; Scope</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem"><strong>NHID-Clinical</strong> defines a minimum control baseline for non-human identity disclosure in B2B healthcare voice interactions. The standard addresses a documented gap between existing consumer-protection laws, healthcare privacy regulations, and real-world payer–provider administrative workflows. It specifically targets <strong>"Impersonation Latency"</strong> — the operational waste and security risk caused when a human provider representative cannot immediately distinguish an AI voice agent from a human counterpart.</p>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem"><strong>NHID-Clinical</strong> proposes a minimum control baseline for non-human identity disclosure in B2B healthcare voice interactions. The proposal addresses a documented gap between existing consumer-protection laws, healthcare privacy regulations, and real-world payer–provider administrative workflows. It specifically targets <strong>"Impersonation Latency"</strong> — the operational waste and security risk caused when a human provider representative cannot immediately distinguish an AI voice agent from a human counterpart.</p>
 
       <div class="content-cards" style="margin-top:2rem">
         <div class="content-card">
@@ -175,7 +171,7 @@
       <p class="section-kicker">Card 2 of 8</p>
       <span class="spec-section-icon" aria-hidden="true">📋</span>
       <h2>Document Layers</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem">This specification contains three distinct layers. Organizations claiming NHID-Clinical v1.3 conformance are required to meet all normative requirements (Layer 1) and encouraged to implement recommended practices (Layer 2). Informative content (Layer 3) is provided for context and future-proofing but is not required for certification.</p>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem">This proposal contains three distinct layers. Organizations adopting NHID-Clinical v1.3 should meet all normative requirements (Layer 1) and are encouraged to implement recommended practices (Layer 2). Informative content (Layer 3) is provided for context and future-proofing but is not required for conformance validation.</p>
 
       <div class="cert-tiers" style="margin-top:2rem">
         <div class="cert-card">
@@ -185,7 +181,7 @@
           <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.75;margin-top:.75rem">
             <li>Core disclosure rules (Sections 1–4)</li>
             <li>Conformance Test Suite (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01)</li>
-            <li>Certification tier requirements (L1 / L2 / L3)</li>
+            <li>Implementation level guidance (L1 / L2 / L3)</li>
           </ul>
         </div>
         <div class="cert-card">
@@ -444,8 +440,8 @@
     <div class="container">
       <p class="section-kicker">Card 5 of 8</p>
       <span class="spec-section-icon" aria-hidden="true">✅</span>
-      <h2>Conformance &amp; Certification</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem">NHID-Clinical v1.3 introduces a formal conformance test suite and tiered certification framework. All five CTS tests must pass for any certification tier.</p>
+      <h2>Proposed Conformance Test Suite</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:72ch;margin-top:1rem">NHID-Clinical v1.3 proposes a formal conformance test suite and implementation levels. All five CTS tests should pass for organizations adopting this framework.</p>
 
       <h3 style="color:var(--ink);margin:2rem 0 .75rem;font-size:1.2rem">Conformance Test Suite (CTS)</h3>
       <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">Five deterministic pass/fail tests. Hard fail on any single test equals non-conformance. <a href="/conformance.html" style="color:var(--blue);font-weight:700">View full CTS documentation →</a></p>
@@ -488,8 +484,8 @@
         </tbody>
       </table>
 
-      <h3 style="color:var(--ink);margin:1.5rem 0 .75rem;font-size:1.2rem">Certification Tiers</h3>
-      <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">All tiers require passing all five CTS tests. Tiers differ in evidence depth and verification method. <a href="/certification.html" style="color:var(--blue);font-weight:700">View full certification framework →</a></p>
+      <h3 style="color:var(--ink);margin:1.5rem 0 .75rem;font-size:1.2rem">Implementation Levels</h3>
+      <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">All levels require passing all five CTS tests. Levels differ in evidence depth and verification approach. Organizations can adopt the level that fits their operational readiness.</p>
 
       <div class="cert-tiers" style="margin-bottom:2rem">
         <div class="cert-card">
