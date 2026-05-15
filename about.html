@@ -27,7 +27,7 @@
       <a href="/">Home</a>
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/conformance.html">Conformance</a>
+      <a href="/conformance.html">Proposed Requirements</a>
       <a href="/script-examples.html">Script Examples</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/specification.html">Specification</a>
@@ -68,7 +68,7 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/conformance.html">Conformance</a>
+  <a href="/conformance.html">Proposed Requirements</a>
   <a href="/script-examples.html">Script Examples</a>
   <a href="/specification.html">Specification</a>
   <a href="/#download">Download</a>
@@ -106,24 +106,25 @@
     <div class="container">
       <p class="section-kicker">What it does</p>
       <h2>What NHID-Clinical Does</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:44rem;margin-bottom:1rem">NHID-Clinical is a voluntary governance standard focused on one specific problem: AI voice agents in healthcare workflows that solicit data before clearly disclosing they are non-human. This creates "impersonation latency" — the gap between call start and human realization, leading to hang-ups, trust breakdown, and potential PHI exposure.</p>
+      <div class="hero-notice" role="note" style="max-width:44rem;margin-bottom:1.5rem">Initiated by Brianna Baynard-Malone. No formal organization or accreditation body exists behind it yet. This is a voluntary open governance proposal — not an official standard or regulatory requirement.</div>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:44rem;margin-bottom:1rem">NHID-Clinical is a voluntary governance proposal focused on one specific problem: AI voice agents in healthcare workflows that solicit data before clearly disclosing they are non-human. This creates "impersonation latency" — the gap between call start and human realization, leading to hang-ups, trust breakdown, and potential PHI exposure.</p>
       <p style="color:var(--body);font-size:0.95rem;line-height:1.8;max-width:44rem;margin-bottom:2rem">The creator witnessed this pattern daily in payer operations: AI agents using human names like "Sarah," collecting NPI and member IDs across a full call workflow, then disclosing AI identity only when challenged by suspicious staff — long after protected data had already been exchanged.</p>
       <div class="positioning-grid">
         <div>
-          <h3 style="font-family:var(--display);font-size:1rem;font-weight:700;color:var(--teal);letter-spacing:-0.02em;margin:0 0 .75rem">What this standard provides</h3>
+          <h3 style="font-family:var(--display);font-size:1rem;font-weight:700;color:var(--teal);letter-spacing:-0.02em;margin:0 0 .75rem">What this proposal provides</h3>
           <ul class="positioning-does-list">
             <li>Deterministic conformance tests with clear pass/fail criteria (CTS IDG-01 through ATR-01)</li>
-            <li>Tiered certification pathway (L1 self-attestation, L2 operational evidence, L3 independent audit)</li>
+            <li>A tiered alignment model (L1 self-attestation, L2 operational evidence, L3 independent audit) for early implementation testing</li>
             <li>A shared disclosure vocabulary payers and providers can reference in vendor requirements</li>
-            <li>Pilot validation at no cost for platforms ready to certify</li>
+            <li>Open specification under CC BY 4.0 — free to implement and adapt</li>
           </ul>
         </div>
         <div>
-          <h3 style="font-family:var(--display);font-size:1rem;font-weight:700;color:var(--ink-soft);letter-spacing:-0.02em;margin:0 0 .75rem">What this standard is not</h3>
+          <h3 style="font-family:var(--display);font-size:1rem;font-weight:700;color:var(--ink-soft);letter-spacing:-0.02em;margin:0 0 .75rem">What this proposal is not</h3>
           <ul class="positioning-not-list">
             <li><strong style="color:var(--ink-soft)">Not a HIPAA compliance solution.</strong> NHID-Clinical supports safer workflows; it does not replace HIPAA or address PHI access controls.</li>
             <li><strong style="color:var(--ink-soft)">Not a broad enterprise NHI security framework.</strong> Scope is voice workflows in B2B payer–provider contexts — not endpoint security or identity federation.</li>
-            <li><strong style="color:var(--ink-soft)">Not required by law.</strong> This is a voluntary standard. Adoption is driven by payer vendor requirements and platform differentiation.</li>
+            <li><strong style="color:var(--ink-soft)">Not required by law.</strong> This is a voluntary proposal. Adoption is driven by payer vendor requirements and platform differentiation.</li>
           </ul>
         </div>
       </div>
@@ -213,24 +214,24 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:1.75rem;align-items:start">
         <div>
           <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-bottom:1.25rem">Voice AI platforms provide the core engine and calling infrastructure. NHID-Clinical provides the independent safety, disclosure, and trust layer that payers and providers can rely on across platforms.</p>
-          <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-bottom:1.25rem">Think of NHID-Clinical as the open standard — analogous to what OAuth is for identity delegation — rather than a competing platform. The standard defines behavioral requirements: disclosure timing, authorization verification, and escalation protocols. Platforms implement; NHID-Clinical certifies.</p>
+          <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-bottom:1.25rem">Think of NHID-Clinical as an open proposal — analogous to what OAuth is for identity delegation — rather than a competing platform. This proposal defines behavioral requirements: disclosure timing, authorization verification, and escalation protocols. Platforms implement; the community validates and refines.</p>
           <p style="color:var(--body);font-size:1rem;line-height:1.8">Platforms built to meet NHID-Clinical requirements can demonstrate legitimate, auditable workflows that healthcare organizations can trust — turning disclosure compliance into a competitive differentiator rather than an operational burden.</p>
         </div>
         <div style="display:grid;gap:1rem">
           <div class="content-card">
             <h3>For Voice AI Platforms</h3>
-            <p>Integrate NHID-Clinical conformance into your platform to differentiate in healthcare markets and demonstrate auditable compliance to payer clients.</p>
-            <a href="/validation.html" class="card-action">Start validation →</a>
+            <p>Align your platform to NHID-Clinical proposed requirements to demonstrate transparent, auditable disclosure behavior to payer clients.</p>
+            <a href="/conformance.html" class="card-action">View proposed requirements →</a>
           </div>
           <div class="content-card">
             <h3>For Payer Operations</h3>
-            <p>Reference NHID-Clinical certification in your vendor requirements to create a clear, testable standard for AI voice agents calling your operations.</p>
+            <p>Reference NHID-Clinical in your vendor requirements to create a clear, testable framework for evaluating AI voice agents calling your operations.</p>
             <a href="/conformance.html" class="card-action">View CTS tests →</a>
           </div>
           <div class="content-card">
             <h3>For Provider Organizations</h3>
-            <p>Require your AI vendor to obtain NHID-Clinical certification before deploying voice agents, protecting your provider–payer relationships.</p>
-            <a href="/certification.html" class="card-action">Certification tiers →</a>
+            <p>Reference NHID-Clinical conformance tests when evaluating AI voice vendors to protect your provider–payer relationships.</p>
+            <a href="/specification.html" class="card-action">Read the full proposal →</a>
           </div>
         </div>
       </div>
@@ -240,11 +241,11 @@
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Get started</p>
-        <h2>Read the standard or request validation.</h2>
-        <p>The pilot validation program is open now, at no cost. Download the specification, then request validation to get your L1/L2/L3 certification.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Read the proposal and share your feedback.</h2>
+        <p>NHID-Clinical is an early-stage open governance proposal. Download the specification and join the discussion to help shape what it becomes.</p>
       </div>
-      <a class="closing-button" href="/validation.html">Request Validation →</a>
+      <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>
