@@ -27,7 +27,7 @@
       <a href="/">Home</a>
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/conformance.html">Conformance</a>
+      <a href="/conformance.html">Proposed Requirements</a>
       <a href="/script-examples.html">Script Examples</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/specification.html" class="is-active">Specification</a>
@@ -68,7 +68,7 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/conformance.html">Conformance</a>
+  <a href="/conformance.html">Proposed Requirements</a>
   <a href="/script-examples.html">Script Examples</a>
   <a href="/specification.html">Specification</a>
   <a href="/#download">Download</a>
@@ -87,12 +87,16 @@
 
 <main>
 
+  <div class="container" style="padding-top:1.5rem;padding-bottom:0">
+    <div class="hero-notice" role="note"><strong>May 2026 — Open Proposal Stage:</strong> The formal pilot validation and certification program is paused while we collect real-world feedback from early implementers. The five proposed conformance tests are ready for self-testing. Reach out via <a href="/community.html" style="color:var(--blue)">community</a> or <a href="mailto:help@nhid-clinical.org" style="color:var(--blue)">help@nhid-clinical.org</a> to discuss implementation.</div>
+  </div>
+
   <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
   <section class="inner-hero">
     <div class="container inner-hero-grid">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>Specification</span></div>
-        <p class="eyebrow">Full Standard · v1.3</p>
+        <p class="eyebrow">Open Proposal · v1.3</p>
         <h1>NHID-Clinical v1.3 Specification</h1>
         <p class="lede">Non-Human Identity Disclosure Standard for Healthcare Voice Workflows. The proposed framework for B2B payer–provider AI voice agent disclosure, conformance, and implementation.</p>
         <nav class="spec-toc" aria-label="Jump to section">
@@ -100,7 +104,7 @@
           <a href="#document-layers">Document Layers</a>
           <a href="#problem-statement">Problem Statement</a>
           <a href="#normative-requirements">Normative Requirements</a>
-          <a href="#conformance">Conformance &amp; Certification</a>
+          <a href="#conformance">Conformance Tests</a>
           <a href="#fhir-mapping">FHIR Mapping</a>
           <a href="#framework-alignment">Framework Alignment</a>
           <a href="#roadmap">Roadmap &amp; Changelog</a>
@@ -113,7 +117,7 @@
           <span class="spec-badge spec-badge-teal">HIPAA-Aligned</span>
           <span class="spec-badge spec-badge-green">Open Proposal</span>
         </div>
-        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem">Published open standard. Normative requirements use RFC 2119 terminology (MUST / MUST NOT / SHOULD / MAY).</p>
+        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem">Open governance proposal. Normative requirements use RFC 2119 terminology (MUST / MUST NOT / SHOULD / MAY). Not an official standard or regulatory requirement.</p>
         <a class="primary-pill" href="/#download" style="width:100%;justify-content:center;margin-bottom:.75rem">Download PDF →</a>
         <a class="outline-link" href="/conformance.html" style="width:100%;justify-content:center">View CTS Tests →</a>
         <p style="font-size:.75rem;color:var(--body);margin-top:.9rem;line-height:1.5">NIST Public Comment: NIST-2025-0035-0026</p>
@@ -157,7 +161,7 @@
 
       <div class="spec-highlight-box" style="margin-top:1.5rem">
         <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Scope Note</strong>
-        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">This standard is intentionally scoped to B2B administrative workflows. This is a deliberate strategy to achieve deep validation in the highest-value, highest-compliance segment before expansion. B2C and patient-facing use cases involve materially different regulatory, technical, and ethical considerations and will be addressed in a future major version.</p>
+        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">This proposal is intentionally scoped to B2B administrative workflows. This is a deliberate strategy to achieve deep feedback in the highest-value, highest-compliance segment before expansion. B2C and patient-facing use cases involve materially different regulatory, technical, and ethical considerations and will be addressed in a future version.</p>
       </div>
 
       <a href="#" class="spec-back-top" aria-label="Back to top">↑ Back to top</a>
@@ -435,7 +439,7 @@
   </section>
 
 
-  <!-- ── Card 5: Conformance & Certification ────────────────────────────────── -->
+  <!-- ── Card 5: Conformance Tests ────────────────────────────────────────── -->
   <section id="conformance" class="page-section">
     <div class="container">
       <p class="section-kicker">Card 5 of 8</p>
@@ -506,8 +510,8 @@
           <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.85rem;line-height:1.75;margin-top:.75rem">
             <li>30+ days production call records</li>
             <li>DFR &lt; 2% (Disclosure Failure Rate)</li>
-            <li>Evidence package reviewed by NHID-Clinical</li>
-            <li>Annual renewal</li>
+            <li>Evidence package shared with NHID-Clinical for feedback</li>
+            <li>Annual renewal encouraged</li>
           </ul>
         </div>
         <div class="cert-card">
@@ -518,7 +522,7 @@
             <li>Independent third-party auditor</li>
             <li>Continuous monitoring evidence</li>
             <li>Annual renewal with audit</li>
-            <li>L3 pilot contact required</li>
+            <li>Contact help@nhid-clinical.org to discuss</li>
           </ul>
         </div>
       </div>
@@ -806,10 +810,10 @@
             <td>Runtime enforcement spec with event schema and policy engine guidance</td>
           </tr>
           <tr>
-            <td><strong>Pilot Certification Program</strong></td>
-            <td>Enforcement</td>
+            <td><strong>Early Implementation Testing</strong></td>
+            <td>Adoption</td>
             <td>🟢 Low</td>
-            <td>First L1/L2 certifications with 2–3 early vendors</td>
+            <td>First implementers self-test and provide feedback to improve the proposal</td>
           </tr>
         </tbody>
       </table>
@@ -870,13 +874,13 @@
           <a href="https://github.com/thankcheeses/NHID-Clinical/issues" class="card-link">GitHub Issues →</a>
         </div>
         <div class="content-card">
-          <h3>Certification &amp; Validation</h3>
-          <p>Ready to certify your system? First L1 validations are offered at no cost.</p>
-          <a href="mailto:validation@nhid-clinical.org" class="card-link">validation@nhid-clinical.org →</a>
+          <h3>Early Implementation Testing</h3>
+          <p>Testing the proposed requirements against your system? We want to hear what you find — every piece of feedback shapes the next version.</p>
+          <a href="mailto:help@nhid-clinical.org" class="card-link">help@nhid-clinical.org →</a>
         </div>
         <div class="content-card">
           <h3>General Questions</h3>
-          <p>Not sure where to start? Reach out for guidance on which certification tier is right for your system.</p>
+          <p>Not sure where to start? Reach out — we're happy to walk through the five tests and what they look like in your workflow.</p>
           <a href="mailto:help@nhid-clinical.org" class="card-link">help@nhid-clinical.org →</a>
         </div>
       </div>
@@ -896,11 +900,11 @@
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Start today</p>
-        <h2>Apply for pilot validation.</h2>
-        <p>First validations are offered at no cost. Run the five CTS tests against your system and submit your evidence package.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Try the five tests and share what you find.</h2>
+        <p>NHID-Clinical is an early-stage open proposal. If you implement or evaluate these tests, your feedback directly shapes the next version.</p>
       </div>
-      <a class="closing-button" href="/validation.html">Request Validation →</a>
+      <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>
