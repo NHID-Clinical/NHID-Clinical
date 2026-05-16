@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical: Non-Human Identity Disclosure Standard for Healthcare Voice Workflows."/>
-  <title>NHID-Clinical | Healthcare Voice AI Disclosure Standard</title>
+  <meta name="description" content="NHID-Clinical: Non-Human Identity Disclosure Proposal for Healthcare Voice Workflows."/>
+  <title>NHID-Clinical | Healthcare Voice AI Disclosure Proposal</title>
   <link rel="icon" href="/assets/brand-icon.jpg" type="image/jpeg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -91,8 +91,8 @@
       <div class="hero-copy">
         <h1>NHID-Clinical</h1>
         <p class="hero-subtitle">An open proposal for transparent AI voice agents in healthcare payer–provider calls.</p>
-        <p class="hero-body">NHID-Clinical proposes that AI voice agents clearly identify themselves as non-human, verify authorization, and create an auditable trail before exchanging operational data in B2B workflows — claims, eligibility, prior auth, and similar interactions.</p>
-        <div class="hero-notice" role="note">Initiated by Brianna Baynard. This is <strong>not</strong> an official standard, accredited certification body, or regulatory requirement. It is a voluntary open governance proposal open for feedback, testing, and early adoption.</div>
+        <p class="hero-body">NHID-Clinical proposes that AI voice agents clearly identify themselves as non-human before exchanging operational data in B2B healthcare workflows — claims, eligibility, prior auth, and similar interactions.</p>
+        <div class="hero-notice" role="note">Initiated by Brianna Baynard. This is <strong>not</strong> an official standard, accredited certification body, or regulatory requirement. It is a voluntary open proposal open for feedback and real-world testing.</div>
         <div class="hero-actions" style="flex-wrap:wrap;gap:.75rem">
           <a class="cta-button" href="/conformance.html">View the Proposed Requirements <span aria-hidden="true">→</span></a>
           <a class="secondary-button" href="/script-examples.html">See Script Examples <span aria-hidden="true">→</span></a>
@@ -100,8 +100,8 @@
         <p class="hero-helper"><a href="/specification.html" style="color:var(--blue);font-weight:600">Read the full proposal →</a></p>
       </div>
       <div class="hero-art" aria-label="NHID-Clinical logo">
-        <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure Standard for Trusted Healthcare Voice AI" />
-        <img class="theme-img theme-img-dark" src="/assets/logo-dark.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure Standard for Trusted Healthcare Voice AI" />
+        <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure for Healthcare Voice AI" />
+        <img class="theme-img theme-img-dark" src="/assets/logo-dark.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure for Healthcare Voice AI" />
       </div>
     </div>
   </section>
@@ -153,7 +153,7 @@
       <div style="max-width:52rem;margin-inline:auto">
         <p class="section-kicker">Regulatory context</p>
         <h2>NIST submission</h2>
-        <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-bottom:1rem">NHID-Clinical has been submitted to NIST in docket NIST-2025-0035 (AI-agent security) as a proposed governance standard for healthcare voice AI disclosure requirements.</p>
+        <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-bottom:1rem">NHID-Clinical has been submitted to NIST in docket NIST-2025-0035 (AI-agent security) as a proposed governance framework for healthcare voice AI disclosure requirements.</p>
         <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" style="color:var(--blue);font-weight:600;font-size:.95rem" target="_blank" rel="noopener noreferrer">View our submission on Regulations.gov →</a>
       </div>
     </div>
@@ -162,20 +162,20 @@
   <section class="container standards-section">
     <article class="standard-card">
       <div class="card-icon" aria-hidden="true">▣</div>
-      <h2>Normative Requirements</h2>
-      <p>Define the mandatory disclosure elements and behaviors for non-human identities in healthcare voice interactions.</p>
+      <h2>Proposed Requirements</h2>
+      <p>Five recommended requirements for transparent AI voice agent behavior in healthcare payer–provider calls.</p>
       <a href="/conformance.html">View Requirements <span aria-hidden="true">→</span></a>
     </article>
     <article class="standard-card tone-teal">
       <div class="card-icon" aria-hidden="true">◎</div>
-      <h2>Recommended Practices</h2>
-      <p>Provide guidance for transparent and ethical voice workflows that build payer and provider trust.</p>
-      <a href="/conformance.html">Explore Practices <span aria-hidden="true">→</span></a>
+      <h2>Implementation Guidance</h2>
+      <p>Practical guidance for auditing current call disclosure timing, removing deceptive audio, and adding escalation paths.</p>
+      <a href="/specification.html">Read the Proposal <span aria-hidden="true">→</span></a>
     </article>
     <article class="standard-card tone-indigo">
       <div class="card-icon" aria-hidden="true">◇</div>
       <h2>Script Examples</h2>
-      <p>See compliant and non-compliant script patterns to understand how disclosure requirements apply in real call scenarios.</p>
+      <p>See passing and failing script patterns to understand how the proposed requirements apply in real call scenarios.</p>
       <a href="/script-examples.html">View Script Examples <span aria-hidden="true">→</span></a>
     </article>
   </section>
@@ -183,8 +183,8 @@
   <section class="container benefits-band" aria-label="Benefits">
     <div><strong>Build Trust</strong><span>Promote transparency in AI voice interactions.</span></div>
     <div><strong>Protect Patients</strong><span>Support informed and safe healthcare workflows.</span></div>
-    <div><strong>Drive Adoption</strong><span>Create a common standard for the industry.</span></div>
-    <div><strong>Advance Interoperability</strong><span>Enable secure, interoperable voice systems.</span></div>
+    <div><strong>Reduce Risk</strong><span>Prevent impersonation latency before data is shared.</span></div>
+    <div><strong>Enable Feedback</strong><span>Help shape a shared vocabulary for the industry.</span></div>
   </section>
 
   <section class="split-section white-section">
@@ -192,31 +192,12 @@
       <div>
         <p class="section-kicker">What problem does this solve?</p>
         <h2>Reduce impersonation latency before sensitive workflow data is exchanged.</h2>
-        <p>NHID-Clinical defines a minimum control baseline for AI voice agents in B2B healthcare administrative workflows. This proposal gives payers, providers, and platforms a shared way to disclose automation, verify authorization, and escalate to a human when needed.</p>
+        <p>NHID-Clinical proposes a minimum baseline for AI voice agents in B2B healthcare administrative workflows. This proposal gives payers, providers, and platforms a shared way to disclose automation, verify authorization, and escalate to a human when needed.</p>
       </div>
       <div class="problem-panel">
         <div>AI voice call enters the workflow</div>
         <div class="warn">Disclosure happens too late or only after challenge</div>
-        <div class="good">NHID-Clinical moves identity disclosure before data exchange</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="container validation-section">
-    <div class="section-heading">
-      <p class="section-kicker">The green lane principle</p>
-      <h2>A simple path for compliant AI voice workflows.</h2>
-      <p>When AI agents identify themselves upfront and follow the rules, providers save time, payers reduce operational burden, and compliance teams gain auditable clarity.</p>
-    </div>
-    <div class="validation-grid">
-      <div class="image-card">
-        <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure Standard for Trusted Healthcare Voice AI" />
-        <img class="theme-img theme-img-dark" src="/assets/logo-dark.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure Standard for Trusted Healthcare Voice AI" />
-      </div>
-      <div class="flow-list">
-        <article><span>01</span><div><h3>Disclose before data exchange</h3><p>AI callers identify themselves clearly before operational or protected workflow details are shared.</p></div></article>
-        <article><span>02</span><div><h3>Verify authorization</h3><p>Payers can distinguish validated AI agents from spoofed or undisclosed automation.</p></div></article>
-        <article><span>03</span><div><h3>Escalate safely</h3><p>When a human representative is required, the path out is documented and auditable.</p></div></article>
+        <div class="good">NHID-Clinical proposes identity disclosure before data exchange</div>
       </div>
     </div>
   </section>
@@ -226,13 +207,13 @@
       <div class="download-cards">
         <article class="download-card">
           <h3>NHID-Clinical v1.3 — Open Proposal</h3>
-          <p>Complete draft with five proposed conformance tests (IDG-01 through ATR-01), implementation level guidance, FHIR AuditEvent mapping, and NHID-Auth companion spec reference.</p>
+          <p>Five proposed requirements (IDG-01 through ATR-01) for transparent AI voice agent behavior in healthcare payer–provider calls. Free to use and adapt under CC BY 4.0.</p>
           <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
           <span class="license-badge">CC BY 4.0 · May 2026</span>
         </article>
         <article class="download-card">
           <h3>NHID-Auth v1.0 — Companion Spec</h3>
-          <p>Authorization attestation layer for delegated authority verification. Defines authorization format, scope, duration, and revocation handling for AI voice agents.</p>
+          <p>Companion proposal addressing the authorization gap — how an AI agent proves it has delegated authority from the provider, not just a publicly available NPI.</p>
           <a href="/specs/NHID-Auth-v1.0-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
           <span class="license-badge">CC BY 4.0 · May 2026</span>
         </article>
@@ -245,7 +226,7 @@
       <div>
         <p class="section-kicker">Get involved</p>
         <h2>Help shape what this proposal becomes.</h2>
-        <p>NHID-Clinical is an early-stage open governance proposal. If you work in healthcare voice AI — as a payer, provider, or platform — your feedback and implementation experience will directly improve it.</p>
+        <p>NHID-Clinical is an early-stage open proposal. If you work in healthcare voice AI — as a payer, provider, or platform — your feedback and real-world experience will directly improve it.</p>
       </div>
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
@@ -256,7 +237,6 @@
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
-      <a href="mailto:validation@nhid-clinical.org">Validation</a>
       <a href="mailto:help@nhid-clinical.org">Help</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
@@ -264,7 +244,7 @@
       <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
       <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
     </div>
-    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | validation@nhid-clinical.org | nhid-clinical.org</p>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | help@nhid-clinical.org | nhid-clinical.org</p>
   </div>
 </footer>
 

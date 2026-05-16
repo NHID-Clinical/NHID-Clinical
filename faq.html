@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical FAQ — frequently asked questions about the non-human identity disclosure standard for healthcare voice AI."/>
+  <meta name="description" content="NHID-Clinical FAQ — frequently asked questions about the non-human identity disclosure proposal for healthcare voice AI."/>
   <title>FAQ | NHID-Clinical</title>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <link rel="icon" href="/assets/brand-icon.jpg" type="image/jpeg"/>
@@ -91,7 +91,7 @@
       <div class="crumbs"><a href="/">Home</a><span>/</span><span>FAQ</span></div>
       <p class="eyebrow">Frequently Asked Questions</p>
       <h1>NHID-Clinical FAQ</h1>
-      <p class="lede">Common questions about this proposal, certification, HIPAA, NIST, and how to get involved.</p>
+      <p class="lede">Common questions about this proposal, how it works, and how to get involved.</p>
     </div>
   </section>
 
@@ -101,9 +101,9 @@
 
         <div class="faq-item">
           <h3>What is NHID-Clinical?</h3>
-          <p>NHID-Clinical v1.3 is an open-source governance standard for <strong>non-human identity disclosure</strong> in B2B healthcare voice workflows.</p>
+          <p>NHID-Clinical v1.3 is an open proposal for <strong>non-human identity disclosure</strong> in B2B healthcare voice workflows.</p>
           <p><strong>The one rule:</strong> AI voice agents must disclose "automated system" status <strong>before</strong> requesting any operational data (NPI, member ID, claim #, DOB).</p>
-          <p>3 behavioral controls. 3 pass/fail tests. L1 self-certification free.</p>
+          <p>Five proposed requirements. Simple self-testing. Free to use under CC BY 4.0.</p>
         </div>
 
         <div class="faq-item">
@@ -121,44 +121,46 @@
           <h3>What's the core problem it solves?</h3>
           <p><strong>Impersonation latency</strong> — the gap between when an AI voice agent begins a call and when staff realize they are not speaking to a human.</p>
           <p><strong>The specific pattern:</strong> An AI calls as "Sarah from Dr. Smith's office," collects NPI and member ID over 3–5 minutes of normal-sounding workflow, then admits "I'm an automated system" only when the rep gets suspicious. By then, protected operational data has been exchanged with an undisclosed system — no consent given, no audit trail.</p>
-          <p style="margin-top:.5rem">This is the pattern NHID-Clinical was built to prevent. It fails three CTS tests simultaneously: <strong>IDG-01</strong> (no upfront disclosure), <strong>PDX-01</strong> (data before disclosure), and <strong>DBC-01</strong> (human name, no AI qualifier).</p>
+          <p style="margin-top:.5rem">This is the pattern NHID-Clinical was built to prevent.</p>
         </div>
 
         <div class="faq-item">
-          <h3>NHID-Core v1.3 vs NHID-Auth v1.0?</h3>
-          <p>NHID-Clinical v1.3 is the disclosure standard — it defines when and how an AI caller must identify itself. NHID-Auth v1.0 is a companion specification addressing delegated authority: not just who is calling, but who authorized them to call. NHID-Auth is independent of v1.3 conformance; organizations may adopt it separately. Download the NHID-Auth v1.0 PDF for details.</p>
+          <h3>NHID-Clinical v1.3 vs NHID-Auth v1.0?</h3>
+          <p>NHID-Clinical v1.3 is the disclosure proposal — it defines when and how an AI caller must identify itself. NHID-Auth v1.0 is a companion proposal addressing delegated authority: not just who is calling, but who authorized them to call. NHID-Auth is independent; organizations may adopt it alongside or separately. Download the NHID-Auth v1.0 PDF for details.</p>
         </div>
 
         <div class="faq-item">
-          <h3>What are the 3 pass/fail tests?</h3>
+          <h3>What are the five proposed requirements?</h3>
           <table class="faq-table">
             <thead>
-              <tr><th>Test</th><th>Pass Criteria</th></tr>
+              <tr><th>Requirement</th><th>What it proposes</th></tr>
             </thead>
             <tbody>
-              <tr><td><strong>IDG-01</strong></td><td>Disclosure BEFORE data request</td></tr>
+              <tr><td><strong>IDG-01</strong></td><td>Disclosure before data request</td></tr>
               <tr><td><strong>PDX-01</strong></td><td>No data accepted pre-disclosure</td></tr>
-              <tr><td><strong>EIT-01</strong></td><td>Human escalation in 1 turn</td></tr>
+              <tr><td><strong>DBC-01</strong></td><td>No deceptive audio artifacts</td></tr>
+              <tr><td><strong>EIT-01</strong></td><td>Human escalation path in 1 turn</td></tr>
+              <tr><td><strong>ATR-01</strong></td><td>Basic audit log of key events</td></tr>
             </tbody>
           </table>
-          <p><strong>Hard fail on any = non-conformance.</strong></p>
+          <p>See <a href="/conformance.html" style="color:var(--blue);font-weight:600">Proposed Requirements →</a> for full pass/fail criteria.</p>
         </div>
 
         <div class="faq-item">
-          <h3>How do I get certified?</h3>
-          <pre class="faq-code">L1 Baseline (Free — first 10)
-1. Run 3 tests internally
-2. Self-attest + signed checklist
-3. Get L1 badge + cert code
-
-L2 Operational ($500):  +30 days production logs
-L3 Enterprise (Custom): Third-party audit</pre>
-          <p><a href="/community.html" style="color:var(--blue);font-weight:700">Apply now at nhid-clinical.org/validation →</a></p>
+          <h3>How do I test this?</h3>
+          <ol style="padding-left:1.4rem;line-height:2">
+            <li>Review recent call recordings or transcripts</li>
+            <li>Check if disclosure happened before any data was exchanged</li>
+            <li>Listen for any fake human sounds</li>
+            <li>Test what happens when someone asks for a human</li>
+            <li>Verify you can pull basic logs for the above events</li>
+          </ol>
+          <p>Share what you find at <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:700">help@nhid-clinical.org</a></p>
         </div>
 
         <div class="faq-item">
           <h3>Why not just use voice biometrics?</h3>
-          <p>Voice biometrics detect <strong>human vs synthetic</strong>. NHID-Clinical proposalizes <strong>authorized non-human vs unauthorized non-human</strong>.</p>
+          <p>Voice biometrics detect <strong>human vs synthetic</strong>. NHID-Clinical addresses <strong>authorized non-human vs unauthorized non-human</strong>.</p>
           <p><strong>Payers want:</strong> "This AI is legitimately calling for Dr. Smith"<br/>
           <strong>Biometrics give:</strong> "This sounds synthetic"</p>
           <p>Different problems.</p>
@@ -181,29 +183,29 @@ L3 Enterprise (Custom): Third-party audit</pre>
 
         <div class="faq-item">
           <h3>Is this mandatory?</h3>
-          <p>No. <strong>Voluntary governance standard.</strong> Published CC BY 4.0.</p>
-          <p>But: payers are increasingly blocking non-disclosing AI, and procurements are beginning to ask for compliance proof.</p>
+          <p>No. <strong>Voluntary open proposal.</strong> Published CC BY 4.0.</p>
+          <p>But: payers are increasingly blocking non-disclosing AI, and procurements are beginning to ask for alignment with proposals like this.</p>
         </div>
 
         <div class="faq-item">
           <h3>What's the background behind this proposal?</h3>
           <p>TRICARE dental call center → WGU Cybersecurity bachelor's → NHID-Clinical creator.</p>
-          <p><em>"I hung up on 1000+ undisclosed AI agents. Built this so it stops happening."</em></p>
+          <p><em>"I took calls from undisclosed AI agents for years. Built this so it stops happening."</em></p>
         </div>
 
         <div class="faq-item">
           <h3>What's the NIST connection?</h3>
-          <p><strong>NIST AI Agent RFI 2025-0035</strong> public comment published April 2026:</p>
+          <p><strong>NIST AI Agent RFI 2025-0035</strong> public comment published January 2026:</p>
           <pre class="faq-code">Comment ID: NIST-2025-0035-0026</pre>
-          <p>Federal agencies see the same delegation gaps that call center staff encounter when taking AI calls.</p>
+          <p>Federal agencies face the same delegation gaps that call center staff encounter when taking AI calls.</p>
         </div>
 
         <div class="faq-item">
           <h3>How do I contribute?</h3>
-          <pre class="faq-code">GitHub Discussions   → Technical questions
-validation@nhid-clinical.org → Certification
-GitHub Issues        → Spec improvements</pre>
-          <p>First 10 L1 certifications are free. <a href="/community.html" style="color:var(--blue);font-weight:700">Submit a validation request →</a></p>
+          <pre class="faq-code">Discord               → Real-time discussion
+help@nhid-clinical.org → Feedback and questions
+GitHub Issues          → Proposal improvements</pre>
+          <p><a href="/community.html" style="color:var(--blue);font-weight:700">Join the community →</a></p>
         </div>
 
       </div>
@@ -213,9 +215,9 @@ GitHub Issues        → Spec improvements</pre>
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Ready to get certified?</p>
-        <h2>Get involved.</h2>
-        <p>Early feedback and testing welcome. Run the 3 conformance tests, then submit your request.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Test the proposal and share what you find.</h2>
+        <p>Real-world feedback from payers, providers, and platforms will shape the next version of NHID-Clinical.</p>
       </div>
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
@@ -226,7 +228,6 @@ GitHub Issues        → Spec improvements</pre>
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
-      <a href="mailto:validation@nhid-clinical.org">Validation</a>
       <a href="mailto:help@nhid-clinical.org">Help</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
@@ -234,6 +235,7 @@ GitHub Issues        → Spec improvements</pre>
       <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
       <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
     </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | help@nhid-clinical.org | nhid-clinical.org</p>
   </div>
 </footer>
 
