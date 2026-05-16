@@ -87,10 +87,6 @@
 
 <main>
 
-  <div class="container" style="padding-top:1.5rem;padding-bottom:0">
-    <div class="hero-notice" role="note"><strong>May 2026 — Open Proposal Status:</strong> This is a voluntary open proposal initiated by Brianna Baynard. It is <strong>not</strong> an official standard, accredited certification body, or regulatory requirement. Provided for early testing, feedback, and real-world implementation. Formal validation or certification processes are currently paused.</div>
-  </div>
-
   <section class="inner-hero">
     <div class="container inner-hero-grid">
       <div>
@@ -105,8 +101,8 @@
           <span class="spec-badge">v1.3</span>
           <span class="spec-badge spec-badge-green">Open Proposal</span>
         </div>
-        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem">Author: Brianna Baynard &nbsp;·&nbsp; Published May 2026<br>Not an official standard or regulatory requirement.</p>
-        <a class="primary-pill" href="/#download" style="width:100%;justify-content:center;margin-bottom:.75rem">Download PDF →</a>
+        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem"><strong>Author:</strong> Brianna Baynard<br><strong>Published:</strong> May 2026<br>Not an official standard or regulatory requirement.</p>
+        <a class="primary-pill" href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="width:100%;justify-content:center;margin-bottom:.75rem">Download PDF →</a>
         <a class="outline-link" href="/conformance.html" style="width:100%;justify-content:center">View Proposed Requirements →</a>
         <p style="font-size:.75rem;color:var(--body);margin-top:.9rem;line-height:1.5">NIST Public Comment: NIST-2025-0035-0026</p>
       </aside>
@@ -116,91 +112,72 @@
   <section class="page-section">
     <div class="container" style="max-width:52rem">
 
+      <div class="hero-notice" role="note" style="margin-bottom:2rem">
+        <strong>May 2026 — Open Proposal Status:</strong> This is a voluntary open proposal initiated by Brianna Baynard. It is <strong>not</strong> an official standard, accredited body, or regulatory requirement. It is shared for feedback and real-world testing.
+      </div>
+
       <h2>Abstract</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-top:.75rem">NHID-Clinical proposes a minimum set of behavioral and operational practices for AI voice agents operating in business-to-business healthcare administrative workflows (claims, eligibility, prior authorization, etc.).</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">The goal is to reduce "impersonation latency" — the friction and risk that occurs when payer staff cannot immediately tell they are speaking with an AI system.</p>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-top:.75rem">NHID-Clinical proposes simple behavioral rules for AI voice agents in payer–provider administrative calls so humans immediately know they are speaking with automation.</p>
 
-      <h2 style="margin-top:2.5rem">1. Problem Statement</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">AI voice agents frequently disclose that they are automated only after sharing operational data or when directly challenged. This creates operational waste, trust issues, and security risks — including easy NPI spoofing when staff have no baseline for what a legitimate AI call looks like.</p>
+      <h2 style="margin-top:2.5rem">Problem</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">AI agents often hide that they are automated until after sharing operational data (NPI, member ID, claim numbers, etc.). This creates "impersonation latency" — wasted time, trust issues, and security risks.</p>
 
-      <h2 style="margin-top:2.5rem">2. Scope</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1rem">
-        <div class="content-card">
-          <h3>In scope</h3>
-          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.95rem;line-height:1.8;margin-top:.5rem">
-            <li>Provider-to-payer administrative voice calls</li>
-            <li>Claims status, eligibility, prior authorization</li>
-            <li>Calls involving operational data (NPI, member ID, claim number, etc.)</li>
-          </ul>
+      <h2 style="margin-top:2.5rem">Proposed Requirements</h2>
+
+      <div class="faq-list" style="margin-top:1.25rem">
+        <div class="faq-item">
+          <h3>IDG-01 – Identity Disclosure Gate</h3>
+          <p>Disclose non-human identity before soliciting or receiving any operational data.</p>
         </div>
-        <div class="content-card">
-          <h3>Out of scope</h3>
-          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.95rem;line-height:1.8;margin-top:.5rem">
-            <li>Patient-facing calls</li>
-            <li>Clinical advice systems</li>
-            <li>General IAM or identity frameworks</li>
-          </ul>
+        <div class="faq-item">
+          <h3>PDX-01 – Pre-Data Exchange Disclosure</h3>
+          <p>Disclosure must happen before any protected operational data is requested or shared.</p>
+        </div>
+        <div class="faq-item">
+          <h3>DBC-01 – No Deceptive Artifacts</h3>
+          <p>Do not use simulated breathing, typing sounds, filler words, or other tricks designed to sound human.</p>
+        </div>
+        <div class="faq-item">
+          <h3>EIT-01 – Escalation Path</h3>
+          <p>Provide a clear way to reach a human representative when requested or when the AI cannot proceed.</p>
+        </div>
+        <div class="faq-item">
+          <h3>ATR-01 – Audit Trail</h3>
+          <p>Keep basic logs showing disclosure time, first data request time, call outcome, and escalation reference (if any).</p>
         </div>
       </div>
 
-      <h2 style="margin-top:2.5rem">3. Proposed Requirements</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.8;margin-top:.75rem">Five proposed behavioral requirements. Full pass/fail criteria are on the <a href="/conformance.html" style="color:var(--blue);font-weight:600">Proposed Requirements</a> page.</p>
-
-      <div class="faq-list" style="margin-top:1.5rem">
-        <div class="faq-item">
-          <h3>3.1 Identity Disclosure Gate (IDG-01)</h3>
-          <p>The AI agent should disclose its non-human identity before any operational data is solicited or received.</p>
-        </div>
-        <div class="faq-item">
-          <h3>3.2 Pre-Data Exchange Disclosure (PDX-01)</h3>
-          <p>Disclosure must occur before requesting or receiving protected operational data (NPI, member ID, claim number, etc.).</p>
-        </div>
-        <div class="faq-item">
-          <h3>3.3 Deceptive Behavioral Constraints (DBC-01)</h3>
-          <p>The agent should not use audio artifacts designed to simulate human presence — simulated breathing, typing sounds, scripted filler words, etc.</p>
-        </div>
-        <div class="faq-item">
-          <h3>3.4 Escalation Path (EIT-01)</h3>
-          <p>The agent should provide a clear escalation path to a human representative when requested or when automation cannot proceed.</p>
-        </div>
-        <div class="faq-item">
-          <h3>3.5 Audit Trail Requirements (ATR-01)</h3>
-          <p>Maintain structured logs including disclosure timestamp, first data request timestamp, call outcome, and escalation reference ID (if applicable).</p>
-        </div>
-      </div>
-
-      <h2 style="margin-top:2.5rem">4. Implementation Guidance</h2>
+      <h2 style="margin-top:2.5rem">Implementation Guidance</h2>
       <ol style="padding-left:1.4rem;color:var(--body);font-size:1rem;line-height:2;margin-top:.75rem">
-        <li>Audit current disclosure timing in your call recordings and logs</li>
-        <li>Remove prohibited human-mimicry artifacts from your TTS pipeline</li>
-        <li>Implement reliable escalation (reference ID + callback or live transfer)</li>
-        <li>Add proper audit logging</li>
-        <li>Self-test your system against the five requirements above</li>
-        <li>Share feedback on what works and what doesn't</li>
+        <li>Check your current calls for when disclosure happens</li>
+        <li>Remove fake human sounds from your voice system</li>
+        <li>Build a simple escalation path (reference number + callback)</li>
+        <li>Log the key events</li>
+        <li>Test it yourself and share feedback</li>
       </ol>
 
-      <h2 style="margin-top:2.5rem">5. Companion Specification</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><strong>NHID-Auth v1.0</strong> addresses delegated authority verification — proof that the AI is actually authorized by the provider it claims to represent. The two proposals are complementary and can be adopted independently or together.</p>
-      <a href="/#download" style="color:var(--blue);font-weight:600;display:inline-block;margin-top:.75rem">Download NHID-Auth v1.0 →</a>
+      <h2 style="margin-top:2.5rem">Companion Document</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><a href="/specs/NHID-Auth-v1.0-Specification.pdf" download style="color:var(--blue);font-weight:600">NHID-Auth v1.0 – Authorization Layer (PDF) →</a><br>
+      Addresses delegated authority — proof the AI is actually authorized by the provider it claims to represent.</p>
 
-      <h2 style="margin-top:2.5rem">Next Steps</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-top:.75rem">Interested in testing or implementing this proposal?</p>
+      <h2 style="margin-top:2.5rem">Downloads</h2>
       <ul style="list-style:disc;padding-left:1.4rem;color:var(--body);font-size:1rem;line-height:2;margin-top:.75rem">
-        <li>Review the <a href="/conformance.html" style="color:var(--blue);font-weight:600">Proposed Requirements</a></li>
-        <li>Download the latest draft specifications on the <a href="/#download" style="color:var(--blue);font-weight:600">homepage</a></li>
-        <li>Send feedback or questions to: <strong><a href="mailto:help@nhid-clinical.org" style="color:var(--blue)">help@nhid-clinical.org</a></strong></li>
+        <li><a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="color:var(--blue);font-weight:600">NHID-Clinical v1.3 — Open Proposal (PDF)</a></li>
+        <li><a href="/specs/NHID-Auth-v1.0-Specification.pdf" download style="color:var(--blue);font-weight:600">NHID-Auth v1.0 (PDF)</a></li>
       </ul>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:1.25rem">We are actively looking for early adopters and real-world feedback to refine NHID-Clinical.</p>
 
       <div class="spec-highlight-box" style="margin-top:2rem">
-        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">License</strong>
-        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">This work is licensed under <strong>Creative Commons Attribution 4.0 International (CC BY 4.0)</strong>. You may use it commercially, modify it for your organization, and share it freely — with attribution to the original author. <strong>Author:</strong> Brianna Baynard. NIST Public Comment: NIST-2025-0035-0026 (April 2026)</p>
+        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Feedback</strong>
+        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">We are looking for early real-world testing and input. Reach out at <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:600">help@nhid-clinical.org</a></p>
+        <p style="color:var(--body);font-size:.85rem;margin-top:.5rem">CC BY 4.0 · Author: Brianna Baynard · NIST-2025-0035-0026</p>
       </div>
 
     </div>
   </section>
 
 </main>
+
+
 
 
 
