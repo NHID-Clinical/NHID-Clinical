@@ -1,100 +1,13 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <link rel="icon" href="/assets/brand-icon.jpg" type="image/jpeg"/>
-  <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="News and updates from NHID-Clinical." />
-    <title>News &amp; Updates | NHID-Clinical</title>
-    <link rel="stylesheet" href="../nhid-clinical-ui.css" />
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <nav class="container nav" aria-label="Primary navigation">
-        <a class="brand" href="/" aria-label="NHID-Clinical home">
-          <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.jpg" alt="NHID-Clinical" /></span>
-          <span><strong>NHID-Clinical</strong><small>Healthcare Voice AI Disclosure</small></span>
-        </a>
-        <div class="nav-links"><a class="" href="/">Home</a><a class="" href="/about/">About</a><a class="" href="/#standard">Standard</a><a class="" href="/specification.html">Specification</a><a class="" href="/validation/">Validation</a><a class="is-active" href="/news/">News</a><a class="" href="/community/">Community</a><a class="" href="#contact">Contact</a></div>
-        <div class="nav-actions">
-          <a class="primary-pill" href="/validation/">Validate</a>
-          <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-site-menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-        </div>
-      </nav>
-    </header>
-
-    <div class="mobile-menu-panel" id="mobile-site-menu" hidden>
-      <div class="mobile-menu-backdrop" data-menu-close></div>
-      <nav class="mobile-menu-card" aria-label="Mobile navigation">
-        <div class="mobile-menu-header">
-          <strong>NHID-Clinical</strong>
-          <button class="icon-button mobile-menu-close" type="button" aria-label="Close menu" data-menu-close>&times;</button>
-        </div>
-        <a href="/">Home</a>
-        <a href="/about/">About</a>
-        <a href="/#standard">Standard</a>
-        <a href="/validation/">Validation</a>
-        <a href="/news/">News</a>
-        <a href="/community/">Community</a>
-        <a href="/conformance/">Conformance</a>
-        <a href="/specification.html">Specification</a>
-        <a href="/certification/">Certification</a>
-        <a href="/#contact">Contact</a>
-      </nav>
-    </div>
-
-    <main id="main">
-      <section class="inner-hero"><div class="container inner-hero-grid"><div><div class="crumbs"><a href="/">Home</a><span>/</span><span>News</span></div><p class="eyebrow"><span class="status-dot"></span>News & Updates</p><h1>News & Updates</h1><p class="lede">Updates on NHID-Clinical releases, validation, public comments, and implementation resources.</p></div><aside class="hero-summary-card"><strong>Latest</strong><p>The behavioral baseline is stable and the pilot validation program is open.</p></aside></div></section>
-      <section class="container page-section"><div class="news-list">
-        <article class="prose-card news-item"><time>May 7, 2026</time><h2>Article Published</h2><p>“When an AI Agent Calls About a Claim, Who Is It Really Representing?”</p><div class="hero-actions"><a class="inline-button" href="https://medium.com/@bnbaynard/when-an-ai-agent-calls-about-a-claim-who-is-it-really-representing-e021e12e4c1b">Medium →</a><a class="outline-link" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fmedium.com%2F%40bnbaynard%2Fwhen-an-ai-agent-calls-about-a-claim-who-is-it-really-representing-e021e12e4c1b">LinkedIn →</a><a class="outline-link" href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fmedium.com%2F%40bnbaynard%2Fwhen-an-ai-agent-calls-about-a-claim-who-is-it-really-representing-e021e12e4c1b&text=When%20an%20AI%20Agent%20Calls%20About%20a%20Claim%2C%20Who%20Is%20It%20Really%20Representing%3F">X →</a></div></article>
-        <article class="prose-card news-item"><time>May 5, 2026</time><h2>NHID-Clinical v1.3 Core Stable + NHID-Auth v1.0 Released</h2><p>The behavioral baseline is stable. Authorization layer now available as companion specification.</p><a class="outline-link" href="/conformance/">Read v1.3 Core →</a></article>
-        <article class="prose-card news-item"><time>April 2026</time><h2>NIST Public Comment Published</h2><p>Docket NIST-2025-0035, Comment ID NIST-2025-0035-0026.</p><a class="outline-link" href="https://www.regulations.gov/comment/NIST-2025-0035-0026">Read Comment →</a></article>
-        <article class="prose-card news-item"><time>March 2026</time><h2>Pilot Validation Program Launched</h2><p>First 10 L1 certifications offered at no cost to qualifying platforms.</p><a class="inline-button" href="/validation/">Apply Now →</a></article>
-      </div></section>
-    </main>
-    <footer id="contact" class="site-footer">
-      <div class="container footer-inner enterprise-footer">
-        <div>
-          <p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0.</p>
-          <p>Published NIST public comment: <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a></p>
-        </div>
-        <div>
-          <a class="footer-cta" href="/validation/">Ready to validate? First 10 L1 certifications free →</a>
-          <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
-          <a href="https://nhid-clinical.org">nhid-clinical.org</a>
-        </div>
-      </div>
-    </footer>
-
-    <script>
-      (function () {
-        var menu = document.getElementById('mobile-site-menu');
-        var button = document.querySelector('.menu-button');
-        if (!menu || !button) return;
-        var closeTargets = menu.querySelectorAll('[data-menu-close]');
-        function openMenu() {
-          menu.hidden = false;
-          document.body.classList.add('mobile-menu-open');
-          button.setAttribute('aria-expanded', 'true');
-          var firstLink = menu.querySelector('a');
-          if (firstLink) firstLink.focus();
-        }
-        function closeMenu() {
-          menu.hidden = true;
-          document.body.classList.remove('mobile-menu-open');
-          button.setAttribute('aria-expanded', 'false');
-          button.focus();
-        }
-        button.addEventListener('click', function () {
-          if (menu.hidden) openMenu(); else closeMenu();
-        });
-        closeTargets.forEach(function (target) { target.addEventListener('click', closeMenu); });
-        menu.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', closeMenu); });
-        document.addEventListener('keydown', function (event) {
-          if (event.key === 'Escape' && !menu.hidden) closeMenu();
-        });
-      })();
-    </script>
-  </body>
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="refresh" content="0;url=/news.html"/>
+  <link rel="canonical" href="/news.html"/>
+  <title>Redirecting…</title>
+</head>
+<body>
+  <script>window.location.replace("/news.html")</script>
+  <p><a href="/news.html">Click here if not redirected.</a></p>
+</body>
 </html>

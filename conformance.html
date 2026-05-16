@@ -261,36 +261,17 @@
   </section>
 
   <section class="page-section-alt">
-    <div class="container">
-      <p class="section-kicker">Evidence requirements</p>
-      <h2>What counts as proof</h2>
-      <p>Evidence requirements increase by tier. All tiers require Tier 1 minimum evidence.</p>
-      <div class="content-cards" style="margin-top:2rem">
-        <div class="content-card">
-          <h3>Tier 1 — Minimum (all tiers)</h3>
-          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.95rem;line-height:1.7;margin-top:.5rem">
-            <li>Transaction log showing disclosure timestamp vs. data request timestamp</li>
-            <li>Script or prompt version control documentation</li>
-            <li>Signed self-attestation declaration</li>
-          </ul>
-        </div>
-        <div class="content-card">
-          <h3>Tier 2 — Recommended (L2+)</h3>
-          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.95rem;line-height:1.7;margin-top:.5rem">
-            <li>30+ days of production call records</li>
-            <li>Audio samples (first 30 seconds, subject to retention policy)</li>
-            <li>DFR (Disclosure Failure Rate) calculation — target &lt;2%</li>
-          </ul>
-        </div>
-        <div class="content-card">
-          <h3>Tier 3 — Enterprise (L3)</h3>
-          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.95rem;line-height:1.7;margin-top:.5rem">
-            <li>Independent third-party audit report</li>
-            <li>Continuous monitoring evidence</li>
-            <li>Annual renewal with updated evidence package</li>
-          </ul>
-        </div>
-      </div>
+    <div class="container" style="max-width:52rem">
+      <p class="section-kicker">Self-testing guidance</p>
+      <h2>What to capture when you test</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">If you run these tests against your system, here's the minimum useful evidence to document:</p>
+      <ul style="list-style:disc;padding-left:1.4rem;color:var(--body);font-size:.95rem;line-height:1.9;margin-top:.75rem">
+        <li>A transaction log showing disclosure timestamp vs. first data request timestamp</li>
+        <li>Script or prompt version at time of test</li>
+        <li>Call outcome (pass / fail / partial, with notes)</li>
+        <li>Any edge cases or failure modes you found</li>
+      </ul>
+      <p style="color:var(--body);font-size:.9rem;line-height:1.7;margin-top:1rem">Share results at <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:600">help@nhid-clinical.org</a> — every piece of feedback improves the proposal.</p>
     </div>
   </section>
 
