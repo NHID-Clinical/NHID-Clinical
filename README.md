@@ -7,17 +7,8 @@
 ![Compliance](https://img.shields.io/badge/Compliance-HIPAA--Aligned-orange?style=for-the-badge)
 [![Version](https://img.shields.io/badge/version-1.3-blue?style=for-the-badge)](https://github.com/thankcheeses/NHID-Clinical)
 [![Domain](https://img.shields.io/badge/domain-AI_Governance-0052CC?style=for-the-badge)](https://github.com/thankcheeses/NHID-Clinical)
-[![Validation](https://img.shields.io/badge/Validation-Now_Live-brightgreen?style=for-the-badge)](https://nhid-clinical.org/validation/)
 
 ---
-
-## 🎯 **NEW: Pilot Validation Program Now Live**
-
-[![Validation Program](https://img.shields.io/badge/🎯_Pilot_Validation-Now_Live-brightgreen?style=for-the-badge)](https://nhid-clinical.org/validation/)
-
-**First validations offered at no cost** for AI voice agent platforms in healthcare.
-
-[**→ Request Validation**](https://nhid-clinical.org/validation/) | [View Conformance Test Suite](conformance.md) | [Certification Framework](certification.md)
 
 ---
 
