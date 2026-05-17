@@ -23,17 +23,18 @@
         <small>Building Trust in Healthcare Voice AI</small>
       </span>
     </a>
-    <div class="nav-links">
+            <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/conformance.html">Conformance</a>
-      <a href="/script-examples.html" class="is-active">Script Examples</a>
-      <a href="/certification.html">Certification</a>
-      <a href="/validation.html">Validation</a>
+      <a href="/conformance.html">Proposed Requirements</a>
+      <a href="/script-examples.html">Script Examples</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/specification.html">Specification</a>
       <a href="/#download">Download</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/for-payers.html">For Payers</a>
+      <a href="/implementation-review.html">Implementation Review</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/news.html">News</a>
       <a href="/community.html">Community</a>
@@ -47,7 +48,7 @@
         <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="primary-pill" href="/validation.html">Get Involved</a>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -68,14 +69,14 @@
 </header>
 
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
-  <a href="/">Home</a>
+      <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/conformance.html">Conformance</a>
+  <a href="/conformance.html">Proposed Requirements</a>
   <a href="/script-examples.html">Script Examples</a>
   <a href="/specification.html">Specification</a>
   <a href="/#download">Download</a>
-  <a href="/certification.html">Certification</a>
-  <a href="/validation.html">Validation</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/implementation-review.html">Implementation Review</a>
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
   <a href="/faq.html">FAQ</a>
@@ -174,19 +175,18 @@
         <div class="script-dialogue" role="region" aria-label="Non-compliant call transcript">
           <div class="dialogue-turn">
             <span class="dialogue-speaker dialogue-speaker-agent">AI Agent</span>
-            <span class="dialogue-text-agent">"Hi, this is Sarah from Dr. Smith's office calling to check claim status for a patient."</span>
+            <span class="dialogue-text-agent">"Hi, this is Sarah from Dr. Smith's office calling to check claim status for a patient. The provider's NPI is 1234567890."</span>
           </div>
           <div class="dialogue-turn">
-            <span class="dialogue-speaker dialogue-speaker-rep">Payer Representative</span>
-            <span class="dialogue-text-rep">"I can help with that. What is the provider's NPI and the member ID?"</span>
+            <span class="dialogue-system-note">Call center rep verifies NPI in system.</span>
           </div>
           <div class="dialogue-turn">
             <span class="dialogue-speaker dialogue-speaker-agent">AI Agent</span>
-            <span class="dialogue-text-agent">"The NPI is 1234567890 and the member ID is 987654321."</span>
-            <span class="dialogue-system-note">The representative collects multiple data points over 3–5 minutes of normal-sounding conversation — PHI/operational data exposed to an undisclosed system with no informed consent or audit trail.</span>
+            <span class="dialogue-text-agent">"The member ID is 987654321, date of service was 01/15/2025."</span>
+            <span class="dialogue-system-note">Multiple data points already exchanged — PHI/operational data exposed to an undisclosed system with no informed consent or audit trail.</span>
           </div>
           <div class="dialogue-turn">
-            <span class="dialogue-speaker dialogue-speaker-rep">Payer Representative (suspicious)</span>
+            <span class="dialogue-speaker dialogue-speaker-rep">Rep (suspicious)</span>
             <span class="dialogue-text-rep">"Wait… are you an AI agent?"</span>
           </div>
           <div class="dialogue-turn">
@@ -248,7 +248,7 @@
   <section class="page-section-alt" id="scope">
     <div class="container">
       <p class="section-kicker">Section 4 — Where NHID Does Not Apply</p>
-      <h2>Workflows outside this standard's scope</h2>
+      <h2>Workflows outside this proposal's scope</h2>
       <p style="color:var(--body);margin-bottom:1.5rem;line-height:1.75;max-width:44rem">NHID-Clinical v1.3 specifically addresses B2B administrative voice workflows between AI agents and healthcare payer operations. The following categories are outside scope — different risk profiles and disclosure frameworks apply.</p>
 
       <ul class="out-of-scope-list">
@@ -267,7 +267,7 @@
         <li>
           <div>
             <strong style="color:var(--ink);font-size:.9rem;display:block;margin-bottom:.2rem">Non-healthcare voice applications</strong>
-            This standard is specific to healthcare administrative workflows. Voice AI in other regulated industries (finance, legal) requires separate governance standards.
+            This proposal is specific to healthcare administrative workflows. Voice AI in other regulated industries (finance, legal) requires separate governance standards.
           </div>
         </li>
         <li>
@@ -308,7 +308,6 @@
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
-      <a href="mailto:validation@nhid-clinical.org">Validation</a>
       <a href="mailto:help@nhid-clinical.org">Help</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
@@ -316,7 +315,7 @@
       <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
       <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
     </div>
-    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | validation@nhid-clinical.org | nhid-clinical.org</p>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | help@nhid-clinical.org | nhid-clinical.org</p>
   </div>
 </footer>
 

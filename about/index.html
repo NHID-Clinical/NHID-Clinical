@@ -1,96 +1,13 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <link rel="icon" href="/assets/brand-icon.jpg" type="image/jpeg"/>
-  <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Why NHID-Clinical exists and who built it." />
-    <title>About | NHID-Clinical</title>
-    <link rel="stylesheet" href="../nhid-clinical-ui.css" />
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <nav class="container nav" aria-label="Primary navigation">
-        <a class="brand" href="/" aria-label="NHID-Clinical home">
-          <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.jpg" alt="NHID-Clinical" /></span>
-          <span><strong>NHID-Clinical</strong><small>Healthcare Voice AI Disclosure</small></span>
-        </a>
-        <div class="nav-links"><a class="" href="/">Home</a><a class="is-active" href="/about/">About</a><a class="" href="/#standard">Standard</a><a class="" href="/specification.html">Specification</a><a class="" href="/validation/">Validation</a><a class="" href="/news/">News</a><a class="" href="/community/">Community</a><a class="" href="#contact">Contact</a></div>
-        <div class="nav-actions">
-          <a class="primary-pill" href="/validation/">Validate</a>
-          <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-site-menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-        </div>
-      </nav>
-    </header>
-
-    <div class="mobile-menu-panel" id="mobile-site-menu" hidden>
-      <div class="mobile-menu-backdrop" data-menu-close></div>
-      <nav class="mobile-menu-card" aria-label="Mobile navigation">
-        <div class="mobile-menu-header">
-          <strong>NHID-Clinical</strong>
-          <button class="icon-button mobile-menu-close" type="button" aria-label="Close menu" data-menu-close>&times;</button>
-        </div>
-        <a href="/">Home</a>
-        <a href="/about/">About</a>
-        <a href="/#standard">Standard</a>
-        <a href="/validation/">Validation</a>
-        <a href="/news/">News</a>
-        <a href="/community/">Community</a>
-        <a href="/conformance/">Conformance</a>
-        <a href="/specification.html">Specification</a>
-        <a href="/certification/">Certification</a>
-        <a href="/#contact">Contact</a>
-      </nav>
-    </div>
-
-    <main id="main">
-      <section class="inner-hero"><div class="container inner-hero-grid"><div><div class="crumbs"><a href="/">Home</a><span>/</span><span>About</span></div><p class="eyebrow"><span class="status-dot"></span>About NHID-Clinical</p><h1>Built from the moment the script stopped working.</h1><p class="lede">NHID-Clinical exists because healthcare administrative voice workflows now receive AI callers that sound human, act at scale, and often disclose too late.</p></div><aside class="hero-summary-card"><strong>Built by Brianna Baynard</strong><p>Created from direct experience answering AI voice agent calls in payer-provider administrative workflows.</p></aside></div></section>
-      <section class="built-by-section"><div class="container built-by-inner"><div class="creator-photo">BB</div><div><p class="section-kicker">Built by</p><h2>Built by someone who answered thousands of AI voice agent calls at a TRICARE dental insurer.</h2><blockquote>“I spent 8 months hanging up on undisclosed AI agents. This standard defines what should have happened instead.”</blockquote><p>— Brianna Baynard, Creator</p></div></div></section>
-      <section class="container page-section content-grid"><article class="prose-card"><h2>The problem is the workflow, not the AI.</h2><p>Healthcare should not simply ban automation from administrative work. Eligibility checks, claim status calls, prior authorization follow-up, and billing tasks are repetitive workflows where automation can reduce burden. The issue is that AI voice agents have entered a trust-based channel without a basic trust model.</p><p>NHID-Clinical defines the minimum behavioral baseline for that channel. If the caller is automated, it should say so before asking for data. If it represents a provider, it should identify the organization and purpose of the call. If the call cannot continue, it should hand off to a human cleanly with a reference ID.</p><h3>Why the scope is narrow</h3><p>This is not a full AI law, a HIPAA replacement, or a general identity platform. It addresses one concrete moment: an automated voice agent calls a payer, says it represents a provider, and asks for administrative information.</p><h3>Source context</h3><p>This page is informed by the essay “When an AI Agent Calls About a Claim, Who Is It Really Representing?”</p><a class="inline-button" href="https://medium.com/@bnbaynard/when-an-ai-agent-calls-about-a-claim-who-is-it-really-representing-e021e12e4c1b">Read the essay →</a></article><aside class="side-stack"><section class="resource-card"><h2>Start here</h2><p>Review the native conformance tests and certification framework.</p><a class="outline-link" href="/conformance/">Conformance →</a><a class="outline-link" href="/certification/">Certification →</a></section></aside></section>
-    </main>
-    <footer id="contact" class="site-footer">
-      <div class="container footer-inner enterprise-footer">
-        <div>
-          <p>© 2026 Brianna Baynard. NHID-Clinical is released under CC BY 4.0.</p>
-          <p>Published NIST public comment: <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a></p>
-        </div>
-        <div>
-          <a class="footer-cta" href="/validation/">Ready to validate? First 10 L1 certifications free →</a>
-          <a href="mailto:help@nhid-clinical.org">help@nhid-clinical.org</a>
-          <a href="https://nhid-clinical.org">nhid-clinical.org</a>
-        </div>
-      </div>
-    </footer>
-
-    <script>
-      (function () {
-        var menu = document.getElementById('mobile-site-menu');
-        var button = document.querySelector('.menu-button');
-        if (!menu || !button) return;
-        var closeTargets = menu.querySelectorAll('[data-menu-close]');
-        function openMenu() {
-          menu.hidden = false;
-          document.body.classList.add('mobile-menu-open');
-          button.setAttribute('aria-expanded', 'true');
-          var firstLink = menu.querySelector('a');
-          if (firstLink) firstLink.focus();
-        }
-        function closeMenu() {
-          menu.hidden = true;
-          document.body.classList.remove('mobile-menu-open');
-          button.setAttribute('aria-expanded', 'false');
-          button.focus();
-        }
-        button.addEventListener('click', function () {
-          if (menu.hidden) openMenu(); else closeMenu();
-        });
-        closeTargets.forEach(function (target) { target.addEventListener('click', closeMenu); });
-        menu.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', closeMenu); });
-        document.addEventListener('keydown', function (event) {
-          if (event.key === 'Escape' && !menu.hidden) closeMenu();
-        });
-      })();
-    </script>
-  </body>
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="refresh" content="0;url=/about.html"/>
+  <link rel="canonical" href="/about.html"/>
+  <title>Redirecting…</title>
+</head>
+<body>
+  <script>window.location.replace("/about.html")</script>
+  <p><a href="/about.html">Click here if not redirected.</a></p>
+</body>
 </html>
