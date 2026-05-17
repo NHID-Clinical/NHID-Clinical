@@ -228,61 +228,6 @@
     </article>
   </section>
 
-  <section class="page-section">
-    <div class="container">
-      <p class="section-kicker">The Five Baseline Tests</p>
-      <h2>What We Test: Plain-English Explanation</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;max-width:72ch;margin-bottom:2rem">NHID-Clinical requires all AI voice agents to pass five deterministic conformance tests. Each test is binary: pass or fail. No gray area. No "substantial compliance."</p>
-
-      <table class="faq-table" style="margin-bottom:2rem">
-        <thead>
-          <tr>
-            <th>Test Code</th>
-            <th>Test Name</th>
-            <th>What It Checks</th>
-            <th>Real-World Measurement</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>IDG-01</strong></td>
-            <td>Identity Disclosure Gate</td>
-            <td>Agent must disclose non-human identity BEFORE requesting any operational or PHI data</td>
-            <td>Timestamps show disclosure occurs before NPI, member ID, claim number, or date of service request</td>
-          </tr>
-          <tr>
-            <td><strong>PDX-01</strong></td>
-            <td>Pre-Data Exchange Test</td>
-            <td>Agent must explicitly state automated nature and obtain consent</td>
-            <td>Validates Turing boundary disclosure before data pipelines open</td>
-          </tr>
-          <tr>
-            <td><strong>DBC-01</strong></td>
-            <td>Deceptive Behavior Check</td>
-            <td>Analyzes audio for psychological manipulation</td>
-            <td>Flags synthetic breathing, programmed hesitations, or fake typing sounds</td>
-          </tr>
-          <tr>
-            <td><strong>EIT-01</strong></td>
-            <td>Escalation to Human</td>
-            <td>Agent must transfer immediately when human requested</td>
-            <td>Provides reference ID and seamless handoff</td>
-          </tr>
-          <tr>
-            <td><strong>ATR-01</strong></td>
-            <td>Audit Trail Requirement</td>
-            <td>All interactions must be logged with cryptographic timestamps</td>
-            <td>Immutable record of disclosure, consent, and data exchange events</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div style="background:var(--bg-alt);border-left:4px solid var(--blue);padding:1rem;border-radius:4px;font-size:.92rem;line-height:1.7;color:var(--body)">
-        <strong>Binary Conformance:</strong> These tests either pass or fail. No gray area. No "substantial compliance." A system passes all five or it doesn't.
-      </div>
-    </div>
-  </section>
-
   <section class="container benefits-band" aria-label="Benefits">
     <div><strong>Build Trust</strong><span>Promote transparency in AI voice interactions.</span></div>
     <div><strong>Protect Patients</strong><span>Support informed and safe healthcare workflows.</span></div>
