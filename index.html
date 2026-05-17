@@ -105,10 +105,11 @@
           <a class="cta-button" href="/specification.html">View the Proposal →</a>
           <p class="cta-subtext" style="font-size:.85rem;color:var(--body);margin-top:.5rem;font-weight:400">Open source specification seeking feedback and adoption from healthcare platforms and payers.</p>
         </div>
+        <p class="hero-helper"><a href="/specification.html" style="color:var(--blue);font-weight:600">Read the full proposal →</a></p>
       </div>
       <div class="hero-art" aria-label="NHID-Clinical logo">
-        <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure Standard for Trusted Healthcare Voice AI" />
-        <img class="theme-img theme-img-dark" src="/assets/logo-dark.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure Standard for Trusted Healthcare Voice AI" />
+        <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure for Healthcare Voice AI" />
+        <img class="theme-img theme-img-dark" src="/assets/logo-dark.jpg" alt="NHID-Clinical — Non-Human Identity Disclosure for Healthcare Voice AI" />
       </div>
     </div>
   </section>
@@ -118,9 +119,9 @@
       <div class="nist-provenance-card">
         <div class="nist-gov-badge" aria-hidden="true">NIST</div>
         <div>
-          <p class="eyebrow">Regulatory context</p>
-          <h2 class="nist-heading">Submitted as public comment to NIST docket NIST-2025-0035 (AI-agent security).</h2>
-          <p class="nist-body">NHID-Clinical was submitted as a public comment to the National Institute of Standards and Technology's AI governance initiative. The proposal addresses impersonation latency through pre-data-exchange disclosure controls for AI voice agents in B2B payer–provider workflows.</p>
+          <p class="eyebrow">NIST AI Safety Institute Submission</p>
+          <h2 class="nist-heading">NHID-Clinical Submitted as a Public Comment to NIST</h2>
+          <p class="nist-body">NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security), proposing a voluntary governance framework for healthcare voice AI disclosure. This is a voluntary industry proposal designed to complement — not replace — existing rules around HIPAA, TCPA, and emerging AI transparency guidelines.</p>
           <p class="nist-meta">NIST Docket: NIST-2025-0035-0026 &nbsp;·&nbsp; Submitted: January 12, 2026</p>
           <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" class="nist-link" target="_blank" rel="noopener noreferrer">View our submission on Regulations.gov →</a>
         </div>
@@ -170,9 +171,9 @@
   <section class="split-section white-section">
     <div class="container">
       <div class="section-heading">
-        <p class="section-kicker">The governance layer</p>
-        <h2>Governance Infrastructure for Voice AI Platforms</h2>
-        <p>NHID-Clinical proposes behavioral requirements for healthcare voice agents — disclosure timing, authorization verification, and escalation protocols. Voice platforms provide the engine. NHID-Clinical provides a proposed safety layer. Platforms that adopt NHID-Clinical can demonstrate transparent, auditable workflows that payers and providers can evaluate.</p>
+        <p class="section-kicker">The proposal</p>
+        <h2>A shared framework for transparent voice AI workflows</h2>
+        <p>NHID-Clinical proposes behavioral requirements for AI voice agents in healthcare — disclosure timing, authorization verification, and escalation protocols. The goal is a shared vocabulary that payers, providers, and platforms can reference when evaluating AI caller behavior.</p>
       </div>
     </div>
   </section>
@@ -195,20 +196,36 @@
     </div>
   </section>
 
+  <section class="split-section white-section" id="regulatory-context">
+    <div class="container">
+      <div style="max-width:52rem;margin-inline:auto">
+        <p class="section-kicker">Regulatory context</p>
+        <h2>NIST submission</h2>
+        <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-bottom:1rem">NHID-Clinical has been submitted to NIST in docket NIST-2025-0035 (AI-agent security) as a proposed governance framework for healthcare voice AI disclosure requirements.</p>
+        <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" style="color:var(--blue);font-weight:600;font-size:.95rem" target="_blank" rel="noopener noreferrer">View our submission on Regulations.gov →</a>
+      </div>
+    </div>
+  </section>
+
   <section class="container standards-section">
     <article class="standard-card">
       <div class="card-icon" aria-hidden="true">▣</div>
-      <h2>Normative Requirements</h2>
-      <p>Define the mandatory disclosure elements and behaviors for non-human identities in healthcare voice interactions.</p>
+      <h2>Proposed Requirements</h2>
+      <p>Five recommended requirements for transparent AI voice agent behavior in healthcare payer–provider calls.</p>
       <a href="/conformance.html">View Requirements <span aria-hidden="true">→</span></a>
     </article>
     <article class="standard-card tone-teal">
       <div class="card-icon" aria-hidden="true">◎</div>
-      <h2>Recommended Practices</h2>
-      <p>Provide guidance for transparent and ethical voice workflows that build payer and provider trust.</p>
-      <a href="/conformance.html">Explore Practices <span aria-hidden="true">→</span></a>
+      <h2>Implementation Guidance</h2>
+      <p>Practical guidance for auditing current call disclosure timing, removing deceptive audio, and adding escalation paths.</p>
+      <a href="/specification.html">Read the Proposal <span aria-hidden="true">→</span></a>
     </article>
-
+    <article class="standard-card tone-indigo">
+      <div class="card-icon" aria-hidden="true">◇</div>
+      <h2>Script Examples</h2>
+      <p>See passing and failing script patterns to understand how the proposed requirements apply in real call scenarios.</p>
+      <a href="/script-examples.html">View Script Examples <span aria-hidden="true">→</span></a>
+    </article>
   </section>
 
   <section class="page-section">
@@ -269,8 +286,8 @@
   <section class="container benefits-band" aria-label="Benefits">
     <div><strong>Build Trust</strong><span>Promote transparency in AI voice interactions.</span></div>
     <div><strong>Protect Patients</strong><span>Support informed and safe healthcare workflows.</span></div>
-    <div><strong>Drive Adoption</strong><span>Create a common standard for the industry.</span></div>
-    <div><strong>Advance Interoperability</strong><span>Enable secure, interoperable voice systems.</span></div>
+    <div><strong>Reduce Risk</strong><span>Prevent impersonation latency before data is shared.</span></div>
+    <div><strong>Enable Feedback</strong><span>Help shape a shared vocabulary for the industry.</span></div>
   </section>
 
   <section class="split-section white-section">
@@ -278,12 +295,12 @@
       <div>
         <p class="section-kicker">What problem does this solve?</p>
         <h2>Reduce impersonation latency before sensitive workflow data is exchanged.</h2>
-        <p>NHID-Clinical proposes a minimum control baseline for AI voice agents in B2B healthcare administrative workflows. The proposal gives payers, providers, and platforms a shared framework to disclose automation, verify authorization, and escalate to a human when needed.</p>
+        <p>NHID-Clinical proposes a minimum baseline for AI voice agents in B2B healthcare administrative workflows. This proposal gives payers, providers, and platforms a shared way to disclose automation, verify authorization, and escalate to a human when needed.</p>
       </div>
       <div class="problem-panel">
         <div>AI voice call enters the workflow</div>
         <div class="warn">Disclosure happens too late or only after challenge</div>
-        <div class="good">NHID-Clinical moves identity disclosure before data exchange</div>
+        <div class="good">NHID-Clinical proposes identity disclosure before data exchange</div>
       </div>
     </div>
   </section>
@@ -316,13 +333,13 @@
           <h3>NHID-Clinical v1.3 Core Specification</h3>
           <p>Five proposed requirements (IDG-01 through ATR-01) for transparent AI voice agent behavior in healthcare payer–provider calls. Free to use and adapt under CC BY 4.0.</p>
           <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
-          <span class="license-badge">CC BY 4.0 · Published May 2026</span>
+          <span class="license-badge">CC BY 4.0 · May 2026</span>
         </article>
         <article class="download-card">
-          <h3>NHID-Auth v1.0 Specification</h3>
-          <p>Authorization layer companion specification for delegated authority verification. Defines authorization attestation format, scope, duration, and revocation handling.</p>
+          <h3>NHID-Auth v1.0 — Companion Spec</h3>
+          <p>Companion proposal addressing the authorization gap — how an AI agent proves it has delegated authority from the provider, not just a publicly available NPI.</p>
           <a href="/specs/NHID-Auth-v1.0-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
-          <span class="license-badge">CC BY 4.0 · Published May 2026</span>
+          <span class="license-badge">CC BY 4.0 · May 2026</span>
         </article>
       </div>
     </div>
@@ -334,10 +351,10 @@
     <div class="closing-panel">
       <div>
         <p class="section-kicker">Get involved</p>
-        <h2>Help shape the future of transparent healthcare voice AI.</h2>
-        <p>NHID-Clinical is an open proposal seeking feedback from healthcare platforms, payers, and providers. Join the community on GitHub or reach out to discuss adoption.</p>
+        <h2>Help shape what this proposal becomes.</h2>
+        <p>NHID-Clinical is an early-stage open proposal. If you work in healthcare voice AI — as a payer, provider, or platform — your feedback and real-world experience will directly improve it.</p>
       </div>
-      <a class="closing-button" href="https://github.com/thankcheeses/NHID-Clinical">View on GitHub →</a>
+      <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>
