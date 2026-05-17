@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Implementation Review — How vendors can get their AI voice agent implementation reviewed for conformance."/>
+  <title>Implementation Review | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.jpg" type="image/jpeg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.jpg" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/conformance.html">Conformance</a>
+      <a href="/script-examples.html">Script Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/implementation-review.html" class="is-active">Implementation Review</a>
+      <a href="/specification.html">Specification</a>
+      <a href="/#download">Download</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/conformance.html">Conformance</a>
+  <a href="/script-examples.html">Script Examples</a>
+  <a href="/implementation-review.html">Implementation Review</a>
+  <a href="/specification.html">Specification</a>
+  <a href="/#download">Download</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container inner-hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Implementation Review</span></div>
+        <p class="eyebrow">For Vendors & Developers</p>
+        <h1>Implementation Review Process</h1>
+        <p class="lede">Vendors implementing NHID-Clinical can request implementation review to validate conformance with the five baseline tests. Official certification program launches Q3 2026.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">What Are the Five Tests?</p>
+      <h2>NHID-Clinical Baseline Requirements</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;max-width:72ch;margin-bottom:2rem">All NHID-Clinical implementations must pass five deterministic conformance tests. Each test is binary: pass or fail. No gray area.</p>
+
+      <table class="faq-table" style="margin-bottom:2rem">
+        <thead>
+          <tr>
+            <th>Test Code</th>
+            <th>Test Name</th>
+            <th>What It Checks</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IDG-01</strong></td>
+            <td>Identity Disclosure Gate</td>
+            <td>Agent must disclose non-human identity BEFORE requesting any operational or PHI data</td>
+            <td>Prevents impersonation latency</td>
+          </tr>
+          <tr>
+            <td><strong>PDX-01</strong></td>
+            <td>Pre-Data Exchange Test</td>
+            <td>No data exchange before disclosure</td>
+            <td>Protects PHI exposure</td>
+          </tr>
+          <tr>
+            <td><strong>DBC-01</strong></td>
+            <td>Deceptive Behavior Check</td>
+            <td>No fake human sounds</td>
+            <td>Prevents deceptive AI behavior</td>
+          </tr>
+          <tr>
+            <td><strong>EIT-01</strong></td>
+            <td>Escalation to Human</td>
+            <td>Immediate human escalation upon request</td>
+            <td>Ensures user choice</td>
+          </tr>
+          <tr>
+            <td><strong>ATR-01</strong></td>
+            <td>Audit Trail Requirement</td>
+            <td>Audit trail with cryptographic timestamps</td>
+            <td>Creates accountability</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="background:var(--bg-alt);border-left:4px solid var(--blue);padding:1.5rem;border-radius:4px;margin-bottom:2rem">
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7"><strong>What "NHID-Clinical Compliant" Means:</strong> Your implementation passes all five tests. Payers and providers can trust that your AI agent discloses itself, doesn't use deceptive techniques, escalates to humans when requested, and maintains an auditable record of all interactions.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)">
+    <div class="container">
+      <p class="section-kicker">How Implementation Review Works</p>
+      <h2>Request Your Implementation Review</h2>
+
+      <div style="margin-top:2rem">
+        <div style="margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:2rem">
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 1: Prepare Your Evidence</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Document how your implementation passes each of the five tests:</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.8;margin-top:.75rem">
+            <li><strong>IDG-01:</strong> Timestamps showing disclosure before data request</li>
+            <li><strong>PDX-01:</strong> Explicit consent/authorization gate before data exchange</li>
+            <li><strong>DBC-01:</strong> Audio analysis or behavioral audit showing no deceptive artifacts</li>
+            <li><strong>EIT-01:</strong> Escalation workflow documentation and test calls</li>
+            <li><strong>ATR-01:</strong> Audit trail schema and sample logs with cryptographic verification</li>
+          </ul>
+        </div>
+
+        <div style="margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:2rem">
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 2: Submit Your Request</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Email <strong>help@nhid-clinical.org</strong> with:</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.8;margin-top:.75rem">
+            <li>Your organization name and contact info</li>
+            <li>Description of your AI voice agent system</li>
+            <li>Evidence documentation for all five tests</li>
+            <li>Sample call transcripts or audio (anonymized)</li>
+            <li>Audit trail samples showing timestamps and logging</li>
+          </ul>
+        </div>
+
+        <div style="margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:2rem">
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 3: Review & Feedback</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">We will review your submission and provide feedback on conformance. If your implementation passes all five tests, we will confirm NHID-Clinical compliance.</p>
+        </div>
+
+        <div>
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 4: Compliance Confirmation</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Upon successful review, you can reference NHID-Clinical compliance in your marketing, RFP responses, and customer communications. Official certification program with badges and registry listing launches Q3 2026.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">Timeline & Expectations</p>
+      <h2>What to Expect</h2>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem">
+        <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem">
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Current Phase (Now - Q2 2026)</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">Implementation review is available. We validate your conformance to the five tests and provide feedback.</p>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7"><strong>Timeline:</strong> 2-4 weeks from submission</p>
+        </div>
+
+        <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem">
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem\">Official Certification (Q3 2026)</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem\">Formal certification program launches with badges, registry listing, and official compliance documentation.</p>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7\"><strong>Timeline:</strong> TBD based on pilot feedback</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)">
+    <div class="container">
+      <p class="section-kicker">Questions?</p>
+      <h2>Get Started with Implementation Review</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem">If you're implementing NHID-Clinical and want to request an implementation review, reach out to our team.</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:2rem"><strong>Email:</strong> help@nhid-clinical.org</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75">We're here to help you understand the five tests, prepare your evidence, and validate your implementation. Early feedback is welcome as we build toward the official certification program in Q3 2026.</p>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard-Malone | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:help@nhid-clinical.org">Help</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+      <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard-Malone | NIST-2025-0035-0026 | CC BY 4.0 | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>
