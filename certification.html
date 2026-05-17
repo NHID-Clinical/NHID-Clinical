@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Certification Framework — L1/L2/L3 levels for healthcare voice AI compliance. Free self-attestation to enterprise audit."/>
+  <title>Certification Framework | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.jpg" type="image/jpeg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.jpg" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/conformance.html">Conformance</a>
+      <a href="/script-examples.html">Script Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/certification.html" class="is-active">Certification</a>
+      <a href="/specification.html">Specification</a>
+      <a href="/#download">Download</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/conformance.html">Conformance</a>
+  <a href="/script-examples.html">Script Examples</a>
+  <a href="/certification.html">Certification</a>
+  <a href="/specification.html">Specification</a>
+  <a href="/#download">Download</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container inner-hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Certification</span></div>
+        <p class="eyebrow">Certification Framework</p>
+        <h1>NHID-Clinical Certification Levels</h1>
+        <p class="lede">Three pathways to demonstrate compliance with NHID-Clinical v1.3. Start free with L1 self-attestation, scale to L2 production validation or L3 enterprise audit.</p>
+      </div>
+      <aside class="hero-summary-card">
+        <strong>Quick Links</strong>
+        <p style="font-size:.88rem;margin:.75rem 0">Jump to certification level details, timeline, or pricing.</p>
+        <a href="#levels" class="outline-link" style="width:100%;justify-content:center;margin-bottom:.5rem">View Levels →</a>
+        <a href="#timeline" class="outline-link" style="width:100%;justify-content:center">Timeline →</a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">Certification Overview</p>
+      <h2>How NHID-Clinical Certification Works</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;max-width:72ch;margin-bottom:2rem">All certification levels require passing all five conformance tests (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01). Levels differ in evidence depth, verification method, and cost. Choose the level that matches your operational readiness and compliance requirements.</p>
+      
+      <div style="background:var(--bg-alt);border-left:4px solid var(--blue);padding:1.5rem;margin:2rem 0;border-radius:4px">
+        <p style="color:var(--body);font-size:.95rem;line-height:1.7"><strong>Core Principle:</strong> All levels require the same five tests to pass. The difference is in how you demonstrate compliance and how deeply we validate your production environment.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="levels" class="page-section">
+    <div class="container">
+      <p class="section-kicker">Three Certification Levels</p>
+      <h2>L1, L2, and L3 Explained</h2>
+      
+      <div class="cert-tiers" style="margin-top:2rem">
+        <div class="cert-card">
+          <div class="cert-label">L1</div>
+          <h3>Baseline (Self-Attestation)</h3>
+          <p style="color:var(--body);font-size:.95rem;line-height:1.7;margin-bottom:1.5rem"><strong>Cost:</strong> Free</p>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">Your organization signs a compliance declaration confirming that your AI voice agent passes all five NHID-Clinical tests. You provide internal QA documentation and test results.</p>
+          <h4 style="color:var(--ink);font-size:.95rem;margin:1.25rem 0 .75rem">What You Get:</h4>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.75">
+            <li>NHID-Clinical L1 badge for your website</li>
+            <li>Listing in public registry</li>
+            <li>Permission to reference compliance in RFPs</li>
+            <li>Access to community resources</li>
+          </ul>
+          <h4 style="color:var(--ink);font-size:.95rem;margin:1.25rem 0 .75rem">Timeline:</h4>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7">Typically 5–7 business days from submission</p>
+          <h4 style="color:var(--ink);font-size:.95rem;margin:1.25rem 0 .75rem">Best For:</h4>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7">Early-stage vendors, internal deployments, or organizations seeking baseline compliance without third-party validation.</p>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-label">L2</div>
+          <h3>Operational (Production Validation)</h3>
+          <p style="color:var(--body);font-size:.95rem;line-height:1.7;margin-bottom:1.5rem"><strong>Cost:</strong> $500</p>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">We validate your system against live production data. You provide 30+ days of call logs, transcripts, and audit trails. We independently verify that all five tests pass in your actual operational environment.</p>
+          <h4 style="color:var(--ink);font-size:.95rem;margin:1.25rem 0 .75rem">What You Get:</h4>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.75">
+            <li>NHID-Clinical L2 badge (higher trust signal)</li>
+            <li>Validation report with test results</li>
+            <li>Enhanced registry listing</li>
+            <li>Case study eligibility</li>
+            <li>Direct support for RFP responses</li>
+          </ul>
+          <h4 style="color:var(--ink);font-size:.95rem;margin:1.25rem 0 .75rem">Timeline:</h4>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7">30–45 days (includes 30-day observation period)</p>
+          <h4 style="color:var(--ink);font-size:.95rem;margin:1.25rem 0 .75rem">Best For:</h4>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7">Vendors seeking payer trust, RFP competitiveness, or regulatory readiness. Recommended for production deployments.</p>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-label">L3</div>
+          <h3>Enterprise (Third-Party Audit)</h3>
+          <p style="color:var(--body);font-size:.95rem;line-height:1.7;margin-bottom:1.5rem"><strong>Cost:</strong> Custom (typically $2,500–$5,000)</p>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">Full third-party security audit of your voice AI system, including architecture review, code inspection, and compliance verification. Independent auditor validates all five tests and produces a detailed audit report.</p>
+          <h4 style="color:var(--ink);font-size:.95rem;margin:1.25rem 0 .75rem">What You Get:</h4>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.75">
+            <li>NHID-Clinical L3 badge (highest trust)</li>
+            <li>Third-party audit report</li>
+            <li>Premium registry listing with audit badge</li>
+            <li>Marketing rights and case study</li>
+            <li>Annual re-audit option</li>
+            <li>Direct engagement with NHID-Clinical governance</li>
+          </ul>
+          <h4 style="color:var(--ink);font-size:.95rem;margin:1.25rem 0 .75rem">Timeline:</h4>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7">60–90 days (includes architecture review, testing, and reporting)</p>
+          <h4 style="color:var(--ink);font-size:.95rem;margin:1.25rem 0 .75rem">Best For:</h4>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7">Enterprise vendors, regulated entities, or organizations requiring independent security validation for compliance or procurement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="timeline" class="page-section">
+    <div class="container">
+      <p class="section-kicker">Certification Timeline</p>
+      <h2>From Submission to Badge</h2>
+      
+      <div style="margin-top:2rem">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-bottom:3rem">
+          <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem">
+            <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">L1: 5–7 Days</h3>
+            <ol style="list-style:decimal;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.8">
+              <li>Submit self-attestation form</li>
+              <li>Provide QA documentation</li>
+              <li>Review and approval</li>
+              <li>Badge issued</li>
+            </ol>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem">
+            <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">L2: 30–45 Days</h3>
+            <ol style="list-style:decimal;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.8">
+              <li>Submit production data (30 days)</li>
+              <li>NHID-Clinical validation (10–15 days)</li>
+              <li>Report generation</li>
+              <li>Badge and registry listing</li>
+            </ol>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem">
+            <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">L3: 60–90 Days</h3>
+            <ol style="list-style:decimal;padding-left:1.25rem;color:var(--body);font-size:.88rem;line-height:1.8">
+              <li>Audit engagement and scoping</li>
+              <li>Architecture and code review</li>
+              <li>Production validation</li>
+              <li>Audit report and badge</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)">
+    <div class="container">
+      <p class="section-kicker">Certification Comparison</p>
+      <h2>Quick Reference: L1 vs L2 vs L3</h2>
+      
+      <table class="faq-table" style="margin-top:2rem">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>L1 (Baseline)</th>
+            <th>L2 (Operational)</th>
+            <th>L3 (Enterprise)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Cost</strong></td>
+            <td>Free</td>
+            <td>$500</td>
+            <td>Custom ($2.5K–$5K)</td>
+          </tr>
+          <tr>
+            <td><strong>All 5 Tests Required</strong></td>
+            <td><span class="faq-check">✓</span></td>
+            <td><span class="faq-check">✓</span></td>
+            <td><span class="faq-check">✓</span></td>
+          </tr>
+          <tr>
+            <td><strong>Validation Method</strong></td>
+            <td>Self-attestation</td>
+            <td>Production data review</td>
+            <td>Third-party audit</td>
+          </tr>
+          <tr>
+            <td><strong>Timeline</strong></td>
+            <td>5–7 days</td>
+            <td>30–45 days</td>
+            <td>60–90 days</td>
+          </tr>
+          <tr>
+            <td><strong>Badge</strong></td>
+            <td>Standard</td>
+            <td>Enhanced</td>
+            <td>Premium</td>
+          </tr>
+          <tr>
+            <td><strong>Registry Listing</strong></td>
+            <td>Basic</td>
+            <td>Enhanced</td>
+            <td>Premium with audit badge</td>
+          </tr>
+          <tr>
+            <td><strong>Case Study Eligible</strong></td>
+            <td>No</td>
+            <td>Yes</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td><strong>Best For</strong></td>
+            <td>Early-stage, internal use</td>
+            <td>Production deployments</td>
+            <td>Enterprise, regulated</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">Getting Started</p>
+      <h2>How to Apply for Certification</h2>
+      
+      <div style="background:var(--bg-alt);border-radius:8px;padding:2rem;margin-top:2rem">
+        <h3 style="color:var(--ink);margin-bottom:1rem">Step 1: Review the Specification</h3>
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:2rem">Read the full NHID-Clinical v1.3 specification and ensure your system passes all five conformance tests.</p>
+        
+        <h3 style="color:var(--ink);margin-bottom:1rem">Step 2: Choose Your Level</h3>
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:2rem">Decide whether L1 (free), L2 ($500), or L3 (custom) best fits your needs.</p>
+        
+        <h3 style="color:var(--ink);margin-bottom:1rem">Step 3: Submit Application</h3>
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">Email <strong>help@nhid-clinical.org</strong> with:</p>
+        <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.8;margin-bottom:2rem">
+          <li>Your organization name and contact info</li>
+          <li>Desired certification level</li>
+          <li>Brief description of your voice AI system</li>
+          <li>For L2/L3: production data or audit scope</li>
+        </ul>
+        
+        <h3 style="color:var(--ink);margin-bottom:1rem">Step 4: Validation & Badge</h3>
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7">We'll validate your submission and issue your badge within the timeline for your chosen level.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)">
+    <div class="container">
+      <p class="section-kicker">Transparency Commitment</p>
+      <h2>L1 Free Forever</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;max-width:72ch;margin-bottom:1.5rem">The NHID-Clinical specification and L1 certification will always be free and open-source. We believe baseline compliance should not be a financial barrier to adoption. Revenue from L2 and L3 certification services funds ongoing maintenance and governance.</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;max-width:72ch">If you have questions about certification or need guidance on which level is right for your organization, reach out to <strong>help@nhid-clinical.org</strong>.</p>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard-Malone | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:help@nhid-clinical.org">Help</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+      <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard-Malone | NIST-2025-0035-0026 | CC BY 4.0 | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>

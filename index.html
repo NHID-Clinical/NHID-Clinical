@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical: Non-Human Identity Disclosure Standard for Healthcare Voice Workflows."/>
-  <title>NHID-Clinical | Healthcare Voice AI Disclosure Standard</title>
+  <meta name="description" content="NHID-Clinical: An open governance proposal for transparent AI voice agents in healthcare payer–provider calls. Initiated by Brianna Baynard."/>
+  <title>NHID-Clinical | Open Governance Proposal</title>
   <link rel="icon" href="/assets/brand-icon.jpg" type="image/jpeg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -29,6 +29,9 @@
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/conformance.html">Conformance</a>
       <a href="/script-examples.html">Script Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/certification.html">Certification</a>
+      <a href="/for-payers.html">For Payers</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/specification.html">Specification</a>
       <a href="/#download">Download</a>
@@ -70,7 +73,10 @@
   <a href="/about.html">About</a>
   <a href="/conformance.html">Conformance</a>
   <a href="/script-examples.html">Script Examples</a>
-  <a href="/specification.html">Specification</a>
+  <a href="/certification.html">Certification</a>
+      <a href="/for-payers.html">For Payers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/specification.html">Specification</a>
   <a href="/#download">Download</a>
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
@@ -89,9 +95,12 @@
   <section class="hero-section">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow">An open governance proposal</p>
-        <h1>NHID-Clinical: A voluntary disclosure framework for AI voice agents in provider-to-payer calls</h1>
-        <p class="hero-subtitle">NHID-Clinical proposes that AI callers should identify themselves, prove authorization, and leave an auditable trail before exchanging patient data. Initiated by Brianna Baynard. Not an official standard or regulatory requirement.</p>
+        <p class="eyebrow">Open Proposal</p>
+        <h1>NHID-Clinical</h1>
+        <p class="hero-subtitle">An open governance proposal for transparent AI voice agents in healthcare payer–provider calls.</p>
+        <div style="background:var(--bg-alt);border-left:4px solid var(--blue);padding:1rem;margin:1.5rem 0;font-size:.95rem;line-height:1.7;color:var(--body)">
+          <strong>Initiated by Brianna Baynard-Malone as an open proposal.</strong> This is not an official standard, regulatory requirement, or accredited certification body. NHID-Clinical is early-stage work seeking feedback and adoption from healthcare platforms and payers.
+        </div>
         <p class="hero-body" style="display:none"></p>
         <div class="hero-actions">
           <a class="cta-button" href="/specification.html">View the Proposal →</a>
@@ -130,7 +139,7 @@
           <div class="impact-green-lane">
             <strong>Green Lane Benefit:</strong> Compliant calls get faster handling by providers who trust transparent workflows — bypassing the "are you human?" challenge cycle entirely.
           </div>
-          <p class="impact-footnote">Projections based on industry admin waste benchmarks. Pilot data available under NDA.</p>
+          <p class="impact-footnote" style="font-size:.85rem;color:var(--body-muted);font-style:italic">These are early-stage projections based on operational patterns observed in healthcare payer workflows. Real-world impact will depend on implementation and adoption.</p>
         </div>
         <div class="impact-metrics">
           <div class="impact-metric">
@@ -203,6 +212,61 @@
 
   </section>
 
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">The Five Baseline Tests</p>
+      <h2>What We Test: Plain-English Explanation</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;max-width:72ch;margin-bottom:2rem">NHID-Clinical requires all AI voice agents to pass five deterministic conformance tests. Each test is binary: pass or fail. No gray area. No "substantial compliance."</p>
+
+      <table class="faq-table" style="margin-bottom:2rem">
+        <thead>
+          <tr>
+            <th>Test Code</th>
+            <th>Test Name</th>
+            <th>What It Checks</th>
+            <th>Real-World Measurement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IDG-01</strong></td>
+            <td>Identity Disclosure Gate</td>
+            <td>Agent must disclose non-human identity BEFORE requesting any operational or PHI data</td>
+            <td>Timestamps show disclosure occurs before NPI, member ID, claim number, or date of service request</td>
+          </tr>
+          <tr>
+            <td><strong>PDX-01</strong></td>
+            <td>Pre-Data Exchange Test</td>
+            <td>Agent must explicitly state automated nature and obtain consent</td>
+            <td>Validates Turing boundary disclosure before data pipelines open</td>
+          </tr>
+          <tr>
+            <td><strong>DBC-01</strong></td>
+            <td>Deceptive Behavior Check</td>
+            <td>Analyzes audio for psychological manipulation</td>
+            <td>Flags synthetic breathing, programmed hesitations, or fake typing sounds</td>
+          </tr>
+          <tr>
+            <td><strong>EIT-01</strong></td>
+            <td>Escalation to Human</td>
+            <td>Agent must transfer immediately when human requested</td>
+            <td>Provides reference ID and seamless handoff</td>
+          </tr>
+          <tr>
+            <td><strong>ATR-01</strong></td>
+            <td>Audit Trail Requirement</td>
+            <td>All interactions must be logged with cryptographic timestamps</td>
+            <td>Immutable record of disclosure, consent, and data exchange events</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="background:var(--bg-alt);border-left:4px solid var(--blue);padding:1rem;border-radius:4px;font-size:.92rem;line-height:1.7;color:var(--body)">
+        <strong>Binary Conformance:</strong> These tests either pass or fail. No gray area. No "substantial compliance." A system passes all five or it doesn't.
+      </div>
+    </div>
+  </section>
+
   <section class="container benefits-band" aria-label="Benefits">
     <div><strong>Build Trust</strong><span>Promote transparency in AI voice interactions.</span></div>
     <div><strong>Protect Patients</strong><span>Support informed and safe healthcare workflows.</span></div>
@@ -244,22 +308,14 @@
     </div>
   </section>
 
-  <section class="split-section blue-section">
-    <div class="container split-grid reverse">
-      <div class="image-card badge-card">
-        <img class="theme-img theme-img-light" src="/assets/badges-light.jpg" alt="NHID-Clinical L1 Verified, L2 Certified, L3 Trust Certified badges" />
-        <img class="theme-img theme-img-dark" src="/assets/badges-dark.jpg" alt="NHID-Clinical L1 Verified, L2 Certified, L3 Trust Certified badges" />
-      </div>
 
-    </div>
-  </section>
 
   <section id="download" class="download-section">
     <div class="container">
       <div class="download-cards">
         <article class="download-card">
           <h3>NHID-Clinical v1.3 Core Specification</h3>
-          <p>Complete technical specification including five CTS conformance tests, L1/L2/L3 certification tiers, FHIR AuditEvent mapping, and NHID-Auth companion spec reference.</p>
+          <p>The full technical proposal including five conformance tests, implementation levels (L1/L2/L3), FHIR AuditEvent mapping, and NHID-Auth companion spec reference.</p>
           <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
           <span class="license-badge">CC BY 4.0 · Published May 2026</span>
         </article>
@@ -269,6 +325,60 @@
           <a href="/specs/NHID-Auth-v1.0-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
           <span class="license-badge">CC BY 4.0 · Published May 2026</span>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)">
+    <div class="container">
+      <p class="section-kicker">Certification & Governance</p>
+      <h2>Three Pathways to Compliance</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;max-width:72ch;margin-bottom:2rem">NHID-Clinical offers three certification levels to fit your organization's needs. L1 is free forever. L2 and L3 are paid validation services that fund ongoing governance and maintenance.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-top:2rem">
+        <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem;background:white">
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">L1: Baseline</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1.5rem"><strong>Free</strong></p>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-bottom:1rem">Self-attestation. You confirm compliance, we issue badge.</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.85rem;line-height:1.7">
+            <li>Forever free</li>
+            <li>5-7 day turnaround</li>
+            <li>Public registry listing</li>
+            <li>Badge for website</li>
+          </ul>
+        </div>
+
+        <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem;background:white">
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">L2: Operational</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1.5rem"><strong>$500</strong></p>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-bottom:1rem">Production validation. We audit 30+ days of live data.</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.85rem;line-height:1.7">
+            <li>30-45 day timeline</li>
+            <li>Validation report</li>
+            <li>Enhanced badge</li>
+            <li>Case study eligible</li>
+          </ul>
+        </div>
+
+        <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem;background:white">
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">L3: Enterprise</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1.5rem"><strong>Custom</strong></p>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-bottom:1rem">Third-party audit. Full security review and compliance.</p>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.85rem;line-height:1.7">
+            <li>60-90 day timeline</li>
+            <li>Audit report</li>
+            <li>Premium badge</li>
+            <li>Marketing rights</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="background:white;border-radius:8px;padding:2rem;margin-top:2rem;border-left:4px solid var(--blue)">
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7"><strong>Transparency Commitment:</strong> The NHID-Clinical specification and L1 certification will always be free and open-source. Revenue from L2 and L3 services funds ongoing governance, maintenance, and community development.</p>
+      </div>
+
+      <div style="text-align:center;margin-top:2rem">
+        <a href="/certification.html" class="cta-button">Learn About Certification →</a>
       </div>
     </div>
   </section>
@@ -287,7 +397,7 @@
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
-    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <p>© 2026 Brianna Baynard-Malone | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
       <a href="mailto:help@nhid-clinical.org">Help</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
@@ -296,7 +406,7 @@
       <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
       <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
     </div>
-    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | nhid-clinical.org</p>
+    <p class="footer-copy">© 2026 Brianna Baynard-Malone | NIST-2025-0035-0026 | CC BY 4.0 | nhid-clinical.org</p>
   </div>
 </footer>
 

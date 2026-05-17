@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical RFP Language — Copy-paste contract requirements for healthcare payers and procurement teams."/>
+  <title>For Payers & Procurement | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.jpg" type="image/jpeg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.jpg" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/conformance.html">Conformance</a>
+      <a href="/script-examples.html">Script Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/certification.html">Certification</a>
+      <a href="/specification.html">Specification</a>
+      <a href="/#download">Download</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/conformance.html">Conformance</a>
+  <a href="/script-examples.html">Script Examples</a>
+  <a href="/certification.html">Certification</a>
+  <a href="/specification.html">Specification</a>
+  <a href="/#download">Download</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container inner-hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>For Payers</span></div>
+        <p class="eyebrow">Procurement & RFP</p>
+        <h1>For Payers & Procurement Teams</h1>
+        <p class="lede">Copy-paste NHID-Clinical compliance language for your vendor contracts and RFPs. Require AI voice agents to disclose themselves, escalate safely, and maintain audit trails.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">RFP Language</p>
+      <h2>Vendor AI Voice Agent Compliance Requirements</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:2rem">Use the language below in your RFPs, vendor contracts, and procurement documents. Customize as needed for your organization.</p>
+
+      <div style="background:var(--bg-alt);border-radius:8px;padding:2rem;margin:2rem 0;font-family:monospace;font-size:.85rem;line-height:1.8;color:var(--body);overflow-x:auto">
+        <pre style="margin:0;white-space:pre-wrap;word-wrap:break-word">VENDOR AI VOICE AGENT COMPLIANCE REQUIREMENTS
+
+Vendor must demonstrate compliance with NHID-Clinical v1.3 baseline 
+requirements, including:
+
+1. Proactive non-human identity disclosure prior to any PHI or 
+   operational data exchange (IDG-01)
+
+2. Prohibition of deceptive behavioral artifacts in voice synthesis 
+   (DBC-01)
+
+3. Cryptographic audit trails with timestamp verification (ATR-01)
+
+4. Pre-data exchange authorization gates (PDX-01)
+
+5. Immediate escalation to human representatives upon request (EIT-01)
+
+Vendor must provide certification documentation (Level 1 minimum, 
+Level 2 preferred) from nhid-clinical.org demonstrating conformance 
+testing results.
+
+Vendor must maintain audit-ready transaction logs showing:
+- Timestamp of non-human identity disclosure
+- Timestamp of first operational or PHI data request
+- Verification that disclosure preceded data request
+- Escalation handling and reference ID issuance
+
+Non-compliance with NHID-Clinical baseline requirements constitutes 
+a material breach of this agreement.</pre>
+      </div>
+
+      <button onclick="copyToClipboard()" style="background:var(--blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:4px;font-size:.9rem;cursor:pointer;font-weight:600">Copy RFP Language →</button>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)">
+    <div class="container">
+      <p class="section-kicker">Why Require NHID-Clinical?</p>
+      <h2>Business Case for Payers</h2>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem">
+        <div>
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">Operational Efficiency</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Upfront AI disclosure eliminates 10–15 seconds of "are you human?" verification per call. For a payer processing 5,000 AI calls per month, that's 120+ staff hours saved.</p>
+        </div>
+        <div>
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">Regulatory Alignment</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">NHID-Clinical aligns with emerging state AI disclosure laws (CA, TX) and NIST AI Risk Management Framework guidance. Demonstrate proactive compliance to regulators.</p>
+        </div>
+        <div>
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">Audit Trail & Compliance</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Cryptographic logging of disclosure, data exchange, and escalation events creates an immutable record for regulatory review and internal compliance audits.</p>
+        </div>
+        <div>
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">Vendor Accountability</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">NHID-Clinical certification (L1/L2/L3) provides clear pass/fail criteria. No ambiguity. Vendors either meet the standard or they don't.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">Certification Levels Explained</p>
+      <h2>What to Require from Your Vendors</h2>
+
+      <div style="margin-top:2rem">
+        <div style="margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:2rem">
+          <h3 style="color:var(--ink);font-size:1.05rem;margin-bottom:.75rem">L1 (Baseline) — Minimum Acceptable</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Vendor self-attests compliance. Suitable for early pilots or lower-risk deployments.</p>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-top:.75rem"><strong>Requirement Language:</strong> "Vendor must provide NHID-Clinical L1 certification or higher."</p>
+        </div>
+
+        <div style="margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:2rem">
+          <h3 style="color:var(--ink);font-size:1.05rem;margin-bottom:.75rem">L2 (Operational) — Recommended</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">NHID-Clinical validates 30+ days of production data. Recommended for all production deployments.</p>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-top:.75rem"><strong>Requirement Language:</strong> "Vendor must provide NHID-Clinical L2 certification (production validation) or equivalent third-party audit."</p>
+        </div>
+
+        <div>
+          <h3 style="color:var(--ink);font-size:1.05rem;margin-bottom:.75rem">L3 (Enterprise) — For High-Risk Deployments</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Full third-party security audit. Required for enterprise deployments or regulated environments.</p>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-top:.75rem"><strong>Requirement Language:</strong> "Vendor must provide NHID-Clinical L3 certification (third-party audit) or equivalent SOC 2 Type II audit with NHID-Clinical scope."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)">
+    <div class="container">
+      <p class="section-kicker">Implementation Guidance</p>
+      <h2>How to Use NHID-Clinical in Your Procurement</h2>
+
+      <div style="margin-top:2rem">
+        <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 1: Add to RFP</h3>
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:2rem">Include the compliance language above in your RFP requirements section. Specify which certification level (L1, L2, or L3) you require.</p>
+
+        <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 2: Vendor Response</h3>
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:2rem">Request vendors provide their NHID-Clinical certification badge, validation report, and registry listing from nhid-clinical.org.</p>
+
+        <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 3: Verification</h3>
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:2rem">Verify certification status at <strong>nhid-clinical.org/registry</strong> or contact help@nhid-clinical.org to confirm vendor compliance.</p>
+
+        <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 4: Contract Language</h3>
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7">Include audit trail and escalation requirements in your service level agreements (SLAs). Require vendors to maintain NHID-Clinical compliance throughout the contract term.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">Questions?</p>
+      <h2>Support for Payers & Procurement</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem">If you have questions about NHID-Clinical compliance, certification levels, or how to implement these requirements in your procurement process, reach out to our team.</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75">Email: <strong>help@nhid-clinical.org</strong></p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75">We can help you craft RFP language, evaluate vendor responses, and ensure compliance during implementation.</p>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard-Malone | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:help@nhid-clinical.org">Help</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+      <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard-Malone | NIST-2025-0035-0026 | CC BY 4.0 | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script>
+function copyToClipboard() {
+  const text = `VENDOR AI VOICE AGENT COMPLIANCE REQUIREMENTS
+
+Vendor must demonstrate compliance with NHID-Clinical v1.3 baseline requirements, including:
+
+1. Proactive non-human identity disclosure prior to any PHI or operational data exchange (IDG-01)
+
+2. Prohibition of deceptive behavioral artifacts in voice synthesis (DBC-01)
+
+3. Cryptographic audit trails with timestamp verification (ATR-01)
+
+4. Pre-data exchange authorization gates (PDX-01)
+
+5. Immediate escalation to human representatives upon request (EIT-01)
+
+Vendor must provide certification documentation (Level 1 minimum, Level 2 preferred) from nhid-clinical.org demonstrating conformance testing results.
+
+Vendor must maintain audit-ready transaction logs showing:
+- Timestamp of non-human identity disclosure
+- Timestamp of first operational or PHI data request
+- Verification that disclosure preceded data request
+- Escalation handling and reference ID issuance
+
+Non-compliance with NHID-Clinical baseline requirements constitutes a material breach of this agreement.`;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    alert('RFP language copied to clipboard!');
+  });
+}
+</script>
+
+<script src="/site.js"></script>
+</body>
+</html>
