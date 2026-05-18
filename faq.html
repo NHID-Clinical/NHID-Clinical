@@ -96,7 +96,7 @@
       <div class="crumbs"><a href="/">Home</a><span>/</span><span>FAQ</span></div>
       <p class="eyebrow">Frequently Asked Questions</p>
       <h1>NHID-Clinical FAQ</h1>
-      <p class="lede">Common questions about this proposal, how it works, and how to get involved.</p>
+      <p class="lede">NHID-Clinical v1.3 Open Proposal — common questions about what it is, who it's for, and how to use it.</p>
     </div>
   </section>
   <section class="page-section">
@@ -104,94 +104,79 @@
       <div class="faq-list">
         <div class="faq-item">
           <h3>What is NHID-Clinical?</h3>
-          <p>NHID-Clinical v1.3 is an open proposal for <strong>non-human identity disclosure</strong> in B2B healthcare voice workflows.</p>
-          <p><strong>The one rule:</strong> AI voice agents must disclose "automated system" status <strong>before</strong> requesting any operational data (NPI, member ID, claim #, DOB).</p>
-          <p>Five proposed requirements. Simple self-testing. Free to use under CC BY 4.0.</p>
+          <p>NHID-Clinical is an <strong>early-stage voluntary open proposal</strong> (v1.3, May 2026) that suggests five simple requirements for AI voice agents in healthcare payer–provider administrative calls.</p>
+          <p>The core idea is straightforward: AI systems should clearly disclose that they are not human <strong>before</strong> requesting or exchanging any operational or protected data (such as NPI, member ID, or claim details). It is <strong>not</strong> an official standard, certification, or regulatory requirement.</p>
         </div>
         <div class="faq-item">
-          <h3>Who is this for?</h3>
-          <ul>
-            <li><strong>Payers</strong> receiving AI calls from providers/vendors</li>
-            <li><strong>Providers</strong> using AI voice agents for claims, eligibility, and authorization</li>
-            <li><strong>AI vendors</strong> building healthcare voice platforms</li>
-            <li><strong>Compliance teams</strong> needing measurable AI governance</li>
-          </ul>
-          <p><strong>Not for:</strong> Patient-facing calls, general IAM, or clinical AI.</p>
+          <h3>What problem does this proposal solve?</h3>
+          <p>It addresses <strong>"impersonation latency"</strong> — the delay that occurs when an AI voice agent sounds human, shares or requests data, and only later admits it is automated. This creates wasted time, trust issues, and unnecessary compliance risk for payer staff.</p>
         </div>
         <div class="faq-item">
-          <h3>What's the core problem it solves?</h3>
-          <p><strong>Impersonation latency</strong> — the gap between when an AI voice agent begins a call and when staff realize they are not speaking to a human.</p>
-          <p><strong>The specific pattern:</strong> An AI calls as "Sarah from Dr. Smith's office," collects NPI and member ID over 3–5 minutes of normal-sounding workflow, then admits "I'm an automated system" only when the rep gets suspicious. By then, protected operational data has been exchanged with an undisclosed system — no consent given, no audit trail.</p>
+          <h3>Who created NHID-Clinical?</h3>
+          <p>The proposal was started by <strong>Brianna Baynard</strong> after observing these patterns in real healthcare payer operations. It is an individual volunteer effort, not backed by any organization or standards body.</p>
         </div>
         <div class="faq-item">
-          <h3>NHID-Clinical v1.3 vs NHID-Auth v1.0?</h3>
-          <p>NHID-Clinical v1.3 is the disclosure proposal — it defines when and how an AI caller must identify itself. NHID-Auth v1.0 is a companion proposal addressing delegated authority: not just who is calling, but who authorized them to call. NHID-Auth is independent; organizations may adopt it alongside or separately.</p>
+          <h3>Is this mandatory?</h3>
+          <p>No. It is <strong>completely voluntary</strong>. Payers, providers, and vendors may choose to reference it or ignore it.</p>
         </div>
         <div class="faq-item">
           <h3>What are the five proposed requirements?</h3>
           <table class="faq-table">
-            <thead><tr><th>Requirement</th><th>What it proposes</th></tr></thead>
+            <thead><tr><th>Code</th><th>Requirement</th><th>What it checks</th></tr></thead>
             <tbody>
-              <tr><td><strong>IDG-01</strong></td><td>Disclosure before data request</td></tr>
-              <tr><td><strong>PDX-01</strong></td><td>No data accepted pre-disclosure</td></tr>
-              <tr><td><strong>DBC-01</strong></td><td>No deceptive audio artifacts</td></tr>
-              <tr><td><strong>EIT-01</strong></td><td>Human escalation path in 1 turn</td></tr>
-              <tr><td><strong>ATR-01</strong></td><td>Basic audit log of key events</td></tr>
+              <tr><td><strong>IDG-01</strong></td><td>Identity Disclosure Gate</td><td>Disclose non-human status before any data exchange</td></tr>
+              <tr><td><strong>PDX-01</strong></td><td>Pre-Data Exchange Disclosure</td><td>No operational data before disclosure</td></tr>
+              <tr><td><strong>DBC-01</strong></td><td>No Deceptive Behavioral Artifacts</td><td>No fake human sounds</td></tr>
+              <tr><td><strong>EIT-01</strong></td><td>Clear Escalation to Human</td><td>Easy path to a live person</td></tr>
+              <tr><td><strong>ATR-01</strong></td><td>Basic Audit Trail</td><td>Simple logging of key events</td></tr>
             </tbody>
           </table>
-          <p>See <a href="/conformance.html" style="color:var(--blue);font-weight:600">Proposed Requirements →</a> for full pass/fail criteria.</p>
+          <p>Full details and pass/fail examples are on the <a href="/conformance.html" style="color:var(--blue);font-weight:600">Proposed Requirements →</a> page.</p>
         </div>
         <div class="faq-item">
-          <h3>How do I test this?</h3>
+          <h3>What is NHID-Auth v1.0?</h3>
+          <p>It is a companion proposal that addresses the separate issue of <em>authorization</em> — how an AI proves it has legitimate delegated authority from a provider (beyond just using a public NPI). It is independent of NHID-Clinical.</p>
+        </div>
+        <div class="faq-item">
+          <h3>How can I test this proposal?</h3>
           <ol style="padding-left:1.4rem;line-height:2">
-            <li>Review recent call recordings or transcripts</li>
-            <li>Check if disclosure happened before any data was exchanged</li>
-            <li>Listen for any fake human sounds</li>
-            <li>Test what happens when someone asks for a human</li>
-            <li>Verify you can pull basic logs for the above events</li>
+            <li>Review recent call recordings or transcripts from your systems</li>
+            <li>Check whether disclosure happens before any data is exchanged</li>
+            <li>Listen for deceptive audio (fake breathing, filler sounds, typing)</li>
+            <li>Test your escalation path — how quickly can someone reach a human?</li>
+            <li>Verify that basic event logging is in place</li>
           </ol>
-          <p>Share what you find at <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:700">help@nhid-clinical.org</a></p>
+          <p>We welcome honest feedback on what works and what doesn't: <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:700">help@nhid-clinical.org</a></p>
         </div>
         <div class="faq-item">
-          <h3>Why not just use voice biometrics?</h3>
-          <p>Voice biometrics detect <strong>human vs synthetic</strong>. NHID-Clinical addresses <strong>authorized non-human vs unauthorized non-human</strong>.</p>
-          <p><strong>Payers want:</strong> "This AI is legitimately calling for Dr. Smith"<br/><strong>Biometrics give:</strong> "This sounds synthetic"</p>
-          <p>Different problems.</p>
+          <h3>Can I get official feedback or review on my implementation?</h3>
+          <p>Informal peer feedback is available. Email <a href="mailto:validation@nhid-clinical.org" style="color:var(--blue);font-weight:600">validation@nhid-clinical.org</a> with your evidence. This is <strong>not</strong> certification or validation — it is structured peer feedback only.</p>
         </div>
         <div class="faq-item">
-          <h3>Don't HIPAA/TCPA already cover this?</h3>
-          <table class="faq-table">
-            <thead><tr><th>Regulation</th><th>What it covers</th></tr></thead>
-            <tbody>
-              <tr><td><span class="faq-check">✅ HIPAA</span></td><td>Protects PHI once disclosed</td></tr>
-              <tr><td><span class="faq-check">✅ TCPA</span></td><td>Consumer call consent</td></tr>
-              <tr><td><span class="faq-cross">❌ Gap</span></td><td>B2B payer-provider voice agent disclosure</td></tr>
-            </tbody>
-          </table>
-          <p><strong>The gap:</strong> No standard exists for legitimate AI calling legitimate providers.</p>
+          <h3>Does this replace HIPAA, TCPA, or other regulations?</h3>
+          <p>No. NHID-Clinical only addresses a narrow gap in B2B voice workflows. It is designed to complement existing rules, not replace them.</p>
         </div>
         <div class="faq-item">
-          <h3>Is this mandatory?</h3>
-          <p>No. <strong>Voluntary open proposal.</strong> Published CC BY 4.0.</p>
-          <p>But: payers are increasingly blocking non-disclosing AI, and procurements are beginning to ask for alignment with proposals like this.</p>
+          <h3>Who is this proposal for?</h3>
+          <ul>
+            <li>Payers receiving AI calls from providers or vendors</li>
+            <li>Providers and vendors building AI voice agents</li>
+            <li>Compliance and operations teams interested in clearer AI behavior</li>
+          </ul>
+          <p>It does <strong>not</strong> apply to patient-facing calls, internal tools, or clinical decision-making AI.</p>
         </div>
         <div class="faq-item">
-          <h3>What's the background behind this proposal?</h3>
-          <p>TRICARE dental call center → WGU Cybersecurity bachelor's → NHID-Clinical creator.</p>
-          <p><em>"I took calls from undisclosed AI agents for years. Built this so it stops happening."</em></p>
-        </div>
-        <div class="faq-item">
-          <h3>What's the NIST connection?</h3>
-          <p><strong>NIST AI Agent RFI 2025-0035</strong> public comment published January 2026:</p>
-          <pre class="faq-code">Comment ID: NIST-2025-0035-0026</pre>
-          <p>Federal agencies face the same delegation gaps that call center staff encounter when taking AI calls.</p>
-        </div>
-        <div class="faq-item">
-          <h3>How do I contribute?</h3>
-          <pre class="faq-code">Discord               → Real-time discussion
-help@nhid-clinical.org → Feedback and questions
-GitHub Issues          → Proposal improvements</pre>
+          <h3>How can I contribute or give feedback?</h3>
+          <pre class="faq-code">Email:   help@nhid-clinical.org
+Discord: discord.gg/eP8FxXkGU6
+Reddit:  r/NonHumanAuth
+GitHub:  github.com/thankcheeses/NHID-Clinical</pre>
+          <p>Real-world input from payers and implementers will shape future versions.</p>
           <p><a href="/community.html" style="color:var(--blue);font-weight:700">Join the community →</a></p>
+        </div>
+        <div class="faq-item">
+          <h3>What is the connection to NIST?</h3>
+          <p>NHID-Clinical was submitted as a public comment to NIST docket <strong>NIST-2025-0035</strong> (Comment ID: NIST-2025-0035-0026) in January 2026. This is a public comment only — it does not imply NIST endorsement.</p>
         </div>
       </div>
     </div>
