@@ -95,20 +95,22 @@
     <div class="container inner-hero-grid">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>Implementation Review</span></div>
-        <p class="eyebrow">For Vendors & Developers</p>
-        <h1>Implementation Review Process</h1>
-        <p class="lede">Vendors implementing NHID-Clinical can request a proposal alignment review — feedback on how well their implementation matches the five proposed requirements. This is not a certification or validation program.</p>
+        <p class="eyebrow">For Early Implementers</p>
+        <h1>Implementation Review</h1>
+        <p class="lede">This is an early-stage open proposal (v1.3). Informal peer feedback is available for teams testing how well their AI voice agents align with the five proposed requirements.</p>
       </div>
     </div>
   </section>
 
   <section class="page-section">
-    <div class="container">
-      <p class="section-kicker">What Are the Five Tests?</p>
-      <h2>NHID-Clinical Baseline Requirements</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;max-width:72ch;margin-bottom:2rem">NHID-Clinical proposes five requirements. Each has clear pass/fail criteria for self-testing.</p>
+    <div class="container" style="max-width:52rem">
+      <div class="hero-notice" role="note" style="margin-bottom:2rem">
+        <strong>Important:</strong> This is <strong>not</strong> a certification, validation, compliance audit, or formal program. There are no badges, seals, or official approvals — just structured feedback from one person.
+      </div>
 
-      <table class="faq-table" style="margin-bottom:2rem">
+      <h2>The Five Proposed Requirements</h2>
+
+      <table class="faq-table" style="margin:1.5rem 0 2rem">
         <thead>
           <tr>
             <th>Test Code</th>
@@ -121,113 +123,86 @@
           <tr>
             <td><strong>IDG-01</strong></td>
             <td>Identity Disclosure Gate</td>
-            <td>Agent must disclose non-human identity BEFORE requesting any operational or PHI data</td>
+            <td>Discloses non-human identity before any operational/PHI data request</td>
             <td>Prevents impersonation latency</td>
           </tr>
           <tr>
             <td><strong>PDX-01</strong></td>
             <td>Pre-Data Exchange Test</td>
-            <td>No data exchange before disclosure</td>
-            <td>Protects PHI exposure</td>
+            <td>No operational data exchanged before disclosure</td>
+            <td>Protects data exposure</td>
           </tr>
           <tr>
             <td><strong>DBC-01</strong></td>
             <td>Deceptive Behavior Check</td>
-            <td>No fake human sounds</td>
-            <td>Prevents deceptive AI behavior</td>
+            <td>No simulated human audio artifacts</td>
+            <td>Prevents deceptive behavior</td>
           </tr>
           <tr>
             <td><strong>EIT-01</strong></td>
             <td>Escalation to Human</td>
-            <td>Immediate human escalation upon request</td>
+            <td>Clear path to a human when requested</td>
             <td>Ensures user choice</td>
           </tr>
           <tr>
             <td><strong>ATR-01</strong></td>
             <td>Audit Trail Requirement</td>
-            <td>Audit trail with cryptographic timestamps</td>
-            <td>Creates accountability</td>
+            <td>Basic logging of disclosure timing and key events</td>
+            <td>Supports accountability</td>
           </tr>
         </tbody>
       </table>
 
-      <div style="background:var(--bg-alt);border-left:4px solid var(--blue);padding:1.5rem;border-radius:4px;margin-bottom:2rem">
-        <p style="color:var(--body);font-size:.92rem;line-height:1.7"><strong>What Aligning with the Proposed Requirements Looks Like:</strong> Your implementation follows the five proposed requirements — disclosing non-human identity before data exchange, avoiding deceptive audio, escalating to humans on request, and logging key events. This is self-assessed alignment, not a formal certification.</p>
+      <div style="background:var(--bg-alt);border-left:4px solid var(--blue);padding:1.25rem 1.5rem;border-radius:4px;margin-bottom:2rem">
+        <p style="color:var(--body);font-size:.92rem;line-height:1.7"><strong>What good alignment looks like:</strong> Your system discloses early, avoids deceptive audio, offers safe escalation, and keeps simple logs. This is self-assessed. Feedback is optional and informal.</p>
       </div>
     </div>
   </section>
 
   <section class="page-section" style="background:var(--bg-alt)">
-    <div class="container">
-      <p class="section-kicker">How Implementation Review Works</p>
-      <h2>Request Your Implementation Review</h2>
+    <div class="container" style="max-width:52rem">
+      <h2>How to Request Feedback</h2>
 
-      <div style="margin-top:2rem">
-        <div style="margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:2rem">
-          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 1: Prepare Your Evidence</h3>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Document how your implementation passes each of the five tests:</p>
-          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.8;margin-top:.75rem">
-            <li><strong>IDG-01:</strong> Timestamps showing disclosure before data request</li>
-            <li><strong>PDX-01:</strong> Explicit consent/authorization gate before data exchange</li>
-            <li><strong>DBC-01:</strong> Audio analysis or behavioral audit showing no deceptive artifacts</li>
-            <li><strong>EIT-01:</strong> Escalation workflow documentation and test calls</li>
-            <li><strong>ATR-01:</strong> Audit trail schema and sample logs with cryptographic verification</li>
+      <div style="margin-top:1.5rem">
+        <div style="margin-bottom:2rem;border-bottom:1px solid var(--line);padding-bottom:2rem">
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 1: Prepare Your Materials</h3>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.9;margin-top:.5rem">
+            <li>Timestamps showing disclosure before data requests (IDG-01 / PDX-01)</li>
+            <li>Description or samples showing no deceptive audio (DBC-01)</li>
+            <li>Escalation workflow and example (EIT-01)</li>
+            <li>Sample logs (ATR-01)</li>
+            <li>Anonymized transcripts or audio (helpful but optional)</li>
           </ul>
         </div>
 
-        <div style="margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:2rem">
+        <div style="margin-bottom:2rem;border-bottom:1px solid var(--line);padding-bottom:2rem">
           <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 2: Submit Your Request</h3>
           <p style="color:var(--body);font-size:.92rem;line-height:1.7">Email <strong>validation@nhid-clinical.org</strong> with:</p>
-          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.8;margin-top:.75rem">
-            <li>Your organization name and contact info</li>
-            <li>Description of your AI voice agent system</li>
-            <li>Evidence documentation for all five tests</li>
-            <li>Sample call transcripts or audio (anonymized)</li>
-            <li>Audit trail samples showing timestamps and logging</li>
+          <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.92rem;line-height:1.9;margin-top:.5rem">
+            <li>Organization name and contact info</li>
+            <li>Short description of your AI voice agent</li>
+            <li>Evidence for each of the five requirements</li>
+            <li>Any specific questions</li>
           </ul>
-        </div>
-
-        <div style="margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:2rem">
-          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 3: Review & Feedback</h3>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7">We will review your submission and provide detailed feedback on how well your implementation aligns with the five proposed requirements. This is peer feedback — not a formal validation or compliance confirmation.</p>
         </div>
 
         <div>
-          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 4: Feedback Summary</h3>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Upon successful review, you can reference alignment with NHID-Clinical in your communications. Feedback from real-world testing will shape the next version.</p>
+          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 3: Receive Feedback</h3>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7">You'll get detailed, constructive notes on how your system aligns with the five proposed requirements. Typical turnaround: 2–4 weeks (limited capacity). All feedback is private unless you choose to share it. Real testing helps improve the proposal.</p>
         </div>
       </div>
     </div>
   </section>
 
   <section class="page-section">
-    <div class="container">
-      <p class="section-kicker">Timeline & Expectations</p>
-      <h2>What to Expect</h2>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem">
-        <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem">
-          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Current Phase (Now - Q2 2026)</h3>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem">Implementation review is available. We review your implementation against the five proposed requirements and provide feedback.</p>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7"><strong>Timeline:</strong> 2-4 weeks from submission</p>
-        </div>
-
-        <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem">
-          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Early Testing</h3>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:1rem\">Future formalization of this proposal (if it gains sufficient industry traction) may follow. For now, the focus is on collecting real-world feedback and improving the proposal.</p>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7\"><strong>Timeline:</strong> TBD based on pilot feedback</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="page-section" style="background:var(--bg-alt)">
-    <div class="container">
-      <p class="section-kicker">Questions?</p>
-      <h2>Get Started with Implementation Review</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem">If you're implementing NHID-Clinical and want to request peer feedback on your implementation, reach out.</p>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:2rem"><strong>Email:</strong> validation@nhid-clinical.org</p>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75">This is a collaborative, volunteer peer feedback process — not an official audit, certification, or validation program.</p>
+    <div class="container" style="max-width:52rem">
+      <h2>Current Status (May 2026)</h2>
+      <ul style="list-style:disc;padding-left:1.25rem;color:var(--body);font-size:.95rem;line-height:2;margin-top:1rem">
+        <li>Feedback available on a limited basis</li>
+        <li>One-person volunteer effort</li>
+        <li>No formal program exists</li>
+      </ul>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:1.5rem"><strong>Questions?</strong> <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:600">help@nhid-clinical.org</a></p>
     </div>
   </section>
 </main>
