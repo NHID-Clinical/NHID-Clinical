@@ -95,110 +95,68 @@
     <div class="container inner-hero-grid">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>For Payers</span></div>
-        <p class="eyebrow">Procurement & RFP</p>
+        <p class="eyebrow">Optional Reference Language</p>
         <h1>For Payers & Procurement Teams</h1>
-        <p class="lede">Reference language for vendor AI voice agent transparency requirements. Adapt this language to encourage AI voice agents to disclose themselves, escalate safely, and maintain audit trails. NHID-Clinical is a voluntary open proposal — not an official standard. Consult your legal team before including in binding contracts.</p>
+        <p class="lede">Optional reference language you can adapt when asking vendors about AI voice agent transparency. NHID-Clinical is a voluntary open proposal — not a formal standard or regulatory requirement. Consult your legal team before using any language in binding contracts.</p>
       </div>
     </div>
   </section>
 
   <section class="page-section">
     <div class="container">
-      <p class="section-kicker">RFP Language</p>
-      <h2>Vendor AI Voice Agent Transparency Requirements</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:2rem">The language below is suggested reference text — not a formal standard. Adapt it to fit your organization's procurement process. Vendors can request proposal alignment review at <strong>help@nhid-clinical.org</strong>.</p>
+      <div class="hero-notice" role="note" style="margin-bottom:2rem">
+        <strong>Important:</strong> This is <strong>not a formal standard, certification, or regulatory requirement</strong>. NHID-Clinical is an early open proposal by Brianna Baynard. The language below is optional and illustrative only. Your organization should make its own determination about appropriate vendor requirements.
+      </div>
+
+      <p class="section-kicker">Optional RFP Language</p>
+      <h2>Sample Vendor AI Voice Agent Transparency Language</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:2rem">The following is example language you may optionally reference or adapt. It is not a certification or audit requirement.</p>
 
       <div style="background:var(--bg-alt);border-radius:8px;padding:2rem;margin:2rem 0;font-family:monospace;font-size:.85rem;line-height:1.8;color:var(--body);overflow-x:auto">
-        <pre style="margin:0;white-space:pre-wrap;word-wrap:break-word">VENDOR AI VOICE AGENT COMPLIANCE REQUIREMENTS
+        <pre style="margin:0;white-space:pre-wrap;word-wrap:break-word">OPTIONAL VENDOR AI VOICE AGENT TRANSPARENCY LANGUAGE
+(Reference only — not a formal standard or requirement)
 
-Vendor should demonstrate alignment with NHID-Clinical v1.3 proposed
-requirements (voluntary open proposal — not an official standard), including:
+Vendor is encouraged to demonstrate alignment with NHID-Clinical v1.3,
+a voluntary open proposal for AI voice agent transparency, including:
 
-1. Proactive non-human identity disclosure prior to any PHI or 
+1. Proactive non-human identity disclosure prior to any PHI or
    operational data exchange (IDG-01)
 
-2. Prohibition of deceptive behavioral artifacts in voice synthesis 
-   (DBC-01)
+2. No deceptive behavioral artifacts in voice synthesis (DBC-01)
 
-3. Cryptographic audit trails with timestamp verification (ATR-01)
+3. Basic audit logging of disclosure timing and key events (ATR-01)
 
-4. Pre-data exchange authorization gates (PDX-01)
+4. No operational data exchange before disclosure (PDX-01)
 
-5. Immediate escalation to human representatives upon request (EIT-01)
+5. Clear escalation to a human representative upon request (EIT-01)
 
-Vendor should provide documentation of self-testing results demonstrating
-alignment with the proposed requirements.
+Vendor may optionally provide self-testing documentation or peer
+feedback results from nhid-clinical.org.
 
-Vendor must maintain audit-ready transaction logs showing:
-- Timestamp of non-human identity disclosure
-- Timestamp of first operational or PHI data request
-- Verification that disclosure preceded data request
-- Escalation handling and reference ID issuance
-
-[Note: NHID-Clinical is a voluntary open proposal. Consult your legal
-team before including binding language in contracts.]</pre>
+Note: NHID-Clinical is a voluntary open proposal by Brianna Baynard —
+not an official standard. Consult your legal team before including
+any binding language in contracts.</pre>
       </div>
 
-      <button onclick="copyToClipboard()" style="background:var(--blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:4px;font-size:.9rem;cursor:pointer;font-weight:600">Copy RFP Language →</button>
+      <button onclick="copyToClipboard()" style="background:var(--blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:4px;font-size:.9rem;cursor:pointer;font-weight:600">Copy Language →</button>
     </div>
   </section>
 
   <section class="page-section" style="background:var(--bg-alt)">
     <div class="container">
-      <p class="section-kicker">Why Require NHID-Clinical?</p>
-      <h2>Business Case for Payers</h2>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem">
-        <div>
-          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">Operational Efficiency</h3>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Upfront AI disclosure eliminates 10–15 seconds of "are you human?" verification per call. For a payer processing 5,000 AI calls per month, that's 120+ staff hours saved.</p>
-        </div>
-        <div>
-          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">Regulatory Alignment</h3>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7">NHID-Clinical aligns with emerging state AI disclosure laws (CA, TX) and NIST AI Risk Management Framework guidance. Demonstrate proactive transparency to regulators.</p>
-        </div>
-        <div>
-          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">Audit Trail &amp; Accountability</h3>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7">Cryptographic logging of disclosure, data exchange, and escalation events creates an immutable record for regulatory review and internal compliance audits.</p>
-        </div>
-        <div>
-          <h3 style="color:var(--ink);font-size:1rem;margin-bottom:.75rem">Vendor Accountability</h3>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7">NHID-Clinical proposed requirements provide clear self-testing criteria with pass/fail definitions. Vendors can demonstrate alignment through documented self-testing results.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-
-  <section class="page-section" style="background:var(--bg-alt)">
-    <div class="container">
-      <p class="section-kicker">Implementation Guidance</p>
-      <h2>How to Use NHID-Clinical in Your Procurement</h2>
-
-      <div style="margin-top:2rem">
-        <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 1: Add to RFP</h3>
-        <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:2rem">Include the suggested requirements language above in your RFP.</p>
-
-        <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 2: Vendor Response</h3>
-        <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:2rem">Request vendors provide evidence of NHID-Clinical self-testing results for all five requirements (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01).</p>
-
-        <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 3: Implementation Review</h3>
-        <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-bottom:2rem">Vendors can request implementation review from NHID-Clinical at <strong>help@nhid-clinical.org</strong>. Early testing and feedback is welcome.</p>
-
-        <h3 style="color:var(--ink);font-size:1rem;margin-bottom:1rem">Step 4: Contract Language</h3>
-        <p style="color:var(--body);font-size:.92rem;line-height:1.7">Include audit trail and escalation requirements in your service level agreements (SLAs). Require vendors to maintain NHID-Clinical alignment throughout the contract term.</p>
-      </div>
+      <p class="section-kicker">Why Some Payers Reference This</p>
+      <h2>The Problem This Addresses</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:1rem;max-width:72ch">AI voice agents calling payer staff often sound human and exchange operational data before ever disclosing they are automated. This wastes time, creates compliance risk, and leads to blanket "no AI" policies that break legitimate workflows.</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem;max-width:72ch">The five proposed requirements in NHID-Clinical are simple: disclose early, no fake human sounds, allow escalation, keep basic logs. Some payers find it useful to reference this language when evaluating vendors, even though it is not a formal standard.</p>
     </div>
   </section>
 
   <section class="page-section">
     <div class="container">
       <p class="section-kicker">Questions?</p>
-      <h2>Support for Payers & Procurement</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem">If you have questions about NHID-Clinical proposed requirements or how to adapt this language for your procurement process, reach out.</p>
+      <h2>Contact</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-bottom:1.5rem">Questions about this proposal or how to adapt the language above:</p>
       <p style="color:var(--body);font-size:.95rem;line-height:1.75">Email: <strong>help@nhid-clinical.org</strong></p>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75">We can help you adapt this language, evaluate vendor responses, and support alignment during implementation.</p>
     </div>
   </section>
 </main>
@@ -220,32 +178,27 @@ team before including binding language in contracts.]</pre>
 
 <script>
 function copyToClipboard() {
-  const text = `VENDOR AI VOICE AGENT COMPLIANCE REQUIREMENTS
+  const text = `OPTIONAL VENDOR AI VOICE AGENT TRANSPARENCY LANGUAGE
+(Reference only — not a formal standard or requirement)
 
-Vendor should demonstrate alignment with NHID-Clinical v1.3 proposed requirements (voluntary open proposal), including:
+Vendor is encouraged to demonstrate alignment with NHID-Clinical v1.3, a voluntary open proposal for AI voice agent transparency, including:
 
 1. Proactive non-human identity disclosure prior to any PHI or operational data exchange (IDG-01)
 
-2. Prohibition of deceptive behavioral artifacts in voice synthesis (DBC-01)
+2. No deceptive behavioral artifacts in voice synthesis (DBC-01)
 
-3. Cryptographic audit trails with timestamp verification (ATR-01)
+3. Basic audit logging of disclosure timing and key events (ATR-01)
 
-4. Pre-data exchange authorization gates (PDX-01)
+4. No operational data exchange before disclosure (PDX-01)
 
-5. Immediate escalation to human representatives upon request (EIT-01)
+5. Clear escalation to a human representative upon request (EIT-01)
 
-Vendor must provide self-testing documentation from nhid-clinical.org demonstrating conformance testing results.
+Vendor may optionally provide self-testing documentation or peer feedback results from nhid-clinical.org.
 
-Vendor must maintain audit-ready transaction logs showing:
-- Timestamp of non-human identity disclosure
-- Timestamp of first operational or PHI data request
-- Verification that disclosure preceded data request
-- Escalation handling and reference ID issuance
+Note: NHID-Clinical is a voluntary open proposal by Brianna Baynard — not an official standard. Consult your legal team before including any binding language in contracts.`;
 
-[Note: NHID-Clinical is a voluntary open proposal. Consult your legal team before including binding language in contracts.]`;
-  
   navigator.clipboard.writeText(text).then(() => {
-    alert('RFP language copied to clipboard!');
+    alert('Language copied to clipboard!');
   });
 }
 </script>
