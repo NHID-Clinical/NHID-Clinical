@@ -107,18 +107,8 @@
       <h2>Suggested RFP Language (Optional / Illustrative)</h2>
       <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin:.75rem 0 1.5rem">The following is example language only. Adapt it to your needs, or ignore it entirely.</p>
 
-      <div style="background:var(--bg-alt);border-radius:8px;padding:2rem;margin-bottom:1.5rem;font-family:monospace;font-size:.85rem;line-height:1.9;color:var(--body);overflow-x:auto">
-        <pre style="margin:0;white-space:pre-wrap;word-wrap:break-word">Vendors operating AI voice agents are encouraged to consider
-alignment with the NHID-Clinical v1.3 open proposal, including:
-
-• Clear upfront disclosure that the caller is an automated /
-  non-human system before any operational data exchange
-
-• No deceptive audio artifacts intended to mimic human behavior
-
-• A clear escalation path to a human representative when requested
-
-• Basic audit logging of disclosure timing</pre>
+      <div style="background:var(--bg-alt);border-radius:8px;padding:2rem;margin-bottom:1.5rem;color:var(--body);font-size:.95rem;line-height:1.85">
+        <p style="margin:0">As automated systems become more common in healthcare communication, organizations are encountering increasing variability in how identity is perceived during voice-based administrative interactions. These situations can create confusion, delays, and inconsistent handling across otherwise routine workflows. This proposal highlights that gap and encourages broader discussion about clearer expectations for system identity in these environments.</p>
       </div>
 
       <button onclick="copyToClipboard()" style="background:var(--blue);color:white;border:none;padding:.75rem 1.5rem;border-radius:4px;font-size:.9rem;cursor:pointer;font-weight:600">Copy Language →</button>
@@ -164,15 +154,7 @@ alignment with the NHID-Clinical v1.3 open proposal, including:
 
 <script>
 function copyToClipboard() {
-  const text = `Vendors operating AI voice agents are encouraged to consider alignment with the NHID-Clinical v1.3 open proposal, including:
-
-• Clear upfront disclosure that the caller is an automated / non-human system before any operational data exchange
-
-• No deceptive audio artifacts intended to mimic human behavior
-
-• A clear escalation path to a human representative when requested
-
-• Basic audit logging of disclosure timing`;
+  const text = `As automated systems become more common in healthcare communication, organizations are encountering increasing variability in how identity is perceived during voice-based administrative interactions. These situations can create confusion, delays, and inconsistent handling across otherwise routine workflows. This proposal highlights that gap and encourages broader discussion about clearer expectations for system identity in these environments.`;
 
   navigator.clipboard.writeText(text).then(() => {
     alert('Language copied to clipboard!');
