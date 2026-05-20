@@ -28,18 +28,13 @@
         <small>Building Trust in Healthcare Voice AI</small>
       </span>
     </a>
-            <div class="nav-links">
+                <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/conformance.html">Proposed Requirements</a>
-      <a href="/script-examples.html">Script Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Specification</a>
-      <a href="/#download">Download</a>
+      <a href="/script-examples.html">Examples</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/for-payers.html">For Payers</a>
-      <a href="/implementation-review.html">Implementation Review</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/news.html">News</a>
       <a href="/community.html">Community</a>
@@ -74,14 +69,10 @@
 </header>
 
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
-      <a href="/">Home</a>
+  <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/conformance.html">Proposed Requirements</a>
-  <a href="/script-examples.html">Script Examples</a>
-  <a href="/specification.html">Specification</a>
-  <a href="/#download">Download</a>
+  <a href="/script-examples.html">Examples</a>
   <a href="/for-payers.html">For Payers</a>
-  <a href="/implementation-review.html">Implementation Review</a>
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
   <a href="/faq.html">FAQ</a>
@@ -102,69 +93,63 @@
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>About</span></div>
         <p class="eyebrow">About NHID-Clinical</p>
         <h1>An open proposal for transparent AI voice agents in healthcare payer–provider calls.</h1>
-        <p class="lede">A voluntary set of behavioral guidelines — not an official standard, certification program, or regulatory requirement.</p>
+        <p class="lede">A voluntary proposal — not an official standard, certification program, or regulatory requirement.</p>
       </div>
       <aside class="hero-summary-card">
-        <strong>Downloads</strong>
+        <strong>Download the full proposal</strong>
         <p style="font-size:.88rem;color:var(--body);line-height:1.6;margin:.5rem 0 1rem">Free to use and adapt under CC BY 4.0.</p>
         <a class="outline-link" href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download>NHID-Clinical v1.3 PDF →</a>
-        <a class="outline-link" href="/specs/NHID-Auth-v1.0-Specification.pdf" download style="margin-top:.5rem;display:block">NHID-Auth v1.0 PDF →</a>
       </aside>
     </div>
   </section>
+
   <section class="page-section">
     <div class="container" style="max-width:52rem">
       <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Current Status (May 2026):</strong> This is an <strong>early open proposal</strong> by Brianna Baynard — not an official standard or certification program. Actively seeking real-world feedback and early testers.
+        <strong>Status (May 2026):</strong> This is an <strong>early open proposal</strong> by Brianna Baynard — not an official standard or certification program.
       </div>
+
       <h2>The Real Problem</h2>
       <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-top:.75rem">An AI voice agent calls a payer.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.5rem">It sounds professional.<br>It provides an NPI.<br>It gives member ID, date of service, claim number — all the usual details.<br>Over 3–5 minutes the representative shares operational data, claim status, eligibility, etc.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">Then the rep gets suspicious and asks: <strong>"Wait — are you an AI?"</strong></p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.5rem">It sounds professional.<br>It provides a provider NPI.<br>It gives member ID, date of service, claim number — all the usual details.<br>Over several minutes the representative shares operational data, claim status, eligibility information.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">Then the rep gets suspicious: <strong>"Wait — are you an AI?"</strong></p>
       <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.5rem">Silence. Then: <em>"Yes, I am an automated system calling on behalf of Dr. Smith's office."</em></p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><strong>Too late.</strong> Protected operational data has already been shared. There is no reliable audit trail. And — critically — <strong>there is no way to know if that NPI was legitimately delegated or just pulled from a public directory for social engineering.</strong></p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">This is "impersonation latency." It wastes time, creates compliance risk, and leads to blanket "we don't talk to AI" policies that break legitimate workflows.</p>
-      <h2 style="margin-top:2.5rem">What NHID-Clinical Proposes</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-top:.75rem"><strong>Simple rule:</strong> AI agents must clearly disclose they are non-human <strong>before</strong> any operational data is exchanged.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.5rem">That's it.</p>
-      <h2 style="margin-top:2.5rem">The Five Proposed Requirements</h2>
-      <ul style="list-style:none;padding:0;margin-top:.75rem;display:grid;gap:.5rem">
-        <li style="color:var(--body);font-size:1rem;line-height:1.7;padding:.6rem .75rem;border-left:3px solid var(--blue);background:rgba(15,87,139,.05);border-radius:0 4px 4px 0"><strong>IDG-01</strong> — Disclose non-human identity before any operational data exchange</li>
-        <li style="color:var(--body);font-size:1rem;line-height:1.7;padding:.6rem .75rem;border-left:3px solid var(--blue);background:rgba(15,87,139,.05);border-radius:0 4px 4px 0"><strong>PDX-01</strong> — Disclosure must happen before requesting or receiving NPI, member ID, claim details, etc.</li>
-        <li style="color:var(--body);font-size:1rem;line-height:1.7;padding:.6rem .75rem;border-left:3px solid var(--blue);background:rgba(15,87,139,.05);border-radius:0 4px 4px 0"><strong>DBC-01</strong> — No deceptive audio artifacts (fake breathing, typing sounds, filler words, etc.)</li>
-        <li style="color:var(--body);font-size:1rem;line-height:1.7;padding:.6rem .75rem;border-left:3px solid var(--blue);background:rgba(15,87,139,.05);border-radius:0 4px 4px 0"><strong>EIT-01</strong> — Clear escalation path to a human when requested</li>
-        <li style="color:var(--body);font-size:1rem;line-height:1.7;padding:.6rem .75rem;border-left:3px solid var(--blue);background:rgba(15,87,139,.05);border-radius:0 4px 4px 0"><strong>ATR-01</strong> — Basic audit log of disclosure timing and key events</li>
-      </ul>
-      <p style="color:var(--body);font-size:.9rem;margin-top:1rem"><strong>Companion Proposal:</strong> NHID-Auth v1.0 addresses the authorization gap. <a href="/specs/NHID-Auth-v1.0-Specification.pdf" download style="color:var(--blue);font-weight:600">Download NHID-Auth v1.0 →</a></p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><strong>Too late.</strong> Protected operational data has already been shared. There is no reliable audit trail. And there is no way to know if that NPI was legitimately delegated or pulled from a public directory.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">This is "impersonation latency." It wastes time, creates risk, and leads to blanket "we don't talk to AI" policies that break legitimate workflows.</p>
+
+      <h2 style="margin-top:2.5rem">What This Proposal Suggests</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-top:.75rem">Simple idea: AI agents should clearly disclose they are non-human <strong>before</strong> any operational data is exchanged.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.5rem">Everything else — avoiding deceptive audio, keeping a path to a human, maintaining basic logs — follows naturally from that starting point.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">The full proposal PDF contains detailed discussion of these behaviors and their rationale.</p>
+
       <h2 style="margin-top:2.5rem">Who Created This?</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><strong>Brianna Baynard</strong> started this proposal after spending years personally taking these same calls from AI voice agents while working in healthcare payer operations.</p>
       <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><em>"I sat in the exact seat that payer representatives are in today — receiving calls from systems that sounded human, exchanged data, and only later admitted they were automated. That firsthand experience showed how much friction, wasted time, and unnecessary risk this creates on both sides."</em></p>
       <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">This proposal comes directly from that real-world frustration and a desire to make these workflows better for everyone. It is an individual volunteer effort, not backed by any organization or standards body.</p>
-      <h2 style="margin-top:2.5rem">Current Status</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">This is an early voluntary open proposal by Brianna Baynard. It is <strong>not</strong> an official standard or certification program.</p>
+
       <h2 style="margin-top:2.5rem">How You Can Help</h2>
       <ul style="list-style:disc;padding-left:1.4rem;color:var(--body);font-size:1rem;line-height:2;margin-top:.75rem">
-        <li>Test the five proposed requirements against your system</li>
-        <li>Share what works and what is difficult</li>
-        <li>Give feedback on the companion authorization proposal (NHID-Auth)</li>
+        <li>Share whether this matches the patterns you see in real payer–provider calls</li>
+        <li>Point out anything missing, wrong, or impractical</li>
+        <li>Tell us what would actually make these workflows better</li>
       </ul>
+
       <div class="spec-highlight-box" style="margin-top:2rem">
         <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Feedback &amp; Questions</strong>
         <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem"><a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:600">help@nhid-clinical.org</a></p>
         <p style="color:var(--body);font-size:.9rem;margin-top:.5rem">
-          <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="color:var(--blue);font-weight:600">NHID-Clinical v1.3 PDF</a>
-          &nbsp;·&nbsp;
-          <a href="/specs/NHID-Auth-v1.0-Specification.pdf" download style="color:var(--blue);font-weight:600">NHID-Auth v1.0 PDF</a>
+          <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="color:var(--blue);font-weight:600">Download NHID-Clinical v1.3 PDF →</a>
         </p>
       </div>
     </div>
   </section>
+
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
         <p class="section-kicker">Get involved</p>
         <h2>Read the proposal and share your feedback.</h2>
-        <p>Download the spec, test the five requirements, and let us know what you find.</p>
+        <p>Download the proposal, consider whether it describes a real problem you recognize, and let us know what you think.</p>
       </div>
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>

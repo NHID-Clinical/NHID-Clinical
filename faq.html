@@ -28,18 +28,13 @@
         <small>Building Trust in Healthcare Voice AI</small>
       </span>
     </a>
-            <div class="nav-links">
+                <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/conformance.html">Proposed Requirements</a>
-      <a href="/script-examples.html">Script Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Specification</a>
-      <a href="/#download">Download</a>
+      <a href="/script-examples.html">Examples</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/for-payers.html">For Payers</a>
-      <a href="/implementation-review.html">Implementation Review</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/news.html">News</a>
       <a href="/community.html">Community</a>
@@ -74,14 +69,10 @@
 </header>
 
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
-      <a href="/">Home</a>
+  <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/conformance.html">Proposed Requirements</a>
-  <a href="/script-examples.html">Script Examples</a>
-  <a href="/specification.html">Specification</a>
-  <a href="/#download">Download</a>
+  <a href="/script-examples.html">Examples</a>
   <a href="/for-payers.html">For Payers</a>
-  <a href="/implementation-review.html">Implementation Review</a>
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
   <a href="/faq.html">FAQ</a>
@@ -101,7 +92,7 @@
       <div class="crumbs"><a href="/">Home</a><span>/</span><span>FAQ</span></div>
       <p class="eyebrow">Frequently Asked Questions</p>
       <h1>NHID-Clinical FAQ</h1>
-      <p class="lede">NHID-Clinical v1.3 Open Proposal — common questions about what it is, who it's for, and how to use it.</p>
+      <p class="lede">What this proposal is, what it is not, and how to get involved.</p>
     </div>
   </section>
   <section class="page-section">
@@ -109,79 +100,63 @@
       <div class="faq-list">
         <div class="faq-item">
           <h3>What is NHID-Clinical?</h3>
-          <p>NHID-Clinical is an <strong>early-stage voluntary open proposal</strong> (v1.3, May 2026) that suggests five simple requirements for AI voice agents in healthcare payer–provider administrative calls.</p>
-          <p>The core idea is straightforward: AI systems should clearly disclose that they are not human <strong>before</strong> requesting or exchanging any operational or protected data (such as NPI, member ID, or claim details). It is <strong>not</strong> an official standard, certification, or regulatory requirement.</p>
+          <p>NHID-Clinical is an early-stage voluntary open proposal (v1.3, May 2026) that addresses a specific problem in healthcare payer–provider voice workflows: AI voice agents that interact with payer staff without disclosing they are automated systems.</p>
+          <p>It is <strong>not</strong> an official standard, certification program, or regulatory requirement. It is one person's attempt to name the problem and suggest a starting point for shared expectations.</p>
         </div>
         <div class="faq-item">
-          <h3>What problem does this proposal solve?</h3>
-          <p>It addresses <strong>"impersonation latency"</strong> — the delay that occurs when an AI voice agent sounds human, shares or requests data, and only later admits it is automated. This creates wasted time, trust issues, and unnecessary compliance risk for payer staff.</p>
+          <h3>What problem does it address?</h3>
+          <p><strong>Impersonation latency</strong> — the gap between when an AI voice agent begins a call and when the person on the other end realizes they are not speaking to a human.</p>
+          <p>An AI calls as "Sarah from Dr. Smith's office," handles several minutes of normal workflow conversation, and only admits "I'm an automated system" when challenged. By then, sensitive operational data has already been exchanged — without clear consent or accountability.</p>
         </div>
         <div class="faq-item">
-          <h3>Who created NHID-Clinical?</h3>
-          <p>The proposal was started by <strong>Brianna Baynard</strong> after observing these patterns in real healthcare payer operations. It is an individual volunteer effort, not backed by any organization or standards body.</p>
+          <h3>Who created this?</h3>
+          <p><strong>Brianna Baynard</strong>, after working in healthcare payer operations and personally experiencing these calls from AI systems that presented as human. It is an individual volunteer effort, not backed by any organization or standards body.</p>
         </div>
         <div class="faq-item">
           <h3>Is this mandatory?</h3>
-          <p>No. It is <strong>completely voluntary</strong>. Payers, providers, and vendors may choose to reference it or ignore it.</p>
+          <p>No. Completely voluntary. Payers, providers, and vendors can choose to reference it, adapt it, or ignore it entirely.</p>
         </div>
         <div class="faq-item">
-          <h3>What are the five proposed requirements?</h3>
-          <table class="faq-table">
-            <thead><tr><th>Code</th><th>Requirement</th><th>What it checks</th></tr></thead>
-            <tbody>
-              <tr><td><strong>IDG-01</strong></td><td>Identity Disclosure Gate</td><td>Disclose non-human status before any data exchange</td></tr>
-              <tr><td><strong>PDX-01</strong></td><td>Pre-Data Exchange Disclosure</td><td>No operational data before disclosure</td></tr>
-              <tr><td><strong>DBC-01</strong></td><td>No Deceptive Behavioral Artifacts</td><td>No fake human sounds</td></tr>
-              <tr><td><strong>EIT-01</strong></td><td>Clear Escalation to Human</td><td>Easy path to a live person</td></tr>
-              <tr><td><strong>ATR-01</strong></td><td>Basic Audit Trail</td><td>Simple logging of key events</td></tr>
-            </tbody>
-          </table>
-          <p>Full details and pass/fail examples are on the <a href="/conformance.html" style="color:var(--blue);font-weight:600">Proposed Requirements →</a> page.</p>
+          <h3>What does the proposal actually suggest?</h3>
+          <p>Four behaviors for AI voice agents in B2B healthcare administrative calls:</p>
+          <ul style="padding-left:1.4rem;color:var(--body);font-size:.95rem;line-height:2;margin-top:.5rem">
+            <li>Identify as an automated system before any operational data is exchanged</li>
+            <li>Avoid behavioral patterns designed to sound human (fake breathing, filler sounds, etc.)</li>
+            <li>Provide a clear, easy path to a human when requested</li>
+            <li>Maintain basic logs of the interaction</li>
+          </ul>
+          <p style="margin-top:.75rem">The full proposal document has detailed discussion of each. <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="color:var(--blue);font-weight:600">Download the PDF →</a></p>
         </div>
         <div class="faq-item">
-          <h3>What is NHID-Auth v1.0?</h3>
-          <p>It is a companion proposal that addresses the separate issue of <em>authorization</em> — how an AI proves it has legitimate delegated authority from a provider (beyond just using a public NPI). It is independent of NHID-Clinical.</p>
-        </div>
-        <div class="faq-item">
-          <h3>How can I test this proposal?</h3>
-          <ol style="padding-left:1.4rem;line-height:2">
-            <li>Review recent call recordings or transcripts from your systems</li>
-            <li>Check whether disclosure happens before any data is exchanged</li>
-            <li>Listen for deceptive audio (fake breathing, filler sounds, typing)</li>
-            <li>Test your escalation path — how quickly can someone reach a human?</li>
-            <li>Verify that basic event logging is in place</li>
-          </ol>
-          <p>We welcome honest feedback on what works and what doesn't: <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:700">help@nhid-clinical.org</a></p>
-        </div>
-        <div class="faq-item">
-          <h3>Can I get official feedback or review on my implementation?</h3>
-          <p>Informal peer feedback is available. Email <a href="mailto:validation@nhid-clinical.org" style="color:var(--blue);font-weight:600">validation@nhid-clinical.org</a> with your evidence. This is <strong>not</strong> certification or validation — it is structured peer feedback only.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Does this replace HIPAA, TCPA, or other regulations?</h3>
-          <p>No. NHID-Clinical only addresses a narrow gap in B2B voice workflows. It is designed to complement existing rules, not replace them.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Who is this proposal for?</h3>
-          <ul>
+          <h3>Who is this for?</h3>
+          <ul style="padding-left:1.4rem;color:var(--body);line-height:2;margin-top:.25rem">
             <li>Payers receiving AI calls from providers or vendors</li>
             <li>Providers and vendors building AI voice agents</li>
-            <li>Compliance and operations teams interested in clearer AI behavior</li>
+            <li>Operations and compliance teams who want clearer expectations</li>
           </ul>
-          <p>It does <strong>not</strong> apply to patient-facing calls, internal tools, or clinical decision-making AI.</p>
+          <p>It does <strong>not</strong> apply to patient-facing calls, internal tools, or clinical decision AI.</p>
         </div>
         <div class="faq-item">
-          <h3>How can I contribute or give feedback?</h3>
+          <h3>How is this different from HIPAA or TCPA?</h3>
+          <p>Those regulations cover patient data privacy and consumer call consent. Neither specifically addresses the B2B scenario where an AI agent calls a payer office on behalf of a provider — which is where the impersonation latency problem actually occurs.</p>
+          <p>This proposal is designed to address a gap, not replace existing rules.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Can I get feedback on my implementation?</h3>
+          <p>Informal peer feedback is available on a limited basis. Email <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:600">help@nhid-clinical.org</a> with your context. This is not certification or formal validation.</p>
+        </div>
+        <div class="faq-item">
+          <h3>What is the NIST connection?</h3>
+          <p>NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security) in January 2026. Comment ID: NIST-2025-0035-0026. This is a public comment — it does not imply NIST endorsement or recognition.</p>
+        </div>
+        <div class="faq-item">
+          <h3>How can I give feedback or get involved?</h3>
           <pre class="faq-code">Email:   help@nhid-clinical.org
 Discord: discord.gg/eP8FxXkGU6
 Reddit:  r/NonHumanAuth
 GitHub:  github.com/thankcheeses/NHID-Clinical</pre>
-          <p>Real-world input from payers and implementers will shape future versions.</p>
+          <p>Real-world experience from payers and implementers is what this proposal most needs.</p>
           <p><a href="/community.html" style="color:var(--blue);font-weight:700">Join the community →</a></p>
-        </div>
-        <div class="faq-item">
-          <h3>What is the connection to NIST?</h3>
-          <p>NHID-Clinical was submitted as a public comment to NIST docket <strong>NIST-2025-0035</strong> (Comment ID: NIST-2025-0035-0026) in January 2026. This is a public comment only — it does not imply NIST endorsement.</p>
         </div>
       </div>
     </div>
@@ -190,8 +165,8 @@ GitHub:  github.com/thankcheeses/NHID-Clinical</pre>
     <div class="closing-panel">
       <div>
         <p class="section-kicker">Get involved</p>
-        <h2>Test the proposal and share what you find.</h2>
-        <p>Real-world feedback from payers, providers, and platforms will shape the next version of NHID-Clinical.</p>
+        <h2>Questions? Disagreements? We want to hear them.</h2>
+        <p>The most useful feedback is honest — including "this doesn't match what we actually see."</p>
       </div>
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
