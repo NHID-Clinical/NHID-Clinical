@@ -28,18 +28,13 @@
         <small>Building Trust in Healthcare Voice AI</small>
       </span>
     </a>
-            <div class="nav-links">
+                <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/conformance.html">Proposed Requirements</a>
-      <a href="/script-examples.html">Script Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Specification</a>
-      <a href="/#download">Download</a>
+      <a href="/script-examples.html">Examples</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/for-payers.html">For Payers</a>
-      <a href="/implementation-review.html">Implementation Review</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/news.html">News</a>
       <a href="/community.html">Community</a>
@@ -74,14 +69,10 @@
 </header>
 
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
-      <a href="/">Home</a>
+  <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/conformance.html">Proposed Requirements</a>
-  <a href="/script-examples.html">Script Examples</a>
-  <a href="/specification.html">Specification</a>
-  <a href="/#download">Download</a>
+  <a href="/script-examples.html">Examples</a>
   <a href="/for-payers.html">For Payers</a>
-  <a href="/implementation-review.html">Implementation Review</a>
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
   <a href="/faq.html">FAQ</a>
@@ -99,10 +90,10 @@
   <section class="inner-hero">
     <div class="container inner-hero-grid">
       <div>
-        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Specification</span></div>
-        <p class="eyebrow">Open Proposal · v1.3</p>
-        <h1>NHID-Clinical v1.3 Specification</h1>
-        <p class="lede">Open Proposal: Non-Human Identity Disclosure for Healthcare Voice Workflows</p>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Proposal</span></div>
+        <p class="eyebrow">Open Proposal · v1.3 · May 2026</p>
+        <h1>The NHID-Clinical Proposal</h1>
+        <p class="lede">A voluntary framework for naming and addressing impersonation latency in healthcare payer–provider voice workflows.</p>
       </div>
       <aside class="hero-summary-card">
         <div class="spec-badges">
@@ -110,51 +101,64 @@
           <span class="spec-badge">v1.3</span>
           <span class="spec-badge spec-badge-green">Open Proposal</span>
         </div>
-        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem"><strong>Author:</strong> Brianna Baynard<br><strong>Published:</strong> May 2026<br>Not an official standard or regulatory requirement.</p>
-        <a class="primary-pill" href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="width:100%;justify-content:center;margin-bottom:.75rem">Download PDF →</a>
-        <a class="outline-link" href="/conformance.html" style="width:100%;justify-content:center">View Proposed Requirements →</a>
-        <p style="font-size:.75rem;color:var(--body);margin-top:.9rem">NIST Public Comment: NIST-2025-0035-0026</p>
+        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem"><strong>Author:</strong> Brianna Baynard<br><strong>NIST Comment:</strong> NIST-2025-0035-0026<br><br>Not an official standard or regulatory requirement.</p>
+        <a class="primary-pill" href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="width:100%;justify-content:center">Download Full Proposal PDF →</a>
       </aside>
     </div>
   </section>
+
   <section class="page-section">
     <div class="container" style="max-width:52rem">
       <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>May 2026 — Open Proposal Status:</strong> This is a voluntary open proposal initiated by Brianna Baynard. It is <strong>not</strong> an official standard, accredited body, or regulatory requirement. It is shared for feedback and real-world testing.
+        <strong>Status (May 2026):</strong> This is a voluntary open proposal by Brianna Baynard. It is <strong>not</strong> an official standard, accredited body, or regulatory requirement.
       </div>
-      <h2>Abstract</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-top:.75rem">NHID-Clinical proposes simple behavioral rules for AI voice agents in payer–provider administrative calls so humans immediately know they are speaking with automation.</p>
-      <h2 style="margin-top:2.5rem">Problem</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">AI agents often hide that they are automated until after sharing operational data. This creates "impersonation latency" — wasted time, trust issues, and security risks.</p>
-      <h2 style="margin-top:2.5rem">Proposed Requirements</h2>
-      <div class="faq-list" style="margin-top:1.25rem">
-        <div class="faq-item"><h3>IDG-01 – Identity Disclosure Gate</h3><p>Disclose non-human identity before any operational data exchange.</p></div>
-        <div class="faq-item"><h3>PDX-01 – Pre-Data Exchange Disclosure</h3><p>Disclosure must occur before requesting or receiving protected data.</p></div>
-        <div class="faq-item"><h3>DBC-01 – No Deceptive Artifacts</h3><p>No simulated breathing, typing sounds, filler words, or other deceptive artifacts.</p></div>
-        <div class="faq-item"><h3>EIT-01 – Escalation Path</h3><p>Provide a clear escalation path to a human when requested.</p></div>
-        <div class="faq-item"><h3>ATR-01 – Audit Trail</h3><p>Maintain basic audit logs (disclosure time, data request time, call outcome).</p></div>
-      </div>
-      <h2 style="margin-top:2.5rem">Implementation Guidance</h2>
-      <ol style="padding-left:1.4rem;color:var(--body);font-size:1rem;line-height:2;margin-top:.75rem">
-        <li>Audit current call disclosure timing</li>
-        <li>Remove fake human audio artifacts</li>
-        <li>Add reliable escalation (reference + callback)</li>
-        <li>Log key events</li>
-        <li>Test and share feedback</li>
-      </ol>
-      <h2 style="margin-top:2.5rem">Companion</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">
-        <a href="/specs/NHID-Auth-v1.0-Specification.pdf" download style="color:var(--blue);font-weight:600">NHID-Auth v1.0 – Authorization Layer (PDF) →</a>
-      </p>
-      <h2 style="margin-top:2.5rem">Downloads</h2>
-      <ul style="list-style:disc;padding-left:1.4rem;color:var(--body);font-size:1rem;line-height:2;margin-top:.75rem">
-        <li><a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="color:var(--blue);font-weight:600">NHID-Clinical v1.3 — Open Proposal (PDF)</a></li>
-        <li><a href="/specs/NHID-Auth-v1.0-Specification.pdf" download style="color:var(--blue);font-weight:600">NHID-Auth v1.0 (PDF)</a></li>
+
+      <h2>The Problem This Addresses</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">AI voice agents in healthcare payer–provider administrative calls frequently operate without disclosing their automated nature at the outset of a call. Staff share operational data — provider credentials, claim details, eligibility information — before realizing they are talking to a machine.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This creates a window of ambiguity — what this proposal calls <strong>impersonation latency</strong> — where sensitive information changes hands without informed consent or clear accountability.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The problem is not that AI is making these calls. It is that AI is making these calls while appearing to be human.</p>
+
+      <h2 style="margin-top:2.5rem">The Core Idea</h2>
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">An AI voice agent should identify itself as automated <strong>before</strong> any operational data is exchanged. That disclosure should be clear, immediate, and not contingent on being challenged.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Everything else in this proposal flows from that single principle.</p>
+
+      <h2 style="margin-top:2.5rem">Suggested Behaviors</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The proposal suggests four behaviors for AI voice agents in these workflows. These are not mandatory requirements — they are a starting point for shared expectations.</p>
+      <ul style="list-style:none;padding:0;margin-top:1.25rem;display:grid;gap:.75rem">
+        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Identify as automated before any data exchange.</strong> The first meaningful act of the call.</li>
+        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Behave like a machine, not a person.</strong> No audio artifacts or behavioral patterns designed to create the impression of human presence.</li>
+        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Provide a clear path to a human.</strong> When requested, the transition should be immediate and unambiguous.</li>
+        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Maintain a basic record.</strong> Sufficient logging to establish what happened, and when.</li>
       </ul>
-      <p style="margin-top:2rem;color:var(--body);font-size:.95rem">
-        <strong>Feedback:</strong> <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:600">help@nhid-clinical.org</a>
-        &nbsp;·&nbsp; CC BY 4.0 &nbsp;·&nbsp; Brianna Baynard &nbsp;·&nbsp; NIST-2025-0035-0026
-      </p>
+
+      <h2 style="margin-top:2.5rem">Why These Four</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">These behaviors address the specific operational friction that motivated this proposal. They are observable, testable in context, and achievable without significant architectural changes in most systems.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">They are also the minimum set that would meaningfully change the impersonation latency problem — not a comprehensive AI governance framework.</p>
+
+      <h2 style="margin-top:2.5rem">Scope</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal applies to <strong>B2B administrative voice workflows</strong> — AI systems calling payer offices on behalf of providers, vendors, or plan administrators. It does not apply to patient-facing calls, clinical decision support, or internal tooling.</p>
+
+      <h2 style="margin-top:2.5rem">What This Is Not</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certification, no audit process, no enforcement mechanism, and no registry. The full proposal document (PDF below) contains more detail for interested practitioners.</p>
+
+      <div class="spec-highlight-box" style="margin-top:2rem">
+        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Download &amp; Feedback</strong>
+        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">
+          <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="color:var(--blue);font-weight:600">NHID-Clinical v1.3 Full Proposal (PDF)</a>
+        </p>
+        <p style="color:var(--body);font-size:.9rem;margin-top:.5rem">Feedback: <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:600">help@nhid-clinical.org</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Get involved</p>
+        <h2>Read the proposal and share your reaction.</h2>
+        <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
+      </div>
+      <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>

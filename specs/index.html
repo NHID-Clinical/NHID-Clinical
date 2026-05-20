@@ -23,15 +23,13 @@
         <small>Building Trust in Healthcare Voice AI</small>
       </span>
     </a>
-    <div class="nav-links">
+        <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/conformance.html">Proposed Requirements</a>
-      <a href="/script-examples.html">Script Examples</a>
+      <a href="/script-examples.html">Examples</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Specification</a>
-      <a href="/#download">Download</a>
+      <a href="/for-payers.html">For Payers</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/news.html">News</a>
       <a href="/community.html">Community</a>
@@ -68,10 +66,8 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/conformance.html">Proposed Requirements</a>
-  <a href="/script-examples.html">Script Examples</a>
-  <a href="/specification.html">Specification</a>
-  <a href="/#download">Download</a>
+  <a href="/script-examples.html">Examples</a>
+  <a href="/for-payers.html">For Payers</a>
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
   <a href="/faq.html">FAQ</a>
@@ -89,75 +85,37 @@
   <section class="inner-hero">
     <div class="container">
       <div class="crumbs"><a href="/">Home</a><span>/</span><span>Download</span></div>
-      <p class="eyebrow">Specification documents</p>
-      <h1>Download the proposal</h1>
-      <p class="lede">NHID-Clinical and NHID-Auth are open governance specifications published under CC BY 4.0. Download, implement, and share freely.</p>
+      <p class="eyebrow">Open Proposal · CC BY 4.0</p>
+      <h1>Download the Proposal</h1>
+      <p class="lede">NHID-Clinical v1.3 is published as a free PDF under Creative Commons Attribution 4.0. Download, share, and adapt freely.</p>
     </div>
   </section>
 
   <section class="page-section">
-    <div class="container">
-      <div class="download-grid" style="margin-top:0">
-        <div class="download-header">
-          <svg class="download-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-          </svg>
-          <h2>Open governance specifications</h2>
-          <p style="color:var(--body);font-size:.95rem;line-height:1.7;margin:0">Both specifications are published under Creative Commons Attribution 4.0 International. Free to use, implement, and redistribute with attribution.</p>
-          <a class="outline-link" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0 →</a>
-        </div>
-        <div class="download-cards">
-          <article class="download-card">
-            <h3>NHID-Clinical v1.3 Core Specification</h3>
-            <p>Complete technical specification including five CTS conformance tests (IDG-01 through ATR-01), implementation levels implementation levels, FHIR AuditEvent mapping, and NHID-Auth companion spec reference.</p>
-            <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
-            <span class="license-badge">CC BY 4.0 · Published May 2026</span>
-          </article>
-          <article class="download-card">
-            <h3>NHID-Auth v1.0 Specification</h3>
-            <p>Authorization layer companion specification for delegated authority verification. Defines authorization attestation format, scope, duration, and revocation handling.</p>
-            <a href="/specs/NHID-Auth-v1.0-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
-            <span class="license-badge">CC BY 4.0 · Published May 2026</span>
-          </article>
-        </div>
+    <div class="container" style="max-width:52rem">
+      <div class="hero-notice" role="note" style="margin-bottom:2rem">
+        <strong>Note:</strong> This is an early-stage open proposal by Brianna Baynard — not an official standard, certification program, or regulatory requirement.
       </div>
-    </div>
-  </section>
 
-  <section class="page-section-alt">
-    <div class="container">
-      <p class="section-kicker">About these documents</p>
-      <h2>What's in each specification</h2>
-      <div class="content-cards" style="margin-top:2rem">
-        <div class="content-card">
-          <div style="font-size:1.5rem;margin-bottom:.5rem">▣</div>
-          <h3>NHID-Clinical v1.3</h3>
-          <p>Five CTS conformance tests (IDG-01 through ATR-01), implementation levels implementation levels, FHIR AuditEvent mapping, and NHID-Auth companion spec reference.</p>
-          <a class="card-action" href="/conformance.html">View CTS tests →</a>
-        </div>
-        <div class="content-card">
-          <div style="font-size:1.5rem;margin-bottom:.5rem">◎</div>
-          <h3>NHID-Auth v1.0</h3>
-          <p>Delegated authority model for AI agents calling on behalf of providers. Defines authorization attestation format, scope, duration, and revocation handling.</p>
-          <a class="card-action" href="/about.html">Learn more →</a>
-        </div>
-        <div class="content-card">
-          <div style="font-size:1.5rem;margin-bottom:.5rem">⚖️</div>
-          <h3>License</h3>
-          <p>Both specifications are published under Creative Commons Attribution 4.0 International. Free to use, implement, and redistribute with attribution.</p>
-          <a class="card-action" href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0 →</a>
-        </div>
+      <div class="download-cards">
+        <article class="download-card">
+          <h3>NHID-Clinical v1.3 — Full Proposal</h3>
+          <p>The complete open proposal document: the impersonation latency problem, four suggested behaviors for AI voice agents in healthcare payer–provider workflows, scope and rationale, and background context.</p>
+          <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0 · May 2026</span>
+        </article>
       </div>
+
+      <p style="color:var(--body);font-size:.9rem;line-height:1.7;margin-top:2rem">Questions about the proposal: <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:600">help@nhid-clinical.org</a></p>
     </div>
   </section>
 
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Ready to certify?</p>
-        <h2>Get involved.</h2>
-        <p>Early feedback and testing welcome. Download the spec, then request validation to get your implementation levels certification.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Feedback welcome.</h2>
+        <p>Read the proposal and share what you think — including if you think it is wrong or missing something important.</p>
       </div>
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
@@ -168,7 +126,6 @@
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
-      <a href="mailto:validation@nhid-clinical.org">Validation</a>
       <a href="mailto:help@nhid-clinical.org">Help</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
@@ -176,7 +133,7 @@
       <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
       <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
     </div>
-    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | validation@nhid-clinical.org | nhid-clinical.org</p>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | nhid-clinical.org</p>
   </div>
 </footer>
 

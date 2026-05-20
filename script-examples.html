@@ -28,18 +28,13 @@
         <small>Building Trust in Healthcare Voice AI</small>
       </span>
     </a>
-            <div class="nav-links">
+                <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/conformance.html">Proposed Requirements</a>
-      <a href="/script-examples.html">Script Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Specification</a>
-      <a href="/#download">Download</a>
+      <a href="/script-examples.html">Examples</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/for-payers.html">For Payers</a>
-      <a href="/implementation-review.html">Implementation Review</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/news.html">News</a>
       <a href="/community.html">Community</a>
@@ -74,14 +69,10 @@
 </header>
 
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
-      <a href="/">Home</a>
+  <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/conformance.html">Proposed Requirements</a>
-  <a href="/script-examples.html">Script Examples</a>
-  <a href="/specification.html">Specification</a>
-  <a href="/#download">Download</a>
+  <a href="/script-examples.html">Examples</a>
   <a href="/for-payers.html">For Payers</a>
-  <a href="/implementation-review.html">Implementation Review</a>
   <a href="/news.html">News</a>
   <a href="/community.html">Community</a>
   <a href="/faq.html">FAQ</a>
@@ -99,212 +90,133 @@
   <section class="inner-hero">
     <div class="container inner-hero-grid">
       <div>
-        <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/conformance.html">Proposed Requirements</a><span>/</span><span>Script Examples</span></div>
-        <p class="eyebrow">Script Examples</p>
-        <h1>What passing disclosure looks like.</h1>
-        <p class="lede">Reference scripts for AI voice agents operating in B2B payer–provider workflows. Each example maps directly to proposed requirement IDG-01 (identity disclosure before data solicitation).</p>
-      </div>
-      <aside class="hero-summary-card">
-        <strong>Proposed requirement: IDG-01</strong>
-        <p>The agent MUST disclose its non-human identity at or before the first opportunity to solicit data. These examples demonstrate passing and failing patterns.</p>
-        <a class="outline-link" href="/conformance.html">View all proposed requirements →</a>
-      </aside>
-    </div>
-  </section>
-
-  <section class="page-section" id="overview">
-    <div class="container">
-      <p class="section-kicker">Section 1 — Overview</p>
-      <h2>The disclosure requirement in plain language</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;max-width:44rem">The core NHID-Clinical requirement is simple: <strong style="color:var(--ink)">an AI voice agent must clearly state that it is non-human before asking for any protected or operational information.</strong> The disclosure must be the first substantive statement on the call — not buried three minutes in, and not offered only when challenged.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-top:2rem">
-        <div class="spec-highlight-box">
-          <p class="section-kicker" style="margin:0 0 .4rem">Timing</p>
-          <p style="color:var(--body);font-size:.9rem;line-height:1.6;margin:0">Disclosure must precede any data solicitation — NPI, member ID, claim number, or any identifier.</p>
-        </div>
-        <div class="spec-highlight-box">
-          <p class="section-kicker" style="margin:0 0 .4rem">Clarity</p>
-          <p style="color:var(--body);font-size:.9rem;line-height:1.6;margin:0">The word "automated," "AI," "non-human," or equivalent must appear. Ambiguous phrasing does not pass.</p>
-        </div>
-        <div class="spec-highlight-box">
-          <p class="section-kicker" style="margin:0 0 .4rem">Consent</p>
-          <p style="color:var(--body);font-size:.9rem;line-height:1.6;margin:0">The receiving party must be given an opportunity to accept, redirect, or terminate before the workflow begins.</p>
-        </div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Examples</span></div>
+        <p class="eyebrow">Dialogue Examples</p>
+        <h1>What transparent disclosure sounds like.</h1>
+        <p class="lede">Side-by-side examples of AI voice agent openings — the kind of interaction this proposal is trying to encourage, and the kind it is trying to reduce.</p>
       </div>
     </div>
   </section>
 
-  <section class="page-section-alt" id="passing">
-    <div class="container">
-      <p class="section-kicker">Section 2 — Passing Script Openings</p>
-      <h2>Example passing script openings</h2>
-      <p style="color:var(--body);margin-bottom:2rem;line-height:1.75;max-width:44rem">These openings pass IDG-01. Each states the calling organization, discloses non-human identity, and requests permission before proceeding. Organization and purpose are illustrative — substitute your actual system name.</p>
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-bottom:2rem">The core idea is simple: an AI voice agent should say it is not human <strong>before</strong> asking for or sharing any operational information. The examples below show what that looks like — and what it looks like when it does not happen.</p>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)" id="good-examples">
+    <div class="container" style="max-width:52rem">
+      <p class="section-kicker">Good examples — disclosure upfront</p>
+      <h2>What we'd like to see more of</h2>
+      <p style="color:var(--body);margin-bottom:2rem;line-height:1.75">These openings work because the AI identifies itself immediately — before asking for anything. The representative knows what they're dealing with from the first sentence.</p>
 
       <div class="script-example-block">
         <h4>General payer operations inquiry</h4>
         <div class="script-quote script-quote-pass">"Hello, this is an automated AI voice agent from Acme Health Plan. I am not a human. I'm calling regarding a claim. Do I have permission to continue?"</div>
-        <p style="font-size:.82rem;color:var(--body);margin-top:.5rem">Discloses: automated · non-human · purpose · permission request. Maps to IDG-01 pass.</p>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Automated nature disclosed immediately. No data exchanged before identification.</p>
       </div>
 
       <div class="script-example-block">
-        <h4>Dental payer — claim status inquiry</h4>
+        <h4>Dental payer — claim status</h4>
         <div class="script-quote script-quote-pass">"This is the AI claims assistant for Delta Dental. I am a non-human system. May I have your NPI to check a claim status?"</div>
-        <p style="font-size:.82rem;color:var(--body);margin-top:.5rem">Discloses: non-human · organization · purpose. Data (NPI) is requested after disclosure. IDG-01 pass.</p>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Non-human status disclosed before any data is requested.</p>
       </div>
 
       <div class="script-example-block">
         <h4>Prior authorization follow-up</h4>
         <div class="script-quote script-quote-pass">"Good morning. This is an automated system calling on behalf of Riverside Medical Group to follow up on a prior authorization request. I am not a person — I'm an AI agent. Are you available to continue?"</div>
-        <p style="font-size:.82rem;color:var(--body);margin-top:.5rem">Non-human disclosure precedes all data activity. Consent asked explicitly. IDG-01 pass.</p>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Clear, early, unambiguous. The representative can make an informed decision about how to proceed.</p>
       </div>
 
       <div class="script-example-block">
         <h4>Eligibility verification</h4>
         <div class="script-quote script-quote-pass">"Hi, this is an automated voice agent — not a human — calling from Valley Provider Services to verify eligibility for a patient visit. Before I give you any details, do I have your permission to proceed?"</div>
-        <p style="font-size:.82rem;color:var(--body);margin-top:.5rem">Disclosure first, purpose stated, permission requested. IDG-01 pass.</p>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Discloses first, then asks permission. Gives the representative control.</p>
       </div>
     </div>
   </section>
 
-  <section class="page-section" id="failing">
-    <div class="container">
-      <p class="section-kicker">Section 3 — Failing Examples (Training Reference)</p>
-      <h2>Patterns that fail IDG-01</h2>
-      <p style="color:var(--body);margin-bottom:2rem;line-height:1.75;max-width:44rem">These are real-world patterns observed in AI voice agent deployments. The first example is the most severe — the complete multi-test failure pattern that NHID-Clinical was built to prevent. Each subsequent example isolates a single correctable failure mode. Use all of these for internal training and QA against your own scripts.</p>
+  <section class="page-section" id="problematic-examples">
+    <div class="container" style="max-width:52rem">
+      <p class="section-kicker">Problematic examples — what this proposal aims to reduce</p>
+      <h2>Patterns that create impersonation latency</h2>
+      <p style="color:var(--body);margin-bottom:2rem;line-height:1.75">These examples illustrate the problem. Each one involves data being exchanged before the representative knows they are talking to an automated system. The scenarios are based on real patterns observed in healthcare payer–provider calls.</p>
 
       <div class="script-example-block">
-        <div class="script-fail-severe-label" aria-label="Most severe violation">
+        <div class="script-fail-severe-label" aria-label="Most concerning pattern">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          Fail — The full impersonation latency pattern (most severe)
+          The full impersonation latency pattern
         </div>
-        <div class="script-dialogue" role="region" aria-label="Failing call transcript example">
+        <div class="script-dialogue" role="region" aria-label="Problematic call example — disclosure only after challenge">
           <div class="dialogue-turn">
             <span class="dialogue-speaker dialogue-speaker-agent">AI Agent</span>
             <span class="dialogue-text-agent">"Hi, this is Sarah from Dr. Smith's office calling to check claim status for a patient. The provider's NPI is 1234567890."</span>
           </div>
           <div class="dialogue-turn">
-            <span class="dialogue-system-note">Call center rep verifies NPI in system.</span>
+            <span class="dialogue-speaker dialogue-speaker-rep">Payer Rep</span>
+            <span class="dialogue-text-rep">"Sure, I can help with that. What's the patient's member ID?"</span>
           </div>
           <div class="dialogue-turn">
             <span class="dialogue-speaker dialogue-speaker-agent">AI Agent</span>
-            <span class="dialogue-text-agent">"The member ID is 987654321, date of service was 01/15/2025."</span>
-            <span class="dialogue-system-note">Multiple data points already exchanged — PHI/operational data exposed to an undisclosed system with no informed consent or audit trail.</span>
+            <span class="dialogue-text-agent">"The member ID is 987654321 and the date of service was January 15th."</span>
           </div>
           <div class="dialogue-turn">
-            <span class="dialogue-speaker dialogue-speaker-rep">Rep (suspicious)</span>
-            <span class="dialogue-text-rep">"Wait… are you an AI agent?"</span>
+            <span class="dialogue-speaker dialogue-speaker-rep">Payer Rep</span>
+            <span class="dialogue-text-rep">"Okay, I'm pulling that up. The claim is currently in review... wait, are you a real person?"</span>
           </div>
           <div class="dialogue-turn">
             <span class="dialogue-speaker dialogue-speaker-agent">AI Agent</span>
-            <span class="dialogue-text-agent">"Yes, I am Sarah, an automated voice system authorized by Dr. Smith to retrieve claim status."</span>
+            <span class="dialogue-text-agent">"I am an automated system calling on behalf of Dr. Smith's office."</span>
           </div>
         </div>
-        <div class="script-fail-multi">
-          Fails <strong>IDG-01</strong> (no upfront disclosure), <strong>PDX-01</strong> (data exchanged before disclosure), and <strong>DBC-01</strong> (human name used without AI qualifier). This is the core Impersonation Latency pattern: appears human, collects sensitive data, admits AI identity only when challenged. By this point, NPI and member ID have been exposed to an undisclosed system. This pattern creates the exact trust breakdown NHID-Clinical was built to prevent.
-        </div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.75rem">The representative shared claim status and engaged in a full workflow exchange before knowing they were talking to automation. NPI and member ID were already exchanged. There is no record of when — or whether — this would have been disclosed without a direct challenge.</p>
       </div>
 
       <div class="script-example-block">
         <div class="script-fail-label">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          Fail — No disclosure, human name used
+          Disclosure buried mid-call
         </div>
-        <div class="script-quote script-quote-fail">
-          "Hi, this is Sarah from claims. What's your member ID?"
-          <span class="script-fail-reason">No disclosure that the caller is non-human. A human name implies a human caller. Data (member ID) is solicited immediately. Fails IDG-01.</span>
-        </div>
+        <div class="script-quote script-quote-fail">"Good morning, this is the billing department at Valley Medical calling about claim 789012. The provider NPI is 5551234567 and we're following up on an authorization request from last week. By the way, I should mention I'm an automated calling system."</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Disclosure comes after the purpose and claim details are established. A busy representative may have already started pulling up records.</p>
       </div>
 
       <div class="script-example-block">
         <div class="script-fail-label">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          Fail — Data solicited before disclosure
+          Human sounds designed to deceive
         </div>
-        <div class="script-quote script-quote-fail">
-          "Hello, may I have your claim number? By the way, I'm an AI."
-          <span class="script-fail-reason">Disclosure occurs after data is requested. IDG-01 requires disclosure at or before the first data solicitation — "by the way" ordering fails the timing requirement.</span>
-        </div>
+        <div class="script-quote script-quote-fail">"[audible breath] Hi, this is Mike from Advanced Medical Solutions. [pause] I'm calling to verify some patient eligibility information — just give me a moment to pull up the file. [typing sounds] Okay, so the provider NPI is..."</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Breathing sounds, hesitation pauses, and typing are added to create the impression of a human caller. Even if disclosure eventually comes, the framing is designed to mislead.</p>
       </div>
 
       <div class="script-example-block">
         <div class="script-fail-label">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          Fail — Ambiguous disclosure buried mid-call
+          Disclosure only when challenged
         </div>
-        <div class="script-quote script-quote-fail">
-          "Hello, I'm calling about claim number 84729. I need to verify the member's eligibility and date of service. [3 minutes later] I should mention this call may be automated."
-          <span class="script-fail-reason">Disclosure buried mid-workflow after multiple data exchanges. This is the core Impersonation Latency pattern. Fails IDG-01 on timing.</span>
-        </div>
-      </div>
-
-      <div class="script-example-block">
-        <div class="script-fail-label">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          Fail — Disclosure only on challenge
-        </div>
-        <div class="script-quote script-quote-fail">
-          [Call proceeds for 4 minutes] Rep: "Wait — are you a real person?" Agent: "No, I'm an automated system."
-          <span class="script-fail-reason">Disclosure triggered by human challenge rather than agent initiative. By this point protected data has been exchanged. Fails IDG-01 and PDX-01.</span>
-        </div>
+        <div class="script-quote script-quote-fail">"Hello, I'm calling about a claim for member 445566. Can you confirm current claim status? [After representative challenges] Yes, this is an automated system."</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Disclosure is contingent on being asked. This is the core pattern this proposal aims to change.</p>
       </div>
     </div>
   </section>
 
-  <section class="page-section-alt" id="scope">
-    <div class="container">
-      <p class="section-kicker">Section 4 — Where NHID Does Not Apply</p>
-      <h2>Workflows outside this proposal's scope</h2>
-      <p style="color:var(--body);margin-bottom:1.5rem;line-height:1.75;max-width:44rem">NHID-Clinical v1.3 specifically addresses B2B administrative voice workflows between AI agents and healthcare payer operations. The following categories are outside scope — different risk profiles and disclosure frameworks apply.</p>
-
-      <ul class="out-of-scope-list">
-        <li>
-          <div>
-            <strong style="color:var(--ink);font-size:.9rem;display:block;margin-bottom:.2rem">Patient-facing appointment reminders</strong>
-            AI-to-patient voice calls operate under different consent and disclosure rules (FTC, TCPA). NHID-Clinical does not govern direct-to-consumer healthcare calls.
-          </div>
-        </li>
-        <li>
-          <div>
-            <strong style="color:var(--ink);font-size:.9rem;display:block;margin-bottom:.2rem">Internal staff-to-staff voice tools</strong>
-            Intra-organization AI voice tools used by clinical or administrative staff internally are outside scope. No payer–provider data exchange boundary is crossed.
-          </div>
-        </li>
-        <li>
-          <div>
-            <strong style="color:var(--ink);font-size:.9rem;display:block;margin-bottom:.2rem">Non-healthcare voice applications</strong>
-            This proposal is specific to healthcare administrative workflows. Voice AI in other regulated industries (finance, legal) requires separate governance standards.
-          </div>
-        </li>
-        <li>
-          <div>
-            <strong style="color:var(--ink);font-size:.9rem;display:block;margin-bottom:.2rem">Text-based chatbots and messaging</strong>
-            NHID-Clinical scope is voice. Chat-based AI systems that handle claims and eligibility via secure messaging portals are not covered by v1.3 requirements.
-          </div>
-        </li>
-        <li>
-          <div>
-            <strong style="color:var(--ink);font-size:.9rem;display:block;margin-bottom:.2rem">Inbound call center AI (payer-to-provider)</strong>
-            Where the payer operates an inbound AI to answer provider calls, different operational dynamics apply. This workflow is under consideration for a future version.
-          </div>
-        </li>
-        <li>
-          <div>
-            <strong style="color:var(--ink);font-size:.9rem;display:block;margin-bottom:.2rem">Clinical triage and diagnostic AI</strong>
-            AI systems that perform clinical decision support, triage, or diagnosis are governed by FDA and clinical AI frameworks, not NHID-Clinical.
-          </div>
-        </li>
-      </ul>
+  <section class="page-section" style="background:var(--bg-alt)">
+    <div class="container" style="max-width:52rem">
+      <h2>A note on scope</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">These examples cover B2B administrative voice workflows — AI systems calling payer offices on behalf of providers or vendors. They do not apply to patient-facing calls, secure messaging, or internal systems.</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The examples above are illustrative, not exhaustive. If you encounter patterns in real calls that are not covered here, <a href="mailto:help@nhid-clinical.org" style="color:var(--blue);font-weight:600">we want to hear about them</a>.</p>
     </div>
   </section>
 
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Test your scripts</p>
-        <h2>Run these examples against IDG-01.</h2>
-        <p>The proposed requirements page has full pass/fail criteria for all five requirements.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Seen something different in the real world?</h2>
+        <p>Real call patterns from payer operations staff are the most valuable input to this proposal. Share what you've seen.</p>
       </div>
-      <a class="closing-button" href="/conformance.html">View Proposed Requirements →</a>
+      <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>
