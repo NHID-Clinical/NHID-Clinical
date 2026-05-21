@@ -336,6 +336,20 @@ p { margin: 0; }
   line-height: 1.85;
 }
 
+.hero-notice {
+  margin-top: 1.5rem;
+  padding: .875rem 1.1rem;
+  border-left: 3px solid var(--blue);
+  background: rgba(15, 87, 139, .07);
+  border-radius: 0 6px 6px 0;
+  font-size: .875rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+[data-theme="dark"] .hero-notice {
+  background: rgba(15, 87, 139, .18);
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -2750,4 +2764,14 @@ textarea { resize: vertical; min-height: 120px; }
   background: rgba(220,38,38,0.18);
   border-color: rgba(220,38,38,0.4);
   color: #fca5a5;
+}
+
+/* ── Hero helper text ────────────────────────────────────────────────────── */
+.hero-helper {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--body);
+  line-height: 1.65;
+  max-width: 30rem;
+  opacity: 0.85;
 }
