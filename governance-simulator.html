@@ -270,6 +270,53 @@
   // ── Mount ─────────────────────────────────────────────────
   var mount = document.getElementById('sim-mount');
   if (mount) mount.innerHTML = renderSimulationEvent(SimulationEvent);
+
+  // ── Live Layer 1 sync from iframe ─────────────────────────
+  var iframeEl = document.querySelector('.sim-interactive iframe');
+  if (iframeEl) {
+    iframeEl.addEventListener('load', function () {
+      var iDoc = iframeEl.contentDocument;
+      if (!iDoc || !iDoc.body) return;
+      var debounce = null;
+      new MutationObserver(function () {
+        clearTimeout(debounce);
+        debounce = setTimeout(function () { syncNarrative(iDoc); }, 450);
+      }).observe(iDoc.body, { childList: true, subtree: true });
+    });
+  }
+
+  function syncNarrative(iDoc) {
+    var aiAction = null;
+    var humanDecision = null;
+    iDoc.querySelectorAll('.shadcn-card').forEach(function (card) {
+      var heading = card.querySelector('h1,h2,h3,h4,[class*="CardTitle"],[class*="font-semibold"]');
+      if (!heading) return;
+      var ht = heading.textContent.trim().toLowerCase();
+      var val = cardValue(card, heading);
+      if (!val) return;
+      if (ht.includes('output') || ht.includes('recommendation') || ht.includes('ai proposed')) aiAction = val;
+      if (ht.includes('human reviewer') || ht.includes('reviewer decision')) humanDecision = val;
+    });
+    if (!aiAction && !humanDecision) return;
+    var narrativeDiv = mount && mount.querySelector('.sim-narrative');
+    if (!narrativeDiv) return;
+    var ps = narrativeDiv.querySelectorAll('p');
+    if (aiAction && ps[0]) ps[0].textContent = 'The AI proposed: ' + aiAction + '.';
+    if (humanDecision && ps[1]) ps[1].textContent = 'Human reviewer decision: ' + humanDecision + '.';
+  }
+
+  function cardValue(card, heading) {
+    var els = card.querySelectorAll('[class*="text-2xl"],[class*="text-xl"],[class*="text-lg"],[class*="font-medium"],[class*="font-bold"]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el === heading || heading.contains(el) || el.contains(heading)) continue;
+      var t = el.textContent.trim();
+      if (t && t.length > 2) return t;
+    }
+    var rest = card.textContent.replace(heading.textContent, '').trim();
+    var first = rest.split('\n')[0].trim();
+    return first.length > 2 ? first : null;
+  }
 })();
 </script>
 
