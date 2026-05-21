@@ -681,7 +681,7 @@
           [c.human && c.auth,   'Human reviewer engaged and verification completed — likely indicates a dispute, an override, or a data anomaly that required human judgment to resolve.'],
           [c.human && !c.auth,  'Human reviewer engaged but verification did not complete. The exception the AI surfaced was not resolved in this interaction.'],
           [!c.human && c.auth,  'Verification completed without human involvement — the expected outcome for a routine eligibility lookup.'],
-          [!c.human && !c.auth, 'Verification did not complete and no human reviewer engaged. The caller's question remains unanswered with no path to resolution communicated.']
+          [!c.human && !c.auth, 'Verification did not complete and no human reviewer engaged. The caller\'s question remains unanswered with no path to resolution communicated.']
         ]);
       },
 

@@ -1,6 +1,43 @@
 (function () {
   'use strict';
 
+  // ── EU reference softening ────────────────────────────────
+  // Replace EU AI Act-specific strings with neutral US-framing
+  // after each React render pass.
+  var REPLACEMENTS = [
+    [/Article\s+14\s+[Oo]versight\s+[Ss]imulator/g, 'Human Oversight Simulator'],
+    [/\bArticle\s+14\b/g,              'Human Oversight'],
+    [/\bArt\.\s*14\b/g,                'Human Oversight'],
+    [/\bArt\.\s*12\s*\/\s*19\s*\/\s*72\b/g, 'Audit / Logging / Incidents'],
+    [/\bArt\.\s*12\b/g,                'Audit Logging'],
+    [/\bArt\.\s*19\b/g,                'Logging Req.'],
+    [/\bArt\.\s*72\b/g,                'Incident Reporting'],
+    [/\bEU\s+AI\s+Act\b/gi,            'risk-based oversight framework'],
+    [/\bEU\s+AI\s+Regulation\b/gi,     'risk-based oversight framework'],
+  ];
+
+  function softenNode(node) {
+    if (node.nodeType === 3) {
+      var v = node.nodeValue, u = v;
+      for (var i = 0; i < REPLACEMENTS.length; i++) {
+        u = u.replace(REPLACEMENTS[i][0], REPLACEMENTS[i][1]);
+      }
+      if (u !== v) node.nodeValue = u;
+    } else if (node.nodeType === 1 && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') {
+      for (var j = 0; j < node.childNodes.length; j++) softenNode(node.childNodes[j]);
+    }
+  }
+
+  function hideEULinks() {
+    document.querySelectorAll(
+      '#root a[href*="artificialintelligenceact"], #root a[href*="eur-lex.europa"]'
+    ).forEach(function (a) {
+      var li = a.closest('li');
+      if (li) li.style.display = 'none';
+      else a.style.display = 'none';
+    });
+  }
+
   // ── Layer classification keyword lists ────────────────────
   var L3 = [
     'article 12', 'article 14', 'article 19', 'article 72',
@@ -27,12 +64,8 @@
     );
     var text = (h ? h.textContent : card.textContent.slice(0, 120)).toLowerCase();
 
-    if (L3.some(function (k) { return text.indexOf(k) !== -1; })) {
-      return '3';
-    }
-    if (L2.some(function (k) { return text.indexOf(k) !== -1; })) {
-      return '2';
-    }
+    if (L3.some(function (k) { return text.indexOf(k) !== -1; })) return '3';
+    if (L2.some(function (k) { return text.indexOf(k) !== -1; })) return '2';
     return '1';
   }
 
@@ -71,14 +104,18 @@
     last.parentNode.insertBefore(wrap, last.nextSibling);
   }
 
-  // ── Main classification pass ──────────────────────────────
+  // ── Main pass ─────────────────────────────────────────────
   function run() {
     if (isWorking) return;
     isWorking = true;
 
-    // Remove stale controls so they get rebuilt cleanly
     var old = document.getElementById('nhid-controls');
     if (old) old.remove();
+
+    // Soften EU references in rendered text
+    var root = document.getElementById('root');
+    if (root) softenNode(root);
+    hideEULinks();
 
     document.querySelectorAll('.shadcn-card').forEach(function (card) {
       card.setAttribute('data-nl', classify(card));
@@ -107,9 +144,7 @@
   // ── Bootstrap ─────────────────────────────────────────────
   function boot() {
     var root = document.getElementById('root');
-    if (!root || !root.children.length) {
-      return setTimeout(boot, 150);
-    }
+    if (!root || !root.children.length) return setTimeout(boot, 150);
     run();
     observe();
   }
