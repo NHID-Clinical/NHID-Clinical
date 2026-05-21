@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Governance Simulator — interactive model of human oversight in administrative healthcare voice AI. Explore disclosure, authorization, escalation, and audit logging behavior."/>
+  <meta name="description" content="NHID-Clinical Governance Simulator — operational prototype for administrative healthcare voice AI. Explores disclosure timing, human escalation, and logging visibility in payer-provider workflows."/>
   <title>Governance Simulator | NHID-Clinical</title>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -12,61 +12,222 @@
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <style>
-    /* Layer 1 */
-    .sim-narrative { margin-bottom: 1.75rem; }
-    .sim-narrative h2 { color: var(--ink); font-size: 1.35rem; margin-bottom: .75rem; }
-    .sim-narrative p { color: var(--body); font-size: 1.05rem; line-height: 1.8; margin-top: .5rem; }
+    /* ── Simulator shell ─────────────────────────────────── */
+    .sim-page { padding: 0; }
 
-    /* Layer 2 & 3 shared */
-    .sim-analysis, .sim-audit, .sim-interactive {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      overflow: hidden;
+    .sim-wrap {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.25rem;
+      align-items: start;
     }
-    .sim-analysis summary, .sim-audit summary, .sim-interactive summary {
+    @media (max-width: 768px) {
+      .sim-wrap { grid-template-columns: 1fr; }
+    }
+
+    /* ── Controls (left column) ──────────────────────────── */
+    .sim-controls {
+      background: #fff;
+      border: 1px solid #c9cdd4;
+      border-radius: 3px;
+      padding: 1.1rem 1.2rem;
+      position: sticky;
+      top: 1rem;
+    }
+    @media (max-width: 768px) {
+      .sim-controls { position: static; }
+    }
+
+    .ctrl-group { margin-bottom: 1.1rem; }
+    .ctrl-group:last-of-type { margin-bottom: 0; }
+
+    .ctrl-label {
+      display: block;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #8d949e;
+      margin-bottom: .5rem;
+    }
+
+    .ctrl-select {
+      width: 100%;
+      font-size: .875rem;
+      padding: .5rem .7rem;
+      border: 1px solid #c9cdd4;
+      border-radius: 3px;
+      background: #f6f7f9;
+      color: #1c2028;
+      font-family: inherit;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238d949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right .75rem center;
+      padding-right: 2rem;
       cursor: pointer;
-      padding: .9rem 1.25rem;
-      background: var(--bg-alt);
-      font-size: .95rem;
-      list-style: none;
-      user-select: none;
     }
-    .sim-analysis summary::-webkit-details-marker,
-    .sim-audit summary::-webkit-details-marker,
-    .sim-interactive summary::-webkit-details-marker { display: none; }
-    .sim-analysis[open] summary, .sim-audit[open] summary, .sim-interactive[open] summary {
-      border-bottom: 1px solid var(--line);
+    .ctrl-select:focus { outline: 2px solid #1a3a5e; outline-offset: 1px; }
+
+    .ctrl-divider { border: none; border-top: 1px solid #e8eaed; margin: 1rem 0; }
+
+    .behavior-item {
+      display: flex;
+      align-items: flex-start;
+      gap: .55rem;
+      padding: .38rem 0;
+      border-bottom: 1px solid #f2f3f5;
+      cursor: pointer;
+    }
+    .behavior-item:last-child { border-bottom: none; }
+    .behavior-item input[type="checkbox"] {
+      margin-top: .17rem;
+      flex-shrink: 0;
+      width: .9rem;
+      height: .9rem;
+      cursor: pointer;
+      accent-color: #1a3a5e;
+    }
+    .behavior-item span {
+      font-size: .84rem;
+      color: #3a4150;
+      line-height: 1.5;
     }
 
-    /* Layer 2 content */
-    .sim-analysis .analysis-grid { padding: 1.25rem; display: grid; gap: .75rem; }
-    .sim-analysis .analysis-grid p { margin: 0; color: var(--body); font-size: .93rem; }
-    .sim-analysis .metrics {
-      display: flex; flex-wrap: wrap; gap: .5rem 1.5rem;
-      background: var(--bg-alt); border-radius: 6px; padding: .75rem 1rem;
-      font-size: .88rem; color: var(--body);
+    .run-btn {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+      background: #1a3a5e;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: .58rem 1rem;
+      font-size: .875rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      letter-spacing: .025em;
+      transition: background .12s;
+    }
+    .run-btn:hover { background: #142f4d; }
+
+    /* ── Report panel (right column) ─────────────────────── */
+    .sim-report {
+      background: #fff;
+      border: 1px solid #c9cdd4;
+      border-radius: 3px;
+      min-height: 260px;
     }
 
-    /* Layer 3 content */
-    .sim-audit > *:not(summary) { padding: 0 1.25rem; }
-    .sim-audit p { color: var(--body); font-size: .92rem; line-height: 1.7; margin: .6rem 0; }
-    .sim-audit .full-log {
-      background: var(--bg-alt); border-radius: 6px;
-      padding: .75rem 1rem; margin-bottom: 1.25rem;
-    }
-    .sim-audit .full-log ul {
-      margin: 0; padding: 0 0 0 1.1rem;
-      color: var(--ink-soft); font-size: .88rem; line-height: 1.8;
-    }
-
-    /* Disclaimer */
-    .final-disclaimer {
-      margin-top: 2rem;
-      font-size: .82rem;
-      color: var(--ink-soft);
+    .report-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 260px;
+      padding: 2rem;
+      color: #b0b8c4;
+      font-size: .875rem;
       text-align: center;
-      font-style: italic;
+      line-height: 1.7;
+    }
+
+    .report-meta {
+      padding: .85rem 1.2rem;
+      background: #f6f7f9;
+      border-bottom: 1px solid #e0e3e8;
+    }
+    .report-meta h2 {
+      margin: 0 0 .18rem;
+      font-size: .875rem;
+      font-weight: 600;
+      color: #1c2028;
+      letter-spacing: .005em;
+    }
+    .report-meta p {
+      margin: 0;
+      font-size: .75rem;
+      color: #8d949e;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .report-section {
+      padding: .85rem 1.2rem;
+      border-bottom: 1px solid #f0f2f4;
+    }
+    .report-section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      color: #a8b0ba;
+      margin: 0 0 .55rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: #edf0f3; }
+
+    /* Timeline */
+    .timeline { line-height: 1; }
+    .t-row {
+      display: grid;
+      grid-template-columns: 2.6rem .7rem 1fr;
+      gap: .2rem;
+      padding: .28rem 0;
+      align-items: baseline;
+    }
+    .t-time {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: .78rem;
+      color: #a8b0ba;
+      white-space: nowrap;
+    }
+    .t-dash {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: .78rem;
+      color: #d0d4d9;
+    }
+    .t-text {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: .78rem;
+      color: #4a5360;
+      line-height: 1.45;
+    }
+
+    /* Bullet lists */
+    .rpt-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .rpt-list li {
+      font-size: .875rem;
+      color: #3a4150;
+      line-height: 1.65;
+      padding: .2rem 0 .2rem 1rem;
+      position: relative;
+    }
+    .rpt-list li::before { content: '–'; position: absolute; left: 0; color: #b0b8c4; }
+
+    .rpt-list.friction li::before { color: #b45309; }
+    .rpt-list.risk li::before { color: #b45309; }
+
+    .rpt-none { font-size: .85rem; color: #b0b8c4; font-style: italic; }
+
+    /* Context paragraph */
+    .rpt-para { font-size: .875rem; color: #3a4150; line-height: 1.7; margin: 0; }
+
+    /* Page disclaimer */
+    .sim-disclaimer {
+      margin-top: 1.5rem;
+      font-size: .78rem;
+      color: #a8b0ba;
+      line-height: 1.75;
+      border-top: 1px solid #e8eaed;
+      padding-top: 1rem;
     }
   </style>
 </head>
@@ -151,174 +312,113 @@
     <div class="container">
       <div class="crumbs"><a href="/">Home</a> / Governance Simulator</div>
       <h1>Governance Simulator</h1>
-      <p class="lede">How administrative healthcare voice AI triggers human oversight in payer–provider workflows.</p>
+      <p class="lede">Operational prototype for administrative healthcare voice AI — payer–provider workflows, disclosure timing, escalation handling, and logging visibility.</p>
     </div>
   </section>
 
-  <section class="page-section">
-    <div class="container" style="max-width:52rem">
-      <div id="sim-mount"></div>
-      <details class="sim-interactive" style="margin-top:2rem">
-        <summary><strong>Open Interactive Simulator</strong></summary>
-        <div style="margin-top:1rem">
-          <iframe src="/simulator/index.html" style="width:100%;height:88vh;border:none;border-radius:8px" title="NHID-Clinical Governance Simulator" allowfullscreen></iframe>
+  <section class="page-section sim-page">
+    <div class="container" style="max-width:72rem">
+
+      <div class="sim-wrap">
+
+        <!-- Left: controls -->
+        <div class="sim-controls">
+          <div class="ctrl-group">
+            <label class="ctrl-label" for="sim-scenario">Scenario</label>
+            <select class="ctrl-select" id="sim-scenario">
+              <option value="">Select scenario…</option>
+              <option value="prior-auth">Prior Authorization Follow-Up</option>
+              <option value="expedited">Expedited Review Request</option>
+              <option value="eligibility">Eligibility Verification</option>
+              <option value="handoff">Human Handoff / Escalation</option>
+            </select>
+          </div>
+
+          <hr class="ctrl-divider"/>
+
+          <div class="ctrl-group">
+            <span class="ctrl-label">Observed Behaviors</span>
+            <label class="behavior-item">
+              <input type="checkbox" name="b" value="identity">
+              <span>AI identity disclosed to caller</span>
+            </label>
+            <label class="behavior-item">
+              <input type="checkbox" name="b" value="human">
+              <span>Human reviewer engaged</span>
+            </label>
+            <label class="behavior-item">
+              <input type="checkbox" name="b" value="documented">
+              <span>Outcome documented before call ended</span>
+            </label>
+            <label class="behavior-item">
+              <input type="checkbox" name="b" value="escalation">
+              <span>Escalation path communicated to caller</span>
+            </label>
+            <label class="behavior-item">
+              <input type="checkbox" name="b" value="auth">
+              <span>Authorization or eligibility confirmed</span>
+            </label>
+            <label class="behavior-item">
+              <input type="checkbox" name="b" value="urgency">
+              <span>Urgency flagged by AI system</span>
+            </label>
+          </div>
+
+          <button class="run-btn" id="sim-run" type="button">Generate Review</button>
         </div>
-      </details>
-      <p class="final-disclaimer">Synthetic data only. Strictly administrative workflows. Not legal advice.</p>
+
+        <!-- Right: report -->
+        <div class="sim-report" id="sim-report">
+          <div class="report-empty" id="sim-empty">
+            Select a scenario and observed behaviors,<br>then generate an operational review.
+          </div>
+          <div id="sim-output" hidden>
+            <div class="report-meta">
+              <h2 id="out-title"></h2>
+              <p id="out-meta"></p>
+            </div>
+            <div class="report-section">
+              <p class="section-label">Operational Context</p>
+              <p class="rpt-para" id="out-context"></p>
+            </div>
+            <div class="report-section">
+              <p class="section-label">Simulated Event Timeline</p>
+              <div class="timeline" id="out-timeline"></div>
+            </div>
+            <div class="report-section">
+              <p class="section-label">Observed Behaviors</p>
+              <ul class="rpt-list" id="out-observations"></ul>
+            </div>
+            <div class="report-section">
+              <p class="section-label">Potential Workflow Friction</p>
+              <ul class="rpt-list friction" id="out-friction"></ul>
+            </div>
+            <div class="report-section">
+              <p class="section-label">Human Oversight Notes</p>
+              <ul class="rpt-list" id="out-oversight"></ul>
+            </div>
+            <div class="report-section">
+              <p class="section-label">Logging Visibility</p>
+              <ul class="rpt-list" id="out-logging"></ul>
+            </div>
+            <div class="report-section">
+              <p class="section-label">Simulated Operational Risks</p>
+              <ul class="rpt-list risk" id="out-risks"></ul>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.sim-wrap -->
+
+      <p class="sim-disclaimer">
+        This simulator is a conceptual prototype. All scenarios, timelines, and observations are synthetic and illustrative only.
+        This is not a certification tool, compliance framework, or regulatory requirement.
+        NHID-Clinical is an early-stage open proposal — not an accredited standard.
+      </p>
+
     </div>
   </section>
 </main>
-
-<script>
-(function () {
-  'use strict';
-
-  // ── SimulationEvent schema ────────────────────────────────
-  // All displayable content lives here. Rendering is purely
-  // presentational — no classification, no DOM scraping.
-  var SimulationEvent = {
-    narrative: {
-      scenarioTitle: 'Prior Authorization Urgency Conflict',
-      event: 'The AI voice agent tried to route an urgent prior authorization request into a standard 72-hour queue.',
-      outcome: 'A payer compliance officer overrode the AI’s decision and escalated the case for faster handling.'
-    },
-    analysis: {
-      aiProposedAction: 'Route to standard 72-hour queue',
-      reason: 'Missing conservative-therapy attestation',
-      metrics: {
-        'Autonomy Score': '70',
-        'Model Confidence': '62%',
-        'Harm Severity': '65',
-        'Administrative Urgency': '78'
-      },
-      triggers: [
-        'Urgent care risk under autonomous routing',
-        'High autonomy at high harm severity'
-      ]
-    },
-    audit: {
-      oversightPosture: 'Human review required (Article 14)',
-      residualRisk: { pre: 63, post: 28 },
-      reviewerDecision: 'Override by payer compliance officer',
-      logFields: [
-        'Event ID',
-        'Use period',
-        'Model version',
-        'Article 12 / 19 / 72 mappings',
-        'Retention class'
-      ]
-    }
-  };
-
-  // ── Renderer ──────────────────────────────────────────────
-  function renderSimulationEvent(ev) {
-    var n = ev.narrative;
-    var a = ev.analysis;
-    var u = ev.audit;
-
-    // Layer 1 — always visible
-    var narrativeHTML =
-      '<div class="sim-narrative">' +
-        '<h2>' + esc(n.scenarioTitle) + '</h2>' +
-        '<p>' + esc(n.event) + '</p>' +
-        '<p>' + esc(n.outcome) + '</p>' +
-      '</div>';
-
-    // Layer 2 — analysis (collapsed by default)
-    var metricsHTML = Object.keys(a.metrics).map(function (k) {
-      return '<div>' + esc(k) + ': <strong>' + esc(a.metrics[k]) + '</strong></div>';
-    }).join('');
-
-    var triggersHTML = a.triggers.map(esc).join(' &bull; ');
-
-    var analysisHTML =
-      '<details class="sim-analysis">' +
-        '<summary><strong>View Analysis</strong></summary>' +
-        '<div class="analysis-grid">' +
-          '<p><strong>AI Proposed Action:</strong> ' + esc(a.aiProposedAction) + '</p>' +
-          '<p><strong>Reason:</strong> ' + esc(a.reason) + '</p>' +
-          '<div class="metrics">' + metricsHTML + '</div>' +
-          '<p><strong>Active Triggers:</strong> ' + triggersHTML + '</p>' +
-        '</div>' +
-      '</details>';
-
-    // Layer 3 — audit & regulatory log (collapsed by default)
-    var logItemsHTML = '<ul>' + u.logFields.map(function (f) {
-      return '<li>' + esc(f) + '</li>';
-    }).join('') + '</ul>';
-
-    var auditHTML =
-      '<details class="sim-audit">' +
-        '<summary><strong>View Audit &amp; Regulatory Log</strong></summary>' +
-        '<p><strong>Oversight Posture:</strong> ' + esc(u.oversightPosture) + '</p>' +
-        '<p><strong>Residual Risk:</strong> High (' + u.residualRisk.pre + ') &rarr; Low (' + u.residualRisk.post + ')</p>' +
-        '<p><strong>Human Reviewer Decision:</strong> ' + esc(u.reviewerDecision) + '</p>' +
-        '<div class="full-log">' + logItemsHTML + '</div>' +
-      '</details>';
-
-    return narrativeHTML + analysisHTML + auditHTML;
-  }
-
-  function esc(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  // ── Mount ─────────────────────────────────────────────────
-  var mount = document.getElementById('sim-mount');
-  if (mount) mount.innerHTML = renderSimulationEvent(SimulationEvent);
-
-  // ── Live Layer 1 sync from iframe ─────────────────────────
-  var iframeEl = document.querySelector('.sim-interactive iframe');
-  if (iframeEl) {
-    iframeEl.addEventListener('load', function () {
-      var iDoc = iframeEl.contentDocument;
-      if (!iDoc || !iDoc.body) return;
-      var debounce = null;
-      new MutationObserver(function () {
-        clearTimeout(debounce);
-        debounce = setTimeout(function () { syncNarrative(iDoc); }, 450);
-      }).observe(iDoc.body, { childList: true, subtree: true });
-    });
-  }
-
-  function syncNarrative(iDoc) {
-    var aiAction = null;
-    var humanDecision = null;
-    iDoc.querySelectorAll('.shadcn-card').forEach(function (card) {
-      var heading = card.querySelector('h1,h2,h3,h4,[class*="CardTitle"],[class*="font-semibold"]');
-      if (!heading) return;
-      var ht = heading.textContent.trim().toLowerCase();
-      var val = cardValue(card, heading);
-      if (!val) return;
-      if (ht.includes('output') || ht.includes('recommendation') || ht.includes('ai proposed')) aiAction = val;
-      if (ht.includes('human reviewer') || ht.includes('reviewer decision')) humanDecision = val;
-    });
-    if (!aiAction && !humanDecision) return;
-    var narrativeDiv = mount && mount.querySelector('.sim-narrative');
-    if (!narrativeDiv) return;
-    var ps = narrativeDiv.querySelectorAll('p');
-    if (aiAction && ps[0]) ps[0].textContent = 'The AI proposed: ' + aiAction + '.';
-    if (humanDecision && ps[1]) ps[1].textContent = 'Human reviewer decision: ' + humanDecision + '.';
-  }
-
-  function cardValue(card, heading) {
-    var els = card.querySelectorAll('[class*="text-2xl"],[class*="text-xl"],[class*="text-lg"],[class*="font-medium"],[class*="font-bold"]');
-    for (var i = 0; i < els.length; i++) {
-      var el = els[i];
-      if (el === heading || heading.contains(el) || el.contains(heading)) continue;
-      var t = el.textContent.trim();
-      if (t && t.length > 2) return t;
-    }
-    var rest = card.textContent.replace(heading.textContent, '').trim();
-    var first = rest.split('\n')[0].trim();
-    return first.length > 2 ? first : null;
-  }
-})();
-</script>
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
@@ -335,5 +435,409 @@
 </footer>
 
 <script src="/site.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ── Helpers ───────────────────────────────────────────────
+  function fmt(secs) {
+    var m = Math.floor(secs / 60), s = secs % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  // Build an array from condition/text pairs, filtering false conditions.
+  function cond(pairs) {
+    return pairs.filter(function (p) { return p[0]; }).map(function (p) { return p[1]; });
+  }
+
+  // ── Scenario definitions ──────────────────────────────────
+  var SCENARIOS = {
+
+    'prior-auth': {
+      label: 'Prior Authorization Follow-Up',
+
+      context: function (c) {
+        var base = 'A provider representative initiated contact to follow up on an open prior authorization. The clinical indication is established; this interaction concerns administrative resolution of an existing case.';
+        if (c.auth && c.human)  return base + ' Authorization status was confirmed with human reviewer involvement before the interaction closed.';
+        if (c.auth)             return base + ' Authorization status was confirmed during this interaction.';
+        if (c.human)            return base + ' The interaction required human reviewer involvement — the authorization gap was not resolved before transfer.';
+        if (!c.auth && !c.human) return base + ' Neither authorization confirmation nor human escalation occurred during this call.';
+        return base;
+      },
+
+      timeline: function (c) {
+        return [
+          { t: 0,  text: c.identity ? 'AI identity disclosed — call initiated' : 'call initiated (AI identity not disclosed)' },
+          { t: 7,  text: 'provider requested authorization case status' },
+          { t: 19, text: 'AI retrieved active case reference' },
+          c.auth     && { t: 34, text: 'authorization status confirmed: pending clinical review' },
+          !c.auth    && { t: 38, text: 'authorization status could not be confirmed — case remains open' },
+          c.urgency  && { t: 51, text: 'urgency level surfaced in routing queue' },
+          c.escalation && { t: 64, text: 'escalation pathway triggered' },
+          c.human    && { t: 76, text: 'human reviewer joined call' },
+          c.documented && { t: 91, text: 'interaction outcome documented in system record' }
+        ].filter(Boolean);
+      },
+
+      observations: function (c) {
+        return cond([
+          [c.identity,   'AI identity was disclosed at call initiation — standard practice for a case-specific follow-up.'],
+          [!c.identity,  'AI identity was not disclosed. The caller may not have known they were interacting with an automated system on a case-specific call.'],
+          [c.auth,       'Authorization status was confirmed during the interaction. The administrative question the call was initiated to address was answered.'],
+          [!c.auth,      'Authorization status was not confirmed. The open case was not resolved in this interaction.'],
+          [c.human,      'A human reviewer joined the call. The AI reached a decision boundary and transferred handling.'],
+          [c.documented, 'The call outcome was documented before the interaction ended.'],
+          [!c.documented,'No documentation recorded during this call.'],
+          [c.urgency,    'Urgency was surfaced in the routing queue. The case has become time-sensitive since the original authorization request.'],
+          [c.escalation, 'An escalation path was communicated to the provider — the case routes to a next handler.']
+        ]);
+      },
+
+      friction: function (c) {
+        return cond([
+          [!c.auth && !c.human,     'Authorization unresolved without human reviewer engagement — this case has no current owner or forward path.'],
+          [!c.auth && !c.escalation,'Open case without an escalation path communicated to the caller. Provider has no next step.'],
+          [c.auth && !c.documented, 'Authorization was confirmed verbally but the administrative record was not updated. Downstream systems cannot act on an undocumented confirmation.'],
+          [c.urgency && !c.escalation && !c.human, 'Urgency was flagged but no escalation mechanism was activated and no human reviewer engaged. Urgency without routing has no effect.'],
+          [!c.identity,             'Identity not disclosed on a case-specific follow-up creates attribution risk if the call outcome is later disputed.']
+        ]);
+      },
+
+      oversight: function (c) {
+        return cond([
+          [c.human && c.auth,   'Human reviewer joined after AI surfaced authorization status. Involvement may reflect case complexity, a policy trigger, or a provider request to speak with staff.'],
+          [c.human && !c.auth,  'Human reviewer engaged without authorization resolution. The AI recognized a decision point it could not close autonomously and transferred the case.'],
+          [!c.human && c.auth,  'Authorization was confirmed without human reviewer involvement. The AI handled the inquiry autonomously.'],
+          [!c.human && !c.auth, 'No human reviewer engaged and authorization was not confirmed. The interaction ended without resolution or escalation.']
+        ]);
+      },
+
+      logging: function (c) {
+        return cond([
+          [c.documented && c.auth,   'Authorization confirmation is on record. This outcome is auditable and actionable for downstream authorization workflows.'],
+          [c.documented && !c.auth,  'Unresolved status is logged. The record will reflect an open case, which should trigger follow-up routing.'],
+          [!c.documented && c.auth,  'Authorization was confirmed but not documented. No audit trail exists for this confirmation — creates a gap if the case is later contested.'],
+          [!c.documented && !c.auth, 'No documentation and no authorization confirmation. This call produces no auditable record of outcome.']
+        ]);
+      },
+
+      risks: function (c) {
+        return cond([
+          [!c.auth && !c.human && !c.escalation, 'Unresolved authorization without escalation or human engagement — if clinically time-sensitive, delay risk accumulates with each unanswered follow-up cycle.'],
+          [!c.documented,                         'No documentation creates an accountability gap. If the call is later referenced in a dispute or appeal, there is no system record to consult.'],
+          [c.urgency && !c.human && !c.escalation,'Urgent case without routing or human engagement. Urgency classification without response is operationally indistinguishable from no classification at all.'],
+          [!c.identity,                            'Undisclosed AI identity on a prior auth follow-up may complicate provider trust if the call outcome is questioned.']
+        ]);
+      }
+    },
+
+    'expedited': {
+      label: 'Expedited Review Request',
+
+      context: function (c) {
+        var base = 'A caller requested expedited review, indicating the standard processing timeline cannot be met given clinical circumstances.';
+        if (c.urgency && c.human)   return base + ' The AI classified the request as urgent and routed to a human reviewer.';
+        if (c.urgency && !c.human)  return base + ' Urgency was flagged but the call did not reach a human reviewer.';
+        if (!c.urgency && c.human)  return base + ' A human reviewer engaged despite the AI not flagging urgency — classification and routing were misaligned.';
+        if (!c.urgency && !c.human) return base + ' Neither urgency classification nor human routing occurred. The call appears to have been handled as a standard inquiry.';
+        return base;
+      },
+
+      timeline: function (c) {
+        return [
+          { t: 0,  text: c.identity ? 'AI identity disclosed — call initiated' : 'call initiated (AI identity not disclosed)' },
+          { t: 9,  text: 'caller indicated urgent clinical timeline' },
+          { t: 22, text: 'expedited review request received and registered' },
+          c.urgency  && { t: 36, text: 'urgency classification applied — case flagged in routing system' },
+          !c.urgency && { t: 36, text: 'request routed under standard processing — urgency not classified' },
+          c.escalation && { t: 51, text: 'escalation pathway activated' },
+          c.human    && { t: 67, text: 'human reviewer joined call' },
+          c.auth     && { t: 79, text: 'review status confirmed and communicated to caller' },
+          c.documented && { t: 88, text: 'review request logged in case management system' }
+        ].filter(Boolean);
+      },
+
+      observations: function (c) {
+        return cond([
+          [c.urgency,   'Urgency was classified — the AI recognized this as an expedited request and flagged it in the routing system.'],
+          [!c.urgency,  'Urgency was not classified. For an expedited review request, this represents a routing classification failure. The call may have been processed as a standard inquiry.'],
+          [c.human,     'A human reviewer engaged. Expedited review decisions require human judgment — this transfer was appropriate.'],
+          [!c.human,    'No human reviewer engaged. Expedited review cannot be completed autonomously by the AI system.'],
+          [c.escalation,'An escalation path was communicated to the caller — they have information about what happens next.'],
+          [!c.escalation,'No escalation path was communicated. The caller was left without continuity information after the call.'],
+          [c.documented,'The expedited review request is on record in the case management system.'],
+          [!c.documented,'No documentation. An undocumented expedited request cannot be tracked, prioritized, or referenced in downstream review queues.']
+        ]);
+      },
+
+      friction: function (c) {
+        return cond([
+          [c.urgency && !c.human,     'Urgency was classified but the call did not reach a human reviewer. Classification without routing is the primary failure mode for expedited review.'],
+          [!c.urgency && !c.human,    'Neither urgency classification nor human routing occurred. The expedited request was likely treated as a standard call — the clinical timeline concern was not addressed.'],
+          [!c.urgency && c.human,     'Human reviewer engaged without urgency being flagged — the routing system did not classify this correctly. The human may have recognized what the AI missed.'],
+          [c.urgency && !c.escalation,'Urgency flagged but no escalation path communicated. The caller does not know what happens next or on what timeline.'],
+          [!c.documented,             'Undocumented expedited request — cannot be referenced for prioritization or appeal purposes.']
+        ]);
+      },
+
+      oversight: function (c) {
+        return cond([
+          [c.urgency && c.human,   'Urgency was recognized and routed to a human reviewer — the AI handled its role as a classification and routing mechanism correctly.'],
+          [c.urgency && !c.human,  'Urgency was flagged but the human handoff did not occur. The routing trigger fired without completing the transfer.'],
+          [!c.urgency && c.human,  'Human engagement without urgency classification — the oversight mechanism was invoked, but the triggering logic did not work as intended.'],
+          [!c.urgency && !c.human, 'No urgency classification and no human reviewer. The expedited nature of this request was not surfaced to any human in the workflow.']
+        ]);
+      },
+
+      logging: function (c) {
+        return cond([
+          [c.documented && c.urgency,   'Expedited request is documented with urgency classification on record. The case can be tracked and prioritized by downstream reviewers.'],
+          [c.documented && !c.urgency,  'Request is documented, but without urgency classification. The record may not surface in expedited review queues.'],
+          [!c.documented && c.urgency,  'Urgency was flagged in the routing system but the case was not formally documented. Routing-system flags are not equivalent to case management records.'],
+          [!c.documented && !c.urgency, 'No documentation and no urgency classification. This expedited request produced no retrievable record.']
+        ]);
+      },
+
+      risks: function (c) {
+        return cond([
+          [!c.human,                     'Expedited review completed without human involvement is not a completed expedited review — the clinical urgency concern remains unaddressed.'],
+          [c.urgency && !c.human,        'Urgency classification without human routing may create a false sense that the case has been handled when it has not.'],
+          [!c.documented,                'Undocumented expedited request — if the caller follows up or escalates, there is no system record of this interaction to reference.'],
+          [!c.urgency && !c.escalation,  'No urgency, no escalation, no human involvement on an expedited review request — the call did not produce any of the behaviors this scenario requires.']
+        ]);
+      }
+    },
+
+    'eligibility': {
+      label: 'Eligibility Verification',
+
+      context: function (c) {
+        var base = 'A caller requested eligibility verification — a lookup-and-confirm workflow in which the AI retrieves established coverage information.';
+        if (c.identity && c.auth && !c.human) return base + ' Identity was disclosed and eligibility was confirmed without human involvement — the expected outcome for this workflow type.';
+        if (!c.identity && c.auth)            return base + ' Eligibility was confirmed, but the source was not identified to the caller before information was exchanged.';
+        if (c.human)                          return base + ' A human reviewer engaged, suggesting the AI encountered an exception or data discrepancy it could not resolve autonomously.';
+        if (!c.auth)                          return base + ' Eligibility status could not be confirmed during this interaction.';
+        return base;
+      },
+
+      timeline: function (c) {
+        return [
+          { t: 0,  text: c.identity ? 'AI identity disclosed before information exchange' : 'call initiated — AI identity not disclosed to caller' },
+          { t: 8,  text: 'caller requested eligibility verification' },
+          { t: 21, text: 'AI queried member eligibility database' },
+          c.auth     && { t: 32, text: 'eligibility status confirmed: active coverage on file' },
+          !c.auth    && { t: 32, text: 'eligibility status could not be confirmed — record flagged' },
+          c.human    && { t: 46, text: 'human reviewer engaged — exception handling initiated' },
+          c.documented && c.auth  && { t: 57, text: 'verification result documented' },
+          c.documented && !c.auth && { t: 57, text: 'unresolved eligibility status logged' },
+          c.escalation && { t: 69, text: 'caller informed of next steps via escalation path' },
+          c.urgency    && { t: 41, text: 'urgency flag raised — caller framing interpreted as time-sensitive' }
+        ].filter(Boolean);
+      },
+
+      observations: function (c) {
+        return cond([
+          [c.identity,   'AI identity was disclosed before eligibility data was exchanged. The source of the verification is on record.'],
+          [!c.identity,  'AI identity was not disclosed before information was exchanged. The caller may not know the eligibility data came from an automated system.'],
+          [c.auth,       'Eligibility status was confirmed. The verification workflow completed its primary function.'],
+          [!c.auth,      'Eligibility status was not confirmed. The call did not produce the information it was initiated to provide.'],
+          [c.human,      'A human reviewer engaged. Eligibility verification is typically AI-autonomous — human involvement signals an exception, discrepancy, or system limitation.'],
+          [c.documented, 'The verification result was documented before the call ended.'],
+          [!c.documented && c.auth, 'Verification completed but not documented. The result exists in the call record; it is not yet in the administrative system.'],
+          [c.escalation, 'An escalation path was communicated — this verification could not terminate here.'],
+          [c.urgency,    'Urgency was flagged on a verification call. Eligibility checks are typically not time-sensitive — this may indicate the caller framing was interpreted as urgent by the AI routing system.']
+        ]);
+      },
+
+      friction: function (c) {
+        return cond([
+          [!c.identity && c.auth,    'Eligibility data was provided without identity disclosure. The information reached the caller, but the interaction lacks the source attribution that makes it administratively defensible.'],
+          [!c.identity && !c.auth,   'Neither identity disclosure nor verification completion occurred. The call produced no valid output.'],
+          [c.auth && !c.documented,  'Verification completed but not documented. The confirmed status is not in the administrative system — downstream systems cannot act on a verbal confirmation.'],
+          [!c.auth && !c.escalation, 'Verification could not complete and no escalation path was offered. The caller has no way to resolve their eligibility question through this channel.'],
+          [c.human && !c.documented, 'Human reviewer engaged during a verification call but the interaction was not documented. The nature of the exception handled is not on record.']
+        ]);
+      },
+
+      oversight: function (c) {
+        return cond([
+          [c.human && c.auth,   'Human reviewer engaged and verification completed — likely indicates a dispute, an override, or a data anomaly that required human judgment to resolve.'],
+          [c.human && !c.auth,  'Human reviewer engaged but verification did not complete. The exception the AI surfaced was not resolved in this interaction.'],
+          [!c.human && c.auth,  'Verification completed without human involvement — the expected outcome for a routine eligibility lookup.'],
+          [!c.human && !c.auth, 'Verification did not complete and no human reviewer engaged. The caller's question remains unanswered with no path to resolution communicated.']
+        ]);
+      },
+
+      logging: function (c) {
+        return cond([
+          [c.documented && c.auth,   'Confirmed eligibility is documented. The administrative record reflects the verification outcome.'],
+          [c.documented && !c.auth,  'Unresolved eligibility status is logged. The open record should surface for follow-up handling.'],
+          [!c.documented && c.auth,  'Verification result is not in the system record — creates an auditability gap if the eligibility status is later questioned.'],
+          [!c.documented && !c.auth, 'No documentation and no confirmed eligibility. This call produced no retrievable record of outcome.']
+        ]);
+      },
+
+      risks: function (c) {
+        return cond([
+          [!c.identity && c.auth,     'Eligibility information provided by an undisclosed AI system — if contested, the source of the data cannot be identified from the caller\'s perspective.'],
+          [!c.auth && !c.escalation,  'Unresolved verification without an escalation path leaves the caller without options. If coverage decisions depend on this verification, delay risk increases.'],
+          [!c.documented,             'Undocumented verification outcome — no audit trail if the eligibility status is referenced in a claim, appeal, or dispute.'],
+          [c.urgency && !c.auth,      'Urgency was flagged but verification did not complete. If the caller\'s urgency framing was clinically accurate, this creates a time-sensitive gap.']
+        ]);
+      }
+    },
+
+    'handoff': {
+      label: 'Human Handoff / Escalation',
+
+      context: function (c) {
+        var base = 'The AI determined it could not complete this interaction autonomously and initiated a handoff to a human reviewer.';
+        if (c.human && c.escalation && c.documented) return base + ' The handoff completed with documentation in place and the caller informed — the structural requirements for a clean transfer were met.';
+        if (c.human && !c.escalation)                return base + ' A human reviewer engaged but the caller was not informed of the escalation path.';
+        if (!c.human && c.escalation)                return base + ' An escalation path was communicated to the caller, but no human reviewer connected — the transfer was announced but did not complete.';
+        if (!c.human)                                return base + ' The handoff did not complete. No human reviewer engaged and the case has no current owner.';
+        return base;
+      },
+
+      timeline: function (c) {
+        return [
+          { t: 0,  text: c.identity ? 'AI identity disclosed — call initiated' : 'call initiated (AI identity not disclosed)' },
+          { t: 9,  text: 'AI determined autonomous resolution not possible' },
+          { t: 17, text: 'handoff sequence initiated' },
+          c.urgency    && { t: 27, text: 'urgency communicated to routing queue' },
+          c.escalation && { t: 38, text: 'escalation path communicated to caller' },
+          !c.escalation && { t: 38, text: 'no escalation path communicated — caller not informed of next steps' },
+          c.human      && { t: 53, text: 'human reviewer joined call and accepted case' },
+          !c.human     && { t: 53, text: 'human reviewer did not connect — call remained in AI handling' },
+          c.auth       && { t: 61, text: 'authorization or eligibility status confirmed before transfer' },
+          c.documented && { t: 71, text: 'call context and handoff reason documented for incoming reviewer' }
+        ].filter(Boolean);
+      },
+
+      observations: function (c) {
+        return cond([
+          [c.human,      'A human reviewer engaged — the handoff reached its intended recipient.'],
+          [!c.human,     'No human reviewer engaged. The handoff was initiated but did not complete. The case is between AI and human handling with no current owner.'],
+          [c.escalation, 'The escalation path was communicated to the caller. The caller has continuity information and knows what to expect next.'],
+          [!c.escalation,'No escalation path was communicated to the caller. Even if the internal transfer completes, the caller is left without information about what happens next.'],
+          [c.documented, 'Call context was documented before close. The incoming human reviewer has a record of what the AI handled and what triggered the handoff.'],
+          [!c.documented,'No documentation. The human reviewer inherits this case without a record — they will need to reconstruct context.'],
+          [c.identity,   'AI identity was disclosed before the handoff — the caller is aware the prior interaction was with an automated system.'],
+          [!c.identity,  'AI identity was not disclosed before handoff. The caller may not know the interaction was AI-mediated.'],
+          [c.urgency,    'Urgency was flagged in the routing queue before transfer. The human reviewer should treat this as a prioritized intake.'],
+          [c.auth,       'Authorization or eligibility status was confirmed before handoff. This information carries forward with the case context.']
+        ]);
+      },
+
+      friction: function (c) {
+        return cond([
+          [!c.human && c.escalation,  'Escalation was communicated to the caller but no human reviewer connected. The caller expects follow-up that the system has not actually initiated.'],
+          [!c.human && !c.escalation, 'Handoff did not complete and caller was not informed. The caller has no information about what happens next and the case has no owner.'],
+          [c.human && !c.documented,  'Human reviewer engaged but case context was not documented. The reviewer must reconstruct what occurred, increasing re-work and continuity risk.'],
+          [c.human && !c.escalation,  'Internal handoff occurred but the caller was not told what happens next. Creates caller-experience friction even when the internal transfer is complete.'],
+          [!c.identity,               'AI identity not disclosed before handoff — the caller may not understand the transition from AI to human handling.'],
+          [!c.human && c.urgency,     'Urgency was flagged but no human reviewer connected. An urgent unresolved handoff is the highest-friction outcome in this scenario.']
+        ]);
+      },
+
+      oversight: function (c) {
+        return cond([
+          [c.human && c.escalation && c.documented, 'Human oversight was established with documentation and caller communication in place. The handoff transferred meaningful context to the reviewer.'],
+          [c.human && !c.documented,                'A human reviewer accepted the case but without documentation — oversight is present but incomplete. The reviewer\'s understanding of the case depends on verbal context from the call.'],
+          [!c.human && c.escalation,                'The escalation mechanism triggered (caller was informed) but human oversight was not actually established. This is a structural gap — declared escalation without actual transfer.'],
+          [!c.human,                                'Human oversight was not established. The AI initiated a handoff sequence that did not result in a human reviewer taking ownership of the case.']
+        ]);
+      },
+
+      logging: function (c) {
+        return cond([
+          [c.documented && c.human,   'Case context is documented and a human reviewer is on record as having accepted the case. The handoff is auditable.'],
+          [c.documented && !c.human,  'Documentation exists but no human reviewer is associated with the case. The record reflects a handoff attempt, not a completed handoff.'],
+          [!c.documented && c.human,  'Human reviewer engaged but no documentation was created. The fact of the transfer is not in the system record — creates an audit gap.'],
+          [!c.documented && !c.human, 'No documentation and no human reviewer engagement. This attempted handoff has no auditable record.']
+        ]);
+      },
+
+      risks: function (c) {
+        return cond([
+          [!c.human,                              'Case has no human owner after a handoff attempt — creates an ownership gap that may not be detected until the caller re-contacts or a deadline is missed.'],
+          [!c.human && c.escalation,              'Caller was told the case is escalated, but no human is handling it. Creates a trust and accountability risk if the caller follows up.'],
+          [!c.documented,                          'No documentation of handoff context — if the case requires appeal, dispute handling, or timeline reconstruction, there is no record of this interaction.'],
+          [!c.identity && !c.human,               'AI identity undisclosed and handoff incomplete — the caller may not know they spoke to an AI or that their case was not actually transferred.'],
+          [c.urgency && !c.human && !c.escalation,'Urgent case with failed handoff and no escalation path communicated — highest-risk pattern in this scenario.']
+        ]);
+      }
+    }
+
+  };
+
+  // ── Render ────────────────────────────────────────────────
+  var scenarioEl = document.getElementById('sim-scenario');
+  var runBtn     = document.getElementById('sim-run');
+  var emptyEl    = document.getElementById('sim-empty');
+  var outputEl   = document.getElementById('sim-output');
+
+  runBtn.addEventListener('click', function () {
+    var key = scenarioEl.value;
+    if (!key || !SCENARIOS[key]) { scenarioEl.focus(); return; }
+
+    var sc = SCENARIOS[key];
+    var c  = {};
+    document.querySelectorAll('input[name="b"]').forEach(function (b) { c[b.value] = b.checked; });
+
+    // Meta header
+    document.getElementById('out-title').textContent = sc.label;
+    var now = new Date();
+    document.getElementById('out-meta').textContent =
+      'Simulated session  ·  ' +
+      now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + '  ' +
+      now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) + '  ·  Synthetic data  ·  Illustrative only';
+
+    // Context
+    document.getElementById('out-context').textContent = sc.context(c);
+
+    // Timeline
+    var timelineEl = document.getElementById('out-timeline');
+    timelineEl.innerHTML = '';
+    var events = sc.timeline(c).sort(function (a, b) { return a.t - b.t; });
+    events.forEach(function (ev) {
+      var row = document.createElement('div');
+      row.className = 't-row';
+      row.innerHTML =
+        '<span class="t-time">' + fmt(ev.t) + '</span>' +
+        '<span class="t-dash">—</span>' +
+        '<span class="t-text">' + ev.text + '</span>';
+      timelineEl.appendChild(row);
+    });
+
+    // Populate list sections
+    function fillList(id, items, cls) {
+      var el = document.getElementById(id);
+      el.innerHTML = '';
+      if (!items.length) {
+        el.innerHTML = '<li style="list-style:none;padding-left:0"><span class="rpt-none">No significant items identified for this behavior combination.</span></li>';
+        return;
+      }
+      items.forEach(function (text) {
+        var li = document.createElement('li');
+        li.textContent = text;
+        el.appendChild(li);
+      });
+    }
+
+    fillList('out-observations', sc.observations(c));
+    fillList('out-friction',     sc.friction(c));
+    fillList('out-oversight',    sc.oversight(c));
+    fillList('out-logging',      sc.logging(c));
+    fillList('out-risks',        sc.risks(c));
+
+    // Show output
+    emptyEl.hidden  = true;
+    outputEl.hidden = false;
+    outputEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+})();
+</script>
 </body>
 </html>
