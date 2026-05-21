@@ -96,21 +96,44 @@
 <main>
   <section class="inner-hero">
     <div class="container">
-      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Governance Simulator</span></div>
-      <p class="eyebrow">Behavior Layer</p>
+      <div class="crumbs"><a href="/">Home</a> / Governance Simulator</div>
+
       <h1>Governance Simulator</h1>
-      <p class="lede">Interactive model of human oversight in administrative healthcare voice AI. Models disclosure, authorization, escalation, and audit logging behavior in payer–provider workflows. Synthetic data only — no PHI.</p>
+
+      <p class="lede">
+        Interactive model showing how administrative healthcare voice AI triggers human oversight and generates audit records in payer–provider workflows.
+      </p>
+
+      <p style="max-width:42rem;margin:1rem auto 2rem;font-size:1.05rem;opacity:0.9;">
+        Strictly B2B administrative workflows. Synthetic data only.
+      </p>
     </div>
   </section>
 
   <div class="sim-frame-wrap">
-    <iframe src="/simulator/index.html" style="width:100%;height:90vh;border:none;" title="NHID-Clinical Governance Simulator"></iframe>
+    <iframe src="/simulator/index.html" style="width:100%;height:92vh;border:none;" title="NHID-Clinical Governance Simulator" allowfullscreen></iframe>
   </div>
 
   <section class="page-section">
-    <div class="container sim-footer-links">
-      <a class="outline-link" href="/specification.html">← Specification</a>
-      <a class="outline-link" href="/for-payers.html">For Payers →</a>
+    <div class="container">
+      <details>
+        <summary><strong>What this simulator shows</strong></summary>
+        <ul style="margin-top:1rem">
+          <li>When human oversight is triggered</li>
+          <li>How overrides and safe-state actions work</li>
+          <li>How risk is reduced after human intervention</li>
+          <li>How audit records are automatically generated</li>
+        </ul>
+      </details>
+
+      <details style="margin-top:1.5rem">
+        <summary><strong>Scope &amp; Limitations</strong></summary>
+        <p style="margin-top:1rem">
+          This demonstrates oversight for administrative tasks only (eligibility, prior authorization routing, identity disclosure, PHI authorization).
+          It does <strong>not</strong> perform clinical triage, symptom assessment, diagnosis, or medical decision-making.
+        </p>
+        <p>This is a synthetic demonstration. Not legal advice.</p>
+      </details>
     </div>
   </section>
 </main>
