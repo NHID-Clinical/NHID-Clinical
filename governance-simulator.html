@@ -848,8 +848,8 @@
     fillList('out-logging',      sc.logging(c));
     fillList('out-risks',        sc.risks(c));
 
-    // Show output
-    emptyEl.hidden  = true;
+    // Show output (use style.display — the flex class overrides [hidden] in CSS)
+    emptyEl.style.display  = 'none';
     outputEl.hidden = false;
     outputEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
