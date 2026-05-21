@@ -12,9 +12,58 @@
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <style>
-    .sim-intro { max-width: 52rem; margin: 0 auto; padding: 2rem 0 1rem; }
-    .sim-frame-wrap { background: var(--bg-alt); border-top: 1px solid var(--line); }
-    .sim-footer-links { max-width: 52rem; margin: 0 auto; padding: 1.5rem 0 2rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    /* Layer 1 */
+    .sim-narrative { margin-bottom: 1.75rem; }
+    .sim-narrative h2 { color: var(--ink); font-size: 1.35rem; margin-bottom: .75rem; }
+    .sim-narrative p { color: var(--body); font-size: 1.05rem; line-height: 1.8; margin-top: .5rem; }
+
+    /* Layer 2 & 3 shared */
+    .sim-analysis, .sim-audit, .sim-interactive {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .sim-analysis summary, .sim-audit summary, .sim-interactive summary {
+      cursor: pointer;
+      padding: .9rem 1.25rem;
+      background: var(--bg-alt);
+      font-size: .95rem;
+      list-style: none;
+      user-select: none;
+    }
+    .sim-analysis summary::-webkit-details-marker,
+    .sim-audit summary::-webkit-details-marker,
+    .sim-interactive summary::-webkit-details-marker { display: none; }
+    .sim-analysis[open] summary, .sim-audit[open] summary, .sim-interactive[open] summary {
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Layer 2 content */
+    .sim-analysis .analysis-grid { padding: 1.25rem; display: grid; gap: .75rem; }
+    .sim-analysis .analysis-grid p { margin: 0; color: var(--body); font-size: .93rem; }
+    .sim-analysis .metrics {
+      display: flex; flex-wrap: wrap; gap: .5rem 1.5rem;
+      background: var(--bg-alt); border-radius: 6px; padding: .75rem 1rem;
+      font-size: .88rem; color: var(--body);
+    }
+
+    /* Layer 3 content */
+    .sim-audit > *:not(summary) { padding: 0 1.25rem; }
+    .sim-audit p { color: var(--body); font-size: .92rem; line-height: 1.7; margin: .6rem 0; }
+    .sim-audit .full-log {
+      background: var(--bg-alt); border-radius: 6px;
+      padding: .75rem 1rem; margin-bottom: 1.25rem;
+    }
+
+    /* Disclaimer */
+    .final-disclaimer {
+      margin-top: 2rem;
+      font-size: .82rem;
+      color: var(--ink-soft);
+      text-align: center;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -97,43 +146,57 @@
   <section class="inner-hero">
     <div class="container">
       <div class="crumbs"><a href="/">Home</a> / Governance Simulator</div>
-
       <h1>Governance Simulator</h1>
-
-      <p class="lede">
-        Interactive model showing how administrative healthcare voice AI triggers human oversight and generates audit records in payer–provider workflows.
-      </p>
-
-      <p style="max-width:42rem;margin:1rem auto 2rem;font-size:1.05rem;opacity:0.9;">
-        Strictly B2B administrative workflows. Synthetic data only.
-      </p>
+      <p class="lede">How administrative healthcare voice AI triggers human oversight in payer–provider workflows.</p>
     </div>
   </section>
 
-  <div class="sim-frame-wrap">
-    <iframe src="/simulator/index.html" style="width:100%;height:92vh;border:none;" title="NHID-Clinical Governance Simulator" allowfullscreen></iframe>
-  </div>
-
   <section class="page-section">
-    <div class="container">
-      <details>
-        <summary><strong>What this simulator shows</strong></summary>
-        <ul style="margin-top:1rem">
-          <li>When human oversight is triggered</li>
-          <li>How overrides and safe-state actions work</li>
-          <li>How risk is reduced after human intervention</li>
-          <li>How audit records are automatically generated</li>
-        </ul>
+    <div class="container" style="max-width:52rem">
+
+      <!-- Layer 1: Narrative only -->
+      <div class="sim-narrative">
+        <h2>Prior Authorization Urgency Conflict</h2>
+        <p>The AI voice agent tried to route an urgent prior authorization request into a standard 72-hour queue.</p>
+        <p>A payer compliance officer overrode the AI's decision and escalated the case for faster handling.</p>
+      </div>
+
+      <!-- Layer 2: Analysis (collapsed) -->
+      <details class="sim-analysis">
+        <summary><strong>View Analysis</strong></summary>
+        <div class="analysis-grid">
+          <p><strong>AI Proposed Action:</strong> Route to standard 72-hour queue</p>
+          <p><strong>Reason:</strong> Missing conservative-therapy attestation</p>
+          <div class="metrics">
+            <div>Autonomy Score: <strong>70</strong></div>
+            <div>Model Confidence: <strong>62%</strong></div>
+            <div>Harm Severity: <strong>65</strong></div>
+            <div>Administrative Urgency: <strong>78</strong></div>
+          </div>
+          <p><strong>Active Triggers:</strong> Urgent care risk under autonomous routing &bull; High autonomy at high harm severity</p>
+        </div>
       </details>
 
-      <details style="margin-top:1.5rem">
-        <summary><strong>Scope &amp; Limitations</strong></summary>
-        <p style="margin-top:1rem">
-          This demonstrates oversight for administrative tasks only (eligibility, prior authorization routing, identity disclosure, PHI authorization).
-          It does <strong>not</strong> perform clinical triage, symptom assessment, diagnosis, or medical decision-making.
-        </p>
-        <p>This is a synthetic demonstration. Not legal advice.</p>
+      <!-- Layer 3: Audit & Regulatory Log (collapsed) -->
+      <details class="sim-audit">
+        <summary><strong>View Audit &amp; Regulatory Log</strong></summary>
+        <p><strong>Oversight Posture:</strong> Human review required (Article 14)</p>
+        <p><strong>Residual Risk:</strong> High (63) &rarr; Low (28)</p>
+        <p><strong>Human Reviewer Decision:</strong> Override by payer compliance officer</p>
+        <div class="full-log">
+          <p style="color:var(--ink-soft);font-size:.88rem">Event ID &bull; Use period &bull; Model version &bull; Full log fields &bull; Article 12/19/72 mappings &bull; Retention class</p>
+        </div>
       </details>
+
+      <!-- Interactive simulator -->
+      <details class="sim-interactive" style="margin-top:2rem">
+        <summary><strong>Open Interactive Simulator</strong></summary>
+        <div style="margin-top:1rem">
+          <iframe src="/simulator/index.html" style="width:100%;height:88vh;border:none;border-radius:8px" title="NHID-Clinical Governance Simulator" allowfullscreen></iframe>
+        </div>
+      </details>
+
+      <p class="final-disclaimer">Synthetic data only. Strictly administrative workflows. Not legal advice.</p>
     </div>
   </section>
 </main>
