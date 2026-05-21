@@ -3,6 +3,58 @@
    Does NOT change logic, state, or feature scope.
 */
 
+/* ═══════════════════════════════════════════════════════════
+   3-LAYER INFORMATION ARCHITECTURE
+   Layer 1 = narrative (always visible)
+   Layer 2 = analysis  (toggle: View Analysis)
+   Layer 3 = audit/compliance (toggle: View Audit Log)
+   ═══════════════════════════════════════════════════════════ */
+
+/* Hide Layer 2 & 3 cards by default; only after classification runs */
+body[data-nhid-ready="1"] [data-nl="2"],
+body[data-nhid-ready="1"] [data-nl="3"] {
+  display: none !important;
+}
+
+/* Reveal Layer 2 when toggled open */
+body[data-nhid-ready="1"][data-nl2="1"] [data-nl="2"] {
+  display: block !important;
+}
+
+/* Reveal Layer 3 when toggled open */
+body[data-nhid-ready="1"][data-nl3="1"] [data-nl="3"] {
+  display: block !important;
+}
+
+/* ── Toggle button container ─────────────────────────────── */
+#nhid-controls {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin: 1.25rem 0 .5rem;
+  padding: 0 .25rem;
+}
+
+/* ── Toggle buttons ──────────────────────────────────────── */
+.nhid-toggle {
+  background: var(--nhid-paper);
+  border: 1.5px solid var(--nhid-line);
+  border-radius: 6px;
+  color: var(--nhid-navy);
+  cursor: pointer;
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  padding: .5rem 1rem;
+  transition: background .15s, border-color .15s;
+}
+
+.nhid-toggle:hover {
+  background: #eff6ff;
+  border-color: var(--nhid-blue);
+  color: var(--nhid-blue);
+}
+
 /* ── Brand tokens ─────────────────────────────────────────── */
 :root {
   --nhid-navy:   #0f2b4c;
