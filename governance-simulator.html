@@ -27,20 +27,22 @@
 
     .sim-wrap {
       display: grid;
-      grid-template-columns: 252px 1fr;
-      gap: 1.25rem;
+      grid-template-columns: 340px 1fr;
+      gap: 2rem;
       align-items: start;
+      max-width: 1280px;
+      margin: 0 auto;
     }
     @media (max-width: 780px) {
-      .sim-wrap { grid-template-columns: 1fr; }
+      .sim-wrap { grid-template-columns: 1fr; gap: 1.5rem; }
     }
 
     /* ── Controls (left) ─────────────────────────────────── */
     .sim-controls {
-      background: #fff;
-      border: 1px solid #d8dde5;
-      border-radius: 2px;
-      padding: 1rem 1.1rem 1.1rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1.5rem;
       position: sticky;
       top: 1rem;
     }
@@ -136,10 +138,12 @@
 
     /* ── Report panel (right) ────────────────────────────── */
     .sim-report {
-      background: #fff;
-      border: 1px solid #d8dde5;
-      border-radius: 2px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
       min-height: 280px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.05);
+      overflow: hidden;
     }
 
     .rpt-empty {
@@ -159,8 +163,8 @@
     /* Report header */
     .rpt-hdr {
       padding: .75rem 1.15rem;
-      background: #f7f8fa;
-      border-bottom: 1px solid #d8dde5;
+      background: var(--bg, #f7f8fa);
+      border-bottom: 1px solid var(--line);
     }
     .rpt-hdr h2 {
       margin: 0 0 .14rem;
@@ -257,12 +261,15 @@
 
     /* Footer disclaimer */
     .sim-disc {
-      margin-top: 1.1rem;
+      margin: 2rem auto 1rem;
+      max-width: 1280px;
       font-size: .69rem;
       color: #a8b5c2;
       line-height: 1.8;
-      border-top: 1px solid #edf0f4;
+      border-top: 1px solid var(--line);
       padding-top: .85rem;
+      text-align: center;
+      opacity: .85;
     }
   </style>
 </head>
@@ -347,7 +354,7 @@
     <div class="container">
       <div class="crumbs"><a href="/">Home</a> / Governance Simulator</div>
       <h1>Governance Simulator</h1>
-      <p class="lede">Operational prototype for administrative healthcare voice AI — payer–provider workflows, disclosure timing, escalation handling, and logging visibility.</p>
+      <p class="lede">Live simulation of human oversight in payer–provider administrative voice workflows.</p>
     </div>
   </section>
 
