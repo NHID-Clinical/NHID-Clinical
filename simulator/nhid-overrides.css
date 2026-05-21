@@ -1,0 +1,204 @@
+/* NHID-Clinical Governance Simulator — UI Polish Overrides
+   Targets: spacing, typography, mobile layout, branding alignment
+   Does NOT change logic, state, or feature scope.
+*/
+
+/* ── Brand tokens ─────────────────────────────────────────── */
+:root {
+  --nhid-navy:   #0f2b4c;
+  --nhid-blue:   #2563eb;
+  --nhid-teal:   #0d9488;
+  --nhid-bg:     #f8fafc;
+  --nhid-paper:  #ffffff;
+  --nhid-line:   #e2e8f0;
+  --nhid-body:   #374151;
+  --nhid-soft:   #6b7280;
+}
+
+/* ── Reset cramped body/root ──────────────────────────────── */
+body,
+#root {
+  background: var(--nhid-bg) !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+/* ── Page-level layout ────────────────────────────────────── */
+.min-h-screen {
+  padding: 1.5rem !important;
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+}
+
+/* ── Cards ────────────────────────────────────────────────── */
+.shadcn-card,
+[class*="rounded-xl"][class*="border"][class*="bg-card"] {
+  border-radius: 10px !important;
+  border-color: var(--nhid-line) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06) !important;
+  padding: 1.5rem !important;
+  background: var(--nhid-paper) !important;
+  margin-bottom: 1.25rem !important;
+}
+
+/* ── Card headers ─────────────────────────────────────────── */
+[class*="text-2xl"][class*="font-semibold"],
+[class*="text-xl"][class*="font-semibold"] {
+  color: var(--nhid-navy) !important;
+  letter-spacing: -.01em !important;
+  line-height: 1.3 !important;
+  margin-bottom: .5rem !important;
+}
+
+/* ── Muted subtitles ──────────────────────────────────────── */
+[class*="text-muted-foreground"] {
+  color: var(--nhid-soft) !important;
+  font-size: .88rem !important;
+  line-height: 1.65 !important;
+}
+
+/* ── Primary action buttons ───────────────────────────────── */
+button[class*="bg-primary"],
+button[class*="bg-blue"] {
+  background: var(--nhid-blue) !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  letter-spacing: .01em !important;
+}
+
+/* ── Risk / alert badges ──────────────────────────────────── */
+[class*="bg-destructive"],
+[class*="border-destructive"] {
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  color: #991b1b !important;
+}
+
+/* ── Section separators ───────────────────────────────────── */
+[class*="border-b"] {
+  border-color: var(--nhid-line) !important;
+  padding-bottom: .75rem !important;
+  margin-bottom: 1rem !important;
+}
+
+/* ── Sliders ──────────────────────────────────────────────── */
+[class*="bg-primary"][class*="absolute"][class*="h-full"] {
+  background: var(--nhid-blue) !important;
+}
+
+/* ── Select / dropdown triggers ──────────────────────────── */
+button[role="combobox"],
+[class*="SelectTrigger"] {
+  border-color: var(--nhid-line) !important;
+  border-radius: 6px !important;
+  background: var(--nhid-paper) !important;
+  font-size: .9rem !important;
+  min-height: 2.5rem !important;
+}
+
+/* ── Table / metadata rows ────────────────────────────────── */
+[class*="text-xs"][class*="font-medium"] {
+  text-transform: uppercase !important;
+  letter-spacing: .06em !important;
+  color: var(--nhid-soft) !important;
+  font-size: .72rem !important;
+}
+
+/* ── Tighten paragraph body text ─────────────────────────── */
+p, li {
+  color: var(--nhid-body) !important;
+  line-height: 1.7 !important;
+}
+
+/* ── Toast notifications ──────────────────────────────────── */
+[class*="ToastViewport"] {
+  bottom: 1rem !important;
+  right: 1rem !important;
+  left: auto !important;
+  max-width: 340px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE  (≤ 767px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  .min-h-screen {
+    padding: 1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Force all flex rows to stack vertically */
+  .min-h-screen > div,
+  [class*="flex"][class*="gap"],
+  [class*="grid"][class*="col"] {
+    flex-direction: column !important;
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Full-width cards on mobile */
+  .shadcn-card,
+  [class*="rounded-xl"][class*="border"][class*="bg-card"] {
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+    padding: 1.1rem !important;
+  }
+
+  /* Prevent any horizontal overflow */
+  * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Bigger touch targets for buttons */
+  button {
+    min-height: 2.75rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Larger select triggers on touch */
+  button[role="combobox"] {
+    min-height: 3rem !important;
+    font-size: 1rem !important;
+  }
+
+  /* Headings more readable on small screens */
+  [class*="text-2xl"] {
+    font-size: 1.25rem !important;
+  }
+
+  [class*="text-xl"] {
+    font-size: 1.1rem !important;
+  }
+
+  /* Sliders: bigger drag handle */
+  [class*="SliderThumb"] {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+
+  /* Toast: full-width on mobile */
+  [class*="ToastViewport"] {
+    left: 1rem !important;
+    right: 1rem !important;
+    max-width: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TABLET  (768px – 1023px)
+   ═══════════════════════════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .min-h-screen {
+    padding: 1.25rem !important;
+  }
+
+  .shadcn-card,
+  [class*="rounded-xl"][class*="border"][class*="bg-card"] {
+    padding: 1.35rem !important;
+  }
+}
