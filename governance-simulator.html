@@ -55,6 +55,10 @@
       background: var(--bg-alt); border-radius: 6px;
       padding: .75rem 1rem; margin-bottom: 1.25rem;
     }
+    .sim-audit .full-log ul {
+      margin: 0; padding: 0 0 0 1.1rem;
+      color: var(--ink-soft); font-size: .88rem; line-height: 1.8;
+    }
 
     /* Disclaimer */
     .final-disclaimer {
@@ -153,53 +157,121 @@
 
   <section class="page-section">
     <div class="container" style="max-width:52rem">
-
-      <!-- Layer 1: Narrative only -->
-      <div class="sim-narrative">
-        <h2>Prior Authorization Urgency Conflict</h2>
-        <p>The AI voice agent tried to route an urgent prior authorization request into a standard 72-hour queue.</p>
-        <p>A payer compliance officer overrode the AI's decision and escalated the case for faster handling.</p>
-      </div>
-
-      <!-- Layer 2: Analysis (collapsed) -->
-      <details class="sim-analysis">
-        <summary><strong>View Analysis</strong></summary>
-        <div class="analysis-grid">
-          <p><strong>AI Proposed Action:</strong> Route to standard 72-hour queue</p>
-          <p><strong>Reason:</strong> Missing conservative-therapy attestation</p>
-          <div class="metrics">
-            <div>Autonomy Score: <strong>70</strong></div>
-            <div>Model Confidence: <strong>62%</strong></div>
-            <div>Harm Severity: <strong>65</strong></div>
-            <div>Administrative Urgency: <strong>78</strong></div>
-          </div>
-          <p><strong>Active Triggers:</strong> Urgent care risk under autonomous routing &bull; High autonomy at high harm severity</p>
-        </div>
-      </details>
-
-      <!-- Layer 3: Audit & Regulatory Log (collapsed) -->
-      <details class="sim-audit">
-        <summary><strong>View Audit &amp; Regulatory Log</strong></summary>
-        <p><strong>Oversight Posture:</strong> Human review required (Article 14)</p>
-        <p><strong>Residual Risk:</strong> High (63) &rarr; Low (28)</p>
-        <p><strong>Human Reviewer Decision:</strong> Override by payer compliance officer</p>
-        <div class="full-log">
-          <p style="color:var(--ink-soft);font-size:.88rem">Event ID &bull; Use period &bull; Model version &bull; Full log fields &bull; Article 12/19/72 mappings &bull; Retention class</p>
-        </div>
-      </details>
-
-      <!-- Interactive simulator -->
+      <div id="sim-mount"></div>
       <details class="sim-interactive" style="margin-top:2rem">
         <summary><strong>Open Interactive Simulator</strong></summary>
         <div style="margin-top:1rem">
           <iframe src="/simulator/index.html" style="width:100%;height:88vh;border:none;border-radius:8px" title="NHID-Clinical Governance Simulator" allowfullscreen></iframe>
         </div>
       </details>
-
       <p class="final-disclaimer">Synthetic data only. Strictly administrative workflows. Not legal advice.</p>
     </div>
   </section>
 </main>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── SimulationEvent schema ────────────────────────────────
+  // All displayable content lives here. Rendering is purely
+  // presentational — no classification, no DOM scraping.
+  var SimulationEvent = {
+    narrative: {
+      scenarioTitle: 'Prior Authorization Urgency Conflict',
+      event: 'The AI voice agent tried to route an urgent prior authorization request into a standard 72-hour queue.',
+      outcome: 'A payer compliance officer overrode the AI’s decision and escalated the case for faster handling.'
+    },
+    analysis: {
+      aiProposedAction: 'Route to standard 72-hour queue',
+      reason: 'Missing conservative-therapy attestation',
+      metrics: {
+        'Autonomy Score': '70',
+        'Model Confidence': '62%',
+        'Harm Severity': '65',
+        'Administrative Urgency': '78'
+      },
+      triggers: [
+        'Urgent care risk under autonomous routing',
+        'High autonomy at high harm severity'
+      ]
+    },
+    audit: {
+      oversightPosture: 'Human review required (Article 14)',
+      residualRisk: { pre: 63, post: 28 },
+      reviewerDecision: 'Override by payer compliance officer',
+      logFields: [
+        'Event ID',
+        'Use period',
+        'Model version',
+        'Article 12 / 19 / 72 mappings',
+        'Retention class'
+      ]
+    }
+  };
+
+  // ── Renderer ──────────────────────────────────────────────
+  function renderSimulationEvent(ev) {
+    var n = ev.narrative;
+    var a = ev.analysis;
+    var u = ev.audit;
+
+    // Layer 1 — always visible
+    var narrativeHTML =
+      '<div class="sim-narrative">' +
+        '<h2>' + esc(n.scenarioTitle) + '</h2>' +
+        '<p>' + esc(n.event) + '</p>' +
+        '<p>' + esc(n.outcome) + '</p>' +
+      '</div>';
+
+    // Layer 2 — analysis (collapsed by default)
+    var metricsHTML = Object.keys(a.metrics).map(function (k) {
+      return '<div>' + esc(k) + ': <strong>' + esc(a.metrics[k]) + '</strong></div>';
+    }).join('');
+
+    var triggersHTML = a.triggers.map(esc).join(' &bull; ');
+
+    var analysisHTML =
+      '<details class="sim-analysis">' +
+        '<summary><strong>View Analysis</strong></summary>' +
+        '<div class="analysis-grid">' +
+          '<p><strong>AI Proposed Action:</strong> ' + esc(a.aiProposedAction) + '</p>' +
+          '<p><strong>Reason:</strong> ' + esc(a.reason) + '</p>' +
+          '<div class="metrics">' + metricsHTML + '</div>' +
+          '<p><strong>Active Triggers:</strong> ' + triggersHTML + '</p>' +
+        '</div>' +
+      '</details>';
+
+    // Layer 3 — audit & regulatory log (collapsed by default)
+    var logItemsHTML = '<ul>' + u.logFields.map(function (f) {
+      return '<li>' + esc(f) + '</li>';
+    }).join('') + '</ul>';
+
+    var auditHTML =
+      '<details class="sim-audit">' +
+        '<summary><strong>View Audit &amp; Regulatory Log</strong></summary>' +
+        '<p><strong>Oversight Posture:</strong> ' + esc(u.oversightPosture) + '</p>' +
+        '<p><strong>Residual Risk:</strong> High (' + u.residualRisk.pre + ') &rarr; Low (' + u.residualRisk.post + ')</p>' +
+        '<p><strong>Human Reviewer Decision:</strong> ' + esc(u.reviewerDecision) + '</p>' +
+        '<div class="full-log">' + logItemsHTML + '</div>' +
+      '</details>';
+
+    return narrativeHTML + analysisHTML + auditHTML;
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── Mount ─────────────────────────────────────────────────
+  var mount = document.getElementById('sim-mount');
+  if (mount) mount.innerHTML = renderSimulationEvent(SimulationEvent);
+})();
+</script>
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
