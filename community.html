@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="Join the NHID-Clinical community on Discord and Reddit. Help define what acceptable healthcare AI voice calls look like."/>
+  <title>Community | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+</div>
+
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+                <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/script-examples.html">Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/governance-simulator.html">Governance Simulator</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/for-payers.html">For Payers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/script-examples.html">Examples</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Community</span></div>
+      <p class="eyebrow">Community</p>
+      <h1>Help define this proposal.</h1>
+      <p class="lede">NHID-Clinical is an early open proposal. Your real-world experience — from payer operations, provider workflows, and AI platform deployment — makes it better.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">Join the conversation</p>
+      <h2>Where the community lives</h2>
+      <div class="community-grid">
+
+        <div class="community-card">
+          <h3>
+            <svg style="flex-shrink:0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 71 55" fill="#5865F2"><path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a.2.2 0 0 0-.2.1 40.8 40.8 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0A37.7 37.7 0 0 0 25.6.8a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 10.9 4.9a.2.2 0 0 0-.1.1C1.6 18.6-.9 31.9.3 45a.2.2 0 0 0 .1.2 58.8 58.8 0 0 0 17.7 9 .2.2 0 0 0 .2-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.8a.2.2 0 0 1 .2 0c11.5 5.3 24 5.3 35.4 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.1 36.1 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .2.1 58.6 58.6 0 0 0 17.7-9 .2.2 0 0 0 .1-.2c1.5-15.3-2.5-28.5-10.6-40.2a.2.2 0 0 0-.1-.1ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.3 6.4 7.2 0 4-2.8 7.2-6.4 7.2Zm23.7 0c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.3 6.4 7.2 0 4-2.8 7.2-6.4 7.2Z"/></svg>
+            Discord
+          </h3>
+          <p>Real-time discussion for implementers, payer operations staff, and healthcare AI practitioners. Ask questions, share implementation experience, and get feedback on edge cases.</p>
+          <a class="btn-primary" href="https://discord.gg/3Z2RqbjuDd" target="_blank" rel="noopener noreferrer" style="font-size:.9rem">Join Discord →</a>
+        </div>
+
+        <div class="community-card">
+          <h3>
+            <svg style="flex-shrink:0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 20 20" fill="#FF4500"><circle cx="10" cy="10" r="10"/><path d="M16.7 10a1.5 1.5 0 0 0-2.5-1.1 7.3 7.3 0 0 0-3.9-1.2l.7-3 2.2.5a1 1 0 1 0 .1-.5l-2.5-.6a.3.3 0 0 0-.3.2l-.7 3.4a7.3 7.3 0 0 0-3.9 1.2 1.5 1.5 0 1 0-1.6 2.4 3 3 0 0 0 0 .4c0 2 2.3 3.6 5.2 3.6s5.2-1.6 5.2-3.6a3 3 0 0 0 0-.4 1.5 1.5 0 0 0 .9-1.4ZM7.5 11a1 1 0 1 1 1 1 1 1 0 0 1-1-1Zm5.6 2.6a3.5 3.5 0 0 1-3.1.9 3.5 3.5 0 0 1-3.1-.9.2.2 0 0 1 .3-.3 3 3 0 0 0 2.8.7 3 3 0 0 0 2.8-.7.2.2 0 0 1 .3.3Zm-.2-1.6a1 1 0 1 1 1-1 1 1 0 0 1-1 1Z" fill="white"/></svg>
+            Reddit — r/NonHumanAuth
+          </h3>
+          <p>Longer-form discussion, proposal feedback, and case studies. Share payer-side experiences, post implementation questions, and help evolve this proposal through community input.</p>
+          <a class="cta-button" href="https://reddit.com/r/NonHumanAuth" target="_blank" rel="noopener noreferrer" style="font-size:.875rem;min-height:2.8rem;margin-top:.5rem">Join r/NonHumanAuth →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section-alt">
+    <div class="container">
+      <p class="section-kicker">How to contribute</p>
+      <h2>What we're looking for</h2>
+      <div class="content-cards" style="margin-top:2rem">
+        <div class="content-card">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">💬</div>
+          <h3>Technical feedback</h3>
+          <p>Implementation feasibility, edge cases in the proposed requirements, gaps in coverage, and interoperability concerns.</p>
+        </div>
+        <div class="content-card">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">🏥</div>
+          <h3>Real-world experience</h3>
+          <p>Payer-side call handling patterns, AI caller behaviors you've encountered, and operational gaps this proposal doesn't yet address.</p>
+        </div>
+        <div class="content-card">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">⚖️</div>
+          <h3>Regulatory context</h3>
+          <p>HIPAA officer feedback, payer operations input, and legal or regulatory analysis of this proposal's positioning and scope.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">Contact</p>
+      <h2>Reach us directly</h2>
+      <div class="community-grid">
+        <div class="community-card">
+          <h3>General questions</h3>
+          <p>For questions about this proposal, its scope, or how to interpret specific requirements.</p>
+          <a class="outline-link" href="mailto:help@nhid-clinical.org" style="margin-top:.5rem;display:inline-block">help@nhid-clinical.org →</a>
+        </div>
+        <div class="community-card">
+          <h3>Feedback &amp; suggestions</h3>
+          <p>Responses to the proposal, edge cases we haven't addressed, and suggestions for future iterations.</p>
+          <a class="outline-link" href="mailto:help@nhid-clinical.org" style="margin-top:.5rem;display:inline-block">help@nhid-clinical.org →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:help@nhid-clinical.org">Help</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | help@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>
