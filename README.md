@@ -1,32 +1,3 @@
-<<<<<<< HEAD
-# nhid-proxy
-
-Minimal scaffold: `app.py`, `llm.py`, `twilio_helper.py`, `nhid_engine.py`.
-
-Setup
-
-1. Create a virtualenv and install dependencies:
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate  # PowerShell/Windows
-pip install -r requirements.txt
-```
-
-2. Populate `.env` (already added) with `OPENAI_API_KEY` and optionally Twilio creds.
-
-Run
-
-```bash
-$env:FLASK_APP = "app.py"
-flask run
-```
-
-Endpoints
-
-- `POST /generate` JSON body `{ "prompt": "..." }` -> returns LLM reply
-- `POST /sms` Twilio webhook for incoming SMS
-=======
 # NHID-Clinical v1.3
 
 **Compliance and Audit Framework for Healthcare Voice AI**
@@ -688,4 +659,3 @@ Special thanks to the healthcare IT community for feedback during early drafts, 
 **Built with ❤️ by someone who spent too many hours asking "Wait, am I talking to a robot?"**
 
 *Let's make healthcare AI transparent, trustworthy, and a little less frustrating.*
->>>>>>> 5ed69e1d37cfff50aebca3d0e42b6dec2482cef4
