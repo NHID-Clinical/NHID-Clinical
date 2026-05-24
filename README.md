@@ -597,8 +597,7 @@ This is an **open standard**—your input makes it better.
 **How to participate:**
 1. 🗣️ [Open a GitHub Discussion](https://github.com/thankcheeses/NHID-Clinical/discussions) for questions
 2. 🐛 [File an Issue](https://github.com/thankcheeses/NHID-Clinical/issues) for specific problems
-3. 📧 General questions: [help@nhid-clinical.org](mailto:help@nhid-clinical.org)
-4. 📧 Validation & certification: [validation@nhid-clinical.org](mailto:validation@nhid-clinical.org)
+3. 📧 General questions: [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
 ---
 

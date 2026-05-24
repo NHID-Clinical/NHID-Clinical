@@ -93,18 +93,6 @@
       excerpt: 'L1 Baseline (self-attestation, free), L2 Operational (30+ days production evidence), L3 Enterprise (independent audit).'
     },
     {
-      title: 'Pilot Validation',
-      url: '/validation.html',
-      keywords: 'validation pilot program apply submit free cost certification voice agent healthcare platform request tier',
-      excerpt: 'First validations offered at no cost. Submit your AI voice agent for pilot validation.'
-    },
-    {
-      title: 'Request Validation',
-      url: '/validation/request.html',
-      keywords: 'request form submit validation company contact email tier description notes apply',
-      excerpt: 'Submit your AI voice agent for NHID-Clinical pilot validation. Share system details and target level.'
-    },
-    {
       title: 'Download Specifications',
       url: '/specs/',
       keywords: 'download spec pdf nhid-clinical v1.3 nhid-auth v1.0 specification cc by 4.0 open fhir auditevent authorization attestation',
@@ -114,7 +102,7 @@
       title: 'News & Announcements',
       url: '/news.html',
       keywords: 'news release v1.3 nhid-auth community discord reddit nist 2025-0035 program open pilot announcement',
-      excerpt: 'Specification releases, validation program updates, and community milestones.'
+      excerpt: 'Specification releases, proposal updates, and community milestones.'
     },
     {
       title: 'Community',
