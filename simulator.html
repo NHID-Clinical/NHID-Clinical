@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Policy Engine Playground — run deterministic disclosure policy traces, test canonical scenarios, and verify replay reproducibility."/>
+  <title>Policy Engine Playground | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <style>
+    /* ── Playground layout ─────────────────────────────────────────────── */
+    .pg-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .pg-grid { grid-template-columns: 1fr; }
+    }
+    .pg-panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+    }
+    .pg-panel-head {
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border);
+      padding: .55rem 1rem;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: .03em;
+    }
+    .pg-panel-body {
+      padding: 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+    textarea.pg-code, pre.pg-code {
+      font-family: 'Courier New', monospace;
+      font-size: .8rem;
+      line-height: 1.55;
+      width: 100%;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .75rem;
+      color: var(--body);
+      resize: vertical;
+      flex: 1;
+    }
+    pre.pg-code {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-x: auto;
+      margin: 0;
+      min-height: 200px;
+    }
+    .pg-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      align-items: center;
+    }
+    .pg-btn {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: .4rem .85rem;
+      border-radius: 5px;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .pg-btn:hover { opacity: .88; }
+    .pg-btn.secondary {
+      background: var(--bg-alt);
+      color: var(--ink);
+      border: 1px solid var(--border);
+    }
+    .pg-select {
+      font-size: .8rem;
+      font-family: inherit;
+      padding: .3rem .5rem;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: var(--bg-alt);
+      color: var(--ink);
+    }
+    .pg-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: .2rem .55rem;
+      border-radius: 999px;
+    }
+    .badge-pass  { background: #dcfce7; color: #15803d; }
+    .badge-fail  { background: #fee2e2; color: #b91c1c; }
+    .badge-info  { background: #eff6ff; color: #1d4ed8; }
+    .badge-wait  { background: var(--bg-alt); color: var(--ink-soft); }
+    .pg-latency  { font-size: .75rem; color: var(--ink-soft); }
+    .pg-footer-row {
+      margin-top: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      align-items: center;
+      font-size: .82rem;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+</div>
+
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/script-examples.html">Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/for-payers.html">For Payers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/specification.html">Spec</a>
+      <a href="/developers.html">Developers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/script-examples.html">Examples</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/specification.html">Spec</a>
+  <a href="/developers.html">Developers</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/developers.html">Developers</a><span>/</span><span>Simulator</span></div>
+      <p class="eyebrow">Experimental Tool · Client-side only · No server required</p>
+      <h1>Policy Engine Playground</h1>
+      <p class="lede">Test NHID-Clinical v1.3 disclosure rules against example event inputs. The engine runs entirely in your browser — output is deterministic: identical input always produces identical trace output.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+
+      <div class="hero-notice" role="note" style="margin-bottom:1.5rem;max-width:52rem">
+        <strong>Experimental demo.</strong> This is a client-side JavaScript mock of the <a href="/developers.html" style="color:var(--blue)">Python policy engine</a>. It demonstrates the disclosure rule logic interactively. It is not the production implementation — for authoritative conformance testing use <code style="font-size:.82rem">tests/failure_injection_harness.py</code>.
+      </div>
+
+      <!-- ── Three-panel playground ──────────────────────────────────────── -->
+      <div class="pg-grid">
+
+        <!-- Panel 1: Policy rules -->
+        <div class="pg-panel">
+          <div class="pg-panel-head">Policy rules — v1.3 (read-only)</div>
+          <div class="pg-panel-body">
+            <textarea class="pg-code" id="policyRules" rows="10" readonly aria-label="Policy rules">{
+  "version": "1.3",
+  "rules": {
+    "disclosure_required": true,
+    "disclosure_timing": "before_substantive_work",
+    "phi_gate_on_undisclosed": true,
+    "deceptive_artifacts_blocked": true,
+    "escalation_path_required": true,
+    "audit_fields_required": true,
+    "replay_deterministic": true
+  }
+}</textarea>
+            <p style="font-size:.78rem;color:var(--ink-soft);margin:0">Reflects NHID-Clinical v1.3 core rules. See <a href="/specification.html" style="color:var(--blue)">Spec</a> for full definitions.</p>
+          </div>
+        </div>
+
+        <!-- Panel 2: Input event -->
+        <div class="pg-panel">
+          <div class="pg-panel-head">Input event (editable JSON)</div>
+          <div class="pg-panel-body">
+            <textarea class="pg-code" id="inputEvent" rows="14" aria-label="Input event JSON">{
+  "correlation_id": "auth-2026-05-27-001",
+  "call_start": "2026-05-27T10:00:00Z",
+  "agent_statements": [
+    {
+      "text": "Hello, this is an automated agent calling about prior authorization.",
+      "timestamp": 0.123
+    },
+    {
+      "text": "I need to check eligibility.",
+      "timestamp": 0.456
+    }
+  ],
+  "opt_out_requested": false
+}</textarea>
+            <div class="pg-toolbar">
+              <button class="pg-btn" id="runBtn" type="button">▶ Run</button>
+              <button class="pg-btn secondary" id="copyBtn" type="button">Copy trace</button>
+              <select class="pg-select" id="canonicalSelect" aria-label="Load canonical trace">
+                <option value="">Load example…</option>
+                <option value="eligibility">Eligibility check</option>
+                <option value="prior_auth">Prior auth</option>
+                <option value="claims_status">Claims status</option>
+                <option value="late_disclosure">Late disclosure (IDG-01 fail)</option>
+                <option value="escalation">Escalation requested</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Output trace -->
+        <div class="pg-panel">
+          <div class="pg-panel-head">Output trace (deterministic)</div>
+          <div class="pg-panel-body">
+            <pre class="pg-code" id="outputTrace" aria-live="polite">{"status":"ready","message":"Click Run to generate trace"}</pre>
+            <div class="pg-toolbar">
+              <span class="pg-badge badge-wait" id="deterministicBadge">waiting</span>
+              <span class="pg-latency" id="latencyLabel"></span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /pg-grid -->
+
+      <!-- ── Footer row ──────────────────────────────────────────────────── -->
+      <div class="pg-footer-row">
+        <span class="pg-badge badge-pass">✓ Deterministic engine</span>
+        <span>Identical input → identical trace output</span>
+        <span>·</span>
+        <span>Pure function, no side effects, no network calls</span>
+        <span>·</span>
+        <a href="/developers.html" style="color:var(--blue)">Full technical reference →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Production implementation</p>
+        <h2>Need the real policy engine?</h2>
+        <p>The authoritative Python implementation is in <code>src/nhid_policy_engine_v1.py</code>. Clone the repo and run the test harness.</p>
+      </div>
+      <a class="closing-button" href="/developers.html">Developers →</a>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ── Deterministic hash (FNV-1a 32-bit) ──────────────────────────────── */
+  function fnv32(str) {
+    var h = 0x811c9dc5;
+    for (var i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = (h * 0x01000193) >>> 0;
+    }
+    return ('00000000' + h.toString(16)).slice(-8);
+  }
+
+  /* ── Canonical example inputs ─────────────────────────────────────────── */
+  var EXAMPLES = {
+    eligibility: '{\n  "correlation_id": "elig-101",\n  "call_start": "2026-05-27T09:00:00Z",\n  "agent_statements": [\n    {"text": "Automated agent calling for eligibility check.", "timestamp": 0.05},\n    {"text": "Please provide subscriber ID.", "timestamp": 0.5}\n  ],\n  "opt_out_requested": false\n}',
+    prior_auth:  '{\n  "correlation_id": "pa-205",\n  "call_start": "2026-05-27T09:15:00Z",\n  "agent_statements": [\n    {"text": "Hello, this is an automated system for prior authorization.", "timestamp": 0.08},\n    {"text": "I need to submit a request.", "timestamp": 0.6}\n  ],\n  "opt_out_requested": false\n}',
+    claims_status: '{\n  "correlation_id": "cs-309",\n  "call_start": "2026-05-27T09:30:00Z",\n  "agent_statements": [\n    {"text": "Claims status inquiry from automated agent.", "timestamp": 0.02}\n  ],\n  "opt_out_requested": true\n}',
+    late_disclosure: '{\n  "correlation_id": "late-001",\n  "call_start": "2026-05-27T10:00:00Z",\n  "agent_statements": [\n    {"text": "Hi there, I am calling about claim number 8842.", "timestamp": 0.05},\n    {"text": "Actually I should mention I am an automated system.", "timestamp": 4.2}\n  ],\n  "opt_out_requested": false\n}',
+    escalation: '{\n  "correlation_id": "esc-512",\n  "call_start": "2026-05-27T11:00:00Z",\n  "agent_statements": [\n    {"text": "This is an automated agent calling about authorization.", "timestamp": 0.1},\n    {"text": "I need to speak with a human please.", "timestamp": 3.0}\n  ],\n  "opt_out_requested": true\n}'
+  };
+
+  /* ── Policy engine (deterministic mock) ──────────────────────────────── */
+  function runPolicyEngine(inputJson) {
+    var input = JSON.parse(inputJson);
+    var stmts = input.agent_statements || [];
+
+    /* IDG-01: check disclosure before substantive work */
+    var DISCLOSURE_KEYWORDS = ['automated', 'agent', 'system', 'bot', 'ai', 'virtual'];
+    var disclosureIdx = -1;
+    for (var i = 0; i < stmts.length; i++) {
+      var lower = stmts[i].text.toLowerCase();
+      if (DISCLOSURE_KEYWORDS.some(function (k) { return lower.indexOf(k) !== -1; })) {
+        disclosureIdx = i;
+        break;
+      }
+    }
+
+    var disclosed = disclosureIdx !== -1;
+    var disclosureTs = disclosed ? stmts[disclosureIdx].timestamp : null;
+    var firstWorkTs  = stmts.length > 0 ? stmts[0].timestamp : null;
+    var lateDisclosure = disclosed && disclosureTs > 1.0;
+
+    /* EIT-01: escalation requested */
+    var ESCALATION_KEYWORDS = ['human', 'person', 'representative', 'agent', 'transfer'];
+    var escalationRequested = stmts.some(function (s) {
+      var t = s.text.toLowerCase();
+      return ESCALATION_KEYWORDS.some(function (k) { return t.indexOf(k) !== -1; });
+    }) || input.opt_out_requested;
+
+    /* Build violations */
+    var violations = [];
+    if (!disclosed)      violations.push({rule: 'IDG-01', severity: 'critical', detail: 'No disclosure statement found'});
+    if (lateDisclosure)  violations.push({rule: 'IDG-01', severity: 'critical', detail: 'Disclosure after t=' + disclosureTs + 's exceeds threshold'});
+
+    /* Build event stream */
+    var events = [
+      {type: 'INGEST',   timestamp: firstWorkTs || 0, detail: 'POST /voice/process received'}
+    ];
+    if (disclosed) {
+      events.push({type: 'VALIDATE', timestamp: disclosureTs, detail: 'Disclosure confirmed: "' + stmts[disclosureIdx].text.slice(0, 60) + '"'});
+    } else {
+      events.push({type: 'VALIDATE', timestamp: firstWorkTs || 0, detail: 'IDG-01 FAIL — no disclosure statement detected'});
+    }
+    events.push({type: 'POLICY',   timestamp: (firstWorkTs || 0) + 0.02, detail: disclosed && !lateDisclosure ? 'IDG-01 PASS' : 'IDG-01 FAIL — policy action: ' + (disclosed ? 'DISCLOSE_IDENTITY (late)' : 'DISCLOSE_IDENTITY')});
+    if (escalationRequested) {
+      events.push({type: 'POLICY', timestamp: (firstWorkTs || 0) + 0.03, detail: 'EIT-01: escalation requested — checking path availability'});
+    }
+    events.push({type: 'EXEC',    timestamp: (firstWorkTs || 0) + 0.05, detail: violations.length ? 'TwiML fallback rendered' : 'Normal response rendered'});
+    events.push({type: 'PERSIST', timestamp: (firstWorkTs || 0) + 0.07, detail: violations.length + ' violation(s) written to event store'});
+
+    /* Policy decision */
+    var action = 'CONTINUE_AI';
+    if (!disclosed || lateDisclosure) action = 'DISCLOSE_IDENTITY';
+
+    /* Deterministic hash — based solely on the canonical input, not wall clock */
+    var inputHash = fnv32(JSON.stringify(input));
+
+    return {
+      trace_id:           'sim_' + inputHash,
+      correlation_id:     input.correlation_id,
+      policy_version:     '1.3',
+      deterministic_hash: inputHash,
+      compliance: {
+        disclosure_made:    disclosed && !lateDisclosure,
+        disclosure_timing:  disclosed ? (lateDisclosure ? 'late' : 'on_time') : 'none',
+        opt_out_supported:  true,
+        escalation_requested: escalationRequested
+      },
+      policy_decision: {
+        action:      action,
+        reason_code: !disclosed ? 'IDG01_DISCLOSURE_MISSING' : (lateDisclosure ? 'IDG01_DISCLOSURE_LATE' : 'IDG01_PASS'),
+        violations:  violations
+      },
+      event_stream: events
+    };
+  }
+
+  /* ── UI wiring ────────────────────────────────────────────────────────── */
+  var lastHash = null;
+
+  function run() {
+    var t0 = performance.now();
+    var inputText = document.getElementById('inputEvent').value;
+    var output, badge, badgeClass;
+
+    try {
+      output = runPolicyEngine(inputText);
+      var json = JSON.stringify(output, null, 2);
+      document.getElementById('outputTrace').textContent = json;
+
+      var newHash = output.deterministic_hash;
+      if (lastHash !== null && lastHash === newHash) {
+        badge = '✓ Deterministic: identical to previous run';
+        badgeClass = 'pg-badge badge-pass';
+      } else if (lastHash !== null) {
+        badge = '⚡ Deterministic: new trace (input changed)';
+        badgeClass = 'pg-badge badge-info';
+      } else {
+        badge = output.policy_decision.violations.length === 0 ? '✓ PASS — no violations' : '⚠ ' + output.policy_decision.violations.length + ' violation(s)';
+        badgeClass = output.policy_decision.violations.length === 0 ? 'pg-badge badge-pass' : 'pg-badge badge-fail';
+      }
+      lastHash = newHash;
+    } catch (e) {
+      document.getElementById('outputTrace').textContent = 'ERROR: ' + e.message + '\n\nCheck that the input is valid JSON.';
+      badge = '✗ Invalid input JSON';
+      badgeClass = 'pg-badge badge-fail';
+      lastHash = null;
+    }
+
+    var el = document.getElementById('deterministicBadge');
+    el.textContent = badge;
+    el.className = badgeClass;
+    document.getElementById('latencyLabel').textContent = (performance.now() - t0).toFixed(2) + ' ms';
+  }
+
+  function copyTrace() {
+    var text = document.getElementById('outputTrace').textContent;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () {
+        var btn = document.getElementById('copyBtn');
+        var orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(function () { btn.textContent = orig; }, 1500);
+      });
+    }
+  }
+
+  document.getElementById('runBtn').addEventListener('click', run);
+  document.getElementById('copyBtn').addEventListener('click', copyTrace);
+  document.getElementById('canonicalSelect').addEventListener('change', function (e) {
+    var key = e.target.value;
+    if (key && EXAMPLES[key]) {
+      document.getElementById('inputEvent').value = EXAMPLES[key];
+      lastHash = null;
+      run();
+    }
+    e.target.value = '';
+  });
+
+  /* Run once on load */
+  run();
+})();
+</script>
+</body>
+</html>

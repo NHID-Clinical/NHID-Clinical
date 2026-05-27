@@ -159,13 +159,22 @@
       </div>
 
       <!-- Artifact 5 -->
-      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:2.5rem;background:var(--paper)">
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;background:var(--paper)">
         <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
           <div style="flex:1;min-width:0">
             <h3 style="margin:0 0 .35rem;font-size:1.05rem">Trace Generator &amp; Example Traces</h3>
             <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">tools/trace_generator.py</code>
             <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">CLI script that produces canonical NHID&#8209;Clinical trace files. Ten pre&#8209;generated failure traces are available in the <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/traces</code> directory.</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Interactive demo -->
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:2.5rem;background:var(--paper);border-left:3px solid var(--blue)">
+        <div style="flex:1;min-width:0">
+          <h3 style="margin:0 0 .35rem;font-size:1.05rem">Policy Engine Playground <span style="font-size:.75rem;font-weight:500;color:var(--ink-soft);margin-left:.4rem">experimental</span></h3>
+          <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 .85rem">Browser-based interactive demo of the disclosure policy rules. Paste or select a canonical event JSON, run the engine, and inspect the deterministic trace output. Identical input always produces identical output.</p>
+          <a href="/simulator.html" style="display:inline-block;background:var(--blue);color:#fff;font-size:.85rem;font-weight:600;padding:.45rem 1rem;border-radius:5px;text-decoration:none">Open Playground →</a>
         </div>
       </div>
 
