@@ -11,6 +11,58 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <style>
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: .8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-right: .6rem;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      margin: 0 0 .6rem;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .pilot-card {
+      padding: 1.2rem 1.5rem;
+      background: var(--bg-alt);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 6px 6px 0;
+    }
+    .pilot-card p, .pilot-card li { color: var(--body); font-size: .93rem; line-height: 1.75; }
+    .pilot-card ol, .pilot-card ul { padding-left: 1.3rem; margin: .5rem 0; }
+    .pilot-card li { margin-bottom: .2rem; }
+    .pilot-card code {
+      font-size: .82rem;
+      background: var(--paper);
+      padding: .1rem .35rem;
+      border-radius: 3px;
+      color: var(--blue);
+    }
+    .pilot-card pre {
+      margin: .65rem 0 0;
+      background: var(--paper);
+      padding: .9rem 1rem;
+      border-radius: 6px;
+      font-size: .82rem;
+      line-height: 1.75;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--body);
+    }
+  </style>
 </head>
 <body>
 
@@ -105,11 +157,13 @@
   <section class="page-section">
     <div class="container" style="max-width:52rem">
 
+      <!-- Disclaimer -->
       <div style="background:#fee2e2;border-left:4px solid #b91c1c;padding:1rem 1.25rem;border-radius:0 6px 6px 0;font-size:.93rem;line-height:1.7;margin-bottom:2rem">
-        <strong>Important:</strong> No payer has piloted or adopted NHID-Clinical yet. You would be among the first. This is a voluntary reference model from a solo founder.
+        <strong>⚠️ Important:</strong> No payer has piloted or adopted NHID-Clinical yet. You would be among the first. This is a voluntary reference model from a solo founder.
       </div>
 
-      <h2>What You Get</h2>
+      <!-- Metrics table -->
+      <h2>What You Gain From a Pilot</h2>
       <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.93rem">
         <thead>
           <tr>
@@ -120,80 +174,156 @@
         </thead>
         <tbody>
           <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Verification latency ("are you human?")</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top">Verification latency ("are you human?")</td>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">3–5 minutes or call terminated</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">&lt;5 seconds</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)"><strong>&lt;5 seconds</strong></td>
           </tr>
           <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Audit effort per vendor</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top">Audit effort per vendor</td>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Manual call review (hours)</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">~2 minutes (run test suite)</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)"><strong>~2 minutes (run test suite)</strong></td>
           </tr>
           <tr>
-            <td style="padding:.7rem .9rem;color:var(--body)">RFP disclosure language</td>
+            <td style="padding:.7rem .9rem;color:var(--body);vertical-align:top">RFP disclosure language</td>
             <td style="padding:.7rem .9rem;color:var(--body)">Custom per vendor</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">One standard clause</td>
+            <td style="padding:.7rem .9rem;color:var(--body)"><strong>One standard clause</strong></td>
           </tr>
         </tbody>
       </table>
 
-      <h2 style="margin-top:2.5rem">90-Day Shadow Pilot Structure</h2>
-
+      <!-- Pilot steps -->
+      <h2 style="margin-top:2.5rem">Step-by-Step Pilot Instructions</h2>
       <div style="display:grid;gap:.85rem;margin-top:1.25rem">
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .3rem;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)">Weeks 1–2 · RFP / Vendor Ask</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Add this clause to your next voice AI vendor RFP or BAA amendment:</p>
-          <pre style="margin:.65rem 0 0;font-family:monospace;font-size:.83rem;background:var(--paper);padding:.85rem 1rem;border-radius:6px;line-height:1.75;color:var(--body);white-space:pre-wrap;word-break:break-word;overflow-x:auto">"The vendor's AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all B2B calls, including disclosure timestamps and opt-out handling. The payer may run the open-source conformance test suite against vendor output."</pre>
+
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">1</span> Weeks 1–2: Add RFP Language</p>
+          <p>Copy and paste this exact clause into your next voice AI vendor RFP or BAA amendment:</p>
+          <pre>"The vendor's AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all B2B calls, including disclosure timestamps and opt-out handling. The payer may run the open-source conformance test suite against vendor output."</pre>
+          <p style="margin-top:.65rem"><em>If you already have a vendor contract in place, send this clause as a formal amendment request.</em></p>
         </div>
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .3rem;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)">Weeks 3–6 · Sandbox Testing</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Ask the vendor to run the <a href="/developers.html" style="color:var(--blue);font-weight:500">conformance test suite</a> in their sandbox and send the resulting JSON traces (100 calls recommended).</p>
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">2</span> Weeks 3–6: Request Sandbox Testing</p>
+          <p>Ask your vendor to:</p>
+          <ol>
+            <li>Clone the NHID-Clinical repository: <code>git clone https://github.com/thankcheeses/NHID-Clinical.git</code></li>
+            <li>Install dependencies: <code>pip install pytest</code></li>
+            <li>Run the conformance test suite in their sandbox: <code>pytest tests/ -v</code></li>
+            <li>Send you the resulting JSON trace logs (100 calls recommended)</li>
+          </ol>
+          <p style="margin-top:.65rem">📎 <strong>Template email to vendor:</strong> <a href="#email-template" style="color:var(--blue)">See below ↓</a></p>
         </div>
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .3rem;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)">Weeks 7–10 · Validation</p>
-          <p style="margin:0 0 .5rem;color:var(--body);font-size:.93rem;line-height:1.75">Run the test suite yourself against the vendor's logs. Check for:</p>
-          <ul style="margin:0;padding-left:1.3rem;color:var(--body);font-size:.93rem;line-height:2">
-            <li>Disclosure before any operational data is requested</li>
-            <li>No deceptive artifacts</li>
-            <li>Opt-out / human escalation works</li>
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">3</span> Weeks 7–10: Validate the Logs Yourself</p>
+          <p>Run the same test suite against the vendor's logs:</p>
+          <ol>
+            <li>Clone the repository (if you haven't already)</li>
+            <li>Place the vendor's JSON logs in the <code>traces/</code> folder</li>
+            <li>Run <code>pytest tests/ -v</code> — look for all tests passing</li>
+            <li>Manually verify three things:
+              <ul style="margin-top:.35rem">
+                <li>✅ Disclosure timestamp appears before any NPI/member ID request</li>
+                <li>✅ No deceptive artifacts (fake breathing, human-only names)</li>
+                <li>✅ Opt-out requests trigger a human transfer within 2 seconds</li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">4</span> Weeks 11–12: Measure the Impact</p>
+          <p>Compare two metrics before and after vendor implementation:</p>
+          <ul>
+            <li><strong>Average verification latency</strong> — time from call start to disclosure (target: &lt;5 seconds)</li>
+            <li><strong>Escalation call volume</strong> — calls requiring human intervention due to identity uncertainty (target: &gt;30% reduction)</li>
+          </ul>
+          <p style="margin-top:.65rem"><em>If you don't have these metrics today, start collecting them now.</em></p>
+        </div>
+
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">5</span> Decide on Next Steps</p>
+          <p>Based on results:</p>
+          <ul>
+            <li><strong>All tests passed + metrics improved:</strong> Consider requiring NHID-Clinical conformance in all vendor contracts.</li>
+            <li><strong>Tests failed or metrics unchanged:</strong> Work with vendor on remediation, or disqualify them from future bids.</li>
           </ul>
         </div>
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .3rem;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)">Weeks 11–12 · Measure Results</p>
-          <p style="margin:0 0 .5rem;color:var(--body);font-size:.93rem;line-height:1.75">Compare before vs after:</p>
-          <ul style="margin:0;padding-left:1.3rem;color:var(--body);font-size:.93rem;line-height:2">
-            <li>Average verification latency</li>
-            <li>Escalation call volume due to identity uncertainty</li>
-          </ul>
-        </div>
       </div>
 
+      <!-- NOT for -->
       <h2 style="margin-top:2.5rem">What This Pilot Is NOT For</h2>
       <div class="callout" role="note" style="border-left-color:#f59e0b;background:rgba(245,158,11,.07);margin-top:1rem">
         <ul style="margin:0 0 .75rem;padding-left:1.3rem;line-height:2">
-          <li>Live decision-making or prior auth automation</li>
-          <li>Replacing call center agents</li>
-          <li>Writing data back into your core systems</li>
-          <li>Agent identity verification / spoofing prevention</li>
+          <li>❌ Live decision-making or prior auth automation</li>
+          <li>❌ Replacing call center agents</li>
+          <li>❌ Writing data back into your core systems</li>
+          <li>❌ Agent identity verification / spoofing prevention (out of scope for v1.3)</li>
         </ul>
         <strong>This is shadow-mode only.</strong> It logs and validates — it does not decide.
       </div>
 
-      <h2 style="margin-top:2.5rem">What You Need From Me (Brianna)</h2>
+      <!-- Vendor questionnaire -->
+      <h2 style="margin-top:2.5rem">Vendor Questionnaire (Copy-Paste Into Your RFP)</h2>
+      <div class="pilot-card" style="margin-top:1rem">
+        <ol>
+          <li>Does your AI agent disclose its non-human identity at the beginning of each call, before requesting any operational data (NPI, member ID, claim number)?</li>
+          <li>Can you produce JSON trace logs showing disclosure timestamps for every call?</li>
+          <li>Does your agent avoid deceptive artifacts (fake breathing, typing sounds, human-only names)?</li>
+          <li>Will you allow us to run the NHID-Clinical conformance test suite against your sandbox environment?</li>
+        </ol>
+      </div>
+
+      <!-- Email template -->
+      <h2 id="email-template" style="margin-top:2.5rem">📧 Template Email to Vendor</h2>
+      <div class="pilot-card" style="margin-top:1rem">
+        <pre>Subject: NHID-Clinical conformance test request
+
+Dear [Vendor Name],
+
+As part of our upcoming pilot, please run the NHID-Clinical v1.3
+conformance test suite in your sandbox environment.
+
+Steps:
+1. Clone: git clone https://github.com/thankcheeses/NHID-Clinical.git
+2. Run:   pytest tests/ -v
+
+Please send us:
+- The test output (pass/fail)
+- JSON trace logs from 100 sample calls
+
+Timeline: Please complete within 2 weeks.
+
+Contact me with any questions.
+
+Thank you,
+[Your Name]
+[Your Health Plan]</pre>
+      </div>
+
+      <!-- What support is available -->
+      <h2 style="margin-top:2.5rem">What Support Is Available</h2>
       <ul style="list-style:none;padding:0;margin-top:1rem;display:grid;gap:.5rem;font-size:.93rem">
         <li style="color:var(--body);line-height:1.7">✅ 30-minute walkthrough of the test suite and trace schema</li>
-        <li style="color:var(--body);line-height:1.7">✅ Recorded demo of the policy engine</li>
+        <li style="color:var(--body);line-height:1.7">✅ Recorded demo of the policy engine (available upon request)</li>
         <li style="color:var(--body);line-height:1.7">❌ No vendor references yet — you would be among the first</li>
       </ul>
 
+      <!-- Next step -->
       <h2 style="margin-top:2.5rem">Next Step</h2>
       <div style="padding:1.5rem 2rem;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;margin-top:1rem">
         <p style="margin:0;color:#166534;font-size:.95rem;line-height:1.75">Email <a href="mailto:contact@nhid-clinical.org" style="color:#166534;font-weight:700">contact@nhid-clinical.org</a> with subject line <strong>"Pilot interest – [Your Health Plan Name]"</strong>.<br>
-        I'll send you the one-page pilot agreement and any needed support within 24 hours.</p>
+        You will receive the one-page pilot agreement and any needed support within 24 hours.</p>
       </div>
+
+      <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
+        <a href="/" style="color:var(--blue)">← Back to Home</a>
+        &nbsp;·&nbsp;
+        <a href="/developers.html" style="color:var(--blue)">Developers</a>
+        &nbsp;·&nbsp;
+        <a href="/proof.html" style="color:var(--blue)">Proof package</a>
+      </p>
 
     </div>
   </section>
