@@ -1,85 +1,222 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>For Payers – NHID-Clinical Pilot Guide</title>
-  <style>
-    body { font-family: 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 2rem auto; padding: 1rem; line-height: 1.6; background: #fff; color: #1a1a1a; }
-    h1 { color: #0D9488; }
-    h2 { margin-top: 2rem; border-left: 5px solid #0D9488; padding-left: 1rem; }
-    .box { background: #f8fafc; border-left: 5px solid #0D9488; padding: 1.25rem; margin: 1.5rem 0; }
-    .warning { background: #fff3e0; border-left: 5px solid #e67e22; padding: 1.25rem; margin: 1.5rem 0; }
-    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
-    th, td { border: 1px solid #ddd; padding: 0.75rem; text-align: left; }
-    th { background: #f1f5f9; }
-    .redflag { background: #fee2e2; border-left: 5px solid #b91c1c; padding: 1.25rem; margin: 1.5rem 0; }
-  </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical For Payers — 90-day shadow pilot guide for payer operations teams evaluating AI voice agent transparency."/>
+  <title>For Payers – 90-Day Pilot Guide | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
 </head>
 <body>
 
-<h1>For Payers: 90-Day Shadow Pilot Guide</h1>
-
-<div class="redflag">
-  <strong>Important:</strong> No payer has piloted or adopted NHID-Clinical yet. You would be among the first. This is a voluntary reference model from a solo founder.
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
 </div>
 
-<h2>What You Get</h2>
-<table>
-  <tr><th>Metric</th><th>Today (typical)</th><th>Target with NHID-Clinical</th></tr>
-  <tr><td>Verification latency ("are you human?")</td><td>3–5 minutes or call terminated</td><td>&lt;5 seconds</td></tr>
-  <tr><td>Audit effort per vendor</td><td>Manual call review (hours)</td><td>~2 minutes (run test suite)</td></tr>
-  <tr><td>RFP disclosure language</td><td>Custom per vendor</td><td>One standard clause</td></tr>
-</table>
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/script-examples.html">Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/for-payers.html">For Payers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/specification.html">Spec</a>
+      <a href="/developers.html">Developers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
 
-<h2>90-Day Shadow Pilot Structure</h2>
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/script-examples.html">Examples</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/specification.html">Spec</a>
+  <a href="/developers.html">Developers</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
 
-<div class="box">
-  <strong>Weeks 1–2: RFP / Vendor Ask</strong><br>
-  Add this clause to your next voice AI vendor RFP or BAA amendment:<br>
-  <code>"The vendor's AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all B2B calls, including disclosure timestamps and opt-out handling. The payer may run the open-source conformance test suite against vendor output."</code>
-</div>
+<main>
+  <section class="inner-hero">
+    <div class="container inner-hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>For Payers</span></div>
+        <p class="eyebrow">Pilot Guide · 90 Days · Shadow Mode</p>
+        <h1>For Payers: 90-Day Shadow Pilot</h1>
+        <p class="lede">A practical starting point for payer operations teams who want to evaluate AI voice agent transparency with one vendor before going further.</p>
+      </div>
+    </div>
+  </section>
 
-<div class="box">
-  <strong>Weeks 3–6: Sandbox Testing</strong><br>
-  Ask the vendor to run the <a href="/developers.html">conformance test suite</a> in their sandbox and send the resulting JSON traces (100 calls recommended).
-</div>
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
 
-<div class="box">
-  <strong>Weeks 7–10: Validation</strong><br>
-  Run the test suite yourself against the vendor's logs. Check for:
-  <ul>
-    <li>Disclosure before any operational data is requested</li>
-    <li>No deceptive artifacts</li>
-    <li>Opt-out / human escalation works</li>
-  </ul>
-</div>
+      <div style="background:#fee2e2;border-left:4px solid #b91c1c;padding:1rem 1.25rem;border-radius:0 6px 6px 0;font-size:.93rem;line-height:1.7;margin-bottom:2rem">
+        <strong>Important:</strong> No payer has piloted or adopted NHID-Clinical yet. You would be among the first. This is a voluntary reference model from a solo founder.
+      </div>
 
-<div class="box">
-  <strong>Weeks 11–12: Measure Results</strong><br>
-  Compare before vs after:
-  <ul>
-    <li>Average verification latency</li>
-    <li>Escalation call volume due to identity uncertainty</li>
-  </ul>
-</div>
+      <h2>What You Get</h2>
+      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.93rem">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Metric</th>
+            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Today (typical)</th>
+            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Target with NHID-Clinical</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Verification latency ("are you human?")</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">3–5 minutes or call terminated</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">&lt;5 seconds</td>
+          </tr>
+          <tr>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Audit effort per vendor</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Manual call review (hours)</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">~2 minutes (run test suite)</td>
+          </tr>
+          <tr>
+            <td style="padding:.7rem .9rem;color:var(--body)">RFP disclosure language</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">Custom per vendor</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">One standard clause</td>
+          </tr>
+        </tbody>
+      </table>
 
-<h2>What This Pilot Is NOT For</h2>
-<div class="warning">
-  <ul>
-    <li>Live decision-making or prior auth automation</li>
-    <li>Replacing call center agents</li>
-    <li>Writing data back into your core systems</li>
-    <li>Agent identity verification / spoofing prevention</li>
-  </ul>
-  <strong>This is shadow-mode only.</strong> It logs and validates — it does not decide.
-</div>
+      <h2 style="margin-top:2.5rem">90-Day Shadow Pilot Structure</h2>
 
-<h2>Next Step</h2>
-<p>Email <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a> with subject line <strong>"Pilot interest – [Your Health Plan Name]"</strong>.<br>
-I will send you the one-page pilot agreement and any needed support within 24 hours.</p>
+      <div style="display:grid;gap:.85rem;margin-top:1.25rem">
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
+          <p style="margin:0 0 .3rem;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)">Weeks 1–2 · RFP / Vendor Ask</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Add this clause to your next voice AI vendor RFP or BAA amendment:</p>
+          <p style="margin:.65rem 0 0;font-family:monospace;font-size:.83rem;background:var(--paper);padding:.75rem 1rem;border-radius:4px;line-height:1.7;color:var(--body)">"The vendor's AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all B2B calls, including disclosure timestamps and opt-out handling. The payer may run the open-source conformance test suite against vendor output."</p>
+        </div>
 
-<p><a href="/">← Back to Home</a></p>
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
+          <p style="margin:0 0 .3rem;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)">Weeks 3–6 · Sandbox Testing</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Ask the vendor to run the <a href="/developers.html" style="color:var(--blue);font-weight:500">conformance test suite</a> in their sandbox and send the resulting JSON traces (100 calls recommended).</p>
+        </div>
 
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
+          <p style="margin:0 0 .3rem;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)">Weeks 7–10 · Validation</p>
+          <p style="margin:0 0 .5rem;color:var(--body);font-size:.93rem;line-height:1.75">Run the test suite yourself against the vendor's logs. Check for:</p>
+          <ul style="margin:0;padding-left:1.3rem;color:var(--body);font-size:.93rem;line-height:2">
+            <li>Disclosure before any operational data is requested</li>
+            <li>No deceptive artifacts</li>
+            <li>Opt-out / human escalation works</li>
+          </ul>
+        </div>
+
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
+          <p style="margin:0 0 .3rem;font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)">Weeks 11–12 · Measure Results</p>
+          <p style="margin:0 0 .5rem;color:var(--body);font-size:.93rem;line-height:1.75">Compare before vs after:</p>
+          <ul style="margin:0;padding-left:1.3rem;color:var(--body);font-size:.93rem;line-height:2">
+            <li>Average verification latency</li>
+            <li>Escalation call volume due to identity uncertainty</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 style="margin-top:2.5rem">What This Pilot Is NOT For</h2>
+      <div class="callout" role="note" style="border-left-color:#f59e0b;background:rgba(245,158,11,.07);margin-top:1rem">
+        <ul style="margin:0 0 .75rem;padding-left:1.3rem;line-height:2">
+          <li>Live decision-making or prior auth automation</li>
+          <li>Replacing call center agents</li>
+          <li>Writing data back into your core systems</li>
+          <li>Agent identity verification / spoofing prevention</li>
+        </ul>
+        <strong>This is shadow-mode only.</strong> It logs and validates — it does not decide.
+      </div>
+
+      <h2 style="margin-top:2.5rem">Next Step</h2>
+      <div style="padding:1.5rem 2rem;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;margin-top:1rem">
+        <p style="margin:0;color:#166534;font-size:.95rem;line-height:1.75">Email <a href="mailto:contact@nhid-clinical.org" style="color:#166534;font-weight:700">contact@nhid-clinical.org</a> with subject line <strong>"Pilot interest – [Your Health Plan Name]"</strong>.<br>
+        I'll send you the one-page pilot agreement and any needed support within 24 hours.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Read the technical details</p>
+        <h2>The schema, policy engine, and conformance tests are open source.</h2>
+        <p>Everything a vendor needs to self-certify is in the repo.</p>
+      </div>
+      <a class="closing-button" href="/developers.html">Developers →</a>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
 </body>
 </html>
