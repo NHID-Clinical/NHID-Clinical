@@ -1,6 +1,6 @@
 # NHID-Clinical v1.3
 
-**Compliance and Audit Framework for Healthcare Voice AI**
+**Non-Human Identity Disclosure Standard for Healthcare Voice Workflows**
 
 ![License](https://img.shields.io/badge/License-CC--BY--4.0-blue?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Released-brightgreen?style=for-the-badge)
@@ -597,8 +597,7 @@ This is an **open standard**—your input makes it better.
 **How to participate:**
 1. 🗣️ [Open a GitHub Discussion](https://github.com/thankcheeses/NHID-Clinical/discussions) for questions
 2. 🐛 [File an Issue](https://github.com/thankcheeses/NHID-Clinical/issues) for specific problems
-3. 📧 General questions: [help@nhid-clinical.org](mailto:help@nhid-clinical.org)
-4. 📧 Validation & certification: [validation@nhid-clinical.org](mailto:validation@nhid-clinical.org)
+3. 📧 General questions: [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
 ---
 
