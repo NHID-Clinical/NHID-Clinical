@@ -24,21 +24,31 @@ Four behaviors:
 ## Repo structure
 
 ```
-schema/    Canonical event schema (JSON Schema Draft 2020-12)
-src/       Policy engine — pure Python, no I/O, deterministic
-tests/     Conformance suite (YAML) + failure harness (pytest) + trace generator
-traces/    10 pre-generated failure traces
+schema/     Canonical event schema (JSON Schema Draft 2020-12)
+src/        Policy engine + cryptographic identity layer (pure Python)
+tests/      Conformance suite (YAML) + failure harness (pytest) + trace generator
+adapters/   Vendor format adapters (Twilio → NHID trace)
+traces/     10 pre-generated failure traces
 ```
 
-## Run the tests
+## Quick start
 
 ```bash
+git clone https://github.com/thankcheeses/NHID-Clinical.git
+cd NHID-Clinical
 pip install -r requirements.txt
-python -m pytest tests/failure_injection_harness.py -v -k "not integration"
-python tests/trace_generator.py --offline
+python -m pytest tests/ -v
 ```
 
-21 unit tests. No server needed. Integration tests auto-skip if nothing is running at `http://127.0.0.1:8000`.
+Expected output: `25 passed, 18 skipped` — the 18 skipped are integration tests that require a live server at `http://127.0.0.1:8000` and are automatically skipped if none is running.
+
+```bash
+# Generate all 10 failure traces (no server needed)
+python tests/trace_generator.py --offline
+
+# Run the Twilio adapter demo
+python adapters/twilio_adapter.py
+```
 
 ## Artifacts
 
@@ -46,9 +56,12 @@ python tests/trace_generator.py --offline
 |---|---|
 | `schema/nhid_trace_schema_v1.json` | Event schema every pipeline stage emits against |
 | `src/nhid_policy_engine_v1.py` | Evaluates IDG-01, PDX-01, DBC-01, EIT-01, ATR-01. Never raises. |
+| `src/agent_identity.py` | Ed25519 agent passports, delegation chains, revocation (v1.4 preview) |
 | `tests/nhid_conformance_test_suite_v1.yaml` | 18 machine-readable pass/fail/edge test cases |
-| `tests/failure_injection_harness.py` | pytest suite — chaos inputs, replay determinism |
+| `tests/failure_injection_harness.py` | pytest suite — chaos inputs, policy evaluation, replay determinism |
+| `tests/test_identity.py` | 4 tests: key generation, delegation, expiry, revocation |
 | `tests/trace_generator.py` | Writes 10 failure traces to `/traces/`. Same output every run. |
+| `adapters/twilio_adapter.py` | Maps Twilio transcripts to NHID-Clinical event traces |
 
 ## Status
 
