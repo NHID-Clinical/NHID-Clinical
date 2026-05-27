@@ -141,7 +141,7 @@
         <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
           <div style="flex:1;min-width:0">
             <h3 style="margin:0 0 .35rem;font-size:1.05rem">Conformance Test Suite</h3>
-            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">conformance/nhid_conformance_test_suite_v1.yaml</code>
+            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">tests/nhid_conformance_test_suite_v1.yaml</code>
             <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">18 machine&#8209;readable test cases covering every pass/fail/edge scenario in the v1.3 spec. Vendors can use this YAML file to self&#8209;validate their implementations.</p>
           </div>
         </div>
@@ -163,7 +163,7 @@
         <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
           <div style="flex:1;min-width:0">
             <h3 style="margin:0 0 .35rem;font-size:1.05rem">Trace Generator &amp; Example Traces</h3>
-            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">tools/trace_generator.py</code>
+            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">tests/trace_generator.py</code>
             <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">CLI script that produces canonical NHID&#8209;Clinical trace files. Ten pre&#8209;generated failure traces are available in the <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/traces</code> directory.</p>
           </div>
         </div>
@@ -186,7 +186,7 @@ cd NHID-Clinical
 git checkout claude/code-review-fixes-98Ir1
 python -m pytest tests/failure_injection_harness.py -v
 python -m jsonschema schema/nhid_trace_schema_v1.json
-python tools/trace_generator.py</pre>
+python tests/trace_generator.py --offline</pre>
 
       <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code> and will be automatically skipped if the server is not reachable.</p>
 

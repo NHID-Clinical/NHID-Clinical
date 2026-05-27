@@ -134,26 +134,35 @@
 
   <section class="page-section" style="background:var(--bg-alt)">
     <div class="container" style="max-width:52rem">
-      <h2>What this proposal suggests</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin:.5rem 0 1.5rem">Four behaviors. No formal enforcement. No certification. Just a shared starting point.</p>
-      <div style="display:grid;gap:1rem">
-        <div style="padding:1.25rem 1.5rem;border-left:3px solid var(--blue);background:var(--paper);border-radius:0 4px 4px 0">
-          <strong style="color:var(--ink)">Say you're not human — before anything else.</strong>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-top:.35rem">Identify as an automated system at the very start of the call, before any data is exchanged.</p>
-        </div>
-        <div style="padding:1.25rem 1.5rem;border-left:3px solid var(--blue);background:var(--paper);border-radius:0 4px 4px 0">
-          <strong style="color:var(--ink)">Sound like what you are.</strong>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-top:.35rem">No fake breathing, no scripted filler sounds, no behavioral patterns designed to make the system seem human.</p>
-        </div>
-        <div style="padding:1.25rem 1.5rem;border-left:3px solid var(--blue);background:var(--paper);border-radius:0 4px 4px 0">
-          <strong style="color:var(--ink)">Make it easy to reach a human.</strong>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-top:.35rem">When the person on the other end asks to speak with someone real, that should always be straightforward.</p>
-        </div>
-        <div style="padding:1.25rem 1.5rem;border-left:3px solid var(--blue);background:var(--paper);border-radius:0 4px 4px 0">
-          <strong style="color:var(--ink)">Keep a basic record.</strong>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin-top:.35rem">When did the call start. When was the system identified as automated. What happened. Simple logs support accountability.</p>
-        </div>
-      </div>
+      <h2>What NHID-Clinical asks of AI agents</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin:.5rem 0 1.25rem">Four behaviors. No certification. No enforcement. Just a written-down baseline.</p>
+      <table style="width:100%;border-collapse:collapse;font-size:.93rem">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Behavior</th>
+            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">What it means</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top"><strong>Disclose upfront</strong></td>
+            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Say you're automated before asking for any data.</td>
+          </tr>
+          <tr>
+            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top"><strong>No deceptive audio</strong></td>
+            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">No fake breathing, filler sounds, or human-name openers.</td>
+          </tr>
+          <tr>
+            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top"><strong>Human escalation</strong></td>
+            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">When someone asks to speak to a person, make it immediate.</td>
+          </tr>
+          <tr>
+            <td style="padding:.75rem .9rem;color:var(--body);vertical-align:top"><strong>Basic audit log</strong></td>
+            <td style="padding:.75rem .9rem;color:var(--body)">Record what happened and when. Enough to reconstruct the call.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="color:var(--ink-soft);font-size:.88rem;line-height:1.7;margin-top:.75rem">These are not enforceable requirements. They are a written-down starting point that vendors can reference in contracts and payers can test with the open-source conformance suite.</p>
     </div>
   </section>
 
