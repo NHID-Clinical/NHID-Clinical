@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Technical Reference — JSON Schema, policy engine, conformance test suite, failure injection harness, and trace generator for the v1.3 specification."/>
+  <title>Technical Reference – NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+</div>
+
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/script-examples.html">Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/governance-simulator.html">Governance Simulator</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/for-payers.html">For Payers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/specification.html">Spec</a>
+      <a href="/developers.html">Developers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/script-examples.html">Examples</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/specification.html">Spec</a>
+  <a href="/developers.html">Developers</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container inner-hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Developers</span></div>
+        <p class="eyebrow">Technical Reference · v1.3 · Open Source</p>
+        <h1>Technical Reference</h1>
+        <p class="lede">Reference implementation artifacts for the NHID-Clinical v1.3 specification. These tools demonstrate that the specification can be implemented, replayed, and evaluated through deterministic trace artifacts and conformance testing.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+
+      <div class="hero-notice" role="note" style="margin-bottom:2.5rem">
+        <strong>Pre&#8209;standardization draft.</strong> The artifacts linked below are a reference implementation of the NHID&#8209;Clinical v1.3 specification. They demonstrate that the specification can be implemented, replayed, and evaluated through deterministic trace artifacts and conformance testing. These tools are not a certification program, and there is no external certification authority. Conformance testing is self&#8209;administered. All artifacts are open for community review and feedback.
+      </div>
+
+      <!-- ── Artifacts ──────────────────────────────────────────────────── -->
+
+      <h2 style="margin-bottom:1.5rem">Reference Artifacts</h2>
+
+      <!-- Artifact 1 -->
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;background:var(--paper)">
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <h3 style="margin:0 0 .35rem;font-size:1.05rem">Canonical Event Schema</h3>
+            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">schema/nhid_trace_schema_v1.json</code>
+            <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">JSON Schema (Draft 2020&#8209;12) for a single NHID&#8209;Trace event. Includes schema annotations referencing disclosure, identity, and auditability considerations associated with TCPA, HIPAA, CA AB 489, and NY S7263.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artifact 2 -->
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;background:var(--paper)">
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <h3 style="margin:0 0 .35rem;font-size:1.05rem">Policy Engine</h3>
+            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">src/nhid_policy_engine_v1.py</code>
+            <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">Pure Python reference implementation of the five core conformance tests plus a bot&#8209;to&#8209;bot detection rule. No external dependencies; fully deterministic.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artifact 3 -->
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;background:var(--paper)">
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <h3 style="margin:0 0 .35rem;font-size:1.05rem">Conformance Test Suite</h3>
+            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">conformance/nhid_conformance_test_suite_v1.yaml</code>
+            <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">18 machine&#8209;readable test cases covering every pass/fail/edge scenario in the v1.3 spec. Vendors can use this YAML file to self&#8209;validate their implementations.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artifact 4 -->
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;background:var(--paper)">
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <h3 style="margin:0 0 .35rem;font-size:1.05rem">Failure Injection Harness</h3>
+            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">tests/failure_injection_harness.py</code>
+            <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">pytest&#8209;based test suite. Unit tests run with no server required. Integration tests validate a live FastAPI endpoint against malformed inputs and replay determinism.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artifact 5 -->
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:2.5rem;background:var(--paper)">
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <h3 style="margin:0 0 .35rem;font-size:1.05rem">Trace Generator &amp; Example Traces</h3>
+            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">tools/trace_generator.py</code>
+            <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">CLI script that produces canonical NHID&#8209;Clinical trace files. Ten pre&#8209;generated failure traces are available in the <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/traces</code> directory.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Quick Start ────────────────────────────────────────────────── -->
+
+      <h2 style="margin-bottom:1rem">Quick Start</h2>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.25rem 1.5rem;font-size:.85rem;line-height:1.9;overflow-x:auto;color:var(--body)">git clone https://github.com/thankcheeses/NHID-Clinical.git
+cd NHID-Clinical
+git checkout claude/code-review-fixes-98Ir1
+python -m pytest tests/failure_injection_harness.py -v
+python -m jsonschema schema/nhid_trace_schema_v1.json
+python tools/trace_generator.py</pre>
+
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code> and will be automatically skipped if the server is not reachable.</p>
+
+      <!-- ── Disclaimer ─────────────────────────────────────────────────── -->
+
+      <div style="margin-top:3rem;padding:1.5rem 1.75rem;background:var(--bg-alt);border-left:3px solid #dc3545;border-radius:0 6px 6px 0">
+        <p style="font-weight:700;margin:0 0 .6rem;color:var(--body)">Important</p>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.8;margin:0">These tools are experimental and not for production use. NHID&#8209;Clinical does not issue certifications, conduct audits, or provide legal advice. Conformance testing is self&#8209;administered. No external authority validates results. Adoption of these artifacts does not confer HIPAA compliance, TCPA compliance, or any regulatory approval.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Open for feedback</p>
+        <h2>Questions or suggestions?</h2>
+        <p>Join the community discussion or reach out directly.</p>
+      </div>
+      <a class="closing-button" href="/community.html">Community →</a>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>
