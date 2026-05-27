@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical: An open governance proposal for transparent AI voice agents in healthcare payer–provider calls. Initiated by Brianna Baynard."/>
-  <title>NHID-Clinical | Open Governance Proposal</title>
+  <meta name="description" content="NHID-Clinical: Observations on AI voice agents calling payers — a voluntary, testable reference implementation by Brianna Baynard documenting disclosure, escalation, and audit patterns in B2B healthcare voice workflows."/>
+  <title>NHID-Clinical | Observations on AI Voice Agents Calling Payers</title>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -33,8 +33,6 @@
       <a href="/about.html">About</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/script-examples.html">Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/governance-simulator.html">Governance Simulator</a>
       <span class="nav-sep" aria-hidden="true"></span>
       <a href="/for-payers.html">For Payers</a>
       <span class="nav-sep" aria-hidden="true"></span>
@@ -77,7 +75,6 @@
   <a href="/">Home</a>
   <a href="/about.html">About</a>
   <a href="/script-examples.html">Examples</a>
-  <a href="/governance-simulator.html">Governance Simulator</a>
   <a href="/for-payers.html">For Payers</a>
   <a href="/specification.html">Spec</a>
   <a href="/developers.html">Developers</a>
@@ -98,11 +95,18 @@
   <section class="hero-section">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <h1>NHID-Clinical</h1>
-        <p class="hero-subtitle">A shared language for transparent AI voice agents in healthcare</p>
-        <p class="hero-body">AI voice systems are calling payer offices, verifying benefits, and exchanging sensitive information — often without ever saying they're automated. By the time a representative realizes they're talking to a machine, the conversation has already happened.</p>
-        <p class="hero-body" style="margin-top:.75rem">This is a voluntary open proposal by Brianna Baynard. Not a standard. Not a certification. Just a named problem and four suggested behaviors.</p>
-        <p class="hero-body" style="margin-top:.75rem;font-size:.9rem;color:var(--ink-soft)">CC BY 4.0 &nbsp;·&nbsp; NIST Public Comment: NIST-2025-0035-0026</p>
+        <h1>NHID-Clinical: Observations on AI Voice Agents Calling Payers</h1>
+        <p class="hero-body">I spent months working in payer operations, handling eligibility, claims, and authorization calls while protecting PHI. Starting in 2025, our call center began receiving more AI voice agents calling on behalf of provider offices. At first they passed verification, so we treated them like regular calls. Over time, clear problems emerged around disclosure timing, authorization verification, and escalation. This project documents those patterns and proposes a voluntary, testable set of behaviors for AI agents in B2B administrative calls. It is not a standard, not a certification, and does not define compliance requirements. It is an open reference implementation and a conversation starter.</p>
+        <div class="callout">
+          <strong>Current state (May 2026):</strong>
+          This project is a pre-standardization reference implementation.
+          We have a working event schema, a deterministic policy engine,
+          a machine-readable conformance test suite, and example failure traces.
+          No organization has piloted or adopted these artifacts yet.
+          We are actively seeking feedback from payers, providers, and health IT teams.
+          — <a href="developers.html">Explore the technical reference →</a>
+        </div>
+        <p class="hero-body" style="margin-top:1rem;font-size:.9rem;color:var(--ink-soft)">CC BY 4.0 &nbsp;·&nbsp; NIST Public Comment: NIST-2025-0035-0026</p>
         <div class="hero-actions" style="flex-wrap:wrap;gap:.75rem">
           <a class="cta-button" href="/community.html">Get Involved <span aria-hidden="true">→</span></a>
           <a class="secondary-button" href="/script-examples.html">See Examples <span aria-hidden="true">→</span></a>
@@ -122,7 +126,7 @@
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Three minutes in, the rep gets suspicious: <em>"Wait — are you actually a person?"</em></p>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Only then does the system admit it's automated.</p>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Operational data has been shared. There's no clear record of when disclosure happened. And there's no way to know whether the credentials were real or scraped from a public directory.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This is <strong>impersonation latency</strong>. It wastes time, erodes trust, and creates risk on both sides of the call. And it's happening in payer–provider workflows across healthcare daily.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This is <strong>impersonation latency</strong> ("impersonation latency" — the operational drag when a human can't quickly tell they're talking to an AI). It wastes time, erodes trust, and creates risk on both sides of the call. And it's happening in payer–provider workflows across healthcare daily.</p>
     </div>
   </section>
 
@@ -194,8 +198,8 @@
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
-  <div style="text-align:center;padding:2rem 1rem;background:#f8fafc">
-    <p style="margin:0;color:#64748b">Explore how governance decisions change under different risk and autonomy conditions. <a href="/governance-simulator.html" style="color:#0ea5e9;font-weight:500">Try the simulator →</a></p>
+  <div style="text-align:center;padding:1rem 1rem;color:var(--ink-soft);font-size:.9rem">
+    <p style="margin:0">(We also have an <a href="governance-simulator.html">experimental simulator</a> for testing policy logic.)</p>
   </div>
   <p style="text-align:center;color:var(--ink-soft);font-size:.85rem;font-style:italic;padding:1.5rem 1rem 2rem"><em>NHID-Clinical v1.3 is an early-stage open proposal created by Brianna Baynard. It is not an official standard, certification program, or regulatory requirement.</em></p>
 </main>
