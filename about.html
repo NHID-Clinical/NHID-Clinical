@@ -92,71 +92,25 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero">
-    <div class="container inner-hero-grid">
-      <div>
-        <div class="crumbs"><a href="/">Home</a><span>/</span><span>About</span></div>
-        <p class="eyebrow">About NHID-Clinical</p>
-        <h1>An open proposal for transparent AI voice agents in healthcare payer–provider calls.</h1>
-        <p class="lede">A voluntary proposal — not an official standard, certification program, or regulatory requirement.</p>
-      </div>
-      <aside class="hero-summary-card">
-        <strong>Download the full proposal</strong>
-        <p style="font-size:.88rem;color:var(--body);line-height:1.6;margin:.5rem 0 1rem">Free to use and adapt under CC BY 4.0.</p>
-        <a class="outline-link" href="/specs/NHID-Clinical-v1.3-Overview.pdf" download>NHID-Clinical Public Brief PDF →</a>
-      </aside>
-    </div>
-  </section>
-
   <section class="page-section">
     <div class="container" style="max-width:52rem">
-      <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status (May 2026):</strong> This is an <strong>early open proposal</strong> by Brianna Baynard — not an official standard or certification program.
-      </div>
 
-      <h2>The Real Problem</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-top:.75rem">An AI voice agent calls a payer.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.5rem">It sounds professional.<br>It provides a provider NPI.<br>It gives member ID, date of service, claim number — all the usual details.<br>Over several minutes the representative shares operational data, claim status, eligibility information.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">Then the rep gets suspicious: <strong>"Wait — are you an AI?"</strong></p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.5rem">Silence. Then: <em>"Yes, I am an automated system calling on behalf of Dr. Smith's office."</em></p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><strong>Too late.</strong> Protected operational data has already been shared. There is no reliable audit trail. And there is no way to know if that NPI was legitimately delegated or pulled from a public directory.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">This is "impersonation latency." It wastes time, creates risk, and leads to blanket "we don't talk to AI" policies that break legitimate workflows.</p>
+      <h1>About NHID-Clinical</h1>
 
-      <h2 style="margin-top:2.5rem">What This Proposal Suggests</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-top:.75rem">Simple idea: AI agents should clearly disclose they are non-human <strong>before</strong> any operational data is exchanged.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.5rem">Everything else — avoiding deceptive audio, keeping a path to a human, maintaining basic logs — follows naturally from that starting point.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">For the complete specification, including behavioral definitions, implementation artifacts, and the conformance test suite, visit the <a href="/developers.html">Developers page</a>.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">NHID-Clinical was started by Brianna Baynard after years working in healthcare payer operations — personally handling calls from AI voice agents on the payer side.</p>
 
-      <h2 style="margin-top:2.5rem">Who Created This?</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><strong>Brianna Baynard</strong> started this proposal after spending months personally taking these same calls from AI voice agents while working in healthcare payer operations.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><em>"I sat in the exact seat that payer representatives are in today — receiving calls from systems that sounded human, exchanged data, and only later admitted they were automated. That firsthand experience showed how much friction, wasted time, and unnecessary risk this creates on both sides."</em></p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">This proposal comes directly from that real-world frustration and a desire to make these workflows better for everyone. It is an individual volunteer effort, not backed by any organization or standards body.</p>
+      <blockquote style="border-left:4px solid var(--blue);margin:1.5rem 0;padding:.75rem 1.25rem;color:var(--body);font-size:1rem;line-height:1.8;font-style:italic">
+        "I sat in the exact seat that payer representatives are in today — receiving calls from systems that sounded human, exchanged sensitive data, and only later admitted they were automated. That firsthand experience showed how much friction, wasted time, and unnecessary risk this creates on both sides."
+      </blockquote>
 
-      <h2 style="margin-top:2.5rem">How You Can Help</h2>
-      <ul style="list-style:disc;padding-left:1.4rem;color:var(--body);font-size:1rem;line-height:2;margin-top:.75rem">
-        <li>Share whether this matches the patterns you see in real payer–provider calls</li>
-        <li>Point out anything missing, wrong, or impractical</li>
-        <li>Tell us what would actually make these workflows better</li>
-      </ul>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">This is a voluntary, open proposal — not an official standard, not a certification program, and not backed by any organization. It simply documents a real operational gap and suggests a practical way to reduce it.</p>
 
-      <div class="spec-highlight-box" style="margin-top:2rem">
-        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Feedback &amp; Questions</strong>
-        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem"><a href="mailto:contact@nhid-clinical.org" style="color:var(--blue);font-weight:600">contact@nhid-clinical.org</a></p>
-        <p style="color:var(--body);font-size:.9rem;margin-top:.5rem">
-          <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download style="color:var(--blue);font-weight:600">Download NHID-Clinical Public Brief PDF →</a>
-        </p>
-      </div>
-    </div>
-  </section>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><strong>Current status:</strong> Early-stage open proposal. Submitted to NIST AI Safety Institute (docket NIST-2025-0035-0026). No organizations have adopted or piloted it yet.</p>
 
-  <section class="container closing-section">
-    <div class="closing-panel">
-      <div>
-        <p class="section-kicker">Get involved</p>
-        <h2>Read the proposal and share your feedback.</h2>
-        <p>Download the proposal, consider whether it describes a real problem you recognize, and let us know what you think.</p>
-      </div>
-      <a class="closing-button" href="/community.html">Join the Discussion →</a>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">If you work in payer operations, provider offices, or voice AI platforms and see similar patterns, your feedback would be genuinely appreciated.</p>
+
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><a href="mailto:contact@nhid-clinical.org" style="color:var(--blue);font-weight:600">contact@nhid-clinical.org</a></p>
+
     </div>
   </section>
 </main>
