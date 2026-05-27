@@ -220,7 +220,7 @@
           <ol>
             <li>Clone the repository (if you haven't already)</li>
             <li>Place the vendor's JSON logs in the <code>traces/</code> folder</li>
-            <li>Run <code>pytest tests/ -v</code> — look for all tests passing</li>
+            <li>Run <code>python -m pytest tests/ -v</code> — look for all tests passing</li>
             <li>Manually verify three things:
               <ul style="margin-top:.35rem">
                 <li>✅ Disclosure timestamp appears before any NPI/member ID request</li>
@@ -295,7 +295,7 @@ conformance test suite in your sandbox environment.
 
 Steps:
 1. Clone: git clone https://github.com/thankcheeses/NHID-Clinical.git
-2. Run:   pytest tests/ -v
+2. Run:   python -m pytest tests/ -v
 
 Please send us:
 - The test output (pass/fail)
