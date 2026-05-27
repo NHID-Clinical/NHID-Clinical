@@ -1,8 +1,7 @@
 NHID-Clinical • POLICY → PERSIST → partial-failure-boundary
 
-session: NHID-TRACE-10-78A98D2A
+session: NHID-TRACE-10-7D4049E1
 context: B2B prior auth call / disclosure confirmed / deceptive artifact mid-session / partial_failure=true
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 

@@ -1,8 +1,7 @@
 NHID-Clinical • INGEST → VALIDATE → session-binding-failure
 
-session: NHID-TRACE-03-5097900E
+session: NHID-TRACE-03-4E875E34
 context: B2B payer-provider voice call / inbound webhook / missing Twilio field
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 

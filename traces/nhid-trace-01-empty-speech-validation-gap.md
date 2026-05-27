@@ -1,8 +1,7 @@
 NHID-Clinical • INGEST → VALIDATE → validation-failure
 
-session: NHID-TRACE-01-BB02B1AE
+session: NHID-TRACE-01-2D29EF6F
 context: B2B payer-provider voice call / prior auth workflow / turn_count=0
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 

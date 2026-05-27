@@ -1,8 +1,7 @@
 NHID-Clinical • POLICY → EXEC → bot-to-bot-policy-gap
 
-session: NHID-TRACE-08-47992EFF
+session: NHID-TRACE-08-19DEEFFB
 context: B2B prior auth call / payer deploying AI agent / counterparty_type=ai_agent / disclosure_timestamp=null
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 

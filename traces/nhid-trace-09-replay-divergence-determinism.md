@@ -1,8 +1,7 @@
 NHID-Clinical • EXEC → PERSIST → replay-integrity-violation
 
-session: NHID-TRACE-09-B7B7B608
+session: NHID-TRACE-09-446CCAF4
 context: B2B eligibility call / replay_mode=cached / external_calls_cached=false (misconfigured)
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 

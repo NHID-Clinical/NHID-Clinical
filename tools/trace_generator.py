@@ -429,7 +429,7 @@ _TRACES: list[TraceSpec] = [
 
 # ── Markdown renderer ─────────────────────────────────────────────────────
 
-def _render_trace(trace: TraceSpec, session_id: str, generated_at: str) -> str:
+def _render_trace(trace: TraceSpec, session_id: str) -> str:
     events_block = "\n".join(
         f"t={_ts(e.offset)}  {e.stage:<10} {e.description}"
         for e in trace.events
@@ -442,7 +442,6 @@ def _render_trace(trace: TraceSpec, session_id: str, generated_at: str) -> str:
 
 session: {session_id}
 context: {trace.system_context}
-generated: {generated_at}
 
 ---
 
@@ -512,10 +511,8 @@ def main() -> None:
     output_dir = os.path.abspath(args.output_dir)
     os.makedirs(output_dir, exist_ok=True)
 
-    generated_at = _now_iso()
     print(f"NHID-Clinical Trace Generator")
     print(f"Output directory: {output_dir}")
-    print(f"Generated at:     {generated_at}")
     print(f"Engine available: {_ENGINE_AVAILABLE}")
     print()
 
@@ -524,13 +521,13 @@ def main() -> None:
         print("Running policy engine validation against trace specs...")
         _validate_traces_against_engine()
 
-    # Write trace files
+    # Write trace files — session IDs are deterministic (UUID v5, slug-based)
     for i, trace in enumerate(_TRACES, start=1):
-        session_id = f"NHID-TRACE-{i:02d}-{str(uuid.uuid4())[:8].upper()}"
+        session_id = f"NHID-TRACE-{i:02d}-{str(uuid.uuid5(uuid.NAMESPACE_DNS, f'nhid-trace-{i:02d}-{trace.slug}'))[:8].upper()}"
         filename   = f"nhid-trace-{trace.slug}.md"
         filepath   = os.path.join(output_dir, filename)
 
-        content = _render_trace(trace, session_id, generated_at)
+        content = _render_trace(trace, session_id)
         with open(filepath, "w", encoding="utf-8") as fh:
             fh.write(content)
 

@@ -1,8 +1,7 @@
 NHID-Clinical • POLICY → EXEC → deception-violation
 
-session: NHID-TRACE-06-2775727A
+session: NHID-TRACE-06-6820605E
 context: B2B prior auth call / AI agent using synthetic breathing sounds / deceptive_artifact_flags=['fake_breathing']
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 

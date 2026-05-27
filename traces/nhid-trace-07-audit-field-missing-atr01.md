@@ -1,8 +1,7 @@
 NHID-Clinical • POLICY → PERSIST → audit-gap
 
-session: NHID-TRACE-07-01322645
+session: NHID-TRACE-07-4FA7AC2B
 context: B2B claim status call / pipeline_version missing from execution_context
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 

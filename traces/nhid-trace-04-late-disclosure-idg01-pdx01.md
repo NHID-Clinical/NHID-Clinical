@@ -1,8 +1,7 @@
 NHID-Clinical • POLICY → EXEC → impersonation-latency
 
-session: NHID-TRACE-04-D3820A6E
+session: NHID-TRACE-04-CF78B8AF
 context: B2B prior auth call / turn_count=3 / PHI already exchanged / disclosure_timestamp=null
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 

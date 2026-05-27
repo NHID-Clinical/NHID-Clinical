@@ -1,8 +1,7 @@
 NHID-Clinical • POLICY → EXEC → escalation-failure
 
-session: NHID-TRACE-05-3A0A9EAD
+session: NHID-TRACE-05-7B249643
 context: B2B eligibility call / human requests transfer / escalation_path_available=false
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 

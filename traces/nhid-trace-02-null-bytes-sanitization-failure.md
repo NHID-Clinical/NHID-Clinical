@@ -1,8 +1,7 @@
 NHID-Clinical • INGEST → VALIDATE → sanitization-failure
 
-session: NHID-TRACE-02-8EE06DFE
+session: NHID-TRACE-02-C7F3BAB7
 context: B2B payer-provider voice call / eligibility check / adversarial input
-generated: 2026-05-26T17:37:26.575+00:00
 
 ---
 
