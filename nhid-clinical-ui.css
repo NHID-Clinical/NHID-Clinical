@@ -349,6 +349,19 @@ p { margin: 0; }
 [data-theme="dark"] .hero-notice {
   background: rgba(15, 87, 139, .18);
 }
+.callout {
+  margin-top: 1.25rem;
+  padding: .875rem 1.1rem;
+  border-left: 3px solid var(--blue);
+  background: rgba(15, 87, 139, .07);
+  border-radius: 0 6px 6px 0;
+  font-size: .875rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+[data-theme="dark"] .callout {
+  background: rgba(15, 87, 139, .18);
+}
 
 .hero-actions {
   display: flex;
