@@ -1,81 +1,61 @@
 # NHID-Clinical
 
-Voluntary proposal for non-human identity disclosure in healthcare payer–provider voice workflows.
+A voluntary, early-stage proposal for AI voice agent behavior in healthcare payer–provider calls.
 
-**This is a pre-standardization open proposal by Brianna Baynard — not an accredited standard, regulatory requirement, or certification authority.**
+**Not a standard. Not a certification. Built by one person based on time spent in payer operations.**
 
-Website: [nhid-clinical.org/specification.html](https://nhid-clinical.org/specification.html)
+Website: [nhid-clinical.org](https://nhid-clinical.org)
 
 ---
+
+## The problem in one sentence
+
+AI voice agents call payer offices, collect operational data, and only disclose they're automated when challenged — sometimes minutes into the call.
+
+## What this proposes
+
+Four behaviors:
+
+1. Identify as automated before asking for any data
+2. No audio designed to sound human (fake breathing, filler, call center noise)
+3. Immediate transfer to a human on request
+4. Basic log: what happened and when
 
 ## Repo structure
 
 ```
-schema/     JSON Schema (Draft 2020-12) for NHID canonical event objects
-src/        Policy engine — pure Python, no I/O, fully deterministic
-tests/      Conformance test suite (YAML) + failure harness (pytest) + trace generator
-traces/     10 pre-generated trace files, one per failure mode
+schema/    Canonical event schema (JSON Schema Draft 2020-12)
+src/       Policy engine — pure Python, no I/O, deterministic
+tests/     Conformance suite (YAML) + failure harness (pytest) + trace generator
+traces/    10 pre-generated failure traces
 ```
 
----
-
-## Quick start
+## Run the tests
 
 ```bash
-git clone https://github.com/thankcheeses/NHID-Clinical.git
-cd NHID-Clinical
-git checkout claude/code-review-fixes-98Ir1
 pip install -r requirements.txt
-
-# Run unit tests (no server needed)
 python -m pytest tests/failure_injection_harness.py -v -k "not integration"
-
-# Generate all 10 failure traces
 python tests/trace_generator.py --offline
-
-# Validate schema is well-formed JSON Schema
-python -m jsonschema schema/nhid_trace_schema_v1.json
 ```
 
-Integration tests (against a live FastAPI server) are auto-skipped if nothing is running at `http://127.0.0.1:8000`.
-
----
+21 unit tests. No server needed. Integration tests auto-skip if nothing is running at `http://127.0.0.1:8000`.
 
 ## Artifacts
 
-| File | What it is |
+| File | What it does |
 |---|---|
-| `schema/nhid_trace_schema_v1.json` | Canonical event schema. Every pipeline stage emits objects conforming to this. |
-| `src/nhid_policy_engine_v1.py` | Evaluates IDG-01, PDX-01, DBC-01, EIT-01, ATR-01. Returns a `PolicyDecision` dataclass. Never raises. |
-| `tests/nhid_conformance_test_suite_v1.yaml` | 18 machine-readable test cases (pass/fail/edge) loadable by any YAML-aware test runner. |
-| `tests/failure_injection_harness.py` | pytest suite — sends chaos inputs (null bytes, missing fields, replay) to a FastAPI endpoint. |
-| `tests/trace_generator.py` | CLI; writes 10 markdown traces to `/traces/`. Deterministic: identical output on every run. |
+| `schema/nhid_trace_schema_v1.json` | Event schema every pipeline stage emits against |
+| `src/nhid_policy_engine_v1.py` | Evaluates IDG-01, PDX-01, DBC-01, EIT-01, ATR-01. Never raises. |
+| `tests/nhid_conformance_test_suite_v1.yaml` | 18 machine-readable pass/fail/edge test cases |
+| `tests/failure_injection_harness.py` | pytest suite — chaos inputs, replay determinism |
+| `tests/trace_generator.py` | Writes 10 failure traces to `/traces/`. Same output every run. |
 
----
+## Status
 
-## Conformance tests
+- No payer or vendor has adopted this yet
+- Working schema, policy engine, conformance suite, and trace generator
+- Actively looking for feedback from payer ops, provider-side AI teams, health IT
 
-| ID | What it checks |
-|---|---|
-| IDG-01 | AI discloses non-human identity before any data exchange |
-| PDX-01 | PHI request blocked when disclosure has not yet occurred |
-| DBC-01 | No deceptive audio artifacts (fake breathing, scripted hesitation) |
-| EIT-01 | Escalation path to a human is available and immediate |
-| ATR-01 | Audit trail contains required fields (`disclosure_timestamp`, `escalation_outcome`, `phi_accessed`) |
+## Contact
 
----
-
-## What this is not
-
-- Not a compliance certification
-- Not an audit program
-- Not a HIPAA or TCPA legal requirement
-- Not a registry or enforcement body
-
-Self-administered conformance only. No external authority validates results.
-
----
-
-## License
-
-CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026 · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
+[contact@nhid-clinical.org](mailto:contact@nhid-clinical.org) · CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026

@@ -1,273 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical For Payers — 90-day pilot structure, vendor questionnaire, and RFP language for payer operations teams evaluating AI voice agent transparency."/>
-  <title>For Payers — 90-Day Pilot Guide | NHID-Clinical</title>
-  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
-  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For Payers – NHID-Clinical Pilot Guide</title>
+  <style>
+    body { font-family: 'Segoe UI', Roboto, sans-serif; max-width: 1000px; margin: 2rem auto; padding: 1rem; line-height: 1.6; background: #fff; color: #1a1a1a; }
+    h1 { color: #0D9488; }
+    h2 { margin-top: 2rem; border-left: 5px solid #0D9488; padding-left: 1rem; }
+    .box { background: #f8fafc; border-left: 5px solid #0D9488; padding: 1.25rem; margin: 1.5rem 0; }
+    .warning { background: #fff3e0; border-left: 5px solid #e67e22; padding: 1.25rem; margin: 1.5rem 0; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { border: 1px solid #ddd; padding: 0.75rem; text-align: left; }
+    th { background: #f1f5f9; }
+    .redflag { background: #fee2e2; border-left: 5px solid #b91c1c; padding: 1.25rem; margin: 1.5rem 0; }
+  </style>
 </head>
 <body>
 
-<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
-  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+<h1>For Payers: 90-Day Shadow Pilot Guide</h1>
+
+<div class="redflag">
+  <strong>Important:</strong> No payer has piloted or adopted NHID-Clinical yet. You would be among the first. This is a voluntary reference model from a solo founder.
 </div>
 
+<h2>What You Get</h2>
+<table>
+  <tr><th>Metric</th><th>Today (typical)</th><th>Target with NHID-Clinical</th></tr>
+  <tr><td>Verification latency ("are you human?")</td><td>3–5 minutes or call terminated</td><td>&lt;5 seconds</td></tr>
+  <tr><td>Audit effort per vendor</td><td>Manual call review (hours)</td><td>~2 minutes (run test suite)</td></tr>
+  <tr><td>RFP disclosure language</td><td>Custom per vendor</td><td>One standard clause</td></tr>
+</table>
 
-<header class="site-header">
-  <nav class="container nav" aria-label="Primary navigation">
-    <a class="brand" href="/" aria-label="NHID-Clinical home">
-      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
-      <span>
-        <strong>NHID-Clinical</strong>
-        <small>Building Trust in Healthcare Voice AI</small>
-      </span>
-    </a>
-                <div class="nav-links">
-      <a href="/">Home</a>
-      <a href="/about.html">About</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/script-examples.html">Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/for-payers.html">For Payers</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Spec</a>
-      <a href="/developers.html">Developers</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/news.html">News</a>
-      <a href="/community.html">Community</a>
-      <a href="/faq.html">FAQ</a>
-    </div>
-    <div class="nav-actions">
-      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      </button>
-      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
-        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-      <a class="primary-pill" href="/community.html">Get Involved</a>
-      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </div>
-  </nav>
-  <div class="search-overlay" id="search-overlay" hidden>
-    <div class="container search-overlay-inner">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
-      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <div class="container">
-      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
-    </div>
-  </div>
-</header>
+<h2>90-Day Shadow Pilot Structure</h2>
 
-<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
-  <a href="/">Home</a>
-  <a href="/about.html">About</a>
-  <a href="/script-examples.html">Examples</a>
-  <a href="/for-payers.html">For Payers</a>
-  <a href="/specification.html">Spec</a>
-  <a href="/developers.html">Developers</a>
-  <a href="/news.html">News</a>
-  <a href="/community.html">Community</a>
-  <a href="/faq.html">FAQ</a>
-  <div class="mobile-nav-footer">
-    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
-      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <span class="mobile-theme-label">Switch to dark mode</span>
-    </button>
-  </div>
-</nav>
-<div class="nav-backdrop" id="nav-backdrop"></div>
+<div class="box">
+  <strong>Weeks 1–2: RFP / Vendor Ask</strong><br>
+  Add this clause to your next voice AI vendor RFP or BAA amendment:<br>
+  <code>"The vendor's AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all B2B calls, including disclosure timestamps and opt-out handling. The payer may run the open-source conformance test suite against vendor output."</code>
+</div>
 
-<main>
-  <section class="inner-hero">
-    <div class="container inner-hero-grid">
-      <div>
-        <div class="crumbs"><a href="/">Home</a><span>/</span><span>For Payers</span></div>
-        <p class="eyebrow">Operational Guide · 90-Day Pilot</p>
-        <h1>For Payers: Running an NHID-Clinical Pilot</h1>
-        <p class="lede">A practical 90-day structure for payer operations teams who want to test AI voice agent transparency requirements with one vendor before expanding.</p>
-      </div>
-    </div>
-  </section>
+<div class="box">
+  <strong>Weeks 3–6: Sandbox Testing</strong><br>
+  Ask the vendor to run the <a href="/developers.html">conformance test suite</a> in their sandbox and send the resulting JSON traces (100 calls recommended).
+</div>
 
-  <section class="page-section">
-    <div class="container" style="max-width:52rem">
+<div class="box">
+  <strong>Weeks 7–10: Validation</strong><br>
+  Run the test suite yourself against the vendor's logs. Check for:
+  <ul>
+    <li>Disclosure before any operational data is requested</li>
+    <li>No deceptive artifacts</li>
+    <li>Opt-out / human escalation works</li>
+  </ul>
+</div>
 
-      <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> No payer has adopted NHID-Clinical yet. This is a reference guide for teams considering a first pilot. NHID-Clinical is <strong>not</strong> a formal standard or regulatory requirement — it is a voluntary proposal you can reference in vendor conversations if it fits your needs.
-      </div>
+<div class="box">
+  <strong>Weeks 11–12: Measure Results</strong><br>
+  Compare before vs after:
+  <ul>
+    <li>Average verification latency</li>
+    <li>Escalation call volume due to identity uncertainty</li>
+  </ul>
+</div>
 
-      <h2>What You Get From a Pilot</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">Three measurable operational improvements, scoped to one vendor and one workflow:</p>
-      <ul style="list-style:none;padding:0;margin-top:1rem;display:grid;gap:.65rem">
-        <li style="padding:.85rem 1.2rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7">
-          <strong>Disclosure latency under 5 seconds.</strong> Staff know they are talking to an AI before any operational data is requested. Target: &lt;5 seconds from call answer to identity disclosure.
-        </li>
-        <li style="padding:.85rem 1.2rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7">
-          <strong>Escalation friction reduced by &gt;30%.</strong> Measure staff-initiated "transfer me to a human" requests before and after. The NHID-Clinical escalation behavior (EIT-01) should reduce friction because staff aren't fighting the system to reach a person.
-        </li>
-        <li style="padding:.85rem 1.2rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7">
-          <strong>Audit trail completeness.</strong> Every call produces a machine-readable event log with disclosure timestamp, escalation outcome, and PHI-access record. You can pull this log without calling the vendor.
-        </li>
-      </ul>
+<h2>What This Pilot Is NOT For</h2>
+<div class="warning">
+  <ul>
+    <li>Live decision-making or prior auth automation</li>
+    <li>Replacing call center agents</li>
+    <li>Writing data back into your core systems</li>
+    <li>Agent identity verification / spoofing prevention</li>
+  </ul>
+  <strong>This is shadow-mode only.</strong> It logs and validates — it does not decide.
+</div>
 
-      <h2 style="margin-top:2.5rem">90-Day Pilot Structure</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">Four phases. Each phase has a gate — you don't move forward until the gate passes.</p>
+<h2>Next Step</h2>
+<p>Email <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a> with subject line <strong>"Pilot interest – [Your Health Plan Name]"</strong>.<br>
+I will send you the one-page pilot agreement and any needed support within 24 hours.</p>
 
-      <div style="display:grid;gap:1rem;margin-top:1.25rem">
-        <div style="padding:1.25rem 1.5rem;background:var(--bg-alt);border-radius:6px;border-top:3px solid var(--blue)">
-          <p style="margin:0 0 .35rem;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)">Weeks 1–2 · Baseline</p>
-          <p style="margin:0;color:var(--body);font-size:.95rem;line-height:1.75">Pull 30 days of existing call logs from the vendor. Measure current disclosure latency, escalation rate, and audit completeness. This is your before-state. If the vendor cannot produce call logs for this period, the pilot ends here.</p>
-        </div>
-        <div style="padding:1.25rem 1.5rem;background:var(--bg-alt);border-radius:6px;border-top:3px solid var(--blue)">
-          <p style="margin:0 0 .35rem;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)">Weeks 3–6 · Configuration</p>
-          <p style="margin:0;color:var(--body);font-size:.95rem;line-height:1.75">Vendor configures their system against the four NHID-Clinical behaviors: upfront identity disclosure, no deceptive artifacts, immediate escalation path, and structured audit logging. You review configuration docs — not marketing copy. Gate: vendor provides written confirmation of which NHID-Clinical behaviors are implemented and which are not.</p>
-        </div>
-        <div style="padding:1.25rem 1.5rem;background:var(--bg-alt);border-radius:6px;border-top:3px solid var(--blue)">
-          <p style="margin:0 0 .35rem;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)">Weeks 7–10 · Live Observation</p>
-          <p style="margin:0;color:var(--body);font-size:.95rem;line-height:1.75">Live calls with NHID-Clinical configuration active. Your ops team logs anomalies in a shared sheet: calls where disclosure didn't happen before data exchange, escalation requests that stalled, audit fields missing. Gate: fewer than 5% of observed calls with disclosure failures.</p>
-        </div>
-        <div style="padding:1.25rem 1.5rem;background:var(--bg-alt);border-radius:6px;border-top:3px solid var(--blue)">
-          <p style="margin:0 0 .35rem;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)">Weeks 11–12 · Measurement &amp; Decision</p>
-          <p style="margin:0;color:var(--body);font-size:.95rem;line-height:1.75">Compare Week 7–10 metrics against the Week 1–2 baseline. Decision: expand to additional workflows, pause for remediation, or exit the pilot. Write a one-page summary — this becomes your internal evidence base if you reference NHID-Clinical in future vendor contracts.</p>
-        </div>
-      </div>
+<p><a href="/">← Back to Home</a></p>
 
-      <div class="callout" role="note" style="margin-top:2rem;border-left-color:#f59e0b;background:rgba(245,158,11,.07)">
-        <strong>What this pilot is NOT for:</strong> This is not a compliance certification, a HIPAA audit, or a legal review of vendor contracts. NHID-Clinical has no enforcement mechanism. The pilot gives you operational evidence — what you do with that evidence is your decision.
-      </div>
-
-      <h2 style="margin-top:2.5rem">RFP Language (Copy-Paste Ready)</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The following clause names NHID-Clinical explicitly and uses <code>SHALL</code> as a contractual obligation. Adapt as needed — your legal team should review before use.</p>
-
-      <div style="background:var(--bg-alt);border-radius:8px;padding:1.5rem 2rem;margin-top:1rem;font-family:monospace;font-size:.875rem;line-height:1.85;color:var(--body);white-space:pre-wrap;word-break:break-word" id="rfp-clause">Vendor SHALL implement the four behavioral requirements defined in the NHID-Clinical v1.3 proposal (nhid-clinical.org/specification.html) for all automated voice agents contacting [Plan Name] staff on administrative workflows:
-
-1. Identity disclosure before any operational data is exchanged.
-2. No audio artifacts or behavioral patterns designed to simulate human presence.
-3. Immediate, unambiguous transfer to a human operator upon request.
-4. Structured event logging sufficient to reconstruct call content and timing.
-
-Vendor SHALL provide machine-readable audit logs conforming to the NHID-Clinical canonical event schema within 5 business days of request. Logs SHALL include disclosure_timestamp, escalation_outcome, and phi_accessed fields as defined in schema/nhid_trace_schema_v1.json.
-
-These requirements are defined by a voluntary open proposal, not a regulatory body. Their inclusion here creates a contractual obligation between the parties regardless of the proposal's standardization status.</div>
-      <button id="rfp-copy-btn" onclick="copyRFP()" style="margin-top:.85rem;background:var(--blue);color:white;border:none;padding:.7rem 1.4rem;border-radius:4px;font-size:.88rem;cursor:pointer;font-weight:600">Copy RFP Clause →</button>
-
-      <h2 style="margin-top:2.5rem">Vendor Questionnaire</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">Four questions. Ask before you sign. Acceptable answers are noted.</p>
-
-      <ol style="padding-left:1.4rem;color:var(--body);font-size:.95rem;line-height:1;margin-top:1.1rem;display:grid;gap:1.1rem">
-        <li style="line-height:1.75">
-          <strong>At what point in the call does your system identify itself as automated?</strong><br>
-          <span style="color:var(--ink-soft)">Acceptable: "Before any data request, within the first utterance." Not acceptable: "When the human asks" or "It depends on the call script."</span>
-        </li>
-        <li style="line-height:1.75">
-          <strong>What happens when a staff member says "transfer me to a human"?</strong><br>
-          <span style="color:var(--ink-soft)">Acceptable: Specific transfer behavior, latency target, fallback if no human is available. Not acceptable: "We handle escalation" without specifics.</span>
-        </li>
-        <li style="line-height:1.75">
-          <strong>Can you provide a sample audit log from a prior call, with disclosure_timestamp and escalation_outcome fields?</strong><br>
-          <span style="color:var(--ink-soft)">Acceptable: Actual sample log (redacted). Not acceptable: "We log everything" without showing the schema.</span>
-        </li>
-        <li style="line-height:1.75">
-          <strong>Does your system use any audio processing — breathing sounds, filler words, variable speech cadence — to reduce the perception of automation?</strong><br>
-          <span style="color:var(--ink-soft)">Acceptable: "No" or explicit list of what is and is not used. Not acceptable: "Our voice sounds natural" without addressing the question directly.</span>
-        </li>
-      </ol>
-
-      <h2 style="margin-top:2.5rem">Threat Model &amp; Failure Handling</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">Four failure modes to plan for before the pilot starts:</p>
-
-      <div style="display:grid;gap:.75rem;margin-top:1.1rem">
-        <div style="padding:.9rem 1.2rem;border-left:3px solid #ef4444;background:rgba(239,68,68,.06);border-radius:0 4px 4px 0;color:var(--body);font-size:.9rem;line-height:1.7">
-          <strong>Vendor claims compliance but cannot produce logs.</strong> Stop the pilot. Require log access as a prerequisite, not a deliverable.
-        </div>
-        <div style="padding:.9rem 1.2rem;border-left:3px solid #ef4444;background:rgba(239,68,68,.06);border-radius:0 4px 4px 0;color:var(--body);font-size:.9rem;line-height:1.7">
-          <strong>Disclosure happens but is buried in a long opening script.</strong> The NHID-Clinical requirement is disclosure before data exchange, not disclosure somewhere in the first 60 seconds. If staff are answering PHI questions before they register the disclosure, the behavior fails regardless of the script.
-        </div>
-        <div style="padding:.9rem 1.2rem;border-left:3px solid #ef4444;background:rgba(239,68,68,.06);border-radius:0 4px 4px 0;color:var(--body);font-size:.9rem;line-height:1.7">
-          <strong>Escalation path exists on paper but stalls in practice.</strong> Test it. Have a staff member request a human transfer during Week 7. If it takes more than 30 seconds or fails, log it as an EIT-01 failure.
-        </div>
-        <div style="padding:.9rem 1.2rem;border-left:3px solid #ef4444;background:rgba(239,68,68,.06);border-radius:0 4px 4px 0;color:var(--body);font-size:.9rem;line-height:1.7">
-          <strong>Vendor updates their system mid-pilot.</strong> Require a change notification window (72 hours minimum). Undisclosed changes invalidate the baseline comparison.
-        </div>
-      </div>
-
-      <h2 style="margin-top:2.5rem">What You Need From Me (Brianna)</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">I can provide three things if you are running a pilot:</p>
-      <ul style="list-style:disc;padding-left:1.4rem;color:var(--body);font-size:.95rem;line-height:2;margin-top:.5rem">
-        <li><strong>Informal review of your vendor's audit log format</strong> against the NHID-Clinical canonical event schema. I'll tell you what fields are missing and what they map to.</li>
-        <li><strong>Clarification of any requirement</strong> in the v1.3 proposal. If the language is ambiguous for your use case, email me and I'll either clarify or note it as a gap for v1.4.</li>
-        <li><strong>A written record that your plan referenced NHID-Clinical</strong> before it was a formal standard. If this becomes a regulatory reference point later, early adoption creates a clear paper trail.</li>
-      </ul>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:1rem">I cannot provide legal advice, compliance certification, or vendor endorsements.</p>
-
-      <div style="padding:1.5rem 2rem;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;margin-top:2.5rem">
-        <p style="margin:0 0 .5rem;font-weight:700;color:#166534">Next Step</p>
-        <p style="margin:0;color:#166534;font-size:.95rem;line-height:1.75">Email <a href="mailto:contact@nhid-clinical.org" style="color:#166534;font-weight:700">contact@nhid-clinical.org</a> with subject line: <strong>Pilot interest – [Health Plan Name]</strong>. Describe your current AI voice vendor, call volume (rough order of magnitude), and the biggest operational friction point you are trying to solve. I'll respond within a week.</p>
-      </div>
-
-    </div>
-  </section>
-
-  <section class="container closing-section">
-    <div class="closing-panel">
-      <div>
-        <p class="section-kicker">Read the full proposal</p>
-        <h2>The technical details are in the specification.</h2>
-        <p>Schema, policy engine, conformance tests, and failure injection harness — all open source.</p>
-      </div>
-      <a class="closing-button" href="/specification.html">Read the Spec →</a>
-    </div>
-  </section>
-</main>
-
-<footer id="contact" class="site-footer">
-  <div class="container footer-inner">
-    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
-    <div>
-      <a href="mailto:contact@nhid-clinical.org">Contact</a>
-      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
-      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
-    </div>
-    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
-  </div>
-</footer>
-
-<script>
-function copyRFP() {
-  const el = document.getElementById('rfp-clause');
-  const btn = document.getElementById('rfp-copy-btn');
-  navigator.clipboard.writeText(el.innerText).then(() => {
-    const orig = btn.textContent;
-    btn.textContent = 'Copied ✓';
-    btn.style.background = '#16a34a';
-    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
-  }).catch(() => {
-    const range = document.createRange();
-    range.selectNode(el);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    window.getSelection().removeAllRanges();
-  });
-}
-</script>
-
-<script src="/site.js"></script>
 </body>
 </html>
