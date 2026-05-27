@@ -180,8 +180,8 @@
       <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/thankcheeses/NHID-Clinical.git
 cd NHID-Clinical
 git checkout claude/code-review-fixes-98Ir1
-pip install cryptography pytest
-pytest tests/test_identity.py -v
+pip install -r requirements.txt
+python -m pytest tests/ -v
 
 # Expected output:
 # test_key_generation     PASSED
