@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Technical Proof Package — deterministic guarantees, audit readiness model, architecture notes, and risk register for enterprise and procurement teams."/>
+  <title>Technical Proof Package | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+</div>
+
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/script-examples.html">Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/for-payers.html">For Payers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/specification.html">Spec</a>
+      <a href="/developers.html">Developers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/script-examples.html">Examples</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/specification.html">Spec</a>
+  <a href="/developers.html">Developers</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/developers.html">Developers</a><span>/</span><span>Proof Package</span></div>
+      <p class="eyebrow">For Enterprise &amp; Procurement Teams · v1.3 · May 2026</p>
+      <h1>Technical Proof Package</h1>
+      <p class="lede">A summary of the deterministic guarantees, audit readiness model, and architectural properties of the NHID-Clinical reference implementation — for teams evaluating adoption or integration.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+
+      <div class="hero-notice" role="note" style="margin-bottom:2rem">
+        <strong>Scope of this document:</strong> This describes the reference implementation's technical properties. NHID-Clinical does not issue certifications, conduct audits, or validate vendor implementations. Everything here is self-attested and open for community review.
+      </div>
+
+      <!-- ── 1. System behavior ─────────────────────────────────────────── -->
+      <h2 style="margin-top:0">1. System Behavior Specification</h2>
+
+      <div style="display:grid;gap:.75rem;margin-top:1rem">
+        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
+          <strong style="color:var(--ink)">Deterministic output</strong>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">Identical input event + identical policy version → identical trace output. The policy engine is a pure function with no side effects. Output does not depend on wall-clock time, process state, or external calls.</p>
+        </div>
+        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
+          <strong style="color:var(--ink)">Replay guarantee</strong>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">Any stored trace can be replayed. The policy version is embedded in each event header. Replay with a different policy version is detected and flagged as a mismatch.</p>
+        </div>
+        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
+          <strong style="color:var(--ink)">Failure invariants</strong>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">The engine never raises an unhandled exception. Invalid or malformed input returns a deterministic error trace (action: LOG_ONLY, recoverable: true). The caller always gets a response.</p>
+        </div>
+        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
+          <strong style="color:var(--ink)">Idempotency</strong>
+          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">Submitting the same request_id twice produces the same policy decision. The event store deduplicates on request_id at the PERSIST stage.</p>
+        </div>
+      </div>
+
+      <!-- ── 2. Failure simulation ──────────────────────────────────────── -->
+      <h2 style="margin-top:2.5rem">2. Failure &amp; Attack Simulation Coverage</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The <a href="/developers.html" style="color:var(--blue)">failure injection harness</a> covers the following scenarios:</p>
+
+      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.88rem;color:var(--body)">
+        <thead>
+          <tr style="background:var(--bg-alt);text-align:left">
+            <th style="padding:.6rem .9rem;border-bottom:2px solid var(--border)">Scenario</th>
+            <th style="padding:.6rem .9rem;border-bottom:2px solid var(--border)">Expected behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.6rem .9rem">Empty SpeechResult</td>
+            <td style="padding:.6rem .9rem">Policy evaluated, event written, no 500</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
+            <td style="padding:.6rem .9rem">Null bytes in input</td>
+            <td style="padding:.6rem .9rem">Sanitized before engine, sanitized text stored</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.6rem .9rem">Missing CallSid (session binding failure)</td>
+            <td style="padding:.6rem .9rem">400 returned, no event written, structured error body</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
+            <td style="padding:.6rem .9rem">Late disclosure (IDG-01 + PDX-01)</td>
+            <td style="padding:.6rem .9rem">DENY_DATA action, 2 critical violations logged</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.6rem .9rem">Escalation path unavailable (EIT-01)</td>
+            <td style="padding:.6rem .9rem">ESCALATE_HUMAN with TwiML fallback, violation logged</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
+            <td style="padding:.6rem .9rem">Deceptive artifact (DBC-01)</td>
+            <td style="padding:.6rem .9rem">LOG_ONLY, partial_failure=true, session continues</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.6rem .9rem">Missing audit fields (ATR-01)</td>
+            <td style="padding:.6rem .9rem">Violation logged, pipeline continues, gap recorded</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
+            <td style="padding:.6rem .9rem">Bot-to-bot, undisclosed agent</td>
+            <td style="padding:.6rem .9rem">DENY_DATA, stricter gate applied for ai_agent counterparty</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.6rem .9rem">Replay with external_calls_cached=false</td>
+            <td style="padding:.6rem .9rem">Divergence detected, ATR-01 violation, replay flagged FAIL</td>
+          </tr>
+          <tr>
+            <td style="padding:.6rem .9rem">Duplicate request_id (idempotency)</td>
+            <td style="padding:.6rem .9rem">Identical trace returned, no duplicate event written</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ── 3. Audit readiness ─────────────────────────────────────────── -->
+      <h2 style="margin-top:2.5rem">3. Audit Readiness Model</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">An external auditor reconstructing a session from the event store can determine:</p>
+      <ul style="color:var(--body);font-size:.93rem;line-height:2;padding-left:1.4rem;margin-top:.5rem">
+        <li>When the call started and when the first disclosure statement was made</li>
+        <li>Whether disclosure preceded any PHI or credential exchange</li>
+        <li>Whether opt-out or escalation was requested and how it was handled</li>
+        <li>Which policy engine version processed each event</li>
+        <li>Whether any partial failures or boundary violations were recorded</li>
+      </ul>
+
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:1rem"><strong>Example correlation ID lifecycle:</strong></p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.82rem;line-height:1.8;overflow-x:auto;color:var(--body)">correlation_id: "auth-2026-05-26-001"
+
+t=00:00.000  INGEST     POST /voice/process received
+t=00:00.123  VALIDATE   SpeechResult normalized
+t=00:00.131  STATE      Session reconstructed: turn_count=0, disclosure=null
+t=00:00.140  POLICY     IDG-01: DISCLOSE_IDENTITY triggered (turn_count=0)
+t=00:00.145  EXEC       TwiML disclosure message rendered
+t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
+
+      <!-- ── 4. Architecture ────────────────────────────────────────────── -->
+      <h2 style="margin-top:2.5rem">4. Architecture &amp; Scale Notes</h2>
+
+      <div style="display:grid;gap:.75rem;margin-top:1rem">
+        <div style="padding:1rem 1.25rem;border:1px solid var(--border);border-radius:6px;background:var(--paper)">
+          <strong style="color:var(--ink);font-size:.92rem">Current reference implementation</strong>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin:.3rem 0 0">FastAPI + SQLite event store. Stateless policy engine. Suitable for development and self-validation. Not load-tested for production at scale.</p>
+        </div>
+        <div style="padding:1rem 1.25rem;border:1px solid var(--border);border-radius:6px;background:var(--paper)">
+          <strong style="color:var(--ink);font-size:.92rem">Path to distributed event store</strong>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin:.3rem 0 0">Replace SQLite with Kafka or S3-backed event log. Policy engine is stateless and horizontally scalable — no changes required to the core engine.</p>
+        </div>
+        <div style="padding:1rem 1.25rem;border:1px solid var(--border);border-radius:6px;background:var(--paper)">
+          <strong style="color:var(--ink);font-size:.92rem">Replay preservation</strong>
+          <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin:.3rem 0 0">Store input payload + policy version with each event. Any node can replay from the event store. Policy version change detection prevents silent audit corruption.</p>
+        </div>
+      </div>
+
+      <!-- ── 5. Risk register ───────────────────────────────────────────── -->
+      <h2 style="margin-top:2.5rem">5. Risk Register</h2>
+
+      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.88rem;color:var(--body)">
+        <thead>
+          <tr style="background:var(--bg-alt);text-align:left">
+            <th style="padding:.6rem .9rem;border-bottom:2px solid var(--border)">Risk</th>
+            <th style="padding:.6rem .9rem;border-bottom:2px solid var(--border)">Mitigation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.6rem .9rem">Timestamps break exact replay</td>
+            <td style="padding:.6rem .9rem">Hash computed over non-timestamp fields only; deterministic_hash excludes wall-clock values</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
+            <td style="padding:.6rem .9rem">Policy engine version change between runs</td>
+            <td style="padding:.6rem .9rem">Policy version embedded in every event; replay rejects version mismatches</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.6rem .9rem">JSON key ordering variance</td>
+            <td style="padding:.6rem .9rem">Canonical JSON (sorted keys) enforced before hashing</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
+            <td style="padding:.6rem .9rem">LLM re-invocation during replay</td>
+            <td style="padding:.6rem .9rem">JSON Schema if/then enforces external_calls_cached=true when replay_mode=cached</td>
+          </tr>
+          <tr>
+            <td style="padding:.6rem .9rem">partial_failure accumulation undetected</td>
+            <td style="padding:.6rem .9rem">boundary_violations[] written per event; partial_failure rate trackable across sessions</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ── 6. One-page summary ────────────────────────────────────────── -->
+      <h2 style="margin-top:2.5rem">6. One-Page Architecture Summary</h2>
+      <div style="padding:1.25rem 1.5rem;background:var(--bg-alt);border-radius:8px;margin-top:1rem">
+        <p style="color:var(--body);font-size:.93rem;line-height:1.8;margin:0"><strong>What it is:</strong> A lightweight, stateless service that logs AI voice agent disclosure behavior. Input: call events from Twilio or equivalent. Output: tamper-evident, deterministically reproducible trace with policy decision and boundary violations.<br><br>
+        <strong>What it is not:</strong> A caller identity verifier, a certification body, or a compliance guarantor. Adoption does not confer HIPAA or TCPA compliance.<br><br>
+        <strong>Event flow:</strong></p>
+        <pre style="background:var(--paper);border:1px solid var(--border);border-radius:4px;padding:.75rem 1rem;font-size:.8rem;line-height:1.8;margin-top:.75rem;overflow-x:auto;color:var(--body)">[AI Voice Agent] → INGEST → VALIDATE → STATE → POLICY → EXEC → PERSIST
+                                                        ↓
+                                               [Event Store]
+                                                        ↓
+                                          [Auditor / Payer System]</pre>
+      </div>
+
+      <div style="margin-top:2rem;display:flex;flex-wrap:wrap;gap:1rem">
+        <a href="/developers.html" style="color:var(--blue);font-weight:600;font-size:.9rem">← Full technical reference</a>
+        <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download style="color:var(--blue);font-weight:600;font-size:.9rem">Download Public Brief (PDF) →</a>
+        <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue);font-weight:600;font-size:.9rem">Contact →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Open for feedback</p>
+        <h2>Questions about implementation or adoption?</h2>
+        <p>Reach out directly or join the community discussion.</p>
+      </div>
+      <a class="closing-button" href="/community.html">Community →</a>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>
