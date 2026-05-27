@@ -10,13 +10,13 @@ trace post template (v1). Output files go to /traces/.
 
 Usage:
   # With a live server:
-  python tools/trace_generator.py
+  python tests/trace_generator.py
 
   # Without a server (generates synthetic traces from policy engine only):
-  python tools/trace_generator.py --offline
+  python tests/trace_generator.py --offline
 
   # Custom output directory:
-  python tools/trace_generator.py --output-dir /path/to/traces
+  python tests/trace_generator.py --output-dir /path/to/traces
 
 NHID-Clinical is a voluntary open proposal. CC BY 4.0.
 Not an accredited standard. Not a regulatory requirement.
