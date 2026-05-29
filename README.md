@@ -38,6 +38,7 @@ git clone https://github.com/thankcheeses/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
+```
 
 Expected output:72 unit tests run standalone with zero setup — no server, no API keys, no accounts required.
 18 integration tests require a live NHID-Clinical server running at http://127.0.0.1:8000. They auto-skip cleanly when no server is present.
