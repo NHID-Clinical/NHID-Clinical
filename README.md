@@ -49,6 +49,11 @@ python tests/trace_generator.py --offline
 # Run the Twilio adapter demo
 python adapters/twilio_adapter.py
 ```
+### Test Suite
+
+72 unit tests run standalone with zero setup — no server, no API keys, no accounts required.
+
+18 integration tests require a live NHID-Clinical server running at http://127.0.0.1:8000. They auto-skip cleanly when no server is present. These tests validate end-to-end policy enforcement, trace reproducibility, and conformance against a running implementation. To run the full suite, start a conforming NHID-Clinical server and re-run pytest.
 
 ## Artifacts
 
