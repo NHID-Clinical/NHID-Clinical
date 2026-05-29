@@ -31,29 +31,20 @@ adapters/   Vendor format adapters (Twilio → NHID trace)
 traces/     10 pre-generated failure traces
 ```
 
-## Quick start
+## Quick Start
 
 ```bash
 git clone https://github.com/thankcheeses/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-```
 
-Expected output: `25 passed, 18 skipped` — the 18 skipped are integration tests that require a live server at `http://127.0.0.1:8000` and are automatically skipped if none is running.
+Expected output:72 unit tests run standalone with zero setup — no server, no API keys, no accounts required.
+18 integration tests require a live NHID-Clinical server running at http://127.0.0.1:8000. They auto-skip cleanly when no server is present.
 
-```bash
-# Generate all 10 failure traces (no server needed)
-python tests/trace_generator.py --offline
+These 18 integration tests validate end-to-end policy enforcement, trace reproducibility, and conformance against a running implementation.To run the full suite (90 tests), start a conforming NHID-Clinical server and re-run pytest.
 
-# Run the Twilio adapter demo
-python adapters/twilio_adapter.py
-```
-### Test Suite
 
-72 unit tests run standalone with zero setup — no server, no API keys, no accounts required.
-
-18 integration tests require a live NHID-Clinical server running at http://127.0.0.1:8000. They auto-skip cleanly when no server is present. These tests validate end-to-end policy enforcement, trace reproducibility, and conformance against a running implementation. To run the full suite, start a conforming NHID-Clinical server and re-run pytest.
 
 ## Artifacts
 
