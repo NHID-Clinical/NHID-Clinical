@@ -50,12 +50,9 @@ pytest tests/ -q
 Expected output (no server required):
 
 ```
-72 passed, 18 skipped
+Unit invariant preserved: 72 passed, 0 skipped
+Integration suite: 18 tests, may pass or skip (expected)
 ```
-
-The 72 unit tests verify deterministic policy engine correctness. They require no server, no API keys, and no accounts. **72 unit tests must pass with zero skips.** If any of the 72 show as skipped, something in the environment is broken.
-
-The 18 skipped tests are integration tests — skipping is expected behavior when no server is running.
 
 ### What you are verifying
 
@@ -71,10 +68,8 @@ Integration tests require a live NHID-Clinical server at `http://127.0.0.1:8000`
 pytest tests/
 ```
 
-Expected when no server running: `72 passed, 18 skipped`  
-Expected when server running: `90 passed, 0 skipped`
-
-Integration tests validate end-to-end policy enforcement, trace reproducibility, and conformance against a running implementation.
+Unit invariant preserved: 72 passed, 0 skipped
+Integration suite: 18 tests, may pass or skip (expected)
 
 ## Artifacts
 
