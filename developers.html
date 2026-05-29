@@ -190,7 +190,8 @@ python -m pytest tests/ -v
 python -m jsonschema schema/nhid_trace_schema_v1.json
 python tests/trace_generator.py --offline</pre>
 
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code> and will be automatically skipped if the server is not reachable.</p>
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">72 unit tests run standalone with zero setup — no server, no API keys, no accounts required.</p>
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">18 integration tests require a live NHID-Clinical server running at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code>. They auto-skip cleanly when no server is present. These tests validate end-to-end policy enforcement, trace reproducibility, and conformance against a running implementation. To run the full suite, start a conforming NHID-Clinical server and re-run pytest.</p>
 
       <!-- ── Interoperability ──────────────────────────────────────────────── -->
 
