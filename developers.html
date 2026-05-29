@@ -186,18 +186,30 @@
       <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.25rem 1.5rem;font-size:.85rem;line-height:1.9;overflow-x:auto;color:var(--body)">git clone https://github.com/thankcheeses/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-python -m pytest tests/ -v
-python -m jsonschema schema/nhid_trace_schema_v1.json
-python tests/trace_generator.py --offline</pre>
+pytest tests/ -q</pre>
 
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">72 unit tests run standalone with zero setup — no server, no API keys, no accounts required.</p>
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">18 integration tests require a live NHID-Clinical server running at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code>. They auto-skip cleanly when no server is present. These tests validate end-to-end policy enforcement, trace reproducibility, and conformance against a running implementation. To run the full suite, start a conforming NHID-Clinical server and re-run pytest.</p>
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Expected output: <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">72 passed, 18 skipped</code> — no server, no API keys, no accounts required.</p>
+
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem"><strong>Unit tests (72):</strong> verify deterministic policy engine correctness. 72 unit tests must pass with zero skips. These are the core contract of the implementation — identical input always produces identical output.</p>
+
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem"><strong>Integration tests (18):</strong> validate a live NHID-Clinical server at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code>. They auto-skip cleanly when no server is present. Integration tests are optional system validation — they are not required to verify policy engine correctness.</p>
+
+      <!-- ── What You Are Verifying ──────────────────────────────────────── -->
+
+      <div style="margin-top:2rem;padding:1.25rem 1.5rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
+        <p style="font-weight:700;margin:0 0 .75rem;color:var(--body)">What you are verifying</p>
+        <ul style="margin:0;padding-left:1.25rem;color:var(--body);font-size:.93rem;line-height:1.9">
+          <li><strong>Deterministic policy engine correctness</strong> — identical input always produces identical output, across any environment</li>
+          <li><strong>Reproducible evaluation logic</strong> — IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 rule enforcement is consistent and auditable</li>
+          <li><strong>Audit-safe trace behavior</strong> — event records are complete, append-only, and reproducible across replay</li>
+        </ul>
+      </div>
 
       <!-- ── Interoperability ──────────────────────────────────────────────── -->
 
       <div style="margin-top:2.5rem;padding:1.25rem 1.5rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
         <p style="font-weight:700;margin:0 0 .4rem;color:var(--body)">Vendor Interoperability</p>
-        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0">The <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">adapters/</code> directory contains format adapters that convert vendor-specific call transcripts to NHID-Clinical event traces. Currently available: Twilio Voice Intelligence. See the <a href="/interoperability.html" style="color:var(--blue);font-weight:500">interoperability demo →</a></p>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0">Vendor format adapters convert vendor-specific call transcripts to NHID-Clinical event traces. See the <a href="/interoperability.html" style="color:var(--blue);font-weight:500">interoperability demo →</a></p>
       </div>
 
       <!-- ── Disclaimer ─────────────────────────────────────────────────── -->
