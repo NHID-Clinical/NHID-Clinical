@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NHID-Clinical Live API Demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui.min.css" />
+  <style>
+    body { margin: 0; padding: 0; background: #f8f9fa; font-family: -apple-system, sans-serif; }
+    .demo-header { background: #0052CC; color: white; padding: 1.5rem 2rem; }
+    .demo-header h1 { margin: 0 0 0.5rem; font-size: 1.5rem; }
+    .demo-header p { margin: 0 0 1rem; opacity: 0.9; font-size: 0.95rem; }
+    .demo-key { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; display: inline-block; font-family: monospace; font-size: 0.9rem; margin-bottom: 1rem; }
+    .demo-links a { color: rgba(255,255,255,0.85); margin-right: 1.5rem; text-decoration: none; font-size: 0.9rem; }
+    .demo-links a:hover { color: white; }
+    .quick-try { background: white; padding: 1.5rem 2rem; border-bottom: 1px solid #e0e0e0; }
+    .quick-try h3 { margin: 0 0 1rem; color: #333; font-size: 1rem; }
+    .quick-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .quick-btn { background: #f0f4ff; border: 1px solid #0052CC; color: #0052CC; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; font-weight: 600; }
+    .quick-btn:hover { background: #0052CC; color: white; }
+    #swagger-ui { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+  </style>
+</head>
+<body>
+
+<div class="demo-header">
+  <h1>NHID-Clinical v1.3 — Live Interactive API Demo</h1>
+  <p>Try every endpoint right now. No signup required for public endpoints.</p>
+  <div class="demo-key">Demo API Key: <strong>nhid-demo-2026</strong></div>
+  <div class="demo-links">
+    <a href="/">← Home</a>
+    <a href="/developers.html">Developers</a>
+    <a href="/pricing.html">Pricing & Pilots</a>
+    <a href="https://github.com/thankcheeses/NHID-Clinical">GitHub</a>
+    <a href="/NHIDClinical.psm1">PowerShell Module</a>
+  </div>
+</div>
+
+<div class="quick-try">
+  <h3>Quick Try — Pre-filled examples:</h3>
+  <div class="quick-buttons">
+    <button class="quick-btn" onclick="copyPayer()">📋 Copy: Screen a Call</button>
+    <button class="quick-btn" onclick="copyAttest()">📋 Copy: Create Attestation</button>
+    <button class="quick-btn" onclick="copyEval()">📋 Copy: Evaluate Transcript</button>
+    <button class="quick-btn" onclick="copyPS()">📋 Copy: PowerShell</button>
+  </div>
+</div>
+
+<div id="swagger-ui"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-bundle.min.js"></script>
+<script>
+  window.onload = () => {
+    window.ui = SwaggerUIBundle({
+      url: "/openapi.json",
+      dom_id: '#swagger-ui',
+      presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+      layout: "BaseLayout",
+      tryItOutEnabled: true,
+      displayRequestDuration: true,
+      defaultModelsExpandDepth: 1,
+    });
+  };
+
+  function copyPayer() {
+    navigator.clipboard.writeText(`curl -X POST https://nhid-clinical.org/v1/payer/screen \\
+  -H "Content-Type: application/json" \\
+  -d '{"caller_npi":"1234567890","reference_id":"demo-ref-001","requested_scope":"claims_inquiry"}'`);
+    alert("Copied! Paste in your terminal.");
+  }
+
+  function copyAttest() {
+    navigator.clipboard.writeText(`curl -X POST https://nhid-clinical.org/v1/attest \\
+  -H "Content-Type: application/json" \\
+  -H "X-API-Key: nhid-demo-2026" \\
+  -d '{"delegating_entity":"1234567890","authorized_actor":"my-vendor","scope":["claims_inquiry"],"expires_at":"2027-01-01T00:00:00Z"}'`);
+    alert("Copied! Paste in your terminal.");
+  }
+
+  function copyEval() {
+    navigator.clipboard.writeText(`curl -X POST https://nhid-clinical.org/v1/policy/evaluate \\
+  -H "Content-Type: application/json" \\
+  -H "X-API-Key: nhid-demo-2026" \\
+  -d '{"session_id":"demo_123","agent_id":"demo_agent","transcript_text":"I want to speak to a human","disclosure_confirmed":true}'`);
+    alert("Copied! Paste in your terminal.");
+  }
+
+  function copyPS() {
+    navigator.clipboard.writeText(`Import-Module .\\NHIDClinical.psm1
+Invoke-NHIDPayerScreen -CallerNPI "1234567890" -ReferenceId "demo-ref-001" -RequestedScope "claims_inquiry"`);
+    alert("Copied! Paste in PowerShell.");
+  }
+</script>
+</body>
+</html>
