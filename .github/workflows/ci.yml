@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "claude/*"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  unit-invariant:
+    name: "Unit invariant: 72 passed, 0 skipped"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate test invariants
+        run: python scripts/validate_ci.py
+        # Hard invariants enforced by this step:
+        #   Unit invariant preserved: 72 passed, 0 skipped
+        #   Integration suite: 18 tests, may pass or skip (expected)
+        #
+        # CI fails if:
+        #   - passed != 72
+        #   - any unit test is skipped unexpectedly
+        #   - any test fails
+        #   - any collection error occurs
+        #
+        # CI does NOT fail if:
+        #   - integration tests skip (no server present in CI = expected)

@@ -24,40 +24,66 @@ Four behaviors:
 ## Repo structure
 
 ```
-schema/     Canonical event schema (JSON Schema Draft 2020-12)
-src/        Policy engine + cryptographic identity layer (pure Python)
-tests/      Conformance suite (YAML) + failure harness (pytest) + trace generator
-adapters/   Vendor format adapters (Twilio → NHID trace)
-traces/     10 pre-generated failure traces
+schema/       Canonical event schema (JSON Schema Draft 2020-12)
+conformance/  Machine-readable conformance test cases (YAML)
+src/          Policy engine + cryptographic identity layer (pure Python)
+tests/        pytest suite — unit tests + integration harness + trace generator
+traces/       10 pre-generated failure traces
 ```
 
-## Quick Start
+## How to Run and Verify NHID-Clinical
+
+### Install
 
 ```bash
 git clone https://github.com/thankcheeses/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-python -m pytest tests/ -v
 ```
 
-### Test Suite
+### Run unit tests (core deterministic engine)
 
-72 unit tests run standalone with zero setup — no server, no API keys, no accounts required.
+```bash
+pytest tests/ -q
+```
 
-18 integration tests require a live NHID-Clinical server running at http://127.0.0.1:8000. They auto-skip cleanly when no server is present. These tests validate end-to-end policy enforcement, trace reproducibility, and conformance against a running implementation. To run the full suite, start a conforming NHID-Clinical server and re-run pytest.
+Expected output (no server required):
+
+```
+Unit invariant preserved: 72 passed, 0 skipped
+Integration suite: 18 tests, may pass or skip (expected)
+```
+
+### What you are verifying
+
+- **Deterministic policy engine correctness** — identical input always produces identical output
+- **Reproducible evaluation logic** — IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 rule enforcement
+- **Audit-safe trace behavior** — event records are complete and append-only
+
+### Run integration tests (optional system validation)
+
+Integration tests require a live NHID-Clinical server at `http://127.0.0.1:8000`. They auto-skip cleanly when no server is present and are not required to verify policy engine correctness.
+
+```bash
+pytest tests/
+```
+
+Unit invariant preserved: 72 passed, 0 skipped
+Integration suite: 18 tests, may pass or skip (expected)
 
 ## Artifacts
 
 | File | What it does |
 |---|---|
 | `schema/nhid_trace_schema_v1.json` | Event schema every pipeline stage emits against |
+| `conformance/nhid_conformance_test_suite_v1.yaml` | 18 machine-readable pass/fail/edge conformance cases |
 | `src/nhid_policy_engine_v1.py` | Evaluates IDG-01, PDX-01, DBC-01, EIT-01, ATR-01. Never raises. |
+| `src/voice_policy.py` | Full policy evaluation functions with deterministic return types |
 | `src/agent_identity.py` | Ed25519 agent passports, delegation chains, revocation (v1.4 preview) |
-| `tests/nhid_conformance_test_suite_v1.yaml` | 18 machine-readable pass/fail/edge test cases |
-| `tests/failure_injection_harness.py` | pytest suite — chaos inputs, policy evaluation, replay determinism |
-| `tests/test_identity.py` | 4 tests: key generation, delegation, expiry, revocation |
-| `tests/trace_generator.py` | Writes 10 failure traces to `/traces/`. Same output every run. |
-| `adapters/twilio_adapter.py` | Maps Twilio transcripts to NHID-Clinical event traces |
+| `tests/test_voice_policy.py` | 54 unit tests — policy engine correctness, no server required |
+| `tests/test_identity.py` | 18 unit tests — identity layer correctness, no server required |
+| `tests/failure_injection_harness.py` | 18 integration tests — auto-skip when no server present |
+| `tests/trace_generator.py` | Writes 10 failure traces to `traces/`. Same output every run. |
 
 ## Status
 
