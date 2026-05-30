@@ -1,0 +1,111 @@
+{
+  "info": {
+    "name": "NHID-Clinical API",
+    "description": "API collection for NHID-Clinical healthcare voice AI compliance endpoints.",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://nhid-clinical.org"
+    },
+    {
+      "key": "api_key",
+      "value": "YOUR_API_KEY_HERE"
+    }
+  ],
+  "item": [
+    {
+      "name": "Policy Evaluate",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/policy/evaluate",
+        "header": [
+          {"key": "X-API-Key", "value": "{{api_key}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": \"call_123\",\n  \"agent_id\": \"vendor_agent_1\",\n  \"transcript_text\": \"I want to speak to a human\",\n  \"disclosure_confirmed\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "Payer Screen",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/payer/screen",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"caller_npi\": \"1234567890\",\n  \"reference_id\": \"YOUR_REFERENCE_ID\",\n  \"requested_scope\": \"claims_inquiry\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Create Attestation",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/attest",
+        "header": [
+          {"key": "X-API-Key", "value": "{{api_key}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"delegating_entity\": \"1234567890\",\n  \"authorized_actor\": \"your-vendor-id\",\n  \"scope\": [\"claims_inquiry\", \"eligibility_check\"],\n  \"expires_at\": \"2027-01-01T00:00:00Z\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Verify Attestation",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/v1/attest/verify/YOUR_REFERENCE_ID",
+        "header": []
+      }
+    },
+    {
+      "name": "Get State Requirements",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/v1/compliance/states",
+        "header": []
+      }
+    },
+    {
+      "name": "Log Audit Event",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/audit/log",
+        "header": [
+          {"key": "X-API-Key", "value": "{{api_key}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": \"call_123\",\n  \"agent_id\": \"vendor_agent_1\",\n  \"event_type\": \"disclosure_confirmed\",\n  \"transcript_text\": \"Yes I am an AI assistant\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Export Audit FHIR",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/v1/audit/export/call_123?format=fhir",
+        "header": []
+      }
+    },
+    {
+      "name": "Export Audit CSV",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/v1/audit/export/call_123?format=csv",
+        "header": []
+      }
+    }
+  ]
+}
