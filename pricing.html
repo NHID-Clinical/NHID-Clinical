@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — NHID-Clinical</title>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css">
+  <style>
+    .pricing-hero { text-align: center; padding: 4rem 1rem 2rem; }
+    .pricing-hero h1 { font-size: 2.5rem; color: #0052CC; margin-bottom: 1rem; }
+    .pricing-hero p { font-size: 1.1rem; color: #555; max-width: 600px; margin: 0 auto 2rem; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto 4rem; padding: 0 1rem; }
+    .pricing-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 2rem; background: #fff; }
+    .pricing-card.featured { border: 2px solid #0052CC; position: relative; }
+    .pricing-card.featured::before { content: "Most Popular"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #0052CC; color: white; padding: 4px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .pricing-card h2 { font-size: 1.4rem; color: #222; margin-bottom: 0.5rem; }
+    .pricing-card .price { font-size: 2.5rem; font-weight: 700; color: #0052CC; margin: 1rem 0 0.25rem; }
+    .pricing-card .price span { font-size: 1rem; color: #888; font-weight: 400; }
+    .pricing-card .description { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1.5rem; }
+    .pricing-card ul { list-style: none; padding: 0; margin: 0 0 2rem; }
+    .pricing-card ul li { padding: 0.5rem 0; font-size: 0.95rem; color: #444; }
+    .pricing-card ul li::before { content: "✓ "; color: #28a745; font-weight: 700; }
+    .pricing-card .cta { display: block; text-align: center; padding: 0.75rem; border-radius: 6px; font-weight: 600; text-decoration: none; }
+    .cta-outline { border: 2px solid #0052CC; color: #0052CC; }
+    .cta-filled { background: #0052CC; color: white; }
+    .pilot-banner { background: #f0f4ff; border: 1px solid #0052CC; border-radius: 8px; padding: 2rem; max-width: 700px; margin: 0 auto 4rem; text-align: center; }
+    .pilot-banner h3 { color: #0052CC; margin-bottom: 0.5rem; }
+    .pilot-banner p { color: #444; margin-bottom: 1.5rem; }
+    .pilot-banner a { background: #0052CC; color: white; padding: 0.75rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container nav-inner">
+    <a class="nav-logo" href="/">NHID-Clinical</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/developers.html">Developers</a>
+      <a href="/for-payers.html">For Payers</a>
+      <a href="/pricing.html" class="active">Pricing</a>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="pricing-hero">
+    <p class="section-kicker">Simple, transparent pricing</p>
+    <h1>Pay for what you need.</h1>
+    <p>The policy engine is open source and free forever. Pay only for hosted infrastructure, enterprise support, and compliance services.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <h2>Self-Host</h2>
+      <div class="price">Free <span>forever</span></div>
+      <p class="description">The full open-source policy engine. Run it yourself, no strings attached.</p>
+      <ul>
+        <li>72-test conformance suite</li>
+        <li>Policy engine (pure Python, zero deps)</li>
+        <li>NHID-Auth attestation logic</li>
+        <li>PowerShell module</li>
+        <li>OpenAPI spec + Postman collection</li>
+        <li>Community support (GitHub + Discord)</li>
+      </ul>
+      <a href="https://github.com/thankcheeses/NHID-Clinical" class="cta cta-outline">Get the Repo →</a>
+    </div>
+
+    <div class="pricing-card featured">
+      <h2>Pro</h2>
+      <div class="price">$499 <span>/mo</span></div>
+      <p class="description">Hosted API with managed infrastructure. For voice AI vendors and mid-size payers.</p>
+      <ul>
+        <li>Everything in Self-Host</li>
+        <li>Hosted API (api.nhid-clinical.org)</li>
+        <li>100K policy evaluations/mo</li>
+        <li>JWT key management + rotation</li>
+        <li>Real-time payer screening (&lt;200ms)</li>
+        <li>FHIR + CSV audit export</li>
+        <li>Signed BAA included</li>
+        <li>Email support</li>
+      </ul>
+      <a href="mailto:contact@nhid-clinical.org?subject=Pro Tier Interest" class="cta cta-filled">Start Pilot →</a>
+    </div>
+
+    <div class="pricing-card">
+      <h2>Enterprise</h2>
+      <div class="price">Custom</div>
+      <p class="description">Dedicated instance, white-label, SLA. For large payers and enterprise voice platforms.</p>
+      <ul>
+        <li>Everything in Pro</li>
+        <li>Unlimited evaluations</li>
+        <li>Dedicated infrastructure</li>
+        <li>mTLS + client certificate auth</li>
+        <li>White-label badges + registry</li>
+        <li>Custom scope + rules</li>
+        <li>99.9% SLA</li>
+        <li>Dedicated support + onboarding</li>
+        <li>Co-branded case study</li>
+      </ul>
+      <a href="mailto:contact@nhid-clinical.org?subject=Enterprise Inquiry" class="cta cta-outline">Contact Us →</a>
+    </div>
+  </div>
+
+  <div class="pilot-banner">
+    <h3>Pilot Waitlist — First 5 Organizations</h3>
+    <p>The first five organizations to pilot NHID-Clinical get Enterprise tier free for 90 days plus a co-branded case study. No obligation. We'll personally walk you through integration.</p>
+    <a href="mailto:contact@nhid-clinical.org?subject=Pilot Waitlist">Join the Waitlist →</a>
+  </div>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+  </div>
+</footer>
+<script src="/site.js"></script>
+</body>
+</html>
