@@ -80,9 +80,9 @@ Integration suite: 18 tests, may pass or skip (expected)
 | `src/nhid_policy_engine_v1.py` | Evaluates IDG-01, PDX-01, DBC-01, EIT-01, ATR-01. Never raises. |
 | `src/voice_policy.py` | Full policy evaluation functions with deterministic return types |
 | `src/agent_identity.py` | Ed25519 agent passports, delegation chains, revocation (v1.4 preview) |
-| `tests/test_voice_policy.py` | 54 unit tests — policy engine correctness, no server required |
-| `tests/test_identity.py` | 18 unit tests — identity layer correctness, no server required |
-| `tests/failure_injection_harness.py` | 18 integration tests — auto-skip when no server present |
+| `tests/test_voice_policy.py` | 47 unit tests — policy engine correctness, no server required |
+| `tests/test_identity.py` | 4 unit tests — identity layer correctness, no server required |
+| `tests/failure_injection_harness.py` | 21 unit tests + 18 integration tests (auto-skip when no server present) |
 | `tests/trace_generator.py` | Writes 10 failure traces to `traces/`. Same output every run. |
 
 ## Status
