@@ -71,6 +71,34 @@ pytest tests/
 Unit invariant preserved: 72 passed, 0 skipped
 Integration suite: 18 tests, may pass or skip (expected)
 
+## API Endpoints
+
+Two public endpoints are available for integration:
+
+### GET /v1/compliance/states
+Returns US state AI disclosure requirements mapped to NHID-Clinical rules.
+No authentication required.
+
+### POST /v1/policy/evaluate
+Evaluates a voice transcript against NHID-Clinical policy rules.
+Requires X-API-Key header.
+
+Request:
+{
+  "session_id": "call_123",
+  "agent_id": "vendor_agent_1",
+  "transcript_text": "I want to speak to a human",
+  "disclosure_confirmed": true
+}
+
+Response:
+{
+  "session_id": "call_123",
+  "action": "escalate",
+  "reason_code": "HUMAN_ESCALATION_REQUESTED",
+  "policy_version": "VOICE-POLICY-v1.0"
+}
+
 ## Artifacts
 
 | File | What it does |
