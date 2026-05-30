@@ -1,0 +1,217 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NHID-Clinical API",
+    "version": "1.0.0",
+    "description": "API for AI voice agent compliance in healthcare payer-provider workflows.",
+    "contact": {
+      "email": "contact@nhid-clinical.org"
+    },
+    "license": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://nhid-clinical.org",
+      "description": "Production"
+    }
+  ],
+  "paths": {
+    "/v1/compliance/states": {
+      "get": {
+        "summary": "Get state AI disclosure requirements",
+        "description": "Returns US state AI disclosure requirements mapped to NHID-Clinical rules. No authentication required.",
+        "responses": {
+          "200": {
+            "description": "State requirements map"
+          }
+        }
+      }
+    },
+    "/v1/policy/evaluate": {
+      "post": {
+        "summary": "Evaluate voice transcript against NHID-Clinical policy",
+        "security": [{"ApiKeyAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["session_id", "agent_id", "transcript_text", "disclosure_confirmed"],
+                "properties": {
+                  "session_id": {"type": "string"},
+                  "agent_id": {"type": "string"},
+                  "transcript_text": {"type": "string"},
+                  "disclosure_confirmed": {"type": "boolean"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Policy decision",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "action": {"type": "string", "enum": ["disclose", "escalate", "allow"]},
+                    "reason_code": {"type": "string"},
+                    "policy_version": {"type": "string"},
+                    "session_id": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/attest": {
+      "post": {
+        "summary": "Create signed attestation for AI caller authorization",
+        "security": [{"ApiKeyAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["delegating_entity", "authorized_actor", "scope", "expires_at"],
+                "properties": {
+                  "delegating_entity": {"type": "string", "description": "Provider NPI"},
+                  "authorized_actor": {"type": "string", "description": "Vendor platform ID"},
+                  "scope": {"type": "array", "items": {"type": "string"}},
+                  "expires_at": {"type": "string", "format": "date-time"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signed attestation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reference_id": {"type": "string"},
+                    "token": {"type": "string"},
+                    "revocation_endpoint": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/attest/verify/{reference_id}": {
+      "get": {
+        "summary": "Verify an attestation by reference ID",
+        "description": "Public endpoint. Payers call this during live voice calls to verify AI caller legitimacy.",
+        "parameters": [
+          {
+            "name": "reference_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attestation verification result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": {"type": "boolean"},
+                    "delegating_entity": {"type": "string"},
+                    "authorized_actor": {"type": "string"},
+                    "scope": {"type": "array", "items": {"type": "string"}},
+                    "expires_at": {"type": "string"},
+                    "revoked": {"type": "boolean"},
+                    "expired": {"type": "boolean"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {"description": "Attestation not found"}
+        }
+      }
+    },
+    "/v1/payer/screen": {
+      "post": {
+        "summary": "Screen an incoming AI call before data exchange",
+        "description": "Payers call this during a live voice call to verify the AI caller is legitimate.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["caller_npi", "reference_id", "requested_scope"],
+                "properties": {
+                  "caller_npi": {"type": "string"},
+                  "reference_id": {"type": "string"},
+                  "requested_scope": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Screening decision",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "verified": {"type": "boolean"},
+                    "compliant": {"type": "boolean"},
+                    "recommended_action": {"type": "string", "enum": ["accept", "reject", "escalate"]},
+                    "reason": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/audit/log": {
+      "post": {
+        "summary": "Log an audit event",
+        "security": [{"ApiKeyAuth": []}],
+        "responses": {"200": {"description": "Event logged"}}
+      }
+    },
+    "/v1/audit/export/{session_id}": {
+      "get": {
+        "summary": "Export audit trail as FHIR bundle or CSV",
+        "parameters": [
+          {"name": "session_id", "in": "path", "required": true, "schema": {"type": "string"}},
+          {"name": "format", "in": "query", "schema": {"type": "string", "enum": ["fhir", "csv"], "default": "fhir"}}
+        ],
+        "responses": {"200": {"description": "Audit export"}}
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  }
+}
