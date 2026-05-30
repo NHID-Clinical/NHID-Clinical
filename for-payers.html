@@ -350,6 +350,49 @@ Thank you,
     </div>
   </section>
 </main>
+<section class="container" style="margin: 4rem auto; max-width: 860px;">
+  <h2 style="font-size: 1.8rem; margin-bottom: 1rem;">How to Screen an Incoming AI Call</h2>
+  <p style="margin-bottom: 2rem; color: #555;">When an AI voice agent calls your office, you can verify it in real time before sharing any operational data. One API call. Under 200ms.</p>
+
+  <div style="background: #f8f9fa; border-left: 4px solid #0052CC; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem;">
+    <p style="font-weight: 600; margin-bottom: 1rem;">Step 1 — AI caller provides their reference ID at the start of the call</p>
+    <p style="color: #555;">"Hello, this is an automated assistant calling on behalf of Dr. Smith's Dental Office, NPI 1234567890. My attestation reference ID is <strong>abc-123-xyz</strong>."</p>
+  </div>
+
+  <div style="background: #f8f9fa; border-left: 4px solid #0052CC; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem;">
+    <p style="font-weight: 600; margin-bottom: 1rem;">Step 2 — Your system calls the NHID-Clinical screening API</p>
+    <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;">curl -X POST https://nhid-clinical.org/v1/payer/screen \
+  -H "Content-Type: application/json" \
+  -d '{
+    "caller_npi": "1234567890",
+    "reference_id": "abc-123-xyz",
+    "requested_scope": "claims_inquiry"
+  }'</pre>
+  </div>
+
+  <div style="background: #f8f9fa; border-left: 4px solid #28a745; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem;">
+    <p style="font-weight: 600; margin-bottom: 1rem;">Step 3 — You get back a clear accept/reject/escalate decision</p>
+    <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;">{
+  "verified": true,
+  "compliant": true,
+  "recommended_action": "accept",
+  "reason": "Attestation valid, NPI matches, scope permitted"
+}</pre>
+  </div>
+
+  <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem;">
+    <p style="font-weight: 600; margin-bottom: 0.5rem;">If the call fails screening</p>
+    <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.85rem;">{
+  "verified": false,
+  "compliant": false,
+  "recommended_action": "reject",
+  "reason": "Caller NPI does not match delegating entity"
+}</pre>
+    <p style="margin-top: 1rem; color: #555;">Terminate the call. Read your standard script. Log the reference ID for audit purposes.</p>
+  </div>
+
+  <p style="color: #555;">Questions? <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a></p>
+</section>
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
