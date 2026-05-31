@@ -402,6 +402,7 @@
             <option value="eligibility">Eligibility Verification</option>
             <option value="handoff">Human Handoff / Escalation</option>
             <option value="spoofed-identity">Spoofed Identity Call</option>
+            <option value="payer-screen">Payer Screening Call</option>
           </select>
           <p class="sim-sc-meta" id="sc-meta" aria-live="polite"></p>
         </div>
@@ -423,6 +424,7 @@
 
       <div class="sim-sb-foot">
         <button class="sim-run-btn" id="run-btn" type="button">Run Simulation</button>
+        <p class="sim-foot-disc" style="margin-bottom:.2rem">Policy: NHID-Clinical v1.3 · VOICE-POLICY-v1.0</p>
         <p class="sim-foot-disc">Synthetic data only. Same inputs → identical trace output.</p>
       </div>
     </aside>
@@ -452,6 +454,12 @@
             <tbody id="out-tbl"></tbody>
           </table>
           <p style="font-size:10px;color:var(--sim-t4);margin-top:.6rem;line-height:1.5">¹ AUTH-01 is a v1.4 preview rule — not enforced in v1.3. Shown here to illustrate the NPI spoofing gap.</p>
+        </div>
+
+        <!-- API Endpoint Reference -->
+        <div class="sim-gc sim-pcs" id="out-api" style="display:none">
+          <div class="sim-sh">Relevant API Endpoint</div>
+          <div id="out-api-content"></div>
         </div>
 
         <!-- Summary -->
@@ -502,6 +510,29 @@
 
     </div><!-- /.sim-main -->
   </div><!-- /.sim-app -->
+
+  <!-- State Compliance Reference Panel -->
+  <div style="max-width:1400px;margin:1rem auto 0">
+    <div class="sim-gc sim-pc">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
+        <div class="sim-sh" style="margin-bottom:0">State AI Disclosure Laws</div>
+        <span style="font-size:10px;color:var(--sim-t4)">Illustrative · Consult legal counsel for compliance determinations</span>
+      </div>
+      <table class="sim-ctbl">
+        <thead><tr><th>State</th><th>Law</th><th>Effective</th><th>Required NHID-Clinical Rules</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>WA</td><td>SB 5395</td><td style="white-space:nowrap">Jul 27, 2025</td><td>IDG-01 · DBC-01</td><td class="sim-sp">✓ Active</td></tr>
+          <tr><td>UT</td><td>SB 319</td><td style="white-space:nowrap">May 7, 2025</td><td>IDG-01</td><td class="sim-sp">✓ Active</td></tr>
+          <tr><td>MD</td><td>HB 1563</td><td style="white-space:nowrap">Oct 1, 2025</td><td>IDG-01</td><td class="sim-sp">✓ Active</td></tr>
+          <tr><td>AL</td><td>SB 63</td><td style="white-space:nowrap">Oct 1, 2025</td><td>IDG-01</td><td class="sim-sp">✓ Active</td></tr>
+          <tr><td>IN</td><td>HB 1271</td><td style="white-space:nowrap">Jul 1, 2026</td><td>IDG-01</td><td class="sim-sf">⚑ Pending</td></tr>
+          <tr><td>GA</td><td>SB 544</td><td style="white-space:nowrap">Jul 1, 2026</td><td>IDG-01</td><td class="sim-sf">⚑ Pending</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:10px;color:var(--sim-t4);margin-top:.6rem;line-height:1.5">All listed states require AI identity disclosure before data exchange — IDG-01 covers the core requirement. <code style="font-family:'Courier New',monospace;font-size:10px">GET /v1/compliance/states</code> returns machine-readable requirement data per state.</p>
+    </div>
+  </div>
+
 </div><!-- /.sim-page -->
 
 <footer id="contact" class="site-footer">
@@ -562,7 +593,8 @@ var META={
   'expedited':        'Caller requests processing on an expedited timeline.',
   'eligibility':      'Lookup-and-confirm workflow for coverage verification.',
   'handoff':          'AI-to-human transfer when autonomous resolution is not possible.',
-  'spoofed-identity': 'AI provides a valid public NPI but presents no cryptographic proof of authorization — the core NHID-Clinical attack vector.'
+  'spoofed-identity': 'AI provides a valid public NPI but presents no cryptographic proof of authorization — the core NHID-Clinical attack vector.',
+  'payer-screen':     'Payer screens an incoming AI caller for NHID-Clinical compliance before allowing data exchange. Illustrates /v1/payer/screen logic.'
 };
 
 /* ── Scenarios ──────────────────────────────────────────────── */
@@ -993,9 +1025,122 @@ var SC={
     [!c.documented,  '· Log all interactions regardless of authorization status']
   ]);},
   tState:function(c){return c.auth_verified?(c.identity?'authorized-disclosed':'authorized-late-disclosure'):c.identity?'disclosed-unverified':'undisclosed-unverified';}
+},
+
+'payer-screen':{
+  label:'Payer Screening Call',
+  summary:function(c){
+    if(c.identity&&c.auth_verified&&c.documented) return 'Incoming AI caller identified, authorization verified, and screening outcome documented. Payer can proceed with confidence.';
+    if(c.identity&&!c.auth_verified)              return 'Caller disclosed AI identity — IDG-01 met. No authorization proof provided — payer cannot verify delegation from the named provider.';
+    if(!c.identity&&c.auth_verified)              return 'Authorization token verified but identity was not disclosed upfront — IDG-01 and PDX-01 both fail. Data was accessed before disclosure.';
+    return 'Incoming AI caller provided no identity disclosure and no authorization proof. Payer released operational data to an unverifiable caller.';
+  },
+  timeline:function(c){
+    return [
+      {t:0, e:'incoming call received — payer screening protocol initiated'},
+      {t:5, e:c.identity?'AI caller discloses: "This is an automated system calling on behalf of Northwest Cardiology"':'caller proceeds without identity disclosure — payer must proactively inquire'},
+      {t:11,e:'caller provides NPI: 9876543210 (publicly listed in NPPES)'},
+      {t:16,e:c.auth_verified?'caller presents authorization token — payer system verifies provider delegation':'no authorization token presented — payer cannot verify provider delegation'},
+      {t:23,e:'caller requests eligibility data for member ID 441-XX-8832'},
+      c.human     ?{t:31,e:'payer escalates to human reviewer — screening exception triggered'}:null,
+      c.documented?{t:40,e:'screening outcome logged — caller profile recorded'}:{t:40,e:'call proceeds without screening log'},
+      c.escalation?{t:48,e:'escalation path offered to caller'}:null
+    ].filter(Boolean);
+  },
+  obs:function(c){return cf([
+    [c.identity,    'Incoming AI identified itself before requesting data — IDG-01 met.'],
+    [!c.identity,   'Incoming AI did not disclose identity — payer cannot attribute this caller.'],
+    [c.auth_verified,'Authorization token verified — caller delegation confirmed.'],
+    [!c.auth_verified,'No authorization proof — caller identity based on public NPI alone.'],
+    [c.documented,  'Screening outcome logged — audit record exists for this interaction.'],
+    [!c.documented, 'Screening not documented — payer has no record of this exchange.'],
+    [c.human,       'Human reviewer engaged for exception handling.'],
+    [c.escalation,  'Escalation path communicated.']
+  ]);},
+  friction:function(c){return cf([
+    [!c.auth_verified,'Public NPIs are freely available — any AI caller can present one. Screening cannot be completed on NPI alone.'],
+    [!c.identity&&!c.auth_verified,'Neither disclosure nor authorization proof — payer released data to an anonymous AI system.'],
+    [c.identity&&!c.auth_verified,'Caller said it was automated — that does not prove it represents the named provider.'],
+    [!c.documented,  'No screening log — payer has no record of what was disclosed or to whom data was released.'],
+    [!c.human&&!c.auth_verified,'Screening gap not escalated to a human reviewer despite no authorization proof.']
+  ]);},
+  oversight:function(c){return cf([
+    [c.auth_verified&&c.identity&&c.human, 'Full screening: identity verified, authorization confirmed, human reviewer engaged.'],
+    [c.auth_verified&&!c.human,            'Authorization verified — autonomous screening completed. Human oversight not required for clean path.'],
+    [!c.auth_verified&&c.human,            'Human reviewer engaged after authorization gap detected — appropriate exception handling.'],
+    [!c.auth_verified&&!c.human,           'No authorization proof and no human escalation — payer screening did not fulfill its governance function.']
+  ]);},
+  logging:function(c){return cf([
+    [c.documented&&c.auth_verified,  'Screening outcome and authorization status on record. Fully auditable.'],
+    [c.documented&&!c.auth_verified, 'Screening logged but caller unverified — log records the exchange, not the authorization.'],
+    [!c.documented&&c.auth_verified, 'Authorization verified but interaction not logged — audit gap despite a clean caller.'],
+    [!c.documented&&!c.auth_verified,'No log, no authorization. Interaction is unattributable.']
+  ]);},
+  tEvents:function(c){return [
+    {t:'00:00',st:'INGEST  ',ev:'incoming call — payer screening protocol initiated'},
+    {t:'00:05',st:'INGEST  ',ev:c.identity?'AI caller discloses non-human identity upfront':'caller does not disclose AI identity — IDG-01 violation'},
+    {t:'00:11',st:'VALIDATE',ev:'caller provides NPI 9876543210 (publicly listed in NPPES)'},
+    {t:'00:16',st:'STATE   ',ev:c.auth_verified?'authorization token verified — provider delegation confirmed':'no authorization token — payer cannot verify provider delegation'},
+    {t:'00:23',st:'EXEC    ',ev:'caller requests eligibility data — member ID 441-XX-8832'},
+    {t:'01:04',st:'POLICY  ',ev:'IDG-01 '+(c.identity?'PASS':'FAIL')+' — '+(c.identity?'AI identity disclosed before data exchange':'identity not disclosed — PDX-01 cascade')},
+    {t:'01:04',st:'POLICY  ',ev:'PDX-01 '+(c.identity?'PASS':'FAIL')+' — '+(c.identity?'disclosure completed before data exchange':'data exchanged without prior disclosure')},
+    {t:'01:04',st:'POLICY  ',ev:'DBC-01 PASS — text-only interaction, no deceptive audio artifacts'},
+    {t:'01:04',st:'POLICY  ',ev:'EIT-01 '+(c.human&&c.escalation?'PASS':'FAIL')+' — '+(c.human&&c.escalation?'human engagement and escalation path confirmed':'screening exception not escalated to human reviewer')},
+    {t:'01:04',st:'POLICY  ',ev:'ATR-01 '+(c.documented?'PASS':'FAIL')+' — '+(c.documented?'screening outcome logged':'no screening log — ATR-01 violation')},
+    {t:'01:04',st:'POLICY  ',ev:'AUTH-01 '+(c.auth_verified?'PASS':'FAIL')+' — '+(c.auth_verified?'cryptographic authorization proof verified — caller identity confirmed':'NO AUTH PROOF — NPI alone insufficient for payer data release')},
+    {t:'01:31',st:'PERSIST ',ev:c.documented?'5 audit fields written — screening outcome on record':'0 audit fields written — exchange unattributable'}
+  ];},
+  tObs:function(c){
+    if(c.identity&&c.auth_verified&&c.documented) return 'Payer screening completed successfully.\nCaller identity disclosed, authorization verified, outcome documented.\nThis is the target state for POST /v1/payer/screen.';
+    if(!c.identity&&!c.auth_verified) return 'Payer screening failed.\nNo identity disclosure, no authorization proof.\nPayer released eligibility data to an unverifiable AI caller.';
+    if(c.identity&&!c.auth_verified) return 'Partial screening. IDG-01 met — caller said it was automated.\nHowever: NPI 9876543210 is publicly listed in NPPES.\nWithout AUTH-01, this caller is indistinguishable from a spoofed agent.';
+    return 'Screening incomplete. Review identity disclosure and authorization requirements.';
+  },
+  tImpl:function(c){return cf([
+    [!c.auth_verified,'· NPI verification alone does not establish caller legitimacy'],
+    [!c.identity,    '· Payer cannot attribute data release to an identified source'],
+    [!c.documented,  '· No screening log — payer cannot demonstrate due diligence'],
+    [!c.human&&!c.auth_verified,'· Screening gap reached caller without human review'],
+    [!c.identity&&!c.auth_verified,'· This call is operationally indistinguishable from a spoofed provider call']
+  ]);},
+  tNext:function(c){return cf([
+    [!c.auth_verified,'· Implement POST /v1/payer/screen to enforce AUTH-01 at the payer side'],
+    [!c.auth_verified,'· Treat public NPI alone as insufficient — require signed delegation token'],
+    [!c.identity,    '· Prompt for identity disclosure if caller does not self-identify as AI upfront'],
+    [!c.documented,  '· Require screening log before releasing any operational data']
+  ]);},
+  tState:function(c){return c.auth_verified?(c.identity?'screened-authorized':'authorized-late-disclosure'):c.identity?'disclosed-unverified':'unscreened';}
 }
 
 }; // end SC
+
+/* ── API endpoint map ───────────────────────────────────────── */
+var ENDPOINTS={
+  'prior-auth':       [{method:'POST',path:'/v1/policy/evaluate',desc:'Evaluate IDG-01 and ATR-01 for this authorization interaction'}],
+  'expedited':        [{method:'POST',path:'/v1/policy/evaluate',desc:'Evaluate urgency classification and EIT-01 escalation path'}],
+  'eligibility':      [{method:'POST',path:'/v1/attest',desc:'Create attestation record for eligibility exchange'},
+                       {method:'GET', path:'/v1/attest/verify/{reference_id}',desc:'Verify attestation before releasing coverage data'}],
+  'handoff':          [{method:'POST',path:'/v1/policy/evaluate',desc:'Evaluate EIT-01 — human engagement and escalation path completeness'}],
+  'spoofed-identity': [{method:'POST',path:'/v1/attest',desc:'Issue authorization delegation token for provider agent'},
+                       {method:'GET', path:'/v1/compliance/states',desc:'Return applicable state AI disclosure requirements'}],
+  'payer-screen':     [{method:'POST',path:'/v1/payer/screen',desc:'Screen incoming AI caller — verify identity disclosure and authorization proof'}]
+};
+
+function buildApiCard(key){
+  var eps=ENDPOINTS[key]||[];
+  if(!eps.length) return '';
+  var rows=eps.map(function(ep){
+    var mc=ep.method==='POST'?'#0b6ebc':'#15803d';
+    return '<div style="padding:.42rem 0;border-bottom:1px solid var(--sim-gb)">' +
+      '<div style="display:flex;align-items:baseline;gap:.6rem">' +
+      '<span style="font-family:\'Courier New\',Courier,monospace;font-size:10.5px;font-weight:700;color:'+mc+';min-width:38px">'+esc(ep.method)+'</span>' +
+      '<span style="font-family:\'Courier New\',Courier,monospace;font-size:11px;color:var(--sim-t1)">'+esc(ep.path)+'</span>' +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--sim-t3);padding:.15rem 0 0 44px">'+esc(ep.desc)+'</div>' +
+      '</div>';
+  }).join('');
+  return rows+'<p style="font-size:10px;color:var(--sim-t4);margin-top:.5rem">Full API reference: <a href="/developers.html" style="color:var(--blue,#0b6ebc)">developers.html</a></p>';
+}
 
 /* ── Builders ───────────────────────────────────────────────── */
 function buildBadges(rules){
@@ -1126,6 +1271,10 @@ function render(key,c){
   fillList('out-oversight',sc.oversight(c));
   fillList('out-logging',  sc.logging(c));
   document.getElementById('out-trace').innerHTML   = colorTrace(buildTrace(key,c));
+
+  var apiHtml=buildApiCard(key);
+  document.getElementById('out-api').style.display=apiHtml?'':'none';
+  document.getElementById('out-api-content').innerHTML=apiHtml;
 
   document.getElementById('empty-state').style.display='none';
   document.getElementById('report').classList.add('on');
