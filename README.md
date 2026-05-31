@@ -71,35 +71,6 @@ pytest tests/
 Unit invariant preserved: 72 passed, 0 skipped
 Integration suite: 18 tests, may pass or skip (expected)
 
-## API Endpoints
-
-### Public Endpoints (no auth required)
-
-GET /v1/compliance/states
-Returns US state AI disclosure requirements mapped to NHID-Clinical rules.
-
-GET /v1/attest/verify/{reference_id}
-Payers call this during a live voice call to verify an AI caller's attestation.
-Returns: valid, delegating_entity, authorized_actor, scope, expires_at, revoked, expired
-
-### Authenticated Endpoints (X-API-Key required)
-
-POST /v1/policy/evaluate
-Evaluates a voice transcript against NHID-Clinical policy rules.
-Request: { "session_id": "call_123", "agent_id": "vendor_1", "transcript_text": "I want to speak to a human", "disclosure_confirmed": true }
-Response: { "action": "escalate", "reason_code": "HUMAN_ESCALATION_REQUESTED", "policy_version": "VOICE-POLICY-v1.0" }
-
-POST /v1/attest
-Vendors call this to generate a signed attestation proving delegated authority from a provider.
-Request: { "delegating_entity": "NPI-1234567890", "authorized_actor": "vendor-id", "scope": ["claims_inquiry"], "expires_at": "2027-01-01T00:00:00Z" }
-Response: { "reference_id": "uuid", "token": "signed-jwt", "revocation_endpoint": "/v1/attest/revoke/uuid" }
-
-POST /v1/payer/screen
-Payers call this to screen an incoming AI call before exchanging any data.
-Request: { "caller_npi": "1234567890", "reference_id": "uuid", "requested_scope": "claims_inquiry" }
-Response: { "verified": true, "compliant": true, "recommended_action": "accept", "reason": "..." }
-
-
 ## Artifacts
 
 | File | What it does |
