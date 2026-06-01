@@ -102,6 +102,9 @@ class AgentIdentityManager:
         self.revocation_list: Dict[str, int] = {}
         # delegation_id → revoked_at: revokes one specific delegation
         self.revoked_delegations: Dict[str, int] = {}
+        # cache for parsed/decoded passport data to speed repeated verifications
+        # delegation_id -> (payload_bytes, provider_sig_bytes, agent_sig_bytes, agent_pub_obj)
+        self._verify_cache: Dict[str, tuple] = {}
 
     def generate_agent_keys(self) -> Tuple[Ed25519PrivateKey, Ed25519PublicKey]:
         priv = Ed25519PrivateKey.generate()
@@ -188,11 +191,32 @@ class AgentIdentityManager:
             if d.nonce != expected or d.call_sid != call_sid:
                 return VerificationResult(False, ERR_NONCE_MISMATCH)
 
-        try:
+        # Use cached decoded values for repeated verifications of the same delegation
+        cache_key = d.delegation_id
+        cached = self._verify_cache.get(cache_key)
+        if cached is None:
             payload = d.to_json().encode()
-            provider_pub.verify(base64.b64decode(passport.signature_b64), payload)
-            agent_pub = self.b64_to_public_key(d.agent_public_key_b64)
-            agent_pub.verify(base64.b64decode(passport.agent_signature_b64), payload)
+            try:
+                prov_sig = base64.b64decode(passport.signature_b64)
+            except Exception:
+                return VerificationResult(False, ERR_INVALID_SIG)
+            try:
+                agent_sig = base64.b64decode(passport.agent_signature_b64)
+            except Exception:
+                return VerificationResult(False, ERR_INVALID_SIG)
+            try:
+                agent_pub = self.b64_to_public_key(d.agent_public_key_b64)
+            except Exception:
+                return VerificationResult(False, ERR_INVALID_SIG)
+            cached = (payload, prov_sig, agent_sig, agent_pub)
+            # Cache the parsed/decoded items keyed by delegation id
+            self._verify_cache[cache_key] = cached
+        else:
+            payload, prov_sig, agent_sig, agent_pub = cached
+
+        try:
+            provider_pub.verify(prov_sig, payload)
+            agent_pub.verify(agent_sig, payload)
         except Exception:
             return VerificationResult(False, ERR_INVALID_SIG)
 
