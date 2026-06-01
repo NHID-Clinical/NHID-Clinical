@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    branches: ["main", "claude/*"]
+    branches: ["main", "claude/*", "feature/*"]
   pull_request:
     branches: ["main"]
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 75 passed, 0 skipped"
+    name: "Unit invariant: 95 passed, 0 skipped"
     runs-on: ubuntu-latest
 
     steps:
@@ -25,11 +25,11 @@ jobs:
       - name: Validate test invariants
         run: python scripts/validate_ci.py
         # Hard invariants enforced by this step:
-        #   Unit invariant preserved: 75 passed, 0 skipped
+        #   Unit invariant preserved: 95 passed, 0 skipped
         #   Integration suite: 18 tests, may pass or skip (expected)
         #
         # CI fails if:
-        #   - passed != 75
+        #   - passed != 95
         #   - any unit test is skipped unexpectedly
         #   - any test fails
         #   - any collection error occurs
