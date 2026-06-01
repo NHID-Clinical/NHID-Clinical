@@ -1,5 +1,6 @@
 import os
-from fastapi import FastAPI, Security, HTTPException
+from fastapi import FastAPI, Header, Security, HTTPException
+from fastapi.responses import Response
 from fastapi.security.api_key import APIKeyHeader
 
 import nhid_api_endpoints
@@ -30,3 +31,38 @@ app.include_router(nhid_audit_export.router, dependencies=[Security(_require_api
 @app.get("/health", tags=["meta"])
 def health():
     return {"status": "ok", "version": "1.3.0"}
+
+
+_BADGE_SVG = {
+    "L1": (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="20">'
+        '<rect width="200" height="20" rx="3" fill="#555"/>'
+        '<rect x="110" width="90" height="20" rx="3" fill="#28a745"/>'
+        '<text x="55" y="14" font-family="sans-serif" font-size="11" fill="#fff" text-anchor="middle">NHID-Clinical</text>'
+        '<text x="155" y="14" font-family="sans-serif" font-size="11" fill="#fff" text-anchor="middle">L1 Compliant</text>'
+        '</svg>'
+    ),
+    "L2": (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="20">'
+        '<rect width="200" height="20" rx="3" fill="#555"/>'
+        '<rect x="110" width="90" height="20" rx="3" fill="#0052CC"/>'
+        '<text x="55" y="14" font-family="sans-serif" font-size="11" fill="#fff" text-anchor="middle">NHID-Clinical</text>'
+        '<text x="155" y="14" font-family="sans-serif" font-size="11" fill="#fff" text-anchor="middle">L2 Compliant</text>'
+        '</svg>'
+    ),
+}
+
+
+@app.get("/v1/certify/badge/{agent_id}", tags=["compliance"])
+def get_compliance_badge(agent_id: str, x_api_key: str = Header(default=None)):
+    expected = os.getenv("NHID_API_KEY")
+    tier = os.getenv("NHID_BADGE_TIER", "")
+    if not expected or x_api_key != expected:
+        raise HTTPException(status_code=403, detail="Valid API key required")
+    if not tier or tier not in _BADGE_SVG:
+        raise HTTPException(status_code=402, detail="Active paid plan required for badge endpoint")
+    return Response(
+        content=_BADGE_SVG[tier],
+        media_type="image/svg+xml",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )

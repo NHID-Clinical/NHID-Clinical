@@ -18,6 +18,7 @@ Backward-compatibility note
   that callers using the simple (non-ruleset) form continue to work unchanged.
 """
 
+from enum import Enum
 from typing import Any, Callable, Dict, List, Optional
 
 POLICY_VERSION = "VOICE-POLICY-v1.0"
@@ -31,6 +32,34 @@ _ESCALATION_PHRASES = [
     "human agent",
     "talk to someone",
 ]
+
+# ── Immutable global safety phrases — enforced even when ruleset is provided ───
+# These cannot be disabled by tenant configuration. "Speak to a human" must
+# always be honored regardless of what any custom ruleset says.
+_GLOBAL_SAFETY_PHRASES: tuple = (
+    "speak to a human",
+    "agent please",
+    "real person",
+)
+
+
+# ── Disclosure state machine ──────────────────────────────────────────────────
+
+class DisclosureState(str, Enum):
+    AWAITING = "awaiting_disclosure_ack"
+    CONFIRMED = "disclosure_confirmed"
+
+
+def get_disclosure_state(session_state: Dict[str, Any]) -> DisclosureState:
+    if session_state.get("disclosure_confirmed", False):
+        return DisclosureState.CONFIRMED
+    return DisclosureState.AWAITING
+
+
+def phi_gate(session_state: Dict[str, Any], phi_fields: Optional[Dict[str, Any]]) -> None:
+    """Raise PermissionError if PHI fields are present before disclosure is confirmed."""
+    if phi_fields and get_disclosure_state(session_state) != DisclosureState.CONFIRMED:
+        raise PermissionError("PHI processing blocked: disclosure not yet confirmed")
 
 
 # ── Low-level rule evaluators ─────────────────────────────────────────────────
@@ -129,6 +158,7 @@ def run_voice_policy(
     phrases: Optional[List[str]] = None,
     policy_version: Optional[str] = None,
     ruleset: Optional[List[Dict[str, Any]]] = None,
+    phi_fields: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     Run the voice policy engine and return an enforcement decision.
@@ -150,6 +180,8 @@ def run_voice_policy(
     """
     version = policy_version if policy_version is not None else POLICY_VERSION
 
+    phi_gate(session_state, phi_fields)
+
     if ruleset is not None:
         # ── Rule-based evaluation (preferred path) ────────────────────────────
         # Rules are evaluated in ascending priority order; first trigger wins.
@@ -159,6 +191,10 @@ def run_voice_policy(
             decision = _evaluate_rule(rule, transcript_text, session_state, version)
             if decision is not None:
                 return decision
+        # Global safety phrases are enforced after all configured rules.
+        # They cannot be disabled by any ruleset configuration.
+        if check_escalation(transcript_text, list(_GLOBAL_SAFETY_PHRASES)):
+            return {"action": "escalate", "reason_code": "HUMAN_ESCALATION_REQUESTED", "policy_version": version}
         return {"action": "allow", "reason_code": None, "policy_version": version}
 
     # ── Legacy path (backward-compat) ────────────────────────────────────────

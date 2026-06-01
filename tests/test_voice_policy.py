@@ -20,6 +20,7 @@ from src.voice_policy import (
     run_voice_policy,
     POLICY_VERSION,
     _ESCALATION_PHRASES,
+    _GLOBAL_SAFETY_PHRASES,
 )
 
 
@@ -193,19 +194,20 @@ class TestRulesetPolicyEngine:
 
     def test_hardcoded_phrase_not_in_custom_list_does_not_escalate(self):
         """
-        A phrase from the hardcoded _ESCALATION_PHRASES that is NOT in the
-        custom list must NOT trigger escalation in ruleset mode.
-        This is the core authoritativeness test.
+        A legacy phrase NOT in the custom list and NOT a global safety phrase
+        must not trigger escalation in ruleset mode.
+        Global safety phrases ("speak to a human" etc.) are always enforced.
         """
         ruleset = self._make_ruleset(phrases=["supervisor", "billing dispute"])
+        # "transfer me" is in legacy defaults but NOT a global safety phrase
         result = run_voice_policy(
-            "I want to speak to a human",
+            "I want to transfer me to somewhere",
             self._CONFIRMED,
             ruleset=ruleset,
         )
         assert result["action"] == "allow", (
-            "Hardcoded phrases must not fire in ruleset mode; "
-            "only the configured custom phrases should be used."
+            "Non-global legacy phrases must not fire in ruleset mode when "
+            "not in the custom phrase list."
         )
 
     @pytest.mark.parametrize("hardcoded_phrase", _ESCALATION_PHRASES)
@@ -214,39 +216,56 @@ class TestRulesetPolicyEngine:
     ):
         """
         In ruleset mode with a custom list that doesn't include a legacy phrase,
-        none of the legacy hardcoded phrases should escalate.
+        non-global legacy phrases must not escalate. Global safety phrases always
+        escalate regardless of custom ruleset configuration.
         """
         ruleset = self._make_ruleset(phrases=["unique-org-phrase-xyz"])
         result = run_voice_policy(hardcoded_phrase, self._CONFIRMED, ruleset=ruleset)
-        assert result["action"] == "allow", (
-            f"Hardcoded phrase '{hardcoded_phrase}' must not fire "
-            f"when the custom list excludes it."
-        )
+        if hardcoded_phrase in _GLOBAL_SAFETY_PHRASES:
+            assert result["action"] == "escalate", (
+                f"Global safety phrase '{hardcoded_phrase}' must always escalate."
+            )
+        else:
+            assert result["action"] == "allow", (
+                f"Non-global phrase '{hardcoded_phrase}' must not fire "
+                f"when the custom list excludes it."
+            )
 
     # ── Empty phrase list tests ───────────────────────────────────────────────
 
-    def test_empty_phrase_list_allows_all_transcripts(self):
+    def test_empty_phrase_list_allows_non_global_phrases(self):
         """
-        Empty phrases in ruleset mode = no triggers configured → all transcripts
+        Empty phrases in ruleset mode = no custom triggers → non-global phrases
         pass (action=allow). Must NOT fall back to hardcoded defaults.
+        Global safety phrases are still enforced regardless of empty list.
         """
         ruleset = self._make_ruleset(phrases=[])
         result = run_voice_policy(
-            "speak to a human",  # in hardcoded defaults
+            "transfer me",  # in legacy hardcoded defaults but NOT a global safety phrase
             self._CONFIRMED,
             ruleset=ruleset,
         )
         assert result["action"] == "allow", (
-            "Empty phrase list must mean 'no triggers' not 'use hardcoded defaults'."
+            "Empty phrase list must mean 'no custom triggers configured'."
         )
 
-    def test_empty_phrase_list_does_not_escalate_any_legacy_phrase(self):
-        """Parametric check: every hardcoded phrase passes through on empty custom list."""
+    def test_empty_phrase_list_global_safety_phrases_still_escalate(self):
+        """Global safety phrases must escalate even with an empty custom phrase list."""
         ruleset = self._make_ruleset(phrases=[])
-        for phrase in _ESCALATION_PHRASES:
+        for phrase in _GLOBAL_SAFETY_PHRASES:
+            result = run_voice_policy(phrase, self._CONFIRMED, ruleset=ruleset)
+            assert result["action"] == "escalate", (
+                f"Global safety phrase '{phrase}' must escalate even with empty list."
+            )
+
+    def test_empty_phrase_list_does_not_escalate_non_global_legacy_phrases(self):
+        """Non-global legacy phrases pass through on empty custom list."""
+        ruleset = self._make_ruleset(phrases=[])
+        non_global = [p for p in _ESCALATION_PHRASES if p not in _GLOBAL_SAFETY_PHRASES]
+        for phrase in non_global:
             result = run_voice_policy(phrase, self._CONFIRMED, ruleset=ruleset)
             assert result["action"] == "allow", (
-                f"'{phrase}' must not escalate when phrase list is empty."
+                f"Non-global phrase '{phrase}' must not escalate when phrase list is empty."
             )
 
     # ── Disabled rule tests ───────────────────────────────────────────────────
@@ -269,18 +288,22 @@ class TestRulesetPolicyEngine:
         result = run_voice_policy("hello", self._UNCONFIRMED, ruleset=ruleset)
         assert result["action"] == "allow"
 
-    def test_both_rules_disabled_always_allows(self):
-        """With all rules disabled every transcript must be allowed."""
+    def test_both_rules_disabled_allows_non_safety_phrases(self):
+        """With all rules disabled, non-global phrases are allowed.
+        Global safety phrases still escalate — they cannot be disabled."""
         ruleset = self._make_ruleset(
             phrases=["supervisor"],
             disclosure_enabled=False,
             escalation_enabled=False,
         )
-        for text in ["", "speak to a human", "supervisor", "Hello how are you?"]:
+        for text in ["", "supervisor", "Hello how are you?"]:
             result = run_voice_policy(text, self._UNCONFIRMED, ruleset=ruleset)
             assert result["action"] == "allow", (
-                f"All-disabled ruleset must allow '{text}'."
+                f"All-disabled ruleset must allow non-global phrase '{text}'."
             )
+        # Global safety phrases still fire even with all rules disabled
+        result = run_voice_policy("speak to a human", self._UNCONFIRMED, ruleset=ruleset)
+        assert result["action"] == "escalate"
 
     # ── Legacy path isolation ─────────────────────────────────────────────────
 
