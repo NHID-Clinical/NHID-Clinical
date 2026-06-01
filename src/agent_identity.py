@@ -25,11 +25,12 @@ call-bound nonces.
 """
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
+import re
 import hashlib, json, time, base64
 from typing import List, Tuple, Optional, Dict
 from dataclasses import dataclass, asdict
 
-# ── Error codes ──────────────────────────────────────────────────────────────
+# ── Error codes ──────────────────────────────────────────────────────────�[...]
 
 ERR_EXPIRED = "ERR_EXPIRED"
 ERR_REVOKED = "ERR_REVOKED"
@@ -51,7 +52,7 @@ def _validate_npi(npi: str) -> None:
         raise ValueError(f"{ERR_INVALID_NPI}: '{npi}' must be exactly 10 digits")
 
 
-# ── Data model ───────────────────────────────────────────────────────────────
+# ── Data model ──────────────────────────────────────────────────────────��[...]
 
 @dataclass
 class Delegation:
@@ -89,7 +90,7 @@ class VerificationResult:
     scope: Optional[List[str]] = None
 
 
-# ── Identity manager ─────────────────────────────────────────────────────────
+# ── Identity manager ────────────────────────────────────────────────────────��[...]
 
 class AgentIdentityManager:
     def __init__(self):
