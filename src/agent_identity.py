@@ -1,7 +1,7 @@
 """NHID-Clinical v1.4 - Cryptographic Agent Identity Layer"""
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
-import json, time, base64
+import hashlib, json, time, base64
 from typing import List, Tuple, Optional, Dict
 from dataclasses import dataclass, asdict
 
@@ -14,9 +14,15 @@ class Delegation:
     expires_at: int
     created_at: int
     delegation_id: str
+    call_sid: str = ""
+    nonce: str = ""
     def to_json(self) -> str: return json.dumps(asdict(self))
     @classmethod
-    def from_json(cls, data: str): return cls(**json.loads(data))
+    def from_json(cls, data: str):
+        d = json.loads(data)
+        d.setdefault("call_sid", "")
+        d.setdefault("nonce", "")
+        return cls(**d)
 
 @dataclass
 class AgentPassport:
@@ -43,25 +49,31 @@ class AgentIdentityManager:
         return base64.b64encode(pub.public_bytes(Encoding.Raw, PublicFormat.Raw)).decode()
     def b64_to_public_key(self, b64: str) -> Ed25519PublicKey:
         return Ed25519PublicKey.from_public_bytes(base64.b64decode(b64))
-    def create_delegation(self, provider_priv, agent_id, agent_pub, scope, ttl_seconds=86400):
+    def create_delegation(self, provider_priv, agent_id, agent_pub, scope, ttl_seconds=86400, call_sid=""):
         now = int(time.time())
+        nonce = hashlib.sha256(f"{call_sid}:{now}".encode()).hexdigest() if call_sid else ""
         return Delegation(
             provider_npi="TODO", agent_id=agent_id,
             agent_public_key_b64=self.public_key_to_b64(agent_pub),
             scope=scope, expires_at=now+ttl_seconds,
-            created_at=now, delegation_id=f"del_{agent_id}_{now}"
+            created_at=now, delegation_id=f"del_{agent_id}_{now}",
+            call_sid=call_sid, nonce=nonce,
         )
     def sign_delegation(self, provider_priv, delegation):
         return base64.b64encode(provider_priv.sign(delegation.to_json().encode())).decode()
     def create_agent_passport(self, delegation, provider_sig, agent_priv):
         agent_sig = base64.b64encode(agent_priv.sign(delegation.to_json().encode())).decode()
         return AgentPassport(delegation=delegation, signature_b64=provider_sig, agent_signature_b64=agent_sig)
-    def verify_passport(self, passport, provider_pub):
+    def verify_passport(self, passport, provider_pub, call_sid=""):
         d = passport.delegation
         if d.agent_id in self.revocation_list:
             return VerificationResult(False, f"Agent {d.agent_id} revoked")
         if d.expires_at <= int(time.time()):
             return VerificationResult(False, "Expired", delegation_id=d.delegation_id)
+        if d.call_sid and call_sid:
+            expected = hashlib.sha256(f"{d.call_sid}:{d.created_at}".encode()).hexdigest()
+            if d.nonce != expected or d.call_sid != call_sid:
+                return VerificationResult(False, "nonce_mismatch")
         try:
             provider_pub.verify(base64.b64decode(passport.signature_b64), d.to_json().encode())
             agent_pub = self.b64_to_public_key(d.agent_public_key_b64)

@@ -39,3 +39,26 @@ def test_revoked():
     result = m.verify_passport(passport, prov_pub)
     assert not result.valid
     assert "revoked" in result.reason.lower()
+
+
+def test_nonce_binds_to_call_sid():
+    m = AgentIdentityManager()
+    prov_priv, prov_pub = m.generate_agent_keys()
+    agent_priv, agent_pub = m.generate_agent_keys()
+    delegation = m.create_delegation(prov_priv, "agent-4", agent_pub, ["eligibility"], call_sid="CA123")
+    assert delegation.nonce != ""
+    sig = m.sign_delegation(prov_priv, delegation)
+    passport = m.create_agent_passport(delegation, sig, agent_priv)
+    assert m.verify_passport(passport, prov_pub, call_sid="CA123").valid
+    assert not m.verify_passport(passport, prov_pub, call_sid="CA999").valid
+
+
+def test_no_nonce_without_call_sid():
+    m = AgentIdentityManager()
+    prov_priv, prov_pub = m.generate_agent_keys()
+    agent_priv, agent_pub = m.generate_agent_keys()
+    delegation = m.create_delegation(prov_priv, "agent-5", agent_pub, ["eligibility"])
+    assert delegation.nonce == ""
+    sig = m.sign_delegation(prov_priv, delegation)
+    passport = m.create_agent_passport(delegation, sig, agent_priv)
+    assert m.verify_passport(passport, prov_pub).valid
