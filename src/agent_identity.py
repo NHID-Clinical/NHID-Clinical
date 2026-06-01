@@ -1,19 +1,26 @@
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import (
+    Ed25519PrivateKey,
+    Ed25519PublicKey,
+)
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
-import hashlib, json, time, base64, re, uuid
-from typing import List, Tuple, Optional, Dict
+
+import hashlib
+import json
+import time
+import base64
+import re
+from typing import List, Optional, Dict, Tuple
 from dataclasses import dataclass, asdict
 
-
-# ── Error codes ─────────────────────────────────────────────────────────
+# ── error codes ─────────────────────────────────────────────
 ERR_EXPIRED = "ERR_EXPIRED"
 ERR_REVOKED = "ERR_REVOKED"
 ERR_INVALID_SIG = "ERR_INVALID_SIG"
 ERR_NONCE_MISMATCH = "ERR_NONCE_MISMATCH"
 ERR_SCOPE_VIOLATION = "ERR_SCOPE_VIOLATION"
 ERR_INVALID_NPI = "ERR_INVALID_NPI"
-ERR_CHAIN_NARROWING = "ERR_CHAIN_NARROWING"
 ERR_CHAIN_TOO_LONG = "ERR_CHAIN_TOO_LONG"
+ERR_CHAIN_NARROWING = "ERR_CHAIN_NARROWING"
 
 MAX_CHAIN_DEPTH = 3
 _NPI_RE = re.compile(r"^\d{10}$")
@@ -21,11 +28,10 @@ _NPI_RE = re.compile(r"^\d{10}$")
 
 def _validate_npi(npi: str) -> None:
     if npi and not _NPI_RE.match(npi):
-        raise ValueError(f"{ERR_INVALID_NPI}: '{npi}' must be exactly 10 digits")
+        raise ValueError(f"{ERR_INVALID_NPI}: must be 10 digits")
 
 
-# ── Data models ─────────────────────────────────────────────────────────
-
+# ── models ─────────────────────────────────────────────
 @dataclass
 class Delegation:
     provider_npi: str
@@ -39,7 +45,7 @@ class Delegation:
     nonce: str = ""
 
     def to_json(self) -> str:
-        # MUST be deterministic or signatures break across runs
+        # deterministic for signatures
         return json.dumps(asdict(self), sort_keys=True, separators=(",", ":"))
 
     @classmethod
@@ -67,25 +73,26 @@ class VerificationResult:
     scope: Optional[List[str]] = None
 
 
-# ── Identity manager ─────────────────────────────────────────────────────
-
+# ── core manager ─────────────────────────────────────────────
 class AgentIdentityManager:
     def __init__(self):
         self.revocation_list: Dict[str, int] = {}
         self.revoked_delegations: Dict[str, int] = {}
 
-    # ── keys ─────────────────────────────────────────
-    def generate_agent_keys(self) -> Tuple[Ed25519PrivateKey, Ed25519PublicKey]:
+    # keys
+    def generate_agent_keys(self):
         priv = Ed25519PrivateKey.generate()
         return priv, priv.public_key()
 
     def public_key_to_b64(self, pub: Ed25519PublicKey) -> str:
-        return base64.b64encode(pub.public_bytes(Encoding.Raw, PublicFormat.Raw)).decode()
+        return base64.b64encode(
+            pub.public_bytes(Encoding.Raw, PublicFormat.Raw)
+        ).decode()
 
     def b64_to_public_key(self, b64: str) -> Ed25519PublicKey:
         return Ed25519PublicKey.from_public_bytes(base64.b64decode(b64))
 
-    # ── delegation ───────────────────────────────────
+    # delegation
     def create_delegation(
         self,
         provider_priv,
@@ -100,9 +107,11 @@ class AgentIdentityManager:
         _validate_npi(provider_npi)
 
         now = int(time.time())
+
         nonce = (
             hashlib.sha256(f"{call_sid}:{now}".encode()).hexdigest()
-            if call_sid else ""
+            if call_sid
+            else ""
         )
 
         return Delegation(
@@ -112,7 +121,7 @@ class AgentIdentityManager:
             scope=scope,
             expires_at=now + ttl_seconds,
             created_at=now,
-            delegation_id=str(uuid.uuid4()),
+            delegation_id=f"del_{agent_id}_{now}",
             call_sid=call_sid,
             nonce=nonce,
         )
@@ -133,13 +142,9 @@ class AgentIdentityManager:
             agent_priv.sign(delegation.to_json().encode())
         ).decode()
 
-        return AgentPassport(
-            delegation=delegation,
-            signature_b64=provider_sig,
-            agent_signature_b64=agent_sig,
-        )
+        return AgentPassport(delegation, provider_sig, agent_sig)
 
-    # ── verification ────────────────────────────────
+    # verification
     def verify_passport(
         self,
         passport: AgentPassport,
@@ -158,50 +163,58 @@ class AgentIdentityManager:
             return VerificationResult(False, ERR_REVOKED)
 
         if d.expires_at <= now:
-            return VerificationResult(False, ERR_EXPIRED, delegation_id=d.delegation_id)
+            return VerificationResult(False, ERR_EXPIRED, d.delegation_id)
 
         if d.call_sid and call_sid:
-            expected = hashlib.sha256(f"{d.call_sid}:{d.created_at}".encode()).hexdigest()
+            expected = hashlib.sha256(
+                f"{d.call_sid}:{d.created_at}".encode()
+            ).hexdigest()
+
             if d.nonce != expected or d.call_sid != call_sid:
                 return VerificationResult(False, ERR_NONCE_MISMATCH)
 
         payload = d.to_json().encode()
 
         try:
-            prov_sig = base64.b64decode(passport.signature_b64)
-            agent_sig = base64.b64decode(passport.agent_signature_b64)
-            agent_pub = self.b64_to_public_key(d.agent_public_key_b64)
-        except Exception:
-            return VerificationResult(False, ERR_INVALID_SIG)
+            provider_pub.verify(
+                base64.b64decode(passport.signature_b64),
+                payload,
+            )
 
-        try:
-            provider_pub.verify(prov_sig, payload)
-            agent_pub.verify(agent_sig, payload)
+            agent_pub = self.b64_to_public_key(d.agent_public_key_b64)
+
+            agent_pub.verify(
+                base64.b64decode(passport.agent_signature_b64),
+                payload,
+            )
         except Exception:
             return VerificationResult(False, ERR_INVALID_SIG)
 
         if required_scope:
             missing = [s for s in required_scope if s not in d.scope]
             if missing:
-                return VerificationResult(False, f"{ERR_SCOPE_VIOLATION}: {missing}")
+                return VerificationResult(
+                    False,
+                    f"{ERR_SCOPE_VIOLATION}: {missing}",
+                )
 
         return VerificationResult(
             True,
             "Valid",
-            delegation_id=d.delegation_id,
-            provider_npi=d.provider_npi,
-            agent_id=d.agent_id,
-            scope=d.scope,
+            d.delegation_id,
+            d.provider_npi,
+            d.agent_id,
+            d.scope,
         )
 
-    # ── revocation ────────────────────────────────
+    # revocation
     def revoke_agent(self, agent_id: str) -> None:
         self.revocation_list[agent_id] = int(time.time())
 
     def revoke_delegation(self, delegation_id: str) -> None:
         self.revoked_delegations[delegation_id] = int(time.time())
 
-    # ── chain validation ───────────────────────────
+    # chain validation
     def validate_chain(
         self,
         passports: List[AgentPassport],
@@ -244,8 +257,8 @@ class AgentIdentityManager:
         return VerificationResult(
             True,
             "Valid chain",
-            delegation_id=last.delegation_id,
-            provider_npi=passports[0].delegation.provider_npi,
-            agent_id=last.agent_id,
-            scope=list(current_scope),
+            last.delegation_id,
+            passports[0].delegation.provider_npi,
+            last.agent_id,
+            list(current_scope),
         )
