@@ -1,5 +1,29 @@
 import pytest
-from src.agent_identity import AgentIdentityManager
+import time
+from src.agent_identity import (
+    AgentIdentityManager,
+    ERR_EXPIRED, ERR_REVOKED, ERR_INVALID_SIG,
+    ERR_NONCE_MISMATCH, ERR_SCOPE_VIOLATION, ERR_INVALID_NPI,
+    ERR_CHAIN_NARROWING, ERR_CHAIN_TOO_LONG, MAX_CHAIN_DEPTH,
+)
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def _make_passport(m, agent_id="agent-x", scope=None, ttl=86400,
+                   npi="", call_sid="", provider_priv=None, provider_pub=None):
+    if scope is None:
+        scope = ["eligibility"]
+    if provider_priv is None:
+        provider_priv, provider_pub = m.generate_agent_keys()
+    agent_priv, agent_pub = m.generate_agent_keys()
+    d = m.create_delegation(provider_priv, agent_id, agent_pub, scope,
+                            ttl_seconds=ttl, call_sid=call_sid, provider_npi=npi)
+    sig = m.sign_delegation(provider_priv, d)
+    passport = m.create_agent_passport(d, sig, agent_priv)
+    return passport, provider_pub, agent_priv, agent_pub
+
+
+# ── Existing tests (unchanged) ────────────────────────────────────────────────
 
 def test_key_generation():
     m = AgentIdentityManager()
