@@ -3,7 +3,7 @@
 NHID-Clinical CI invariant validator.
 
 Hard rules (fail CI if violated):
-  - Unit tests: exactly 72 passed, 0 unit tests skipped
+  - Unit tests: exactly 75 passed, 0 unit tests skipped
   - No test failures
   - No collection errors
 
@@ -15,7 +15,7 @@ import subprocess
 import sys
 
 
-UNIT_EXPECTED = 72
+UNIT_EXPECTED = 75
 INTEGRATION_EXPECTED = 18
 
 
@@ -53,7 +53,7 @@ def parse_summary(output):
 def validate(counts):
     violations = []
 
-    # Hard: exactly 72 unit tests must pass
+    # Hard: exactly 75 unit tests must pass
     if counts["passed"] != UNIT_EXPECTED:
         violations.append(
             f"FAIL: expected {UNIT_EXPECTED} passed, got {counts['passed']}"
