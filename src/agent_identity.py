@@ -1,23 +1,44 @@
-"""NHID-Clinical — Cryptographic Agent Identity Layer"""
+"""
+NHID-Clinical v1.4 — Cryptographic Agent Identity & Delegation Layer
+
+Solves the core impersonation problem: any AI with web access can look up a
+real provider NPI from NPPES in seconds. This module makes that insufficient.
+A valid passport requires a cryptographic signature from the provider's private
+key — something public NPI data cannot produce.
+
+End-to-end payer verification flow:
+    manager = AgentIdentityManager()
+    prov_priv, prov_pub = manager.generate_agent_keys()
+    agent_priv, agent_pub = manager.generate_agent_keys()
+    delegation = manager.create_delegation(
+        prov_priv, "agent-001", agent_pub,
+        scope=["eligibility", "claim_status"],
+        provider_npi="1234567890",
+    )
+    sig = manager.sign_delegation(prov_priv, delegation)
+    passport = manager.create_agent_passport(delegation, sig, agent_priv)
+    result = manager.verify_passport(passport, prov_pub)
+    # result.valid is True; result.provider_npi == "1234567890"
+"""
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
-import re, hashlib, json, time, base64
+import re, hashlib, json, time, uuid, base64
 from typing import List, Tuple, Optional, Dict
 from dataclasses import dataclass, asdict
 
 # ── Error codes ───────────────────────────────────────────────────────────────
-ERR_EXPIRED        = "ERR_EXPIRED"
-ERR_REVOKED        = "ERR_REVOKED"
-ERR_INVALID_SIG    = "ERR_INVALID_SIG"
-ERR_NONCE_MISMATCH = "ERR_NONCE_MISMATCH"
-ERR_INVALID_NPI    = "ERR_INVALID_NPI"
+ERR_EXPIRED         = "ERR_EXPIRED"
+ERR_REVOKED         = "ERR_REVOKED"
+ERR_INVALID_SIG     = "ERR_INVALID_SIG"
+ERR_NONCE_MISMATCH  = "ERR_NONCE_MISMATCH"
 ERR_SCOPE_VIOLATION = "ERR_SCOPE_VIOLATION"
+ERR_INVALID_NPI     = "ERR_INVALID_NPI"
 ERR_CHAIN_NARROWING = "ERR_CHAIN_NARROWING"
 ERR_CHAIN_TOO_LONG  = "ERR_CHAIN_TOO_LONG"
 
 MAX_CHAIN_DEPTH = 3
-
 _NPI_RE = re.compile(r'^\d{10}$')
+
 
 def _validate_npi(npi: str) -> None:
     if npi and not _NPI_RE.match(npi):
@@ -93,7 +114,7 @@ class AgentIdentityManager:
             scope=scope,
             expires_at=now + ttl_seconds,
             created_at=now,
-            delegation_id=f"del_{agent_id}_{now}",
+            delegation_id=str(uuid.uuid4()),
             call_sid=call_sid,
             nonce=nonce,
         )
@@ -108,7 +129,8 @@ class AgentIdentityManager:
                              agent_signature_b64=agent_sig)
 
     def verify_passport(self, passport: AgentPassport, provider_pub,
-                        call_sid: str = "") -> VerificationResult:
+                        call_sid: str = "",
+                        required_scope: Optional[List[str]] = None) -> VerificationResult:
         d = passport.delegation
 
         if d.agent_id in self.revocation_list:
@@ -129,6 +151,11 @@ class AgentIdentityManager:
         except Exception:
             return VerificationResult(False, ERR_INVALID_SIG)
 
+        if required_scope:
+            missing = [a for a in required_scope if a not in d.scope]
+            if missing:
+                return VerificationResult(False, f"{ERR_SCOPE_VIOLATION}: {missing}")
+
         return VerificationResult(True, "Valid", delegation_id=d.delegation_id,
                                   provider_npi=d.provider_npi, agent_id=d.agent_id,
                                   scope=d.scope)
@@ -138,3 +165,36 @@ class AgentIdentityManager:
 
     def revoke_delegation(self, delegation_id: str) -> None:
         self.revoked_delegations[delegation_id] = int(time.time())
+
+    def validate_chain(self, passports: List[AgentPassport],
+                       provider_pub) -> VerificationResult:
+        if not passports:
+            return VerificationResult(False, "Empty chain")
+        if len(passports) > MAX_CHAIN_DEPTH:
+            return VerificationResult(False, f"{ERR_CHAIN_TOO_LONG}: max {MAX_CHAIN_DEPTH}")
+
+        result = self.verify_passport(passports[0], provider_pub)
+        if not result.valid:
+            return result
+
+        current_scope = set(passports[0].delegation.scope)
+
+        for i, passport in enumerate(passports[1:], start=1):
+            prev_agent_pub = self.b64_to_public_key(
+                passports[i - 1].delegation.agent_public_key_b64
+            )
+            result = self.verify_passport(passport, prev_agent_pub)
+            if not result.valid:
+                return result
+            next_scope = set(passport.delegation.scope)
+            if not next_scope.issubset(current_scope):
+                escalated = sorted(next_scope - current_scope)
+                return VerificationResult(
+                    False, f"{ERR_CHAIN_NARROWING}: {escalated} not in parent scope"
+                )
+            current_scope = next_scope
+
+        last = passports[-1].delegation
+        return VerificationResult(True, "Valid chain", delegation_id=last.delegation_id,
+                                  provider_npi=passports[0].delegation.provider_npi,
+                                  agent_id=last.agent_id, scope=sorted(current_scope))
