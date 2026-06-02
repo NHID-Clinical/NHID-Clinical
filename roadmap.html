@@ -97,7 +97,7 @@
     <div class="container inner-hero-grid">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>Roadmap</span></div>
-        <p class="eyebrow">In Development · Target August 2026</p>
+        <p class="eyebrow">Preview Available · Reference Implementation on main</p>
         <h1>NHID-Clinical v1.4: Cryptographic Agent Identity</h1>
         <p class="lede">v1.3 establishes disclosure and audit. v1.4 adds the missing piece: a way to cryptographically verify that an AI agent is actually authorized by the provider it claims to represent.</p>
       </div>
@@ -108,7 +108,7 @@
     <div class="container" style="max-width:52rem">
 
       <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> Reference implementation complete. Spec and test suite in development. No production deployments yet. Target release: August 2026.
+        <strong>Status:</strong> Reference implementation on <code style="font-size:.85rem">main</code> — 25 tests passing, all identity features complete. Full spec integration and production API in progress. Available for early testing now.
       </div>
 
       <!-- Version comparison -->
@@ -118,7 +118,7 @@
           <tr>
             <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Capability</th>
             <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v1.3 (current)</th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v1.4 (planned)</th>
+            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v1.4 (preview)</th>
           </tr>
         </thead>
         <tbody>
@@ -150,8 +150,8 @@
         </tbody>
       </table>
 
-      <!-- What's coming -->
-      <h2 style="margin-top:2.5rem">What's Coming in v1.4</h2>
+      <!-- What's in v1.4 -->
+      <h2 style="margin-top:2.5rem">What's in v1.4</h2>
       <div style="display:grid;gap:.85rem;margin-top:1.25rem">
 
         <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
@@ -177,20 +177,16 @@
       </div>
 
       <!-- Reference implementation note -->
-      <h2 style="margin-top:2.5rem">Reference Implementation</h2>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The core identity module is already written and tested. Four passing tests covering key generation, delegation + verification, expiry, and revocation:</p>
+      <h2 style="margin-top:2.5rem">Try It Now</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The identity module is on <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">main</code>. 25 tests covering the full feature set: NPI validation, delegation chains, scope enforcement, per-delegation revocation, call-bound nonces, and 1000-verification performance.</p>
       <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/thankcheeses/NHID-Clinical.git
 cd NHID-Clinical
-git checkout claude/code-review-fixes-98Ir1
 pip install -r requirements.txt
-python -m pytest tests/ -v
+python -m pytest tests/test_identity.py -v
 
-# Expected output:
-# test_key_generation     PASSED
-# test_delegation_creation PASSED
-# test_expired            PASSED
-# test_revoked            PASSED</pre>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/thankcheeses/NHID-Clinical/blob/claude/code-review-fixes-98Ir1/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
+# 25 passed — key generation, NPI binding, delegation chains,
+# scope enforcement, revocation, call-bound nonces, performance</pre>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/thankcheeses/NHID-Clinical/blob/main/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
 
       <!-- Timeline -->
       <h2 style="margin-top:2.5rem">Timeline</h2>
@@ -203,8 +199,8 @@ python -m pytest tests/ -v
         </thead>
         <tbody>
           <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">May 2026</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Reference implementation complete — <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/agent_identity.py</code>, 4 passing tests</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">June 2026 ✅</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Reference implementation on <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">main</code> — 25 passing tests, full feature set</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">July 2026</td>
@@ -212,7 +208,7 @@ python -m pytest tests/ -v
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">August 2026</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Demo + first payer pilot integration</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">HTTP identity API + first payer pilot integration</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;color:var(--body);white-space:nowrap">Q1 2027</td>
