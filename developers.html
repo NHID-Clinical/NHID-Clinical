@@ -171,6 +171,22 @@
         </div>
       </div>
 
+      <!-- Live demo API -->
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:1.5rem;background:var(--paper);border-left:3px solid #28a745">
+        <div style="flex:1;min-width:0">
+          <h3 style="margin:0 0 .35rem;font-size:1.05rem">Live Demo API <span style="font-size:.75rem;font-weight:500;background:#e6f4ea;color:#1a7f37;padding:.15rem .45rem;border-radius:10px;margin-left:.4rem">hosted on Railway</span></h3>
+          <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 .5rem">A read-only demo instance of the NHID-Clinical API is publicly accessible. No API key required for <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/health</code> and policy engine endpoints. Rate-limited.</p>
+          <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:5px;padding:.85rem 1rem;font-size:.82rem;line-height:1.8;overflow-x:auto;color:var(--body);margin:.75rem 0 .85rem">curl https://nhid-clinical.up.railway.app/health
+# {"status":"ok","version":"1.3.0"}
+
+curl -X POST https://nhid-clinical.up.railway.app/v1/policy/run \
+  -H "Content-Type: application/json" \
+  -d '{"event_type":"voice_turn","transcript":"I need to speak to a human","call_sid":"CA_demo"}'</pre>
+          <a href="https://nhid-clinical.up.railway.app/docs" style="display:inline-block;background:#28a745;color:#fff;font-size:.85rem;font-weight:600;padding:.45rem 1rem;border-radius:5px;text-decoration:none;margin-right:.5rem">Open API Docs →</a>
+          <a href="https://nhid-clinical.up.railway.app/health" style="display:inline-block;background:transparent;border:1.5px solid #28a745;color:#28a745;font-size:.85rem;font-weight:600;padding:.45rem 1rem;border-radius:5px;text-decoration:none">Health Check →</a>
+        </div>
+      </div>
+
       <!-- Interactive demo -->
       <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:2.5rem;background:var(--paper);border-left:3px solid var(--blue)">
         <div style="flex:1;min-width:0">
