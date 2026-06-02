@@ -26,7 +26,7 @@ import re, hashlib, json, time, uuid, base64
 from typing import List, Tuple, Optional, Dict
 from dataclasses import dataclass, asdict
 
-# ── Error codes ───────────────────────────────────────────────────────────────
+# ── Error codes ──────────────────────────────────────────────────────────
 ERR_EXPIRED         = "ERR_EXPIRED"
 ERR_REVOKED         = "ERR_REVOKED"
 ERR_INVALID_SIG     = "ERR_INVALID_SIG"
@@ -45,7 +45,7 @@ def _validate_npi(npi: str) -> None:
         raise ValueError(f"{ERR_INVALID_NPI}: '{npi}' must be exactly 10 digits")
 
 
-# ── Data model ────────────────────────────────────────────────────────────────
+# ── Data model ──────────────────────────────────────────────────────────
 @dataclass
 class Delegation:
     provider_npi: str
@@ -86,7 +86,7 @@ class VerificationResult:
     scope: Optional[List[str]] = None
 
 
-# ── Identity manager ──────────────────────────────────────────────────────────
+# ── Identity manager ────────────────────────────────────────────────────────
 class AgentIdentityManager:
     def __init__(self):
         self.revocation_list: Dict[str, int] = {}
