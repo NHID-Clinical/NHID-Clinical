@@ -12,6 +12,7 @@ import re
 from typing import List, Optional, Dict, Tuple
 from dataclasses import dataclass, asdict
 
+
 # ── error codes ─────────────────────────────────────────────
 ERR_EXPIRED = "ERR_EXPIRED"
 ERR_REVOKED = "ERR_REVOKED"
@@ -19,8 +20,8 @@ ERR_INVALID_SIG = "ERR_INVALID_SIG"
 ERR_NONCE_MISMATCH = "ERR_NONCE_MISMATCH"
 ERR_SCOPE_VIOLATION = "ERR_SCOPE_VIOLATION"
 ERR_INVALID_NPI = "ERR_INVALID_NPI"
-ERR_CHAIN_TOO_LONG = "ERR_CHAIN_TOO_LONG"
 ERR_CHAIN_NARROWING = "ERR_CHAIN_NARROWING"
+ERR_CHAIN_TOO_LONG = "ERR_CHAIN_TOO_LONG"
 
 MAX_CHAIN_DEPTH = 3
 _NPI_RE = re.compile(r"^\d{10}$")
@@ -31,7 +32,7 @@ def _validate_npi(npi: str) -> None:
         raise ValueError(f"{ERR_INVALID_NPI}: must be 10 digits")
 
 
-# ── models ─────────────────────────────────────────────
+# ── models ────────────────────────────────────────────────
 @dataclass
 class Delegation:
     provider_npi: str
@@ -45,8 +46,12 @@ class Delegation:
     nonce: str = ""
 
     def to_json(self) -> str:
-        # deterministic for signatures
-        return json.dumps(asdict(self), sort_keys=True, separators=(",", ":"))
+        # deterministic → required for signature stability
+        return json.dumps(
+            asdict(self),
+            sort_keys=True,
+            separators=(",", ":"),
+        )
 
     @classmethod
     def from_json(cls, data: str):
@@ -73,14 +78,14 @@ class VerificationResult:
     scope: Optional[List[str]] = None
 
 
-# ── core manager ─────────────────────────────────────────────
+# ── core manager ─────────────────────────────────────────
 class AgentIdentityManager:
     def __init__(self):
         self.revocation_list: Dict[str, int] = {}
         self.revoked_delegations: Dict[str, int] = {}
 
-    # keys
-    def generate_agent_keys(self):
+    # ── keys ─────────────────────────────
+    def generate_agent_keys(self) -> Tuple[Ed25519PrivateKey, Ed25519PublicKey]:
         priv = Ed25519PrivateKey.generate()
         return priv, priv.public_key()
 
@@ -92,7 +97,7 @@ class AgentIdentityManager:
     def b64_to_public_key(self, b64: str) -> Ed25519PublicKey:
         return Ed25519PublicKey.from_public_bytes(base64.b64decode(b64))
 
-    # delegation
+    # ── delegation ───────────────────────
     def create_delegation(
         self,
         provider_priv,
@@ -144,7 +149,7 @@ class AgentIdentityManager:
 
         return AgentPassport(delegation, provider_sig, agent_sig)
 
-    # verification
+    # ── verification (HOT PATH) ─────────────────────
     def verify_passport(
         self,
         passport: AgentPassport,
@@ -156,15 +161,18 @@ class AgentIdentityManager:
         d = passport.delegation
         now = int(time.time())
 
+        # revocation
         if d.agent_id in self.revocation_list:
             return VerificationResult(False, ERR_REVOKED)
 
         if d.delegation_id in self.revoked_delegations:
             return VerificationResult(False, ERR_REVOKED)
 
+        # expiry
         if d.expires_at <= now:
             return VerificationResult(False, ERR_EXPIRED, d.delegation_id)
 
+        # nonce binding
         if d.call_sid and call_sid:
             expected = hashlib.sha256(
                 f"{d.call_sid}:{d.created_at}".encode()
@@ -176,20 +184,19 @@ class AgentIdentityManager:
         payload = d.to_json().encode()
 
         try:
-            provider_pub.verify(
-                base64.b64decode(passport.signature_b64),
-                payload,
-            )
-
+            prov_sig = base64.b64decode(passport.signature_b64)
+            agent_sig = base64.b64decode(passport.agent_signature_b64)
             agent_pub = self.b64_to_public_key(d.agent_public_key_b64)
-
-            agent_pub.verify(
-                base64.b64decode(passport.agent_signature_b64),
-                payload,
-            )
         except Exception:
             return VerificationResult(False, ERR_INVALID_SIG)
 
+        try:
+            provider_pub.verify(prov_sig, payload)
+            agent_pub.verify(agent_sig, payload)
+        except Exception:
+            return VerificationResult(False, ERR_INVALID_SIG)
+
+        # scope
         if required_scope:
             missing = [s for s in required_scope if s not in d.scope]
             if missing:
@@ -207,14 +214,14 @@ class AgentIdentityManager:
             d.scope,
         )
 
-    # revocation
+    # ── revocation ─────────────────────
     def revoke_agent(self, agent_id: str) -> None:
         self.revocation_list[agent_id] = int(time.time())
 
     def revoke_delegation(self, delegation_id: str) -> None:
         self.revoked_delegations[delegation_id] = int(time.time())
 
-    # chain validation
+    # ── chain validation ─────────────────
     def validate_chain(
         self,
         passports: List[AgentPassport],
