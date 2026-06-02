@@ -1,0 +1,203 @@
+name: NHID Clinical - Production Readiness Gates
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main", "claude/*", "feature/*"]
+
+jobs:
+  test:
+    name: unit + policy + identity tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: install deps
+        run: pip install -r requirements.txt
+      - name: run full test suite
+        run: pytest tests/ -v --disable-warnings --maxfail=1
+
+  identity_determinism:
+    name: identity determinism + crypto consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: enforce deterministic serialization
+        run: |
+          python -c "
+          from src.agent_identity import Delegation
+          d = Delegation(
+              provider_npi='1234567890',
+              agent_id='test',
+              agent_public_key_b64='x',
+              scope=['a'],
+              expires_at=1,
+              created_at=1,
+              delegation_id='d1'
+          )
+          j1 = d.to_json()
+          j2 = d.to_json()
+          assert j1 == j2, f'non-deterministic serialization: {j1!r} != {j2!r}'
+          print('OK')
+          "
+      - name: signature round-trip sanity
+        run: |
+          python -c "
+          from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+          from src.agent_identity import Delegation
+          priv = Ed25519PrivateKey.generate()
+          pub = priv.public_key()
+          d = Delegation(
+              provider_npi='1234567890',
+              agent_id='test',
+              agent_public_key_b64='abc',
+              scope=['read'],
+              expires_at=9999999999,
+              created_at=1,
+              delegation_id='x'
+          )
+          payload = d.to_json().encode()
+          pub.verify(priv.sign(payload), payload)
+          print('OK')
+          "
+
+  api_contract:
+    name: fastapi contract stability
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: import app cleanly
+        run: python -c "from main import app; print('FASTAPI OK')"
+      - name: openapi schema loads
+        run: |
+          python -c "
+          from fastapi.testclient import TestClient
+          from main import app
+          c = TestClient(app)
+          r = c.get('/openapi.json')
+          assert r.status_code == 200, f'got {r.status_code}'
+          assert 'paths' in r.json()
+          print('OPENAPI OK')
+          "
+
+  security_gates:
+    name: abuse + input hardening
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: run failure injection suite (unit tests only)
+        run: pytest tests/failure_injection_harness.py -v --disable-warnings
+      - name: enforce tampered signature rejection
+        run: |
+          python -c "
+          from src.agent_identity import AgentIdentityManager
+          m = AgentIdentityManager()
+          prov_priv, prov_pub = m.generate_agent_keys()
+          agent_priv, agent_pub = m.generate_agent_keys()
+          d = m.create_delegation(prov_priv, 'agent-sec', agent_pub, ['eligibility'])
+          sig = m.sign_delegation(prov_priv, d)
+          passport = m.create_agent_passport(d, sig, agent_priv)
+          # flip one byte in the provider signature
+          raw = list(passport.signature_b64)
+          raw[10] = 'A' if raw[10] != 'A' else 'B'
+          passport.signature_b64 = ''.join(raw)
+          result = m.verify_passport(passport, prov_pub)
+          assert not result.valid, 'tampered signature was accepted'
+          print('OK: tampered signature rejected')
+          "
+      - name: enforce expired delegation rejection
+        run: |
+          python -c "
+          from src.agent_identity import AgentIdentityManager
+          m = AgentIdentityManager()
+          prov_priv, prov_pub = m.generate_agent_keys()
+          agent_priv, agent_pub = m.generate_agent_keys()
+          d = m.create_delegation(prov_priv, 'agent-exp', agent_pub, ['eligibility'], ttl_seconds=0)
+          sig = m.sign_delegation(prov_priv, d)
+          passport = m.create_agent_passport(d, sig, agent_priv)
+          result = m.verify_passport(passport, prov_pub)
+          assert not result.valid, 'expired delegation was accepted'
+          assert 'expired' in result.reason.lower(), f'wrong reason: {result.reason}'
+          print('OK: expired delegation rejected')
+          "
+      - name: enforce revocation
+        run: |
+          python -c "
+          from src.agent_identity import AgentIdentityManager
+          m = AgentIdentityManager()
+          prov_priv, prov_pub = m.generate_agent_keys()
+          agent_priv, agent_pub = m.generate_agent_keys()
+          d = m.create_delegation(prov_priv, 'agent-rev', agent_pub, ['eligibility'])
+          sig = m.sign_delegation(prov_priv, d)
+          passport = m.create_agent_passport(d, sig, agent_priv)
+          m.revoke_agent('agent-rev')
+          result = m.verify_passport(passport, prov_pub)
+          assert not result.valid, 'revoked delegation was accepted'
+          print('OK: revoked delegation rejected')
+          "
+
+  performance_smoke:
+    name: latency + basic load sanity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: cold start check
+        run: |
+          python -c "
+          import time
+          start = time.time()
+          from src.agent_identity import AgentIdentityManager
+          AgentIdentityManager()
+          elapsed = time.time() - start
+          assert elapsed < 1.0, f'cold start took {elapsed:.2f}s'
+          print('OK')
+          "
+      - name: 1000 verify calls under 2s
+        run: |
+          python -c "
+          import time
+          from src.agent_identity import AgentIdentityManager
+          m = AgentIdentityManager()
+          prov_priv, prov_pub = m.generate_agent_keys()
+          agent_priv, agent_pub = m.generate_agent_keys()
+          d = m.create_delegation(prov_priv, 'perf-agent', agent_pub, ['eligibility'])
+          sig = m.sign_delegation(prov_priv, d)
+          passport = m.create_agent_passport(d, sig, agent_priv)
+          start = time.perf_counter()
+          for _ in range(1000):
+              m.verify_passport(passport, prov_pub)
+          elapsed_ms = (time.perf_counter() - start) * 1000
+          assert elapsed_ms < 2000, f'1000 verifications took {elapsed_ms:.1f}ms (limit: 2000ms)'
+          print(f'OK: {elapsed_ms:.0f}ms for 1000 verifications')
+          "
+
+  release_gate:
+    name: market readiness gate
+    runs-on: ubuntu-latest
+    needs: [test, identity_determinism, api_contract, security_gates, performance_smoke]
+    steps:
+      - run: echo "ALL GATES PASSED - ELIGIBLE FOR MERGE"
