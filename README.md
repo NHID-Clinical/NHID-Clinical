@@ -21,9 +21,9 @@ A minimum, voluntary, testable control baseline for non-human identity disclosur
 
 ## The Problem
 
-A payer representative answers an eligibility call. The voice on the line is fluent, professional, and asking for PHI. They cannot tell — in the first thirty seconds — whether they are talking to a human, a hybrid agent, or a fully automated system. They proceed anyway, because their queue is full.
+A payer representative answers an eligibility call. The voice on the line is fluent, professional, and asking for PHI. They cannot tell — in the first thirty seconds — whether they are talking to a human or an AI agent.
 
-This is **impersonation latency**: the gap between when an AI voice agent connects to a payer line and when the human operator can reliably identify it as non-human. Existing frameworks do not address it. HIPAA covers PHI. TCPA covers consumer telemarketing. State AI disclosure laws cover consumer-facing voice. None of them govern the B2B administrative workflow — eligibility, claim status, prior authorization — where most healthcare voice automation actually runs.
+This is **impersonation latency**: the gap between when an AI voice agent connects to a payer line and when the human operator can reliably identify it as non-human. Existing frameworks do not address this.
 
 NHID-Clinical addresses that gap.
 
@@ -46,7 +46,7 @@ A voluntary minimum control baseline. Five normative requirements. Five determin
 
 ## Open Core vs Commercial
 
-NHID-Clinical follows an open-core model. The specification is and will remain freely available under CC BY 4.0. The cryptographic identity layer and tier-3 certification infrastructure are commercial offerings that support the project's long-term sustainability.
+NHID-Clinical follows an open-core model. The specification is and will remain freely available under CC BY 4.0. The cryptographic identity layer and tier-3 certification infrastructure are commercial.
 
 | Component | License | Status |
 |-----------|---------|--------|
@@ -121,119 +121,6 @@ NHID-Clinical/
 └── site/                  nhid-clinical.org source
 ```
 
-## Pilot Program
-
-No-cost validation for healthcare voice AI vendors and payer operations teams. The pilot tests one outbound or inbound workflow against the L1 or L2 conformance criteria and returns a written assessment. Commercial features (NHID-Auth, L3 certification) are also available for pilot evaluation.
-
-Request access: [nhid-clinical.org/pilot.html](https://nhid-clinical.org/pilot.html)
-
-## Citation
-
-```bibtex
-@misc{nhidclinical2026,
-  author       = {Baynard, Brianna},
-  title        = {NHID-Clinical: Non-Human Identity Disclosure Standard for Healthcare Voice Workflows},
-  year         = {2026},
-  version      = {1.3},
-  url          = {https://nhid-clinical.org},
-  note         = {Submitted to NIST AI Safety Institute, docket NIST-2025-0035-0026}
-}
-```
-
-## License
-
-Specification and documentation: [CC BY 4.0](LICENSE)
-Reference implementation: open source, see [LICENSE](LICENSE)
-NHID-Auth and L3 certification components: commercial license, contact for terms
-
-## Contact
-
-- Website: [nhid-clinical.org](https://nhid-clinical.org)
-- Author: Brianna Baynard
-- NIST docket: [NIST-2025-0035-0026](https://www.regulations.gov/comment/NIST-2025-0035-0026)
-```
-
-## Pilot Program
-
-No-cost validation for healthcare voice AI vendors and payer operations teams. The pilot tests one outbound or inbound workflow against the L1 or L2 conformance criteria and returns a written assessment.
-
-Request access: [nhid-clinical.org/pilot.html](https://nhid-clinical.org/pilot.html)
-
-## Citation
-
-```bibtex
-@misc{nhidclinical2026,
-  author       = {Baynard, Brianna},
-  title        = {NHID-Clinical: Non-Human Identity Disclosure Standard for Healthcare Voice Workflows},
-  year         = {2026},
-  version      = {1.4},
-  url          = {https://nhid-clinical.org},
-  note         = {Submitted to NIST AI Safety Institute, docket NIST-2025-0035-0026}
-}
-```
-
-## License
-
-Specification and documentation: [CC BY 4.0](LICENSE)
-Reference implementation: see [LICENSE](LICENSE)
-
-## Contact
-
-- Website: [nhid-clinical.org](https://nhid-clinical.org)
-- Author: Brianna Baynard
-- NIST docket: [NIST-2025-0035-0026](https://www.regulations.gov/comment/NIST-2025-0035-0026)
-
-## Citation
-
-```bibtex
-@misc{nhidclinical2026,
-  author       = {Baynard, Brianna},
-  title        = {NHID-Clinical: Non-Human Identity Disclosure Standard for Healthcare Voice Workflows},
-  year         = {2026},
-  version      = {1.4},
-  url          = {https://nhid-clinical.org},
-  note         = {Submitted to NIST AI Safety Institute, docket NIST-2025-0035-0026}
-}
-```
-
-## License
-
-Specification and documentation: [CC BY 4.0](LICENSE)
-Reference implementation: see [LICENSE](LICENSE)
-
-## Contact
-
-- Website: [nhid-clinical.org](https://nhid-clinical.org)
-- Author: Brianna Baynard
-- NIST docket: [NIST-2025-0035-0026](https://www.regulations.gov/comment/NIST-2025-0035-0026)
-Request access: [nhid-clinical.org/pilot.html](https://nhid-clinical.org/pilot.html)
-
-## Citation
-
-```bibtex
-@misc{nhidclinical2026,
-  author       = {Baynard, Brianna},
-  title        = {NHID-Clinical: Non-Human Identity Disclosure Standard for Healthcare Voice Workflows},
-  year         = {2026},
-  version      = {1.4},
-  url          = {https://nhid-clinical.org},
-  note         = {Submitted to NIST AI Safety Institute, docket NIST-2025-0035-0026}
-}
-```
-
-## License
-
-Specification and documentation: [CC BY 4.0](LICENSE)
-Reference implementation: see [LICENSE](LICENSE)
-
-## Contact
-
-- Website: [nhid-clinical.org](https://nhid-clinical.org)
-- Author: Brianna Baynard
-- NIST docket: [NIST-2025-0035-0026](https://www.regulations.gov/comment/NIST-2025-0035-0026)
-
----
-
 ## Artifacts
 
 | File | What it does |
@@ -249,7 +136,11 @@ Reference implementation: see [LICENSE](LICENSE)
 | `examples/issue_and_verify.py` | Runnable v1.4 passport demo |
 | `traces/` | 10 pre-generated failure traces |
 
----
+## Pilot Program
+
+No-cost validation for healthcare voice AI vendors and payer operations teams. The pilot tests one outbound or inbound workflow against the L1 or L2 conformance criteria and returns a written assessment and pathway.
+
+Request access: [nhid-clinical.org/pilot.html](https://nhid-clinical.org/pilot.html)
 
 ## Status
 
@@ -257,6 +148,28 @@ Reference implementation: see [LICENSE](LICENSE)
 - Working schema, policy engine, conformance suite, trace generator, and cryptographic identity layer
 - Actively looking for feedback from payer ops, provider-side AI teams, health IT
 
+## Citation
+
+```bibtex
+@misc{nhidclinical2026,
+  author       = {Baynard, Brianna},
+  title        = {NHID-Clinical: Non-Human Identity Disclosure Standard for Healthcare Voice Workflows},
+  year         = {2026},
+  version      = {1.4},
+  url          = {https://nhid-clinical.org},
+  note         = {Submitted to NIST AI Safety Institute, docket NIST-2025-0035-0026}
+}
+```
+
+## License
+
+- **Specification and documentation**: [CC BY 4.0](LICENSE)
+- **Reference implementation**: Open source, see [LICENSE](LICENSE)
+- **NHID-Auth and L3 certification components**: Commercial license, contact for terms
+
 ## Contact
 
-[contact@nhid-clinical.org](mailto:contact@nhid-clinical.org) · CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026
+- **Website**: [nhid-clinical.org](https://nhid-clinical.org)
+- **Email**: [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
+- **Author**: Brianna Baynard
+- **NIST docket**: [NIST-2025-0035-0026](https://www.regulations.gov/comment/NIST-2025-0035-0026)
