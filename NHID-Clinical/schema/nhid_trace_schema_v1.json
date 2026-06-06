@@ -1,0 +1,376 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nhid-clinical.org/schema/nhid-trace-v1.json",
+  "title": "NHID-Clinical Canonical Event Schema v1",
+  "description": "Canonical schema for a single pipeline event in an NHID-Clinical-conformant healthcare voice AI session. All pipeline stages (INGEST through PERSIST) emit objects conforming to this schema.",
+  "$comment": "NHID-Clinical v1.3 open proposal. CC BY 4.0. Not a certified standard. Not a regulatory requirement. See nhid-clinical.org.",
+  "type": "object",
+  "required": [
+    "event_id",
+    "timestamp",
+    "session_id",
+    "request_id",
+    "event_type",
+    "actor_id",
+    "counterparty_type",
+    "state_before",
+    "state_after",
+    "partial_failure",
+    "boundary_violations",
+    "replay_mode",
+    "external_calls_cached",
+    "execution_context"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "$comment": "Globally unique identifier for this event. Clients MUST generate a UUID v4.",
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID v4. Unique per event. Stable across replay."
+    },
+    "timestamp": {
+      "$comment": "Wall-clock UTC timestamp at the moment the event was generated. ISO 8601 with timezone offset.",
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC wall-clock time of event generation. ISO 8601 format."
+    },
+    "session_id": {
+      "$comment": "Binds all events for a single voice call. Maps to Twilio CallSid in Twilio deployments.",
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable call/session identifier. Equal to Twilio CallSid or a synthetic UUID for non-Twilio deployments."
+    },
+    "request_id": {
+      "$comment": "Correlation ID for idempotency. The same logical request submitted twice MUST carry the same request_id. Systems use this for duplicate-detection and replay binding.",
+      "type": "string",
+      "minLength": 1,
+      "description": "Correlation ID. Stable for the lifetime of a single logical request. Used for idempotency and replay linking."
+    },
+    "event_type": {
+      "$comment": "Enumerates the pipeline stage that emitted this event. Defines the linear processing order: INGEST → VALIDATE → STATE → POLICY → EXEC → EVENT → PERSIST.",
+      "type": "string",
+      "enum": ["INGEST", "VALIDATE", "STATE", "POLICY", "EXEC", "EVENT", "PERSIST"],
+      "description": "Pipeline stage that produced this event."
+    },
+    "actor_id": {
+      "$comment": "The entity that triggered or caused this event. For AI-initiated events, this SHOULD be a stable agent identifier (not a model name). For human-initiated events, use an anonymized operator ID.",
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier for the entity (AI agent, human operator, or system) that produced this event."
+    },
+    "counterparty_type": {
+      "$comment": "Classification of the party on the other side of the interaction. 'ai_agent' triggers stricter NHID-Clinical disclosure rules (bot-to-bot policy). 'unknown' MUST be treated as 'human_operator' for governance purposes.",
+      "type": "string",
+      "enum": ["human_operator", "ai_agent", "ivr_system", "unknown"],
+      "description": "Classification of the interaction counterparty. Determines which policy rules apply."
+    },
+    "input_payload": {
+      "$comment": "The normalized input received at this pipeline stage. Normalization removes leading/trailing whitespace and collapses internal whitespace. Raw input MUST NOT be stored if it contains PHI unless a BAA and retention policy are in place.",
+      "type": ["object", "null"],
+      "description": "Normalized input for this pipeline stage.",
+      "properties": {
+        "speech_text": {
+          "type": ["string", "null"],
+          "description": "Normalized speech-to-text transcription."
+        },
+        "raw_form_fields": {
+          "type": ["object", "null"],
+          "description": "Parsed form fields from the inbound request. Present at INGEST stage only.",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "output_payload": {
+      "$comment": "The output produced by this pipeline stage. For EXEC and PERSIST stages, this contains the TwiML response or persistence result.",
+      "type": ["object", "null"],
+      "description": "Output produced at this pipeline stage.",
+      "properties": {
+        "twiml": {
+          "type": ["string", "null"],
+          "description": "Serialized TwiML XML response string."
+        },
+        "llm_response": {
+          "type": ["string", "null"],
+          "description": "Raw LLM completion text, if LLM was invoked."
+        },
+        "policy_message": {
+          "type": ["string", "null"],
+          "description": "Policy-determined message text, if LLM was NOT invoked."
+        },
+        "persist_result": {
+          "type": ["string", "null"],
+          "enum": ["ok", "failed", "duplicate", null],
+          "description": "Outcome of the PERSIST stage write operation."
+        }
+      },
+      "additionalProperties": false
+    },
+    "state_before": {
+      "$comment": "The session state machine value BEFORE this event was processed. State transitions MUST be explicit — no implicit state mutation is permitted.",
+      "type": "string",
+      "description": "Session state before this event was processed."
+    },
+    "state_after": {
+      "$comment": "The session state machine value AFTER this event was processed. If state_after equals state_before, the stage was a no-op transition.",
+      "type": "string",
+      "description": "Session state after this event was processed."
+    },
+    "policy_decision": {
+      "$comment": "Present only when event_type is POLICY. Null for all other stages.",
+      "type": ["object", "null"],
+      "description": "Policy engine output. Present only at POLICY stage.",
+      "required": ["action", "reason_code", "policy_version"],
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["DISCLOSE_IDENTITY", "ESCALATE_HUMAN", "CONTINUE_AI", "DENY_DATA", "LOG_ONLY"],
+          "description": "The policy action to execute."
+        },
+        "reason_code": {
+          "type": "string",
+          "description": "Machine-readable reason code. Examples: IDG01_DISCLOSURE_MISSING, PDX01_PHI_GATE_TRIGGERED, DBC01_ARTIFACT_DETECTED, EIT01_NO_ESCALATION_PATH, ATR01_AUDIT_FIELDS_MISSING."
+        },
+        "policy_version": {
+          "type": "string",
+          "description": "Version of the policy engine that produced this decision. SemVer string."
+        },
+        "gather_speech": {
+          "type": "boolean",
+          "description": "Whether the TwiML response should include a Gather verb to collect speech.",
+          "default": true
+        }
+      }
+    },
+    "error": {
+      "$comment": "Structured error descriptor. Present when a pipeline stage encounters a recoverable or unrecoverable error. Systems MUST NOT silently swallow errors — every error MUST produce an error object and a boundary_violation entry.",
+      "type": ["object", "null"],
+      "description": "Structured error. Non-null when a pipeline stage encountered an error.",
+      "required": ["code", "message", "stage", "recoverable"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Machine-readable error code. Example: VALIDATION_MISSING_CALLSID, PARSE_NULL_BYTES, POLICY_EVALUATION_FAILED."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable error description."
+        },
+        "stage": {
+          "type": "string",
+          "enum": ["INGEST", "VALIDATE", "STATE", "POLICY", "EXEC", "EVENT", "PERSIST"],
+          "description": "Pipeline stage where the error occurred."
+        },
+        "recoverable": {
+          "type": "boolean",
+          "description": "True if the pipeline can continue with a deterministic fallback. False if the session must be terminated."
+        }
+      }
+    },
+    "partial_failure": {
+      "$comment": "True when a pipeline stage completed successfully but one or more governance boundaries were violated during processing. A partial failure does NOT stop the pipeline — but every violation MUST appear in boundary_violations. This captures the most dangerous failure mode in healthcare voice AI: degraded-but-not-broken interactions.",
+      "type": "boolean",
+      "description": "True if this stage completed but triggered one or more governance boundary violations."
+    },
+    "boundary_violations": {
+      "$comment": "List of all NHID-Clinical control violations detected at this stage. Each entry references a specific control ID (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) and describes the violation. An empty array means no violations.",
+      "type": "array",
+      "description": "Governance boundary violations detected during this stage.",
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "description", "severity"],
+        "additionalProperties": false,
+        "properties": {
+          "rule_id": {
+            "type": "string",
+            "description": "NHID-Clinical control ID. Examples: IDG-01, PDX-01, DBC-01, EIT-01, ATR-01."
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of the specific violation."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "major", "minor"],
+            "description": "Severity classification. Critical = normative MUST violation. Major = recommended SHOULD violation. Minor = informative observation."
+          }
+        }
+      }
+    },
+    "healthcare_governance": {
+      "$comment": "Healthcare-specific governance fields. These fields are required for NHID-Clinical conformance and map directly to regulatory requirements. Systems that do not populate these fields cannot demonstrate conformance.",
+      "type": ["object", "null"],
+      "description": "Healthcare governance metadata. Required for full NHID-Clinical conformance.",
+      "additionalProperties": false,
+      "properties": {
+        "disclosure_timestamp": {
+          "$comment": "REGULATORY MAPPING: TCPA (47 U.S.C. § 227) + FCC February 2024 declaratory ruling (non-human voice). CA AB 2905 (eff. Jan 1, 2026). UT SB 226. TX TRAIGA. Timestamp when AI identity was disclosed to the counterparty. NULL means disclosure has not yet occurred.",
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "UTC timestamp when the AI agent first disclosed its non-human identity. Null if disclosure has not yet occurred. Required to satisfy pre-data-exchange gate (PDX-01)."
+        },
+        "identity_assertion_text": {
+          "$comment": "REGULATORY MAPPING: CA AB 489 (prohibits AI impersonating licensed healthcare professionals, eff. Jan 1, 2026). NY S7263 (advanced March 2026, private right of action for AI impersonation). The verbatim text of the AI's identity disclosure statement.",
+          "type": ["string", "null"],
+          "description": "Verbatim text of the AI agent's identity disclosure statement. Null if disclosure has not yet occurred."
+        },
+        "deceptive_artifact_flags": {
+          "$comment": "REGULATORY MAPPING: NHID-Clinical DBC-01 (Prohibition of Deceptive Behavior). Flags any detected synthetic human-mimicry artifacts. An empty array is required for DBC-01 conformance.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "fake_breathing",
+              "fake_typing",
+              "artificial_pause",
+              "human_name_claim",
+              "license_claim",
+              "employer_claim_unverified"
+            ]
+          },
+          "description": "Deceptive artifacts detected in this interaction. Empty array required for DBC-01 conformance."
+        },
+        "escalation_timestamp": {
+          "$comment": "REGULATORY MAPPING: NHID-Clinical EIT-01 (Escalation Implementation Test). Hawaii SB 2281 (Feb 2026, qualified human oversight personnel requirement).",
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "UTC timestamp when escalation to a human operator was initiated."
+        },
+        "escalation_outcome": {
+          "$comment": "REGULATORY MAPPING: NHID-Clinical EIT-01.",
+          "type": ["string", "null"],
+          "enum": ["connected", "unavailable", "declined_by_caller", "timeout", null],
+          "description": "Outcome of the escalation attempt."
+        },
+        "phi_accessed": {
+          "$comment": "REGULATORY MAPPING: HIPAA Minimum Necessary Standard, 45 CFR § 164.502(b). Documents which PHI categories were accessed in this interaction. Systems operating under HIPAA-aligned posture MUST populate this field. Not a substitute for a BAA or organizational HIPAA compliance program.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "member_id",
+              "npi",
+              "date_of_birth",
+              "claim_number",
+              "prior_auth_number",
+              "diagnosis_code",
+              "procedure_code",
+              "provider_tin"
+            ]
+          },
+          "description": "PHI categories accessed during this interaction. HIPAA-aligned systems MUST populate this field."
+        }
+      }
+    },
+    "execution_context": {
+      "$comment": "Full provenance chain for this event. Enables cross-vendor incident comparison and audit trail completeness. Required for ATR-01 conformance.",
+      "type": "object",
+      "description": "Execution provenance. Required for ATR-01 audit trail conformance.",
+      "required": ["pipeline_version", "policy_engine_version", "nhid_schema_version"],
+      "additionalProperties": false,
+      "properties": {
+        "pipeline_version": {
+          "type": "string",
+          "description": "SemVer version of the processing pipeline that emitted this event."
+        },
+        "policy_engine_version": {
+          "type": "string",
+          "description": "SemVer version of the NHID-Clinical policy engine used."
+        },
+        "nhid_schema_version": {
+          "type": "string",
+          "description": "Version of this NHID-Clinical trace schema. Currently '1.0'.",
+          "const": "1.0"
+        },
+        "llm_provider": {
+          "type": ["string", "null"],
+          "description": "LLM provider identifier. Null if LLM was not invoked."
+        },
+        "llm_model": {
+          "type": ["string", "null"],
+          "description": "Specific model identifier. Null if LLM was not invoked."
+        },
+        "stt_provider": {
+          "type": ["string", "null"],
+          "description": "Speech-to-text provider identifier. Null if STT was not used."
+        },
+        "tts_provider": {
+          "type": ["string", "null"],
+          "description": "Text-to-speech provider identifier. Null if TTS was not used."
+        }
+      }
+    },
+    "replay_mode": {
+      "$comment": "Indicates whether this event was produced during live execution or replayed from a cached event stream. During replay, external_calls_cached MUST be true. Replaying with live external calls is a replay integrity violation.",
+      "type": "string",
+      "enum": ["live", "cached"],
+      "description": "live = produced during real-time execution. cached = produced during deterministic replay with no external calls."
+    },
+    "external_calls_cached": {
+      "$comment": "When replay_mode is 'cached', this MUST be true. If external_calls_cached is false during replay, LLM/STT/TTS outputs may differ from the original, breaking audit integrity. The canonical constraint: replay emits no external calls.",
+      "type": "boolean",
+      "description": "True if all external calls (LLM, STT, TTS) were served from cache during this event's production. Required to be true when replay_mode is 'cached'."
+    }
+  },
+  "if": {
+    "properties": { "replay_mode": { "const": "cached" } }
+  },
+  "then": {
+    "properties": { "external_calls_cached": { "const": true } },
+    "required": ["external_calls_cached"]
+  },
+  "examples": [
+    {
+      "event_id": "550e8400-e29b-41d4-a716-446655440000",
+      "timestamp": "2026-05-26T14:30:00.000Z",
+      "session_id": "CA1234567890abcdef1234567890abcd",
+      "request_id": "req-idg01-pass-001",
+      "event_type": "POLICY",
+      "actor_id": "nhid-agent-v1",
+      "counterparty_type": "human_operator",
+      "input_payload": {
+        "speech_text": "Hello, I am an automated system calling on behalf of Dr. Smith's office.",
+        "raw_form_fields": null
+      },
+      "output_payload": {
+        "twiml": null,
+        "llm_response": null,
+        "policy_message": "Continuing — identity disclosure confirmed.",
+        "persist_result": null
+      },
+      "state_before": "AWAITING_DISCLOSURE",
+      "state_after": "DISCLOSED",
+      "policy_decision": {
+        "action": "CONTINUE_AI",
+        "reason_code": "IDG01_DISCLOSURE_CONFIRMED",
+        "policy_version": "1.3.0",
+        "gather_speech": true
+      },
+      "error": null,
+      "partial_failure": false,
+      "boundary_violations": [],
+      "healthcare_governance": {
+        "disclosure_timestamp": "2026-05-26T14:30:00.000Z",
+        "identity_assertion_text": "Hello, I am an automated system calling on behalf of Dr. Smith's office.",
+        "deceptive_artifact_flags": [],
+        "escalation_timestamp": null,
+        "escalation_outcome": null,
+        "phi_accessed": []
+      },
+      "execution_context": {
+        "pipeline_version": "1.0.0",
+        "policy_engine_version": "1.0.0",
+        "nhid_schema_version": "1.0",
+        "llm_provider": null,
+        "llm_model": null,
+        "stt_provider": "deepgram",
+        "tts_provider": null
+      },
+      "replay_mode": "live",
+      "external_calls_cached": false
+    }
+  ]
+}
