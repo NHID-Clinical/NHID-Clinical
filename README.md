@@ -1,175 +1,103 @@
-<div align="center">
-
 # NHID-Clinical
 
 **Non-Human Identity Disclosure Standard for Healthcare Voice Workflows**
-
-A minimum, voluntary, testable control baseline for non-human identity disclosure in B2B healthcare administrative voice interactions.
-
-[![Spec](https://img.shields.io/badge/spec-v1.3-blue?style=flat-square)](https://nhid-clinical.org/specification.html)
-[![Implementation](https://img.shields.io/badge/impl-v1.4-005a9c?style=flat-square)](https://github.com/thankcheeses/NHID-Clinical/releases)
-[![Tests](https://img.shields.io/badge/tests-95%20passing-brightgreen?style=flat-square)](#evidence)
-[![License](https://img.shields.io/badge/spec%20license-CC%20BY%204.0-blue?style=flat-square)](LICENSE)
-[![NIST](https://img.shields.io/badge/NIST-docket%20AI--2025--0035-005a9c?style=flat-square)](https://www.regulations.gov/comment/NIST-2025-0035-0026)
-[![Status](https://img.shields.io/badge/status-pilot--ready-orange?style=flat-square)](https://nhid-clinical.org)
-
-[Website](https://nhid-clinical.org) · [Specification](https://nhid-clinical.org/specification.html) · [NIST Submission](https://www.regulations.gov/comment/NIST-2025-0035-0026) · [Pilot Program](https://nhid-clinical.org/pilot.html)
-
-</div>
+Version: 1.3 | Status: Open Governance Proposal | License: CC BY 4.0
 
 ---
 
-## The Problem
-
-A payer representative answers an eligibility call. The voice on the line is fluent, professional, and asking for PHI. They cannot tell — in the first thirty seconds — whether they are talking to a human or an AI agent.
-
-This is **impersonation latency**: the gap between when an AI voice agent connects to a payer line and when the human operator can reliably identify it as non-human. Existing frameworks do not address this.
-
-NHID-Clinical addresses that gap.
-
 ## What This Is
 
-A voluntary minimum control baseline. Five normative requirements. Five deterministic conformance tests. Three certification tiers. Technology-agnostic.
+NHID-Clinical defines a minimum, voluntary, testable control baseline for non-human identity disclosure in B2B healthcare administrative voice interactions.
 
-| Tier | Method | Audience |
-|------|--------|----------|
-| **L1** | Self-attestation | Vendors entering market |
-| **L2** | Evidence-backed | Vendors with operational data |
-| **L3** | Independent audit | Payer-facing production deployments |
+It addresses a documented gap in provider-to-payer voice workflows (eligibility, claim status, prior authorization) where AI voice agents operate without disclosing their automated status before exchanging operational data.
 
-## What This Is Not
+**This is not a regulation, certification program, or compliance requirement.** It is an open governance proposal submitted to NIST docket NIST-2025-0035 (Comment ID: NIST-2025-0035-0026).
 
-- Not a replacement for HIPAA, TCPA, or state AI disclosure law
-- Not a voice biometrics or anti-fraud spec — see Pindrop, Nuance for that layer
-- Not consumer-facing — strictly B2B provider-to-payer administrative workflows
-- Not a procurement requirement (yet)
+---
 
-## Open Core vs Commercial
+## The Problem: Impersonation Latency
 
-NHID-Clinical follows an open-core model. The specification is and will remain freely available under CC BY 4.0. The cryptographic identity layer and tier-3 certification infrastructure are commercial.
+An AI calls as "Sarah from Dr. Smith's office." It handles several minutes of normal workflow conversation. Only when challenged does it admit it is automated. By then, sensitive operational data has already been exchanged without clear consent or accountability.
 
-| Component | License | Status |
-|-----------|---------|--------|
-| Specification (v1.3) | CC BY 4.0 | Open, stable, NIST-submitted |
-| Five normative controls + CTS tests | CC BY 4.0 | Open |
-| Reference implementation (voice policy, PHI gating, FHIR mapping) | Open source | Open |
-| NHID-Auth identity layer (Ed25519 passports, delegation chains) | Commercial | Pilot partners |
-| L3 certification badge + cryptographic verification | Commercial | Pilot partners |
+This is impersonation latency: the measurable trust delay between an AI agent initiating a call and the receiving system verifying the caller is authorized to represent the claimed provider.
 
-For pilot access to commercial features: [nhid-clinical.org/pilot.html](https://nhid-clinical.org/pilot.html)
+---
 
-## Evidence
+## The Four Controls (v1.3)
 
-Reference implementation. 95 tests passing covering identity, voice policy, and failure injection.
+| ID | Name | Requirement |
+|----|------|-------------|
+| IDG-01 | Identity Disclosure Gate | AI MUST identify as automated before any operational data exchange |
+| DBC-01 | Deceptive Behavior Check | AI MUST NOT use fake breathing, typing sounds, or scripted human-like hesitation |
+| EIT-01 | Escalation and Immediate Transfer | AI MUST provide immediate human handoff when requested |
+| ATR-01 | Audit Trail Requirements | AI MUST log disclosure timestamp vs. first data request timestamp |
 
-<div align="center">
+---
 
-https://github.com/user-attachments/assets/13a8d270-7787-43fc-bdad-87415fb23c85
+## Conformance Test Suite
 
-</div>
-
-```
-============================= test session starts =============================
-collected 113 items
-
-tests/failure_injection_harness.py ....................                  [ 17%]
-tests/test_identity.py .........................                         [ 39%]
-tests/test_voice_policy.py ..............................                [ 65%]
-tests/test_voice_policy.py ........................................      [100%]
-
-================== 95 passed, 18 skipped in 4.45s =============================
-```
-
-## Quickstart
+Five deterministic pass/fail tests. All five must pass for NHID-Clinical v1.3 conformance.
 
 ```bash
-git clone https://github.com/thankcheeses/NHID-Clinical.git
+git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-pytest
+pytest tests/ -q
 ```
 
-Run the reference server:
+Expected: `95 passed, 18 skipped`
 
-```bash
-uvicorn src.main:app --reload
-# OpenAPI docs at http://localhost:8000/docs
-```
+The 18 skipped tests are integration tests requiring a live FastAPI server. They are optional and do not affect policy engine verification.
 
-Live backend: `https://nhid-clinical-production.up.railway.app/health`
+---
 
-## The Five Controls
-
-1. **Proactive disclosure** — automated status declared before protected data exchange
-2. **Authorization verification** — caller authority verifiable by the receiving party
-3. **Safe escalation** — globally enforced human-handoff phrases that tenant config cannot silence
-4. **PHI gating** — protected information blocked until disclosure state is confirmed
-5. **Auditable trail** — FHIR AuditEvent mapping for every disclosure decision
-
-See [`docs/specification.md`](docs/specification.md) for normative language.
-
-## Repository Layout
+## Repository Structure
 
 ```
-NHID-Clinical/
-├── docs/                  Specification, FHIR mapping, conformance tests
-├── src/
-│   ├── agent_identity.py  Ed25519 identity passport + delegation chain
-│   ├── voice_policy.py    Disclosure state machine and safety phrases
-│   └── main.py            FastAPI reference server
-├── tests/                 95 passing tests
-└── site/                  nhid-clinical.org source
+src/
+  agent_identity.py              # NHID-Auth delegation and NPI binding
+  voice_policy.py                # Core disclosure and escalation policy engine
+  nhid_policy_engine_v1.py       # Five CTS rule implementations
+tests/
+  test_identity.py               # Identity and delegation tests
+  test_voice_policy.py           # Policy engine tests
+  failure_injection_harness.py   # Chaos and adversarial input tests
+conformance/
+  nhid_conformance_test_suite_v1.yaml   # 18 machine-readable CTS cases
+specs/
+  NHIDClinicalv1.3_Overview.pdf
+  NHID-Clinical-Operational-Blueprint-v1.3.pdf
 ```
 
-## Artifacts
+---
 
-| File | What it does |
-|---|---|
-| `schema/nhid_trace_schema_v1.json` | Event schema every pipeline stage emits against |
-| `conformance/nhid_conformance_test_suite_v1.yaml` | 18 machine-readable pass/fail/edge conformance cases |
-| `src/nhid_policy_engine_v1.py` | Evaluates IDG-01, PDX-01, DBC-01, EIT-01, ATR-01. Never raises. |
-| `src/voice_policy.py` | Policy engine with global safety phrases, PHI gate, ruleset evaluation |
-| `src/agent_identity.py` | Ed25519 passports, NPI binding, scope enforcement, chain validation (v1.4) |
-| `tests/test_voice_policy.py` | 70 unit tests — policy engine correctness |
-| `tests/test_identity.py` | 25 unit tests — identity layer (5 original + 20 new in v1.4) |
-| `tests/failure_injection_harness.py` | Integration tests (auto-skip without server) |
-| `examples/issue_and_verify.py` | Runnable v1.4 passport demo |
-| `traces/` | 10 pre-generated failure traces |
+## Framework Alignment
 
-## Pilot Program
+| NHID-Clinical Control | NIST AI RMF 1.0 | ISO/IEC 42001:2023 |
+|----------------------|-----------------|-------------------|
+| Proactive Identity Assertion | MEASURE 2.6, MAP 3.4 | A.7.2, B.9.1 |
+| No Deceptive Artifacts | GOV 1.5, MAP 3.4 | A.5.8, A.9.2 |
+| Pre-Data Exchange Gate | MANAGE 1.2, GOV 5.1 | A.6.2, A.8.2 |
+| Safe Failover / Escalation | MANAGE 4.2, GOV 5.2 | A.8.3, A.6.3 |
+| Audit Logging | MANAGE 4.1, MEASURE 2.2 | A.4.2, A.9.3 |
 
-No-cost validation for healthcare voice AI vendors and payer operations teams. The pilot tests one outbound or inbound workflow against the L1 or L2 conformance criteria and returns a written assessment and pathway.
+---
 
-Request access: [nhid-clinical.org/pilot.html](https://nhid-clinical.org/pilot.html)
+## NIST Submission
 
-## Status
+Submitted to NIST AI Safety Institute public comment docket NIST-2025-0035.
+Comment ID: **NIST-2025-0035-0026**
+This is a public comment. It does not imply NIST endorsement or recognition.
 
-- No payer or vendor has adopted this yet
-- Working schema, policy engine, conformance suite, trace generator, and cryptographic identity layer
-- Actively looking for feedback from payer ops, provider-side AI teams, health IT
+---
 
-## Citation
+## Website
 
-```bibtex
-@misc{nhidclinical2026,
-  author       = {Baynard, Brianna},
-  title        = {NHID-Clinical: Non-Human Identity Disclosure Standard for Healthcare Voice Workflows},
-  year         = {2026},
-  version      = {1.4},
-  url          = {https://nhid-clinical.org},
-  note         = {Submitted to NIST AI Safety Institute, docket NIST-2025-0035-0026}
-}
-```
+**[nhid-clinical.org](https://nhid-clinical.org)**
+
+---
 
 ## License
 
-- **Specification and documentation**: [CC BY 4.0](LICENSE)
-- **Reference implementation**: Open source, see [LICENSE](LICENSE)
-- **NHID-Auth and L3 certification components**: Commercial license, contact for terms
-
-## Contact
-
-- **Website**: [nhid-clinical.org](https://nhid-clinical.org)
-- **Email**: [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
-- **Author**: Brianna Baynard
-- **NIST docket**: [NIST-2025-0035-0026](https://www.regulations.gov/comment/NIST-2025-0035-0026)
+CC BY 4.0 - Brianna Baynard-Malone
+contact@nhid-clinical.org
