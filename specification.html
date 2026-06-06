@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical v1.3 Specification — Open proposal for non-human identity disclosure in healthcare voice workflows. Five proposed requirements for transparent AI[...]">
+  <meta name="description" content="NHID-Clinical v1.3 Specification — Open proposal for non-human identity disclosure in healthcare voice workflows. Five proposed requirements for transparent AI voice agent disclosure in B2B healthcare administrative calls."/>
   <title>Specification | NHID-Clinical v1.3</title>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -46,7 +46,7 @@
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m2[...]"/></svg>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       </button>
       <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
         <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/></svg>
@@ -129,35 +129,35 @@
       </div>
 
       <h2>The Problem This Addresses</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">AI voice agents in healthcare payer–provider administrative calls frequently operate without disclosing t[...]
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This creates a window of ambiguity — what this proposal calls <strong>impersonation latency</strong> — whe[...]
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The problem is not that AI is making these calls. It is that AI is making these calls while appearing to be hu[...]
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">AI voice agents in healthcare payer–provider administrative calls frequently operate without disclosing their automated status before exchanging operational data.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This creates a window of ambiguity — what this proposal calls <strong>impersonation latency</strong> &mdash; where a payer representative cannot quickly determine whether the caller is human or automated.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The problem is not that AI is making these calls. It is that AI is making these calls while appearing to be human.</p>
 
       <h2 style="margin-top:2.5rem">The Core Idea</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">An AI voice agent should identify itself as automated <strong>before</strong> any operational data is excha[...]
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">An AI voice agent should identify itself as automated <strong>before</strong> any operational data is exchanged.</p>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Everything else in this proposal flows from that single principle.</p>
 
       <h2 style="margin-top:2.5rem">Suggested Behaviors</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The proposal suggests four behaviors for AI voice agents in these workflows. These are not mandatory require[...]
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The proposal suggests four behaviors for AI voice agents in these workflows. These are not mandatory requirements &mdash; they are suggested behaviors for voluntary adoption.</p>
       <ul style="list-style:none;padding:0;margin-top:1.25rem;display:grid;gap:.75rem">
-        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Identify [...]
-        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Behave li[...]
-        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Provide a[...]
-        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Maintain [...]
+        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Identify as an automated system</strong> before any exchange of operational data (NPI, Member ID, Claim Number)</li>
+        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Behave like a machine, not a human</strong> &mdash; no fake breathing, typing sounds, or scripted hesitation designed to imply human presence</li>
+        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Provide a clear, immediate path to a human agent</strong> when requested</li>
+        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Maintain a basic audit log</strong> showing disclosure occurred before data was exchanged</li>
       </ul>
 
       <h2 style="margin-top:2.5rem">Why These Four</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">These behaviors address the specific operational friction that motivated this proposal. They are observable, t[...]
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">They are also the minimum set that would meaningfully change the impersonation latency problem — not a compr[...]
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">These behaviors address the specific operational friction that motivated this proposal. They are observable, testable, and do not require vendor architecture changes.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">They are also the minimum set that would meaningfully change the impersonation latency problem &mdash; not a comprehensive AI governance framework.</p>
 
       <h2 style="margin-top:2.5rem">Scope</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal applies to <strong>B2B administrative voice workflows</strong> — AI systems calling payer offi[...]
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal applies to <strong>B2B administrative voice workflows</strong> — AI systems calling payer offices on behalf of providers for eligibility verification, claim status, prior authorization, and similar administrative tasks. It does not apply to patient-facing calls, internal tools, or clinical decision support.</p>
 
       <h2 style="margin-top:2.5rem">What This Is Not</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certification, no audit process, no enforcemen[...]
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certification, no audit process, no enforcement mechanism, and no regulatory authority. Adoption is entirely voluntary.</p>
 
       <h2 style="margin-top:2.5rem">Known Gaps (v1.3)</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">v1.3 addresses <em>observable behavior</em> — disclosure timing, deceptive artifacts, escalation path, audit[...]
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">v1.3 addresses <em>observable behavior</em> — disclosure timing, deceptive artifacts, escalation paths, and audit logging. It does not address cross-boundary authorization (whether the AI is actually delegated by the provider it claims to represent). That is the scope of v2.</p>
 
       <div class="spec-highlight-box" style="margin-top:2rem">
         <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Download &amp; Feedback</strong>
