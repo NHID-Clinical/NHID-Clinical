@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Interoperability Demo — mapping Twilio call transcripts to NHID-Clinical v1.3 event traces and running conformance checks."/>
+  <title>Interoperability Demo | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+</div>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/script-examples.html">Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/for-payers.html">For Payers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/specification.html">Spec</a>
+      <a href="/developers.html">Developers</a>
+      <a href="/interoperability.html">Interoperability</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/script-examples.html">Examples</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/specification.html">Spec</a>
+  <a href="/developers.html">Developers</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/news.html">News</a>
+  <a href="/community.html">Community</a>
+  <a href="/faq.html">FAQ</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container inner-hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/developers.html">Developers</a><span>/</span><span>Interoperability</span></div>
+        <p class="eyebrow">Simulation · Twilio → NHID-Clinical</p>
+        <h1>Interoperability Demo</h1>
+        <p class="lede">This page shows how a real vendor's call transcript format can be mapped to an NHID-Clinical v1.3 event trace and evaluated for conformance. The adapter is open source — replace the sample input with real logs to test your own vendor.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+
+      <div class="callout" role="note" style="margin-bottom:2rem">
+        <strong>Simulation only.</strong> These examples use synthetic Twilio-format transcripts to demonstrate the mapping. No real call data is shown. The adapter source is at <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">adapters/twilio_adapter.py</code>.
+      </div>
+
+      <!-- How it works -->
+      <h2>How It Works</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">Vendors who use Twilio produce call transcripts with text, timestamps, and speaker labels. The NHID-Clinical Twilio adapter reads that format and produces a structured event trace showing when disclosure happened, when data was first requested, and whether the call passes IDG-01.</p>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.5rem">The same pattern applies to other voice platforms (Bland.ai, Vapi, Retell) — each needs its own adapter, but the output schema is identical.</p>
+
+      <!-- Case 1: Compliant -->
+      <h2 style="margin-top:2.5rem">Case 1: Compliant Call</h2>
+      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.5rem;color:var(--ink-soft)">Agent discloses before requesting any operational data.</p>
+
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-top:1.25rem;margin-bottom:.4rem">Input — Twilio transcript</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.82rem;line-height:1.75;overflow-x:auto;color:var(--body);margin:0">{
+  "call_sid": "CA123456789",
+  "start_time": "2026-05-27T14:00:00Z",
+  "transcript": [
+    {"text": "Hello, this is an automated system calling on behalf of Dr. Smith's office.",
+     "timestamp": 0.5, "speaker": "agent"},
+    {"text": "Can I get the NPI number please?",
+     "timestamp": 3.2, "speaker": "agent"},
+    {"text": "Sure, it's 1234567890.",
+     "timestamp": 5.8, "speaker": "human"}
+  ]
+}</pre>
+
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-top:1.25rem;margin-bottom:.4rem">Output — NHID-Clinical trace</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.82rem;line-height:1.75;overflow-x:auto;color:var(--body);margin:0">{
+  "trace_id": "twilio_CA123456789",
+  "source_format": "twilio_transcript",
+  "policy_version": "1.3",
+  "events": [
+    {"event_type": "DISCLOSURE",    "timestamp_offset_s": 0.5, "nhid_rule": "IDG-01"},
+    {"event_type": "DATA_REQUEST",  "timestamp_offset_s": 3.2, "nhid_rule": "PDX-01"}
+  ],
+  "compliance": {
+    "IDG-01": "PASS",
+    "disclosure_timestamp_offset_s": 0.5,
+    "first_data_request_offset_s": 3.2,
+    "disclosure_made": true
+  }
+}</pre>
+      <p style="margin-top:.75rem;padding:.6rem 1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;font-size:.9rem;color:#166534"><strong>IDG-01: PASS</strong> — disclosure at 0.5s, data request at 3.2s. Disclosure preceded data exchange.</p>
+
+      <!-- Case 2: Non-compliant -->
+      <h2 style="margin-top:2.5rem">Case 2: Non-Compliant Call (Late Disclosure)</h2>
+      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.5rem;color:var(--ink-soft)">Agent requests data before identifying as automated — impersonation latency.</p>
+
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-top:1.25rem;margin-bottom:.4rem">Input — Twilio transcript</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.82rem;line-height:1.75;overflow-x:auto;color:var(--body);margin:0">{
+  "call_sid": "CA999888777",
+  "start_time": "2026-05-27T14:05:00Z",
+  "transcript": [
+    {"text": "Hi, can I get the member ID and NPI?",
+     "timestamp": 0.3, "speaker": "agent"},
+    {"text": "Sure — NPI is 1234567890.",
+     "timestamp": 2.1, "speaker": "human"},
+    {"text": "Thank you. By the way, I'm an automated system.",
+     "timestamp": 4.0, "speaker": "agent"}
+  ]
+}</pre>
+
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-top:1.25rem;margin-bottom:.4rem">Output — NHID-Clinical trace</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.82rem;line-height:1.75;overflow-x:auto;color:var(--body);margin:0">{
+  "trace_id": "twilio_CA999888777",
+  "source_format": "twilio_transcript",
+  "policy_version": "1.3",
+  "events": [
+    {"event_type": "DATA_REQUEST",  "timestamp_offset_s": 2.1, "nhid_rule": "PDX-01"},
+    {"event_type": "DISCLOSURE",    "timestamp_offset_s": 4.0, "nhid_rule": "IDG-01"}
+  ],
+  "compliance": {
+    "IDG-01": "FAIL – disclosure occurred after data request (impersonation latency)",
+    "disclosure_timestamp_offset_s": 4.0,
+    "first_data_request_offset_s": 2.1,
+    "disclosure_made": true
+  }
+}</pre>
+      <p style="margin-top:.75rem;padding:.6rem 1rem;background:#fee2e2;border:1px solid #fca5a5;border-radius:6px;font-size:.9rem;color:#991b1b"><strong>IDG-01: FAIL</strong> — data requested at 2.1s, disclosure not until 4.0s. 1.9 seconds of impersonation latency.</p>
+
+      <!-- Run it yourself -->
+      <h2 style="margin-top:2.5rem">Run It Yourself</h2>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body)">git clone https://github.com/thankcheeses/NHID-Clinical.git
+cd NHID-Clinical
+git checkout claude/code-review-fixes-98Ir1
+python adapters/twilio_adapter.py</pre>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">Replace <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">SAMPLE_TWILIO_COMPLIANT</code> or <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">SAMPLE_TWILIO_NONCOMPLIANT</code> in the adapter with your own call transcript to test your vendor's output.</p>
+
+      <!-- Other vendors -->
+      <h2 style="margin-top:2.5rem">Other Vendor Formats</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The Twilio adapter demonstrates the mapping pattern. The same approach applies to other voice platforms — the output schema is always the same NHID-Clinical trace format.</p>
+      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.9rem">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Platform</th>
+            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Status</th>
+            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Twilio Voice Intelligence</td>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Adapter available</td>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">See <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">adapters/twilio_adapter.py</code></td>
+          </tr>
+          <tr>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Bland.ai</td>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">🔲 Planned</td>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Transcript format documented; adapter not yet written</td>
+          </tr>
+          <tr>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Vapi</td>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">🔲 Planned</td>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Transcript format documented; adapter not yet written</td>
+          </tr>
+          <tr>
+            <td style="padding:.65rem .9rem;color:var(--body)">Retell AI</td>
+            <td style="padding:.65rem .9rem;color:var(--body)">🔲 Planned</td>
+            <td style="padding:.65rem .9rem;color:var(--body)">Transcript format documented; adapter not yet written</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="color:var(--ink-soft);font-size:.88rem;line-height:1.7;margin-top:.75rem">If you have logs from a platform not listed here, email <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue)">contact@nhid-clinical.org</a> — we'll build the adapter together.</p>
+
+      <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
+        <a href="/developers.html" style="color:var(--blue)">← Developers</a>
+        &nbsp;·&nbsp;
+        <a href="/specification.html" style="color:var(--blue)">Spec</a>
+        &nbsp;·&nbsp;
+        <a href="/for-payers.html" style="color:var(--blue)">Pilot Guide</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Have real vendor logs?</p>
+        <h2>Send them and we'll build the adapter together.</h2>
+        <p>Redact any real identifiers first. The goal is to show the mapping works on production-format data.</p>
+      </div>
+      <a class="closing-button" href="mailto:contact@nhid-clinical.org">Contact →</a>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>
