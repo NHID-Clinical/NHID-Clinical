@@ -179,18 +179,14 @@
       <!-- Reference implementation note -->
       <h2 style="margin-top:2.5rem">Reference Implementation</h2>
       <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The core identity module is already written and tested. Four passing tests covering key generation, delegation + verification, expiry, and revocation:</p>
-      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/thankcheeses/NHID-Clinical.git
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
-git checkout claude/code-review-fixes-98Ir1
 pip install -r requirements.txt
 python -m pytest tests/ -v
 
 # Expected output:
-# test_key_generation     PASSED
-# test_delegation_creation PASSED
-# test_expired            PASSED
-# test_revoked            PASSED</pre>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/thankcheeses/NHID-Clinical/blob/claude/code-review-fixes-98Ir1/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
+# 173 passed, 18 skipped in ~1.4s</pre>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
 
       <!-- Timeline -->
       <h2 style="margin-top:2.5rem">Timeline</h2>
@@ -204,7 +200,7 @@ python -m pytest tests/ -v
         <tbody>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">May 2026</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Reference implementation complete — <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/agent_identity.py</code>, 4 passing tests</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Reference implementation complete — <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/agent_identity.py</code>, 173 passing tests</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">July 2026</td>

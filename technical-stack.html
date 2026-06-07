@@ -1,133 +1,144 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technical Architecture – NHID-Clinical</title>
-    <link rel="stylesheet" href="nhid-clinical-ui.css">
-    <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Technical Stack — The five-layer trust stack for B2B healthcare voice AI."/>
+  <title>Technical Stack | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
 </head>
 <body>
-    <div class="disclaimer">Note: NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.</div>
-    <header>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="examples.html">Examples</a>
-            <a href="for-payers.html">For Payers</a>
-            <a href="specification.html">Spec</a>
-            <a href="developers.html">Developers</a>
-            <a href="interoperability.html">Interoperability</a>
-            <a href="news.html">News</a>
-            <a href="community.html">Community</a>
-            <a href="faq.html">FAQ</a>
-        </nav>
-    </header>
 
-    <main>
-        <div class="breadcrumbs">Home / Developers / Technical Architecture</div>
-        <div class="eyebrow">Technical Architecture · Five Layers · Open Standards</div>
-        <h1>The Trust Stack for B2B Healthcare Voice</h1>
-        <p class="lede">STIR/SHAKEN verifies the phone number. It does not verify the AI agent behind the call. This page explains the five-layer stack that closes that gap.</p>
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+</div>
 
-        <section>
-            <p>Pre-standardization draft. Each layer references an existing open standard (RFC / IETF / HL7 / CNCF). NHID-Clinical is the governance spec that connects them for B2B healthcare voice.</p>
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/script-examples.html">Examples</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/for-payers.html">For Payers</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/specification.html">Spec</a>
+      <a href="/developers.html">Developers</a>
+      <a href="/interoperability.html">Interoperability</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/news.html">News</a>
+      <a href="/community.html">Community</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+    </div>
+  </nav>
+</header>
 
-            <h2>Why STIR/SHAKEN Is Not Enough</h2>
-            <p>STIR/SHAKEN (ATIS-1000074 / RFC 8224) authenticates the originating phone number with A/B/C attestation. It is essential infrastructure. But a STIR/SHAKEN A-attestation only tells you the number was not spoofed. It tells you nothing about whether the caller is human or AI, whether the AI is authorized to represent the provider it claims, whether any NPI cited is bound to that organization, or whether there is any audit record.</p>
+<main>
+  <section class="inner-hero">
+    <div class="container">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Technical Stack</span></div>
+      <p class="eyebrow">Architecture · Five Layers · Open Standards</p>
+      <h1>Technical Stack</h1>
+      <p class="lede">The trust stack for B2B healthcare voice AI.</p>
+    </div>
+  </section>
 
-            <h2>The NPI Gap</h2>
-            <p>NPI numbers are public (NPPES). Any AI can look one up and cite it. There is no cryptographic binding between an NPI and the AI making the call. NHID-Auth v2 closes this gap — v1.3 already requires disclosure before any NPI is cited.</p>
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+      <div class="callout" role="note" style="margin-bottom:2rem">
+        <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+      </div>
 
-            <h2>Pindrop vs. NHID-Clinical</h2>
-            <p>Pindrop = detection (identifies fraudulent calls after the fact). NHID-Clinical = attestation (defines what an AI must assert before the call proceeds). Complementary, not competing.</p>
+      <h2>The Trust Stack for B2B Healthcare Voice</h2>
+      <p style="margin-bottom:1.5rem">STIR/SHAKEN verifies the phone number. NHID-Clinical verifies the <strong>AI agent behind</strong> the call and what it is authorized to do.</p>
 
-            <h2>The Five-Layer Stack</h2>
-            <div class="stack-layer">
-                <h3>Layer 0: The NPI Gap — The Problem</h3>
-                <p>No existing infrastructure addresses the cross-org NPI authorization gap. Any AI can cite any NPI without cryptographic proof.</p>
-                <p><em>Mitigated by: IDG-01 + NHID-Auth v2 Ed25519 delegation</em></p>
-            </div>
+      <h3>The Five-Layer Stack</h3>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:2rem">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border);text-align:left">
+            <th style="padding:.75rem">Layer</th>
+            <th style="padding:.75rem">Purpose</th>
+            <th style="padding:.75rem">Key Standards</th>
+            <th style="padding:.75rem">NHID Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 0: NPI Gap</td>
+            <td style="padding:.75rem">Public NPI spoofing risk</td>
+            <td style="padding:.75rem">NPPES</td>
+            <td style="padding:.75rem">IDG-01 + NHID-Auth v2</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 1: STIR/SHAKEN</td>
+            <td style="padding:.75rem">Carrier number authentication</td>
+            <td style="padding:.75rem">RFC 8224</td>
+            <td style="padding:.75rem">Complementary</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 2: NHID-Clinical v1.3</td>
+            <td style="padding:.75rem">Behavioral disclosure baseline</td>
+            <td style="padding:.75rem">Voluntary proposal</td>
+            <td style="padding:.75rem">Core (IDG-01, DBC-01, EIT-01, ATR-01)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 3: NHID-Auth v2</td>
+            <td style="padding:.75rem">Cryptographic delegation</td>
+            <td style="padding:.75rem">Ed25519, DPoP</td>
+            <td style="padding:.75rem">Authorization proof</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 4: FHIR AuditEvent</td>
+            <td style="padding:.75rem">Healthcare-native logging</td>
+            <td style="padding:.75rem">HL7 FHIR R4</td>
+            <td style="padding:.75rem">ATR-01 compliance</td>
+          </tr>
+        </tbody>
+      </table>
 
-            <div class="stack-layer">
-                <h3>Layer 1: STIR/SHAKEN — Carrier Number Authentication</h3>
-                <p>FCC-mandated (ATIS-1000074, RFC 8224). A/B/C attestation. Prevents caller-ID spoofing. Does not address AI agent identity.</p>
-                <p>Standards: ATIS-1000074, RFC 8224, RFC 8225 | Status: Deployed</p>
-            </div>
+      <div style="text-align:center">
+        <a href="/developers.html" class="primary-pill">Developers → Run the reference implementation</a>
+      </div>
+    </div>
+  </section>
+</main>
 
-            <div class="stack-layer">
-                <h3>Layer 2: NHID-Clinical v1.3 — Behavioral Disclosure Baseline</h3>
-                <p>Four controls (IDG-01, DBC-01, EIT-01, ATR-01) + five CTS tests. Open proposal (NIST-2025-0035-0026).</p>
-                <p><a href="specification.html">Specification →</a> · <a href="https://github.com/NHID-Clinical/NHID-Clinical">Reference Implementation →</a></p>
-            </div>
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+  </div>
+</footer>
 
-            <div class="stack-layer">
-                <h3>Layer 3: NHID-Auth v2 — Delegated Authorization + Call Attestation</h3>
-                <p>Ed25519 delegation chain + DPoP call-nonce binding. Closes the NPI gap cryptographically. Requires v1.3 as prerequisite.</p>
-                <p>Primitives: Ed25519 (RFC 8037), DPoP (RFC 9449), JWT (RFC 7519) | Status: Draft · <a href="roadmap.html">Roadmap →</a></p>
-            </div>
-
-            <div class="stack-layer">
-                <h3>Layer 4: FHIR AuditEvent R4 / IHE BALP — Healthcare-Native Logging</h3>
-                <p>ATR-01 audit records in HL7 FHIR AuditEvent R4 format. Natively parseable by EHR systems, SIEM platforms, and CMS auditors.</p>
-                <p>Standards: HL7 FHIR R4 AuditEvent, IHE ITI-20 BALP | Required by: ATR-01, CMS-0057-F</p>
-            </div>
-
-            <div class="stack-layer">
-                <h3>Layer 5: OpenTelemetry Spans — SIEM / Enterprise Observability</h3>
-                <p>NHID-Clinical traces as OTel spans (CNCF OTel v1.x). Export to Splunk, Datadog, Elastic, Google Cloud — no custom parsers.</p>
-                <p>Standards: CNCF OpenTelemetry v1, OTLP | Schema: schema/nhid_trace_schema_v1.json</p>
-            </div>
-
-            <h2>Document Family</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Layer</th>
-                        <th>Artifact</th>
-                        <th>Status</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Governance standard</td>
-                        <td>NHID-Clinical v1.3</td>
-                        <td>Current</td>
-                        <td>Minimum disclosure / escalation baseline</td>
-                    </tr>
-                    <tr>
-                        <td>Companion spec</td>
-                        <td>NHID-Auth v2</td>
-                        <td>Draft</td>
-                        <td>Delegated authorization + call attestation</td>
-                    </tr>
-                    <tr>
-                        <td>Verification infra</td>
-                        <td>Registry & Badge Model</td>
-                        <td>In development</td>
-                        <td>Public verification layer</td>
-                    </tr>
-                    <tr>
-                        <td>Reference software</td>
-                        <td>nhid-clinical-api (Railway)</td>
-                        <td>Pilot</td>
-                        <td>CTS evaluation + badge generation</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section class="cta">
-            <h2>Ready to implement</h2>
-            <p>Clone the repo and run the reference implementation. 173 tests. Under 1.4 seconds.</p>
-            <a href="developers.html" class="button">Developers →</a>
-        </section>
-    </main>
-
-    <footer>
-        <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
-        <p>Contact: <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a> | <a href="https://nhid-clinical.org">nhid-clinical.org</a></p>
-    </footer>
+<script src="/site.js"></script>
 </body>
 </html>
