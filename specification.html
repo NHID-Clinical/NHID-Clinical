@@ -11,13 +11,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <!-- Mermaid CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'default' });</script>
 </head>
 <body>
 
 <div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
   <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
 </div>
-
 
 <header class="site-header">
   <nav class="container nav" aria-label="Primary navigation">
@@ -28,21 +30,16 @@
         <small>Building Trust in Healthcare Voice AI</small>
       </span>
     </a>
-                <div class="nav-links">
+    <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/script-examples.html">Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/governance-simulator.html">Governance Simulator</a>
       <a href="/for-payers.html">For Payers</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Spec</a>
+      <a href="/specification.html">Specification</a>
       <a href="/developers.html">Developers</a>
-      <a href="/interoperability.html">Interoperability</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/news.html">News</a>
-      <a href="/community.html">Community</a>
-      <a href="/faq.html">FAQ</a>
+      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+      <a href="/technical-stack.html">Technical Stack</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -75,14 +72,13 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/script-examples.html">Examples</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
   <a href="/for-payers.html">For Payers</a>
-  <a href="/specification.html">Spec</a>
+  <a href="/specification.html">Specification</a>
   <a href="/developers.html">Developers</a>
-  <a href="/interoperability.html">Interoperability</a>
-  <a href="/news.html">News</a>
-  <a href="/community.html">Community</a>
-  <a href="/faq.html">FAQ</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -146,6 +142,22 @@
         <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Maintain a basic record.</strong> Sufficient logging to establish what happened, and when.</li>
       </ul>
 
+      <h2 style="margin-top:2.5rem">Sequence of Interaction</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The following diagram illustrates the disclosure gate in a standard eligibility workflow.</p>
+      <div class="mermaid" style="margin:2rem 0;background:white;padding:1.5rem;border-radius:8px;border:1px solid var(--line)">
+sequenceDiagram
+    participant A as AI Voice Agent
+    participant P as Payer Representative
+    participant E as NHID Policy Engine
+
+    A->>P: "Hello, I am an automated system calling from..."
+    P->>A: "Understood. Please provide NPI."
+    A->>E: evaluate_idg01(session, event)
+    E-->>A: CONTINUE_AI (Disclosure Confirmed)
+    A->>P: "NPI is 1234567890."
+    Note over A,P: Operational data exchange proceeds
+      </div>
+
       <h2 style="margin-top:2.5rem">Why These Four</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">These behaviors address the specific operational friction that motivated this proposal. They are observable, testable in context, and achievable without significant architectural changes in most systems.</p>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">They are also the minimum set that would meaningfully change the impersonation latency problem — not a comprehensive AI governance framework.</p>
@@ -169,6 +181,45 @@
 
       <div style="padding:1.5rem;background:#eff6ff;border-radius:8px;margin-top:2rem">
         <p style="margin:0;color:#1e293b">These behaviors are demonstrated in the <a href="/governance-simulator.html" style="color:#0ea5e9;font-weight:500">Governance Simulator →</a></p>
+        
+        <h3 style="margin-top:1.5rem;font-size:1.1rem">Broader Context</h3>
+        <p style="font-size:0.95rem;line-height:1.6;color:#1e293b">
+          NHID-Clinical is also featured in the <a href="https://ai-governance-map.vercel.app/" target="_blank" style="color:#0ea5e9;font-weight:600">AI Governance Map</a> 
+          — an interactive maturity radar for tracking compliance across frameworks like NIST RMF, EU AI Act, and ISO 42001.
+        </p>
+
+        <h3 style="margin-top:1.5rem;font-size:1.1rem">Document Family</h3>
+        <table style="width:100%;border-collapse:collapse;margin-top:0.75rem;font-size:0.9rem">
+            <thead>
+                <tr style="border-bottom:1px solid #cbd5e1;text-align:left">
+                    <th style="padding:0.5rem">Layer</th>
+                    <th style="padding:0.5rem">Artifact</th>
+                    <th style="padding:0.5rem">Status</th>
+                    <th style="padding:0.5rem">Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom:1px solid #e2e8f0">
+                    <td style="padding:0.5rem">Governance standard</td>
+                    <td style="padding:0.5rem">NHID-Clinical v1.3</td>
+                    <td style="padding:0.5rem">Current</td>
+                    <td style="padding:0.5rem">Minimum disclosure baseline</td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0">
+                    <td style="padding:0.5rem">Companion spec</td>
+                    <td style="padding:0.5rem">NHID-Auth v2</td>
+                    <td style="padding:0.5rem">Draft</td>
+                    <td style="padding:0.5rem">Delegated authorization</td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0">
+                    <td style="padding:0.5rem">Reference software</td>
+                    <td style="padding:0.5rem">nhid-clinical-api</td>
+                    <td style="padding:0.5rem">Pilot</td>
+                    <td style="padding:0.5rem">CTS evaluation</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin-top:1rem;font-size:0.9rem"><a href="/technical-stack.html" style="color:#0ea5e9">Five-layer trust architecture →</a> &nbsp;·&nbsp; <a href="/regulatory-alignment.html" style="color:#0ea5e9">Regulatory alignment matrix →</a></p>
       </div>
     </div>
   </section>
@@ -185,15 +236,9 @@
   </section>
 </main>
 
-
-
-
-
-
-
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
-    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
@@ -201,7 +246,6 @@
       <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
       <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
-    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>
 </footer>
 

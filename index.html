@@ -28,21 +28,16 @@
         <small>Building Trust in Healthcare Voice AI</small>
       </span>
     </a>
-                <div class="nav-links">
+    <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/script-examples.html">Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/governance-simulator.html">Governance Simulator</a>
       <a href="/for-payers.html">For Payers</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Spec</a>
+      <a href="/specification.html">Specification</a>
       <a href="/developers.html">Developers</a>
-      <a href="/interoperability.html">Interoperability</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/news.html">News</a>
-      <a href="/community.html">Community</a>
-      <a href="/faq.html">FAQ</a>
+      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+      <a href="/technical-stack.html">Technical Stack</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -75,14 +70,13 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/script-examples.html">Examples</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
   <a href="/for-payers.html">For Payers</a>
-  <a href="/specification.html">Spec</a>
+  <a href="/specification.html">Specification</a>
   <a href="/developers.html">Developers</a>
-  <a href="/interoperability.html">Interoperability</a>
-  <a href="/news.html">News</a>
-  <a href="/community.html">Community</a>
-  <a href="/faq.html">FAQ</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -94,6 +88,8 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
+
+  <!-- ── Section 1: Hero ─────────────────────────────────────────────────── -->
   <section class="hero-section">
     <div class="container hero-grid">
       <div class="hero-copy">
@@ -110,8 +106,8 @@
         </div>
         <p class="hero-body" style="margin-top:1rem;font-size:.9rem;color:var(--ink-soft)">CC BY 4.0 &nbsp;·&nbsp; NIST Public Comment: NIST-2025-0035-0026</p>
         <div class="hero-actions" style="flex-wrap:wrap;gap:.75rem">
-          <a class="cta-button" href="/community.html">Get Involved <span aria-hidden="true">→</span></a>
-          <a class="secondary-button" href="/script-examples.html">See Examples <span aria-hidden="true">→</span></a>
+          <a class="cta-button" href="/specification.html">View Specification <span aria-hidden="true">→</span></a>
+          <a class="secondary-button" href="/governance-simulator.html">Governance Simulator <span aria-hidden="true">→</span></a>
         </div>
       </div>
       <div class="hero-art" aria-label="NHID-Clinical logo">
@@ -121,102 +117,163 @@
     </div>
   </section>
 
+  <!-- ── Section 2: What it is / What it is not ─────────────────────────── -->
   <section class="page-section">
-    <div class="container" style="max-width:52rem">
-      <h2>The problem</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">An AI voice agent calls a payer's office. It sounds professional. It provides provider credentials and asks about a claim. The representative answers — sharing details they would only share in a legitimate workflow.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Three minutes in, the rep gets suspicious: <em>"Wait — are you actually a person?"</em></p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Only then does the system admit it's automated.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Operational data has been shared. There's no clear record of when disclosure happened. And there's no way to know whether the credentials were real or scraped from a public directory.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This is <strong>impersonation latency</strong> ("impersonation latency" — the operational drag when a human can't quickly tell they're talking to an AI). It wastes time, erodes trust, and creates risk on both sides of the call. And it's happening in payer–provider workflows across healthcare daily.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">There's a concrete version of this problem that goes beyond late disclosure: an AI can look up any provider's NPI from the public NPPES registry, call a payer, provide that valid NPI, and request claim details. The payer has no real-time way to know whether the caller is actually authorized by that provider. This isn't hypothetical — it's trivially easy with today's voice AI tools. NHID-Clinical aims to name this gap; a cryptographic authorization layer (planned for v2) aims to fix it.</p>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem"><strong>Important distinction:</strong> NHID-Clinical v1.3 does <em>not</em> verify caller identity or agent authenticity. It standardizes observable disclosure and trace behaviors. The authorization gap is documented — not yet solved.</p>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.5rem"><strong>Payers who ask vendors to adopt NHID-Clinical gain machine&#8209;auditable trace logs for voice agent identity</strong> — no certification theatre required.</p>
-    </div>
-  </section>
-
-  <section class="page-section" style="background:var(--bg-alt)">
-    <div class="container" style="max-width:52rem">
-      <h2>What NHID-Clinical asks of AI agents</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin:.5rem 0 1.25rem">Four behaviors. No certification. No enforcement. Just a written-down baseline.</p>
-      <table style="width:100%;border-collapse:collapse;font-size:.93rem">
-        <thead>
-          <tr>
-            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Behavior</th>
-            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">What it means</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top"><strong>Disclose upfront</strong></td>
-            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Say you're automated before asking for any data.</td>
-          </tr>
-          <tr>
-            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top"><strong>No deceptive audio</strong></td>
-            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">No fake breathing, filler sounds, or human-name openers.</td>
-          </tr>
-          <tr>
-            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top"><strong>Human escalation</strong></td>
-            <td style="padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">When someone asks to speak to a person, make it immediate.</td>
-          </tr>
-          <tr>
-            <td style="padding:.75rem .9rem;color:var(--body);vertical-align:top"><strong>Basic audit log</strong></td>
-            <td style="padding:.75rem .9rem;color:var(--body)">Record what happened and when. Enough to reconstruct the call.</td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="color:var(--ink-soft);font-size:.88rem;line-height:1.7;margin-top:.75rem">These are not enforceable requirements. They are a written-down starting point that vendors can reference in contracts and payers can test with the open-source conformance suite.</p>
-    </div>
-  </section>
-
-  <section class="nist-provenance-section">
-    <div class="container">
-      <div class="nist-provenance-card">
-        <div class="nist-gov-badge" aria-hidden="true">NIST</div>
+    <div class="container" style="max-width:60rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start">
         <div>
-          <p class="eyebrow">NIST AI Safety Institute — Public Comment</p>
-          <h2 class="nist-heading">Submitted to NIST docket NIST-2025-0035</h2>
-          <p class="nist-body">NHID-Clinical was submitted as a public comment to NIST's AI-agent security docket in January 2026. This is a public comment — not an endorsement, not a standard. It puts the problem on the record.</p>
-          <p class="nist-meta">Comment ID: NIST-2025-0035-0026 &nbsp;·&nbsp; January 12, 2026</p>
-          <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" class="nist-link" target="_blank" rel="noopener noreferrer">View on Regulations.gov →</a>
+          <h2 style="font-size:1.4rem;margin-bottom:1rem">What it is</h2>
+          <ul style="list-style:none;padding:0;margin:0;display:grid;gap:.85rem">
+            <li style="display:flex;gap:.75rem;align-items:baseline;color:var(--body);font-size:.95rem;line-height:1.7">
+              <span style="flex-shrink:0;color:var(--teal);font-weight:800">—</span>
+              A voluntary, testable behavioral baseline for AI voice agents making administrative calls to payers
+            </li>
+            <li style="display:flex;gap:.75rem;align-items:baseline;color:var(--body);font-size:.95rem;line-height:1.7">
+              <span style="flex-shrink:0;color:var(--teal);font-weight:800">—</span>
+              An open reference implementation: policy engine, conformance test suite, audit trace schema
+            </li>
+            <li style="display:flex;gap:.75rem;align-items:baseline;color:var(--body);font-size:.95rem;line-height:1.7">
+              <span style="flex-shrink:0;color:var(--teal);font-weight:800">—</span>
+              Scoped to B2B provider-to-payer administrative voice workflows only
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2 style="font-size:1.4rem;margin-bottom:1rem">What it is not</h2>
+          <ul style="list-style:none;padding:0;margin:0;display:grid;gap:.85rem">
+            <li style="display:flex;gap:.75rem;align-items:baseline;color:var(--body);font-size:.95rem;line-height:1.7">
+              <span style="flex-shrink:0;color:var(--ink-soft);font-weight:800">—</span>
+              A regulatory requirement or accredited standard
+            </li>
+            <li style="display:flex;gap:.75rem;align-items:baseline;color:var(--body);font-size:.95rem;line-height:1.7">
+              <span style="flex-shrink:0;color:var(--ink-soft);font-weight:800">—</span>
+              A certification body or compliance guarantor
+            </li>
+            <li style="display:flex;gap:.75rem;align-items:baseline;color:var(--body);font-size:.95rem;line-height:1.7">
+              <span style="flex-shrink:0;color:var(--ink-soft);font-weight:800">—</span>
+              An identity verifier (v1.3 standardizes observable disclosure and trace behaviors; cryptographic authorization is documented but not yet solved)
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="container article-section">
-    <div class="article-section-inner">
-      <p class="section-kicker">Background reading</p>
-      <h2>The thinking behind this proposal</h2>
-      <p class="article-lead">Why impersonation latency is a real operational problem in healthcare payer–provider voice workflows, and what a shared language for addressing it might look like.</p>
-      <div class="article-links">
-        <a class="article-link" href="https://medium.com/@bnbaynard/when-an-ai-agent-calls-about-a-claim-who-is-it-really-representing-e021e12e4c1b" target="_blank" rel="noopener noreferrer">
-          <span class="article-link-source">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
-            Medium
-          </span>
-          <span class="article-link-title">When an AI Agent Calls About a Claim — Who Is It Really Representing?</span>
-          <span class="article-link-cta">Read on Medium →</span>
-        </a>
+  <!-- ── Section 3: CTA Strip ───────────────────────────────────────────── -->
+  <div style="background:var(--mist);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:2rem 0">
+    <div class="container" style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:center">
+      <a class="cta-button" href="/specification.html">Specification</a>
+      <a class="secondary-button" href="/governance-simulator.html">Governance Simulator</a>
+      <a class="secondary-button" href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+    </div>
+  </div>
+
+  <!-- ── Section 4: Key Tools ───────────────────────────────────────────── -->
+  <section class="page-section">
+    <div class="container">
+      <h2 style="margin-bottom:1.75rem">Key tools</h2>
+      <div class="content-cards" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+        <div class="content-card">
+          <h3>Policy Engine Playground</h3>
+          <p>Test NHID-Clinical v1.3 controls against synthetic call scenarios in real time.</p>
+          <a class="card-link" href="/governance-simulator.html">Open the simulator →</a>
+        </div>
+        <div class="content-card">
+          <h3>Specification (v1.3)</h3>
+          <p>The full control set: IDG-01, DBC-01, EIT-01, ATR-01, and the event schema.</p>
+          <a class="card-link" href="/specification.html">Read the specification →</a>
+        </div>
+        <div class="content-card">
+          <h3>Shadow Evaluation Guide</h3>
+          <p>A structured 90-day process for payers to establish a behavioral baseline — no vendor changes required.</p>
+          <a class="card-link" href="/shadow-evaluation-guide.html">View the guide →</a>
+        </div>
+        <div class="content-card">
+          <h3>Evidence Pack</h3>
+          <p>System behavior guarantees, anonymized failure trace example, and audit readiness model for procurement teams.</p>
+          <a class="card-link" href="/evidence-pack.html">Review the evidence pack →</a>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- ── Section 5: Trust Stack Preview ────────────────────────────────── -->
+  <section class="page-section" style="background:var(--mist)">
+    <div class="container" style="max-width:52rem">
+      <h2>Where NHID-Clinical sits in the stack</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem;max-width:60ch">STIR/SHAKEN verifies the phone number. NHID-Clinical is the layer above: it standardizes what the AI agent says about itself, when it says it, and what gets logged. A cryptographic authorization layer (v2, planned) will verify whether the agent is actually authorized to act for the provider.</p>
+      <div style="margin-top:2rem;display:grid;gap:.5rem">
+        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.76)">
+          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-soft)">Voice carrier</span>
+          <span style="color:var(--body);font-size:.9rem">PSTN / VoIP transmission</span>
+        </div>
+        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.76)">
+          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-soft)">STIR/SHAKEN</span>
+          <span style="color:var(--body);font-size:.9rem">Phone number attestation (existing standard)</span>
+        </div>
+        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid rgba(11,110,188,.35);border-left:4px solid var(--blue);border-radius:.75rem;background:var(--blue-soft)">
+          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink)">NHID-Clinical v1.3</span>
+          <span style="color:var(--ink-soft);font-size:.9rem">Disclosure, escalation, audit trace <span style="display:inline-flex;align-items:center;padding:.15rem .5rem;border-radius:999px;background:rgba(11,110,188,.12);color:var(--blue);font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-left:.5rem">this layer</span></span>
+        </div>
+        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.76)">
+          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-soft)">NHID-Auth v2</span>
+          <span style="color:var(--body);font-size:.9rem">Cryptographic authorization (planned, not yet public)</span>
+        </div>
+        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.76)">
+          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-soft)">Payer system</span>
+          <span style="color:var(--body);font-size:.9rem">Eligibility, claims, authorization workflows</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 6: Buyer-Facing Evidence ──────────────────────────────── -->
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+      <h2>For procurement and evaluation teams</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">The Evidence Pack documents the reference implementation's deterministic guarantees, a worked anonymized failure trace, the audit readiness model, and a risk register.</p>
+      <p style="margin-top:1.25rem">
+        <a class="card-link" href="/evidence-pack.html" style="font-size:1rem">Review the Evidence Pack →</a>
+      </p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:1.5rem">Starting a shadow evaluation? The Shadow Evaluation Guide walks through the 90-day process.</p>
+      <p style="margin-top:.75rem">
+        <a class="card-link" href="/shadow-evaluation-guide.html" style="font-size:1rem">Shadow Evaluation Guide →</a>
+      </p>
+
+      <div style="margin-top:2.5rem">
+        <div class="nist-provenance-card">
+          <div class="nist-gov-badge" aria-hidden="true">NIST</div>
+          <div>
+            <p class="eyebrow">NIST AI Safety Institute — Public Comment</p>
+            <h2 class="nist-heading">Submitted to NIST docket NIST-2025-0035</h2>
+            <p class="nist-body">NHID-Clinical was submitted as a public comment to NIST's AI-agent security docket in January 2026. This is a public comment — not an endorsement, not a standard. It puts the problem on the record.</p>
+            <p class="nist-meta">Comment ID: NIST-2025-0035-0026 &nbsp;·&nbsp; January 12, 2026</p>
+            <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" class="nist-link" target="_blank" rel="noopener noreferrer">View on Regulations.gov →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Section 7: Get Involved ────────────────────────────────────────── -->
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
         <p class="section-kicker">Get involved</p>
-        <h2>If you work in this space, your input matters.</h2>
-        <p>NHID-Clinical is one volunteer's attempt to name a real problem. If you work in healthcare payer operations, provider-side AI, or voice platform development — your experience is exactly what this proposal needs.</p>
+        <h2>Read the proposal. Try the simulator. Share what you think.</h2>
+        <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback shapes the next version.</p>
       </div>
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
-  <div style="text-align:center;padding:1rem 1rem;color:var(--ink-soft);font-size:.9rem">
-    <p style="margin:0">(We also have an <a href="simulator.html">experimental simulator</a> for testing policy logic, a <a href="proof.html">technical proof package</a> for enterprise teams, and a <a href="roadmap.html">v2 roadmap</a> covering cryptographic agent identity.)</p>
-  </div>
-  <p style="text-align:center;color:var(--ink-soft);font-size:.85rem;font-style:italic;padding:1.5rem 1rem 2rem"><em>NHID-Clinical v1.3 is an early-stage open proposal created by Brianna Baynard. It is not an official standard, certification program, or regulatory requirement.</em></p>
+
 </main>
+
+
+
+
+
+
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">

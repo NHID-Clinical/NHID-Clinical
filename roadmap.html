@@ -30,18 +30,13 @@
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/script-examples.html">Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/governance-simulator.html">Governance Simulator</a>
       <a href="/for-payers.html">For Payers</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Spec</a>
+      <a href="/specification.html">Specification</a>
       <a href="/developers.html">Developers</a>
-      <a href="/interoperability.html">Interoperability</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/news.html">News</a>
-      <a href="/community.html">Community</a>
-      <a href="/faq.html">FAQ</a>
+      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+      <a href="/technical-stack.html">Technical Stack</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -74,14 +69,13 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/script-examples.html">Examples</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
   <a href="/for-payers.html">For Payers</a>
-  <a href="/specification.html">Spec</a>
+  <a href="/specification.html">Specification</a>
   <a href="/developers.html">Developers</a>
-  <a href="/interoperability.html">Interoperability</a>
-  <a href="/news.html">News</a>
-  <a href="/community.html">Community</a>
-  <a href="/faq.html">FAQ</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -179,18 +173,14 @@
       <!-- Reference implementation note -->
       <h2 style="margin-top:2.5rem">Reference Implementation</h2>
       <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The core identity module is already written and tested. Four passing tests covering key generation, delegation + verification, expiry, and revocation:</p>
-      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/thankcheeses/NHID-Clinical.git
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
-git checkout claude/code-review-fixes-98Ir1
 pip install -r requirements.txt
 python -m pytest tests/ -v
 
 # Expected output:
-# test_key_generation     PASSED
-# test_delegation_creation PASSED
-# test_expired            PASSED
-# test_revoked            PASSED</pre>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/thankcheeses/NHID-Clinical/blob/claude/code-review-fixes-98Ir1/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
+# 173 passed, 18 skipped in ~1.4s</pre>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
 
       <!-- Timeline -->
       <h2 style="margin-top:2.5rem">Timeline</h2>
@@ -204,7 +194,7 @@ python -m pytest tests/ -v
         <tbody>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">May 2026</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Reference implementation complete — <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/agent_identity.py</code>, 4 passing tests</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Reference implementation complete — <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/agent_identity.py</code>, 173 passing tests</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">July 2026</td>
@@ -224,9 +214,9 @@ python -m pytest tests/ -v
       <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
         <a href="/for-payers.html" style="color:var(--blue)">← Pilot Guide</a>
         &nbsp;·&nbsp;
-        <a href="/developers.html" style="color:var(--blue)">Developers</a>
-        &nbsp;·&nbsp;
         <a href="/specification.html" style="color:var(--blue)">v1.3 Spec</a>
+        &nbsp;·&nbsp;
+        <a href="/technical-stack.html" style="color:var(--blue)">Five-layer trust architecture →</a>
       </p>
 
     </div>
@@ -235,11 +225,11 @@ python -m pytest tests/ -v
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">v1.3 is ready now</p>
-        <h2>Start a shadow pilot while v2 is in development.</h2>
-        <p>Disclosure, audit, and conformance testing are working today. Cryptographic identity is coming in August.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Read the proposal and share your reaction.</h2>
+        <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
       </div>
-      <a class="closing-button" href="/for-payers.html">Pilot Guide →</a>
+      <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>

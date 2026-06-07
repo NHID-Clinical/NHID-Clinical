@@ -2,8 +2,8 @@
 
 **Author:** Brianna Baynard (bnbaynard@gmail.com)
 **License:** CC BY 4.0
-**Status:** v1.3 pilot-ready · v1.4 reference/preview (not yet merged to main)
-**Repo:** thankcheeses/NHID-Clinical
+**Status:** v1.3 pilot-ready · v2 reference/preview (locked commercial tier)
+**Repo:** NHID-Clinical/NHID-Clinical
 **Site:** nhid-clinical.org
 
 ---
@@ -34,7 +34,7 @@ NHID-Clinical/
 ├── src/
 │   ├── nhid_policy_engine_v1.py   # Core NHID v1.3 rules (IDG-01 … ATR-01)
 │   ├── voice_policy.py            # Voice-optimized rule engine + PHI gate
-│   └── agent_identity.py          # v1.4 Ed25519 cryptographic identity layer
+│   └── agent_identity.py          # v2 Ed25519 cryptographic identity layer
 ├── tests/
 │   ├── test_voice_policy.py       # 70 unit tests for voice_policy.py
 │   ├── test_identity.py           # 25 unit tests for agent_identity.py
@@ -50,15 +50,15 @@ NHID-Clinical/
 ├── conformance/
 │   └── nhid_conformance_test_suite_v1.yaml # YAML conformance test spec
 ├── scripts/
-│   └── validate_ci.py             # CI invariant enforcer (95 passed, 0 skipped)
+│   └── validate_ci.py             # CI invariant enforcer (173 passed, 18 skipped)
 ├── examples/
-│   └── issue_and_verify.py        # v1.4 end-to-end demo (on feature/v1.4-auth)
+│   └── issue_and_verify.py        # v2 end-to-end demo
 ├── .github/workflows/
 │   ├── ci.yml                     # Unit invariant gate
 │   └── nhid-gates.yml             # Production readiness gates (5 jobs)
 ├── requirements.txt
 ├── pytest.ini
-└── CHANGELOG_v1.4.md              # (on feature/v1.4-auth only)
+└── CHANGELOG_v2.md                # v2 locked commercial tier
 ```
 
 ---
@@ -76,7 +76,7 @@ python-multipart>=0.0.9
 pyyaml>=6.0.1
 jsonschema>=4.21.0
 cryptography>=41.0.0
-PyJWT>=2.8.0
+pyjwt>=2.8.0
 ```
 
 Install: `pip install -r requirements.txt`
@@ -232,13 +232,13 @@ Supported rule types (fallback): `builtin`, `phrase_match`
 
 ---
 
-## Module: `src/agent_identity.py` — Cryptographic Identity Layer (v1.4)
+## Module: `src/agent_identity.py` — Cryptographic Identity Layer (v2)
 
 Solves NPI impersonation: any AI can look up a real provider NPI from NPPES in seconds.
 A valid passport requires a cryptographic signature from the provider's private key.
 
 **This module is a library only — it is NOT wired to any HTTP endpoint yet.**
-It ships as preview/reference code. The pilot (v1.3) uses `nhid_attest.py` (JWT) instead.
+It ships as preview/reference code. The pilot (v1.3) uses `nhid_attest.py` (JWT) instead. v2 introduces the cryptographic layer.
 
 ### Error Codes
 
@@ -402,230 +402,4 @@ Looks up attestation in SQLite. Returns `{verified, compliant, recommended_actio
 **`GET /v1/certify/badge/{agent_id}`** ← **PAID FEATURE**
 Returns an SVG compliance badge. Gated by two env vars:
 - `NHID_API_KEY`: must match `X-API-Key` header → 403 if mismatch
-- `NHID_BADGE_TIER`: must be `"L1"` or `"L2"` → 402 if not set (free tier gets nothing)
-These env vars are set per-account manually until billing is automated.
-They are NEVER committed to the repo.
-
----
-
-## Paid Features & Pricing Model
-
-### What Is and Isn't Open
-
-**Open (CC BY 4.0):**
-- All source code in this repo
-- Policy engine rules
-- Identity layer library
-- Conformance test suite
-- JSON schema
-
-**Paid (hosted service + credentials):**
-- Access to the hosted API at nhid-clinical.org
-- Compliance badge endpoint (`/v1/certify/badge/`)
-- Dedicated support and implementation review
-- SLA-backed audit log storage
-
-### Tiers (preliminary)
-
-| Tier | Gating | What It Unlocks |
-|------|--------|-----------------|
-| Free | No `NHID_BADGE_TIER` set | API access, no badge |
-| L1 | `NHID_BADGE_TIER=L1` | Green "L1 Compliant" SVG badge |
-| L2 | `NHID_BADGE_TIER=L2` | Blue "L2 Compliant" SVG badge + audit SLA |
-
-**Billing is not yet automated.** Env vars are set manually per customer account.
-No Stripe dependency in the codebase. The badge endpoint returns 402 on free tier.
-
-### Keys
-
-`NHID_API_KEY` and `NHID_BADGE_TIER` are runtime environment variables.
-They live in the deployment environment only — never in the git repo, never in test fixtures.
-Free users self-host and get 403/402 on paid endpoints; paid users get the env var set
-on the hosted instance.
-
----
-
-## Test Suite
-
-**Total: 95 passed, 18 skipped** (on `claude/code-review-fixes-98Ir1` and `feature/v1.4-auth`)
-The 18 skipped are integration tests in `failure_injection_harness.py` that require a
-live server — they skip automatically in CI (expected).
-
-### `tests/test_voice_policy.py` — 70 unit tests
-
-Coverage:
-- `check_disclosure()` — session state with/without disclosure
-- `check_escalation()` — phrase matching, custom phrases, empty list
-- `run_voice_policy()` legacy path — disclosure, escalation, allow
-- `run_voice_policy()` ruleset path — priority ordering, disabled rules
-- Global safety phrases — cannot be suppressed by empty ruleset or disabled rule
-- `DisclosureState` enum and `phi_gate()` — PHI blocked before disclosure
-- Parameterized tests for all 6 `_ESCALATION_PHRASES` vs global phrase behavior
-
-**Critical behavior:** The 3 phrases in `_GLOBAL_SAFETY_PHRASES` fire as `"escalate"`
-even when a custom ruleset has an empty phrase list or the escalation rule is disabled.
-The other 3 phrases (`transfer me`, `human agent`, `talk to someone`) are NOT global —
-they return `"allow"` when suppressed by ruleset config.
-
-### `tests/test_identity.py` — 25 unit tests
-
-Coverage (5 original + 20 v1.4):
-- Key generation, delegation creation, basic verify
-- Expiry, revocation (agent-level and delegation-level)
-- Nonce binding to call_sid
-- NPI validation (10 digits required; letters rejected; 9-digit rejected; empty is ok)
-- Canonical/deterministic JSON serialization
-- Tampered provider signature rejection
-- Scope enforcement (subset passes, exact match passes, exceeding fails, empty scope)
-- Per-delegation revocation (revoke one, others still valid)
-- Chain validation (single hop, two hops, scope escalation rejected, too long rejected, expired link rejected)
-- Performance: 1000 verifications < 500ms
-
-### `tests/failure_injection_harness.py` — 18 integration tests
-
-Require a live server. Skip automatically in CI (no server = expected skip).
-Tests API error responses, malformed inputs, auth failures.
-
-### CI Invariants (`scripts/validate_ci.py`)
-
-```
-UNIT_EXPECTED = 95
-Hard rules:
-  - passed == 95 (exactly)
-  - failed == 0
-  - error == 0
-  - skipped in (0, 18)  # 0 = server running, 18 = CI (no server)
-```
-
----
-
-## CI / GitHub Actions
-
-### `.github/workflows/ci.yml` — Unit Invariant Gate
-
-Triggers on: `push` to `main`, `claude/*`, `feature/*`; `pull_request` to `main`
-Job: "Unit invariant: 95 passed, 0 skipped"
-Runs `python scripts/validate_ci.py` — fails CI if test count deviates.
-
-### `.github/workflows/nhid-gates.yml` — Production Readiness Gates
-
-5 parallel jobs + 1 gate job:
-
-| Job | What It Checks |
-|-----|---------------|
-| `test` | Full pytest suite, `--maxfail=1` |
-| `identity_determinism` | Delegation JSON is deterministic; Ed25519 sign/verify round-trip |
-| `api_contract` | `from main import app` imports clean; `/openapi.json` returns 200 with `paths` |
-| `security_gates` | Tampered sig rejected, expired delegation rejected, revocation enforced |
-| `performance_smoke` | Cold start < 1s; 1000 verifications < 2000ms |
-| `release_gate` | Depends on all 5 — "ALL GATES PASSED - ELIGIBLE FOR MERGE" |
-
----
-
-## Branch Strategy
-
-| Branch | State | Purpose |
-|--------|-------|---------|
-| `main` | v1.3 — 75 tests | Public, stable, matches tweet + Eshan outreach |
-| `feature/v1.4-auth` | v1.4 — 95 tests | Ed25519 identity, preview/reference, NOT merged to main yet |
-| `claude/code-review-fixes-98Ir1` | v1.4 — 95 tests | Active working branch |
-
-**v1.4 merge decision:** v1.4 is the paid commercial layer. It will NOT merge to main until
-there is a license model, pricing page, and monetization strategy finalized. Main intentionally
-stays at v1.3 to match public communications (tweet: "75 tests passing", Eshan/Bek/Feros outreach
-references v1.3 policy enforcement as the pilot).
-
----
-
-## Strategic Context
-
-**Who uses this:**
-- AI voice agent vendors (Prior Auth vendors, RCM companies, payer portal automation)
-- Health insurance companies (payers) screening inbound AI calls
-- Healthcare providers verifying that their AI agents are compliant
-
-**The pitch to Eshan/Bek/Feros:**
-"You're making AI calls to insurance companies. We're the policy engine you embed to stay
-compliant with state AI disclosure laws (WA, GA, MD, IN, UT, AL) and NIST guidelines. Open
-source, deterministic, no vendor lock-in. We offer hosted API + compliance badges for production."
-
-**NIST submission:** NHID-Clinical is designed to be submitted as an open proposal to NIST's
-AI governance framework for healthcare. The conformance test suite in `conformance/` is the
-artifact that gets cited.
-
-**Open-core model:**
-The code is open because the standard has more value when it's adopted widely. The revenue
-model is the hosted service, the badge, and support — not the IP. Anyone can run this
-themselves; they just won't have the credential that says they've been verified.
-
----
-
-## How to Work on This Project
-
-### Local Setup
-
-```bash
-git clone https://github.com/thankcheeses/NHID-Clinical.git
-cd NHID-Clinical
-pip install -r requirements.txt
-uvicorn main:app --reload
-# API at http://localhost:8000
-# Docs at http://localhost:8000/docs
-```
-
-### Run Tests
-
-```bash
-pytest tests/ -q
-# 95 passed, 18 skipped (normal)
-
-python scripts/validate_ci.py
-# CI PASS
-```
-
-### Test the Badge Endpoint
-
-```bash
-NHID_API_KEY=mykey NHID_BADGE_TIER=L1 uvicorn main:app
-curl -H "X-API-Key: mykey" http://localhost:8000/v1/certify/badge/agent-001
-# Returns SVG
-
-curl -H "X-API-Key: wrong" http://localhost:8000/v1/certify/badge/agent-001
-# 403
-
-# Without NHID_BADGE_TIER set:
-NHID_API_KEY=mykey uvicorn main:app
-curl -H "X-API-Key: mykey" http://localhost:8000/v1/certify/badge/agent-001
-# 402
-```
-
-### Adding a New Policy Rule
-
-1. Add evaluator function in `src/nhid_policy_engine_v1.py` following the IDG-01 pattern
-2. Add it to the `decisions` list in `evaluate_all()`
-3. Add the corresponding rule key to `_RULE_EVALUATORS` in `src/voice_policy.py` if it needs voice support
-4. Add tests — the CI invariant requires exactly 95 passing; add tests to match
-
-### Adding a New HTTP Endpoint
-
-1. Add to the appropriate router file (`nhid_api_endpoints.py` for policy, `nhid_audit_export.py` for logging, etc.)
-2. Add a Pydantic model for request/response validation
-3. Wire auth via `dependencies=[Security(_require_api_key)]` in `main.py` if the endpoint is gated
-
-### v1.4 Identity Integration (future)
-
-To wire `src/agent_identity.py` to an HTTP endpoint:
-1. Add a new router (e.g. `nhid_identity.py`) with `POST /v1/identity/delegate` and `POST /v1/identity/verify`
-2. Store the `AgentIdentityManager` instance (or use a Redis-backed revocation list)
-3. Add tests — target count will increase above 95
-4. Update `UNIT_EXPECTED` in `scripts/validate_ci.py` and the CI job name in `ci.yml`
-
----
-
-## Files NOT to Modify Without Understanding
-
-- `scripts/validate_ci.py` — changing `UNIT_EXPECTED` will break CI unless test count actually changed
-- `.github/workflows/ci.yml` — the job name contains the expected count ("95 passed") — keep in sync
-- `src/agent_identity.py` — the `to_json()` method uses `sort_keys=True, separators=(',',':')` for deterministic signing; changing this breaks all existing signatures
-- `nhid_attest.py` — uses SQLite at `NHID_AUTH_DB` path; the `nhid_payer.py` reads the same DB; they are coupled
-- `main.py` — router import order and auth dependency wiring matters; `nhid_attest` is intentionally public (no auth) so vendors can self-register
+- `NHID_BADGE_TIER`: must be `"L1"` or `"L2"` → 402 if not set (free tier blocked)

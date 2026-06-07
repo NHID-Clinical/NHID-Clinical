@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Regulatory Alignment — How the proposal maps to CMS-0057-F, MACPAC, DOJ FCA enforcement, and state AI laws."/>
+  <title>Regulatory Alignment | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+</div>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/governance-simulator.html">Governance Simulator</a>
+      <a href="/for-payers.html">For Payers</a>
+      <a href="/specification.html">Specification</a>
+      <a href="/developers.html">Developers</a>
+      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+      <a href="/technical-stack.html">Technical Stack</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="inner-hero">
+    <div class="container">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Regulatory Alignment</span></div>
+      <p class="eyebrow">Alignment · June 2026</p>
+      <h1>Regulatory Alignment</h1>
+      <p class="lede">How NHID-Clinical maps to current healthcare AI governance requirements.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+      <div class="callout" role="note" style="margin-bottom:2rem">
+        <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+      </div>
+
+      <h2>How NHID-Clinical Maps to Current Requirements</h2>
+      <p style="margin-bottom:1.5rem">This is not legal advice. NHID-Clinical is voluntary. The table below shows how the controls relate to key regulations and guidance as of June 2026.</p>
+
+      <table style="width:100%;border-collapse:collapse;margin-bottom:2rem">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border);text-align:left">
+            <th style="padding:.75rem">Regulatory Driver</th>
+            <th style="padding:.75rem">Specific Requirement</th>
+            <th style="padding:.75rem">NHID-Clinical Control</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">CMS-0057-F Prior Auth Final Rule</td>
+            <td style="padding:.75rem">FHIR API, 72-hour turnaround, 5-year retention</td>
+            <td style="padding:.75rem">FHIR AuditEvent + session trace (ATR-01)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">MACPAC May 2026</td>
+            <td style="padding:.75rem">AI transparency in prior auth, human review pathway</td>
+            <td style="padding:.75rem">IDG-01 + EIT-01 (escalation) + ATR-01</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">DOJ FCA 2026 Enforcement Focus</td>
+            <td style="padding:.75rem">Explainability + audit trail for AI-assisted billing</td>
+            <td style="padding:.75rem">Structured trace + CTS conformance (ATR-01)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">State AI Laws (CA, TX, MD, etc.)</td>
+            <td style="padding:.75rem">Inspectable, auditable AI decisions</td>
+            <td style="padding:.75rem">IDG-01 + DBC-01 + L1/L2/L3 tiers</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">NIST AI RMF / CAISI</td>
+            <td style="padding:.75rem">Cross-org agent identity + authorization</td>
+            <td style="padding:.75rem">NHID-Auth v2 + NIST-2025-0035-0026 comment</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="padding:1.5rem;background:var(--bg-alt);border-radius:8px;text-align:center">
+        <p style="margin-bottom:1rem;font-weight:600">Want to learn more?</p>
+        <a href="mailto:contact@nhid-clinical.org" class="primary-pill" style="display:inline-flex">Contact us for a 30-minute briefing →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>
