@@ -164,6 +164,12 @@
         <strong>⚠️ Important:</strong> No payer has piloted or adopted NHID-Clinical yet. You would be among the first. This is a voluntary reference model from a solo founder.
       </div>
 
+      <div style="padding:1.5rem;background:#eff6ff;border-radius:8px;margin-bottom:2.5rem">
+          <h3 style="margin-top:0;font-size:1.1rem">Regulatory Alignment</h3>
+          <p style="font-size:0.95rem;line-height:1.6">How NHID-Clinical v1.3 maps to CMS-0057-F, MACPAC 2026, DOJ FCA enforcement, and state AI laws.</p>
+          <p style="margin-bottom:0;font-size:0.95rem"><a href="/regulatory-alignment.html" style="color:#0ea5e9;font-weight:500">See the regulatory alignment matrix →</a></p>
+      </div>
+
       <!-- Metrics table -->
       <h2>What You Gain From a Pilot</h2>
       <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.93rem">
@@ -263,78 +269,11 @@
         <p style="margin-top:.75rem;font-size:.92rem;color:var(--ink-soft)"><strong>Why this matters:</strong> NPIs are public. Any AI can look up a provider's NPI in the NPPES registry and use it on a call. v1.3 tells you the caller was automated; it does not tell you the caller was actually authorized by that provider. That gap is real, it's easy to exploit, and it's what NHID-Auth (v2) is designed to close.</p>
       </div>
 
-      <!-- NOT for -->
-      <h2 style="margin-top:2.5rem">What This Pilot Is NOT For</h2>
-      <div class="callout" role="note" style="border-left-color:#f59e0b;background:rgba(245,158,11,.07);margin-top:1rem">
-        <ul style="margin:0 0 .75rem;padding-left:1.3rem;line-height:2">
-          <li>❌ Live decision-making or prior auth automation</li>
-          <li>❌ Replacing call center agents</li>
-          <li>❌ Writing data back into your core systems</li>
-          <li>❌ Agent identity verification / spoofing prevention (out of scope for v1.3)</li>
-        </ul>
-        <strong>This is shadow-mode only.</strong> It logs and validates — it does not decide.
+      <!-- Proof package -->
+      <div style="margin-top:2.5rem">
+        <h2>Proof package</h2>
+        <p style="font-size:0.95rem"><a href="/regulatory-alignment.html" style="color:#0ea5e9">Regulatory alignment matrix →</a></p>
       </div>
-
-      <!-- Vendor questionnaire -->
-      <h2 style="margin-top:2.5rem">Vendor Questionnaire (Copy-Paste Into Your RFP)</h2>
-      <div class="pilot-card" style="margin-top:1rem">
-        <ol>
-          <li>Does your AI agent disclose its non-human identity at the beginning of each call, before requesting any operational data (NPI, member ID, claim number)?</li>
-          <li>Can you produce JSON trace logs showing disclosure timestamps for every call?</li>
-          <li>Does your agent avoid deceptive artifacts (fake breathing, typing sounds, human-only names)?</li>
-          <li>Will you allow us to run the NHID-Clinical conformance test suite against your sandbox environment?</li>
-        </ol>
-      </div>
-
-      <!-- Email template -->
-      <h2 id="email-template" style="margin-top:2.5rem">📧 Template Email to Vendor</h2>
-      <div class="pilot-card" style="margin-top:1rem">
-        <pre>Subject: NHID-Clinical conformance test request
-
-Dear [Vendor Name],
-
-As part of our upcoming pilot, please run the NHID-Clinical v1.3
-conformance test suite in your sandbox environment.
-
-Steps:
-1. Clone: git clone https://github.com/thankcheeses/NHID-Clinical.git
-2. Run:   python -m pytest tests/ -v
-
-Please send us:
-- The test output (pass/fail)
-- JSON trace logs from 100 sample calls
-
-Timeline: Please complete within 2 weeks.
-
-Contact me with any questions.
-
-Thank you,
-[Your Name]
-[Your Health Plan]</pre>
-      </div>
-
-      <!-- What support is available -->
-      <h2 style="margin-top:2.5rem">What Support Is Available</h2>
-      <ul style="list-style:none;padding:0;margin-top:1rem;display:grid;gap:.5rem;font-size:.93rem">
-        <li style="color:var(--body);line-height:1.7">✅ 30-minute walkthrough of the test suite and trace schema</li>
-        <li style="color:var(--body);line-height:1.7">✅ Recorded demo of the policy engine (available upon request)</li>
-        <li style="color:var(--body);line-height:1.7">❌ No vendor references yet — you would be among the first</li>
-      </ul>
-
-      <!-- Next step -->
-      <h2 style="margin-top:2.5rem">Next Step</h2>
-      <div style="padding:1.5rem 2rem;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;margin-top:1rem">
-        <p style="margin:0;color:#166534;font-size:.95rem;line-height:1.75">Email <a href="mailto:contact@nhid-clinical.org" style="color:#166534;font-weight:700">contact@nhid-clinical.org</a> with subject line <strong>"Pilot interest – [Your Health Plan Name]"</strong>.<br>
-        You will receive the one-page pilot agreement and any needed support within 24 hours.</p>
-      </div>
-
-      <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
-        <a href="/" style="color:var(--blue)">← Back to Home</a>
-        &nbsp;·&nbsp;
-        <a href="/developers.html" style="color:var(--blue)">Developers</a>
-        &nbsp;·&nbsp;
-        <a href="/proof.html" style="color:var(--blue)">Proof package</a>
-      </p>
 
     </div>
   </section>
@@ -342,11 +281,11 @@ Thank you,
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Read the technical details</p>
-        <h2>The schema, policy engine, and conformance tests are open source.</h2>
-        <p>Everything a vendor needs to self-certify is in the repo.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Read the proposal and share your reaction.</h2>
+        <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
       </div>
-      <a class="closing-button" href="/developers.html">Developers →</a>
+      <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regulatory Alignment – NHID-Clinical</title>
+    <link rel="stylesheet" href="nhid-clinical-ui.css">
+    <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+</head>
+<body>
+    <div class="disclaimer">Note: NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.</div>
+    <header>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="examples.html">Examples</a>
+            <a href="for-payers.html">For Payers</a>
+            <a href="specification.html">Spec</a>
+            <a href="developers.html">Developers</a>
+            <a href="interoperability.html">Interoperability</a>
+            <a href="news.html">News</a>
+            <a href="community.html">Community</a>
+            <a href="faq.html">FAQ</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumbs">Home / For Payers / Regulatory Alignment</div>
+        <div class="eyebrow">Regulatory Alignment · June 2026</div>
+        <h1>How NHID-Clinical Addresses Today's AI Governance Mandates</h1>
+        <p class="lede">CMS WISeR, MACPAC May 2026, DOJ FCA 2026 enforcement, and state AI laws are all converging on the same gap: AI voice agents in prior auth workflows with no disclosure, no delegation proof, and no audit trail.</p>
+
+        <section>
+            <p><em>This is not legal advice. NHID-Clinical is a voluntary open proposal. This mapping helps compliance teams understand how NHID-Clinical controls relate to regulatory requirements. Consult qualified healthcare counsel for compliance determinations.</em></p>
+
+            <h2>Compliance Alignment Matrix</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Regulatory Driver</th>
+                        <th>Specific Requirement</th>
+                        <th>NHID-Clinical Control</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CMS-0057-F Prior Auth Final Rule</td>
+                        <td>FHIR API, 72-hour turnaround, 5-year retention</td>
+                        <td>FHIR AuditEvent + session trace · ATR-01</td>
+                    </tr>
+                    <tr>
+                        <td>MACPAC May 2026</td>
+                        <td>AI transparency in prior auth, human review pathway</td>
+                        <td>PIA + EIT-01 (escalation) + ATR-01 (audit log)</td>
+                    </tr>
+                    <tr>
+                        <td>DOJ FCA 2026 False Claims Act</td>
+                        <td>Explainability + audit trail for AI-assisted billing</td>
+                        <td>LOG (structured trace) + CTS conformance · ATR-01</td>
+                    </tr>
+                    <tr>
+                        <td>CMS CRUSH Initiative</td>
+                        <td>Voice auth in high-risk prior auth transactions</td>
+                        <td>NHID-Auth v2 delegation chain · IDG-01</td>
+                    </tr>
+                    <tr>
+                        <td>State AI Laws (CA / TX / MD / NE)</td>
+                        <td>Inspectable, auditable AI decisions</td>
+                        <td>L1/L2/L3 tiered certification · IDG-01 · DBC-01</td>
+                    </tr>
+                    <tr>
+                        <td>NIST CAISI 2026</td>
+                        <td>Cross-org agent identity + authorization</td>
+                        <td>NHID-Auth v2 + NHID-Clinical v1.3 (NIST-2025-0035-0026)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>The False Claims Act Gap</h2>
+            <p>The False Claims Act (31 U.S.C. § 3729) imposes treble damages on fraudulent Medicare/Medicaid claims. The 2026 DOJ enforcement shift focuses on AI-assisted billing workflows — whether organizations can demonstrate that automated systems affecting claim submission have a contemporaneous, inspectable audit record.</p>
+            <p>The gap NHID-Clinical addresses is upstream of billing: the prior authorization voice call. When an AI agent calls a payer to request prior auth, it is acting as the provider's agent. If that call results in a prior auth supporting a subsequent claim, and the AI cannot prove it disclosed its automated status before data exchange — that is an undocumented assumption in the evidentiary chain. NHID-Clinical's ATR-01 closes that gap with a single timestamped log entry.</p>
+
+            <h2>The 30-Day Audit Trail Test</h2>
+            <p>Ask your voice AI vendor: "Can you produce a structured, exportable log of every call in the last 30 days with a per-call timestamp proving AI disclosure occurred before any operational data was exchanged?" If the answer is not an immediate yes with a format specification, your organization is carrying unpriced FCA exposure.</p>
+
+            <h2>Vendor Evidence Pack Minimum</h2>
+            <p>Demand these six items from any vendor making AI-initiated prior auth calls on your behalf:</p>
+            <ul>
+                <li><strong>Disclosure timestamp log</strong> — per-call record in JSON, FHIR AuditEvent, or NDJSON proving disclosure before any NPI/Member ID was cited.</li>
+                <li><strong>Escalation path documentation</strong> — evidence a human handoff was available on every call.</li>
+                <li><strong>NPI authorization evidence</strong> — how the AI is authorized to cite provider NPIs. Without NHID-Auth v2: a signed contractual attestation.</li>
+                <li><strong>Deceptive behavior certification</strong> — written attestation: no fake breathing, hesitation, or human-impression scripting.</li>
+                <li><strong>CTS self-assessment results</strong> — output of the five CTS tests against a representative call trace.</li>
+                <li><strong>Data retention policy</strong> — retention period, export format, and audit request process.</li>
+            </ul>
+        </section>
+
+        <section class="cta">
+            <h2>Questions about compliance posture</h2>
+            <p>Contact us for a 30-minute briefing on the alignment matrix.</p>
+            <a href="mailto:contact@nhid-clinical.org" class="button">Contact →</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+        <p>Contact: <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a> | <a href="https://nhid-clinical.org">nhid-clinical.org</a></p>
+    </footer>
+</body>
+</html>

@@ -132,6 +132,10 @@
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">There's a concrete version of this problem that goes beyond late disclosure: an AI can look up any provider's NPI from the public NPPES registry, call a payer, provide that valid NPI, and request claim details. The payer has no real-time way to know whether the caller is actually authorized by that provider. This isn't hypothetical — it's trivially easy with today's voice AI tools. NHID-Clinical aims to name this gap; a cryptographic authorization layer (planned for v2) aims to fix it.</p>
       <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem"><strong>Important distinction:</strong> NHID-Clinical v1.3 does <em>not</em> verify caller identity or agent authenticity. It standardizes observable disclosure and trace behaviors. The authorization gap is documented — not yet solved.</p>
       <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.5rem"><strong>Payers who ask vendors to adopt NHID-Clinical gain machine&#8209;auditable trace logs for voice agent identity</strong> — no certification theatre required.</p>
+      
+      <div style="padding:1.5rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;margin-top:2rem">
+          <p style="margin:0;color:#475569;font-size:0.95rem">Alignment notes are available for <a href="/alignment/stir-shaken.html" style="color:#0ea5e9;font-weight:500">STIR/SHAKEN</a>, <a href="/alignment/cms-0057-f.html" style="color:#0ea5e9;font-weight:500">CMS-0057-F</a>, <a href="/alignment/nist-ai-agent-standards.html" style="color:#0ea5e9;font-weight:500">NIST AI Agent Standards</a>, and a <a href="/alignment/vendor-evidence-pack.html" style="color:#0ea5e9;font-weight:500">Vendor Evidence Pack</a>.</p>
+      </div>
     </div>
   </section>
 
@@ -189,14 +193,19 @@
       <p class="section-kicker">Background reading</p>
       <h2>The thinking behind this proposal</h2>
       <p class="article-lead">Why impersonation latency is a real operational problem in healthcare payer–provider voice workflows, and what a shared language for addressing it might look like.</p>
+      
+      <div style="padding:1.5rem;background:#eff6ff;border-radius:8px;margin-bottom:2rem">
+        <p style="margin:0;color:#1e293b">We also have a live <a href="https://ai-governance-map.vercel.app" style="color:#0ea5e9;font-weight:500">AI Governance Map</a> that tracks EU AI Act, ISO 42001, NIST RMF obligations — including an NHID-Clinical v1.3 conformance section showing the AUTH-01 gap interactively.</p>
+        <p style="margin-top:1rem;margin-bottom:0"><a href="https://ai-governance-map.vercel.app" class="primary-pill">Live Governance Map →</a></p>
+      </div>
+
       <div class="article-links">
         <a class="article-link" href="https://medium.com/@bnbaynard/when-an-ai-agent-calls-about-a-claim-who-is-it-really-representing-e021e12e4c1b" target="_blank" rel="noopener noreferrer">
           <span class="article-link-source">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
             Medium
           </span>
-          <span class="article-link-title">When an AI Agent Calls About a Claim — Who Is It Really Representing?</span>
-          <span class="article-link-cta">Read on Medium →</span>
+          <span class="article-link-title">When an AI Agent Calls About a Claim: Who Is It Really Representing?</span>
         </a>
       </div>
     </div>
@@ -206,17 +215,19 @@
     <div class="closing-panel">
       <div>
         <p class="section-kicker">Get involved</p>
-        <h2>If you work in this space, your input matters.</h2>
-        <p>NHID-Clinical is one volunteer's attempt to name a real problem. If you work in healthcare payer operations, provider-side AI, or voice platform development — your experience is exactly what this proposal needs.</p>
+        <h2>Read the proposal and share your reaction.</h2>
+        <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
       </div>
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
-  <div style="text-align:center;padding:1rem 1rem;color:var(--ink-soft);font-size:.9rem">
-    <p style="margin:0">(We also have an <a href="simulator.html">experimental simulator</a> for testing policy logic, a <a href="proof.html">technical proof package</a> for enterprise teams, and a <a href="roadmap.html">v2 roadmap</a> covering cryptographic agent identity.)</p>
-  </div>
-  <p style="text-align:center;color:var(--ink-soft);font-size:.85rem;font-style:italic;padding:1.5rem 1rem 2rem"><em>NHID-Clinical v1.3 is an early-stage open proposal created by Brianna Baynard. It is not an official standard, certification program, or regulatory requirement.</em></p>
 </main>
+
+
+
+
+
+
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">

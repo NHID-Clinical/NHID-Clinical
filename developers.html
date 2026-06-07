@@ -196,41 +196,24 @@ curl -X POST https://nhid-clinical.up.railway.app/v1/policy/run \
         </div>
       </div>
 
+      <div style="padding:1.5rem;background:#eff6ff;border-radius:8px;margin-bottom:2.5rem">
+          <h3 style="margin-top:0;font-size:1.1rem">How It All Fits Together</h3>
+          <p style="font-size:0.95rem;line-height:1.6">Each layer — from STIR/SHAKEN at the carrier level to OpenTelemetry spans at the SIEM layer — connects through NHID-Clinical.</p>
+          <p style="margin-bottom:0;font-size:0.95rem"><a href="/technical-stack.html" style="color:#0ea5e9;font-weight:500">See the five-layer trust architecture →</a></p>
+      </div>
+
       <!-- ── Quick Start ────────────────────────────────────────────────── -->
 
       <h2 style="margin-bottom:1rem">Quick Start</h2>
-      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.25rem 1.5rem;font-size:.85rem;line-height:1.9;overflow-x:auto;color:var(--body)">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
+      <p style="margin-bottom:1rem">Unit invariant preserved: <strong>173 passed, 18 skipped in ~1.4s</strong></p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:5px;padding:1rem 1.25rem;font-size:.85rem;line-height:1.75;overflow-x:auto;color:var(--body);margin-bottom:2rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-pytest tests/ -q</pre>
+python -m pytest tests/ -v</pre>
 
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Expected output: <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">Unit invariant preserved: 95 passed, 0 skipped</code><br><code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">Integration suite: 18 tests, may pass or skip (expected)</code></p>
-
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem"><strong>Integration tests (18):</strong> validate a live NHID-Clinical server at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code>. They auto-skip cleanly when no server is present. Integration tests are optional system validation — they are not required to verify policy engine correctness.</p>
-
-      <!-- ── What You Are Verifying ──────────────────────────────────────── -->
-
-      <div style="margin-top:2rem;padding:1.25rem 1.5rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-        <p style="font-weight:700;margin:0 0 .75rem;color:var(--body)">What you are verifying</p>
-        <ul style="margin:0;padding-left:1.25rem;color:var(--body);font-size:.93rem;line-height:1.9">
-          <li><strong>Deterministic policy engine correctness</strong> — identical input always produces identical output, across any environment</li>
-          <li><strong>Reproducible evaluation logic</strong> — IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 rule enforcement is consistent and auditable</li>
-          <li><strong>Audit-safe trace behavior</strong> — event records are complete, append-only, and reproducible across replay</li>
-        </ul>
-      </div>
-
-      <!-- ── Interoperability ──────────────────────────────────────────────── -->
-
-      <div style="margin-top:2.5rem;padding:1.25rem 1.5rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-        <p style="font-weight:700;margin:0 0 .4rem;color:var(--body)">Vendor Interoperability</p>
-        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0">Vendor format adapters convert vendor-specific call transcripts to NHID-Clinical event traces. See the <a href="/interoperability.html" style="color:var(--blue);font-weight:500">interoperability demo →</a></p>
-      </div>
-
-      <!-- ── Disclaimer ─────────────────────────────────────────────────── -->
-
-      <div style="margin-top:3rem;padding:1.5rem 1.75rem;background:var(--bg-alt);border-left:3px solid #dc3545;border-radius:0 6px 6px 0">
-        <p style="font-weight:700;margin:0 0 .6rem;color:var(--body)">Important</p>
-        <p style="color:var(--body);font-size:.93rem;line-height:1.8;margin:0">These tools are experimental and not for production use. NHID&#8209;Clinical does not issue certifications, conduct audits, or provide legal advice. Conformance testing is self&#8209;administered. No external authority validates results. Adoption of these artifacts does not confer HIPAA compliance, TCPA compliance, or any regulatory approval.</p>
+      <div style="border-top:1px solid var(--border);padding-top:2rem">
+          <h3 style="font-size:1.1rem">Vendor Interoperability</h3>
+          <p style="font-size:0.95rem;line-height:1.6">Vendor format adapters convert vendor-specific call transcripts to NHID-Clinical event traces. <a href="/interoperability.html" style="color:#0ea5e9">See the interoperability demo →</a></p>
       </div>
 
     </div>
@@ -239,11 +222,11 @@ pytest tests/ -q</pre>
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Open for feedback</p>
-        <h2>Questions or suggestions?</h2>
-        <p>Join the community discussion or reach out directly.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Contribute to the reference implementation.</h2>
+        <p>Open a PR on GitHub or join the discussion on Discord to help refine the policy engine and test suite.</p>
       </div>
-      <a class="closing-button" href="/community.html">Community →</a>
+      <a class="closing-button" href="https://github.com/NHID-Clinical/NHID-Clinical">View on GitHub →</a>
     </div>
   </section>
 </main>
