@@ -1,103 +1,74 @@
 # NHID-Clinical
 
-**Non-Human Identity Disclosure Standard for Healthcare Voice Workflows**
-Version: 1.3 | Status: Open Governance Proposal | License: CC BY 4.0
+A voluntary, early-stage proposal for AI voice agent behavior in healthcare payer–provider calls.
+
+**Not a standard. Not a certification. Built by one person based on time spent in payer operations.**
+
+Website: [nhid-clinical.org](https://nhid-clinical.org)
 
 ---
 
-## What This Is
+## The problem in one sentence
 
-NHID-Clinical defines a minimum, voluntary, testable control baseline for non-human identity disclosure in B2B healthcare administrative voice interactions.
+AI voice agents call payer offices, collect operational data, and only disclose they're automated when challenged — sometimes minutes into the call.
 
-It addresses a documented gap in provider-to-payer voice workflows (eligibility, claim status, prior authorization) where AI voice agents operate without disclosing their automated status before exchanging operational data.
+## What this proposes
 
-**This is not a regulation, certification program, or compliance requirement.** It is an open governance proposal submitted to NIST docket NIST-2025-0035 (Comment ID: NIST-2025-0035-0026).
+Four behaviors:
 
----
+1. Identify as automated before asking for any data
+2. No audio designed to sound human (fake breathing, filler, call center noise)
+3. Immediate transfer to a human on request
+4. Basic log: what happened and when
 
-## The Problem: Impersonation Latency
+## Repo structure
 
-An AI calls as "Sarah from Dr. Smith's office." It handles several minutes of normal workflow conversation. Only when challenged does it admit it is automated. By then, sensitive operational data has already been exchanged without clear consent or accountability.
+```
+schema/     Canonical event schema (JSON Schema Draft 2020-12)
+src/        Policy engine + cryptographic identity layer (pure Python)
+tests/      Conformance suite (YAML) + failure harness (pytest) + trace generator
+adapters/   Vendor format adapters (Twilio → NHID trace)
+traces/     10 pre-generated failure traces
+```
 
-This is impersonation latency: the measurable trust delay between an AI agent initiating a call and the receiving system verifying the caller is authorized to represent the claimed provider.
-
----
-
-## The Four Controls (v1.3)
-
-| ID | Name | Requirement |
-|----|------|-------------|
-| IDG-01 | Identity Disclosure Gate | AI MUST identify as automated before any operational data exchange |
-| DBC-01 | Deceptive Behavior Check | AI MUST NOT use fake breathing, typing sounds, or scripted human-like hesitation |
-| EIT-01 | Escalation and Immediate Transfer | AI MUST provide immediate human handoff when requested |
-| ATR-01 | Audit Trail Requirements | AI MUST log disclosure timestamp vs. first data request timestamp |
-
----
-
-## Conformance Test Suite
-
-Five deterministic pass/fail tests. All five must pass for NHID-Clinical v1.3 conformance.
+## Quick start
 
 ```bash
-git clone https://github.com/NHID-Clinical/NHID-Clinical.git
+git clone https://github.com/thankcheeses/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-pytest tests/ -q
+python -m pytest tests/ -v
 ```
 
-Expected: `95 passed, 18 skipped`
+Expected output: `25 passed, 18 skipped` — the 18 skipped are integration tests that require a live server at `http://127.0.0.1:8000` and are automatically skipped if none is running.
 
-The 18 skipped tests are integration tests requiring a live FastAPI server. They are optional and do not affect policy engine verification.
+```bash
+# Generate all 10 failure traces (no server needed)
+python tests/trace_generator.py --offline
 
----
-
-## Repository Structure
-
-```
-src/
-  agent_identity.py              # NHID-Auth delegation and NPI binding
-  voice_policy.py                # Core disclosure and escalation policy engine
-  nhid_policy_engine_v1.py       # Five CTS rule implementations
-tests/
-  test_identity.py               # Identity and delegation tests
-  test_voice_policy.py           # Policy engine tests
-  failure_injection_harness.py   # Chaos and adversarial input tests
-conformance/
-  nhid_conformance_test_suite_v1.yaml   # 18 machine-readable CTS cases
-specs/
-  NHIDClinicalv1.3_Overview.pdf
-  NHID-Clinical-Operational-Blueprint-v1.3.pdf
+# Run the Twilio adapter demo
+python adapters/twilio_adapter.py
 ```
 
----
+## Artifacts
 
-## Framework Alignment
+| File | What it does |
+|---|---|
+| `schema/nhid_trace_schema_v1.json` | Event schema every pipeline stage emits against |
+| `src/nhid_policy_engine_v1.py` | Evaluates IDG-01, PDX-01, DBC-01, EIT-01, ATR-01. Never raises. |
+| `src/agent_identity.py` | Ed25519 agent passports, delegation chains, revocation (v1.4 preview) |
+| `tests/nhid_conformance_test_suite_v1.yaml` | 18 machine-readable pass/fail/edge test cases |
+| `tests/failure_injection_harness.py` | pytest suite — chaos inputs, policy evaluation, replay determinism |
+| `tests/test_identity.py` | 4 tests: key generation, delegation, expiry, revocation |
+| `tests/trace_generator.py` | Writes 10 failure traces to `/traces/`. Same output every run. |
+| `adapters/twilio_adapter.py` | Maps Twilio transcripts to NHID-Clinical event traces |
 
-| NHID-Clinical Control | NIST AI RMF 1.0 | ISO/IEC 42001:2023 |
-|----------------------|-----------------|-------------------|
-| Proactive Identity Assertion | MEASURE 2.6, MAP 3.4 | A.7.2, B.9.1 |
-| No Deceptive Artifacts | GOV 1.5, MAP 3.4 | A.5.8, A.9.2 |
-| Pre-Data Exchange Gate | MANAGE 1.2, GOV 5.1 | A.6.2, A.8.2 |
-| Safe Failover / Escalation | MANAGE 4.2, GOV 5.2 | A.8.3, A.6.3 |
-| Audit Logging | MANAGE 4.1, MEASURE 2.2 | A.4.2, A.9.3 |
+## Status
 
----
+- No payer or vendor has adopted this yet
+- Working schema, policy engine, conformance suite, and trace generator
+- Actively looking for feedback from payer ops, provider-side AI teams, health IT
 
-## NIST Submission
+## Contact
 
-Submitted to NIST AI Safety Institute public comment docket NIST-2025-0035.
-Comment ID: **NIST-2025-0035-0026**
-This is a public comment. It does not imply NIST endorsement or recognition.
-
----
-
-## Website
-
-**[nhid-clinical.org](https://nhid-clinical.org)**
-
----
-
-## License
-
-CC BY 4.0 - Brianna Baynard-Malone
-contact@nhid-clinical.org
+[contact@nhid-clinical.org](mailto:contact@nhid-clinical.org) · CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026

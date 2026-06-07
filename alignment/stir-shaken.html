@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STIR/SHAKEN Alignment · NHID-Clinical</title>
+<link rel="stylesheet" href="../nhid-clinical-ui.css">
+</head>
+<body>
+<div class="nhid-banner">Note: NHID-Clinical is an early-stage open proposal. It is not an accredited standard or regulatory requirement.</div>
+<nav><a href="../index.html">Home</a> / <a href="../specification.html">Specification</a> / STIR/SHAKEN Alignment</nav>
+<main>
+<h1>STIR/SHAKEN Alignment</h1>
+<p>STIR/SHAKEN attests that a number is legitimate — not that the caller is authorized to access protected health information.</p>
+<h2>Trust Stack</h2>
+<table>
+  <thead><tr><th>Layer</th><th>Standard</th><th>What it proves</th></tr></thead>
+  <tbody>
+    <tr><td>Carrier</td><td>STIR/SHAKEN</td><td>Number is legitimate</td></tr>
+    <tr><td>Disclosure</td><td>NHID-Clinical v1.3</td><td>AI status declared before PHI exchange</td></tr>
+    <tr><td>Authorization</td><td>NHID-Auth v2</td><td>Cryptographic delegation from provider</td></tr>
+  </tbody>
+</table>
+<p>For cross-framework mapping see the <a href="https://ai-governance-map.vercel.app">AI Governance Map</a></p>
+<p><a href="../specification.html">specification.html</a></p>
+</main>
+</body>
+</html>

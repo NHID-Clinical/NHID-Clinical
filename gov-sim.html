@@ -393,7 +393,7 @@ body::before{
         <thead><tr><th>Rule</th><th>Status</th><th>Detail</th></tr></thead>
         <tbody id="out-tbl"></tbody>
       </table>
-      <p style="font-size:10px;color:var(--t4);margin-top:.6rem;line-height:1.5">¹ AUTH-01 is a v1.4 preview rule — not enforced in v1.3. Shown here to illustrate the NPI spoofing gap.</p>
+      <p style="font-size:10px;color:var(--t4);margin-top:.6rem;line-height:1.5">¹ AUTH-01 is a v2 preview rule — not enforced in v1.3. Shown here to illustrate the NPI spoofing gap.</p>
     </div>
 
     <!-- Summary -->
@@ -839,7 +839,7 @@ var SC={
 ,'spoofed-identity':{
   label:'Spoofed Identity Call',
   summary:function(c){
-    if(c.auth_verified&&c.identity) return 'Identity disclosed and authorization verified. The caller is demonstrably who they claim to be — this is the target state for v1.4.';
+    if(c.auth_verified&&c.identity) return 'Identity disclosed and authorization verified. The caller is demonstrably who they claim to be — this is the target state for v2.';
     if(c.auth_verified&&!c.identity) return 'Authorization was verified but identity was not disclosed upfront — IDG-01 and PDX-01 still fail.';
     if(!c.auth_verified&&c.identity) return 'AI disclosed it was automated (IDG-01 PASS) and provided a valid NPI — but NPIs are public. Without authorization proof, a spoofed caller passes the same checks. AUTH-01 FAIL.';
     return 'Neither identity disclosed nor authorization verified. The call proceeded with a public NPI as the only credential — payer has no way to distinguish this from a legitimate call.';
@@ -901,7 +901,7 @@ var SC={
     {t:'01:31',st:'PERSIST ',ev:c.documented?'5 audit fields written — caller unverified unless AUTH-01 passed':'0 audit fields written — unattributable interaction'}
   ];},
   tObs:function(c){
-    if(c.auth_verified&&c.identity) return 'Identity disclosed and authorization verified. This is the v1.4 target state.\nImpersonation risk eliminated.';
+    if(c.auth_verified&&c.identity) return 'Identity disclosed and authorization verified. This is the v2 target state.\nImpersonation risk eliminated.';
     if(!c.auth_verified&&c.identity) return 'AI disclosed it was automated — IDG-01 met.\nHowever: NPI 1234567890 is listed in the public NPPES registry.\nAny caller can provide this NPI. Without AUTH-01, this call is\nindistinguishable from an impersonation attempt.';
     if(!c.auth_verified&&!c.identity) return 'No disclosure, no authorization proof.\nThe payer released claim data to an unverifiable caller.\nThis is the core NHID-Clinical attack vector.';
     return 'Partial compliance. AUTH-01 gap means caller identity remains unverifiable.';
@@ -914,7 +914,7 @@ var SC={
     [!c.documented,  '· No record of what was disclosed or to whom']
   ]);},
   tNext:function(c){return cf([
-    [!c.auth_verified,'· Implement v1.4 AUTH-01: require cryptographic delegation token signed by provider EHR'],
+    [!c.auth_verified,'· Implement v2 AUTH-01: require cryptographic delegation token signed by provider EHR'],
     [!c.auth_verified,'· Treat public NPI alone as insufficient for releasing operational data'],
     [!c.identity,    '· Require identity disclosure before any credential is accepted'],
     [!c.documented,  '· Log all interactions regardless of authorization status']
@@ -939,7 +939,7 @@ function buildTable(rules){
     {id:'DBC-01',p:true,           d:'Text-only simulation — no audio artifacts present'},
     {id:'EIT-01',p:rules['EIT-01'],d:rules['EIT-01']?'Human engagement and escalation path both confirmed':'EIT-01 requires both human engagement AND communicated escalation path'},
     {id:'ATR-01',p:rules['ATR-01'],d:rules['ATR-01']?'Required audit fields written before call close':'Outcome not documented — ATR-01 requires logging of interaction result'},
-    {id:'AUTH-01 ¹',p:rules['AUTH-01'],d:rules['AUTH-01']?'Caller presented verifiable authorization — cannot be impersonated with a public NPI alone':'No authorization proof — any caller with a public NPI could pass as this provider (v1.4 preview, not enforced in v1.3)'}
+    {id:'AUTH-01 ¹',p:rules['AUTH-01'],d:rules['AUTH-01']?'Caller presented verifiable authorization — cannot be impersonated with a public NPI alone':'No authorization proof — any caller with a public NPI could pass as this provider (v2 preview, not enforced in v1.3)'}
   ];
   return rows.map(function(r){
     var cls=r.p?'sp':'sf';
