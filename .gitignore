@@ -2,3 +2,12 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+
+# Local output files — not for the repo
+*.pdf
+docs/
+scripts/generate_voiceadmin_onepager.py
+
+.python_history
+*.patch
+go.py - Copy.py
