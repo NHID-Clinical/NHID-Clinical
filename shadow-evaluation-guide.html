@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical Shadow Evaluation Guide — a no-cost, 90-day behavioral baseline observation guide for payers assessing AI voice agent transparency in B2B administrative workflows."/>
+  <title>Shadow Evaluation Guide | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <style>
+    .phase-card {
+      padding: 1.2rem 1.5rem;
+      background: var(--bg-alt);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 6px 6px 0;
+    }
+    .phase-card strong {
+      display: block;
+      font-size: .97rem;
+      color: var(--ink);
+      margin-bottom: .4rem;
+    }
+    .phase-card p {
+      margin: 0;
+      color: var(--body);
+      font-size: .93rem;
+      line-height: 1.8;
+    }
+    .controls-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: .93rem;
+    }
+    .controls-table thead th {
+      text-align: left;
+      padding: .65rem .9rem;
+      border-bottom: 2px solid var(--border);
+      color: var(--ink-soft);
+      font-weight: 600;
+      background: none;
+    }
+    .controls-table tbody td {
+      padding: .7rem .9rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--body);
+      vertical-align: top;
+      line-height: 1.6;
+    }
+    .controls-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .controls-table .control-id {
+      font-family: monospace;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--blue);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+</div>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>Building Trust in Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/governance-simulator.html">Governance Simulator</a>
+      <a href="/for-payers.html">For Payers</a>
+      <a href="/specification.html">Specification</a>
+      <a href="/developers.html">Developers</a>
+      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+      <a href="/technical-stack.html">Technical Stack</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/for-payers.html">For Payers</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/specification.html">Specification</a>
+  <a href="/developers.html">Developers</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container inner-hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/for-payers.html">For Payers</a><span>/</span><span>Shadow Evaluation Guide</span></div>
+        <p class="eyebrow">Behavioral Baseline &middot; Shadow Mode &middot; 90 Days</p>
+        <h1>Shadow Evaluation Guide</h1>
+        <p class="lede">A structured, no-cost process for payer operations teams to establish a behavioral baseline for incoming AI voice calls — without changing anything in your call flow.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+
+      <div class="callout" role="note" style="margin-bottom:2.5rem">
+        <strong>Shadow mode means observe-only.</strong> Your existing call handling is unchanged. You measure how today's incoming AI voice traffic behaves against the four NHID-Clinical v1.3 controls, then decide what to do with the findings.
+      </div>
+
+      <h2>What This Is</h2>
+      <ul style="list-style:disc;padding-left:1.5rem;margin:.75rem 0 0;color:var(--body);font-size:.95rem;line-height:1.85">
+        <li>No cost. No vendor changes. No production risk.</li>
+        <li>You run it in shadow mode alongside your current operations.</li>
+        <li>Goal: produce a written behavioral baseline showing how AI voice agents currently disclose, escalate, and log calls to your administrative lines.</li>
+        <li>This is not a pilot program. There is no certification, no SLA, and no commitment beyond sharing anonymized findings with the community if you choose.</li>
+      </ul>
+
+      <h2 style="margin-top:2.5rem">What You Need</h2>
+      <ul style="list-style:disc;padding-left:1.5rem;margin:.75rem 0 0;color:var(--body);font-size:.95rem;line-height:1.85">
+        <li>Access to call logs or recordings for a sample of incoming administrative calls (eligibility, claim status, prior authorization).</li>
+        <li>About 30 minutes of staff time for orientation.</li>
+        <li>Willingness to share anonymized findings if you choose to.</li>
+      </ul>
+
+      <h2 style="margin-top:2.5rem">The 90-Day Structure</h2>
+      <div style="display:grid;gap:1rem;margin-top:1rem">
+        <div class="phase-card">
+          <strong>Month 1 — Behavioral Baseline</strong>
+          <p>Log incoming calls. Identify which callers are AI voice agents. Record disclosure timing, escalation behavior, and audit trail presence.</p>
+        </div>
+        <div class="phase-card">
+          <strong>Month 2 — Gap Analysis</strong>
+          <p>Evaluate identified AI calls against the four v1.3 controls (IDG-01, DBC-01, EIT-01, ATR-01). Quantify what passes, what fails, what is ambiguous.</p>
+        </div>
+        <div class="phase-card">
+          <strong>Month 3 — Written Assessment</strong>
+          <p>Compile findings into a short written assessment. Share the anonymized results with the community to help inform the next version of the proposal.</p>
+        </div>
+      </div>
+
+      <h2 style="margin-top:2.5rem">The Four Controls You Are Observing</h2>
+      <table class="controls-table">
+        <thead>
+          <tr>
+            <th>Control</th>
+            <th>What it requires</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="control-id">IDG-01</td>
+            <td>Disclose AI identity at call start, before any data exchange.</td>
+          </tr>
+          <tr>
+            <td class="control-id">DBC-01</td>
+            <td>No deceptive audio artifacts — no fake breathing, no human-name openers.</td>
+          </tr>
+          <tr>
+            <td class="control-id">EIT-01</td>
+            <td>Immediate, clean escalation path to a human on request.</td>
+          </tr>
+          <tr>
+            <td class="control-id">ATR-01</td>
+            <td>Basic audit log — enough to reconstruct when disclosure occurred.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 style="margin-top:2.5rem">How to Start</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">
+        Email <a href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation" style="color:var(--blue);font-weight:600">contact@nhid-clinical.org</a> with the subject line <strong>"Shadow Evaluation"</strong>. Include your role and the workflows you want to observe.
+      </p>
+
+      <div style="margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;gap:1.5rem;flex-wrap:wrap;font-size:.9rem;align-items:center">
+        <a href="/for-payers.html" style="color:var(--blue);font-weight:600">&larr; Back to For Payers</a>
+        <a href="/evidence-pack.html" style="color:var(--blue);font-weight:600">Evidence Pack (what you'd produce) &rarr;</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Open for feedback</p>
+        <h2>Questions? Reach out directly.</h2>
+        <p>Whether you have a process question, a concern about the controls, or you want to share what you're seeing in your own call traffic — feedback from payer operations teams is what shapes this work.</p>
+      </div>
+      <a class="closing-button" href="/for-payers.html">For Payers &rarr;</a>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+<script src="/site.js"></script>
+</body>
+</html>
