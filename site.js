@@ -71,50 +71,80 @@
     {
       title: 'Home',
       url: '/',
-      keywords: 'nhid clinical non-human identity disclosure healthcare voice standard ai automated impersonation data exchange b2b payer provider green lane',
-      excerpt: 'NHID-Clinical v1.3 — Non-Human Identity Disclosure Standard for Healthcare Voice Workflows.'
+      keywords: 'nhid clinical non-human identity disclosure healthcare voice standard ai automated impersonation data exchange b2b payer provider behavioral baseline',
+      excerpt: 'NHID-Clinical — open proposal for AI voice agent disclosure, escalation, and audit trace in B2B healthcare voice workflows.'
     },
     {
       title: 'About',
       url: '/about.html',
-      keywords: 'about origin impersonation latency problem healthcare voice ai payer provider tricare call center history background brianna baynard wgu cybersecurity',
-      excerpt: 'NHID-Clinical defines a minimum control baseline for AI voice agents in B2B healthcare administrative workflows.'
+      keywords: 'about origin impersonation latency problem healthcare voice ai payer provider call center history background brianna baynard open proposal',
+      excerpt: 'NHID-Clinical defines a minimum behavioral baseline for AI voice agents in B2B healthcare administrative workflows.'
+    },
+    {
+      title: 'Governance Simulator',
+      url: '/governance-simulator.html',
+      keywords: 'governance simulator policy engine playground idg-01 dbc-01 eit-01 atr-01 test scenario synthetic call evaluation interactive',
+      excerpt: 'Test NHID-Clinical v1.3 controls against synthetic call scenarios in real time — no setup required.'
+    },
+    {
+      title: 'For Payers',
+      url: '/for-payers.html',
+      keywords: 'payers shadow evaluation pilot 90 day baseline operations call center ai voice agent transparency vendor assessment',
+      excerpt: 'A starting point for payer operations teams evaluating AI voice agent transparency — shadow mode, no vendor changes required.'
+    },
+    {
+      title: 'Specification',
+      url: '/specification.html',
+      keywords: 'specification v1.3 controls idg-01 dbc-01 eit-01 atr-01 event schema conformance test suite policy engine open source',
+      excerpt: 'The NHID-Clinical v1.3 specification: four controls, the event schema, and the machine-readable conformance test suite.'
+    },
+    {
+      title: 'Developers',
+      url: '/developers.html',
+      keywords: 'developers technical reference implementation api policy engine fastapi twilio voice webhook audit log event schema github open source',
+      excerpt: 'Technical reference for the NHID-Clinical reference implementation: architecture, API, event schema, and failure injection harness.'
+    },
+    {
+      title: 'Regulatory Alignment',
+      url: '/regulatory-alignment.html',
+      keywords: 'regulatory alignment cms-0057-f macpac doj fca state ai laws nist hipaa compliance mapping controls federal mandate',
+      excerpt: 'How NHID-Clinical controls map to CMS-0057-F, MACPAC 2026, DOJ FCA enforcement, and state AI laws.'
+    },
+    {
+      title: 'Technical Stack',
+      url: '/technical-stack.html',
+      keywords: 'technical stack trust layers stir shaken nhid-clinical nhid-auth voice carrier payer system five-layer architecture',
+      excerpt: 'The five-layer trust stack for B2B healthcare voice AI — from carrier to payer system.'
+    },
+    {
+      title: 'Shadow Evaluation Guide',
+      url: '/shadow-evaluation-guide.html',
+      keywords: 'shadow evaluation guide 90 day behavioral baseline payer operations ai voice agent disclosure escalation audit no cost observe only',
+      excerpt: 'A structured 90-day process for payers to establish a behavioral baseline for incoming AI voice calls — no vendor changes required.'
+    },
+    {
+      title: 'Evidence Pack',
+      url: '/evidence-pack.html',
+      keywords: 'evidence pack technical proof deterministic guarantees failure trace idg-01 audit readiness risk register procurement enterprise evaluation',
+      excerpt: 'System behavior guarantees, anonymized failure trace example, and audit readiness model for the NHID-Clinical reference implementation.'
     },
     {
       title: 'Conformance Test Suite',
       url: '/conformance.html',
-      keywords: 'conformance tests cts idg-01 pdx-01 eit-01 pass fail deterministic disclosure identity verification escalation human atr-01',
-      excerpt: 'Five deterministic pass/fail tests for NHID-Clinical v1.3 conformance: IDG-01, PDX-01, EIT-01, ATR-01.'
-    },
-    {
-      title: 'Certification Framework',
-      url: '/certification.html',
-      keywords: 'certification l1 l2 l3 baseline operational enterprise tier attestation audit badge evidence production logs dfr disclosure failure rate',
-      excerpt: 'L1 Baseline (self-attestation, free), L2 Operational (30+ days production evidence), L3 Enterprise (independent audit).'
-    },
-    {
-      title: 'Download Specifications',
-      url: '/specs/',
-      keywords: 'download spec pdf nhid-clinical v1.3 nhid-auth v1.0 specification cc by 4.0 open fhir auditevent authorization attestation',
-      excerpt: 'Download NHID-Clinical v1.3 Core Specification and NHID-Auth v1.0. Published CC BY 4.0.'
-    },
-    {
-      title: 'News & Announcements',
-      url: '/news.html',
-      keywords: 'news release v1.3 nhid-auth community discord reddit nist 2025-0035 program open pilot announcement',
-      excerpt: 'Specification releases, proposal updates, and community milestones.'
+      keywords: 'conformance tests cts idg-01 dbc-01 eit-01 atr-01 pass fail deterministic disclosure identity escalation human audit',
+      excerpt: 'Deterministic pass/fail tests for NHID-Clinical v1.3 conformance.'
     },
     {
       title: 'Community',
       url: '/community.html',
-      keywords: 'community discord reddit non-human auth contribution feedback technical compliance payer provider help contact',
-      excerpt: 'Join the NHID-Clinical Discord and r/NonHumanAuth to help define the standard.'
+      keywords: 'community discord reddit contribution feedback technical compliance payer provider help contact get involved',
+      excerpt: 'Join the NHID-Clinical community to give feedback and help shape the next version of the proposal.'
     },
     {
       title: 'FAQ',
       url: '/faq.html',
-      keywords: 'faq frequently asked questions who what why how certification cost hipaa tcpa nist biometrics mandatory volunteer impersonation latency tricare background',
-      excerpt: 'Frequently asked questions about NHID-Clinical, certification, HIPAA, NIST connection, and more.'
+      keywords: 'faq frequently asked questions who what why how cost hipaa tcpa nist mandatory volunteer impersonation latency background',
+      excerpt: 'Frequently asked questions about NHID-Clinical, the scope, HIPAA, NIST, and how to get involved.'
     }
   ];
 
