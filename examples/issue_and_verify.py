@@ -1,5 +1,5 @@
 """
-NHID-Clinical v1.4 — Agent Passport: issue, verify, revoke
+NHID-Clinical v2 — Agent Passport: issue, verify, revoke
 
 Run this directly:
     python examples/issue_and_verify.py
@@ -134,7 +134,7 @@ def main():
     print()
     print("  An attacker with only public NPPES data cannot produce")
     print("  a valid Ed25519 signature over the delegation payload.")
-    print("  That is the core v1.4 guarantee.")
+    print("  That is the core v2 guarantee.")
     print()
 
 

@@ -1,5 +1,5 @@
 """
-NHID-Clinical v1.4 — Cryptographic Agent Identity & Delegation Layer
+NHID-Clinical v2 — Cryptographic Agent Identity & Delegation Layer
 
 Solves the core impersonation problem: any AI with web access can look up a
 real provider NPI from NPPES in seconds. This module makes that insufficient.

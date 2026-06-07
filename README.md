@@ -1,6 +1,6 @@
 # NHID-Clinical
 
-[![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/main.yml/badge.svg)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
+[![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![NIST Submission](https://img.shields.io/badge/NIST-2025--0035--0026-blue)](https://www.regulations.gov/comment/NIST-2025-0035-0026)
 [![Version](https://img.shields.io/badge/Version-v1.3%20Open%20Core-green)](https://nhid-clinical.org/specification.html)
@@ -68,7 +68,7 @@ Expected output: `173 passed, 18 skipped` in ~1.4s.
 
 Submitted to NIST docket **NIST-2025-0035** · Comment ID: **NIST-2025-0035-0026**
 
-## v2 Roadmap
+## v2 Roadmap (Locked Commercial Tier)
 
 v1.3 closes the disclosure gap. **v2 closes the authorization gap** — Ed25519 delegation chains, scope attenuation, revocation, call-bound nonces. Targeting Q3 2026. [Full roadmap →](https://nhid-clinical.org/roadmap.html)
 
