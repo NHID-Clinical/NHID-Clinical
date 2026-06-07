@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical v1.4 Roadmap — Cryptographic agent identity, delegation chains, and revocation. Target August 2026."/>
-  <title>v1.4 Roadmap | NHID-Clinical</title>
+  <meta name="description" content="NHID-Clinical v2 Roadmap — Cryptographic agent identity, delegation chains, and revocation. Target August 2026."/>
+  <title>v2 Roadmap | NHID-Clinical</title>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -30,18 +30,13 @@
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/script-examples.html">Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/governance-simulator.html">Governance Simulator</a>
       <a href="/for-payers.html">For Payers</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Spec</a>
+      <a href="/specification.html">Specification</a>
       <a href="/developers.html">Developers</a>
-      <a href="/interoperability.html">Interoperability</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/news.html">News</a>
-      <a href="/community.html">Community</a>
-      <a href="/faq.html">FAQ</a>
+      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+      <a href="/technical-stack.html">Technical Stack</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -74,14 +69,13 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/script-examples.html">Examples</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
   <a href="/for-payers.html">For Payers</a>
-  <a href="/specification.html">Spec</a>
+  <a href="/specification.html">Specification</a>
   <a href="/developers.html">Developers</a>
-  <a href="/interoperability.html">Interoperability</a>
-  <a href="/news.html">News</a>
-  <a href="/community.html">Community</a>
-  <a href="/faq.html">FAQ</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -97,9 +91,9 @@
     <div class="container inner-hero-grid">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>Roadmap</span></div>
-        <p class="eyebrow">Preview Available · Reference Implementation on main</p>
-        <h1>NHID-Clinical v1.4: Cryptographic Agent Identity</h1>
-        <p class="lede">v1.3 establishes disclosure and audit. v1.4 adds the missing piece: a way to cryptographically verify that an AI agent is actually authorized by the provider it claims to represent.</p>
+        <p class="eyebrow">In Development · Target August 2026</p>
+        <h1>NHID-Clinical v2: Cryptographic Agent Identity</h1>
+        <p class="lede">v1.3 establishes disclosure and audit. v2 adds the missing piece: a way to cryptographically verify that an AI agent is actually authorized by the provider it claims to represent.</p>
       </div>
     </div>
   </section>
@@ -108,17 +102,17 @@
     <div class="container" style="max-width:52rem">
 
       <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> Reference implementation on <code style="font-size:.85rem">main</code> — 25 tests passing, all identity features complete. Full spec integration and production API in progress. Available for early testing now.
+        <strong>Status:</strong> Reference implementation complete. Spec and test suite in development. No production deployments yet. Target release: August 2026.
       </div>
 
       <!-- Version comparison -->
-      <h2>Where v1.3 Ends and v1.4 Begins</h2>
+      <h2>Where v1.3 Ends and v2 Begins</h2>
       <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.93rem">
         <thead>
           <tr>
             <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Capability</th>
             <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v1.3 (current)</th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v1.4 (preview)</th>
+            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v2 (planned)</th>
           </tr>
         </thead>
         <tbody>
@@ -150,8 +144,8 @@
         </tbody>
       </table>
 
-      <!-- What's in v1.4 -->
-      <h2 style="margin-top:2.5rem">What's in v1.4</h2>
+      <!-- What's coming -->
+      <h2 style="margin-top:2.5rem">What's Coming in v2</h2>
       <div style="display:grid;gap:.85rem;margin-top:1.25rem">
 
         <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
@@ -166,7 +160,7 @@
 
         <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
           <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Revocation Lists</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Compromised agents can be revoked immediately. Payers check a simple HTTP endpoint before accepting a passport. No central registry required in v1.4 — each provider hosts their own revocation list.</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Compromised agents can be revoked immediately. Payers check a simple HTTP endpoint before accepting a passport. No central registry required in v2 — each provider hosts their own revocation list.</p>
         </div>
 
         <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
@@ -177,16 +171,16 @@
       </div>
 
       <!-- Reference implementation note -->
-      <h2 style="margin-top:2.5rem">Try It Now</h2>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The identity module is on <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">main</code>. 25 tests covering the full feature set: NPI validation, delegation chains, scope enforcement, per-delegation revocation, call-bound nonces, and 1000-verification performance.</p>
-      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/thankcheeses/NHID-Clinical.git
+      <h2 style="margin-top:2.5rem">Reference Implementation</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The core identity module is already written and tested. Four passing tests covering key generation, delegation + verification, expiry, and revocation:</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-python -m pytest tests/test_identity.py -v
+python -m pytest tests/ -v
 
-# 25 passed — key generation, NPI binding, delegation chains,
-# scope enforcement, revocation, call-bound nonces, performance</pre>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/thankcheeses/NHID-Clinical/blob/main/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
+# Expected output:
+# 173 passed, 18 skipped in ~1.4s</pre>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
 
       <!-- Timeline -->
       <h2 style="margin-top:2.5rem">Timeline</h2>
@@ -199,20 +193,20 @@ python -m pytest tests/test_identity.py -v
         </thead>
         <tbody>
           <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">June 2026 ✅</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Reference implementation on <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">main</code> — 25 passing tests, full feature set</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">May 2026</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Reference implementation complete — <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/agent_identity.py</code>, 173 passing tests</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">July 2026</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Full v1.4 spec + expanded conformance test suite</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Full v2 spec + expanded conformance test suite</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">August 2026</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">HTTP identity API + first payer pilot integration</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Demo + first payer pilot integration</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;color:var(--body);white-space:nowrap">Q1 2027</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">v1.4 release — production-ready with cryptographic identity</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">v2 release — production-ready with cryptographic identity</td>
           </tr>
         </tbody>
       </table>
@@ -220,9 +214,9 @@ python -m pytest tests/test_identity.py -v
       <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
         <a href="/for-payers.html" style="color:var(--blue)">← Pilot Guide</a>
         &nbsp;·&nbsp;
-        <a href="/developers.html" style="color:var(--blue)">Developers</a>
-        &nbsp;·&nbsp;
         <a href="/specification.html" style="color:var(--blue)">v1.3 Spec</a>
+        &nbsp;·&nbsp;
+        <a href="/technical-stack.html" style="color:var(--blue)">Five-layer trust architecture →</a>
       </p>
 
     </div>
@@ -231,11 +225,11 @@ python -m pytest tests/test_identity.py -v
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">v1.3 is ready now</p>
-        <h2>Start a shadow pilot while v1.4 is in development.</h2>
-        <p>Disclosure, audit, and conformance testing are working today. Cryptographic identity is coming in August.</p>
+        <p class="section-kicker">Get involved</p>
+        <h2>Read the proposal and share your reaction.</h2>
+        <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
       </div>
-      <a class="closing-button" href="/for-payers.html">Pilot Guide →</a>
+      <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>

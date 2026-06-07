@@ -28,21 +28,16 @@
         <small>Building Trust in Healthcare Voice AI</small>
       </span>
     </a>
-                <div class="nav-links">
+    <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/script-examples.html">Examples</a>
-      <span class="nav-sep" aria-hidden="true"></span>
+      <a href="/governance-simulator.html">Governance Simulator</a>
       <a href="/for-payers.html">For Payers</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/specification.html">Spec</a>
+      <a href="/specification.html">Specification</a>
       <a href="/developers.html">Developers</a>
-      <a href="/interoperability.html">Interoperability</a>
-      <span class="nav-sep" aria-hidden="true"></span>
-      <a href="/news.html">News</a>
-      <a href="/community.html">Community</a>
-      <a href="/faq.html">FAQ</a>
+      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+      <a href="/technical-stack.html">Technical Stack</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -75,14 +70,13 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/script-examples.html">Examples</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
   <a href="/for-payers.html">For Payers</a>
-  <a href="/specification.html">Spec</a>
+  <a href="/specification.html">Specification</a>
   <a href="/developers.html">Developers</a>
-  <a href="/interoperability.html">Interoperability</a>
-  <a href="/news.html">News</a>
-  <a href="/community.html">Community</a>
-  <a href="/faq.html">FAQ</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -132,7 +126,7 @@
             <li>Provide a clear, easy path to a human when requested</li>
             <li>Maintain basic logs of the interaction</li>
           </ul>
-          <p style="margin-top:.75rem">The full proposal document has detailed discussion of each. <a href="/specs/NHIDClinicalv1.3_Overview.pdf" download style="color:var(--blue);font-weight:600">Download the PDF →</a></p>
+          <p style="margin-top:.75rem">The full proposal document has detailed discussion of each. <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download style="color:var(--blue);font-weight:600">Download the PDF →</a></p>
         </div>
         <div class="faq-item">
           <h3>Who is this for?</h3>
@@ -151,7 +145,7 @@
         <div class="faq-item">
           <h3>Why are NPIs a security risk in voice calls?</h3>
           <p>NPIs are public identifiers. Anyone can find a provider's NPI in the NPPES registry and use it when calling a payer. Without a real-time authorization check, a caller can claim to be from that practice and request operational data — claim status, eligibility, authorization details — and the payer's system has no mechanism to refuse.</p>
-          <p>NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v1.4 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just <em>that</em> they're talking to an AI, but that the AI truly represents the provider it claims to.</p>
+          <p>NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just <em>that</em> they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes <strong>173 passing tests</strong> to ensure deterministic policy enforcement.</p>
         </div>
         <div class="faq-item">
           <h3>Can I get feedback on my implementation?</h3>

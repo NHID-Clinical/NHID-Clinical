@@ -17,25 +17,6 @@
 
 ---
 
-# Suite metadata — machine-readable test count and skip policy
-suite_metadata:
-  schema_version: "1.3.0"
-  unit_tests:
-    count: 72
-    skipped_allowed: false
-    meaning: "Deterministic policy engine correctness. Unit invariant preserved: 72 passed, 0 skipped."
-    command: "pytest tests/ -q"
-    expected_output: "Unit invariant preserved: 72 passed, 0 skipped"
-  integration_tests:
-    count: 18
-    skippable: true
-    meaning: "Optional system validation against a live server. Skipping is expected when no server is present."
-    trigger: "Requires live server at http://127.0.0.1:8000"
-  invariant: "Unit invariant preserved: 72 passed, 0 skipped"
-  integration_label: "Integration suite: 18 tests, may pass or skip (expected)"
-
----
-
 # ──────────────────────────────────────────────────────────────────────────
 # IDG-01: Identity Disclosure Gate
 # ──────────────────────────────────────────────────────────────────────────

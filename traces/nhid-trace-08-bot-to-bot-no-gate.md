@@ -50,7 +50,7 @@ replay integrity: PASS
 
 next iteration
 
-- Escalate NHID-Auth bot-to-bot identity verification from future scope to v1.4 priority.
+- Escalate NHID-Auth bot-to-bot identity verification from future scope to v2 priority.
 - Reference IETF AgentID Protocol (draft-gudlab-agentid-protocol-00) as the technical basis for bot-to-bot identity tokens.
 - Add counterparty_type detection to the ingress layer — identify AI callers from SIP headers or DNIS patterns.
 
