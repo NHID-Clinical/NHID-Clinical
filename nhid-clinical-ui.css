@@ -1240,8 +1240,6 @@ body, .site-header, .mobile-nav, .site-footer,
   border-radius: 1rem;
   background: white;
   box-shadow: var(--shadow);
-  overflow: visible;
-  height: auto;
 }
 
 /* ── Page sections ───────────────────────────────────────────────────────── */

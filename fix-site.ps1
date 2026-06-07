@@ -1,3 +1,40 @@
+# fix-site.ps1 - NHID-Clinical fix pass (run from repo root)
+$ErrorActionPreference = 'Stop'
+Set-Location 'C:\Users\bnbay\NHID-Clinical'
+function ReadAll($p){ [System.IO.File]::ReadAllText($p) }
+function WriteAll($p,$c){ [System.IO.File]::WriteAllText($p,$c,(New-Object System.Text.UTF8Encoding($false))) }
+
+git checkout main
+git pull origin main
+
+# ===== FIX 3: restore 16 truncated strings in specification.html =====
+$p='specification.html'; $h=ReadAll $p
+$pairs=@(
+ @('requirements for transparent AI[^\r\n]*','requirements for transparent AI voice agent disclosure in B2B healthcare administrative calls."/>'),
+ @('r="8"/><path d="m2[^\r\n]*','r="8"/><path d="m21 21-4.35-4.35"/></svg>'),
+ @('operate without disclosing[^\r\n]*','operate without disclosing their automated status before exchanging operational data.</p>'),
+ @('impersonation latency</strong>[^\r\n]*','impersonation latency</strong> &mdash; where a payer representative cannot quickly determine whether the caller is human or automated.</p>'),
+ @('appearing to be hu[^\r\n]*','appearing to be human.</p>'),
+ @('operational data is excha[^\r\n]*','operational data is exchanged.</p>'),
+ @('These are not mandatory require[^\r\n]*','These are not mandatory requirements &mdash; they are suggested behaviors for voluntary adoption.</p>'),
+ @('<strong>Identify [^\r\n]*','<strong>Identify as an automated system</strong> before any exchange of operational data (NPI, Member ID, Claim Number)</li>'),
+ @('<strong>Behave li[^\r\n]*','<strong>Behave like a machine, not a human</strong> &mdash; no fake breathing, typing sounds, or scripted hesitation designed to imply human presence</li>'),
+ @('<strong>Provide a[^\r\n]*','<strong>Provide a clear, immediate path to a human agent</strong> when requested</li>'),
+ @('<strong>Maintain [^\r\n]*','<strong>Maintain a basic audit log</strong> showing disclosure occurred before data was exchanged</li>'),
+ @('They are observable, t[^\r\n]*','They are observable, testable, and do not require vendor architecture changes.</p>'),
+ @('would meaningfully change the impersonation latency problem[^\r\n]*','would meaningfully change the impersonation latency problem &mdash; not a comprehensive AI governance framework.</p>'),
+ @('calling payer offi[^\r\n]*','calling payer offices on behalf of providers for eligibility verification, claim status, prior authorization, and similar administrative tasks. It does not apply to patient-facing calls, internal tools, or clinical decision support.</p>'),
+ @('no audit process, no enforcemen[^\r\n]*','no audit process, no enforcement mechanism, and no regulatory authority. Adoption is entirely voluntary.</p>'),
+ @('escalation path, audit[^\r\n]*','escalation paths, and audit logging. It does not address cross-boundary authorization (whether the AI is actually delegated by the provider it claims to represent). That is the scope of v2.</p>')
+)
+foreach($pr in $pairs){ $h=[regex]::Replace($h,$pr[0],$pr[1]) }
+if($h -match '\[\.\.\.\]'){ throw 'truncation markers still present in specification.html' }
+WriteAll $p $h
+git add specification.html
+git commit -m "Restore truncated specification.html section text"
+
+# ===== FIX 1: create pilot.html =====
+$pilot=@'
 <!doctype html>
 <html lang="en">
 <head>
@@ -145,3 +182,147 @@
 <script src="/site.js"></script>
 </body>
 </html>
+'@
+WriteAll 'pilot.html' $pilot
+git add pilot.html
+git commit -m "Add pilot.html - 90-day shadow mode pilot guide for payers"
+
+# ===== FIX 2: mark Railway demo endpoints offline in developers.html =====
+$d=ReadAll 'developers.html'
+$d=$d.Replace('Live Demo API <span','Live Demo API (currently offline) <span')
+$note='<p style="margin:.5rem 0 .25rem;font-size:.85rem;color:#9a6700;background:#fff8e1;border-left:3px solid #ffc107;padding:.5rem .75rem;border-radius:0 4px 4px 0">&#9888; Live demo endpoint currently offline. Code examples shown for reference only.</p>'
+$d=$d.Replace('Rate-limited.</p>','Rate-limited.</p>'+$note)
+WriteAll 'developers.html' $d
+git add developers.html
+git commit -m "Mark Railway demo endpoints as offline in developers.html"
+
+# ===== FIX 4: stale repo URLs (7 files) + remove internal branch line =====
+$files = @('developers.html','docs.html','for-payers.html','interoperability.html','news.html','pricing.html','roadmap.html')
+foreach($f in $files){
+  if(Test-Path $f){
+    $c=ReadAll $f
+    if($c.Contains('thankcheeses/NHID-Clinical')){
+      WriteAll $f ($c.Replace('thankcheeses/NHID-Clinical','NHID-Clinical/NHID-Clinical'))
+    }
+  }
+}
+$io=ReadAll 'interoperability.html'
+$io=[regex]::Replace($io,'(?m)^git checkout claude/code-review-fixes-98Ir1\r?\n','')
+WriteAll 'interoperability.html' $io
+git add developers.html for-payers.html interoperability.html news.html pricing.html roadmap.html
+git commit -m "Fix stale repo URLs and remove internal branch reference from public pages"
+
+# ===== FIX 5: README =====
+$readme=@'
+# NHID-Clinical
+
+**Non-Human Identity Disclosure Standard for Healthcare Voice Workflows**
+Version: 1.3 | Status: Open Governance Proposal | License: CC BY 4.0
+
+---
+
+## What This Is
+
+NHID-Clinical defines a minimum, voluntary, testable control baseline for non-human identity disclosure in B2B healthcare administrative voice interactions.
+
+It addresses a documented gap in provider-to-payer voice workflows (eligibility, claim status, prior authorization) where AI voice agents operate without disclosing their automated status before exchanging operational data.
+
+**This is not a regulation, certification program, or compliance requirement.** It is an open governance proposal submitted to NIST docket NIST-2025-0035 (Comment ID: NIST-2025-0035-0026).
+
+---
+
+## The Problem: Impersonation Latency
+
+An AI calls as "Sarah from Dr. Smith's office." It handles several minutes of normal workflow conversation. Only when challenged does it admit it is automated. By then, sensitive operational data has already been exchanged without clear consent or accountability.
+
+This is impersonation latency: the measurable trust delay between an AI agent initiating a call and the receiving system verifying the caller is authorized to represent the claimed provider.
+
+---
+
+## The Four Controls (v1.3)
+
+| ID | Name | Requirement |
+|----|------|-------------|
+| IDG-01 | Identity Disclosure Gate | AI MUST identify as automated before any operational data exchange |
+| DBC-01 | Deceptive Behavior Check | AI MUST NOT use fake breathing, typing sounds, or scripted human-like hesitation |
+| EIT-01 | Escalation and Immediate Transfer | AI MUST provide immediate human handoff when requested |
+| ATR-01 | Audit Trail Requirements | AI MUST log disclosure timestamp vs. first data request timestamp |
+
+---
+
+## Conformance Test Suite
+
+Five deterministic pass/fail tests. All five must pass for NHID-Clinical v1.3 conformance.
+
+```bash
+git clone https://github.com/NHID-Clinical/NHID-Clinical.git
+cd NHID-Clinical
+pip install -r requirements.txt
+pytest tests/ -q
+```
+
+Expected: `95 passed, 18 skipped`
+
+The 18 skipped tests are integration tests requiring a live FastAPI server. They are optional and do not affect policy engine verification.
+
+---
+
+## Repository Structure
+
+```
+src/
+  agent_identity.py              # NHID-Auth delegation and NPI binding
+  voice_policy.py                # Core disclosure and escalation policy engine
+  nhid_policy_engine_v1.py       # Five CTS rule implementations
+tests/
+  test_identity.py               # Identity and delegation tests
+  test_voice_policy.py           # Policy engine tests
+  failure_injection_harness.py   # Chaos and adversarial input tests
+conformance/
+  nhid_conformance_test_suite_v1.yaml   # 18 machine-readable CTS cases
+specs/
+  NHIDClinicalv1.3_Overview.pdf
+  NHID-Clinical-Operational-Blueprint-v1.3.pdf
+```
+
+---
+
+## Framework Alignment
+
+| NHID-Clinical Control | NIST AI RMF 1.0 | ISO/IEC 42001:2023 |
+|----------------------|-----------------|-------------------|
+| Proactive Identity Assertion | MEASURE 2.6, MAP 3.4 | A.7.2, B.9.1 |
+| No Deceptive Artifacts | GOV 1.5, MAP 3.4 | A.5.8, A.9.2 |
+| Pre-Data Exchange Gate | MANAGE 1.2, GOV 5.1 | A.6.2, A.8.2 |
+| Safe Failover / Escalation | MANAGE 4.2, GOV 5.2 | A.8.3, A.6.3 |
+| Audit Logging | MANAGE 4.1, MEASURE 2.2 | A.4.2, A.9.3 |
+
+---
+
+## NIST Submission
+
+Submitted to NIST AI Safety Institute public comment docket NIST-2025-0035.
+Comment ID: **NIST-2025-0035-0026**
+This is a public comment. It does not imply NIST endorsement or recognition.
+
+---
+
+## Website
+
+**[nhid-clinical.org](https://nhid-clinical.org)**
+
+---
+
+## License
+
+CC BY 4.0 - Brianna Baynard-Malone
+contact@nhid-clinical.org
+'@
+WriteAll 'README.md' $readme
+git add README.md
+git commit -m "Update README - correct repo URL, accurate project status"
+
+# ===== push =====
+git log --oneline -6
+git push origin main
+Write-Host "`nDONE. Verify Pages build at https://github.com/NHID-Clinical/NHID-Clinical/actions" -ForegroundColor Green

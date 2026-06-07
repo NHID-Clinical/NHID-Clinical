@@ -171,22 +171,6 @@
         </div>
       </div>
 
-      <!-- Live demo API -->
-      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:1.5rem;background:var(--paper);border-left:3px solid #28a745">
-        <div style="flex:1;min-width:0">
-          <h3 style="margin:0 0 .35rem;font-size:1.05rem">Live Demo API (currently offline) <span style="font-size:.75rem;font-weight:500;background:#e6f4ea;color:#1a7f37;padding:.15rem .45rem;border-radius:10px;margin-left:.4rem">hosted on Railway</span></h3>
-          <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 .5rem">A read-only demo instance of the NHID-Clinical API is publicly accessible. No API key required for <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/health</code> and policy engine endpoints. Rate-limited.</p><p style="margin:.5rem 0 .25rem;font-size:.85rem;color:#9a6700;background:#fff8e1;border-left:3px solid #ffc107;padding:.5rem .75rem;border-radius:0 4px 4px 0">&#9888; Live demo endpoint currently offline. Code examples shown for reference only.</p>
-          <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:5px;padding:.85rem 1rem;font-size:.82rem;line-height:1.8;overflow-x:auto;color:var(--body);margin:.75rem 0 .85rem">curl https://nhid-clinical.up.railway.app/health
-# {"status":"ok","version":"1.3.0"}
-
-curl -X POST https://nhid-clinical.up.railway.app/v1/policy/run \
-  -H "Content-Type: application/json" \
-  -d '{"event_type":"voice_turn","transcript":"I need to speak to a human","call_sid":"CA_demo"}'</pre>
-          <a href="https://nhid-clinical.up.railway.app/docs" style="display:inline-block;background:#28a745;color:#fff;font-size:.85rem;font-weight:600;padding:.45rem 1rem;border-radius:5px;text-decoration:none;margin-right:.5rem">Open API Docs →</a>
-          <a href="https://nhid-clinical.up.railway.app/health" style="display:inline-block;background:transparent;border:1.5px solid #28a745;color:#28a745;font-size:.85rem;font-weight:600;padding:.45rem 1rem;border-radius:5px;text-decoration:none">Health Check →</a>
-        </div>
-      </div>
-
       <!-- Interactive demo -->
       <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:2.5rem;background:var(--paper);border-left:3px solid var(--blue)">
         <div style="flex:1;min-width:0">
@@ -199,31 +183,20 @@ curl -X POST https://nhid-clinical.up.railway.app/v1/policy/run \
       <!-- ── Quick Start ────────────────────────────────────────────────── -->
 
       <h2 style="margin-bottom:1rem">Quick Start</h2>
-      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.25rem 1.5rem;font-size:.85rem;line-height:1.9;overflow-x:auto;color:var(--body)">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.25rem 1.5rem;font-size:.85rem;line-height:1.9;overflow-x:auto;color:var(--body)">git clone https://github.com/thankcheeses/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-pytest tests/ -q</pre>
+python -m pytest tests/ -v
+python -m jsonschema schema/nhid_trace_schema_v1.json
+python tests/trace_generator.py --offline</pre>
 
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Expected output: <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">Unit invariant preserved: 95 passed, 0 skipped</code><br><code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">Integration suite: 18 tests, may pass or skip (expected)</code></p>
-
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem"><strong>Integration tests (18):</strong> validate a live NHID-Clinical server at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code>. They auto-skip cleanly when no server is present. Integration tests are optional system validation — they are not required to verify policy engine correctness.</p>
-
-      <!-- ── What You Are Verifying ──────────────────────────────────────── -->
-
-      <div style="margin-top:2rem;padding:1.25rem 1.5rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-        <p style="font-weight:700;margin:0 0 .75rem;color:var(--body)">What you are verifying</p>
-        <ul style="margin:0;padding-left:1.25rem;color:var(--body);font-size:.93rem;line-height:1.9">
-          <li><strong>Deterministic policy engine correctness</strong> — identical input always produces identical output, across any environment</li>
-          <li><strong>Reproducible evaluation logic</strong> — IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 rule enforcement is consistent and auditable</li>
-          <li><strong>Audit-safe trace behavior</strong> — event records are complete, append-only, and reproducible across replay</li>
-        </ul>
-      </div>
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code> and will be automatically skipped if the server is not reachable.</p>
 
       <!-- ── Interoperability ──────────────────────────────────────────────── -->
 
       <div style="margin-top:2.5rem;padding:1.25rem 1.5rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
         <p style="font-weight:700;margin:0 0 .4rem;color:var(--body)">Vendor Interoperability</p>
-        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0">Vendor format adapters convert vendor-specific call transcripts to NHID-Clinical event traces. See the <a href="/interoperability.html" style="color:var(--blue);font-weight:500">interoperability demo →</a></p>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0">The <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">adapters/</code> directory contains format adapters that convert vendor-specific call transcripts to NHID-Clinical event traces. Currently available: Twilio Voice Intelligence. See the <a href="/interoperability.html" style="color:var(--blue);font-weight:500">interoperability demo →</a></p>
       </div>
 
       <!-- ── Disclaimer ─────────────────────────────────────────────────── -->

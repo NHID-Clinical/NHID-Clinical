@@ -2,11 +2,3 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
-
-# Local output files — not for the repo
-*.pdf
-docs/
-scripts/generate_voiceadmin_onepager.py
-
-NHID-Clinical-test/
-NHID-Clinical/
