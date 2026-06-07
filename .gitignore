@@ -7,3 +7,7 @@ __pycache__/
 *.pdf
 docs/
 scripts/generate_voiceadmin_onepager.py
+
+.python_history
+*.patch
+go.py - Copy.py
