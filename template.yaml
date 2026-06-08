@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: NHID Clinical Policy Engine - Hosted Conformance API
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.12
+
+Resources:
+
+  # ── Lambda function ──────────────────────────────────────────────────────
+  ConformanceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: nhid-conformance-check
+      Handler: functions.handler.lambda_handler
+      # CodeUri: . packages the full repo root so src/ is importable
+      CodeUri: .
+      Description: NHID Clinical policy engine conformance checker
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Events:
+        ConformancePost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/conformance/check
+            Method: POST
+            Auth:
+              ApiKeyRequired: true
+        HealthGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /health
+            Method: GET
+
+  # ── API Gateway REST API ─────────────────────────────────────────────────
+  NHIDApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Description: NHID Clinical Policy Engine API
+      Cors:
+        AllowMethods: "'POST,GET,OPTIONS'"
+        AllowHeaders: "'Content-Type,x-api-key'"
+        AllowOrigin: "'*'"
+
+  # ── Usage plan: 50k req/month, 20 req/s sustained, 100 burst ────────────
+  NHIDUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    # SAM names the stage resource as <ApiLogicalId><StageName>Stage
+    DependsOn: NHIDApiprodStage
+    Properties:
+      UsagePlanName: nhid-clinical-plan
+      Description: NHID Clinical API monthly quota
+      ApiStages:
+        - ApiId: !Ref NHIDApi
+          Stage: prod
+      Quota:
+        Limit: 50000
+        Period: MONTH
+      Throttle:
+        BurstLimit: 100
+        RateLimit: 20
+
+  # ── Default API key (retrieve value with `make get-key`) ─────────────────
+  NHIDDefaultApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    DependsOn: NHIDApiprodStage
+    Properties:
+      Name: nhid-clinical-default-key
+      Description: Default API key for NHID Clinical
+      Enabled: true
+      StageKeys:
+        - RestApiId: !Ref NHIDApi
+          StageName: prod
+
+  NHIDApiKeyToUsagePlan:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Ref NHIDDefaultApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref NHIDUsagePlan
+
+  # ── CloudWatch log group (30-day retention) ──────────────────────────────
+  ConformanceFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${ConformanceFunction}"
+      RetentionInDays: 30
+
+Outputs:
+  ApiBaseUrl:
+    Description: API Gateway base URL
+    Value: !Sub "https://${NHIDApi}.execute-api.${AWS::Region}.amazonaws.com/prod"
+
+  ConformanceEndpoint:
+    Description: "POST here with x-api-key header to check conformance"
+    Value: !Sub "https://${NHIDApi}.execute-api.${AWS::Region}.amazonaws.com/prod/v1/conformance/check"
+
+  HealthEndpoint:
+    Description: "GET health check (no auth)"
+    Value: !Sub "https://${NHIDApi}.execute-api.${AWS::Region}.amazonaws.com/prod/health"
+
+  ApiKeyId:
+    Description: "Run `make get-key` to print the actual key value"
+    Value: !Ref NHIDDefaultApiKey
