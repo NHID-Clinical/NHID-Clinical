@@ -517,6 +517,57 @@
 (function(){
 'use strict';
 
+/* ── Live API ───────────────────────────────────────────────── */
+var ENDPOINT='https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/conformance/check';
+var DEMO_KEY='4QqUokCY2s3FSUY3dSZJh7XFZupYW0tx608CAIZ7';
+
+function buildEvent(key,c){
+  var now=new Date().toISOString();
+  var past=new Date(Date.now()-60000).toISOString();
+  var ev={
+    event_id:'sim-'+Math.random().toString(36).slice(2,10),
+    timestamp:now,
+    session_id:sid(key,c),
+    event_type:'POLICY',
+    actor_id:'nhid-sim',
+    state_before:c.identity?'ACTIVE':'AWAITING_DISCLOSURE',
+    state_after:c.identity?'ACTIVE':'AWAITING_DISCLOSURE',
+    replay_mode:'live',
+    external_calls_cached:false,
+    execution_context:{pipeline_version:'1.0.0',policy_engine_version:'1.0.0',nhid_schema_version:'1.0'},
+    counterparty_type:'human_operator',
+    healthcare_governance:{
+      disclosure_timestamp:c.identity?past:null,
+      identity_assertion_text:c.identity?'I am an automated system':'',
+      deceptive_artifact_flags:key==='spoofed-identity'?['fake_npi_claim']:[],
+      escalation_timestamp:null,
+      escalation_outcome:null,
+      phi_accessed:[]
+    },
+    input_payload:{
+      speech_text:c.human?'I need to speak to a human representative':'What is the status of my request?',
+      raw_form_fields:null
+    },
+    output_payload:null,
+    error:null,
+    policy_decision:null
+  };
+  if(c.documented){ev.request_id='req-'+Math.random().toString(36).slice(2,10);}
+  return ev;
+}
+
+function rulesFromResponse(data,c){
+  var failing=new Set((data.violations||[]).map(function(v){return v.rule_id;}));
+  return {
+    'IDG-01':!failing.has('IDG-01'),
+    'PDX-01':!failing.has('PDX-01'),
+    'DBC-01':!failing.has('DBC-01'),
+    'EIT-01':!failing.has('EIT-01'),
+    'ATR-01':!failing.has('ATR-01'),
+    'AUTH-01':c.auth_verified===true
+  };
+}
+
 /* ── Helpers ────────────────────────────────────────────────── */
 function fmt(s){
   var m=Math.floor(s/60),r=s%60;
@@ -538,7 +589,7 @@ function sid(key,c){
 function passN(rules){return Object.values(rules).filter(Boolean).length;}
 function cf(pairs){return pairs.filter(function(p){return p[0];}).map(function(p){return p[1];});}
 
-/* ── Conformance evaluator ──────────────────────────────────── */
+/* ── Conformance evaluator (fallback when API unreachable) ──── */
 function evalR(c){
   return {
     'IDG-01': c.identity===true,
@@ -1033,9 +1084,8 @@ function fillList(id,items){
 }
 
 /* ── Trace builder ──────────────────────────────────────────── */
-function buildTrace(key,c){
+function buildTrace(key,c,rules){
   var sc=SC[key];
-  var rules=evalR(c);
   var failing=Object.keys(rules).filter(function(r){return !rules[r];});
   var evts=sc.tEvents(c);
   var implLines=sc.tImpl(c);
@@ -1104,13 +1154,13 @@ function setView(v){
 }
 
 /* ── Render ─────────────────────────────────────────────────── */
-function render(key,c){
+function render(key,c,rules,live){
   var sc=SC[key];
-  var rules=evalR(c);
   var n=passN(rules);
+  var src=live?'Live API · nhid-clinical.org':'Offline · Synthetic data';
 
   document.getElementById('out-title').textContent = sc.label;
-  document.getElementById('out-meta').textContent  = 'Governance Simulator · Synthetic data · Illustrative only · '+n+'/6 rules PASS';
+  document.getElementById('out-meta').textContent  = 'Governance Simulator · '+src+' · '+n+'/6 rules PASS';
   document.getElementById('out-badges').innerHTML  = buildBadges(rules);
   document.getElementById('out-tbl').innerHTML     = buildTable(rules);
   document.getElementById('out-summary').innerHTML = buildSummaryCard(sc.summary(c),rules);
@@ -1119,7 +1169,7 @@ function render(key,c){
   fillList('out-friction', sc.friction(c));
   fillList('out-oversight',sc.oversight(c));
   fillList('out-logging',  sc.logging(c));
-  document.getElementById('out-trace').innerHTML   = colorTrace(buildTrace(key,c));
+  document.getElementById('out-trace').innerHTML   = colorTrace(buildTrace(key,c,rules));
 
   document.getElementById('empty-state').style.display='none';
   document.getElementById('report').classList.add('on');
@@ -1139,7 +1189,23 @@ document.getElementById('run-btn').addEventListener('click',function(){
   if(!key||!SC[key]){scEl.focus();return;}
   var c={};
   document.querySelectorAll('input[name="b"]').forEach(function(b){c[b.value]=b.checked;});
-  render(key,c);
+  var btn=this;
+  btn.disabled=true;
+  btn.textContent='Running…';
+  var session={turn_count:1,escalation_path_available:c.escalation===true};
+  var ev=buildEvent(key,c);
+  fetch(ENDPOINT,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':DEMO_KEY},
+    body:JSON.stringify({session:session,event:ev})
+  }).then(function(r){return r.json();}).then(function(data){
+    render(key,c,rulesFromResponse(data,c),true);
+  }).catch(function(){
+    render(key,c,evalR(c),false);
+  }).then(function(){
+    btn.disabled=false;
+    btn.textContent='Run Simulation';
+  });
 });
 
 document.getElementById('vt-sum').addEventListener('click',function(){setView('summary');});

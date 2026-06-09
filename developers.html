@@ -190,7 +190,25 @@ python -m pytest tests/ -v
 python -m jsonschema schema/nhid_trace_schema_v1.json
 python tests/trace_generator.py --offline</pre>
 
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">http://127.0.0.1:8000</code> and will be automatically skipped if the server is not reachable.</p>
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod</code> and will be automatically skipped if the server is not reachable.</p>
+
+      <!-- ── Hosted API ─────────────────────────────────────────────────────── -->
+
+      <div style="margin-top:2.5rem;border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;background:var(--paper)">
+        <h2 style="margin:0 0 1rem;font-size:1.15rem">Hosted API</h2>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">A public conformance endpoint is available for integration testing without self-hosting. Send any NHID-Clinical v1.3 event and receive a structured policy decision.</p>
+        <div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.25rem;margin-bottom:1rem">
+          <p style="margin:0 0 .4rem;font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase">Endpoint</p>
+          <code style="font-size:.85rem;color:var(--blue);word-break:break-all">POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/conformance/check</code>
+        </div>
+        <p style="color:var(--body);font-size:.88rem;line-height:1.75;margin:0 0 .75rem">Requests require an <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">x-api-key</code> header. The <a href="/simulator.html" style="color:var(--blue)">Governance Simulator</a> uses a rate-limited demo key automatically. To obtain a key for your integration, contact <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue)">contact@nhid-clinical.org</a>.</p>
+        <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.25rem;font-size:.82rem;line-height:1.8;overflow-x:auto;color:var(--body);margin:0">curl -s -X POST \
+  https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/conformance/check \
+  -H "x-api-key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"session":{"turn_count":1,"escalation_path_available":true},"event":{...}}'</pre>
+        <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:.85rem 0 0">Returns: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">{"conformant": true/false, "action": "...", "violations": [...], "next_state": "..."}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json" style="color:var(--blue)">sample_request.json</a> for a complete example.</p>
+      </div>
 
       <!-- ── Interoperability ──────────────────────────────────────────────── -->
 
