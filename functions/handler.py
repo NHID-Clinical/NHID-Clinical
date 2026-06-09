@@ -69,10 +69,17 @@ def lambda_handler(event: dict, context) -> dict:
     })
 
 
+_CORS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type,x-api-key",
+    "Access-Control-Allow-Methods": "POST,GET,OPTIONS",
+}
+
+
 def _ok(body: dict) -> dict:
     return {
         "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {"Content-Type": "application/json", **_CORS},
         "body": json.dumps(body),
     }
 
@@ -80,6 +87,6 @@ def _ok(body: dict) -> dict:
 def _error(status_code: int, message: str) -> dict:
     return {
         "statusCode": status_code,
-        "headers": {"Content-Type": "application/json"},
+        "headers": {"Content-Type": "application/json", **_CORS},
         "body": json.dumps({"error": message}),
     }
