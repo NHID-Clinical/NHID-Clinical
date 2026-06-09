@@ -82,13 +82,34 @@
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
-      <a href="/governance-simulator.html">Governance Simulator</a>
-      <a href="/for-payers.html">For Payers</a>
-      <a href="/specification.html">Specification</a>
-      <a href="/developers.html">Developers</a>
-      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-      <a href="/technical-stack.html">Technical Stack</a>
-      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Specification <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/specification.html">Specification</a>
+          <a href="/technical-stack.html">Technical Stack</a>
+          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Implement <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/developers.html">Developers</a>
+          <a href="/interoperability.html">Interoperability</a>
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Pilot <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/community.html">Community</a>
+          <a href="/roadmap.html">Roadmap</a>
+          <a href="/news.html">News</a>
+        </div>
+      </div>
+      <a href="/simulator.html">Simulator</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Map &#x2197;</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -121,13 +142,22 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/governance-simulator.html">Governance Simulator</a>
-  <a href="/for-payers.html">For Payers</a>
+  <a href="/simulator.html">Simulator</a>
+  <strong class="mobile-nav-group">Specification</strong>
   <a href="/specification.html">Specification</a>
-  <a href="/developers.html">Developers</a>
-  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
   <a href="/technical-stack.html">Technical Stack</a>
-  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <strong class="mobile-nav-group">Implement</strong>
+  <a href="/developers.html">Developers</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <strong class="mobile-nav-group">Pilot</strong>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/community.html">Community</a>
+  <a href="/roadmap.html">Roadmap</a>
+  <a href="/news.html">News</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Map &#x2197;</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -146,6 +176,20 @@
         <p class="eyebrow">Shadow Evaluation · 90 Days · Observe Only</p>
         <h1>For Payers: Shadow Evaluation Guide</h1>
         <p class="lede">A practical starting point for payer operations teams establishing a behavioral baseline for AI voice agent transparency — no vendor changes, no production risk.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pilot Banner ──────────────────────────────────────────────────────── -->
+  <section class="page-section" style="padding-top:1.5rem;padding-bottom:.5rem">
+    <div class="container" style="max-width:52rem">
+      <div style="background:linear-gradient(135deg,var(--blue-soft),var(--teal-soft));border:1px solid var(--line);border-radius:1rem;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+        <div style="font-size:1.75rem;line-height:1">🤝</div>
+        <div style="flex:1;min-width:14rem">
+          <strong style="display:block;font-size:1rem;color:var(--ink);margin-bottom:.25rem">Interested in becoming a pilot partner?</strong>
+          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are actively seeking payer and provider organizations to run the 90-day shadow evaluation below. No vendor changes required — observe only.</p>
+        </div>
+        <a class="cta-button" href="mailto:contact@nhid-clinical.org?subject=Pilot%20Partner%20Interest" style="flex-shrink:0;white-space:nowrap">Get in Touch <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
@@ -293,7 +337,7 @@
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
       <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
 

@@ -37,7 +37,7 @@ sub("for-payers.html",
     '')
 
 # 4. community.html
-sub("community.html", "discord.gg/3Z2RqbjuDd", "discord.gg/eP8FxXkGU6")
+sub("community.html", "discord.gg/3Z2RqbjuDd", "discord.gg/CU7BwHwVYC")
 
 # 5. README.md badges + tagline
 sub("README.md",
@@ -75,7 +75,7 @@ This repository contains no live PHI or secrets.
 2. Make changes
 3. Run tests: `python -m pytest tests/ -q` (173 expected)
 4. Open a PR — big changes: open an Issue first
-Discord: https://discord.gg/eP8FxXkGU6
+Discord: https://discord.gg/CU7BwHwVYC
 """, encoding='utf-8')
 (ROOT / "CHANGELOG.md").write_text("""# Changelog
 ## [v1.3] - 2026-06
