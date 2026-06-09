@@ -1,4 +1,4 @@
-import { createVerify } from 'crypto';
+import { verify as cryptoVerify } from 'crypto';
 import { CallerRecord, CallerType, VerificationResult } from '../types/index.js';
 import { CallerRegistry } from './CallerRegistry.js';
 
@@ -69,10 +69,10 @@ export class RemoteCallerVerifier {
     }
 
     try {
-      const verify = createVerify('ed25519');
-      verify.update(Buffer.from(challenge, 'utf8'));
       const publicKeyDer = Buffer.from(record.public_key_b64, 'base64');
-      const valid = verify.verify(
+      const valid = cryptoVerify(
+        null,
+        Buffer.from(challenge, 'utf8'),
         { key: publicKeyDer, format: 'der', type: 'spki' },
         Buffer.from(proof, 'base64'),
       );
