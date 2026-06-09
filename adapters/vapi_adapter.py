@@ -165,6 +165,14 @@ def to_nhid_event(vapi_payload: dict[str, Any]) -> tuple[dict[str, Any], dict[st
             if any(kw in text for kw in ESCALATION_KEYWORDS):
                 escalation_requested = True
 
+    # Disclosure is only valid (satisfies IDG-01) if it preceded any data request.
+    # Late disclosure — bot identified itself AFTER requesting PHI — is not a valid disclosure.
+    disc_offset = compliance["disclosure_timestamp_offset_s"]
+    data_offset = compliance["first_data_request_offset_s"]
+    disclosure_valid = compliance["disclosure_made"] and (
+        data_offset is None or disc_offset <= data_offset
+    )
+
     session: dict[str, Any] = {
         "turn_count": len(messages),
         "escalation_path_available": True,
@@ -188,8 +196,8 @@ def to_nhid_event(vapi_payload: dict[str, Any]) -> tuple[dict[str, Any], dict[st
         },
         "counterparty_type": "human_operator",
         "healthcare_governance": {
-            "disclosure_timestamp": start_time if compliance["disclosure_made"] else None,
-            "identity_assertion_text": disclosure_text,
+            "disclosure_timestamp": start_time if disclosure_valid else None,
+            "identity_assertion_text": disclosure_text if disclosure_valid else "",
             "deceptive_artifact_flags": [],
             "escalation_timestamp": None,
             "escalation_outcome": None,
