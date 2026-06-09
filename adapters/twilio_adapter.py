@@ -182,6 +182,13 @@ def to_nhid_event(twilio_log: dict[str, Any]) -> tuple[dict[str, Any], dict[str,
             if any(kw in text_lower for kw in ("transfer", "human", "representative", "agent please")):
                 escalation_requested = True
 
+    # Disclosure is only valid (satisfies IDG-01) if it preceded any data request.
+    disc_offset = compliance["disclosure_timestamp_offset_s"]
+    data_offset = compliance["first_data_request_offset_s"]
+    disclosure_valid = compliance["disclosure_made"] and (
+        data_offset is None or disc_offset <= data_offset
+    )
+
     session: dict[str, Any] = {
         "turn_count": len(transcript),
         "escalation_path_available": True,
@@ -205,8 +212,8 @@ def to_nhid_event(twilio_log: dict[str, Any]) -> tuple[dict[str, Any], dict[str,
         },
         "counterparty_type": "human_operator",
         "healthcare_governance": {
-            "disclosure_timestamp": start_time if compliance["disclosure_made"] else None,
-            "identity_assertion_text": disclosure_text,
+            "disclosure_timestamp": start_time if disclosure_valid else None,
+            "identity_assertion_text": disclosure_text if disclosure_valid else "",
             "deceptive_artifact_flags": [],
             "escalation_timestamp": None,
             "escalation_outcome": None,
