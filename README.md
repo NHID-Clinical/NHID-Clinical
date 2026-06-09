@@ -74,6 +74,6 @@ v1.3 closes the disclosure gap. **v2 closes the authorization gap** — Ed25519 
 
 ## Contributing
 
-[Community](https://nhid-clinical.org/community.html) · [Discord](https://discord.gg/yourlink) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
+[Community](https://nhid-clinical.org/community.html) · [Discord](https://discord.gg/CU7BwHwVYC) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
 CC BY 4.0 · Brianna Baynard · [nhid-clinical.org](https://nhid-clinical.org)

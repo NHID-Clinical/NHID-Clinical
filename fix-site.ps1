@@ -173,7 +173,7 @@ $pilot=@'
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
+      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
       <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
   </div>
