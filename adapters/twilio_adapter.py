@@ -147,6 +147,83 @@ SAMPLE_TWILIO_NONCOMPLIANT = {
 }
 
 
+def to_nhid_event(twilio_log: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """
+    Convert a Twilio call transcript to a (session, event) pair for evaluate_all().
+
+    Returns:
+        (session_dict, event_dict) ready for src.nhid_policy_engine_v1.evaluate_all()
+    """
+    import uuid
+    from datetime import datetime, timezone
+
+    transcript = twilio_log.get("transcript", [])
+    call_sid = twilio_log.get("call_sid", str(uuid.uuid4()))
+    start_time = twilio_log.get("start_time", datetime.now(timezone.utc).isoformat())
+
+    trace = twilio_transcript_to_nhid(twilio_log)
+    compliance = trace["compliance"]
+
+    disclosure_text = ""
+    latest_user_speech = ""
+    escalation_requested = False
+
+    for entry in transcript:
+        text = entry.get("text", "")
+        text_lower = text.lower()
+        speaker = entry.get("speaker", "unknown")
+        words = set(text_lower.replace(",", " ").replace(".", " ").split())
+
+        if DISCLOSURE_KEYWORDS & words and speaker in ("agent", "ai", "unknown") and not disclosure_text:
+            disclosure_text = text
+
+        if speaker == "human":
+            latest_user_speech = text
+            if any(kw in text_lower for kw in ("transfer", "human", "representative", "agent please")):
+                escalation_requested = True
+
+    session: dict[str, Any] = {
+        "turn_count": len(transcript),
+        "escalation_path_available": True,
+    }
+
+    event: dict[str, Any] = {
+        "event_id": str(uuid.uuid4()),
+        "timestamp": start_time,
+        "session_id": call_sid,
+        "request_id": f"req-{call_sid}",
+        "event_type": "POLICY",
+        "actor_id": f"twilio-{call_sid}",
+        "state_before": "ACTIVE",
+        "state_after": "ACTIVE",
+        "replay_mode": "live",
+        "external_calls_cached": False,
+        "execution_context": {
+            "pipeline_version": "1.0.0",
+            "policy_engine_version": "1.0.0",
+            "nhid_schema_version": "1.0",
+        },
+        "counterparty_type": "human_operator",
+        "healthcare_governance": {
+            "disclosure_timestamp": start_time if compliance["disclosure_made"] else None,
+            "identity_assertion_text": disclosure_text,
+            "deceptive_artifact_flags": [],
+            "escalation_timestamp": None,
+            "escalation_outcome": None,
+            "phi_accessed": [],
+        },
+        "input_payload": {
+            "speech_text": latest_user_speech,
+            "raw_form_fields": None,
+        },
+        "output_payload": None,
+        "error": None,
+        "policy_decision": None,
+    }
+
+    return session, event
+
+
 if __name__ == "__main__":
     print("=== Compliant call ===")
     result = twilio_transcript_to_nhid(SAMPLE_TWILIO_COMPLIANT)

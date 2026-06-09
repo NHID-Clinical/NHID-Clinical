@@ -108,7 +108,7 @@
       <!-- How it works -->
       <h2>How It Works</h2>
       <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">Vendors who use Twilio produce call transcripts with text, timestamps, and speaker labels. The NHID-Clinical Twilio adapter reads that format and produces a structured event trace showing when disclosure happened, when data was first requested, and whether the call passes IDG-01.</p>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.5rem">The same pattern applies to other voice platforms (Bland.ai, Vapi, Retell) — each needs its own adapter, but the output schema is identical.</p>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.5rem">The same pattern applies to other voice platforms — each needs its own adapter, but the output schema is identical. VAPI is now supported (<code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">POST /v1/adapters/vapi/check</code>). Bland.ai and Retell AI adapters are planned.</p>
 
       <!-- Case 1: Compliant -->
       <h2 style="margin-top:2.5rem">Case 1: Compliant Call</h2>
@@ -214,8 +214,8 @@ python adapters/twilio_adapter.py</pre>
           </tr>
           <tr>
             <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Vapi</td>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">🔲 Planned</td>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Transcript format documented; adapter not yet written</td>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Adapter available</td>
+            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">See <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">adapters/vapi_adapter.py</code> · Live endpoint: <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">POST /v1/adapters/vapi/check</code> (no key required)</td>
           </tr>
           <tr>
             <td style="padding:.65rem .9rem;color:var(--body)">Retell AI</td>
@@ -225,6 +225,22 @@ python adapters/twilio_adapter.py</pre>
         </tbody>
       </table>
       <p style="color:var(--ink-soft);font-size:.88rem;line-height:1.7;margin-top:.75rem">If you have logs from a platform not listed here, email <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue)">contact@nhid-clinical.org</a> — we'll build the adapter together.</p>
+
+      <!-- VAPI demo -->
+      <h2 style="margin-top:2.5rem">VAPI — Non-Compliant Call Demo</h2>
+      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.5rem;color:var(--ink-soft)">POST a native VAPI call payload directly. No NHID schema required. This call requests PHI before the bot identifies itself as automated — expect an IDG-01 violation.</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.82rem;line-height:1.8;overflow-x:auto;color:var(--body);margin-top:1rem">curl -s -X POST \
+  https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
+  -H "Content-Type: application/json" \
+  -d '{
+    "call": {"id": "call_demo_001", "startedAt": "2026-06-09T10:00:00Z"},
+    "messages": [
+      {"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
+      {"role": "user", "message": "Sure — NPI is 1234567890.", "secondsFromStart": 3.1},
+      {"role": "bot",  "message": "Thank you. I am an automated system.", "secondsFromStart": 5.8}
+    ]
+  }'</pre>
+      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.75rem">Expected response: <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">"conformant": false</code> with an <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">IDG-01</code> violation — identity not disclosed before data exchange. Fix: move the disclosure to the first message and re-run. Result flips to <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">"conformant": true</code>.</p>
 
       <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
         <a href="/developers.html" style="color:var(--blue)">← Developers</a>

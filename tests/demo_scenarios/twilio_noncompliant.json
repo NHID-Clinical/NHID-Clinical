@@ -1,0 +1,21 @@
+{
+  "call_sid": "CA999888777",
+  "start_time": "2026-06-09T10:15:00Z",
+  "transcript": [
+    {
+      "text": "Hi, can I get the member ID and NPI?",
+      "timestamp": 0.3,
+      "speaker": "agent"
+    },
+    {
+      "text": "Sure — NPI is 1234567890.",
+      "timestamp": 2.1,
+      "speaker": "human"
+    },
+    {
+      "text": "Thank you. By the way, I'm an automated system.",
+      "timestamp": 4.0,
+      "speaker": "agent"
+    }
+  ]
+}

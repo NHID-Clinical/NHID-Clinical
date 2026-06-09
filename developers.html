@@ -210,11 +210,61 @@ python tests/trace_generator.py --offline</pre>
         <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:.85rem 0 0">Returns: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">{"conformant": true/false, "action": "...", "violations": [...], "next_state": "..."}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json" style="color:var(--blue)">sample_request.json</a> for a complete example.</p>
       </div>
 
+      <!-- ── Vendor Quick-Start ─────────────────────────────────────────────── -->
+
+      <div style="margin-top:2.5rem;border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;background:var(--paper)">
+        <h2 style="margin:0 0 .75rem;font-size:1.15rem">Vendor Quick-Start</h2>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">POST your platform's native call payload — no NHID schema required. The adapter translates and evaluates automatically.</p>
+        <table style="width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:1.25rem">
+          <thead>
+            <tr style="background:var(--bg-alt)">
+              <th style="padding:.55rem .9rem;text-align:left;font-weight:600;color:var(--ink-soft);border-bottom:1px solid var(--border)">Vendor</th>
+              <th style="padding:.55rem .9rem;text-align:left;font-weight:600;color:var(--ink-soft);border-bottom:1px solid var(--border)">Endpoint</th>
+              <th style="padding:.55rem .9rem;text-align:left;font-weight:600;color:var(--ink-soft);border-bottom:1px solid var(--border)">Auth</th>
+              <th style="padding:.55rem .9rem;text-align:left;font-weight:600;color:var(--ink-soft);border-bottom:1px solid var(--border)">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">VAPI</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border)"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/vapi/check</code></td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">None</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:#16a34a;font-weight:600">✅ Live</td>
+            </tr>
+            <tr>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Twilio</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border)"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/twilio/check</code></td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">None</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:#16a34a;font-weight:600">✅ Live</td>
+            </tr>
+            <tr>
+              <td style="padding:.6rem .9rem;color:var(--body)">Bland.ai</td>
+              <td style="padding:.6rem .9rem"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/bland/check</code></td>
+              <td style="padding:.6rem .9rem;color:var(--body)">—</td>
+              <td style="padding:.6rem .9rem;color:var(--ink-soft)">🔲 Planned</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="color:var(--body);font-size:.88rem;font-weight:600;margin:0 0 .4rem">Example — VAPI non-compliant call (bot requests PHI before disclosing identity):</p>
+        <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.81rem;line-height:1.8;overflow-x:auto;color:var(--body);margin:0 0 .75rem">curl -s -X POST \
+  https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
+  -H "Content-Type: application/json" \
+  -d '{
+    "call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
+    "messages": [
+      {"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
+      {"role": "user", "message": "NPI is 1234567890.", "secondsFromStart": 3.1},
+      {"role": "bot",  "message": "Thanks. I am an automated system.", "secondsFromStart": 5.8}
+    ]
+  }'</pre>
+        <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:0">Returns <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">"conformant": false</code> with an <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">IDG-01</code> violation. Move the disclosure to the first message and re-run — result flips to <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">"conformant": true</code>. See <a href="/interoperability.html" style="color:var(--blue)">interoperability demo →</a> for full examples.</p>
+      </div>
+
       <!-- ── Interoperability ──────────────────────────────────────────────── -->
 
       <div style="margin-top:2.5rem;padding:1.25rem 1.5rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
         <p style="font-weight:700;margin:0 0 .4rem;color:var(--body)">Vendor Interoperability</p>
-        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0">The <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">adapters/</code> directory contains format adapters that convert vendor-specific call transcripts to NHID-Clinical event traces. Currently available: Twilio Voice Intelligence. See the <a href="/interoperability.html" style="color:var(--blue);font-weight:500">interoperability demo →</a></p>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0">The <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">adapters/</code> directory contains format adapters that convert vendor-specific call transcripts to NHID-Clinical event traces. Available: Twilio Voice Intelligence, VAPI. See the <a href="/interoperability.html" style="color:var(--blue);font-weight:500">interoperability demo →</a></p>
       </div>
 
       <!-- ── Disclaimer ─────────────────────────────────────────────────── -->
