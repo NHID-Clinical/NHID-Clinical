@@ -36,6 +36,18 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/demo/check
             Method: POST
+        VapiAdapterPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/adapters/vapi/check
+            Method: POST
+        TwilioAdapterPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/adapters/twilio/check
+            Method: POST
         HealthGet:
           Type: Api
           Properties:

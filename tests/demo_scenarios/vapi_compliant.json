@@ -1,0 +1,28 @@
+{
+  "call": {
+    "id": "call_vapi_compliant_001",
+    "startedAt": "2026-06-09T10:00:00Z"
+  },
+  "messages": [
+    {
+      "role": "bot",
+      "message": "Hello, I am an automated system calling on behalf of ABC Medical Group. I am not a human representative.",
+      "secondsFromStart": 0.5
+    },
+    {
+      "role": "user",
+      "message": "Okay, understood.",
+      "secondsFromStart": 4.2
+    },
+    {
+      "role": "bot",
+      "message": "Can I get the NPI number for the ordering provider please?",
+      "secondsFromStart": 6.1
+    },
+    {
+      "role": "user",
+      "message": "Sure, it's 1234567890.",
+      "secondsFromStart": 9.3
+    }
+  ]
+}

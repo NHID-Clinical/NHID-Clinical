@@ -1,0 +1,21 @@
+{
+  "call_sid": "CA123456789",
+  "start_time": "2026-06-09T10:10:00Z",
+  "transcript": [
+    {
+      "text": "Hello, this is an automated system calling on behalf of Dr. Smith's office.",
+      "timestamp": 0.5,
+      "speaker": "agent"
+    },
+    {
+      "text": "Can I get the NPI number please?",
+      "timestamp": 3.2,
+      "speaker": "agent"
+    },
+    {
+      "text": "Sure, it's 1234567890.",
+      "timestamp": 5.8,
+      "speaker": "human"
+    }
+  ]
+}
