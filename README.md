@@ -1,29 +1,19 @@
-<div align="center">
-
-<img src="https://nhid-clinical.org/assets/brand-icon.png" width="72" alt="NHID-Clinical" />
-
 # NHID-Clinical
 
-<img src="https://readme-typing-svg.demolab.com/api?font=Raleway&weight=600&size=15&pause=1200&color=0B6EBC&center=true&vCenter=true&width=520&lines=Early+disclosure+before+PHI+exchange;No+deceptive+audio+behaviors;Immediate+human+escalation;Machine-readable+audit+traces" alt="NHID-Clinical principles" />
+**A voluntary behavioral baseline for AI voice agents in B2B healthcare payer–provider calls — with an open cryptographic authorization layer (v2) in reference implementation.**
 
-**A voluntary behavioral baseline for AI voice agents in B2B healthcare payer–provider calls.**
+Built by a former payer operations lead after handling hundreds of real AI agent calls. Not a standard. Not a certification. An open, testable reference.
 
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
-[![Tests](https://img.shields.io/badge/tests-173%20passing-brightgreen)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
-[![Version](https://img.shields.io/badge/version-v1.3%20Open%20Core-0b6ebc)](https://nhid-clinical.org/specification.html)
+[![Tests](https://img.shields.io/badge/tests-239%20passing-brightgreen)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
+[![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](https://nhid-clinical.org/specification.html)
 [![License: CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey)](https://creativecommons.org/licenses/by/4.0/)
 [![NIST](https://img.shields.io/badge/NIST-2025--0035--0026-blue)](https://www.regulations.gov/comment/NIST-2025-0035-0026)
 [![Discord](https://img.shields.io/badge/Discord-join-5865f2?logo=discord&logoColor=white)](https://discord.gg/CU7BwHwVYC)
 
-[Website](https://nhid-clinical.org) · [Simulator](https://nhid-clinical.org/simulator.html) · [Spec](https://nhid-clinical.org/specification.html) · [Roadmap](https://nhid-clinical.org/roadmap.html) · [Discord](https://discord.gg/CU7BwHwVYC)
+[Website](https://nhid-clinical.org) · [Simulator](https://nhid-clinical.org/simulator.html) · [Spec](https://nhid-clinical.org/specification.html) · [v2 Identity Layer](https://nhid-clinical.org/roadmap.html) · [Discord](https://discord.gg/CU7BwHwVYC)
 
-</div>
-
----
-
-> **Not a standard. Not a certification.** Built by one person based on time spent in payer operations watching AI voice agents bypass PHI disclosure requirements in real calls.
-
-## ⚡ Live API — Try It Now
+## Live API — Try It Now
 
 The conformance API is live. No signup, no key required for the demo and vendor adapter routes.
 
@@ -54,7 +44,7 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 
 ---
 
-## 🔒 The Four Controls
+## The Four Controls
 
 | Control | Name | Requirement |
 | :--- | :--- | :--- |
@@ -63,11 +53,11 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 | **DBC-01** | Deceptive Behavior Check | No synthetic voice artifacts designed to impersonate a human |
 | **EIT-01** | Escalation & Intervention | Human escalation path must be communicated and available |
 
-5 deterministic CTS tests · same inputs → identical trace output · 173 passing · ~1.4s
+5 deterministic CTS tests · same inputs → identical trace output · 239 passing across the Python policy engine (173) and TypeScript middleware (66)
 
 ---
 
-## 🏗️ Five-Layer Trust Stack
+## Five-Layer Trust Stack
 
 | Layer | Standard | Role |
 | :--- | :--- | :--- |
@@ -82,7 +72,7 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 
 ---
 
-## 🏛️ Regulatory Alignment
+## Regulatory Alignment
 
 | Regulatory Driver | Specific Requirement | NHID-Clinical Control |
 | :--- | :--- | :--- |
@@ -96,7 +86,7 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 NHID-Clinical/
@@ -111,7 +101,7 @@ NHID-Clinical/
 └── specs/           # PDF artifacts — Core Specification + Operational Blueprint
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 git clone https://github.com/NHID-Clinical/NHID-Clinical.git
@@ -124,15 +114,20 @@ Expected output: `173 passed, 18 skipped` in ~1.4s.
 
 ---
 
-## 🗺️ v2 Roadmap
+## NHID-Auth v2 — Cryptographic Agent Identity
 
-v1.3 closes the **disclosure gap**. v2 closes the **authorization gap** with a cryptographic authorization layer currently in development. Targeting Q3 2026.
+v1.3 verifies disclosure behavior. v2 verifies authorization: provider-signed agent credentials with NPI binding, scoped delegation, revocation, and call binding. Public reference implementation in `src/agent_identity.py` (42 tests). Not production-ready; no finalized specification yet.
 
-[Full roadmap →](https://nhid-clinical.org/roadmap.html)
+```bash
+python -m pytest tests/test_identity.py -v
+python examples/issue_and_verify.py
+```
+
+[Details →](https://nhid-clinical.org/roadmap.html)
 
 ---
 
-## 🤝 Contributing & Pilot Partners
+## Contributing & Pilot Partners
 
 We are actively seeking payer and provider organizations to run a **90-day shadow evaluation** — no vendor changes required.
 

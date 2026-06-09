@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="Early non-human identity disclosure standard for payer-provider voice calls. No deceptive audio. Immediate escalation. Auditable traces. v1.3 open proposal by Brianna Baynard. — a voluntary, testable reference implementation by Brianna Baynard documenting disclosure, escalation, and audit patterns in B2B healthcare voice workflows."/>
+  <meta name="description" content="NHID-Clinical — a voluntary, testable behavioral baseline for AI voice agents in B2B healthcare payer–provider calls. Open reference implementation by a former payer operations lead."/>
   <title>NHID-Clinical | Transparent AI Voice Agents in Healthcare</title>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
 </head>
@@ -25,7 +25,7 @@
       <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
-        <small>Building Trust in Healthcare Voice AI</small>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
       </span>
     </a>
     <div class="nav-links">
@@ -124,14 +124,14 @@
     <div class="container hero-grid">
       <div class="hero-copy">
         <h1>NHID-Clinical</h1>
-        <p class="hero-body">Early disclosure before PHI exchange. No deceptive audio behaviors. Immediate human escalation. Machine-readable audit traces.</p>
-        <p class="hero-body" style="display:none">I spent months working in payer operations, handling eligibility, claims, and authorization calls while protecting PHI. Starting in 2025, our call center began receiving more AI voice agents calling on behalf of provider offices. At first they passed verification, so we treated them like regular calls. Over time, clear problems emerged around disclosure timing, authorization verification, and escalation. This project documents those patterns and proposes a voluntary, testable set of behaviors for AI agents in B2B administrative calls. It is not a standard, not a certification, and does not define compliance requirements. It is an open reference implementation and a conversation starter.</p>
+        <p class="hero-body"><strong>Practical controls for AI voice agents in payer–provider calls, built by a former payer operations lead who handled hundreds of real AI agent calls.</strong></p>
+        <p class="hero-body">I worked in payer operations — eligibility, claims, prior authorization — protecting PHI on live calls. Starting in 2025, our call center began receiving AI voice agents calling on behalf of provider offices. They passed verification, so we treated them as regular calls. Over time the problems became consistent: disclosure after PHI had already moved, no way to verify authorization, no escalation path. This project documents those patterns and proposes a voluntary, testable behavioral baseline. It is not a standard and not a certification. It is an open reference implementation.</p>
         <div class="callout">
-          <strong>Current state (v1.3 · June 2026):</strong>
-          The conformance API is live. The simulator runs real policy checks —
-          paste a VAPI or Twilio call payload and see a pass/fail result in seconds.
-          v1.3 closes the disclosure gap; v2 (Q3 2026) closes the authorization gap.
-          We are now seeking pilot partners from payer and provider organizations.
+          <strong>Current state:</strong>
+          The v1.3 conformance API is live — no key required for demo and vendor routes.
+          VAPI and Twilio adapters accept native call payloads and return a pass/fail result.
+          The v2 cryptographic authorization layer is public reference code in the repository.
+          Zero production pilots — we are seeking the first shadow evaluation partners.
           — <a href="/for-payers.html">Start a shadow evaluation →</a>
         </div>
         <p class="hero-body" style="margin-top:1rem;font-size:.9rem;color:var(--ink-soft)">CC BY 4.0 &nbsp;·&nbsp; NIST Public Comment: NIST-2025-0035-0026</p>
@@ -150,11 +150,10 @@
   <!-- ── Pilot Banner ──────────────────────────────────────────────────────── -->
   <section class="page-section" style="padding-top:1.5rem;padding-bottom:1.5rem">
     <div class="container" style="max-width:60rem">
-      <div class="pilot-banner" style="background:linear-gradient(135deg,var(--blue-soft),var(--teal-soft));border:1px solid var(--line);border-radius:1rem;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
-        <div style="font-size:1.75rem;line-height:1">🤝</div>
+      <div class="pilot-banner" style="background:var(--blue-soft);border:1px solid var(--line);border-radius:1rem;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
         <div style="flex:1;min-width:14rem">
           <strong style="display:block;font-size:1rem;color:var(--ink);margin-bottom:.25rem">Call for Pilot Partners</strong>
-          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are actively seeking payer and provider organizations to run a 90-day shadow evaluation — no vendor changes required. Help shape the standard before it ships.</p>
+          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are seeking payer and provider organizations to run a 90-day shadow evaluation — no vendor changes, no production risk. Pilot results directly shape the v2 specification.</p>
         </div>
         <a class="cta-button" href="/for-payers.html" style="flex-shrink:0;white-space:nowrap">Become a Pilot Partner <span aria-hidden="true">→</span></a>
       </div>
@@ -207,7 +206,7 @@
   <div style="background:var(--mist);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:2rem 0">
     <div class="container" style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:center">
       <a class="cta-button" href="/specification.html">Specification</a>
-      <a class="secondary-button" href="/governance-simulator.html">Governance Simulator</a>
+      <a class="secondary-button" href="/simulator.html">Governance Simulator</a>
       <a class="secondary-button" href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
     </div>
   </div>
@@ -220,7 +219,7 @@
         <div class="content-card">
           <h3>Policy Engine Playground</h3>
           <p>Test NHID-Clinical v1.3 controls against synthetic call scenarios in real time.</p>
-          <a class="card-link" href="/governance-simulator.html">Open the simulator →</a>
+          <a class="card-link" href="/simulator.html">Open the simulator →</a>
         </div>
         <div class="content-card">
           <h3>Specification (v1.3)</h3>
@@ -245,7 +244,7 @@
   <section class="page-section" style="background:var(--mist)">
     <div class="container" style="max-width:52rem">
       <h2>Where NHID-Clinical sits in the stack</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem;max-width:60ch">STIR/SHAKEN verifies the phone number. NHID-Clinical is the layer above: it standardizes what the AI agent says about itself, when it says it, and what gets logged. A cryptographic authorization layer (v2, planned) will verify whether the agent is actually authorized to act for the provider.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem;max-width:60ch">STIR/SHAKEN verifies the phone number. NHID-Clinical is the layer above: it standardizes what the AI agent says about itself, when it says it, and what gets logged. The v2 cryptographic authorization layer — public reference implementation in the repository — verifies whether the agent is actually authorized to act for the provider.</p>
       <div style="margin-top:2rem;display:grid;gap:.5rem">
         <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.76)">
           <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-soft)">Voice carrier</span>
