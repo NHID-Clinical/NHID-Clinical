@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical v2 Roadmap — Cryptographic agent identity, delegation chains, and revocation. Target August 2026."/>
+  <meta name="description" content="NHID-Clinical v2 Roadmap — Cryptographic authorization layer for AI agents in healthcare. Target Q3 2026."/>
   <title>v2 Roadmap | NHID-Clinical</title>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -154,17 +154,17 @@
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Provider authorization</td>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">❌ Not verifiable</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Ed25519 delegation chain</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Cryptographically verifiable</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Revocation</td>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">❌ Not supported</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ HTTP revocation list</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Real-time access controls</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Audit trail</td>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Structured event logs</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ + Passport ID in every log</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ + Credential ID in every log</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;color:var(--body)">Suitable for</td>
@@ -179,30 +179,30 @@
       <div style="display:grid;gap:.85rem;margin-top:1.25rem">
 
         <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Agent Passport System (APS)</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Ed25519-based cryptographic identity for AI agents. Each agent has a key pair. Providers sign a delegation granting the agent specific scopes (e.g., <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">eligibility</code>, <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">claim_status</code>). Based on IETF draft standards.</p>
+          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Cryptographic Agent Identity</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">AI agents will carry a verifiable identity credential issued by their provider organization — closing the NPI spoofing gap that v1.3 cannot address on its own.</p>
         </div>
 
         <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Delegation Chains with Scope Attenuation</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">A provider authorizes an agent with limited permissions. The agent cannot exceed its granted scope. Delegations have explicit TTLs — a 24-hour delegation cannot be replayed the next day.</p>
+          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Scoped Authorization</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Agents will only be authorized to perform the specific operations their provider has granted. Time-limited credentials prevent replay. Scope violations are detectable and auditable.</p>
         </div>
 
         <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Revocation Lists</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Compromised agents can be revoked immediately. Payers check a simple HTTP endpoint before accepting a passport. No central registry required in v2 — each provider hosts their own revocation list.</p>
+          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Instant Access Controls</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Compromised or decommissioned agents can have their access withdrawn immediately — no waiting for credentials to expire. Payers verify access status before any data exchange.</p>
         </div>
 
         <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Call Integration</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Passport tokens delivered via DTMF or SIP headers — no change to the voice interaction itself. The payer's system validates the token out-of-band before the call proceeds to data exchange.</p>
+          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Transparent Call Integration</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Authorization is verified out-of-band — no change to the voice interaction itself. v1.3 behavioral controls remain in place alongside the v2 authorization layer.</p>
         </div>
 
       </div>
 
       <!-- Reference implementation note -->
       <h2 style="margin-top:2.5rem">Reference Implementation</h2>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The core identity module is already written and tested. Four passing tests covering key generation, delegation + verification, expiry, and revocation:</p>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The v2 authorization layer is in active development. The v1.3 conformance test suite (173 passing) remains the benchmark for behavioral compliance during the development period.</p>
       <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
@@ -210,7 +210,6 @@ python -m pytest tests/ -v
 
 # Expected output:
 # 173 passed, 18 skipped in ~1.4s</pre>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
 
       <!-- Timeline -->
       <h2 style="margin-top:2.5rem">Timeline</h2>
