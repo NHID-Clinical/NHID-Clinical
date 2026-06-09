@@ -31,13 +31,34 @@
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
-      <a href="/governance-simulator.html">Governance Simulator</a>
-      <a href="/for-payers.html">For Payers</a>
-      <a href="/specification.html">Specification</a>
-      <a href="/developers.html">Developers</a>
-      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-      <a href="/technical-stack.html">Technical Stack</a>
-      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Specification <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/specification.html">Specification</a>
+          <a href="/technical-stack.html">Technical Stack</a>
+          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Implement <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/developers.html">Developers</a>
+          <a href="/interoperability.html">Interoperability</a>
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Pilot <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/community.html">Community</a>
+          <a href="/roadmap.html">Roadmap</a>
+          <a href="/news.html">News</a>
+        </div>
+      </div>
+      <a href="/simulator.html">Simulator</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Map &#x2197;</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -70,13 +91,22 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
-  <a href="/governance-simulator.html">Governance Simulator</a>
-  <a href="/for-payers.html">For Payers</a>
+  <a href="/simulator.html">Simulator</a>
+  <strong class="mobile-nav-group">Specification</strong>
   <a href="/specification.html">Specification</a>
-  <a href="/developers.html">Developers</a>
-  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
   <a href="/technical-stack.html">Technical Stack</a>
-  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <strong class="mobile-nav-group">Implement</strong>
+  <a href="/developers.html">Developers</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <strong class="mobile-nav-group">Pilot</strong>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/community.html">Community</a>
+  <a href="/roadmap.html">Roadmap</a>
+  <a href="/news.html">News</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Map &#x2197;</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -98,22 +128,35 @@
         <p class="hero-body" style="display:none">I spent months working in payer operations, handling eligibility, claims, and authorization calls while protecting PHI. Starting in 2025, our call center began receiving more AI voice agents calling on behalf of provider offices. At first they passed verification, so we treated them like regular calls. Over time, clear problems emerged around disclosure timing, authorization verification, and escalation. This project documents those patterns and proposes a voluntary, testable set of behaviors for AI agents in B2B administrative calls. It is not a standard, not a certification, and does not define compliance requirements. It is an open reference implementation and a conversation starter.</p>
         <div class="callout">
           <strong>Current state (v1.3 · June 2026):</strong>
-          This project is a pre-standardization reference implementation.
-          We have a working event schema, a deterministic policy engine,
-          a machine-readable conformance test suite, and example failure traces.
-          No organization has piloted or adopted these artifacts yet.
-          We are actively seeking feedback from payers, providers, and health IT teams.
-          — <a href="developers.html">Explore the technical reference →</a>
+          The conformance API is live. The simulator runs real policy checks —
+          paste a VAPI or Twilio call payload and see a pass/fail result in seconds.
+          v1.3 closes the disclosure gap; v2 (Q3 2026) closes the authorization gap.
+          We are now seeking pilot partners from payer and provider organizations.
+          — <a href="/for-payers.html">Start a shadow evaluation →</a>
         </div>
         <p class="hero-body" style="margin-top:1rem;font-size:.9rem;color:var(--ink-soft)">CC BY 4.0 &nbsp;·&nbsp; NIST Public Comment: NIST-2025-0035-0026</p>
         <div class="hero-actions" style="flex-wrap:wrap;gap:.75rem">
           <a class="cta-button" href="/specification.html">View Specification <span aria-hidden="true">→</span></a>
-          <a class="secondary-button" href="/governance-simulator.html">Governance Simulator <span aria-hidden="true">→</span></a>
+          <a class="secondary-button" href="/simulator.html">Governance Simulator <span aria-hidden="true">→</span></a>
         </div>
       </div>
       <div class="hero-art" aria-label="NHID-Clinical logo">
         <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical" />
         <img class="theme-img theme-img-dark" src="/assets/logo-dark.jpg" alt="NHID-Clinical" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pilot Banner ──────────────────────────────────────────────────────── -->
+  <section class="page-section" style="padding-top:1.5rem;padding-bottom:1.5rem">
+    <div class="container" style="max-width:60rem">
+      <div class="pilot-banner" style="background:linear-gradient(135deg,var(--blue-soft),var(--teal-soft));border:1px solid var(--line);border-radius:1rem;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+        <div style="font-size:1.75rem;line-height:1">🤝</div>
+        <div style="flex:1;min-width:14rem">
+          <strong style="display:block;font-size:1rem;color:var(--ink);margin-bottom:.25rem">Call for Pilot Partners</strong>
+          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are actively seeking payer and provider organizations to run a 90-day shadow evaluation — no vendor changes required. Help shape the standard before it ships.</p>
+        </div>
+        <a class="cta-button" href="/for-payers.html" style="flex-shrink:0;white-space:nowrap">Become a Pilot Partner <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
