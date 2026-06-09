@@ -74,7 +74,7 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 | **0** | NPI Gap | The problem — no existing diagram addresses cross-org NPI authorization |
 | **1** | STIR/SHAKEN (RFC 8224) | Carrier number authentication — A/B/C attestation |
 | **2** | **NHID-Clinical v1.3** | Behavioral disclosure baseline — 4 controls, 5 CTS tests |
-| **3** | NHID-Auth v2 (Ed25519 + DPoP) | Delegation chain + call-nonce binding (v2 roadmap) |
+| **3** | NHID-Auth v2 | Cryptographic authorization layer (v2 roadmap) |
 | **4** | FHIR AuditEvent R4 / IHE BALP | Healthcare-native audit logging |
 | **5** | OpenTelemetry spans | SIEM / enterprise observability export |
 
@@ -126,7 +126,7 @@ Expected output: `173 passed, 18 skipped` in ~1.4s.
 
 ## 🗺️ v2 Roadmap
 
-v1.3 closes the **disclosure gap**. v2 closes the **authorization gap** — Ed25519 delegation chains, scope attenuation, revocation, call-bound nonces. Targeting Q3 2026.
+v1.3 closes the **disclosure gap**. v2 closes the **authorization gap** with a cryptographic authorization layer currently in development. Targeting Q3 2026.
 
 [Full roadmap →](https://nhid-clinical.org/roadmap.html)
 
