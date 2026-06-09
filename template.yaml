@@ -30,6 +30,12 @@ Resources:
             Method: POST
             Auth:
               ApiKeyRequired: true
+        DemoPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/demo/check
+            Method: POST
         HealthGet:
           Type: Api
           Properties:

@@ -517,9 +517,8 @@
 (function(){
 'use strict';
 
-/* ── Live API ───────────────────────────────────────────────── */
-var ENDPOINT='https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/conformance/check';
-var DEMO_KEY='4QqUokCY2s3FSUY3dSZJh7XFZupYW0tx608CAIZ7';
+/* ── Live API (public demo route — no key required) ─────────── */
+var ENDPOINT='https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/demo/check';
 
 function buildEvent(key,c){
   var now=new Date().toISOString();
@@ -1196,7 +1195,7 @@ document.getElementById('run-btn').addEventListener('click',function(){
   var ev=buildEvent(key,c);
   fetch(ENDPOINT,{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':DEMO_KEY},
+    headers:{'Content-Type':'application/json'},
     body:JSON.stringify({session:session,event:ev})
   }).then(function(r){return r.json();}).then(function(data){
     render(key,c,rulesFromResponse(data,c),true);
