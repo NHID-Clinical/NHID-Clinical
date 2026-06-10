@@ -200,6 +200,10 @@
 
       </div>
 
+      <!-- Credential flow diagram -->
+      <h2 style="margin-top:2.5rem">How the Credential Flow Works</h2>
+      <img src="/assets/diagrams/v2-identity-flow.svg" alt="NHID-Auth v2 credential flow: a provider organization issues an Ed25519-signed agent passport with NPI binding, scopes, and expiry; optional scoped delegation narrows scope across at most 3 hops; the passport is presented out of band with a call-bound nonce; the payer runs six ordered checks (signature, NPI, expiry, revocation, scope narrowing, nonce) and returns ALLOW or a typed DENY error code" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-top:1rem" loading="lazy"/>
+
       <!-- Run it -->
       <h2 style="margin-top:2.5rem">Run It</h2>
       <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
