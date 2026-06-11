@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 998 1386" font-family="Inter, system-ui, sans-serif" role="img" aria-label="NHID-Clinical framework mind map">
+  <rect x="0" y="0" width="998" height="1386" rx="14" fill="#f5f6fa"/>
+  <path d="M206,693 C266,693 240,114 300,114" fill="none" stroke="#a9b2dd" stroke-width="1.6"/>
+  <path d="M422,114 C472,114 530,51 580,51" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M422,114 C472,114 530,93 580,93" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M422,114 C472,114 530,135 580,135" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M422,114 C472,114 530,177 580,177" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M206,693 C266,693 240,300 300,300" fill="none" stroke="#a9b2dd" stroke-width="1.6"/>
+  <path d="M468,300 C518,300 530,237 580,237" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M468,300 C518,300 530,279 580,279" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M468,300 C518,300 530,321 580,321" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M468,300 C518,300 530,363 580,363" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M206,693 C266,693 240,507 300,507" fill="none" stroke="#a9b2dd" stroke-width="1.6"/>
+  <path d="M445,507 C495,507 530,423 580,423" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M445,507 C495,507 530,465 580,465" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M445,507 C495,507 530,507 580,507" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M445,507 C495,507 530,549 580,549" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M445,507 C495,507 530,591 580,591" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M206,693 C266,693 240,714 300,714" fill="none" stroke="#a9b2dd" stroke-width="1.6"/>
+  <path d="M468,714 C518,714 530,651 580,651" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M468,714 C518,714 530,693 580,693" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M468,714 C518,714 530,735 580,735" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M468,714 C518,714 530,777 580,777" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M206,693 C266,693 240,921 300,921" fill="none" stroke="#a9b2dd" stroke-width="1.6"/>
+  <path d="M484,921 C534,921 530,837 580,837" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M484,921 C534,921 530,879 580,879" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M484,921 C534,921 530,921 580,921" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M484,921 C534,921 530,963 580,963" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M484,921 C534,921 530,1005 580,1005" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M206,693 C266,693 240,1128 300,1128" fill="none" stroke="#a9b2dd" stroke-width="1.6"/>
+  <path d="M461,1128 C511,1128 530,1065 580,1065" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M461,1128 C511,1128 530,1107 580,1107" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M461,1128 C511,1128 530,1149 580,1149" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M461,1128 C511,1128 530,1191 580,1191" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M206,693 C266,693 240,1293 300,1293" fill="none" stroke="#a9b2dd" stroke-width="1.6"/>
+  <path d="M500,1293 C550,1293 530,1251 580,1251" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M500,1293 C550,1293 530,1293 580,1293" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <path d="M500,1293 C550,1293 530,1335 580,1335" fill="none" stroke="#a9b2dd" stroke-width="1.3"/>
+  <rect x="28" y="663" width="178" height="60" rx="9" fill="#3d4663"/>
+  <text x="117.0" y="686" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">NHID-Clinical</text>
+  <text x="117.0" y="706" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">AI Governance</text>
+  <rect x="300" y="96" width="122" height="36" rx="8" fill="#46505c"/>
+  <text x="361" y="118" font-size="13.5" font-weight="600" fill="#ffffff" text-anchor="middle">The Proposal</text>
+  <rect x="580" y="36" width="206" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="56" font-size="13" font-weight="500" fill="#f3f4f6">v1.3 Behavioral Baseline</text>
+  <rect x="580" y="78" width="213" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="98" font-size="13" font-weight="500" fill="#f3f4f6">v2 Cryptographic Identity</text>
+  <rect x="580" y="120" width="317" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="140" font-size="13" font-weight="500" fill="#f3f4f6">B2B Payer–Provider Administrative Calls</text>
+  <rect x="580" y="162" width="257" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="182" font-size="13" font-weight="500" fill="#f3f4f6">Impersonation Latency Reduction</text>
+  <rect x="300" y="282" width="168" height="36" rx="8" fill="#46505c"/>
+  <text x="384" y="304" font-size="13.5" font-weight="600" fill="#ffffff" text-anchor="middle">v1.3 Core Controls</text>
+  <rect x="580" y="222" width="391" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="242" font-size="13" font-weight="500" fill="#f3f4f6">IDG-01 · Identity disclosure before data exchange</text>
+  <rect x="580" y="264" width="272" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="284" font-size="13" font-weight="500" fill="#f3f4f6">PDX-01 · No PHI before disclosure</text>
+  <rect x="580" y="306" width="302" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="326" font-size="13" font-weight="500" fill="#f3f4f6">DBC-01 · No deceptive audio artifacts</text>
+  <rect x="580" y="348" width="250" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="368" font-size="13" font-weight="500" fill="#f3f4f6">EIT-01 · Human escalation path</text>
+  <rect x="300" y="489" width="145" height="36" rx="8" fill="#46505c"/>
+  <text x="372" y="512" font-size="13.5" font-weight="600" fill="#ffffff" text-anchor="middle">Technical Stack</text>
+  <rect x="580" y="408" width="198" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="428" font-size="13" font-weight="500" fill="#f3f4f6">Stateless Policy Engine</text>
+  <rect x="580" y="450" width="191" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="470" font-size="13" font-weight="500" fill="#f3f4f6">Canonical Event Schema</text>
+  <rect x="580" y="492" width="250" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="512" font-size="13" font-weight="500" fill="#f3f4f6">Vendor Adapters (VAPI, Twilio)</text>
+  <rect x="580" y="534" width="176" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="554" font-size="13" font-weight="500" fill="#f3f4f6">Governance Simulator</text>
+  <rect x="580" y="576" width="280" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="596" font-size="13" font-weight="500" fill="#f3f4f6">Conformance Test Suite (239 tests)</text>
+  <rect x="300" y="696" width="168" height="36" rx="8" fill="#46505c"/>
+  <text x="384" y="718" font-size="13.5" font-weight="600" fill="#ffffff" text-anchor="middle">Pilot &amp; Evaluation</text>
+  <rect x="580" y="636" width="206" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="656" font-size="13" font-weight="500" fill="#f3f4f6">90-Day Shadow Evaluation</text>
+  <rect x="580" y="678" width="183" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="698" font-size="13" font-weight="500" fill="#f3f4f6">RFP Disclosure Clause</text>
+  <rect x="580" y="720" width="243" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="740" font-size="13" font-weight="500" fill="#f3f4f6">Evidence Pack for Procurement</text>
+  <rect x="580" y="762" width="235" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="782" font-size="13" font-weight="500" fill="#f3f4f6">Verification Latency Metrics</text>
+  <rect x="300" y="903" width="184" height="36" rx="8" fill="#46505c"/>
+  <text x="392" y="926" font-size="13.5" font-weight="600" fill="#ffffff" text-anchor="middle">Regulatory Alignment</text>
+  <rect x="580" y="822" width="139" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="842" font-size="13" font-weight="500" fill="#f3f4f6">NIST AI RMF 1.0</text>
+  <rect x="580" y="864" width="191" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="884" font-size="13" font-weight="500" fill="#f3f4f6">EU AI Act Transparency</text>
+  <rect x="580" y="906" width="250" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="926" font-size="13" font-weight="500" fill="#f3f4f6">CMS-0057-F Prior Authorization</text>
+  <rect x="580" y="948" width="161" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="968" font-size="13" font-weight="500" fill="#f3f4f6">ISO/IEC 42001 AIMS</text>
+  <rect x="580" y="990" width="161" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="1010" font-size="13" font-weight="500" fill="#f3f4f6">OECD AI Principles</text>
+  <rect x="300" y="1110" width="161" height="36" rx="8" fill="#46505c"/>
+  <text x="380" y="1132" font-size="13.5" font-weight="600" fill="#ffffff" text-anchor="middle">v2 Identity Layer</text>
+  <rect x="580" y="1050" width="213" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="1070" font-size="13" font-weight="500" fill="#f3f4f6">Agent Passports (Ed25519)</text>
+  <rect x="580" y="1092" width="206" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="1112" font-size="13" font-weight="500" fill="#f3f4f6">Scoped Delegation Chains</text>
+  <rect x="580" y="1134" width="176" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="1154" font-size="13" font-weight="500" fill="#f3f4f6">Per-Agent Revocation</text>
+  <rect x="580" y="1176" width="198" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="1196" font-size="13" font-weight="500" fill="#f3f4f6">NPI Spoofing Prevention</text>
+  <rect x="300" y="1275" width="200" height="36" rx="8" fill="#46505c"/>
+  <text x="400" y="1298" font-size="13.5" font-weight="600" fill="#ffffff" text-anchor="middle">Community &amp; Governance</text>
+  <rect x="580" y="1236" width="243" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="1256" font-size="13" font-weight="500" fill="#f3f4f6">NIST AI Safety Docket Comment</text>
+  <rect x="580" y="1278" width="213" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="1298" font-size="13" font-weight="500" fill="#f3f4f6">Discord &amp; Reddit Channels</text>
+  <rect x="580" y="1320" width="331" height="30" rx="7" fill="#333d44"/>
+  <text x="594" y="1340" font-size="13" font-weight="500" fill="#f3f4f6">Open Reference Implementation (CC BY 4.0)</text>
+</svg>

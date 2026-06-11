@@ -8,7 +8,7 @@
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
 </head>
@@ -24,7 +24,7 @@
       <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
-        <small>Building Trust in Healthcare Voice AI</small>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
       </span>
     </a>
     <div class="nav-links">
@@ -84,10 +84,6 @@
 
   <section class="page-section">
     <div class="container" style="max-width:52rem">
-      <div class="callout" role="note" style="margin-bottom:2rem">
-        <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
-      </div>
-
       <h2>The Trust Stack for B2B Healthcare Voice</h2>
       <p style="margin-bottom:1.5rem">STIR/SHAKEN verifies the phone number. NHID-Clinical verifies the <strong>AI agent behind</strong> the call and what it is authorized to do.</p>
 
@@ -123,7 +119,7 @@
           <tr style="border-bottom:1px solid var(--border)">
             <td style="padding:.75rem">Layer 3: NHID-Auth v2</td>
             <td style="padding:.75rem">Cryptographic authorization</td>
-            <td style="padding:.75rem">NHID-Auth v2 (in development)</td>
+            <td style="padding:.75rem">NHID-Auth v2 (reference implementation)</td>
             <td style="padding:.75rem">Authorization proof</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border)">
@@ -138,6 +134,14 @@
       <div style="text-align:center">
         <a href="/developers.html" class="primary-pill">Developers → Run the reference implementation</a>
       </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--mist)">
+    <div class="container" style="max-width:62rem">
+      <h2>The Framework at a Glance</h2>
+      <p style="margin-bottom:1.5rem;color:var(--body)">Every component of NHID-Clinical on one map — the proposal, the v1.3 controls, the technical stack, pilot tooling, regulatory alignment, and the v2 identity layer.</p>
+      <img src="/assets/diagrams/framework-mindmap.svg" alt="Mind map of the NHID-Clinical framework: the proposal, v1.3 core controls (IDG-01, PDX-01, DBC-01, EIT-01), technical stack, pilot and evaluation tooling, regulatory alignment, v2 identity layer, and community governance" style="width:100%;height:auto;border-radius:14px;border:1px solid var(--border)" loading="lazy"/>
     </div>
   </section>
 </main>

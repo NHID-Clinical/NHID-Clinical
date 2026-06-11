@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 760" font-family="Inter, system-ui, sans-serif" role="img" aria-label="NHID-Auth v2 credential issuance and verification flow">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0b6ebc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#085a9b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow2">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#0b6ebc" />
+    </marker>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="800" height="60" fill="url(#blueGrad)"/>
+  <text x="400" y="37" font-size="22" font-weight="bold" fill="white" text-anchor="middle">
+    NHID-Auth v2 — Credential Flow (Reference Implementation)
+  </text>
+
+  <!-- Step 1: Provider issues -->
+  <rect x="50" y="90" width="700" height="80" rx="8" fill="#eef6fd" stroke="#0b6ebc" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="70" y="116" font-size="14" font-weight="bold" fill="#085a9b">Step 1: Provider Organization Issues an Agent Passport</text>
+  <text x="70" y="140" font-size="13" fill="#0c4a78">The provider signs the agent's public key with its Ed25519 issuing key,</text>
+  <text x="70" y="158" font-size="13" fill="#0c4a78">binding its 10-digit NPI, granted scopes, and a short expiry into the credential.</text>
+
+  <line x1="400" y1="170" x2="400" y2="200" stroke="#0b6ebc" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Step 2: Optional delegation -->
+  <rect x="50" y="200" width="700" height="80" rx="8" fill="#eef6fd" stroke="#0b6ebc" stroke-width="2" stroke-dasharray="6 4" filter="url(#shadow2)"/>
+  <text x="70" y="226" font-size="14" font-weight="bold" fill="#085a9b">Step 2 (optional): Scoped Delegation</text>
+  <text x="70" y="250" font-size="13" fill="#0c4a78">A credential can be delegated down a chain of at most 3 hops.</text>
+  <text x="70" y="268" font-size="13" fill="#0c4a78">Scope can only narrow — any attempt to expand it is rejected at verification.</text>
+
+  <line x1="400" y1="280" x2="400" y2="310" stroke="#0b6ebc" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Step 3: Call time -->
+  <rect x="50" y="310" width="700" height="80" rx="8" fill="#eef6fd" stroke="#0b6ebc" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="70" y="336" font-size="14" font-weight="bold" fill="#085a9b">Step 3: Call Session — Passport Presented Out of Band</text>
+  <text x="70" y="360" font-size="13" fill="#0c4a78">The agent presents its passport via API with a nonce bound to the specific call</text>
+  <text x="70" y="378" font-size="13" fill="#0c4a78">session (call SID), preventing replay across calls. No latency added to the voice channel.</text>
+
+  <line x1="400" y1="390" x2="400" y2="420" stroke="#0b6ebc" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Step 4: Verification -->
+  <rect x="50" y="420" width="700" height="120" rx="8" fill="#dceefb" stroke="#0b6ebc" stroke-width="3" filter="url(#shadow2)"/>
+  <text x="70" y="446" font-size="14" font-weight="bold" fill="#085a9b">Step 4: Payer-Side Verification — Six Ordered Checks</text>
+  <text x="70" y="472" font-size="13" fill="#0c4a78">1. Provider signature (Ed25519)&#160;&#160;&#160;2. NPI binding&#160;&#160;&#160;3. Expiry</text>
+  <text x="70" y="492" font-size="13" fill="#0c4a78">4. Revocation (per-agent and per-delegation)&#160;&#160;&#160;5. Scope narrowing across the chain</text>
+  <text x="70" y="512" font-size="13" fill="#0c4a78">6. Call-session nonce match</text>
+  <text x="70" y="530" font-size="12" fill="#3b6f96" font-style="italic">v1.3 behavioral controls (IDG-01, PDX-01, DBC-01, EIT-01) run unchanged alongside.</text>
+
+  <!-- Split arrows -->
+  <line x1="250" y1="540" x2="250" y2="580" stroke="#059669" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <line x1="550" y1="540" x2="550" y2="580" stroke="#b91c1c" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Allow -->
+  <rect x="60" y="580" width="330" height="70" rx="8" fill="#047857" stroke="#065f46" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="225" y="610" font-size="15" font-weight="bold" fill="white" text-anchor="middle">ALLOW</text>
+  <text x="225" y="632" font-size="12.5" fill="#d1fae5" text-anchor="middle">Credential ID written to the audit trail</text>
+
+  <!-- Deny -->
+  <rect x="410" y="580" width="330" height="70" rx="8" fill="#b91c1c" stroke="#7f1d1d" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="575" y="606" font-size="15" font-weight="bold" fill="white" text-anchor="middle">DENY — typed error code</text>
+  <text x="575" y="626" font-size="11.5" fill="#fecaca" text-anchor="middle">ERR_EXPIRED · ERR_REVOKED · ERR_INVALID_SIG</text>
+  <text x="575" y="642" font-size="11.5" fill="#fecaca" text-anchor="middle">ERR_SCOPE_VIOLATION · ERR_NONCE_MISMATCH</text>
+
+  <!-- Footer note -->
+  <text x="400" y="695" font-size="12.5" fill="#5b6472" text-anchor="middle">Public reference code: src/agent_identity.py · 42 dedicated tests · not production-ready</text>
+  <text x="400" y="715" font-size="12.5" fill="#5b6472" text-anchor="middle">No finalized specification yet — pilot results will shape the v2 spec.</text>
+</svg>

@@ -260,3 +260,15 @@
     }
   });
 })();
+
+/* ── ElevenLabs Conversational AI widget (Nadine) ─────────────────────── */
+(function () {
+  var s = document.createElement('script');
+  s.src = 'https://elevenlabs.io/convai-widget/index.js';
+  s.async = true;
+  document.head.appendChild(s);
+
+  var w = document.createElement('elevenlabs-convai');
+  w.setAttribute('agent-id', 'agent_4001krn32nmwe5t8mqzgee0w84rj');
+  document.body.appendChild(w);
+})();

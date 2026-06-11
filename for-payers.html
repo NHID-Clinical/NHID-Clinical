@@ -8,7 +8,7 @@
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <style>
@@ -76,7 +76,7 @@
       <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
-        <small>Building Trust in Healthcare Voice AI</small>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
       </span>
     </a>
     <div class="nav-links">
@@ -302,9 +302,9 @@
       <div class="callout" role="note" style="margin-top:2.5rem">
         <strong>Production readiness note:</strong>
         <strong>v1.3 (current)</strong> covers disclosure and audit — suitable for shadow pilots.
-        <strong>v2 (August 2026)</strong> adds cryptographic agent identity and delegation — required for production deployments where you need to verify the agent is actually authorized by the provider it claims to represent.
+        <strong>v2</strong> adds cryptographic agent identity and delegation, for deployments where you need to verify the agent is actually authorized by the provider it claims to represent. A public reference implementation is in the repository.
         <a href="/roadmap.html" style="color:var(--blue);font-weight:500">Read the v2 roadmap →</a>
-        <p style="margin-top:.75rem;font-size:.92rem;color:var(--ink-soft)"><strong>Why this matters:</strong> NPIs are public. Any AI can look up a provider's NPI in the NPPES registry and use it on a call. v1.3 tells you the caller was automated; it does not tell you the caller was actually authorized by that provider. That gap is real, it's easy to exploit, and it's what NHID-Auth (v2) is designed to close.</p>
+        <p style="margin-top:.75rem;font-size:.92rem;color:var(--ink-soft)"><strong>Why this matters:</strong> NPIs are public. Any AI can look up a provider's NPI in the NPPES registry and use it on a call. v1.3 tells you the caller was automated; it does not tell you the caller was actually authorized by that provider. That gap is real and easy to exploit. NHID-Auth v2 addresses it with provider-signed agent credentials.</p>
       </div>
 
       <!-- Evidence and evaluation links -->

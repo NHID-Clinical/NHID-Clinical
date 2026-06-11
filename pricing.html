@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pricing — NHID-Clinical</title>
+  <title>Licensing &amp; Services — NHID-Clinical</title>
   <link rel="stylesheet" href="/nhid-clinical-ui.css">
   <style>
     .pricing-hero { text-align: center; padding: 4rem 1rem 2rem; }
@@ -36,7 +36,7 @@
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
-      <a href="/governance-simulator.html">Governance Simulator</a>
+      <a href="/simulator.html">Governance Simulator</a>
       <a href="/for-payers.html">For Payers</a>
       <a href="/specification.html">Specification</a>
       <a href="/developers.html">Developers</a>
@@ -49,67 +49,30 @@
 
 <main>
   <div class="pricing-hero">
-    <p class="section-kicker">Simple, transparent pricing</p>
-    <h1>Pay for what you need.</h1>
-    <p>The policy engine is open source and free forever. Pay only for hosted infrastructure, enterprise support, and compliance services.</p>
+    <p class="section-kicker">Licensing &amp; Services</p>
+    <h1>Everything is open. CC BY 4.0.</h1>
+    <p>The specification, the v1.3 policy engine, the v2 cryptographic identity layer, the conformance test suite, the adapters, and the simulator are all free and open — no license fees, no paid tiers, no gated features.</p>
   </div>
 
-  <div class="pricing-grid">
+  <div class="pricing-grid" style="grid-template-columns:1fr;max-width:44rem;margin:0 auto">
     <div class="pricing-card">
-      <h2>Self-Host</h2>
-      <div class="price">Free <span>forever</span></div>
-      <p class="description">The full open-source policy engine. Run it yourself, no strings attached.</p>
+      <h2>What you get, free</h2>
       <ul>
-        <li>173-test conformance suite</li>
-        <li>Policy engine (pure Python, zero deps)</li>
-        <li>NHID-Auth attestation logic</li>
-        <li>PowerShell module</li>
-        <li>OpenAPI spec + Postman collection</li>
+        <li>Full conformance test suite (Python policy engine + TypeScript middleware)</li>
+        <li>v1.3 policy engine (pure Python, zero runtime deps)</li>
+        <li>v2 cryptographic identity layer — public reference implementation</li>
+        <li>VAPI + Twilio adapters and a live demo API (no key required)</li>
+        <li>PowerShell module, OpenAPI spec, Postman collection</li>
         <li>Community support (GitHub + Discord)</li>
       </ul>
-      <a href="https://github.com/thankcheeses/NHID-Clinical" class="cta cta-outline">Get the Repo →</a>
-    </div>
-
-    <div class="pricing-card featured">
-      <h2>Pro</h2>
-      <div class="price">$499 <span>/mo</span></div>
-      <p class="description">Hosted API with managed infrastructure. For voice AI vendors and mid-size payers.</p>
-      <ul>
-        <li>Everything in Self-Host</li>
-        <li>Hosted API (api.nhid-clinical.org)</li>
-        <li>100K policy evaluations/mo</li>
-        <li>JWT key management + rotation</li>
-        <li>Real-time payer screening (&lt;200ms)</li>
-        <li>FHIR + CSV audit export</li>
-        <li>Signed BAA included</li>
-        <li>Email support</li>
-      </ul>
-      <a href="mailto:contact@nhid-clinical.org?subject=Pro Tier Interest" class="cta cta-filled">Start Pilot →</a>
+      <a href="https://github.com/NHID-Clinical/NHID-Clinical" class="cta cta-filled">Get the Repo →</a>
     </div>
 
     <div class="pricing-card">
-      <h2>Enterprise</h2>
-      <div class="price">Custom</div>
-      <p class="description">Dedicated instance, white-label, SLA. For large payers and enterprise voice platforms.</p>
-      <ul>
-        <li>Everything in Pro</li>
-        <li>Unlimited evaluations</li>
-        <li>Dedicated infrastructure</li>
-        <li>mTLS + client certificate auth</li>
-        <li>White-label badges + registry</li>
-        <li>Custom scope + rules</li>
-        <li>99.9% SLA</li>
-        <li>Dedicated support + onboarding</li>
-        <li>Co-branded case study</li>
-      </ul>
-      <a href="mailto:contact@nhid-clinical.org?subject=Enterprise Inquiry" class="cta cta-outline">Contact Us →</a>
+      <h2>Need help running it?</h2>
+      <p class="description">If your organization wants hands-on support — a guided 90-day shadow evaluation, integration help with your voice vendor, or a written conformance assessment — that is available as a service. The software itself stays free either way.</p>
+      <a href="mailto:contact@nhid-clinical.org?subject=Shadow Evaluation Support" class="cta cta-outline">Contact Us →</a>
     </div>
-  </div>
-
-  <div class="pilot-banner">
-    <h3>Pilot Waitlist — First 5 Organizations</h3>
-    <p>The first five organizations to pilot NHID-Clinical get Enterprise tier free for 90 days plus a co-branded case study. No obligation. We'll personally walk you through integration.</p>
-    <a href="mailto:contact@nhid-clinical.org?subject=Pilot Waitlist">Join the Waitlist →</a>
   </div>
 </main>
 
