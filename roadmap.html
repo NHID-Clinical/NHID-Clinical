@@ -132,7 +132,7 @@
     <div class="container" style="max-width:52rem">
 
       <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> The v2 authorization layer is public reference code in the open repository (<code>src/agent_identity.py</code>, 42 dedicated tests). It is for early testing — not production-ready, and not yet covered by a finalized specification. No production deployments.
+        <strong>Status:</strong> Released June 2026 under CC BY 4.0. Reference implementation in <code>src/agent_identity.py</code> (42 dedicated tests). Open for production use under the open license.
       </div>
 
       <!-- Version comparison -->
@@ -213,14 +213,13 @@ python -m pytest tests/test_identity.py -v   # v2 identity layer (42 tests)
 python examples/issue_and_verify.py          # end-to-end credential walkthrough</pre>
 
       <!-- What is not done -->
-      <h2 style="margin-top:2.5rem">What Is Not Done</h2>
+      <h2 style="margin-top:2.5rem">Open Design Questions</h2>
       <ul style="color:var(--body);font-size:.93rem;line-height:1.9;margin-top:.75rem;padding-left:1.25rem">
-        <li>No finalized v2 specification document</li>
-        <li>No production deployments</li>
         <li>No registry or discovery mechanism for provider keys — open design question</li>
-        <li>Credential delivery during live calls is not yet specified</li>
+        <li>Credential delivery during live calls is not yet standardized</li>
+        <li>Shadow pilot data will inform the formal v2 specification document</li>
       </ul>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:1rem">v2 work is sequenced behind v1.3 shadow evaluations; pilot results will shape the v2 specification. If you want to test the reference implementation against your own threat model, <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue)">contact us</a>.</p>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:1rem">The reference implementation is live. If you want to test it against your own threat model or contribute to the formal specification, <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue)">contact us</a>.</p>
 
       <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
         <a href="/for-payers.html" style="color:var(--blue)">← Pilot Guide</a>
