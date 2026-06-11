@@ -1,9 +1,9 @@
 # Changelog
 ## [v2.0] - 2026-06
 - NHID-Auth v2 released: Ed25519 provider-signed agent passports, NPI binding, scoped delegation chains (max 3 hops), per-agent/per-delegation revocation, call-SID nonce binding
-- ElevenLabs Conversational AI agent "Nadine" deployed (agent_4001krn32nmwe5t8mqzgee0w84rj)
+- ElevenLabs Conversational AI agent "Beacon" deployed (agent_4001krn32nmwe5t8mqzgee0w84rj) — outbound claim status caller, voice Eryn, Gemini 2.5 Flash
 - ElevenLabs CTS runner: ATR-01 timestamp fix (per-message time_in_call_secs), EIT-01 persona fix (named human), credit-aware NOT_EXECUTED reporting
-- Canonical agent prompt versioned at agents/nadine_system_prompt.md
+- Canonical agent prompt versioned at agents/beacon_system_prompt.md
 - v2 fully open under CC BY 4.0
 
 ## [v1.3] - 2026-06

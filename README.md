@@ -72,6 +72,23 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 
 ---
 
+## Meet Beacon
+
+Beacon is the NHID-Clinical reference voice agent — an outbound AI administrative caller operating under the v1.3 behavioral baseline and NHID-Auth v2 authorization layer.
+
+Beacon calls insurance offices on behalf of provider organizations to check claim status. Before any PHI is exchanged, Beacon discloses that it is an automated AI system and obtains consent. Every call produces a machine-readable audit trace.
+
+| Property | Value |
+| :--- | :--- |
+| Agent ID | `agent_4001krn32nmwe5t8mqzgee0w84rj` |
+| Voice | Eryn (ElevenLabs) |
+| LLM | Gemini 2.5 Flash |
+| Canonical prompt | [`agents/beacon_system_prompt.md`](agents/beacon_system_prompt.md) |
+
+Beacon is a reference implementation, not a product or commercial offering.
+
+---
+
 ## Regulatory Alignment
 
 | Regulatory Driver | Specific Requirement | NHID-Clinical Control |

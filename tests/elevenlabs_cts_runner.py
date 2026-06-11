@@ -1,7 +1,7 @@
 """
 NHID-Clinical Conformance Test Suite — ElevenLabs Live Agent Runner
 ====================================================================
-Evaluates Nadine (agent_4001krn32nmwe5t8mqzgee0w84rj) against NHID-Clinical
+Evaluates Beacon (agent_4001krn32nmwe5t8mqzgee0w84rj) against NHID-Clinical
 v1.3 + NHID-Auth v2 controls by running structured test conversations via the
 ElevenLabs Conversational AI API.
 
@@ -66,7 +66,7 @@ except ImportError:
 # ── Config ────────────────────────────────────────────────────────────────────
 
 AGENT_ID              = "agent_4001krn32nmwe5t8mqzgee0w84rj"
-CANONICAL_PROMPT_PATH = Path(__file__).parent.parent / "agents" / "nadine_system_prompt.md"
+CANONICAL_PROMPT_PATH = Path(__file__).parent.parent / "agents" / "beacon_system_prompt.md"
 API_BASE              = "https://api.elevenlabs.io"
 API_AGENTS            = f"{API_BASE}/v1/convai/agents/{AGENT_ID}"
 API_CONVS             = f"{API_BASE}/v1/convai/conversations"
@@ -110,7 +110,7 @@ class ScenarioResult:
 # ── Test scenarios ────────────────────────────────────────────────────────────
 # Each scenario is a script of (role, text) turns.
 # "user"  = payer staff (Acme Health)
-# "agent" = Nadine (evaluated)
+# "agent" = Beacon (evaluated)
 # EIT-01 escalation persona: "Sarah Johnson, benefits coordinator" (fix for 2/15 EIT-01 failure)
 
 SCENARIOS: list[dict[str, Any]] = [
@@ -549,13 +549,13 @@ class ElevenLabsClient:
     # ── Agent config ──────────────────────────────────────────────────────
 
     def get_agent_config(self) -> dict:
-        """Fetch Nadine's live configuration."""
+        """Fetch Beacon's live configuration."""
         resp = httpx.get(API_AGENTS, headers=self._headers, timeout=15)
         resp.raise_for_status()
         return resp.json()
 
     def patch_agent_config(self, payload: dict) -> dict:
-        """Push updated configuration to Nadine."""
+        """Push updated configuration to Beacon."""
         resp = httpx.patch(API_AGENTS, headers=self._headers, json=payload, timeout=15)
         resp.raise_for_status()
         return resp.json()
@@ -576,7 +576,7 @@ class ElevenLabsClient:
 # ── Prompt sync ───────────────────────────────────────────────────────────────
 
 def _extract_canonical_prompt() -> Optional[str]:
-    """Load canonical system prompt from agents/nadine_system_prompt.md."""
+    """Load canonical system prompt from agents/beacon_system_prompt.md."""
     if not CANONICAL_PROMPT_PATH.exists():
         return None
     text = CANONICAL_PROMPT_PATH.read_text(encoding="utf-8")
@@ -593,8 +593,8 @@ def sync_prompt(client: ElevenLabsClient, *, dry_run: bool = False) -> dict:
     """
     Task 1 — SYNC CHECK
     -------------------
-    1. Pull Nadine's live system prompt.
-    2. Diff against canonical prompt in agents/nadine_system_prompt.md.
+    1. Pull Beacon's live system prompt.
+    2. Diff against canonical prompt in agents/beacon_system_prompt.md.
     3. Report every divergence.
     4. If canonical exists and differs, push it (unless --dry-run).
     Returns a dict summarising what changed.
@@ -666,7 +666,7 @@ def _write_canonical_from_live(prompt: str, first_message: str) -> None:
     CANONICAL_PROMPT_PATH.parent.mkdir(parents=True, exist_ok=True)
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     header = textwrap.dedent(f"""\
-        # Nadine — NHID-Clinical Reference System Prompt
+        # Beacon — NHID-Clinical Reference System Prompt
         > Canonical source of truth for agent `{AGENT_ID}`.
         > Last synced from live: {now}
         > Repo is source of truth. Push changes here; runner will sync to ElevenLabs.
@@ -687,7 +687,7 @@ def _write_canonical_from_live(prompt: str, first_message: str) -> None:
 
 async def _run_conversation_ws(turns: list[tuple[str, str]], api_key: str) -> list[dict]:
     """
-    Run a scripted conversation with Nadine over WebSocket (text mode).
+    Run a scripted conversation with Beacon over WebSocket (text mode).
     Returns the transcript as a list of {role, message, time_in_call_secs} dicts.
 
     ATR-01 NOTE: we record `time.monotonic()` as `time_in_call_secs` for every
@@ -778,7 +778,7 @@ async def run_scenario(
     dry_run: bool = False,
 ) -> ScenarioResult:
     """
-    Run a single scenario against Nadine.
+    Run a single scenario against Beacon.
     Returns NOT_EXECUTED (not FAIL) on credit exhaustion.
     """
     if dry_run:
@@ -827,7 +827,7 @@ def print_report(results: list[ScenarioResult]) -> int:
 
     print("\n" + "=" * 70)
     print("NHID-Clinical Conformance Test Suite — ElevenLabs Live Agent")
-    print(f"Agent:   Nadine  ({AGENT_ID})")
+    print(f"Agent:   Beacon  ({AGENT_ID})")
     print(f"Date:    {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
     print("=" * 70)
 
@@ -871,7 +871,7 @@ async def _main() -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--dry-run",     action="store_true", help="Show scenarios without calling API")
-    parser.add_argument("--sync-prompt", action="store_true", help="Sync canonical prompt to Nadine first")
+    parser.add_argument("--sync-prompt", action="store_true", help="Sync canonical prompt to Beacon first")
     parser.add_argument("--runs",        type=int,            help="Run only the first N scenarios")
     parser.add_argument("--run-id",      nargs="+",           help="Run specific scenario ID(s)")
     args = parser.parse_args()
@@ -900,7 +900,7 @@ async def _main() -> int:
 
     # Optional prompt sync
     if args.sync_prompt and not args.dry_run:
-        print("Syncing canonical prompt to Nadine…")
+        print("Syncing canonical prompt to Beacon…")
         client = ElevenLabsClient(api_key)
         sync_report = sync_prompt(client, dry_run=False)
         print(f"  Agent:   {sync_report['live_name']}")

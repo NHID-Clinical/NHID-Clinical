@@ -136,9 +136,56 @@
         </div>
         <p class="hero-body" style="margin-top:1rem;font-size:.9rem;color:var(--ink-soft)">CC BY 4.0 &nbsp;·&nbsp; NIST Public Comment: NIST-2025-0035-0026</p>
         <div class="hero-actions" style="flex-wrap:wrap;gap:.75rem">
-          <a class="cta-button" href="/specification.html">View Specification <span aria-hidden="true">→</span></a>
+          <div class="call-demo-form">
+            <input type="tel" id="demo-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your phone number" />
+            <button class="cta-button" id="demo-call-btn" type="button">Receive a Call from Beacon</button>
+          </div>
           <a class="secondary-button" href="/simulator.html">Governance Simulator <span aria-hidden="true">→</span></a>
         </div>
+        <div id="call-status" hidden aria-live="polite"></div>
+        <script>
+        (function () {
+          var btn = document.getElementById('demo-call-btn');
+          var inp = document.getElementById('demo-phone');
+          var status = document.getElementById('call-status');
+          if (!btn || !inp || !status) return;
+
+          function setStatus(msg, ok) {
+            status.textContent = msg;
+            status.hidden = false;
+            status.style.color = ok === false ? 'var(--red, #c0392b)' : 'var(--teal)';
+          }
+
+          btn.addEventListener('click', function () {
+            var raw = inp.value.replace(/\D/g, '');
+            if (!raw.startsWith('1')) raw = '1' + raw;
+            if (raw.length !== 11) {
+              setStatus('Please enter a valid US phone number.', false);
+              return;
+            }
+            var e164 = '+' + raw;
+            btn.disabled = true;
+            setStatus('Dialing…');
+            fetch('https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/demo/call', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ phone: e164 })
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (d.status === 'dialing') {
+                setStatus('Beacon is calling you now. Expect disclosure within the first sentence.');
+              } else {
+                setStatus('Could not initiate call: ' + (d.error || 'unknown error'), false);
+              }
+            })
+            .catch(function () {
+              setStatus('Network error — please try again.', false);
+            })
+            .finally(function () { btn.disabled = false; });
+          });
+        })();
+        </script>
       </div>
       <div class="hero-art" aria-label="NHID-Clinical logo">
         <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical" />
@@ -205,9 +252,9 @@
   <!-- ── Video Overview ─────────────────────────────────────────────────── -->
   <section class="page-section" style="padding-top:1rem">
     <div class="container" style="max-width:52rem">
-      <h2 style="margin-bottom:.5rem">Watch: The Impersonation Latency Trap</h2>
-      <p style="color:var(--body);margin-bottom:1.25rem">A 4-minute overview of the core problem — AI voice agents that disclose their automated status only after PHI has already moved — and how the framework addresses it.</p>
-      <video controls preload="metadata" style="width:100%;border-radius:12px;border:1px solid var(--line);background:#000" aria-label="The Impersonation Latency Trap — Auditing Healthcare's AI Voice Agents">
+      <h2 style="margin-bottom:.5rem">The AI Dilemma</h2>
+      <p style="color:var(--body);margin-bottom:1.25rem">What happens when AI voice agents call your office and you can't tell whether to trust them.</p>
+      <video controls preload="metadata" style="width:100%;border-radius:12px;border:1px solid var(--line);background:#000" aria-label="The AI Dilemma — NHID-Clinical">
         <source src="/assets/media/impersonation-latency-trap.mp4" type="video/mp4"/>
         Your browser does not support embedded video. <a href="/assets/media/impersonation-latency-trap.mp4">Download the video</a>.
       </video>
