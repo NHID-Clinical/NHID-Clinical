@@ -64,7 +64,7 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 | **0** | NPI Gap | The problem — no existing diagram addresses cross-org NPI authorization |
 | **1** | STIR/SHAKEN (RFC 8224) | Carrier number authentication — A/B/C attestation |
 | **2** | **NHID-Clinical v1.3** | Behavioral disclosure baseline — 4 controls, 5 CTS tests |
-| **3** | NHID-Auth v2 | Cryptographic authorization layer (v2 roadmap) |
+| **3** | NHID-Auth v2 | Cryptographic authorization layer — reference implementation live (CC BY 4.0) |
 | **4** | FHIR AuditEvent R4 / IHE BALP | Healthcare-native audit logging |
 | **5** | OpenTelemetry spans | SIEM / enterprise observability export |
 
@@ -116,7 +116,7 @@ Expected output: `173 passed, 18 skipped` in ~1.4s.
 
 ## NHID-Auth v2 — Cryptographic Agent Identity
 
-v1.3 verifies disclosure behavior. v2 verifies authorization: provider-signed agent credentials with NPI binding, scoped delegation, revocation, and call binding. Public reference implementation in `src/agent_identity.py` (42 tests). Not production-ready; no finalized specification yet.
+v1.3 verifies disclosure behavior. v2 verifies authorization: provider-signed agent credentials with NPI binding, scoped delegation chains (max 3 hops), per-agent revocation, and call-SID nonce binding. Reference implementation in `src/agent_identity.py` (42 tests). Released June 2026 under CC BY 4.0.
 
 ```bash
 python -m pytest tests/test_identity.py -v
