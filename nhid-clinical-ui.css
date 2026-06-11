@@ -3039,3 +3039,44 @@ textarea { resize: vertical; min-height: 120px; }
 elevenlabs-convai {
   z-index: 9999;
 }
+
+/* ── Beacon outbound call demo form ──────────────────────────────────────── */
+.call-demo-form {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.call-demo-form input[type="tel"] {
+  flex: 1;
+  min-width: 10rem;
+  max-width: 16rem;
+  padding: .65rem 1rem;
+  border: 1.5px solid var(--line);
+  border-radius: .5rem;
+  font-size: .95rem;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.call-demo-form input[type="tel"]:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(11,110,188,.12);
+}
+
+[data-theme="dark"] .call-demo-form input[type="tel"] {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.15);
+  color: var(--ink);
+}
+
+#call-status {
+  margin-top: .5rem;
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--teal);
+}

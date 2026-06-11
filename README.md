@@ -5,7 +5,7 @@
 Built by a former payer operations lead after handling hundreds of real AI agent calls. Not a standard. Not a certification. An open, testable reference.
 
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
-[![Tests](https://img.shields.io/badge/tests-239%20passing-brightgreen)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
+[![Tests](https://img.shields.io/badge/tests-257%20passing-brightgreen)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](https://nhid-clinical.org/specification.html)
 [![License: CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey)](https://creativecommons.org/licenses/by/4.0/)
 [![NIST](https://img.shields.io/badge/NIST-2025--0035--0026-blue)](https://www.regulations.gov/comment/NIST-2025-0035-0026)
@@ -53,7 +53,7 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 | **DBC-01** | Deceptive Behavior Check | No synthetic voice artifacts designed to impersonate a human |
 | **EIT-01** | Escalation & Intervention | Human escalation path must be communicated and available |
 
-5 deterministic CTS tests · same inputs → identical trace output · 239 passing across the Python policy engine (173) and TypeScript middleware (66)
+5 deterministic CTS tests · same inputs → identical trace output · 257 passing across the Python test suite (191) and TypeScript middleware (66)
 
 ---
 
@@ -69,6 +69,23 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 | **5** | OpenTelemetry spans | SIEM / enterprise observability export |
 
 [Full technical architecture →](https://nhid-clinical.org/technical-stack.html)
+
+---
+
+## Meet Beacon
+
+Beacon is the NHID-Clinical reference voice agent — an outbound AI administrative caller operating under the v1.3 behavioral baseline and NHID-Auth v2 authorization layer.
+
+Beacon calls insurance offices on behalf of provider organizations to check claim status. Before any PHI is exchanged, Beacon discloses that it is an automated AI system and obtains consent. Every call produces a machine-readable audit trace.
+
+| Property | Value |
+| :--- | :--- |
+| Agent ID | `agent_4001krn32nmwe5t8mqzgee0w84rj` |
+| Voice | Eryn (ElevenLabs) |
+| LLM | Gemini 2.5 Flash |
+| Canonical prompt | [`agents/beacon_system_prompt.md`](agents/beacon_system_prompt.md) |
+
+Beacon is a reference implementation, not a product or commercial offering.
 
 ---
 
@@ -110,7 +127,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected output: `173 passed, 18 skipped` in ~1.4s.
+Expected output: `191 passing` in ~1.4s (requires `cryptography` package for identity tests; ~6 skip when no server is running).
 
 ---
 

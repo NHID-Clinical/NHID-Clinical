@@ -261,7 +261,7 @@
   });
 })();
 
-/* ── ElevenLabs Conversational AI widget (Nadine) ─────────────────────── */
+/* ── ElevenLabs Conversational AI widget (Beacon) ─────────────────────── */
 (function () {
   var s = document.createElement('script');
   s.src = 'https://elevenlabs.io/convai-widget/index.js';

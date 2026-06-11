@@ -1,7 +1,10 @@
 """Lambda handler for the NHID Clinical conformance check API."""
 import json
 import os
+import re
 import sys
+import urllib.error
+import urllib.request
 
 # When SAM packages with CodeUri: ., the repo root is /var/task.
 # This insert ensures `src` and `adapters` are importable whether running locally or in Lambda.
@@ -33,6 +36,10 @@ def lambda_handler(event: dict, context) -> dict:
             "nhid_spec_version": NHID_SPEC_VERSION,
         })
 
+    # Outbound call demo route
+    if "/demo/call" in path:
+        return _handle_demo_call(event)
+
     # Vendor adapter routes
     if "/adapters/vapi/" in path:
         return _handle_vendor(event, "vapi")
@@ -61,6 +68,62 @@ def lambda_handler(event: dict, context) -> dict:
         return _error(500, f"Policy evaluation failed: {exc}")
 
     return _ok(_decision_to_dict(decision))
+
+
+_BEACON_AGENT_ID = "agent_4001krn32nmwe5t8mqzgee0w84rj"
+
+
+def _handle_demo_call(event: dict) -> dict:
+    """Trigger an outbound ElevenLabs call to the provided phone number."""
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    phone = str(body.get("phone", "")).strip()
+    if not phone:
+        return _error(400, "Missing required field: 'phone'")
+
+    digits = re.sub(r"\D", "", phone)
+    if not digits.startswith("1"):
+        digits = "1" + digits
+    if len(digits) != 11:
+        return _error(400, "Phone number must be a valid US number in E.164 format")
+    e164 = "+" + digits
+
+    api_key = os.environ.get("ELEVENLABS_API_KEY", "")
+    phone_number_id = os.environ.get("ELEVENLABS_PHONE_NUMBER_ID", "")
+    if not api_key or not phone_number_id:
+        return _error(503, "Outbound call service not configured")
+
+    url = f"https://api.elevenlabs.io/v1/convai/phone-numbers/{phone_number_id}/outbound-call"
+    payload = json.dumps({
+        "agent_id": _BEACON_AGENT_ID,
+        "to_number": e164,
+    }).encode()
+
+    req = urllib.request.Request(
+        url,
+        data=payload,
+        headers={"xi-api-key": api_key, "Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            resp_body = json.loads(resp.read())
+            return _ok({
+                "status": "dialing",
+                "call_id": resp_body.get("call_id", resp_body.get("conversation_id", "")),
+            })
+    except urllib.error.HTTPError as exc:
+        err_text = exc.read().decode("utf-8", errors="replace")
+        return _error(exc.code, f"ElevenLabs API error: {err_text}")
+    except Exception as exc:  # noqa: BLE001
+        return _error(500, f"Outbound call failed: {exc}")
 
 
 def _handle_vendor(event: dict, vendor: str) -> dict:
