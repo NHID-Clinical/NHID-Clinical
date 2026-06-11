@@ -214,82 +214,27 @@
 
       <!-- Run it yourself -->
       <h2 style="margin-top:2.5rem">Run It Yourself</h2>
-      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body)">git clone https://github.com/thankcheeses/NHID-Clinical.git
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body)">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
-git checkout claude/code-review-fixes-98Ir1
-python adapters/twilio_adapter.py</pre>
+pip install -r requirements.txt
+python -m pytest tests/ -v</pre>
       <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">Replace <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">SAMPLE_TWILIO_COMPLIANT</code> or <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">SAMPLE_TWILIO_NONCOMPLIANT</code> in the adapter with your own call transcript to test your vendor's output.</p>
 
       <!-- Other vendors -->
       <h2 style="margin-top:2.5rem">Other Vendor Formats</h2>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The Twilio adapter demonstrates the mapping pattern. The same approach applies to other voice platforms — the output schema is always the same NHID-Clinical trace format.</p>
-      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.9rem">
-        <thead>
-          <tr>
-            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Platform</th>
-            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Status</th>
-            <th style="text-align:left;padding:.6rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Twilio Voice Intelligence</td>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Adapter available</td>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">See <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">adapters/twilio_adapter.py</code></td>
-          </tr>
-          <tr>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Bland.ai</td>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">🔲 Planned</td>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Transcript format documented; adapter not yet written</td>
-          </tr>
-          <tr>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Vapi</td>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Adapter available</td>
-            <td style="padding:.65rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">See <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">adapters/vapi_adapter.py</code> · Live endpoint: <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">POST /v1/adapters/vapi/check</code> (no key required)</td>
-          </tr>
-          <tr>
-            <td style="padding:.65rem .9rem;color:var(--body)">Retell AI</td>
-            <td style="padding:.65rem .9rem;color:var(--body)">🔲 Planned</td>
-            <td style="padding:.65rem .9rem;color:var(--body)">Transcript format documented; adapter not yet written</td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="color:var(--ink-soft);font-size:.88rem;line-height:1.7;margin-top:.75rem">If you have logs from a platform not listed here, email <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue)">contact@nhid-clinical.org</a> — we'll build the adapter together.</p>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">adapters/</code> directory contains format adapters that convert vendor-specific call transcripts to NHID-Clinical event traces. Available: Twilio Voice Intelligence, VAPI. Bland.ai and Retell AI adapters are planned.</p>
 
-      <!-- VAPI demo -->
-      <h2 style="margin-top:2.5rem">VAPI — Non-Compliant Call Demo</h2>
-      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.5rem;color:var(--ink-soft)">POST a native VAPI call payload directly. No NHID schema required. This call requests PHI before the bot identifies itself as automated — expect an IDG-01 violation.</p>
-      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.82rem;line-height:1.8;overflow-x:auto;color:var(--body);margin-top:1rem">curl -s -X POST \
-  https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
-  -H "Content-Type: application/json" \
-  -d '{
-    "call": {"id": "call_demo_001", "startedAt": "2026-06-09T10:00:00Z"},
-    "messages": [
-      {"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
-      {"role": "user", "message": "Sure — NPI is 1234567890.", "secondsFromStart": 3.1},
-      {"role": "bot",  "message": "Thank you. I am an automated system.", "secondsFromStart": 5.8}
-    ]
-  }'</pre>
-      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.75rem">Expected response: <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">"conformant": false</code> with an <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">IDG-01</code> violation — identity not disclosed before data exchange. Fix: move the disclosure to the first message and re-run. Result flips to <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">"conformant": true</code>.</p>
-
-      <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
-        <a href="/developers.html" style="color:var(--blue)">← Developers</a>
-        &nbsp;·&nbsp;
-        <a href="/specification.html" style="color:var(--blue)">Spec</a>
-        &nbsp;·&nbsp;
-        <a href="/for-payers.html" style="color:var(--blue)">Pilot Guide</a>
-      </p>
     </div>
   </section>
 
   <section class="container closing-section">
     <div class="closing-panel">
       <div>
-        <p class="section-kicker">Have real vendor logs?</p>
-        <h2>Send them and we'll build the adapter together.</h2>
-        <p>Redact any real identifiers first. The goal is to show the mapping works on production-format data.</p>
+        <p class="section-kicker">Open for feedback</p>
+        <h2>Questions or suggestions?</h2>
+        <p>Join the community discussion or reach out directly.</p>
       </div>
-      <a class="closing-button" href="mailto:contact@nhid-clinical.org">Contact →</a>
+      <a class="closing-button" href="/community.html">Community →</a>
     </div>
   </section>
 </main>
@@ -304,7 +249,7 @@ python adapters/twilio_adapter.py</pre>
       <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
       <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
-    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+
   </div>
 </footer>
 

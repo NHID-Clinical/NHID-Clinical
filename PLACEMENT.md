@@ -29,7 +29,7 @@ and cannot run standalone, so they remain only in `NHID-Clinical-SaaS`.
 From a fresh clone of the **public** repo:
 
 ```bash
-git clone https://github.com/thankcheeses/NHID-Clinical.git
+git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 # copy the two files from this bundle into place:
 #   src/voice_policy.py

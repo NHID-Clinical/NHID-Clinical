@@ -115,7 +115,7 @@ NHID-Clinical/
 ├── adapters/        # Vendor adapters — VAPI, Twilio (native payload → NHID event)
 ├── functions/       # AWS Lambda handler
 ├── NHIDClinical.psm1  # PowerShell module for payer teams
-└── specs/           # PDF artifacts — Core Specification + Operational Blueprint
+101	└── specs/           # PDF artifacts — Core Specification + Operational Blueprint
 ```
 
 ## Quick Start

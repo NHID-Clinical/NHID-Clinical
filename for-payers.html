@@ -250,12 +250,18 @@
 
         <div class="pilot-card">
           <p class="step-header"><span class="step-num">2</span> Weeks 3–6: Request Sandbox Testing</p>
-          <p>Ask your vendor to:</p>
+          <p>Ask your vendor or technical contact to test NHID-Clinical against their voice agent in a sandbox environment. It takes <strong>under 5 minutes</strong>.</p>
+          <p><strong>Step-by-step Instructions for the Vendor:</strong></p>
           <ol>
-            <li>Clone the NHID-Clinical repository: <code>git clone https://github.com/NHID-Clinical/NHID-Clinical.git</code></li>
-            <li>Install dependencies: <code>pip install -r requirements.txt</code></li>
-            <li>Run the conformance test suite in their sandbox: <code>python -m pytest tests/ -v</code></li>
-            <li>Send you the resulting JSON trace logs (100 calls recommended)</li>
+            <li><strong>Clone the repository</strong><br><code>git clone https://github.com/NHID-Clinical/NHID-Clinical.git</code></li>
+            <li><strong>Install dependencies</strong><br><code>pip install -r requirements.txt</code></li>
+            <li><strong>Run the conformance test suite</strong><br><code>python -m pytest tests/ -v</code></li>
+            <li><strong>Send us the results</strong>
+              <ul>
+                <li>Screenshot or copy the full terminal output (especially the summary at the end)</li>
+                <li>Optionally include 10–100 sample trace logs from the test run</li>
+              </ul>
+            </li>
           </ol>
           <p style="margin-top:.65rem">📎 <strong>Template email to vendor:</strong> <a href="#email-template" style="color:var(--blue)">See below ↓</a></p>
         </div>
