@@ -3035,11 +3035,6 @@ textarea { resize: vertical; min-height: 120px; }
   pointer-events: none;
 }
 
-/* ElevenLabs widget — ensure it stays above all content */
-elevenlabs-convai {
-  z-index: 9999;
-}
-
 /* ── Beacon outbound call demo form ──────────────────────────────────────── */
 .call-demo-form {
   display: flex;
