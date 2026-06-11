@@ -257,26 +257,26 @@
     <div class="container" style="max-width:52rem">
       <h2>Where NHID-Clinical sits in the stack</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem;max-width:60ch">STIR/SHAKEN verifies the phone number. NHID-Clinical is the layer above: it standardizes what the AI agent says about itself, when it says it, and what gets logged. The v2 cryptographic authorization layer — public reference implementation in the repository — verifies whether the agent is actually authorized to act for the provider.</p>
-      <div style="margin-top:2rem;display:grid;gap:.5rem">
-        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.76)">
-          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-soft)">Voice carrier</span>
-          <span style="color:var(--body);font-size:.9rem">PSTN / VoIP transmission</span>
+      <div class="stack-grid">
+        <div class="stack-row">
+          <span class="stack-row-label">Voice carrier</span>
+          <span class="stack-row-desc">PSTN / VoIP transmission</span>
         </div>
-        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.76)">
-          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-soft)">STIR/SHAKEN</span>
-          <span style="color:var(--body);font-size:.9rem">Phone number attestation (existing standard)</span>
+        <div class="stack-row">
+          <span class="stack-row-label">STIR/SHAKEN</span>
+          <span class="stack-row-desc">Phone number attestation (existing standard)</span>
         </div>
-        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid rgba(11,110,188,.35);border-left:4px solid var(--blue);border-radius:.75rem;background:var(--blue-soft)">
-          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink)">NHID-Clinical v1.3</span>
-          <span style="color:var(--ink-soft);font-size:.9rem">Disclosure, escalation, audit trace <span style="display:inline-flex;align-items:center;padding:.15rem .5rem;border-radius:999px;background:rgba(11,110,188,.12);color:var(--blue);font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-left:.5rem">this layer</span></span>
+        <div class="stack-row stack-row-active">
+          <span class="stack-row-label">NHID-Clinical v1.3</span>
+          <span class="stack-row-desc">Disclosure, escalation, audit trace <span class="stack-layer-badge">this layer</span></span>
         </div>
-        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.76)">
-          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-soft)">NHID-Auth v2</span>
-          <span style="color:var(--body);font-size:.9rem">Cryptographic authorization (planned, not yet public)</span>
+        <div class="stack-row">
+          <span class="stack-row-label">NHID-Auth v2</span>
+          <span class="stack-row-desc">Cryptographic authorization — <a href="/roadmap.html" style="color:var(--blue);font-weight:600">public reference implementation</a></span>
         </div>
-        <div style="display:grid;grid-template-columns:14rem 1fr;gap:1.25rem;align-items:center;padding:1rem 1.25rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(255,255,255,.76)">
-          <span style="font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-soft)">Payer system</span>
-          <span style="color:var(--body);font-size:.9rem">Eligibility, claims, authorization workflows</span>
+        <div class="stack-row">
+          <span class="stack-row-label">Payer system</span>
+          <span class="stack-row-desc">Eligibility, claims, authorization workflows</span>
         </div>
       </div>
     </div>
