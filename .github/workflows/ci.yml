@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 197 passed, 0 skipped"
+    name: "Unit invariant: 198 passed, 0 skipped"
     runs-on: ubuntu-latest
 
     steps:

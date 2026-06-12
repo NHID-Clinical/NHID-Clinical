@@ -324,3 +324,15 @@ def test_auth_verification_milestone_when_provider_npi(minimal_session, conforma
 def test_no_auth_milestone_without_provider_npi(minimal_session, conformant_event):
     b = build_audit_bundle(minimal_session, conformant_event)
     assert "nhid-auth-verification" not in _milestones(b)
+
+
+# ── Test 25: fullUrl required by R4 collection bundles ─────────────────────
+
+def test_entry_has_full_url(minimal_session, conformant_event):
+    """R4 requires fullUrl on every entry in a collection Bundle."""
+    b = build_audit_bundle(minimal_session, conformant_event)
+    for i, entry in enumerate(b["entry"]):
+        assert "fullUrl" in entry, f"entry[{i}] missing fullUrl"
+        assert entry["fullUrl"].startswith("urn:uuid:"), (
+            f"entry[{i}] fullUrl should be urn:uuid:, got {entry['fullUrl']!r}"
+        )

@@ -78,6 +78,12 @@ def _bundle_id(session_id: str) -> str:
     return f"nhid-bundle-{digest}"
 
 
+def _ae_full_url(ae_id: str) -> str:
+    """Deterministic urn:uuid fullUrl for a Bundle entry (required by R4 collection bundles)."""
+    h = hashlib.sha256(ae_id.encode()).hexdigest()
+    return f"urn:uuid:{h[:8]}-{h[8:12]}-{h[12:16]}-{h[16:20]}-{h[20:32]}"
+
+
 # ── Reusable structural elements ───────────────────────────────────────────
 
 def _source_element() -> dict[str, Any]:
@@ -387,7 +393,7 @@ def build_audit_bundle(
         "id": _bundle_id(session_id),
         "type": "collection",
         "timestamp": recorded,
-        "entry": [{"resource": e} for e in entries],
+        "entry": [{"fullUrl": _ae_full_url(e["id"]), "resource": e} for e in entries],
     }
 
 

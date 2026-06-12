@@ -2,9 +2,10 @@
   "resourceType": "Bundle",
   "id": "nhid-bundle-cf6bfd57c1f6ef3ad089",
   "type": "collection",
-  "timestamp": "2026-06-12T14:30:00.000Z",
+  "timestamp": "2026-06-09T14:30:00.000Z",
   "entry": [
     {
+      "fullUrl": "urn:uuid:a66ed4e7-e463-610b-bc02-d28af6bb57c5",
       "resource": {
         "resourceType": "AuditEvent",
         "id": "nhid-ae-74c52afb24b5c83c",
@@ -21,7 +22,7 @@
           }
         ],
         "action": "E",
-        "recorded": "2026-06-12T14:30:00.000Z",
+        "recorded": "2026-06-09T14:30:00.000Z",
         "outcome": "0",
         "outcomeDesc": "Call session initialised",
         "agent": [
@@ -120,6 +121,7 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:e6dca530-1d3a-b1a7-5dcf-5b27d2125af1",
       "resource": {
         "resourceType": "AuditEvent",
         "id": "nhid-ae-a54cc51015487d44",
@@ -136,7 +138,7 @@
           }
         ],
         "action": "E",
-        "recorded": "2026-06-12T14:30:05.000Z",
+        "recorded": "2026-06-09T14:30:05.000Z",
         "outcome": "0",
         "outcomeDesc": "AI identity disclosed and assertion text confirmed",
         "agent": [
@@ -249,6 +251,7 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:8a6d1623-eeb1-b675-e9dd-cb4a24465f5a",
       "resource": {
         "resourceType": "AuditEvent",
         "id": "nhid-ae-3077f7ee55ff4b5e",
@@ -265,7 +268,7 @@
           }
         ],
         "action": "E",
-        "recorded": "2026-06-12T14:30:00.000Z",
+        "recorded": "2026-06-09T14:30:00.000Z",
         "outcome": "0",
         "outcomeDesc": "Provider NPI authorization reference recorded: 1234567890",
         "agent": [
@@ -364,6 +367,7 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:ecec97b8-edf8-0fd5-c26e-ccd54a0954bd",
       "resource": {
         "resourceType": "AuditEvent",
         "id": "nhid-ae-f4be6eb1e22c5fee",
@@ -380,7 +384,7 @@
           }
         ],
         "action": "E",
-        "recorded": "2026-06-12T14:30:00.000Z",
+        "recorded": "2026-06-09T14:30:00.000Z",
         "outcome": "0",
         "outcomeDesc": "PDX-01 gate cleared \u2014 disclosure confirmed before PHI exchange",
         "agent": [
@@ -479,6 +483,7 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:359d8b91-3260-2f44-55ba-79f20a043981",
       "resource": {
         "resourceType": "AuditEvent",
         "id": "nhid-ae-3da40c435aefdcd4",
@@ -495,7 +500,7 @@
           }
         ],
         "action": "R",
-        "recorded": "2026-06-12T14:30:00.000Z",
+        "recorded": "2026-06-09T14:30:00.000Z",
         "outcome": "0",
         "outcomeDesc": "PHI exchange begun \u2014 categories: claim_number, npi",
         "agent": [
@@ -608,6 +613,7 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:352aeae5-2155-e1d1-d441-add1cc2e62ff",
       "resource": {
         "resourceType": "AuditEvent",
         "id": "nhid-ae-3eaa3bd3a16312da",
@@ -624,7 +630,7 @@
           }
         ],
         "action": "E",
-        "recorded": "2026-06-12T14:35:00.000Z",
+        "recorded": "2026-06-09T14:31:00.000Z",
         "outcome": "0",
         "outcomeDesc": "Human escalation connected successfully",
         "agent": [
@@ -723,6 +729,7 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:bd068dc3-121b-7e47-a87c-da3f56eed2c2",
       "resource": {
         "resourceType": "AuditEvent",
         "id": "nhid-ae-36516f2460882ea2",
@@ -739,7 +746,7 @@
           }
         ],
         "action": "E",
-        "recorded": "2026-06-12T14:30:00.000Z",
+        "recorded": "2026-06-09T14:30:00.000Z",
         "outcome": "0",
         "outcomeDesc": "No policy decision recorded",
         "agent": [
