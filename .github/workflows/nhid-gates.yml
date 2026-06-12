@@ -195,9 +195,51 @@ jobs:
           print(f'OK: {elapsed_ms:.0f}ms for 1000 verifications')
           "
 
+  fhir_validation:
+    name: FHIR R4 AuditEvent validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache FHIR validator
+        uses: actions/cache@v4
+        id: validator-cache
+        with:
+          path: tools/validator_cli.jar
+          key: fhir-validator-v1
+
+      - name: Download FHIR validator
+        if: steps.validator-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p tools
+          curl -fsSL -o tools/validator_cli.jar \
+            https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar
+
+      - name: Validate FHIR Bundles against R4
+        run: |
+          FAIL=0
+          for f in examples/fhir/*.json; do
+            echo "=== Validating $f ==="
+            java -jar tools/validator_cli.jar -version 4.0.1 "$f" 2>&1 | tee /tmp/fhir-out.txt
+            if [ ${PIPESTATUS[0]} -ne 0 ]; then
+              echo "FHIR VALIDATION ERROR in $f"
+              FAIL=1
+            fi
+          done
+          if [ "$FAIL" -ne 0 ]; then
+            echo "One or more FHIR bundles failed validation."
+            exit 1
+          fi
+          echo "All FHIR bundles valid against R4."
+
   release_gate:
     name: market readiness gate
     runs-on: ubuntu-latest
-    needs: [test, identity_determinism, api_contract, security_gates, performance_smoke]
+    needs: [test, identity_determinism, api_contract, security_gates, performance_smoke, fhir_validation]
     steps:
       - run: echo "ALL GATES PASSED - ELIGIBLE FOR MERGE"

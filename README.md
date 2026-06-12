@@ -2,7 +2,7 @@
 
 **A voluntary behavioral baseline for AI voice agents in B2B healthcare payer–provider calls — with an open cryptographic authorization layer (v2) in reference implementation.**
 
-Built by a former payer operations lead after handling hundreds of real AI agent calls. Not a standard. Not a certification. An open, testable reference.
+Built by a former payer operations associate who saw the problem firsthand on live calls. Not a standard. Not a certification. An open, testable reference.
 
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
 [![Tests](https://img.shields.io/badge/tests-257%20passing-brightgreen)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
