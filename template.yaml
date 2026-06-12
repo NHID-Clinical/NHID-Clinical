@@ -113,6 +113,12 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/pilot/enroll
             Method: POST
+        CTSEvaluatePost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/cts/evaluate
+            Method: POST
         HealthGet:
           Type: Api
           Properties:

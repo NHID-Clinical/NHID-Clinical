@@ -5,7 +5,7 @@
 Built by a former payer operations associate who saw the problem firsthand on live calls. Not a standard. Not a certification. An open, testable reference.
 
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
-[![Tests](https://img.shields.io/badge/tests-327%20passing-brightgreen)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
+[![Tests](https://img.shields.io/badge/tests-336%20passing-brightgreen)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](https://nhid-clinical.org/specification.html)
 [![License: CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey)](https://creativecommons.org/licenses/by/4.0/)
 [![NIST](https://img.shields.io/badge/NIST-2025--0035--0026-blue)](https://www.regulations.gov/comment/NIST-2025-0035-0026)
@@ -47,6 +47,7 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 | `GET /v1/public/vendor/{id}/badge` | none | Public CAS badge SVG (embeddable) |
 | `GET /v1/vendor/metrics/summary` | `x-api-key` | Per-vendor pass rate + CAS trend |
 | `POST /v1/pilot/enroll` | none | Shadow pilot enrollment |
+| `POST /v1/cts/evaluate` | none | Run CTS YAML test suite against the policy engine |
 | `POST /v1/conformance/check` | `x-api-key` | Production conformance check |
 
 **New here?** Start with the [5-minute quickstart](docs/5-minute-quickstart.md), then the [staged v2 integration guide](docs/v2-integration-guide.md) (Tier 0: 15 min → Tier 2: 1 day).
@@ -62,7 +63,7 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 | **DBC-01** | Deceptive Behavior Check | No synthetic voice artifacts designed to impersonate a human |
 | **EIT-01** | Escalation & Intervention | Human escalation path must be communicated and available |
 
-5 deterministic CTS tests · same inputs → identical trace output · 327 passing across the Python test suite (261) and TypeScript middleware (66)
+5 deterministic CTS tests · same inputs → identical trace output · 336 passing across the Python test suite (270) and TypeScript middleware (66)
 
 ---
 

@@ -309,7 +309,9 @@ _DBC_IMPERSONATION_PHRASES: tuple[str, ...] = (
     "speaking with a live agent",
     "i'm a real",
     "you're talking to a person",
-    "human representative",
+    "i am a human representative",
+    "i'm a human representative",
+    "this is a human representative",
     "a person calling",
     "real person calling",
 )
@@ -394,7 +396,10 @@ def evaluate_dbc01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
 # ──────────────────────────────────────────────────────────────────────────
 
 _ESCALATION_TRIGGERS: tuple[str, ...] = (
-    "speak to a human", "talk to a person", "representative",
+    "speak to a human", "talk to a person", "speak with a human",
+    "speak to a representative", "talk to a representative",
+    "speak with a representative", "talk to a human representative",
+    "speak with a human representative", "speak to a human representative",
     "transfer me", "speak to someone", "real person",
     "human agent", "supervisor", "manager",
     "i need help", "can't help me", "not what i asked",
