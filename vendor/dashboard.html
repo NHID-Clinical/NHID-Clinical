@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NHID-Clinical — Vendor Compliance Dashboard</title>
+<style>
+  :root { --blue:#0b6ebc; --green:#2da44e; --amber:#d4a72c; --red:#cf222e; --grey:#6e7781; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:#f6f8fa; color:#1f2328; padding:2rem; }
+  .container { max-width:880px; margin:0 auto; }
+  h1 { font-size:1.4rem; margin-bottom:.25rem; }
+  .sub { color:var(--grey); font-size:.9rem; margin-bottom:1.5rem; }
+  .controls { display:flex; gap:.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+  input,select,button { padding:.5rem .75rem; border:1px solid #d0d7de; border-radius:6px; font-size:.9rem; }
+  button { background:var(--blue); color:#fff; border:none; cursor:pointer; }
+  button:hover { opacity:.9; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+  .card { background:#fff; border:1px solid #d0d7de; border-radius:8px; padding:1rem; }
+  .card .label { font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:var(--grey); }
+  .card .value { font-size:1.8rem; font-weight:600; margin-top:.25rem; }
+  .tier-Verified { color:var(--green); }
+  .tier-Conditional { color:var(--blue); }
+  .tier-Review { color:var(--amber); }
+  .tier-Denied { color:var(--red); }
+  .badge-box { background:#fff; border:1px solid #d0d7de; border-radius:8px; padding:1rem; margin-bottom:1.5rem; }
+  .badge-box h2 { font-size:1rem; margin-bottom:.5rem; }
+  .badge-box pre { background:#f6f8fa; padding:.75rem; border-radius:6px; font-size:.78rem; overflow-x:auto; margin-top:.5rem; }
+  .error { background:#fff1f0; border:1px solid var(--red); color:var(--red); border-radius:8px; padding:.75rem 1rem; margin-bottom:1rem; display:none; }
+  footer { color:var(--grey); font-size:.78rem; margin-top:2rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>NHID-Clinical Vendor Compliance Dashboard</h1>
+  <p class="sub">Per-vendor conformance metrics from the live NHID-CAS API · v1.3</p>
+
+  <div class="controls">
+    <input id="vendorId" type="text" placeholder="vendor_id" />
+    <input id="apiKey" type="password" placeholder="x-api-key" />
+    <select id="days">
+      <option value="7">Last 7 days</option>
+      <option value="30" selected>Last 30 days</option>
+      <option value="90">Last 90 days</option>
+    </select>
+    <button id="loadBtn">Load Metrics</button>
+  </div>
+
+  <div class="error" id="errorBox"></div>
+
+  <div class="cards">
+    <div class="card"><div class="label">Calls Evaluated</div><div class="value" id="callsTotal">—</div></div>
+    <div class="card"><div class="label">Pass Rate</div><div class="value" id="passRate">—</div></div>
+    <div class="card"><div class="label">Average CAS</div><div class="value" id="casAvg">—</div></div>
+    <div class="card"><div class="label">CAS Range</div><div class="value" id="casRange">—</div></div>
+  </div>
+
+  <div class="badge-box">
+    <h2>Public CAS Badge</h2>
+    <div id="badgePreview"></div>
+    <pre id="badgeSnippet">Load metrics to generate your embed snippet.</pre>
+  </div>
+
+  <footer>
+    NHID-Clinical is a voluntary open proposal (CC BY 4.0). Not an accredited standard.
+    Not a regulatory requirement. · <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+  </footer>
+</div>
+
+<script>
+const API_BASE = "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod";
+
+document.getElementById("loadBtn").addEventListener("click", loadMetrics);
+
+async function loadMetrics() {
+  const vendorId = document.getElementById("vendorId").value.trim();
+  const apiKey = document.getElementById("apiKey").value.trim();
+  const days = document.getElementById("days").value;
+  const errorBox = document.getElementById("errorBox");
+  errorBox.style.display = "none";
+
+  if (!vendorId) { return showError("Enter a vendor_id."); }
+
+  try {
+    const resp = await fetch(
+      `${API_BASE}/v1/vendor/metrics/summary?vendor_id=${encodeURIComponent(vendorId)}&days=${days}`,
+      { headers: apiKey ? { "x-api-key": apiKey } : {} }
+    );
+    if (!resp.ok) {
+      const body = await resp.json().catch(() => ({}));
+      return showError(body.error || `API returned ${resp.status}`);
+    }
+    const m = await resp.json();
+    document.getElementById("callsTotal").textContent = m.calls_total;
+    document.getElementById("passRate").textContent = (m.pass_rate * 100).toFixed(1) + "%";
+    document.getElementById("casAvg").textContent = m.cas_avg.toFixed(4);
+    document.getElementById("casRange").textContent = `${m.cas_min.toFixed(2)}–${m.cas_max.toFixed(2)}`;
+
+    const badgeUrl = `${API_BASE}/v1/public/vendor/${encodeURIComponent(vendorId)}/badge`;
+    document.getElementById("badgePreview").innerHTML =
+      `<img src="${badgeUrl}" alt="NHID-CAS badge for ${vendorId}" />`;
+    document.getElementById("badgeSnippet").textContent =
+      `<a href="https://nhid-clinical.org" title="NHID-Clinical CAS badge">\n` +
+      `  <img src="${badgeUrl}" alt="NHID-CAS compliance badge for ${vendorId}" />\n` +
+      `</a>`;
+  } catch (err) {
+    showError("Network error: " + err.message);
+  }
+}
+
+function showError(msg) {
+  const errorBox = document.getElementById("errorBox");
+  errorBox.textContent = msg;
+  errorBox.style.display = "block";
+}
+</script>
+</body>
+</html>

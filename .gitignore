@@ -5,9 +5,14 @@ __pycache__/
 
 # Local output files — not for the repo
 *.pdf
-docs/
+docs/*
+!docs/*.md
 scripts/generate_voiceadmin_onepager.py
 
 .python_history
 *.patch
 go.py - Copy.py
+
+# Local SQLite event store
+nhid_events.db
+nhid_events.db-*
