@@ -63,6 +63,24 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/adapters/twilio/check
             Method: POST
+        VonageAdapterPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/adapters/vonage/check
+            Method: POST
+        RetellAdapterPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/adapters/retell/check
+            Method: POST
+        ConnectAdapterPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/adapters/connect/check
+            Method: POST
         DemoCallPost:
           Type: Api
           Properties:

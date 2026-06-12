@@ -1,8 +1,9 @@
+import json
 import os
 import sqlite3
 import time
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -47,6 +48,20 @@ def _get_db_connection() -> sqlite3.Connection:
     )
     conn.execute(
         "CREATE UNIQUE INDEX IF NOT EXISTS idx_event_unique ON events(session_id, request_id, event_type);"
+    )
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS conformance_results ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "vendor_id TEXT NOT NULL,"
+        "session_id TEXT NOT NULL,"
+        "timestamp TEXT NOT NULL,"
+        "cas_score REAL NOT NULL,"
+        "conformant INTEGER NOT NULL,"
+        "control_results TEXT"
+        ");"
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_cr_vendor_ts ON conformance_results(vendor_id, timestamp);"
     )
     conn.commit()
     return conn
@@ -341,3 +356,93 @@ def get_session_trace(session_id: str) -> Dict[str, Any]:
 
 def replay(session_id: str) -> List[Dict[str, Any]]:
     return get_events(session_id)
+
+
+# ── Vendor conformance metrics ────────────────────────────────────────────────
+
+def record_conformance_result(
+    vendor_id: str,
+    session_id: str,
+    cas_score: float,
+    conformant: bool,
+    control_results: Dict[str, Any] | None = None,
+) -> None:
+    """Persist a single conformance check result for vendor trend analytics."""
+    if not vendor_id:
+        raise ValueError("vendor_id is required")
+    if not session_id:
+        raise ValueError("session_id is required")
+
+    def operation():
+        conn = _get_db_connection()
+        try:
+            with conn:
+                conn.execute(
+                    "INSERT INTO conformance_results "
+                    "(vendor_id, session_id, timestamp, cas_score, conformant, control_results) "
+                    "VALUES (?, ?, ?, ?, ?, ?)",
+                    (
+                        vendor_id,
+                        session_id,
+                        _utc_timestamp(),
+                        float(cas_score),
+                        1 if conformant else 0,
+                        json.dumps(control_results) if control_results else None,
+                    ),
+                )
+        finally:
+            conn.close()
+
+    _run_sqlite_with_retry(operation)
+
+
+def get_vendor_metrics(vendor_id: str, days: int = 30) -> Dict[str, Any]:
+    """
+    Return aggregated conformance metrics for a vendor over the last N days.
+
+    Returns:
+        {
+            "vendor_id": str,
+            "period_days": int,
+            "calls_total": int,
+            "pass_rate": float,        # 0.0–1.0
+            "cas_avg": float,          # average CAS score
+            "cas_min": float,
+            "cas_max": float,
+        }
+    """
+    if not vendor_id:
+        raise ValueError("vendor_id is required")
+
+    def operation():
+        conn = _get_db_connection()
+        try:
+            cutoff = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            # SQLite date arithmetic: filter rows within the last N days
+            row = conn.execute(
+                "SELECT "
+                "  COUNT(*) AS total,"
+                "  SUM(conformant) AS passed,"
+                "  AVG(cas_score) AS cas_avg,"
+                "  MIN(cas_score) AS cas_min,"
+                "  MAX(cas_score) AS cas_max "
+                "FROM conformance_results "
+                "WHERE vendor_id = ? "
+                "  AND timestamp >= datetime('now', ? || ' days')",
+                (vendor_id, f"-{days}"),
+            ).fetchone()
+            total = row["total"] or 0
+            passed = row["passed"] or 0
+            return {
+                "vendor_id": vendor_id,
+                "period_days": days,
+                "calls_total": total,
+                "pass_rate": round(passed / total, 4) if total > 0 else 0.0,
+                "cas_avg": round(row["cas_avg"] or 0.0, 4),
+                "cas_min": round(row["cas_min"] or 0.0, 4),
+                "cas_max": round(row["cas_max"] or 0.0, 4),
+            }
+        finally:
+            conn.close()
+
+    return _run_sqlite_with_retry(operation)

@@ -26,6 +26,9 @@ def lambda_handler(event: dict, context) -> dict:
       POST /v1/demo/check                    — same as conformance/check, no API key required
       POST /v1/adapters/vapi/check           — accepts native VAPI call payload, no API key
       POST /v1/adapters/twilio/check         — accepts native Twilio call payload, no API key
+      POST /v1/adapters/vonage/check         — accepts native Vonage call payload, no API key
+      POST /v1/adapters/retell/check         — accepts native Retell AI payload, no API key
+      POST /v1/adapters/connect/check        — accepts Amazon Connect Contact Lens payload
       POST /v1/webhooks/call-progress        — turn-by-turn evaluation, no API key required
     """
     method = event.get("httpMethod", "POST")
@@ -51,6 +54,12 @@ def lambda_handler(event: dict, context) -> dict:
         return _handle_vendor(event, "vapi")
     if "/adapters/twilio/" in path:
         return _handle_vendor(event, "twilio")
+    if "/adapters/vonage/" in path:
+        return _handle_vendor(event, "vonage")
+    if "/adapters/retell/" in path:
+        return _handle_vendor(event, "retell")
+    if "/adapters/connect/" in path:
+        return _handle_vendor(event, "connect")
 
     # Generic NHID event routes (/v1/conformance/check and /v1/demo/check)
     raw_body = event.get("body") or ""
@@ -150,6 +159,15 @@ def _handle_vendor(event: dict, vendor: str) -> dict:
         elif vendor == "twilio":
             from adapters.twilio_adapter import to_nhid_event as _twilio_to_nhid
             session, policy_event = _twilio_to_nhid(payload)
+        elif vendor == "vonage":
+            from adapters.vonage_adapter import to_nhid_event as _vonage_to_nhid
+            session, policy_event = _vonage_to_nhid(payload)
+        elif vendor == "retell":
+            from adapters.retell_adapter import to_nhid_event as _retell_to_nhid
+            session, policy_event = _retell_to_nhid(payload)
+        elif vendor == "connect":
+            from adapters.amazon_connect_adapter import to_nhid_event as _connect_to_nhid
+            session, policy_event = _connect_to_nhid(payload)
         else:
             return _error(400, f"Unknown vendor: {vendor}")
     except Exception as exc:  # noqa: BLE001
