@@ -5,7 +5,7 @@
 Built by a former payer operations associate who saw the problem firsthand on live calls. Not a standard. Not a certification. An open, testable reference.
 
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
-[![Tests](https://img.shields.io/badge/tests-257%20passing-brightgreen)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
+[![Tests](https://img.shields.io/badge/tests-285%20passing-brightgreen)](https://github.com/NHID-Clinical/NHID-Clinical/actions)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](https://nhid-clinical.org/specification.html)
 [![License: CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey)](https://creativecommons.org/licenses/by/4.0/)
 [![NIST](https://img.shields.io/badge/NIST-2025--0035--0026-blue)](https://www.regulations.gov/comment/NIST-2025-0035-0026)
@@ -53,7 +53,7 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 | **DBC-01** | Deceptive Behavior Check | No synthetic voice artifacts designed to impersonate a human |
 | **EIT-01** | Escalation & Intervention | Human escalation path must be communicated and available |
 
-5 deterministic CTS tests · same inputs → identical trace output · 257 passing across the Python test suite (191) and TypeScript middleware (66)
+5 deterministic CTS tests · same inputs → identical trace output · 285 passing across the Python test suite (219) and TypeScript middleware (66)
 
 ---
 
@@ -127,7 +127,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected output: `191 passing` in ~1.4s (requires `cryptography` package for identity tests; ~6 skip when no server is running).
+Expected output: `219 passing` in ~1.4s (requires `cryptography` package for identity tests; ~6 skip when no server is running).
 
 ---
 

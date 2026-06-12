@@ -296,20 +296,74 @@ def evaluate_pdx01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
 # DBC-01: Deceptive Behavior Check
 # ──────────────────────────────────────────────────────────────────────────
 
+# Phrases in an AI agent's self-identification text that imply human status.
+# Matched against healthcare_governance.identity_assertion_text (case-insensitive).
+# A match triggers a MAJOR violation — text heuristics are suggestive, not definitive.
+_DBC_IMPERSONATION_PHRASES: tuple[str, ...] = (
+    "this is a real person",
+    "i am a human",
+    "i'm a human",
+    "not an automated",
+    "not a robot",
+    "actual human",
+    "speaking with a live agent",
+    "i'm a real",
+    "you're talking to a person",
+    "human representative",
+    "a person calling",
+    "real person calling",
+)
+
+
+def _assertion_implies_human(text: str) -> str | None:
+    """Return the matched phrase if identity assertion implies human status, else None."""
+    if not text:
+        return None
+    normalized = text.lower()
+    for phrase in _DBC_IMPERSONATION_PHRASES:
+        if phrase in normalized:
+            return phrase
+    return None
+
+
 def evaluate_dbc01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecision:
     """
     DBC-01: The AI agent MUST NOT use deceptive audio artifacts or make
     claims that imply licensed-professional or human status.
 
-    Pass condition: deceptive_artifact_flags is empty.
-    Fail condition: any flag is present.
+    Pass conditions:
+      - deceptive_artifact_flags is empty, AND
+      - identity_assertion_text contains no human-impersonation phrases
+
+    Fail conditions (CRITICAL): any artifact flag present
+    Fail conditions (MAJOR): identity_assertion_text implies human status
     """
     try:
-        governance       = _safe_get(event, "healthcare_governance", default={})
-        artifact_flags   = _safe_get(governance, "deceptive_artifact_flags", default=[])
-        state_before     = _safe_get(event, "state_before", default="UNKNOWN")
+        governance         = _safe_get(event, "healthcare_governance", default={})
+        artifact_flags     = _safe_get(governance, "deceptive_artifact_flags", default=[])
+        assertion_text     = _safe_get(governance, "identity_assertion_text", default="") or ""
+        state_before       = _safe_get(event, "state_before", default="UNKNOWN")
 
-        if not artifact_flags:
+        violations: list[BoundaryViolation] = []
+
+        # Tier A: voice/signal artifact flags (CRITICAL — definitive)
+        for flag in artifact_flags:
+            violations.append(BoundaryViolation(
+                rule_id="DBC-01",
+                description=f"Deceptive artifact detected: {flag}",
+                severity=ViolationSeverity.CRITICAL,
+            ))
+
+        # Tier B: text heuristics on identity assertion (MAJOR — suggestive)
+        matched_phrase = _assertion_implies_human(assertion_text)
+        if matched_phrase:
+            violations.append(BoundaryViolation(
+                rule_id="DBC-01",
+                description=f"Identity assertion implies human status: \"{matched_phrase}\"",
+                severity=ViolationSeverity.MAJOR,
+            ))
+
+        if not violations:
             return PolicyDecision(
                 action=PolicyAction.CONTINUE_AI,
                 reason_code="DBC01_NO_ARTIFACTS",
@@ -318,18 +372,13 @@ def evaluate_dbc01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
                 gather_speech=True,
             )
 
-        violations = [
-            BoundaryViolation(
-                rule_id="DBC-01",
-                description=f"Deceptive artifact detected: {flag}",
-                severity=ViolationSeverity.CRITICAL,
-            )
-            for flag in artifact_flags
-        ]
+        # Critical flags dominate; text-only match logs only
+        has_critical = any(v.severity == ViolationSeverity.CRITICAL for v in violations)
+        reason_code = "DBC01_ARTIFACT_DETECTED" if has_critical else "DBC01_IMPERSONATION_PHRASE_DETECTED"
 
         return PolicyDecision(
             action=PolicyAction.LOG_ONLY,
-            reason_code="DBC01_ARTIFACT_DETECTED",
+            reason_code=reason_code,
             violations=violations,
             next_state="DECEPTION_FLAGGED",
             twiml_fallback=None,

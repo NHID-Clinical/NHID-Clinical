@@ -15,16 +15,18 @@ from src.nhid_policy_engine_v1 import (  # noqa: E402
     NHID_SPEC_VERSION,
     evaluate_all,
 )
+from src.nhid_cas import _tier_for_cas  # noqa: E402
 
 
 def lambda_handler(event: dict, context) -> dict:
     """
     Routes:
-      GET  /health                      — liveness probe, no API key required
-      POST /v1/conformance/check        — evaluate an NHID event, API key required
-      POST /v1/demo/check               — same as conformance/check, no API key required
-      POST /v1/adapters/vapi/check      — accepts native VAPI call payload, no API key
-      POST /v1/adapters/twilio/check    — accepts native Twilio call payload, no API key
+      GET  /health                           — liveness probe, no API key required
+      POST /v1/conformance/check             — evaluate an NHID event, API key required
+      POST /v1/demo/check                    — same as conformance/check, no API key required
+      POST /v1/adapters/vapi/check           — accepts native VAPI call payload, no API key
+      POST /v1/adapters/twilio/check         — accepts native Twilio call payload, no API key
+      POST /v1/webhooks/call-progress        — turn-by-turn evaluation, no API key required
     """
     method = event.get("httpMethod", "POST")
     path = event.get("path", "")
@@ -39,6 +41,10 @@ def lambda_handler(event: dict, context) -> dict:
     # Outbound call demo route
     if "/demo/call" in path:
         return _handle_demo_call(event)
+
+    # Turn-by-turn call-progress webhook (no DB writes, stateless)
+    if "/webhooks/call-progress" in path:
+        return _handle_call_progress(event)
 
     # Vendor adapter routes
     if "/adapters/vapi/" in path:
@@ -67,7 +73,7 @@ def lambda_handler(event: dict, context) -> dict:
     except Exception as exc:  # noqa: BLE001
         return _error(500, f"Policy evaluation failed: {exc}")
 
-    return _ok(_decision_to_dict(decision))
+    return _ok(_decision_to_dict(decision, policy_event))
 
 
 _BEACON_AGENT_ID = "agent_4001krn32nmwe5t8mqzgee0w84rj"
@@ -154,13 +160,83 @@ def _handle_vendor(event: dict, vendor: str) -> dict:
     except Exception as exc:  # noqa: BLE001
         return _error(500, f"Policy evaluation failed: {exc}")
 
-    result = _decision_to_dict(decision)
+    result = _decision_to_dict(decision, policy_event)
     result["vendor"] = vendor
     return _ok(result)
 
 
-def _decision_to_dict(decision) -> dict:
+def _handle_call_progress(event: dict) -> dict:
+    """Turn-by-turn conformance evaluation. Stateless — caller maintains session_state."""
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    try:
+        from adapters.call_progress_adapter import to_nhid_event
+        session, policy_event = to_nhid_event(body)
+    except (KeyError, ValueError) as exc:
+        return _error(400, f"Invalid call-progress payload: {exc}")
+    except Exception as exc:  # noqa: BLE001
+        return _error(400, f"Adapter conversion failed: {exc}")
+
+    try:
+        decision = evaluate_all(session, policy_event)
+    except Exception as exc:  # noqa: BLE001
+        return _error(500, f"Policy evaluation failed: {exc}")
+
+    result = _decision_to_dict(decision, policy_event)
+    result["turn_index"] = body.get("turn_index", 0)
+    result["session_id"] = body.get("session_id", "")
+    return _ok(result)
+
+
+def _policy_cas(decision, event: dict) -> dict:
+    """Disclosure-level CAS derived from policy violations and event audit fields.
+
+    F_IAF: 1.0 if no IDG-01/PDX-01 violations (identity gates clear)
+    F_NOCF: approximated from violation severity pattern
+    ECF: fraction of core NHID event audit fields present in the event
+
+    Note: this is a disclosure-focused CAS. For the full NOCF telemetry-based
+    CAS, use src/nhid_cas.compute_cas() with operational metrics.
+    """
+    violations = decision.violations
+    critical_ids = {v.rule_id for v in violations if v.severity.value == "critical"}
+
+    F_IAF = 0.0 if ("IDG-01" in critical_ids or "PDX-01" in critical_ids) else 1.0
+
+    critical_count = sum(1 for v in violations if v.severity.value == "critical")
+    if critical_count == 0:
+        F_NOCF = 0.90
+    elif critical_count == 1:
+        F_NOCF = 0.50
+    else:
+        F_NOCF = 0.25
+
+    _CORE_FIELDS = ("event_id", "timestamp", "session_id", "event_type")
+    present = sum(1 for f in _CORE_FIELDS if event.get(f) is not None)
+    ECF = round(present / len(_CORE_FIELDS), 4)
+
+    cas = round(F_IAF * F_NOCF * ECF, 4)
+    tier, badge = _tier_for_cas(cas)
+
     return {
+        "score": cas,
+        "tier": tier,
+        "badge_eligible": badge,
+        "F_IAF": F_IAF,
+        "F_NOCF": round(F_NOCF, 4),
+        "ECF": ECF,
+    }
+
+
+def _decision_to_dict(decision, event: dict | None = None) -> dict:
+    result = {
         "conformant": len(decision.violations) == 0,
         "action": decision.action.value,
         "reason_code": decision.reason_code,
@@ -176,7 +252,9 @@ def _decision_to_dict(decision) -> dict:
         "next_state": decision.next_state,
         "twiml_fallback": decision.twiml_fallback,
         "gather_speech": decision.gather_speech,
+        "cas": _policy_cas(decision, event or {}),
     }
+    return result
 
 
 _CORS = {
