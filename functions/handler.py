@@ -33,6 +33,7 @@ def lambda_handler(event: dict, context) -> dict:
       GET  /v1/public/vendor/{id}/badge      — public CAS badge SVG, no API key required
       GET  /v1/vendor/metrics/summary        — per-vendor metrics, API key required
       POST /v1/pilot/enroll                  — pilot enrollment, no API key required
+      POST /v1/cts/evaluate                  — run conformance test suite, no API key required
     """
     method = event.get("httpMethod", "POST")
     path = event.get("path", "")
@@ -51,6 +52,10 @@ def lambda_handler(event: dict, context) -> dict:
     # Pilot enrollment
     if "/pilot/enroll" in path:
         return _handle_pilot_enroll(event)
+
+    # Hosted CTS evaluation
+    if "/cts/evaluate" in path:
+        return _handle_cts_evaluate(event)
 
     # Outbound call demo route
     if "/demo/call" in path:
@@ -312,6 +317,27 @@ def _handle_pilot_enroll(event: dict) -> dict:
             "Generate your pilot report with tools/pilot_report_generator.py",
         ],
     })
+
+
+def _handle_cts_evaluate(event: dict) -> dict:
+    """Run the NHID CTS YAML test cases and return structured results."""
+    raw_body = event.get("body") or "{}"
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    test_ids = body.get("test_ids") or None
+    if test_ids is not None and not isinstance(test_ids, list):
+        return _error(400, "'test_ids' must be a list of strings")
+
+    try:
+        from src.cts_runner import run_cts
+        report = run_cts(test_ids=test_ids)
+    except Exception as exc:  # noqa: BLE001
+        return _error(500, f"CTS evaluation failed: {exc}")
+
+    return _ok(report)
 
 
 def _policy_cas(decision, event: dict) -> dict:

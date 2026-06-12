@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import re, subprocess, sys
-UNIT_EXPECTED = 261
+UNIT_EXPECTED = 270
 INTEGRATION_EXPECTED = 18
 def run_pytest():
     result = subprocess.run([sys.executable,"-m","pytest","tests/","-q","--tb=short","--no-header"],capture_output=True,text=True)
