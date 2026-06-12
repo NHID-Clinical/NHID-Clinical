@@ -69,6 +69,12 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/demo/call
             Method: POST
+        CallProgressPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/webhooks/call-progress
+            Method: POST
         HealthGet:
           Type: Api
           Properties:
