@@ -103,7 +103,7 @@
           <tr style="border-bottom:1px solid var(--border)">
             <td style="padding:.75rem">CMS-0057-F Prior Auth Final Rule</td>
             <td style="padding:.75rem">FHIR API, 72-hour turnaround, 5-year retention</td>
-            <td style="padding:.75rem">FHIR AuditEvent + session trace (ATR-01)</td>
+            <td style="padding:.75rem">HL7 FHIR R4 AuditEvent (validated) + session trace (ATR-01) — <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/fhir-auditevent-mapping.md">mapping spec</a></td>
           </tr>
           <tr style="border-bottom:1px solid var(--border)">
             <td style="padding:.75rem">MACPAC May 2026</td>
@@ -128,9 +128,43 @@
         </tbody>
       </table>
 
-      <div style="padding:1.5rem;background:var(--bg-alt);border-radius:8px;text-align:center">
-        <p style="margin-bottom:1rem;font-weight:600">Want to learn more?</p>
-        <a href="mailto:contact@nhid-clinical.org" class="primary-pill" style="display:inline-flex">Contact us for a 30-minute briefing →</a>
+      <h2 style="margin-top:2.5rem">FHIR R4 AuditEvent Emission</h2>
+      <p style="margin-bottom:1rem">Every NHID-Clinical conformance test suite (CTS) execution produces a HL7 FHIR R4 <code>Bundle</code> of <code>AuditEvent</code> resources — one per conformance milestone. These Bundles are validated against the FHIR R4 base specification (version 4.0.1) in CI before every merge.</p>
+
+      <div style="background:var(--bg-alt);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:.9rem;line-height:1.7">
+        <strong>What is emitted per call:</strong>
+        <ol style="margin:.5rem 0 0 1.25rem;padding:0">
+          <li><strong>nhid-session-start</strong> — call session initialised (DCM Application Activity)</li>
+          <li><strong>nhid-identity-disclosure</strong> — IDG-01 gate evaluated; outcome reflects pass/fail (DCM Security Alert)</li>
+          <li><strong>nhid-auth-verification</strong> — provider NPI authorization recorded, when present (DCM User Authentication)</li>
+          <li><strong>nhid-phi-gate</strong> — PDX-01 pre-data-exchange gate decision (DCM Security Alert)</li>
+          <li><strong>nhid-phi-exchange</strong> — PHI exchange begins, when gate cleared (DCM Patient Record)</li>
+          <li><strong>nhid-escalation</strong> — EIT-01 escalation event, when triggered (DCM Application Activity)</li>
+          <li><strong>nhid-call-end</strong> — session terminated; outcome reflects aggregate policy decision (DCM Application Activity)</li>
+        </ol>
+      </div>
+
+      <div style="background:var(--bg-alt);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:.9rem;line-height:1.7">
+        <strong>Conformance scope:</strong> Validated against HL7 FHIR R4 base specification only.
+        No conformance to any named HL7 Implementation Guide is claimed or implied.
+        DICOM audit event type codes (DCM 110100, 110110, 110113, 110114) are used for <code>AuditEvent.type</code>.
+        Three agent slices capture the AI voice agent (requestor), payer system (destination),
+        and provider organisation (on-behalf-of, when NPI is present).
+      </div>
+
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/fhir-auditevent-mapping.md"
+           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
+          AuditEvent Mapping Spec →
+        </a>
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/examples/fhir/nhid-compliant-call-bundle.json"
+           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
+          Example Bundle (JSON) →
+        </a>
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/examples/fhir/README.md"
+           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
+          Payer Ingestion Guide →
+        </a>
       </div>
     </div>
   </section>

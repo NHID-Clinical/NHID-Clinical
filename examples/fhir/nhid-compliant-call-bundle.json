@@ -1,0 +1,841 @@
+{
+  "resourceType": "Bundle",
+  "id": "nhid-bundle-cf6bfd57c1f6ef3ad089",
+  "type": "collection",
+  "timestamp": "2026-06-12T14:30:00.000Z",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "nhid-ae-74c52afb24b5c83c",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "system": "https://nhid-clinical.org/fhir/CodeSystem/audit-event-subtype",
+            "code": "nhid-session-start",
+            "display": "NHID Session Start"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-12T14:30:00.000Z",
+        "outcome": "0",
+        "outcomeDesc": "Call session initialised",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110153",
+                  "display": "Source Role ID"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/agents",
+                "value": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+              },
+              "display": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+            },
+            "requestor": true
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110152",
+                  "display": "Destination Role ID"
+                }
+              ]
+            },
+            "who": {
+              "display": "Payer Organization"
+            },
+            "requestor": false
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://nhid-clinical.org/fhir/CodeSystem/agent-role",
+                  "code": "principal",
+                  "display": "Principal Organization (on behalf of)"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": "1234567890"
+              },
+              "display": "Sunny Dental Group"
+            },
+            "requestor": false
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical.org",
+          "observer": {
+            "identifier": {
+              "system": "https://nhid-clinical.org/fhir/systems",
+              "value": "nhid-policy-engine-v1"
+            },
+            "display": "NHID-Clinical Policy Engine v1"
+          },
+          "type": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/security-source-type",
+              "code": "4",
+              "display": "Application Server"
+            }
+          ]
+        },
+        "entity": [
+          {
+            "what": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/sessions",
+                "value": "CA1234567890abcdef1234567890abcd"
+              }
+            },
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/audit-entity-type",
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "system": "http://terminology.hl7.org/CodeSystem/object-role",
+              "code": "20",
+              "display": "Job"
+            },
+            "description": "NHID-Clinical call session"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "nhid-ae-a54cc51015487d44",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110113",
+          "display": "Security Alert"
+        },
+        "subtype": [
+          {
+            "system": "https://nhid-clinical.org/fhir/CodeSystem/audit-event-subtype",
+            "code": "nhid-identity-disclosure",
+            "display": "NHID Identity Disclosure"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-12T14:30:05.000Z",
+        "outcome": "0",
+        "outcomeDesc": "AI identity disclosed and assertion text confirmed",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110153",
+                  "display": "Source Role ID"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/agents",
+                "value": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+              },
+              "display": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+            },
+            "requestor": true
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110152",
+                  "display": "Destination Role ID"
+                }
+              ]
+            },
+            "who": {
+              "display": "Payer Organization"
+            },
+            "requestor": false
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://nhid-clinical.org/fhir/CodeSystem/agent-role",
+                  "code": "principal",
+                  "display": "Principal Organization (on behalf of)"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": "1234567890"
+              },
+              "display": "Sunny Dental Group"
+            },
+            "requestor": false
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical.org",
+          "observer": {
+            "identifier": {
+              "system": "https://nhid-clinical.org/fhir/systems",
+              "value": "nhid-policy-engine-v1"
+            },
+            "display": "NHID-Clinical Policy Engine v1"
+          },
+          "type": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/security-source-type",
+              "code": "4",
+              "display": "Application Server"
+            }
+          ]
+        },
+        "entity": [
+          {
+            "what": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/sessions",
+                "value": "CA1234567890abcdef1234567890abcd"
+              }
+            },
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/audit-entity-type",
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "system": "http://terminology.hl7.org/CodeSystem/object-role",
+              "code": "20",
+              "display": "Job"
+            },
+            "description": "NHID-Clinical call session"
+          },
+          {
+            "what": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/sessions",
+                "value": "CA1234567890abcdef1234567890abcd"
+              }
+            },
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/audit-entity-type",
+              "code": "4",
+              "display": "Other"
+            },
+            "description": "Hi, this is Beacon, an AI assistant calling from a provider office on behalf of a dental facility. I am not a human."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "nhid-ae-3077f7ee55ff4b5e",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110114",
+          "display": "User Authentication"
+        },
+        "subtype": [
+          {
+            "system": "https://nhid-clinical.org/fhir/CodeSystem/audit-event-subtype",
+            "code": "nhid-auth-verification",
+            "display": "NHID Auth Verification"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-12T14:30:00.000Z",
+        "outcome": "0",
+        "outcomeDesc": "Provider NPI authorization reference recorded: 1234567890",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110153",
+                  "display": "Source Role ID"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/agents",
+                "value": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+              },
+              "display": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+            },
+            "requestor": true
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110152",
+                  "display": "Destination Role ID"
+                }
+              ]
+            },
+            "who": {
+              "display": "Payer Organization"
+            },
+            "requestor": false
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://nhid-clinical.org/fhir/CodeSystem/agent-role",
+                  "code": "principal",
+                  "display": "Principal Organization (on behalf of)"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": "1234567890"
+              },
+              "display": "Sunny Dental Group"
+            },
+            "requestor": false
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical.org",
+          "observer": {
+            "identifier": {
+              "system": "https://nhid-clinical.org/fhir/systems",
+              "value": "nhid-policy-engine-v1"
+            },
+            "display": "NHID-Clinical Policy Engine v1"
+          },
+          "type": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/security-source-type",
+              "code": "4",
+              "display": "Application Server"
+            }
+          ]
+        },
+        "entity": [
+          {
+            "what": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/sessions",
+                "value": "CA1234567890abcdef1234567890abcd"
+              }
+            },
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/audit-entity-type",
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "system": "http://terminology.hl7.org/CodeSystem/object-role",
+              "code": "20",
+              "display": "Job"
+            },
+            "description": "NHID-Clinical call session"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "nhid-ae-f4be6eb1e22c5fee",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110113",
+          "display": "Security Alert"
+        },
+        "subtype": [
+          {
+            "system": "https://nhid-clinical.org/fhir/CodeSystem/audit-event-subtype",
+            "code": "nhid-phi-gate",
+            "display": "NHID Phi Gate"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-12T14:30:00.000Z",
+        "outcome": "0",
+        "outcomeDesc": "PDX-01 gate cleared \u2014 disclosure confirmed before PHI exchange",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110153",
+                  "display": "Source Role ID"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/agents",
+                "value": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+              },
+              "display": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+            },
+            "requestor": true
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110152",
+                  "display": "Destination Role ID"
+                }
+              ]
+            },
+            "who": {
+              "display": "Payer Organization"
+            },
+            "requestor": false
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://nhid-clinical.org/fhir/CodeSystem/agent-role",
+                  "code": "principal",
+                  "display": "Principal Organization (on behalf of)"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": "1234567890"
+              },
+              "display": "Sunny Dental Group"
+            },
+            "requestor": false
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical.org",
+          "observer": {
+            "identifier": {
+              "system": "https://nhid-clinical.org/fhir/systems",
+              "value": "nhid-policy-engine-v1"
+            },
+            "display": "NHID-Clinical Policy Engine v1"
+          },
+          "type": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/security-source-type",
+              "code": "4",
+              "display": "Application Server"
+            }
+          ]
+        },
+        "entity": [
+          {
+            "what": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/sessions",
+                "value": "CA1234567890abcdef1234567890abcd"
+              }
+            },
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/audit-entity-type",
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "system": "http://terminology.hl7.org/CodeSystem/object-role",
+              "code": "20",
+              "display": "Job"
+            },
+            "description": "NHID-Clinical call session"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "nhid-ae-3da40c435aefdcd4",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110110",
+          "display": "Patient Record"
+        },
+        "subtype": [
+          {
+            "system": "https://nhid-clinical.org/fhir/CodeSystem/audit-event-subtype",
+            "code": "nhid-phi-exchange",
+            "display": "NHID Phi Exchange"
+          }
+        ],
+        "action": "R",
+        "recorded": "2026-06-12T14:30:00.000Z",
+        "outcome": "0",
+        "outcomeDesc": "PHI exchange begun \u2014 categories: claim_number, npi",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110153",
+                  "display": "Source Role ID"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/agents",
+                "value": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+              },
+              "display": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+            },
+            "requestor": true
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110152",
+                  "display": "Destination Role ID"
+                }
+              ]
+            },
+            "who": {
+              "display": "Payer Organization"
+            },
+            "requestor": false
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://nhid-clinical.org/fhir/CodeSystem/agent-role",
+                  "code": "principal",
+                  "display": "Principal Organization (on behalf of)"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": "1234567890"
+              },
+              "display": "Sunny Dental Group"
+            },
+            "requestor": false
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical.org",
+          "observer": {
+            "identifier": {
+              "system": "https://nhid-clinical.org/fhir/systems",
+              "value": "nhid-policy-engine-v1"
+            },
+            "display": "NHID-Clinical Policy Engine v1"
+          },
+          "type": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/security-source-type",
+              "code": "4",
+              "display": "Application Server"
+            }
+          ]
+        },
+        "entity": [
+          {
+            "what": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/sessions",
+                "value": "CA1234567890abcdef1234567890abcd"
+              }
+            },
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/audit-entity-type",
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "system": "http://terminology.hl7.org/CodeSystem/object-role",
+              "code": "20",
+              "display": "Job"
+            },
+            "description": "NHID-Clinical call session"
+          },
+          {
+            "what": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/sessions",
+                "value": "CA1234567890abcdef1234567890abcd"
+              }
+            },
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/audit-entity-type",
+              "code": "1",
+              "display": "Person"
+            },
+            "description": "PHI categories accessed: claim_number, npi"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "nhid-ae-3eaa3bd3a16312da",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "system": "https://nhid-clinical.org/fhir/CodeSystem/audit-event-subtype",
+            "code": "nhid-escalation",
+            "display": "NHID Escalation"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-12T14:35:00.000Z",
+        "outcome": "0",
+        "outcomeDesc": "Human escalation connected successfully",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110153",
+                  "display": "Source Role ID"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/agents",
+                "value": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+              },
+              "display": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+            },
+            "requestor": true
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110152",
+                  "display": "Destination Role ID"
+                }
+              ]
+            },
+            "who": {
+              "display": "Payer Organization"
+            },
+            "requestor": false
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://nhid-clinical.org/fhir/CodeSystem/agent-role",
+                  "code": "principal",
+                  "display": "Principal Organization (on behalf of)"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": "1234567890"
+              },
+              "display": "Sunny Dental Group"
+            },
+            "requestor": false
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical.org",
+          "observer": {
+            "identifier": {
+              "system": "https://nhid-clinical.org/fhir/systems",
+              "value": "nhid-policy-engine-v1"
+            },
+            "display": "NHID-Clinical Policy Engine v1"
+          },
+          "type": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/security-source-type",
+              "code": "4",
+              "display": "Application Server"
+            }
+          ]
+        },
+        "entity": [
+          {
+            "what": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/sessions",
+                "value": "CA1234567890abcdef1234567890abcd"
+              }
+            },
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/audit-entity-type",
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "system": "http://terminology.hl7.org/CodeSystem/object-role",
+              "code": "20",
+              "display": "Job"
+            },
+            "description": "NHID-Clinical call session"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "nhid-ae-36516f2460882ea2",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "system": "https://nhid-clinical.org/fhir/CodeSystem/audit-event-subtype",
+            "code": "nhid-call-end",
+            "display": "NHID Call End"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-12T14:30:00.000Z",
+        "outcome": "0",
+        "outcomeDesc": "No policy decision recorded",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110153",
+                  "display": "Source Role ID"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/agents",
+                "value": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+              },
+              "display": "agent_4001krn32nmwe5t8mqzgee0w84rj"
+            },
+            "requestor": true
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://dicom.nema.org/resources/ontology/DCM",
+                  "code": "110152",
+                  "display": "Destination Role ID"
+                }
+              ]
+            },
+            "who": {
+              "display": "Payer Organization"
+            },
+            "requestor": false
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "https://nhid-clinical.org/fhir/CodeSystem/agent-role",
+                  "code": "principal",
+                  "display": "Principal Organization (on behalf of)"
+                }
+              ]
+            },
+            "who": {
+              "identifier": {
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": "1234567890"
+              },
+              "display": "Sunny Dental Group"
+            },
+            "requestor": false
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical.org",
+          "observer": {
+            "identifier": {
+              "system": "https://nhid-clinical.org/fhir/systems",
+              "value": "nhid-policy-engine-v1"
+            },
+            "display": "NHID-Clinical Policy Engine v1"
+          },
+          "type": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/security-source-type",
+              "code": "4",
+              "display": "Application Server"
+            }
+          ]
+        },
+        "entity": [
+          {
+            "what": {
+              "identifier": {
+                "system": "https://nhid-clinical.org/fhir/sessions",
+                "value": "CA1234567890abcdef1234567890abcd"
+              }
+            },
+            "type": {
+              "system": "http://terminology.hl7.org/CodeSystem/audit-entity-type",
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "system": "http://terminology.hl7.org/CodeSystem/object-role",
+              "code": "20",
+              "display": "Job"
+            },
+            "description": "NHID-Clinical call session"
+          }
+        ]
+      }
+    }
+  ]
+}
