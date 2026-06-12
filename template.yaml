@@ -63,6 +63,24 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/adapters/twilio/check
             Method: POST
+        VonageAdapterPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/adapters/vonage/check
+            Method: POST
+        RetellAdapterPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/adapters/retell/check
+            Method: POST
+        ConnectAdapterPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/adapters/connect/check
+            Method: POST
         DemoCallPost:
           Type: Api
           Properties:
@@ -74,6 +92,26 @@ Resources:
           Properties:
             RestApiId: !Ref NHIDApi
             Path: /v1/webhooks/call-progress
+            Method: POST
+        BadgeGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/public/vendor/{vendor_id}/badge
+            Method: GET
+        MetricsSummaryGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/vendor/metrics/summary
+            Method: GET
+            Auth:
+              ApiKeyRequired: true
+        PilotEnrollPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/pilot/enroll
             Method: POST
         HealthGet:
           Type: Api
