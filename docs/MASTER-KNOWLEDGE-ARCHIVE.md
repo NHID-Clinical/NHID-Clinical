@@ -245,24 +245,30 @@ exchanges PHI while the counterparty believes they are speaking with a human.
 **Impersonation Latency (IL), time form:**
 
 ```
-IL = t(disclosure) − t(connect)
+IL = t_disclosure − t_connect
 ```
 
-where `t(disclosure)` is the first valid IDG-01 disclosure event (`disclosure_timestamp`) and `t(connect)` is the session start timestamp. If no valid disclosure occurs, IL is right-censored at call end and reported as `IL ≥ call duration`.
+where `t_disclosure` is the first valid IDG-01 disclosure event (`disclosure_timestamp`) and `t_connect` is the session start timestamp. If no valid disclosure occurs, IL is right-censored at call end and reported as `IL ≥ t_call_end − t_connect`.
 
 **Turn form:**
 
 ```
-IL(turns) = number of completed conversational turns before the first valid disclosure
+IL_turns = |{ completed turns before first valid disclosure }|
 ```
 
-Disclosure in the first message yields `IL(turns) = 0` — the conformant target.
+Disclosure in the first message yields `IL_turns = 0` — the conformant target.
 
-**Exposure weighting:** IL measures the interval; the harm is what moved inside it. Pre-Disclosure PHI Exposure = count of `phi_accessed` fields with timestamps earlier than `t(disclosure)`. PDX-01 fires when this count exceeds zero. A call may have high IL with zero exposure (bad practice, no breach) or low IL with nonzero exposure (critical).
+**Pre-Disclosure PHI Exposure:**
 
-**Perceptual variant:** `IL(detection) = t(human detection) − t(connect)` measures when the counterparty subjectively identifies the agent. It is not machine-observable and is excluded from conformance evaluation; it is retained for survey-based research only.
+```
+E_PHI = |{ f ∈ phi_accessed : t(f) < t_disclosure }|
+```
 
-This definition is deterministic: both anchors are required ATR-01 event fields, so IL is computable from any conformant audit trail with no human judgment.
+PDX-01 fires when `E_PHI > 0`. A call may have high IL with `E_PHI = 0` (bad practice, no breach) or low IL with `E_PHI > 0` (critical violation).
+
+**Perceptual variant:** `IL_detection = t_human_detection − t_connect` measures when the counterparty subjectively identifies the agent. It is not machine-observable and is excluded from conformance evaluation; it is retained for survey-based research only.
+
+This definition is deterministic: both anchors (`t_disclosure`, `t_connect`) are required ATR-01 event fields, so IL is computable from any conformant audit trail with no human judgment.
 
 ![Impersonation Latency — formal measurement diagram](assets/archive/fig7-il-formula.svg)
 
