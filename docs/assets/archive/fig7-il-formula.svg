@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="540" viewBox="0 0 760 540">
+<rect width="760" height="540" fill="#0F172A"/>
+<text x="380" y="30" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#F8FAFC" letter-spacing="1">IMPERSONATION LATENCY — FORMAL MEASUREMENT (§2.4.1)</text>
+<line x1="60" y1="80" x2="680" y2="80" stroke="#334155" stroke-width="4"/>
+<line x1="60" y1="80" x2="460" y2="80" stroke="#14B8A6" stroke-width="6"/>
+<circle cx="60" cy="80" r="7" fill="#67E8F9"/>
+<circle cx="460" cy="80" r="7" fill="#14B8A6"/>
+<circle cx="680" cy="80" r="7" fill="#94A3B8"/>
+<text x="60" y="102" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="10" fill="#67E8F9">t(connect)</text>
+<text x="460" y="102" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="10" fill="#14B8A6">t(disclosure)</text>
+<text x="680" y="102" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="10" fill="#94A3B8">t(end)</text>
+<line x1="60" y1="62" x2="460" y2="62" stroke="#14B8A6" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="260" y="56" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="700" fill="#14B8A6">IL = t(disclosure) − t(connect)</text>
+<text x="688" y="85" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">no disclosure → IL ≥ call duration (right-censored)</text>
+<line x1="60" y1="155" x2="680" y2="155" stroke="#334155" stroke-width="2"/>
+<circle cx="110" cy="155" r="5" fill="#F87171"/>
+<text x="110" y="173" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#F87171">T1</text>
+<circle cx="185" cy="155" r="5" fill="#F87171"/>
+<text x="185" y="173" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#F87171">T2</text>
+<circle cx="260" cy="155" r="5" fill="#94A3B8"/>
+<text x="260" y="173" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#94A3B8">T3</text>
+<circle cx="335" cy="155" r="5" fill="#94A3B8"/>
+<text x="335" y="173" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#94A3B8">T4</text>
+<circle cx="410" cy="155" r="5" fill="#14B8A6"/>
+<text x="410" y="173" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#14B8A6">T5 disc.</text>
+<text x="260" y="143" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="700" fill="#67E8F9">IL(turns) = 4  →  conformant target: IL(turns) = 0</text>
+<rect x="40" y="218" width="680" height="56" rx="5" fill="#334155"/>
+<text x="56" y="236" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="700" fill="#FACC15">Exposure weighting</text>
+<text x="56" y="253" font-family="'Courier New', Courier, monospace" font-size="10" fill="#F8FAFC">Pre-Disclosure PHI Exposure = count( phi_accessed.timestamp &lt; t(disclosure) )</text>
+<text x="56" y="268" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">PDX-01 fires when count &gt; 0 — high IL + zero exposure (bad practice) is not a breach; low IL + nonzero exposure (critical)</text>
+<rect x="40" y="292" width="680" height="44" rx="5" fill="#334155"/>
+<text x="56" y="309" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="700" fill="#94A3B8">Perceptual variant (excluded from conformance)</text>
+<text x="56" y="326" font-family="'Courier New', Courier, monospace" font-size="10" fill="#94A3B8">IL(detection) = t(human detection) − t(connect)  →  not machine-observable; survey research only</text>
+<rect x="40" y="354" width="680" height="56" rx="5" fill="#1E3A5F" stroke="#14B8A6" stroke-width="1.5"/>
+<text x="56" y="372" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="700" fill="#14B8A6">Determinism guarantee</text>
+<text x="56" y="389" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#F8FAFC">Both anchors are required ATR-01 event fields (disclosure_timestamp, session start).</text>
+<text x="56" y="404" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#F8FAFC">IL is computable from any conformant audit trail with no human judgment.</text>
+<text x="380" y="528" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#94A3B8">§2.4.1 · IL = t(disclosure) − t(connect) · deterministic from ATR-01 fields · right-censored when no disclosure occurs</text>
+</svg>

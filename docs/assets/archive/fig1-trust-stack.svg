@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="520" viewBox="0 0 760 520">
+<rect width="760" height="520" fill="#0F172A"/>
+<text x="380" y="32" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#F8FAFC" letter-spacing="1">NHID-CLINICAL FIVE-LAYER TRUST STACK</text>
+<rect x="40" y="52" width="680" height="62" rx="6" fill="#334155" stroke="none" stroke-width="0"/>
+<rect x="50" y="64" width="38" height="38" rx="4" fill="#334155cc"/>
+<text x="69" y="88" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="800" fill="#F8FAFC">5</text>
+<text x="100" y="78" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">OpenTelemetry Spans</text>
+<text x="100" y="96" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" fill="#94A3B8">SIEM / Enterprise Observability</text>
+<rect x="40" y="120" width="680" height="62" rx="6" fill="#334155" stroke="none" stroke-width="0"/>
+<rect x="50" y="132" width="38" height="38" rx="4" fill="#334155cc"/>
+<text x="69" y="156" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="800" fill="#F8FAFC">4</text>
+<text x="100" y="146" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">FHIR AuditEvent R4</text>
+<text x="100" y="164" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" fill="#94A3B8">Healthcare-Native Audit Trail · 7 Milestones per Call</text>
+<rect x="40" y="188" width="680" height="62" rx="6" fill="#334155" stroke="none" stroke-width="0"/>
+<rect x="50" y="200" width="38" height="38" rx="4" fill="#334155cc"/>
+<text x="69" y="224" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="800" fill="#F8FAFC">3</text>
+<text x="100" y="214" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">NHID-Auth v2</text>
+<text x="100" y="232" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" fill="#94A3B8">Ed25519 · NPI-Bound Delegation Chains · 3-Hop Max</text>
+<rect x="40" y="256" width="680" height="62" rx="6" fill="#14B8A6" stroke="#14B8A6" stroke-width="2"/>
+<rect x="50" y="268" width="38" height="38" rx="4" fill="#14B8A6"/>
+<text x="69" y="292" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="800" fill="#0F172A">2</text>
+<text x="100" y="282" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#14B8A6">NHID-Clinical v1.3</text>
+<text x="100" y="300" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" fill="#94A3B8">4 Controls · 5 CTS Tests · Deterministic Engine</text>
+<text x="708" y="292" text-anchor="end" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="700" fill="#14B8A6" letter-spacing="0.5">THIS REPOSITORY</text>
+<rect x="40" y="324" width="680" height="62" rx="6" fill="#334155" stroke="none" stroke-width="0"/>
+<rect x="50" y="336" width="38" height="38" rx="4" fill="#334155cc"/>
+<text x="69" y="360" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="800" fill="#F8FAFC">1</text>
+<text x="100" y="350" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">STIR/SHAKEN (RFC 8224)</text>
+<text x="100" y="368" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" fill="#94A3B8">Carrier Number Authentication · A/B/C Attestation</text>
+<rect x="40" y="392" width="680" height="62" rx="6" fill="#1E293B" stroke="none" stroke-width="0"/>
+<rect x="50" y="404" width="38" height="38" rx="4" fill="#334155cc"/>
+<text x="69" y="428" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="800" fill="#F8FAFC">0</text>
+<text x="100" y="418" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">NPI Authorization Gap</text>
+<text x="100" y="436" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" fill="#94A3B8">The Problem — No Cross-Org AI Agent Identity Standard</text>
+</svg>

@@ -1,6 +1,6 @@
 # NHID-CLINICAL MASTER KNOWLEDGE ARCHIVE
 
-**Version:** 1.0 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-06-12
+**Version:** 1.1 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-06-13
 **Author:** Brianna Nicole Baynard-Malone · **License:** CC BY 4.0
 
 > This document is the single authoritative reference for all NHID-Clinical knowledge: technical
@@ -97,7 +97,7 @@ traceable, auditable, and trustworthy:
 - Payer call centers can screen incoming AI agent calls with a single API call in under 200ms
 - Provider organizations can issue NPI-bound cryptographic passports for their AI agents
 - Vendor AI platforms voluntarily integrate NHID-Clinical compliance checks as a selling point
-- Compliance Assurance Scores (CAS) become a procurement criterion for healthcare AI vendors
+- Call Authorization Scores (CAS) become a procurement criterion for healthcare AI vendors
 - The behavioral baseline is adopted as input to federal AI regulatory frameworks
 
 ---
@@ -125,7 +125,7 @@ AND the disclosure occurred before any PHI request.
 **Bot-to-bot variant:** When `counterparty_type == "ai_agent"`, both parties must be disclosed
 as non-human before data exchange. Stricter enforcement applies.
 
-#### PDX-01 — PHI Data Exchange Gate
+#### PDX-01 — Pre-Data Exchange Gate
 
 **Requirement:** No protected health information may be exchanged until IDG-01 disclosure is
 confirmed.
@@ -172,7 +172,7 @@ _DBC_IMPERSONATION_PHRASES = (
 **Non-blocking:** DBC-01 fires LOG_ONLY unless Tier A CRITICAL artifacts are present. It does
 not by itself trigger DENY_DATA.
 
-#### EIT-01 — Escalation & Intervention
+#### EIT-01 — Escalation Implementation Test
 
 **Requirement:** A human escalation path must be communicated and available. When requested, the
 escalation must be honored.
@@ -235,13 +235,36 @@ Impersonation Latency is the canonical term for the failure mode NHID-Clinical e
 exchanges PHI while the counterparty believes they are speaking with a human.
 
 **Anatomy of a typical violation:**
-```
-Turn 1: Agent: "Hi, can I get the member ID and date of birth?"  ← PHI requested; no disclosure
-Turn 2: Human: "Sure — member ID is 789-XX-4421, DOB is 1965-04-12"  ← PHI exchanged
-Turn 3: Agent: "Thank you. By the way, I'm an automated system..."  ← Too late; PDX-01 violated
-```
+
+![Impersonation Latency — turn-by-turn anatomy](assets/archive/fig2-impersonation-latency.svg)
 
 **Policy engine response:** IDG-01 CRITICAL + PDX-01 CRITICAL → action: DENY_DATA, CAS → 0.0
+
+#### 2.4.1 — Formal Measurement Definition
+
+**Impersonation Latency (IL), time form:**
+
+```
+IL = t(disclosure) − t(connect)
+```
+
+where `t(disclosure)` is the first valid IDG-01 disclosure event (`disclosure_timestamp`) and `t(connect)` is the session start timestamp. If no valid disclosure occurs, IL is right-censored at call end and reported as `IL ≥ call duration`.
+
+**Turn form:**
+
+```
+IL(turns) = number of completed conversational turns before the first valid disclosure
+```
+
+Disclosure in the first message yields `IL(turns) = 0` — the conformant target.
+
+**Exposure weighting:** IL measures the interval; the harm is what moved inside it. Pre-Disclosure PHI Exposure = count of `phi_accessed` fields with timestamps earlier than `t(disclosure)`. PDX-01 fires when this count exceeds zero. A call may have high IL with zero exposure (bad practice, no breach) or low IL with nonzero exposure (critical).
+
+**Perceptual variant:** `IL(detection) = t(human detection) − t(connect)` measures when the counterparty subjectively identifies the agent. It is not machine-observable and is excluded from conformance evaluation; it is retained for survey-based research only.
+
+This definition is deterministic: both anchors are required ATR-01 event fields, so IL is computable from any conformant audit trail with no human judgment.
+
+![Impersonation Latency — formal measurement diagram](assets/archive/fig7-il-formula.svg)
 
 ---
 
@@ -249,30 +272,7 @@ Turn 3: Agent: "Thank you. By the way, I'm an automated system..."  ← Too late
 
 ### 3.1 Five-Layer Trust Stack
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  Layer 5  │  OpenTelemetry spans                                │
-│           │  SIEM / enterprise observability export             │
-├─────────────────────────────────────────────────────────────────┤
-│  Layer 4  │  FHIR AuditEvent R4                                 │
-│           │  Healthcare-native audit logging (7 milestones)     │
-├─────────────────────────────────────────────────────────────────┤
-│  Layer 3  │  NHID-Auth v2                                       │
-│           │  Cryptographic authorization — Ed25519 NPI-bound    │
-│           │  delegation chains (max 3 hops); per-agent revocation│
-├─────────────────────────────────────────────────────────────────┤
-│  Layer 2  │  NHID-Clinical v1.3  ← THIS REPOSITORY             │
-│           │  Behavioral disclosure baseline                      │
-│           │  4 controls, 5 CTS tests, deterministic engine      │
-├─────────────────────────────────────────────────────────────────┤
-│  Layer 1  │  STIR/SHAKEN (RFC 8224)                             │
-│           │  Carrier number authentication (A/B/C attestation)  │
-├─────────────────────────────────────────────────────────────────┤
-│  Layer 0  │  NPI Gap                                            │
-│           │  The problem: no existing framework addresses        │
-│           │  cross-org NPI authorization for AI agents           │
-└─────────────────────────────────────────────────────────────────┘
-```
+![Five-Layer Trust Stack](assets/archive/fig1-trust-stack.svg)
 
 ### 3.2 Version Roadmap
 
@@ -283,7 +283,7 @@ Turn 3: Agent: "Thank you. By the way, I'm an automated system..."  ← Too late
 | **v2.0** | NHID-Auth cryptographic layer (Ed25519, delegation chains) | Reference implementation live |
 | **v2.1** | Planned: STIR/SHAKEN integration, attestation registry | Future |
 
-### 3.3 Conformance Assurance Score (CAS)
+### 3.3 Call Authorization Score (CAS)
 
 CAS provides a continuous compliance signal between 0.0 and 1.0 per call session.
 
@@ -299,14 +299,15 @@ CAS provides a continuous compliance signal between 0.0 and 1.0 per call session
 
 **Full NOCF formula** (from `src/nhid_cas.py`):
 ```
-C (coherence)  = w_H × entity_match + w_H × intent_accuracy + w_H × domain_hit_rate
-E (execution)  = w_P × (successful/attempted) - w_P × tool_failure_rate
-S (stability)  = 1 - w_I × call_drop_rate - w_I × audio_corruption_rate
-L_hat          = max(0, 1 - latency_ms / l_max_ms)
-R (risk)       = 1 - (0.5 × hallucination_risk + 0.3 × pii_leakage_risk + 0.2 × identity_ambiguity_risk)
-A_nocf         = (C + E + S) / 3 × L_hat × R
+C (coherence)  = (entity_match_rate + intent_accuracy + domain_hit_rate) / 3
+E (execution)  = successful_actions / attempted_actions
+S (stability)  = 1 − (call_drop_rate + audio_corruption_rate + tool_failure_rate) / 3
+L_hat          = max(0, 1 − latency_ms / l_max_ms)
+R (risk)       = w_H × hallucination_risk + w_P × pii_leakage_risk + w_I × identity_ambiguity_risk
+A_nocf         = C × E × S × L_hat × (1 − R)
 ```
-Default weights: w_H=0.40, w_P=0.35, w_I=0.25; l_max_ms=2500ms
+Weights (w_H=0.40, w_P=0.35, w_I=0.25) apply only to the risk factor R.
+l_max_ms default=2500 ms; floor=1500 ms; ceiling=5000 ms.
 
 **CAS Tier Ladder:**
 
@@ -601,40 +602,7 @@ turn POST. The engine evaluates each turn independently and returns an action.
 
 ### 6.1 System Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  Call Platforms                                                 │
-│  VAPI · Twilio · Vonage · Retell · Amazon Connect · Generic    │
-└────────────────┬────────────────────────────────────────────────┘
-                 │ Native payloads (per-platform format)
-                 ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  Vendor Adapters (adapters/*.py)                               │
-│  to_nhid_event(payload) → (session_dict, event_dict)           │
-└────────────────┬────────────────────────────────────────────────┘
-                 │ Canonical NHID event
-                 ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  AWS Lambda (functions/handler.py)                             │
-│  API Gateway: dc2ipcqs7k.execute-api.us-east-2.amazonaws.com   │
-│  Runtime: Python 3.13 · 256MB · 30s timeout                   │
-└────────────────┬────────────────────────────────────────────────┘
-                 │
-                 ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  Policy Engine (src/nhid_policy_engine_v1.py)                  │
-│  evaluate_all(session, event) → PolicyDecision                 │
-│  Pure Python · No I/O · No LLM · Deterministic                 │
-└────────────────┬────────────────────────────────────────────────┘
-                 │
-         ┌───────┴────────┐
-         ↓                ↓
-┌────────────────┐  ┌─────────────────────────────────────────────┐
-│ CAS Engine     │  │ FHIR Audit Emitter                          │
-│ nhid_cas.py    │  │ fhir_audit_emitter.py                       │
-│ 0.0–1.0 score  │  │ 7-milestone R4 AuditEvent Bundle            │
-└────────────────┘  └─────────────────────────────────────────────┘
-```
+![System Architecture — Platform → Adapter → Lambda → Policy Engine → CAS + FHIR](assets/archive/fig4-system-architecture.svg)
 
 ### 6.2 Repository Structure
 
@@ -1164,7 +1132,7 @@ Expected response:
 3. The four controls (IDG-01, PDX-01, DBC-01, EIT-01) with formal definitions
 4. ATR-01 audit trail requirements
 5. Conformance Test Suite (CTS) — 5 core tests, 18 YAML scenarios
-6. Compliance Assurance Score (CAS) — formula and tier definitions
+6. Call Authorization Score (CAS) — formula and tier definitions
 7. NHID-Auth v2 cryptographic layer
 8. FHIR R4 AuditEvent integration
 9. Regulatory alignment matrix
@@ -1215,96 +1183,25 @@ framework development (CAISI 2026). Key positions:
 
 ## 12. Diagrams & Visual Concepts
 
-### 12.1 Five-Layer Trust Stack (Text Diagram)
+### 12.1 Five-Layer Trust Stack
 
-```
-LAYER 5 ─ OpenTelemetry Spans ──────────── SIEM / Enterprise Observability
-LAYER 4 ─ FHIR R4 AuditEvent ───────────── Healthcare-Native Audit (7 milestones)
-LAYER 3 ─ NHID-Auth v2 ─────────────────── Ed25519 NPI-Bound Delegation Chains
-LAYER 2 ─ NHID-Clinical v1.3 ───────────── Behavioral Baseline (4 controls)
-LAYER 1 ─ STIR/SHAKEN (RFC 8224) ────────── Carrier Number Authentication
-LAYER 0 ─ NPI Gap ───────────────────────── The Problem This Solves
-```
+![Five-Layer Trust Stack](assets/archive/fig1-trust-stack.svg)
 
 ### 12.2 Impersonation Latency Anatomy
 
-```
-Turn 1: AI Agent  → "Hi, can I get the member ID?"        ← PHI REQUEST (no disclosure)
-         ↑                                                    IDG-01 FAIL + PDX-01 FAIL
-Turn 2: Human     → "Member 789-XX-4421, NPI 1234567890"  ← PHI EXCHANGED
-Turn 3: AI Agent  → "By the way, I'm an automated system" ← Too late; violations already fired
-         ↑
-    "Impersonation Latency" = 2 turns of undisclosed AI operation
-    CAS = 0.0 · Action = DENY_DATA
-```
+![Impersonation Latency — turn-by-turn anatomy](assets/archive/fig2-impersonation-latency.svg)
 
 ### 12.3 CAS Tier Ladder
 
-```
-CAS Score      Tier                  Badge
-─────────────────────────────────────────────
-  1.00 ─┐
-  0.90 ─┤  Verified Trust           L2 ✓
-        │
-  0.75 ─┤  Conditional Trust        L1 ✓
-        │
-  0.50 ─┤  Review Required          (none)
-        │
-  0.20 ─┤  Denied / Degraded        (none)
-        │
-  0.00 ─┘  Hard Denial              (none)
-```
+![CAS Tier Ladder — 0.0 to 1.0 with tier bands and badge eligibility](assets/archive/fig3-cas-tier-ladder.svg)
 
 ### 12.4 API Request Flow
 
-```
-Vendor Platform
-     │
-     │ POST /v1/adapters/{platform}/check
-     │ (native payload format)
-     ↓
-Lambda Handler (handler.py)
-     │
-     │ _handle_vendor(event, vendor)
-     ↓
-Vendor Adapter (to_nhid_event)
-     │
-     │ (session_dict, event_dict)
-     ↓
-Policy Engine (evaluate_all)
-     │
-     ├── IDG-01 evaluator
-     ├── PDX-01 evaluator
-     ├── DBC-01 evaluator
-     ├── EIT-01 evaluator
-     ├── ATR-01 evaluator
-     └── Bot-to-bot evaluator
-     │
-     │ PolicyDecision
-     ↓
-CAS Engine (_policy_cas)
-     │
-     ↓
-JSON Response
-{conformant, action, violations[], cas{score, tier, badge_eligible}}
-```
+![API Request Flow — vendor payload through adapter, Lambda, policy engine, and CAS to JSON response](assets/archive/fig5-api-request-flow.svg)
 
 ### 12.5 Delegation Chain (v2)
 
-```
-Provider Organization (NPI: 1234567890)
-     │ Issues & signs
-     ↓
-AgentPassport [scope: claim_status_inquiry, eligibility_check]
-     │ Delegates to
-     ↓
-AI Vendor (scope: claim_status_inquiry only ← monotonic narrowing)
-     │ Sub-delegates to
-     ↓
-Specific Agent Instance (scope: claim_status_inquiry only)
-     │
-     └─ Max 3 hops. Scope can only narrow. call_sid bound to prevent replay.
-```
+![NHID-Auth v2 Delegation Chain — Provider → Vendor → Sub-Vendor → Agent with monotonic scope narrowing](assets/archive/fig6-delegation-chain.svg)
 
 ---
 
@@ -1650,7 +1547,12 @@ NHID-Clinical is not positioned against any existing product. It fills a gap:
 | :--- | :--- | :--- |
 | **Impersonation Latency** | Specific, vivid, accurate to the failure mode | **Permanent — never rename** |
 | **IDG-01, PDX-01, DBC-01, EIT-01** | ISO-style rule IDs; stable across versions | Permanent |
-| **NHID-CAS** | Conformance Assurance Score; distinguishes from other scoring systems | Permanent |
+| **NHID-CAS** | Call Authorization Score; code: `nhid_cas.py` line 1 docstring | Permanent |
+| **IDG-01** | Identity Disclosure Gate; code: `nhid_policy_engine_v1.py` line 129 | Permanent |
+| **PDX-01** | Pre-Data Exchange Gate; code: `nhid_policy_engine_v1.py` line 205 | Permanent |
+| **DBC-01** | Deceptive Behavior Check; code: `nhid_policy_engine_v1.py` line 296 | Permanent |
+| **EIT-01** | Escalation Implementation Test; code: `nhid_policy_engine_v1.py` line 395 | Permanent |
+| **ATR-01** | Audit Trail Requirements; code: `nhid_policy_engine_v1.py` line 481 | Permanent |
 | **NHID-Auth** | Auth sub-brand for the v2 cryptographic layer | Permanent |
 | **Beacon** | Reference voice agent name; echoes "signal" and "guidance" | Permanent |
 | **Verified Trust / Conditional Trust** | Tier names; descriptive, not binary | Permanent |
@@ -1944,11 +1846,11 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 | :--- | :--- |
 | **Impersonation Latency** | Duration an AI agent operates before disclosing its non-human identity |
 | **IDG-01** | Identity Disclosure Gate: first-message AI disclosure requirement |
-| **PDX-01** | PHI Data Exchange Gate: no PHI before disclosure |
+| **PDX-01** | Pre-Data Exchange Gate: no PHI before disclosure |
 | **DBC-01** | Deceptive Behavior Check: no artifacts or claims implying human identity |
-| **EIT-01** | Escalation & Intervention: human transfer must be available and honored |
+| **EIT-01** | Escalation Implementation Test: human transfer must be available and honored |
 | **ATR-01** | Audit Trail Requirements: complete event metadata |
-| **CAS** | Conformance Assurance Score: 0.0–1.0 per-call compliance score |
+| **CAS** | Call Authorization Score: 0.0–1.0 per-call compliance score |
 | **NHID-Auth v2** | Cryptographic agent identity layer: Ed25519 NPI-bound delegation |
 | **AgentPassport** | Signed credential proving AI agent authorization |
 | **Delegation Chain** | Provider → Agent authorization path (max 3 hops) |
@@ -1966,24 +1868,24 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 
 | File | Lines | Purpose |
 | :--- | :--- | :--- |
-| `src/nhid_policy_engine_v1.py` | ~670 | Policy engine — all 6 rule evaluators |
-| `src/agent_identity.py` | ~200 | Ed25519 delegation and passport verification |
-| `src/nhid_cas.py` | ~58 | CAS scoring formula |
-| `src/fhir_audit_emitter.py` | ~300 | FHIR R4 AuditEvent bundle generator |
-| `src/cts_runner.py` | ~200 | CTS YAML test runner |
-| `src/nhid_badge_generator.py` | ~50 | SVG badge generation |
-| `functions/handler.py` | 426 | Lambda multi-route API handler |
-| `adapters/vapi_adapter.py` | ~150 | VAPI native payload adapter |
-| `adapters/twilio_adapter.py` | ~240 | Twilio Voice Intelligence adapter |
-| `adapters/vonage_adapter.py` | ~150 | Vonage Voice API adapter |
-| `adapters/retell_adapter.py` | ~150 | Retell AI adapter |
-| `adapters/amazon_connect_adapter.py` | ~150 | Amazon Connect Contact Lens adapter |
-| `adapters/call_progress_adapter.py` | ~100 | Turn-by-turn webhook adapter |
-| `agents/beacon_system_prompt.md` | ~60 | Reference agent (Beacon) system prompt |
-| `schema/nhid_trace_schema_v1.json` | ~150 | JSON Schema Draft 2020-12 event schema |
-| `tests/nhid_conformance_test_suite_v1.yaml` | ~250 | 18 CTS test cases |
-| `template.yaml` | ~150 | AWS SAM CloudFormation template |
-| `NHIDClinical.psm1` | 114 | PowerShell module for payer IT |
+| `src/nhid_policy_engine_v1.py` | 669 | Policy engine — all 6 rule evaluators |
+| `src/agent_identity.py` | 200 | Ed25519 delegation and passport verification |
+| `src/nhid_cas.py` | 57 | CAS scoring formula |
+| `src/fhir_audit_emitter.py` | 421 | FHIR R4 AuditEvent bundle generator |
+| `src/cts_runner.py` | 257 | CTS YAML test runner |
+| `src/nhid_badge_generator.py` | 87 | SVG badge generation |
+| `functions/handler.py` | 425 | Lambda multi-route API handler |
+| `adapters/vapi_adapter.py` | 267 | VAPI native payload adapter |
+| `adapters/twilio_adapter.py` | 241 | Twilio Voice Intelligence adapter |
+| `adapters/vonage_adapter.py` | 153 | Vonage Voice API adapter |
+| `adapters/retell_adapter.py` | 161 | Retell AI adapter |
+| `adapters/amazon_connect_adapter.py` | 174 | Amazon Connect Contact Lens adapter |
+| `adapters/call_progress_adapter.py` | 144 | Turn-by-turn webhook adapter |
+| `agents/beacon_system_prompt.md` | 110 | Reference agent (Beacon) system prompt |
+| `schema/nhid_trace_schema_v1.json` | 376 | JSON Schema Draft 2020-12 event schema |
+| `tests/nhid_conformance_test_suite_v1.yaml` | 632 | 18 CTS test cases |
+| `template.yaml` | 199 | AWS SAM CloudFormation template |
+| `NHIDClinical.psm1` | 113 | PowerShell module for payer IT |
 | `docs/5-minute-quickstart.md` | ~100 | Zero-install on-ramp |
 | `docs/v2-integration-guide.md` | ~150 | Tier 0/1/2 staged integration |
 | `docs/fhir-auditevent-mapping.md` | ~200 | FHIR R4 AuditEvent profile |
@@ -2113,6 +2015,40 @@ assert len(decision.violations) == 0
 
 ---
 
-*End of NHID-Clinical Master Knowledge Archive · v1.0 · 2026-06-12*
+---
+
+## Changelog
+
+### v1.1 — 2026-06-13
+
+**Consistency fixes (code is source of truth):**
+
+| Discrepancy | Was | Fixed To | Source |
+| :--- | :--- | :--- | :--- |
+| CAS expansion (2 conflicting names) | "Compliance/Conformance Assurance Score" | **"Call Authorization Score"** | `nhid_cas.py` line 1 docstring |
+| PDX-01 name | "PHI Data Exchange Gate" | **"Pre-Data Exchange Gate"** | `nhid_policy_engine_v1.py` line 205 |
+| EIT-01 name | "Escalation & Intervention" | **"Escalation Implementation Test"** | `nhid_policy_engine_v1.py` line 395 |
+| NOCF formula | `(C+E+S)/3 × L_hat × R` with weights in C/E/S | `C×E×S×L_hat×(1−R)`; weights only in R | `nhid_cas.py` `compute_nocf()` |
+| `fhir_audit_emitter.py` line count | ~300 | 421 | `wc -l` |
+| `cts_runner.py` line count | ~200 | 257 | `wc -l` |
+| `nhid_badge_generator.py` line count | ~50 | 87 | `wc -l` |
+| `vapi_adapter.py` line count | ~150 | 267 | `wc -l` |
+| `amazon_connect_adapter.py` line count | ~150 | 174 | `wc -l` |
+| `call_progress_adapter.py` line count | ~100 | 144 | `wc -l` |
+| `beacon_system_prompt.md` line count | ~60 | 110 | `wc -l` |
+| `schema/nhid_trace_schema_v1.json` line count | ~150 | 376 | `wc -l` |
+| `nhid_conformance_test_suite_v1.yaml` line count | ~250 | 632 | `wc -l` |
+| `template.yaml` line count | ~150 | 199 | `wc -l` |
+| `NHIDClinical.psm1` line count | 114 | 113 | `wc -l` |
+
+**Additions:**
+- Control name expansions (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) added to §19.2 as permanent naming decisions with source-file citations
+- §2.4.1 "Formal Measurement Definition" inserted after §2.4: time form `IL = t(disclosure) − t(connect)`, turn form `IL(turns)`, exposure weighting, perceptual variant (survey-only exclusion), and determinism guarantee (both anchors are ATR-01 required fields)
+- All ASCII diagrams replaced with brand-compliant SVG figures (fig1–fig7); 300-DPI PNGs generated for PDF; `fig7-il-formula.svg` updated from placeholder to full formal measurement diagram
+- PDF rebuilt with page footer "NHID-Clinical · CC BY 4.0 · nhid-clinical.org"
+
+---
+
+*End of NHID-Clinical Master Knowledge Archive · v1.1 · 2026-06-13*
 
 *CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026 · nhid-clinical.org*

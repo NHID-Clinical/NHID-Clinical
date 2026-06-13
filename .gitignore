@@ -7,6 +7,12 @@ __pycache__/
 *.pdf
 docs/*
 !docs/*.md
+!docs/assets/
+!docs/assets/archive/
+!docs/assets/archive/*.svg
+!docs/assets/archive/*.png
+!docs/assets/archive/*.py
+!docs/assets/archive/NHID-Clinical-Master-Knowledge-Archive.pdf
 scripts/generate_voiceadmin_onepager.py
 
 .python_history
