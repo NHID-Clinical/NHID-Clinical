@@ -240,6 +240,32 @@ exchanges PHI while the counterparty believes they are speaking with a human.
 
 **Policy engine response:** IDG-01 CRITICAL + PDX-01 CRITICAL → action: DENY_DATA, CAS → 0.0
 
+#### 2.4.1 — Formal Measurement Definition
+
+**Impersonation Latency (IL), time form:**
+
+```
+IL = t(disclosure) − t(connect)
+```
+
+where `t(disclosure)` is the first valid IDG-01 disclosure event (`disclosure_timestamp`) and `t(connect)` is the session start timestamp. If no valid disclosure occurs, IL is right-censored at call end and reported as `IL ≥ call duration`.
+
+**Turn form:**
+
+```
+IL(turns) = number of completed conversational turns before the first valid disclosure
+```
+
+Disclosure in the first message yields `IL(turns) = 0` — the conformant target.
+
+**Exposure weighting:** IL measures the interval; the harm is what moved inside it. Pre-Disclosure PHI Exposure = count of `phi_accessed` fields with timestamps earlier than `t(disclosure)`. PDX-01 fires when this count exceeds zero. A call may have high IL with zero exposure (bad practice, no breach) or low IL with nonzero exposure (critical).
+
+**Perceptual variant:** `IL(detection) = t(human detection) − t(connect)` measures when the counterparty subjectively identifies the agent. It is not machine-observable and is excluded from conformance evaluation; it is retained for survey-based research only.
+
+This definition is deterministic: both anchors are required ATR-01 event fields, so IL is computable from any conformant audit trail with no human judgment.
+
+![Impersonation Latency — formal measurement diagram](assets/archive/fig7-il-formula.svg)
+
 ---
 
 ## 3. Governance Architecture
@@ -2017,6 +2043,9 @@ assert len(decision.violations) == 0
 
 **Additions:**
 - Control name expansions (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) added to §19.2 as permanent naming decisions with source-file citations
+- §2.4.1 "Formal Measurement Definition" inserted after §2.4: time form `IL = t(disclosure) − t(connect)`, turn form `IL(turns)`, exposure weighting, perceptual variant (survey-only exclusion), and determinism guarantee (both anchors are ATR-01 required fields)
+- All ASCII diagrams replaced with brand-compliant SVG figures (fig1–fig7); 300-DPI PNGs generated for PDF; `fig7-il-formula.svg` updated from placeholder to full formal measurement diagram
+- PDF rebuilt with page footer "NHID-Clinical · CC BY 4.0 · nhid-clinical.org"
 
 ---
 

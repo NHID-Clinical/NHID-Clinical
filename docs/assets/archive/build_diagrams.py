@@ -475,42 +475,90 @@ def d6_delegation_chain():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Diagram 7: IL Formula (placeholder — §2.4.1 body not yet provided)
+# Diagram 7: IL Formal Measurement Definition (§2.4.1)
 # ─────────────────────────────────────────────────────────────────────────────
 
 def d7_il_formula():
-    W, H = 680, 260
+    W, H = 760, 540
+    M = "font-family=\"'Courier New', Courier, monospace\""
+    S = f'font-family="{FONT_SANS}"'
     lines = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">']
     lines.append(f'<rect width="{W}" height="{H}" fill="{NAVY}"/>')
+
+    # Title
     lines.append(
-        f'<text x="{W//2}" y="32" text-anchor="middle" font-family="{FONT_SANS}" '
-        f'font-size="16" font-weight="700" fill="{WHITE}" letter-spacing="1">IMPERSONATION LATENCY — FORMAL DEFINITION</text>'
+        f'<text x="{W//2}" y="30" text-anchor="middle" {S} font-size="15" font-weight="700" '
+        f'fill="{WHITE}" letter-spacing="1">IMPERSONATION LATENCY — FORMAL MEASUREMENT (§2.4.1)</text>'
     )
 
-    formulas = [
-        ("Time form:",  "IL_t = t_phi − t_disclosure",           "seconds elapsed between first PHI request and disclosure"),
-        ("Turn form:",  "IL_n = n_phi − n_disclosure",           "turn count at first PHI request minus turn count at disclosure"),
-        ("Condition:",  "IL_t > 0  or  IL_n > 0  →  IDG-01 FAIL + PDX-01 FAIL", ""),
-        ("CAS effect:", "F_IAF = 0.0  →  CAS = 0.0",            "any positive IL collapses identity assurance factor to zero"),
-    ]
+    # ── Timeline row ──────────────────────────────────────────────────────────
+    TY = 80   # y-center of timeline bar
+    X0 = 60   # t(connect)
+    XD = 460  # t(disclosure)
+    XE = 680  # t(end)
 
-    fy = 68
-    for label, formula, note in formulas:
-        lines.append(
-            f'<text x="32" y="{fy}" font-family="{FONT_SANS}" font-size="11" fill="{LGRAY}" font-weight="600">{label}</text>'
-        )
-        lines.append(
-            f'<text x="130" y="{fy}" font-family="\'Courier New\', Courier, monospace" font-size="13" fill="{TEAL}" font-weight="700">{formula}</text>'
-        )
-        if note:
-            lines.append(
-                f'<text x="130" y="{fy + 16}" font-family="{FONT_SANS}" font-size="10" fill="{LGRAY}">{note}</text>'
-            )
-        fy += 50
+    # Grey track
+    lines.append(f'<line x1="{X0}" y1="{TY}" x2="{XE}" y2="{TY}" stroke="{DGRAY}" stroke-width="4"/>')
+    # IL bracket — teal span
+    lines.append(f'<line x1="{X0}" y1="{TY}" x2="{XD}" y2="{TY}" stroke="{TEAL}" stroke-width="6"/>')
 
+    # Endpoint circles
+    for x, col in [(X0, CYAN), (XD, TEAL), (XE, LGRAY)]:
+        lines.append(f'<circle cx="{x}" cy="{TY}" r="7" fill="{col}"/>')
+
+    # Labels below timeline
+    for x, label, col in [
+        (X0, "t(connect)", CYAN),
+        (XD, "t(disclosure)", TEAL),
+        (XE, "t(end)", LGRAY),
+    ]:
+        lines.append(f'<text x="{x}" y="{TY+22}" text-anchor="middle" {M} font-size="10" fill="{col}">{label}</text>')
+
+    # IL bracket annotation above
+    mid = (X0 + XD) // 2
+    lines.append(f'<line x1="{X0}" y1="{TY-18}" x2="{XD}" y2="{TY-18}" stroke="{TEAL}" stroke-width="1.5" stroke-dasharray="4,3"/>')
+    lines.append(f'<text x="{mid}" y="{TY-24}" text-anchor="middle" {S} font-size="11" font-weight="700" fill="{TEAL}">IL = t(disclosure) − t(connect)</text>')
+
+    # Right-censored case note
     lines.append(
-        f'<text x="{W//2}" y="{H - 16}" text-anchor="middle" font-family="{FONT_SANS}" '
-        f'font-size="10" fill="{LGRAY}">§2.4.1 — awaiting formal definition block from project lead</text>'
+        f'<text x="{XE+8}" y="{TY+5}" {S} font-size="10" fill="{LGRAY}">no disclosure → IL ≥ call duration (right-censored)</text>'
+    )
+
+    # ── Turns row ─────────────────────────────────────────────────────────────
+    turns = [("T1", 110), ("T2", 185), ("T3", 260), ("T4", 335), ("T5 disc.", 410)]
+    TY2 = 155
+    lines.append(f'<line x1="{X0}" y1="{TY2}" x2="{XE}" y2="{TY2}" stroke="{DGRAY}" stroke-width="2"/>')
+    for i, (label, tx) in enumerate(turns):
+        col = TEAL if "disc" in label else (RED if i < 2 else LGRAY)
+        lines.append(f'<circle cx="{tx}" cy="{TY2}" r="5" fill="{col}"/>')
+        lines.append(f'<text x="{tx}" y="{TY2+18}" text-anchor="middle" {S} font-size="9" fill="{col}">{label}</text>')
+    # Turn-form bracket
+    lines.append(f'<text x="{(110+410)//2}" y="{TY2-12}" text-anchor="middle" {S} font-size="11" font-weight="700" fill="{CYAN}">IL(turns) = 4  →  conformant target: IL(turns) = 0</text>')
+
+    # ── Exposure weighting row ────────────────────────────────────────────────
+    EY = 218
+    lines.append(f'<rect x="40" y="{EY}" width="{W-80}" height="56" rx="5" fill="{DGRAY}"/>')
+    lines.append(f'<text x="56" y="{EY+18}" {S} font-size="11" font-weight="700" fill="{YELLOW}">Exposure weighting</text>')
+    lines.append(f'<text x="56" y="{EY+35}" {M} font-size="10" fill="{WHITE}">Pre-Disclosure PHI Exposure = count( phi_accessed.timestamp &lt; t(disclosure) )</text>')
+    lines.append(f'<text x="56" y="{EY+50}" {S} font-size="10" fill="{LGRAY}">PDX-01 fires when count &gt; 0 — high IL + zero exposure (bad practice) is not a breach; low IL + nonzero exposure (critical)</text>')
+
+    # ── Perceptual variant ────────────────────────────────────────────────────
+    PY = 292
+    lines.append(f'<rect x="40" y="{PY}" width="{W-80}" height="44" rx="5" fill="{DGRAY}"/>')
+    lines.append(f'<text x="56" y="{PY+17}" {S} font-size="11" font-weight="700" fill="{LGRAY}">Perceptual variant (excluded from conformance)</text>')
+    lines.append(f'<text x="56" y="{PY+34}" {M} font-size="10" fill="{LGRAY}">IL(detection) = t(human detection) − t(connect)  →  not machine-observable; survey research only</text>')
+
+    # ── Determinism guarantee ─────────────────────────────────────────────────
+    DY = 354
+    lines.append(f'<rect x="40" y="{DY}" width="{W-80}" height="56" rx="5" fill="#1E3A5F" stroke="{TEAL}" stroke-width="1.5"/>')
+    lines.append(f'<text x="56" y="{DY+18}" {S} font-size="11" font-weight="700" fill="{TEAL}">Determinism guarantee</text>')
+    lines.append(f'<text x="56" y="{DY+35}" {S} font-size="10" fill="{WHITE}">Both anchors are required ATR-01 event fields (disclosure_timestamp, session start).</text>')
+    lines.append(f'<text x="56" y="{DY+50}" {S} font-size="10" fill="{WHITE}">IL is computable from any conformant audit trail with no human judgment.</text>')
+
+    # ── Footer ────────────────────────────────────────────────────────────────
+    lines.append(
+        f'<text x="{W//2}" y="{H-12}" text-anchor="middle" {S} font-size="9" fill="{LGRAY}">'
+        f'§2.4.1 · IL = t(disclosure) − t(connect) · deterministic from ATR-01 fields · right-censored when no disclosure occurs</text>'
     )
     lines.append('</svg>')
     return "\n".join(lines)
