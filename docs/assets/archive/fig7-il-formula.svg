@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="260" viewBox="0 0 680 260">
+<rect width="680" height="260" fill="#0F172A"/>
+<text x="340" y="32" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="700" fill="#F8FAFC" letter-spacing="1">IMPERSONATION LATENCY — FORMAL DEFINITION</text>
+<text x="32" y="68" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#94A3B8" font-weight="600">Time form:</text>
+<text x="130" y="68" font-family="'Courier New', Courier, monospace" font-size="13" fill="#14B8A6" font-weight="700">IL_t = t_phi − t_disclosure</text>
+<text x="130" y="84" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">seconds elapsed between first PHI request and disclosure</text>
+<text x="32" y="118" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#94A3B8" font-weight="600">Turn form:</text>
+<text x="130" y="118" font-family="'Courier New', Courier, monospace" font-size="13" fill="#14B8A6" font-weight="700">IL_n = n_phi − n_disclosure</text>
+<text x="130" y="134" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">turn count at first PHI request minus turn count at disclosure</text>
+<text x="32" y="168" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#94A3B8" font-weight="600">Condition:</text>
+<text x="130" y="168" font-family="'Courier New', Courier, monospace" font-size="13" fill="#14B8A6" font-weight="700">IL_t > 0  or  IL_n > 0  →  IDG-01 FAIL + PDX-01 FAIL</text>
+<text x="32" y="218" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#94A3B8" font-weight="600">CAS effect:</text>
+<text x="130" y="218" font-family="'Courier New', Courier, monospace" font-size="13" fill="#14B8A6" font-weight="700">F_IAF = 0.0  →  CAS = 0.0</text>
+<text x="130" y="234" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">any positive IL collapses identity assurance factor to zero</text>
+<text x="340" y="244" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">§2.4.1 — awaiting formal definition block from project lead</text>
+</svg>

@@ -140,7 +140,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected output: `261 passing` in ~1.4s (requires `cryptography` package for identity tests; ~6 skip when no server is running).
+Expected output: `270 passing` in ~1.4s (requires `cryptography` package for identity tests; ~18 skip when no server is running).
 
 ---
 

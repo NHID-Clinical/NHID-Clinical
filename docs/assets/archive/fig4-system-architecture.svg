@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="460" viewBox="0 0 760 460">
+<rect width="760" height="460" fill="#0F172A"/>
+<text x="380" y="28" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="700" fill="#F8FAFC" letter-spacing="1">SYSTEM ARCHITECTURE</text>
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#14B8A6"/></marker></defs>
+<rect x="77" y="50" width="110" height="42" rx="7" fill="#1E293B"/>
+<rect x="77" y="50" width="110" height="4" rx="3" fill="#67E8F9"/>
+<text x="132" y="71" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">VAPI</text>
+<rect x="201" y="50" width="110" height="42" rx="7" fill="#1E293B"/>
+<rect x="201" y="50" width="110" height="4" rx="3" fill="#67E8F9"/>
+<text x="256" y="71" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">Twilio</text>
+<rect x="325" y="50" width="110" height="42" rx="7" fill="#1E293B"/>
+<rect x="325" y="50" width="110" height="4" rx="3" fill="#67E8F9"/>
+<text x="380" y="71" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">Vonage</text>
+<rect x="449" y="50" width="110" height="42" rx="7" fill="#1E293B"/>
+<rect x="449" y="50" width="110" height="4" rx="3" fill="#67E8F9"/>
+<text x="504" y="71" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">Retell</text>
+<rect x="573" y="50" width="110" height="42" rx="7" fill="#1E293B"/>
+<rect x="573" y="50" width="110" height="4" rx="3" fill="#67E8F9"/>
+<text x="628" y="71" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">Amazon Connect</text>
+<rect x="240" y="130" width="280" height="46" rx="7" fill="#334155"/>
+<rect x="240" y="130" width="280" height="4" rx="3" fill="#14B8A6"/>
+<text x="380" y="146" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">Vendor Adapters</text>
+<text x="380" y="162" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">to_nhid_event(payload) → (session, event)</text>
+<line x1="380" y1="92" x2="380" y2="130" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="210" y="214" width="340" height="46" rx="7" fill="#334155"/>
+<rect x="210" y="214" width="340" height="4" rx="3" fill="#14B8A6"/>
+<text x="380" y="230" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">AWS Lambda Handler</text>
+<text x="380" y="246" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">functions/handler.py · Python 3.13 · 256 MB · 30s</text>
+<line x1="380" y1="176" x2="380" y2="214" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="210" y="298" width="340" height="46" rx="7" fill="#0D3D56"/>
+<rect x="210" y="298" width="340" height="4" rx="3" fill="#14B8A6"/>
+<text x="380" y="314" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#67E8F9">Policy Engine</text>
+<text x="380" y="330" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">evaluate_all(session, event) → PolicyDecision</text>
+<line x1="380" y1="260" x2="380" y2="298" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="120" y="382" width="240" height="52" rx="7" fill="#334155"/>
+<rect x="120" y="382" width="240" height="4" rx="3" fill="#14B8A6"/>
+<text x="240" y="401" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">CAS Engine</text>
+<text x="240" y="417" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">nhid_cas.py · 0.0–1.0 score</text>
+<rect x="400" y="382" width="240" height="52" rx="7" fill="#334155"/>
+<rect x="400" y="382" width="240" height="4" rx="3" fill="#67E8F9"/>
+<text x="520" y="401" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">FHIR Audit Emitter</text>
+<text x="520" y="417" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">fhir_audit_emitter.py · R4 Bundle</text>
+<line x1="250" y1="344" x2="240" y2="382" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="510" y1="344" x2="520" y2="382" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#arr)"/>
+</svg>
