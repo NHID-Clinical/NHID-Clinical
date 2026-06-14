@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "id": "3c84103b-3ff5-43da-97e8-ab186c52cd78",
+  "type": "collection",
+  "timestamp": "2026-06-05T10:12:00Z",
+  "meta": {
+    "tag": [
+      {
+        "system": "https://nhid-clinical.org/pilot",
+        "code": "shadow-baseline"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "7ad89976-485e-4105-bfda-e07a3acf0d79",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "code": "nhid-conformance-check",
+            "display": "NHID-Clinical v1.3 Conformance Check"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-05T10:12:00Z",
+        "outcome": "4",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "code": "humanuser"
+                }
+              ]
+            },
+            "who": {
+              "display": "NHID-Clinical Policy Engine v1.3"
+            },
+            "requestor": true
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical-lambda",
+          "observer": {
+            "display": "NHID-Clinical Conformance API"
+          }
+        },
+        "entity": [
+          {
+            "what": {
+              "display": "pilot-shadow-ae69d935"
+            },
+            "type": {
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "code": "20",
+              "display": "Job"
+            },
+            "detail": [
+              {
+                "type": "session_id",
+                "valueString": "pilot-shadow-ae69d935"
+              },
+              {
+                "type": "conformant",
+                "valueString": "false"
+              },
+              {
+                "type": "cas_score",
+                "valueString": "0.45"
+              },
+              {
+                "type": "violations",
+                "valueString": "[\"DBC-01\"]"
+              },
+              {
+                "type": "notes",
+                "valueString": "Voice forensics flag present (elevenlabs_voice_confidence: 0.95)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c05cd095-d8a0-4e68-ab31-93318de2c344",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://nhid-clinical.org/fhir/CodeSystem/cas",
+              "code": "cas-score"
+            }
+          ]
+        },
+        "valueDecimal": 0.45,
+        "note": [
+          {
+            "text": "Voice forensics flag present (elevenlabs_voice_confidence: 0.95)"
+          }
+        ]
+      }
+    }
+  ]
+}

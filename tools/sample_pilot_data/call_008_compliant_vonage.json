@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "id": "a3739787-8918-4de9-a493-6ce75a23f50f",
+  "type": "collection",
+  "timestamp": "2026-06-08T10:21:00Z",
+  "meta": {
+    "tag": [
+      {
+        "system": "https://nhid-clinical.org/pilot",
+        "code": "shadow-baseline"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "193248e1-d139-4704-a1e4-9cd9b298a31a",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "code": "nhid-conformance-check",
+            "display": "NHID-Clinical v1.3 Conformance Check"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-08T10:21:00Z",
+        "outcome": "0",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "code": "humanuser"
+                }
+              ]
+            },
+            "who": {
+              "display": "NHID-Clinical Policy Engine v1.3"
+            },
+            "requestor": true
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical-lambda",
+          "observer": {
+            "display": "NHID-Clinical Conformance API"
+          }
+        },
+        "entity": [
+          {
+            "what": {
+              "display": "pilot-shadow-3f6332e3"
+            },
+            "type": {
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "code": "20",
+              "display": "Job"
+            },
+            "detail": [
+              {
+                "type": "session_id",
+                "valueString": "pilot-shadow-3f6332e3"
+              },
+              {
+                "type": "conformant",
+                "valueString": "true"
+              },
+              {
+                "type": "cas_score",
+                "valueString": "0.93"
+              },
+              {
+                "type": "violations",
+                "valueString": "[]"
+              },
+              {
+                "type": "notes",
+                "valueString": "Vonage - multi-turn, disclosure held until turn 2, still compliant"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "0e59388a-648f-45d5-93e4-859ab45164f1",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://nhid-clinical.org/fhir/CodeSystem/cas",
+              "code": "cas-score"
+            }
+          ]
+        },
+        "valueDecimal": 0.93,
+        "note": [
+          {
+            "text": "Vonage - multi-turn, disclosure held until turn 2, still compliant"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -194,6 +194,37 @@
     </div>
   </section>
 
+  <!-- ── Live API Terminal ─────────────────────────────────────────────────── -->
+  <section class="page-section" style="padding-top:1.5rem;padding-bottom:1rem">
+    <div class="container" style="max-width:60rem">
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.6rem">Live API &mdash; Try it now (no key required)</p>
+      <div style="background:#0f172a;border-radius:10px;overflow:hidden;font-family:'Courier New',Courier,monospace;font-size:.8rem;line-height:1.65">
+        <div style="background:#1e293b;padding:.45rem 1rem;display:flex;align-items:center;gap:.4rem">
+          <span style="width:10px;height:10px;border-radius:50%;background:#f87171;display:inline-block"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#facc15;display:inline-block"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#4ade80;display:inline-block"></span>
+          <span style="color:#94a3b8;margin-left:.5rem;font-size:.75rem">nhid-clinical &mdash; zsh</span>
+        </div>
+        <div style="padding:1rem 1.25rem;overflow-x:auto">
+          <div><span style="color:#4ade80">$</span> <span style="color:#f8fafc">curl -s -X POST \</span></div>
+          <div style="color:#f8fafc">&nbsp;&nbsp;<span style="color:#67e8f9">https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check</span> \</div>
+          <div style="color:#f8fafc">&nbsp;&nbsp;-H <span style="color:#fde68a">"Content-Type: application/json"</span> \</div>
+          <div style="color:#f8fafc">&nbsp;&nbsp;-d @tests/demo_scenarios/vapi_noncompliant.json | python3 -m json.tool</div>
+          <div style="margin-top:.6rem;color:#94a3b8">{</div>
+          <div style="color:#94a3b8">&nbsp;&nbsp;<span style="color:#67e8f9">"conformant"</span>: <span style="color:#f87171">false</span>,</div>
+          <div style="color:#94a3b8">&nbsp;&nbsp;<span style="color:#67e8f9">"action"</span>: <span style="color:#fde68a">"DENY_DATA"</span>,</div>
+          <div style="color:#94a3b8">&nbsp;&nbsp;<span style="color:#67e8f9">"violations"</span>: [</div>
+          <div style="color:#94a3b8">&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color:#67e8f9">"rule_id"</span>: <span style="color:#fde68a">"IDG-01"</span>, <span style="color:#67e8f9">"severity"</span>: <span style="color:#fde68a">"critical"</span> },</div>
+          <div style="color:#94a3b8">&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color:#67e8f9">"rule_id"</span>: <span style="color:#fde68a">"PDX-01"</span>, <span style="color:#67e8f9">"severity"</span>: <span style="color:#fde68a">"critical"</span> }</div>
+          <div style="color:#94a3b8">&nbsp;&nbsp;],</div>
+          <div style="color:#94a3b8">&nbsp;&nbsp;<span style="color:#67e8f9">"cas"</span>: { <span style="color:#67e8f9">"score"</span>: <span style="color:#f87171">0.28</span>, <span style="color:#67e8f9">"tier"</span>: <span style="color:#fde68a">"Denied/Degraded"</span> }</div>
+          <div style="color:#94a3b8">}</div>
+        </div>
+      </div>
+      <p style="font-size:.82rem;color:var(--ink-soft);margin-top:.6rem">Replace the payload with your own VAPI, Twilio, Vonage, Retell AI, or Amazon Connect call data. &mdash; <a href="/docs/5-minute-quickstart.md" style="color:var(--teal)">Full 5-minute quickstart &rarr;</a></p>
+    </div>
+  </section>
+
   <!-- ── Pilot Banner ──────────────────────────────────────────────────────── -->
   <section class="page-section" style="padding-top:1.5rem;padding-bottom:1.5rem">
     <div class="container" style="max-width:60rem">

@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "id": "328fa982-e374-42fb-b98d-5bc9f308b57c",
+  "type": "collection",
+  "timestamp": "2026-06-09T10:24:00Z",
+  "meta": {
+    "tag": [
+      {
+        "system": "https://nhid-clinical.org/pilot",
+        "code": "shadow-baseline"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "203bd232-73f6-4d96-8eaf-db60a5071a5c",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "code": "nhid-conformance-check",
+            "display": "NHID-Clinical v1.3 Conformance Check"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-09T10:24:00Z",
+        "outcome": "4",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "code": "humanuser"
+                }
+              ]
+            },
+            "who": {
+              "display": "NHID-Clinical Policy Engine v1.3"
+            },
+            "requestor": true
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical-lambda",
+          "observer": {
+            "display": "NHID-Clinical Conformance API"
+          }
+        },
+        "entity": [
+          {
+            "what": {
+              "display": "pilot-shadow-6c294450"
+            },
+            "type": {
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "code": "20",
+              "display": "Job"
+            },
+            "detail": [
+              {
+                "type": "session_id",
+                "valueString": "pilot-shadow-6c294450"
+              },
+              {
+                "type": "conformant",
+                "valueString": "false"
+              },
+              {
+                "type": "cas_score",
+                "valueString": "0.61"
+              },
+              {
+                "type": "violations",
+                "valueString": "[\"PDX-01\"]"
+              },
+              {
+                "type": "notes",
+                "valueString": "Disclosure happened but PHI was accessed 0.4s before timestamp"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "f056cbac-4dfd-4740-b147-fe4a77dab9cc",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://nhid-clinical.org/fhir/CodeSystem/cas",
+              "code": "cas-score"
+            }
+          ]
+        },
+        "valueDecimal": 0.61,
+        "note": [
+          {
+            "text": "Disclosure happened but PHI was accessed 0.4s before timestamp"
+          }
+        ]
+      }
+    }
+  ]
+}

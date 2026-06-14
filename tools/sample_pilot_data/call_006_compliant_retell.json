@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "id": "c4500385-897d-4088-855b-1ac0a8d48f97",
+  "type": "collection",
+  "timestamp": "2026-06-06T10:15:00Z",
+  "meta": {
+    "tag": [
+      {
+        "system": "https://nhid-clinical.org/pilot",
+        "code": "shadow-baseline"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "0729e093-2f4a-49ce-9ff3-4503b976f391",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "code": "nhid-conformance-check",
+            "display": "NHID-Clinical v1.3 Conformance Check"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-06T10:15:00Z",
+        "outcome": "0",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "code": "humanuser"
+                }
+              ]
+            },
+            "who": {
+              "display": "NHID-Clinical Policy Engine v1.3"
+            },
+            "requestor": true
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical-lambda",
+          "observer": {
+            "display": "NHID-Clinical Conformance API"
+          }
+        },
+        "entity": [
+          {
+            "what": {
+              "display": "pilot-shadow-2985847f"
+            },
+            "type": {
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "code": "20",
+              "display": "Job"
+            },
+            "detail": [
+              {
+                "type": "session_id",
+                "valueString": "pilot-shadow-2985847f"
+              },
+              {
+                "type": "conformant",
+                "valueString": "true"
+              },
+              {
+                "type": "cas_score",
+                "valueString": "0.89"
+              },
+              {
+                "type": "violations",
+                "valueString": "[]"
+              },
+              {
+                "type": "notes",
+                "valueString": "Retell - proper disclosure, escalation offered at turn 4"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "9603a5a5-78cb-4f80-84b2-0bb7b41d85c4",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://nhid-clinical.org/fhir/CodeSystem/cas",
+              "code": "cas-score"
+            }
+          ]
+        },
+        "valueDecimal": 0.89,
+        "note": [
+          {
+            "text": "Retell - proper disclosure, escalation offered at turn 4"
+          }
+        ]
+      }
+    }
+  ]
+}

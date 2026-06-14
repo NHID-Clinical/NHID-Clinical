@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "id": "370d07d3-9053-49dc-98d2-037c9f26ba85",
+  "type": "collection",
+  "timestamp": "2026-06-02T10:03:00Z",
+  "meta": {
+    "tag": [
+      {
+        "system": "https://nhid-clinical.org/pilot",
+        "code": "shadow-baseline"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "e58e714c-ec18-4695-be18-e0c18b951245",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "code": "nhid-conformance-check",
+            "display": "NHID-Clinical v1.3 Conformance Check"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-02T10:03:00Z",
+        "outcome": "4",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "code": "humanuser"
+                }
+              ]
+            },
+            "who": {
+              "display": "NHID-Clinical Policy Engine v1.3"
+            },
+            "requestor": true
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical-lambda",
+          "observer": {
+            "display": "NHID-Clinical Conformance API"
+          }
+        },
+        "entity": [
+          {
+            "what": {
+              "display": "pilot-shadow-9aead291"
+            },
+            "type": {
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "code": "20",
+              "display": "Job"
+            },
+            "detail": [
+              {
+                "type": "session_id",
+                "valueString": "pilot-shadow-9aead291"
+              },
+              {
+                "type": "conformant",
+                "valueString": "false"
+              },
+              {
+                "type": "cas_score",
+                "valueString": "0.32"
+              },
+              {
+                "type": "violations",
+                "valueString": "[\"IDG-01\", \"PDX-01\"]"
+              },
+              {
+                "type": "notes",
+                "valueString": "Agent requests member ID on turn 1 without disclosure"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "6208c907-9ff5-45b1-9a32-0ac6ffa2ba13",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://nhid-clinical.org/fhir/CodeSystem/cas",
+              "code": "cas-score"
+            }
+          ]
+        },
+        "valueDecimal": 0.32,
+        "note": [
+          {
+            "text": "Agent requests member ID on turn 1 without disclosure"
+          }
+        ]
+      }
+    }
+  ]
+}

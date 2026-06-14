@@ -128,6 +128,40 @@
     </div>
   </section>
 
+  <!-- ── Integration Tiers ─────────────────────────────────────────────────── -->
+  <section class="page-section" style="padding-bottom:1rem">
+    <div class="container" style="max-width:52rem">
+      <h2>Integration Tiers</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.5rem;margin-bottom:1.5rem">Three on-ramps from zero to full v2 identity. Start at Tier 0 — no code changes required.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:1rem">
+
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:1.25rem">
+          <div style="font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem">Tier 0 &mdash; 15 minutes</div>
+          <strong style="font-size:.97rem">Try the demo endpoint</strong>
+          <p style="font-size:.85rem;color:var(--body);line-height:1.6;margin-top:.4rem">POST your existing call payload to <code>/v1/demo/check</code>. No API key, no code changes. Get a conformance result and CAS score instantly.</p>
+          <code style="display:block;font-size:.78rem;background:var(--bg-alt);padding:.5rem .75rem;border-radius:5px;margin-top:.75rem;white-space:pre-wrap">curl -s -X POST \
+  .../v1/adapters/vapi/check \
+  -d @your_call.json</code>
+        </div>
+
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:1.25rem">
+          <div style="font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem">Tier 1 &mdash; 2 hours</div>
+          <strong style="font-size:.97rem">Wire into your webhook</strong>
+          <p style="font-size:.85rem;color:var(--body);line-height:1.6;margin-top:.4rem">Add <code>/v1/webhooks/call-progress</code> as a server URL in VAPI or Twilio. Get real-time per-turn action recommendations with your <code>x-api-key</code>.</p>
+          <p style="font-size:.82rem;color:var(--ink-soft);margin-top:.75rem">Adapters available: VAPI &middot; Twilio &middot; Vonage &middot; Retell AI &middot; Amazon Connect</p>
+        </div>
+
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:1.25rem">
+          <div style="font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem">Tier 2 &mdash; 1 day</div>
+          <strong style="font-size:.97rem">Full v2 cryptographic identity</strong>
+          <p style="font-size:.85rem;color:var(--body);line-height:1.6;margin-top:.4rem">Generate Ed25519 keys, bind to provider NPI, issue agent passports. Payers verify delegation signatures without trusting self-reported NPI.</p>
+          <p style="font-size:.82rem;color:var(--ink-soft);margin-top:.75rem"><a href="https://github.com/nhid-clinical/nhid-clinical/blob/main/examples/v2-staged-integration.py" style="color:var(--teal)">Working 60-line example &rarr;</a></p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <section class="page-section">
     <div class="container" style="max-width:52rem">
 
@@ -138,7 +172,7 @@
       <!-- How it works -->
       <h2>How It Works</h2>
       <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">Vendors who use Twilio produce call transcripts with text, timestamps, and speaker labels. The NHID-Clinical Twilio adapter reads that format and produces a structured event trace showing when disclosure happened, when data was first requested, and whether the call passes IDG-01.</p>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.5rem">The same pattern applies to other voice platforms — each needs its own adapter, but the output schema is identical. VAPI is now supported (<code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">POST /v1/adapters/vapi/check</code>). Bland.ai and Retell AI adapters are planned.</p>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.5rem">The same pattern applies to other voice platforms — each needs its own adapter, but the output schema is identical. Native adapters are available for VAPI, Twilio, Vonage, Retell AI, and Amazon Connect Contact Lens.</p>
 
       <!-- Case 1: Compliant -->
       <h2 style="margin-top:2.5rem">Case 1: Compliant Call</h2>

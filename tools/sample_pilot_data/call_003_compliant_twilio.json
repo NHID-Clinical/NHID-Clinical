@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "id": "b3ebb064-a03e-4702-a95d-0a374d6785d5",
+  "type": "collection",
+  "timestamp": "2026-06-03T10:06:00Z",
+  "meta": {
+    "tag": [
+      {
+        "system": "https://nhid-clinical.org/pilot",
+        "code": "shadow-baseline"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "d218a50f-6929-4f43-9bf0-1e29b00e5179",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "code": "nhid-conformance-check",
+            "display": "NHID-Clinical v1.3 Conformance Check"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-03T10:06:00Z",
+        "outcome": "0",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "code": "humanuser"
+                }
+              ]
+            },
+            "who": {
+              "display": "NHID-Clinical Policy Engine v1.3"
+            },
+            "requestor": true
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical-lambda",
+          "observer": {
+            "display": "NHID-Clinical Conformance API"
+          }
+        },
+        "entity": [
+          {
+            "what": {
+              "display": "pilot-shadow-2c08e3a4"
+            },
+            "type": {
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "code": "20",
+              "display": "Job"
+            },
+            "detail": [
+              {
+                "type": "session_id",
+                "valueString": "pilot-shadow-2c08e3a4"
+              },
+              {
+                "type": "conformant",
+                "valueString": "true"
+              },
+              {
+                "type": "cas_score",
+                "valueString": "0.91"
+              },
+              {
+                "type": "violations",
+                "valueString": "[]"
+              },
+              {
+                "type": "notes",
+                "valueString": "Twilio - disclosure in greeting, escalation communicated"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "3666c95d-da55-4a62-ad51-cd483870a8a9",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://nhid-clinical.org/fhir/CodeSystem/cas",
+              "code": "cas-score"
+            }
+          ]
+        },
+        "valueDecimal": 0.91,
+        "note": [
+          {
+            "text": "Twilio - disclosure in greeting, escalation communicated"
+          }
+        ]
+      }
+    }
+  ]
+}

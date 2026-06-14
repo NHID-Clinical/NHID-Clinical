@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "id": "cd6a9689-f199-46eb-9f9e-123d10fbe54d",
+  "type": "collection",
+  "timestamp": "2026-06-04T10:09:00Z",
+  "meta": {
+    "tag": [
+      {
+        "system": "https://nhid-clinical.org/pilot",
+        "code": "shadow-baseline"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "48b8cc8f-3967-468a-89d0-175312908e7f",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "code": "nhid-conformance-check",
+            "display": "NHID-Clinical v1.3 Conformance Check"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-04T10:09:00Z",
+        "outcome": "4",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "code": "humanuser"
+                }
+              ]
+            },
+            "who": {
+              "display": "NHID-Clinical Policy Engine v1.3"
+            },
+            "requestor": true
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical-lambda",
+          "observer": {
+            "display": "NHID-Clinical Conformance API"
+          }
+        },
+        "entity": [
+          {
+            "what": {
+              "display": "pilot-shadow-f97c1c38"
+            },
+            "type": {
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "code": "20",
+              "display": "Job"
+            },
+            "detail": [
+              {
+                "type": "session_id",
+                "valueString": "pilot-shadow-f97c1c38"
+              },
+              {
+                "type": "conformant",
+                "valueString": "false"
+              },
+              {
+                "type": "cas_score",
+                "valueString": "0.73"
+              },
+              {
+                "type": "violations",
+                "valueString": "[\"EIT-01\"]"
+              },
+              {
+                "type": "notes",
+                "valueString": "No human escalation path communicated by call end"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "a4ebe8a2-5a34-4222-a408-70d5599ec544",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://nhid-clinical.org/fhir/CodeSystem/cas",
+              "code": "cas-score"
+            }
+          ]
+        },
+        "valueDecimal": 0.73,
+        "note": [
+          {
+            "text": "No human escalation path communicated by call end"
+          }
+        ]
+      }
+    }
+  ]
+}

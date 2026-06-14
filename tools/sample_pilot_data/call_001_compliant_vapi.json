@@ -1,0 +1,115 @@
+{
+  "resourceType": "Bundle",
+  "id": "f84e6f20-02f9-45f4-b1c6-1dff57b05a4d",
+  "type": "collection",
+  "timestamp": "2026-06-01T10:00:00Z",
+  "meta": {
+    "tag": [
+      {
+        "system": "https://nhid-clinical.org/pilot",
+        "code": "shadow-baseline"
+      }
+    ]
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "AuditEvent",
+        "id": "5ae82c67-1090-4679-a6e2-ececb5ffd584",
+        "type": {
+          "system": "http://dicom.nema.org/resources/ontology/DCM",
+          "code": "110100",
+          "display": "Application Activity"
+        },
+        "subtype": [
+          {
+            "code": "nhid-conformance-check",
+            "display": "NHID-Clinical v1.3 Conformance Check"
+          }
+        ],
+        "action": "E",
+        "recorded": "2026-06-01T10:00:00Z",
+        "outcome": "0",
+        "agent": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "code": "humanuser"
+                }
+              ]
+            },
+            "who": {
+              "display": "NHID-Clinical Policy Engine v1.3"
+            },
+            "requestor": true
+          }
+        ],
+        "source": {
+          "site": "nhid-clinical-lambda",
+          "observer": {
+            "display": "NHID-Clinical Conformance API"
+          }
+        },
+        "entity": [
+          {
+            "what": {
+              "display": "pilot-shadow-89c6c256"
+            },
+            "type": {
+              "code": "2",
+              "display": "System Object"
+            },
+            "role": {
+              "code": "20",
+              "display": "Job"
+            },
+            "detail": [
+              {
+                "type": "session_id",
+                "valueString": "pilot-shadow-89c6c256"
+              },
+              {
+                "type": "conformant",
+                "valueString": "true"
+              },
+              {
+                "type": "cas_score",
+                "valueString": "0.94"
+              },
+              {
+                "type": "violations",
+                "valueString": "[]"
+              },
+              {
+                "type": "notes",
+                "valueString": "VAPI - disclosure turn 1, no PHI before disclosure"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "984c80b4-2410-4f02-8f98-c1d1689979a1",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "https://nhid-clinical.org/fhir/CodeSystem/cas",
+              "code": "cas-score"
+            }
+          ]
+        },
+        "valueDecimal": 0.94,
+        "note": [
+          {
+            "text": "VAPI - disclosure turn 1, no PHI before disclosure"
+          }
+        ]
+      }
+    }
+  ]
+}

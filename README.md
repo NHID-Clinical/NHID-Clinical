@@ -54,6 +54,50 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 
 ---
 
+## 5-Minute Vendor Integration
+
+**Zero install, zero signup — CAS score in 30 seconds.**
+
+```bash
+# Step 1: POST a non-compliant VAPI payload and get violations + CAS score
+curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
+  -H "Content-Type: application/json" \
+  -d @tests/demo_scenarios/vapi_noncompliant.json | python3 -m json.tool
+```
+
+```json
+{
+  "conformant": false,
+  "action": "DENY_DATA",
+  "violations": [
+    { "rule_id": "IDG-01", "severity": "critical" },
+    { "rule_id": "PDX-01", "severity": "critical" }
+  ],
+  "cas": { "score": 0.28, "tier": "Denied/Degraded", "badge_eligible": null }
+}
+```
+
+```bash
+# Step 2: Swap in your own VAPI payload
+curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
+  -H "Content-Type: application/json" \
+  -d @your_vapi_call.json | python3 -m json.tool
+
+# Step 3: Add x-api-key for production (contact@nhid-clinical.org to request)
+curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/conformance/check \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_KEY" \
+  -d @your_event.json
+
+# Step 4: Set the call-progress webhook in VAPI for real-time per-turn evaluation
+# Dashboard → Assistant → Server URL:
+# https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/webhooks/call-progress
+```
+
+Full walkthrough: [docs/5-minute-quickstart.md](docs/5-minute-quickstart.md)
+
+---
+
 ## The Four Controls
 
 | Control | Name | Requirement |
