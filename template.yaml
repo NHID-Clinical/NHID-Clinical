@@ -125,6 +125,28 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /health
             Method: GET
+        # Wildcard catch-all — routes not explicitly listed above still reach Lambda.
+        # Explicit routes above take precedence (ConformancePost, MetricsSummaryGet
+        # keep their x-api-key requirement). This avoids CloudFormation redeployment
+        # every time a new route is added to handler.py.
+        ProxyPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /{proxy+}
+            Method: POST
+        ProxyGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /{proxy+}
+            Method: GET
+        ProxyOptions:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /{proxy+}
+            Method: OPTIONS
 
   # ── API Gateway REST API ─────────────────────────────────────────────────
   NHIDApi:

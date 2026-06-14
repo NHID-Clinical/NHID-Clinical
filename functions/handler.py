@@ -38,6 +38,9 @@ def lambda_handler(event: dict, context) -> dict:
     method = event.get("httpMethod", "POST")
     path = event.get("path", "")
 
+    if method == "OPTIONS":
+        return {"statusCode": 200, "headers": _CORS, "body": ""}
+
     if method == "GET":
         if "/public/vendor/" in path and path.endswith("/badge"):
             return _handle_badge(event, path)
