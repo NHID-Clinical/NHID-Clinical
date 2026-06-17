@@ -26,8 +26,7 @@
 
 <div class="demo-header">
   <h1>NHID-Clinical v1.3 — Live Interactive API Demo</h1>
-  <p>Try every endpoint right now. No signup required for public endpoints.</p>
-  <div class="demo-key">Demo API Key: <strong>nhid-demo-2026</strong></div>
+  <p>Try the hosted conformance endpoints right now. No signup required for public endpoints.</p>
   <div class="demo-links">
     <a href="/">← Home</a>
     <a href="/developers.html">Developers</a>
@@ -40,9 +39,9 @@
 <div class="quick-try">
   <h3>Quick Try — Pre-filled examples:</h3>
   <div class="quick-buttons">
-    <button class="quick-btn" onclick="copyPayer()">📋 Copy: Screen a Call</button>
-    <button class="quick-btn" onclick="copyAttest()">📋 Copy: Create Attestation</button>
-    <button class="quick-btn" onclick="copyEval()">📋 Copy: Evaluate Transcript</button>
+    <button class="quick-btn" onclick="copyDemo()">📋 Copy: Evaluate an Event (no key)</button>
+    <button class="quick-btn" onclick="copyVapi()">📋 Copy: VAPI Adapter</button>
+    <button class="quick-btn" onclick="copyPilot()">📋 Copy: Pilot Enroll</button>
     <button class="quick-btn" onclick="copyPS()">📋 Copy: PowerShell</button>
   </div>
 </div>
@@ -63,32 +62,30 @@
     });
   };
 
-  function copyPayer() {
-    navigator.clipboard.writeText(`curl -X POST https://nhid-clinical.org/v1/payer/screen \\
+  function copyDemo() {
+    navigator.clipboard.writeText(`curl -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/demo/check \\
   -H "Content-Type: application/json" \\
-  -d '{"caller_npi":"1234567890","reference_id":"demo-ref-001","requested_scope":"claims_inquiry"}'`);
+  -d '{"session":{"turn_count":1,"escalation_path_available":true},"event":{"event_id":"550e8400-e29b-41d4-a716-446655440001","timestamp":"2026-06-08T10:00:01.000Z","session_id":"demo-session-001","request_id":"req-001","event_type":"POLICY","actor_id":"agent-001","state_before":"ACTIVE","state_after":"ACTIVE","counterparty_type":"human_operator","healthcare_governance":{"disclosure_timestamp":"2026-06-08T09:59:55.000Z","identity_assertion_text":"I am an automated system","deceptive_artifact_flags":[],"escalation_timestamp":null,"escalation_outcome":null,"phi_accessed":[]},"input_payload":{"speech_text":"What are my coverage options?"}}}'`);
     alert("Copied! Paste in your terminal.");
   }
 
-  function copyAttest() {
-    navigator.clipboard.writeText(`curl -X POST https://nhid-clinical.org/v1/attest \\
+  function copyVapi() {
+    navigator.clipboard.writeText(`curl -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \\
   -H "Content-Type: application/json" \\
-  -H "X-API-Key: nhid-demo-2026" \\
-  -d '{"delegating_entity":"1234567890","authorized_actor":"my-vendor","scope":["claims_inquiry"],"expires_at":"2027-01-01T00:00:00Z"}'`);
+  -d '{"call":{"id":"demo-call-001","startedAt":"2026-06-08T10:00:00.000Z"},"messages":[{"role":"bot","message":"I am an automated system calling on behalf of your provider.","secondsFromStart":0},{"role":"user","message":"What are my coverage options?","secondsFromStart":4}]}'`);
     alert("Copied! Paste in your terminal.");
   }
 
-  function copyEval() {
-    navigator.clipboard.writeText(`curl -X POST https://nhid-clinical.org/v1/policy/evaluate \\
+  function copyPilot() {
+    navigator.clipboard.writeText(`curl -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/pilot/enroll \\
   -H "Content-Type: application/json" \\
-  -H "X-API-Key: nhid-demo-2026" \\
-  -d '{"session_id":"demo_123","agent_id":"demo_agent","transcript_text":"I want to speak to a human","disclosure_confirmed":true}'`);
+  -d '{"org_name":"Demo Health Plan","contact_email":"you@example.com"}'`);
     alert("Copied! Paste in your terminal.");
   }
 
   function copyPS() {
     navigator.clipboard.writeText(`Import-Module .\\NHIDClinical.psm1
-Invoke-NHIDPayerScreen -CallerNPI "1234567890" -ReferenceId "demo-ref-001" -RequestedScope "claims_inquiry"`);
+Invoke-NHIDConformanceCheck -SessionId "demo-session-001" -ActorId "agent-001" -SpeechText "What are my coverage options?" -DisclosureText "I am an automated system calling on behalf of your provider."`);
     alert("Copied! Paste in PowerShell.");
   }
 </script>
