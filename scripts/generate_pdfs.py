@@ -410,8 +410,9 @@ def make_shadow_guide():
          "escalation behavior, and audit trail presence for a sample of eligibility, "
          "claim status, and prior authorization calls."),
         ("Month 2 — Gap Analysis",
-         "Evaluate identified AI calls against the four v1.3 controls (IDG-01, DBC-01, "
-         "EIT-01, ATR-01). Quantify what passes, what fails, what is ambiguous."),
+         "Evaluate identified AI calls against the v1.3 controls (IDG-01, PDX-01, DBC-01, "
+         "EIT-01, plus the supplemental ATR-01 audit-trail control). Quantify what passes, "
+         "what fails, what is ambiguous."),
         ("Month 3 — Written Assessment",
          "Compile findings into a short written assessment. Share anonymized results "
          "with the community to help inform the next version of the proposal."),
