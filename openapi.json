@@ -3,7 +3,7 @@
   "info": {
     "title": "NHID-Clinical Conformance API",
     "version": "1.3.0",
-    "description": "Hosted reference implementation of the NHID-Clinical v1.3 conformance check. Evaluates a voice-AI call transcript/event against the four behavioral controls (IDG-01, PDX-01, DBC-01, EIT-01) and returns a policy decision plus a Call Authorization Score (CAS).",
+    "description": "Hosted reference implementation of the NHID-Clinical v1.3 conformance check. Evaluates a voice-AI call transcript/event against the four core behavioral controls (IDG-01, PDX-01, DBC-01, EIT-01) plus the supplemental ATR-01 audit-trail control, and returns a policy decision plus a Call Authorization Score (CAS).",
     "contact": {
       "email": "contact@nhid-clinical.org"
     },
