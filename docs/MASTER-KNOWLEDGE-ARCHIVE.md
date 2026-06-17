@@ -1,6 +1,6 @@
 # NHID-CLINICAL MASTER KNOWLEDGE ARCHIVE
 
-**Version:** 1.1 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-06-13
+**Version:** 1.2 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-06-17
 **Author:** Brianna Nicole Baynard-Malone · **License:** CC BY 4.0
 
 > This document is the single authoritative reference for all NHID-Clinical knowledge: technical
@@ -626,7 +626,7 @@ NHID-Clinical/
 │   ├── amazon_connect_adapter.py
 │   └── call_progress_adapter.py       # Turn-by-turn webhook
 ├── functions/
-│   └── handler.py                     # Lambda entry point (426 lines)
+│   └── handler.py                     # Lambda entry point (362 lines)
 ├── tests/
 │   ├── nhid_conformance_test_suite_v1.yaml   # 18 CTS test cases
 │   ├── demo_scenarios/
@@ -680,7 +680,6 @@ NHID-Clinical/
 | `POST` | `/v1/cts/evaluate` | none | Run CTS YAML suite against policy engine |
 | `POST` | `/v1/conformance/check` | `x-api-key` | Production conformance check |
 | `GET`  | `/health` | none | Lambda liveness probe |
-| `POST` | `/v1/demo/call` | none | Trigger outbound Beacon call (requires env vars) |
 
 ### 6.4 Response Format
 
@@ -730,10 +729,6 @@ ConformanceFunction:
     Runtime: python3.13
     MemorySize: 256
     Timeout: 30
-    Environment:
-      Variables:
-        ELEVENLABS_API_KEY: !Ref ElevenLabsApiKey
-        ELEVENLABS_PHONE_NUMBER_ID: !Ref ElevenLabsPhoneNumberId
 
 NHIDApi:
   Type: AWS::Serverless::Api
@@ -1554,7 +1549,7 @@ NHID-Clinical is not positioned against any existing product. It fills a gap:
 | **EIT-01** | Escalation Implementation Test; code: `nhid_policy_engine_v1.py` line 395 | Permanent |
 | **ATR-01** | Audit Trail Requirements; code: `nhid_policy_engine_v1.py` line 481 | Permanent |
 | **NHID-Auth** | Auth sub-brand for the v2 cryptographic layer | Permanent |
-| **Beacon** | Reference voice agent name; echoes "signal" and "guidance" | Permanent |
+| **Beacon** | Reference voice agent name (docs-only; `agents/beacon_system_prompt.md`); live outbound call route retired in PR #253 | Historical/Reference |
 | **Verified Trust / Conditional Trust** | Tier names; descriptive, not binary | Permanent |
 | **L1 / L2** | Badge levels; simple, incrementable if L3 added later | Stable |
 
@@ -1900,11 +1895,6 @@ POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
 UNIT_EXPECTED = 270  # scripts/validate_ci.py
 
-# Beacon reference agent
-BEACON_AGENT_ID = "agent_4001krn32nmwe5t8mqzgee0w84rj"
-BEACON_VOICE = "Eryn (ElevenLabs)"
-BEACON_LLM = "Gemini 2.5 Flash"
-
 # Live API
 API_BASE = "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod"
 
@@ -1923,25 +1913,26 @@ NPI_PATTERN = r"^\d{10}$"
 
 | Test File | Tests | Coverage |
 | :--- | :--- | :--- |
-| `test_nhid_policy_engine.py` | ~50 | All 6 rule evaluators |
-| `test_identity.py` | 42 | NHID-Auth v2, Ed25519, delegation chains |
+| `test_voice_policy.py` | 48 | All 6 rule evaluators (policy engine) |
 | `test_nhid_cas.py` | 38 | CAS formula, tier thresholds |
-| `test_fhir_audit_emitter.py` | ~30 | 7-milestone AuditEvent bundle |
-| `test_vapi_adapter.py` | 6 | VAPI adapter |
-| `test_twilio_adapter.py` | 6 | Twilio adapter |
+| `test_identity.py` | 26 | NHID-Auth v2, Ed25519, delegation chains |
+| `test_fhir_audit_emitter.py` | 25 | 7-milestone AuditEvent bundle |
+| `failure_injection_harness.py` | 39 | Pre-generated failure-trace scenarios |
+| `test_npi_registry.py` | 17 | NPI registry lookups/validation |
+| `test_alignment_pages.py` | 14 | NIST/CMS alignment page generation |
+| `test_version_boundary.py` | 9 | v1.3/v2 boundary behavior |
+| `test_cts_runner.py` | 9 | CTS runner + hosted CTS endpoint |
+| `test_event_store_metrics.py` | 8 | Multi-tenant event store |
+| `test_call_progress_webhook.py` | 8 | Turn-by-turn webhook |
+| `test_dbc01_heuristics.py` | 8 | DBC-01 impersonation phrase matching |
 | `test_vonage_adapter.py` | 6 | Vonage adapter |
 | `test_retell_adapter.py` | 6 | Retell adapter |
 | `test_amazon_connect_adapter.py` | 6 | Amazon Connect adapter |
-| `test_cts_runner.py` | 9 | CTS runner + hosted CTS endpoint |
+| `test_wave3_endpoints.py` | 6 | Wave 3 API endpoints |
 | `test_handler_cas.py` | 5 | CAS block in API responses |
-| `test_event_store_metrics.py` | 8 | Multi-tenant event store |
-| `test_metrics_api.py` | 8 | Metrics API endpoints |
 | `test_badge_generator.py` | 5 | SVG badge generation |
-| `test_call_progress_webhook.py` | 8 | Turn-by-turn webhook |
-| `test_dbc01_heuristics.py` | 8 | DBC-01 impersonation phrase matching |
 | `test_pilot_report_generator.py` | 5 | Pilot report generator |
-| Other tests | ~remaining | Schema validation, edge cases, NPI |
-| **Total** | **270** | All Python unit tests |
+| **Total** | **270 passed, 18 skipped** | All Python unit tests |
 
 ### 23.4 Pre-Generated Failure Traces
 

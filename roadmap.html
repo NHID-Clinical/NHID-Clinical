@@ -133,7 +133,7 @@
     <div class="container" style="max-width:52rem">
 
       <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> Released June 2026 under CC BY 4.0. Reference implementation in <code>src/agent_identity.py</code> (42 dedicated tests). Open for production use under the open license.
+        <strong>Status:</strong> Released June 2026 under CC BY 4.0. Reference implementation in <code>src/agent_identity.py</code> (26 dedicated tests). Open for production use under the open license.
       </div>
 
       <!-- Version comparison -->
@@ -175,6 +175,11 @@
         </tbody>
       </table>
 
+      <!-- Trust stack diagram -->
+      <h2 style="margin-top:2.5rem">Where v2 Sits in the Trust Stack</h2>
+      <p class="lede" style="font-size:.93rem;margin-top:.5rem">v2 is one layer in a stack that starts at a real gap (no cross-org NPI authorization exists today) and ends at a healthcare-native audit trail. Layers 2–4 are NHID-Clinical's contribution; Layer 3 (this page) is optional.</p>
+      <img src="/assets/diagrams/trust-stack.svg" alt="Five-layer trust stack: Layer 0 is the NPI gap, the problem this addresses; Layer 1 is STIR/SHAKEN carrier-level number authentication; Layer 2 is NHID-Clinical v1.3's behavioral baseline with 4 controls and 5 CTS tests; Layer 3 is NHID-Auth v2's cryptographic agent identity with Ed25519 signatures and NPI-bound passports; Layer 4 is the FHIR R4 AuditEvent and OpenTelemetry export layer" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-top:1rem" loading="lazy"/>
+
       <!-- What the reference implementation contains -->
       <h2 style="margin-top:2.5rem">What the Reference Implementation Contains</h2>
       <div style="display:grid;gap:.85rem;margin-top:1.25rem">
@@ -210,7 +215,7 @@
       <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-python -m pytest tests/test_identity.py -v   # v2 identity layer (42 tests)
+python -m pytest tests/test_identity.py -v   # v2 identity layer (26 tests)
 python examples/issue_and_verify.py          # end-to-end credential walkthrough</pre>
 
       <!-- What is not done -->
