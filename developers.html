@@ -138,6 +138,12 @@
         <strong>Pre&#8209;standardization draft.</strong> The artifacts linked below are a reference implementation of the NHID&#8209;Clinical v1.3 specification. They demonstrate that the specification can be implemented, replayed, and evaluated through deterministic trace artifacts and conformance testing. These tools are not a certification program, and there is no external certification authority. Conformance testing is self&#8209;administered. All artifacts are open for community review and feedback.
       </div>
 
+      <!-- ── Integration Ladder ────────────────────────────────────────── -->
+
+      <h2 style="margin-bottom:1rem">Staged Integration — Stop at Any Rung</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Integration is a ladder, not an all-or-nothing commitment. Tier 0 needs nothing but <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">curl</code>; Tier 2's cryptographic identity layer (NHID-Auth v2) is optional. Full walkthrough: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/v2-integration-guide.md" style="color:var(--blue)">v2-integration-guide.md</a>.</p>
+      <img src="/assets/diagrams/integration-ladder.svg" alt="Staged integration ladder: Tier 0 paste a payload to the hosted demo endpoint in 15 minutes with no keys; Tier 1 wire one HTTP call into your end-of-call webhook in about 2 hours for continuous CAS monitoring; Tier 2 adds cryptographic agent identity via NHID-Auth v2 in about a day, with NPI-bound passports and scoped delegation" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:2.5rem" loading="lazy"/>
+
       <!-- ── Artifacts ──────────────────────────────────────────────────── -->
 
       <h2 style="margin-bottom:1.5rem">Reference Artifacts</h2>
@@ -233,7 +239,15 @@ python tests/trace_generator.py --offline</pre>
   -H "x-api-key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"session":{"turn_count":1,"escalation_path_available":true},"event":{...}}'</pre>
-        <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:.85rem 0 0">Returns: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">{"conformant": true/false, "action": "...", "violations": [...], "next_state": "..."}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json" style="color:var(--blue)">sample_request.json</a> for a complete example.</p>
+        <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:.85rem 0 0">Returns: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">{"conformant": true/false, "action": "...", "violations": [...], "next_state": "...", "cas": {"score": ..., "tier": ...}}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json" style="color:var(--blue)">sample_request.json</a> for a complete example.</p>
+      </div>
+
+      <!-- ── CAS Tiers ──────────────────────────────────────────────────────── -->
+
+      <div style="margin-top:2.5rem">
+        <h2 style="margin-bottom:1rem;font-size:1.15rem">Call Authorization Score (CAS) — Tier Thresholds</h2>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Every conformance and adapter response includes a <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">cas</code> block. The score is a 0.0–1.0 composite; the band it falls in determines the suggested action.</p>
+        <img src="/assets/diagrams/cas-scoring-tiers.svg" alt="CAS tier thresholds: 0.90 and above is Verified Trust L2 with full access; 0.75 and above is Conditional Trust L1 with reduced scope; 0.50 and above requires human review; 0.20 and above is denied or degraded with a lower-risk fallback; below 0.20 is a hard denial with a typed error code, logged to the FHIR AuditEvent trail regardless of outcome" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border)" loading="lazy"/>
       </div>
 
       <!-- ── Vendor Quick-Start ─────────────────────────────────────────────── -->
@@ -264,10 +278,22 @@ python tests/trace_generator.py --offline</pre>
               <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:#16a34a;font-weight:600">✅ Live</td>
             </tr>
             <tr>
-              <td style="padding:.6rem .9rem;color:var(--body)">Bland.ai</td>
-              <td style="padding:.6rem .9rem"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/bland/check</code></td>
-              <td style="padding:.6rem .9rem;color:var(--body)">—</td>
-              <td style="padding:.6rem .9rem;color:var(--ink-soft)">🔲 Planned</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Vonage</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border)"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/vonage/check</code></td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">None</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:#16a34a;font-weight:600">✅ Live</td>
+            </tr>
+            <tr>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Retell AI</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border)"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/retell/check</code></td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">None</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:#16a34a;font-weight:600">✅ Live</td>
+            </tr>
+            <tr>
+              <td style="padding:.6rem .9rem;color:var(--body)">Amazon Connect</td>
+              <td style="padding:.6rem .9rem"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/connect/check</code></td>
+              <td style="padding:.6rem .9rem;color:var(--body)">None</td>
+              <td style="padding:.6rem .9rem;color:#16a34a;font-weight:600">✅ Live</td>
             </tr>
           </tbody>
         </table>

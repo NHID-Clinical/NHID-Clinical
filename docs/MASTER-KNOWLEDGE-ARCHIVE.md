@@ -1913,25 +1913,26 @@ NPI_PATTERN = r"^\d{10}$"
 
 | Test File | Tests | Coverage |
 | :--- | :--- | :--- |
-| `test_nhid_policy_engine.py` | ~50 | All 6 rule evaluators |
-| `test_identity.py` | 42 | NHID-Auth v2, Ed25519, delegation chains |
+| `test_voice_policy.py` | 48 | All 6 rule evaluators (policy engine) |
 | `test_nhid_cas.py` | 38 | CAS formula, tier thresholds |
-| `test_fhir_audit_emitter.py` | ~30 | 7-milestone AuditEvent bundle |
-| `test_vapi_adapter.py` | 6 | VAPI adapter |
-| `test_twilio_adapter.py` | 6 | Twilio adapter |
+| `test_identity.py` | 26 | NHID-Auth v2, Ed25519, delegation chains |
+| `test_fhir_audit_emitter.py` | 25 | 7-milestone AuditEvent bundle |
+| `failure_injection_harness.py` | 39 | Pre-generated failure-trace scenarios |
+| `test_npi_registry.py` | 17 | NPI registry lookups/validation |
+| `test_alignment_pages.py` | 14 | NIST/CMS alignment page generation |
+| `test_version_boundary.py` | 9 | v1.3/v2 boundary behavior |
+| `test_cts_runner.py` | 9 | CTS runner + hosted CTS endpoint |
+| `test_event_store_metrics.py` | 8 | Multi-tenant event store |
+| `test_call_progress_webhook.py` | 8 | Turn-by-turn webhook |
+| `test_dbc01_heuristics.py` | 8 | DBC-01 impersonation phrase matching |
 | `test_vonage_adapter.py` | 6 | Vonage adapter |
 | `test_retell_adapter.py` | 6 | Retell adapter |
 | `test_amazon_connect_adapter.py` | 6 | Amazon Connect adapter |
-| `test_cts_runner.py` | 9 | CTS runner + hosted CTS endpoint |
+| `test_wave3_endpoints.py` | 6 | Wave 3 API endpoints |
 | `test_handler_cas.py` | 5 | CAS block in API responses |
-| `test_event_store_metrics.py` | 8 | Multi-tenant event store |
-| `test_metrics_api.py` | 8 | Metrics API endpoints |
 | `test_badge_generator.py` | 5 | SVG badge generation |
-| `test_call_progress_webhook.py` | 8 | Turn-by-turn webhook |
-| `test_dbc01_heuristics.py` | 8 | DBC-01 impersonation phrase matching |
 | `test_pilot_report_generator.py` | 5 | Pilot report generator |
-| Other tests | ~remaining | Schema validation, edge cases, NPI |
-| **Total** | **270** | All Python unit tests |
+| **Total** | **270 passed, 18 skipped** | All Python unit tests |
 
 ### 23.4 Pre-Generated Failure Traces
 
