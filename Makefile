@@ -1,23 +1,10 @@
 STACK_NAME ?= nhid-clinical-api
 REGION     ?= us-east-1
 PROFILE    ?=
-ELEVENLABS_API_KEY         ?=
-ELEVENLABS_PHONE_NUMBER_ID ?=
 
 AWS_ARGS := --region $(REGION)
 ifdef PROFILE
   AWS_ARGS += --profile $(PROFILE)
-endif
-
-PARAM_OVERRIDES :=
-ifneq ($(ELEVENLABS_API_KEY),)
-  PARAM_OVERRIDES += ElevenLabsApiKey=$(ELEVENLABS_API_KEY)
-endif
-ifneq ($(ELEVENLABS_PHONE_NUMBER_ID),)
-  PARAM_OVERRIDES += ElevenLabsPhoneNumberId=$(ELEVENLABS_PHONE_NUMBER_ID)
-endif
-ifneq ($(PARAM_OVERRIDES),)
-  DEPLOY_PARAMS := --parameter-overrides $(PARAM_OVERRIDES)
 endif
 
 .PHONY: build deploy destroy get-key get-url test-api logs help
@@ -32,8 +19,7 @@ help:
 	@echo "  logs        tail Lambda CloudWatch logs"
 	@echo "  destroy     delete the CloudFormation stack"
 	@echo ""
-	@echo "Overrides:  STACK_NAME, REGION, PROFILE,"
-	@echo "            ELEVENLABS_API_KEY, ELEVENLABS_PHONE_NUMBER_ID (for /v1/demo/call)"
+	@echo "Overrides:  STACK_NAME, REGION, PROFILE"
 
 build:
 	sam build $(AWS_ARGS)
@@ -43,7 +29,6 @@ deploy: build
 		--stack-name $(STACK_NAME) \
 		--capabilities CAPABILITY_IAM \
 		--resolve-s3 \
-		$(DEPLOY_PARAMS) \
 		$(AWS_ARGS)
 
 get-key:

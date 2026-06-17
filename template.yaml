@@ -2,17 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: NHID Clinical Policy Engine - Hosted Conformance API
 
-Parameters:
-  ElevenLabsApiKey:
-    Type: String
-    Default: ""
-    NoEcho: true
-    Description: ElevenLabs API key for Beacon outbound call triggering
-  ElevenLabsPhoneNumberId:
-    Type: String
-    Default: ""
-    Description: ElevenLabs provisioned phone number ID for Beacon outbound calls
-
 Globals:
   Function:
     Timeout: 30
@@ -32,10 +21,6 @@ Resources:
       Description: NHID Clinical policy engine conformance checker
       Policies:
         - AWSLambdaBasicExecutionRole
-      Environment:
-        Variables:
-          ELEVENLABS_API_KEY: !Ref ElevenLabsApiKey
-          ELEVENLABS_PHONE_NUMBER_ID: !Ref ElevenLabsPhoneNumberId
       Events:
         ConformancePost:
           Type: Api
@@ -80,12 +65,6 @@ Resources:
           Properties:
             RestApiId: !Ref NHIDApi
             Path: /v1/adapters/connect/check
-            Method: POST
-        DemoCallPost:
-          Type: Api
-          Properties:
-            RestApiId: !Ref NHIDApi
-            Path: /v1/demo/call
             Method: POST
         CallProgressPost:
           Type: Api
