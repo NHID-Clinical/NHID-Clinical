@@ -95,7 +95,7 @@ Run the working example end to end:
 ```bash
 pip install cryptography
 python examples/issue_and_verify.py
-python -m pytest tests/test_identity.py -v   # 28 tests
+python -m pytest tests/test_identity.py -v   # 26 tests
 ```
 
 The full concept reference (delegation chains, revocation, nonce binding) is at
