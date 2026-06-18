@@ -27,6 +27,10 @@
 </p>
 
 <p align="center">
+  <sub>The NIST badge links to a public comment submitted to a NIST RFI docket — it is not a NIST endorsement, adoption, or certification.</sub>
+</p>
+
+<p align="center">
   <img alt="Python" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg">
   <img alt="TypeScript" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg">
   <img alt="Node.js" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg">
