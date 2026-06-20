@@ -1,23 +1,21 @@
 # Compass — NHID-Clinical Site Assistant System Prompt
-> Canonical source of truth for agent `agent_id_pending_dashboard_creation`.
+> Canonical source of truth for agent `agent_3801kvj9xbdaeh29c85900jb4wxj`.
 > **Repo is the source of truth.** Edit here; `scripts/sync_agent_config.py --agent compass` syncs to ElevenLabs.
 >
-> **Setup required before this is live:** create the "Compass" agent in the
-> ElevenLabs dashboard (one-time manual step — `scripts/sync_agent_config.py`
-> pushes config to an existing agent id, it does not create agents), then:
+> Agent created in the ElevenLabs dashboard; `agents/compass.config.json` and
+> `site.js`'s `COMPASS_AGENT_ID` already point at the real id. Remaining
+> one-time step — pull the live voice/model into the repo, then push this
+> prompt to confirm it matches what's configured live:
 >   ```bash
 >   export ELEVENLABS_API_KEY=your_key
->   # replace the placeholder agent_id in agents/compass.config.json with the real one first
 >   python scripts/sync_agent_config.py --agent compass --pull   # pull live voice/model once
 >   python scripts/sync_agent_config.py --agent compass          # push this prompt
 >   ```
-> Also replace the placeholder `agent-id` in the `site.js` widget IIFE
-> (search for `COMPASS_AGENT_ID`) with the real id once created.
 
 ## Agent identity
 
 - **Name**: Compass
-- **Agent ID**: `agent_id_pending_dashboard_creation` (placeholder — not yet created)
+- **Agent ID**: `agent_3801kvj9xbdaeh29c85900jb4wxj`
 - **Voice**: TBD — set after creating the agent, then `--pull` to record it here
 - **LLM**: TBD — set after creating the agent, then `--pull` to record it here
 - **Role**: Inbound, text-chat site assistant. Answers visitor questions about what
@@ -104,3 +102,4 @@ hi, I'm Compass — ask me anything about NHID-Clinical, how it works, or how to
 | Date | Direction | Notes |
 |------|-----------|-------|
 | 2026-06-20 | repo authored | Initial canonical prompt, written before the live agent exists. Run `--pull` after creating the agent and dashboard-configuring voice/model, then re-push this prompt. |
+| 2026-06-20 | agent created | Compass agent created in ElevenLabs dashboard as `agent_3801kvj9xbdaeh29c85900jb4wxj`; content guardrails (all categories, end-conversation) and the Spotlight prompt-injection guardrail enabled. `agents/compass.config.json` and `site.js`'s `COMPASS_AGENT_ID` updated with the real id. Voice/model still pending a `--pull`. |
