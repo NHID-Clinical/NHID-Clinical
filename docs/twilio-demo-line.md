@@ -57,7 +57,19 @@ This requires:
 When any of the three are unset, the SMS option is simply not spoken, so the
 demo line works unchanged before registration is complete. Sending lives in
 `functions/twilio_sms.py` (`sms_enabled()` / `send_sms()`); the texted body
-includes the carrier-required `STOP`/`HELP` and rate-disclosure language.
+(`twilio_sms.starter_pack_body()`) includes the carrier-required `STOP`/`HELP`
+and rate-disclosure language and is shared with the web opt-in below.
+
+### Web opt-in form (A2P 10DLC proof)
+
+For carrier registration the opt-in must be demonstrable, so there is also a
+web form at `sms-opt-in.html`. It collects a number plus an explicit consent
+checkbox and POSTs to `POST /v1/demo/sms-opt-in`
+(`functions/handler.py::_handle_demo_sms_optin`), which requires `consent`,
+verifies Turnstile, rate-limits per IP/number, then sends the same
+starter-pack text. `privacy.html` carries the required mobile-messaging clause
+("we do not share or sell mobile opt-in data"). Register `sms-opt-in.html` as
+the campaign's opt-in URL and `privacy.html` as the privacy policy URL.
 3. Every turn is evaluated through the same `adapters/call_progress_adapter.py`
    + `src/nhid_policy_engine_v1.py` pipeline production traffic uses — only
    the scripted speech is fake.
