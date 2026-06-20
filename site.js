@@ -260,3 +260,21 @@
     }
   });
 })();
+
+/* ── ElevenLabs Conversational AI widget (Compass — site FAQ/support agent) ──
+   Separate from Beacon (the outbound claims-call demo agent): Compass answers
+   visitor questions about adopting/integrating NHID-Clinical. See
+   agents/compass_system_prompt.md. Replace COMPASS_AGENT_ID once the agent is
+   created in the ElevenLabs dashboard (see that file for setup steps). */
+(function () {
+  var COMPASS_AGENT_ID = 'agent_id_pending_dashboard_creation';
+
+  var s = document.createElement('script');
+  s.src = 'https://elevenlabs.io/convai-widget/index.js';
+  s.async = true;
+  document.head.appendChild(s);
+
+  var w = document.createElement('elevenlabs-convai');
+  w.setAttribute('agent-id', COMPASS_AGENT_ID);
+  document.body.appendChild(w);
+})();
