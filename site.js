@@ -267,7 +267,7 @@
    agents/compass_system_prompt.md. Replace COMPASS_AGENT_ID once the agent is
    created in the ElevenLabs dashboard (see that file for setup steps). */
 (function () {
-  var COMPASS_AGENT_ID = 'agent_id_pending_dashboard_creation';
+  var COMPASS_AGENT_ID = 'agent_3801kvj9xbdaeh29c85900jb4wxj';
 
   var s = document.createElement('script');
   s.src = 'https://elevenlabs.io/convai-widget/index.js';
