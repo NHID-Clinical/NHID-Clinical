@@ -13,8 +13,9 @@ expose phone number purchase via SAM/CFN resources.
 1. In the [Twilio Console](https://console.twilio.com/), buy a phone number
    (Phone Numbers → Buy a number). Voice capability is required; SMS/MMS are
    not used by this feature.
-2. Deploy this repo's stack (`make deploy`) and note the API Gateway base URL
-   from the `ApiBaseUrl` stack output.
+2. Deploy this repo's stack (`make deploy` on macOS/Linux, or `.\deploy.ps1` on
+   Windows PowerShell) and note the API Gateway base URL from the `ApiBaseUrl`
+   stack output (both print it at the end of a successful deploy).
 3. On the purchased number's configuration page, under **Voice & Fax →
    A call comes in**, set:
    - Webhook: `https://<api-id>.execute-api.<region>.amazonaws.com/prod/v1/webhooks/twilio-demo/voice`
