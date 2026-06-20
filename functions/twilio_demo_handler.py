@@ -81,6 +81,29 @@ def _redirect_twiml(say_text: str, action_url: str) -> dict[str, Any]:
     return _twiml_response(body)
 
 
+def _other_script(script_name: str) -> str:
+    """The scenario the caller has not heard yet (compliant <-> noncompliant)."""
+    return "noncompliant" if script_name == "compliant" else "compliant"
+
+
+def _end_menu_twiml(summary_text: str, other_script: str, action_url: str) -> dict[str, Any]:
+    """End-of-demo menu: speak the scenario summary, then offer to hear the
+    other scenario (press 1) or end the demo (press 2). The trailing Hangup
+    covers the no-input case."""
+    other_label = SCRIPT_LABELS[other_script].lower()
+    body = (
+        _say(summary_text)
+        + f'\n  <Gather numDigits="1" action="{escape(action_url)}" method="POST" timeout="8">'
+        + _say(
+            f"Press 1 to hear the {other_label}, or press 2 to end the demo."
+        )
+        + "\n  </Gather>"
+        + _say("No selection received. Goodbye.")
+        + "\n  <Hangup/>"
+    )
+    return _twiml_response(body)
+
+
 def _extract_say_text(twiml_fallback: Optional[str]) -> Optional[str]:
     """Pull the spoken message out of a policy-engine twiml_fallback string."""
     if not twiml_fallback:
@@ -131,12 +154,12 @@ def _closing_summary_text(turns: list[dict[str, Any]]) -> str:
     critical_count = _critical_violation_count(turns)
     if critical_count == 0:
         return (
-            "This call has ended. No critical NHID Clinical control violations "
-            "were detected during this scenario. Goodbye."
+            "That scenario is complete. No critical NHID Clinical control "
+            "violations were detected."
         )
     return (
-        f"This call has ended. {critical_count} critical NHID Clinical control "
-        "violations were detected during this scenario. Goodbye."
+        f"That scenario is complete. {critical_count} critical NHID Clinical "
+        "control violations were detected."
     )
 
 
@@ -157,27 +180,49 @@ def _handle_twilio_demo_voice(event: dict[str, Any], *, status_table=None) -> di
     action_url = _voice_webhook_url(event)
     existing = demo_status_store.get_status(call_sid, table=status_table)
     script_name = existing.get("script")
+    existing_turns = list(existing.get("turns", []))
+    demo_completed = bool(existing_turns) and existing_turns[-1].get("decision", {}).get("type") == "summary"
 
-    # No script chosen yet: first request shows the menu, the menu's
-    # response (a Digits field with no stored script) picks the scenario.
-    if not script_name:
+    if demo_completed:
+        # The scenario finished and the caller is answering the end-of-demo
+        # menu: press 1 replays the scenario they didn't choose, anything
+        # else (including 2 or no input) ends the demo.
+        if digits == "1":
+            script_name = _other_script(script_name or _DEFAULT_SCRIPT)
+            demo_status_store.reset_session(call_sid, table=status_table)
+            turns: list[dict[str, Any]] = []
+            session_state: dict[str, Any] = {
+                "turn_count": 0,
+                "disclosure_timestamp": None,
+                "escalation_available": True,
+            }
+        else:
+            return _twiml_response(
+                _say_and_hangup("Thanks for exploring the NHID Clinical demo. Goodbye.")
+            )
+    elif not script_name:
+        # No script chosen yet: first request shows the menu, the menu's
+        # response (a Digits field with no stored script) picks the scenario.
         if not digits:
             return _menu_twiml(action_url)
         script_name = _DIGIT_TO_SCRIPT.get(digits, _DEFAULT_SCRIPT)
-        turns: list[dict[str, Any]] = []
-        session_state: dict[str, Any] = {
+        turns = []
+        session_state = {
             "turn_count": 0,
             "disclosure_timestamp": None,
             "escalation_available": True,
         }
     else:
-        turns = list(existing.get("turns", []))
+        turns = existing_turns
         session_state = dict(existing.get("session_state", {}))
 
     script = SCRIPTS[script_name]
     turn_index = len(turns)
 
     if turn_index >= len(script):
+        # Scenario finished: record the summary once, then offer the
+        # end-of-demo menu (hear the other scenario / end) instead of
+        # hanging up immediately.
         already_closed = bool(turns) and turns[-1].get("decision", {}).get("type") == "summary"
         if not already_closed:
             stored = demo_status_store.put_turn(
@@ -189,7 +234,7 @@ def _handle_twilio_demo_voice(event: dict[str, Any], *, status_table=None) -> di
                 table=status_table,
             )
             demo_status_store.set_latest(stored, table=status_table)
-        return _twiml_response(_say_and_hangup(_closing_summary_text(turns)))
+        return _end_menu_twiml(_closing_summary_text(turns), _other_script(script_name), action_url)
 
     turn = script[turn_index]
     body = {

@@ -64,6 +64,23 @@ def put_turn(
     return item
 
 
+def reset_session(session_id: str, *, table=None) -> dict[str, Any]:
+    """Clear a session's accumulated turns and state so a fresh scenario can be
+    replayed under the same CallSid. Used when a caller chooses to hear the
+    other scenario at the end of the demo. Returns the cleared item."""
+    table = table if table is not None else _table()
+    now = int(time.time())
+    item = {
+        "session_id": session_id,
+        "turns": [],
+        "session_state": {},
+        "ttl": now + TTL_SECONDS,
+        "updated_at": now,
+    }
+    table.put_item(Item=item)
+    return item
+
+
 def get_status(session_id: str, *, table=None) -> dict[str, Any]:
     """Return the session's accumulated status, or {} if the session is unknown/expired."""
     table = table if table is not None else _table()

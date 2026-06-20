@@ -152,6 +152,48 @@ def test_call_completes_in_exactly_script_length_turns():
     assert len(scripted_turns) == len(SCRIPTS["compliant"])
 
 
+def test_completion_offers_end_menu_instead_of_immediate_hangup():
+    table = _FakeTable()
+    bodies = _run_full_call("CA-endmenu", "1", table)
+    final = bodies[-1]
+    # The demo now ends on a menu, not a bare goodbye-hangup.
+    assert "<Gather" in final
+    assert "Press 1 to hear the non-compliant call" in final
+    assert "press 2 to end the demo" in final
+    # Summary is still spoken and the no-input fallback still hangs up.
+    assert "That scenario is complete" in final
+    assert "<Hangup/>" in final
+
+
+def test_end_menu_press_1_replays_the_other_scenario():
+    table = _FakeTable()
+    _run_full_call("CA-replay", "1", table)  # hear compliant first
+    assert table.items["CA-replay"]["script"] == "compliant"
+
+    # Press 1 at the end menu -> restart with the non-compliant scenario.
+    _handle_twilio_demo_voice(_event("CA-replay", digits="1"), status_table=table)
+
+    # Drive the replayed scenario to its own completion.
+    for _ in range(20):
+        resp = _handle_twilio_demo_voice(_event("CA-replay"), status_table=table)
+        if "<Gather" in resp["body"] or "Thanks for exploring" in resp["body"]:
+            break
+
+    status = table.items["CA-replay"]
+    assert status["script"] == "noncompliant"
+    scripted_turns = [t for t in status["turns"] if t["decision"].get("type") != "summary"]
+    assert len(scripted_turns) == len(SCRIPTS["noncompliant"])
+
+
+def test_end_menu_press_2_ends_the_demo():
+    table = _FakeTable()
+    _run_full_call("CA-bye", "1", table)
+    resp = _handle_twilio_demo_voice(_event("CA-bye", digits="2"), status_table=table)
+    assert "<Hangup/>" in resp["body"]
+    assert "<Gather" not in resp["body"]
+    assert "Goodbye" in resp["body"]
+
+
 def test_latest_mirror_tracks_call_progress_for_anonymous_viewers():
     table = _FakeTable()
     _run_full_call("CA-mirrored", "2", table)
