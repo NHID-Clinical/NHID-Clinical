@@ -222,7 +222,7 @@ python -m pytest tests/ -v
 python -m jsonschema schema/nhid_trace_schema_v1.json
 python tests/trace_generator.py --offline</pre>
 
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod</code> and will be automatically skipped if the server is not reachable.</p>
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod</code> and will be automatically skipped if the server is not reachable.</p>
 
       <!-- ── Hosted API ─────────────────────────────────────────────────────── -->
 
@@ -231,11 +231,11 @@ python tests/trace_generator.py --offline</pre>
         <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">A public conformance endpoint is available for integration testing without self-hosting. Send any NHID-Clinical v1.3 event and receive a structured policy decision.</p>
         <div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.25rem;margin-bottom:1rem">
           <p style="margin:0 0 .4rem;font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase">Endpoint</p>
-          <code style="font-size:.85rem;color:var(--blue);word-break:break-all">POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/conformance/check</code>
+          <code style="font-size:.85rem;color:var(--blue);word-break:break-all">POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/conformance/check</code>
         </div>
         <p style="color:var(--body);font-size:.88rem;line-height:1.75;margin:0 0 .75rem">Requests require an <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">x-api-key</code> header. The <a href="/simulator.html" style="color:var(--blue)">Governance Simulator</a> uses a rate-limited demo key automatically. To obtain a key for your integration, contact <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue)">contact@nhid-clinical.org</a>.</p>
         <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.25rem;font-size:.82rem;line-height:1.8;overflow-x:auto;color:var(--body);margin:0">curl -s -X POST \
-  https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/conformance/check \
+  https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/conformance/check \
   -H "x-api-key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"session":{"turn_count":1,"escalation_path_available":true},"event":{...}}'</pre>
@@ -299,7 +299,7 @@ python tests/trace_generator.py --offline</pre>
         </table>
         <p style="color:var(--body);font-size:.88rem;font-weight:600;margin:0 0 .4rem">Example — VAPI non-compliant call (bot requests PHI before disclosing identity):</p>
         <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.81rem;line-height:1.8;overflow-x:auto;color:var(--body);margin:0 0 .75rem">curl -s -X POST \
-  https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
+  https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
   -H "Content-Type: application/json" \
   -d '{
     "call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
