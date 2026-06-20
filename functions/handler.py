@@ -14,6 +14,15 @@ from src.nhid_policy_engine_v1 import (  # noqa: E402
 )
 from src.nhid_cas import _tier_for_cas  # noqa: E402
 
+try:
+    import httpx
+    _HTTPX_OK = True
+except ImportError:
+    _HTTPX_OK = False
+
+TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+TURNSTILE_SECRET_ENV = "CLOUDFLARE_TURNSTILE_SECRET"
+
 
 def lambda_handler(event: dict, context) -> dict:
     """
@@ -229,6 +238,28 @@ def _handle_metrics_summary(event: dict) -> dict:
         return _error(500, f"Metrics query failed: {exc}")
 
     return _ok(metrics)
+
+
+def _verify_turnstile(token: str) -> bool:
+    """Verify a Cloudflare Turnstile token server-side. False on any failure
+    (missing token, missing secret, network error, or Cloudflare rejection) —
+    callers should treat that as "reject the request", not "skip the check"."""
+    if not token:
+        return False
+    secret = os.environ.get(TURNSTILE_SECRET_ENV, "")
+    if not secret or not _HTTPX_OK:
+        return False
+
+    try:
+        resp = httpx.post(
+            TURNSTILE_VERIFY_URL,
+            data={"secret": secret, "response": token},
+            timeout=10.0,
+        )
+        resp.raise_for_status()
+        return bool(resp.json().get("success"))
+    except Exception:  # noqa: BLE001
+        return False
 
 
 def _handle_demo_call_status(event: dict) -> dict:

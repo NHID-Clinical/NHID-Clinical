@@ -2,9 +2,20 @@ STACK_NAME ?= nhid-clinical-api
 REGION     ?= us-east-1
 PROFILE    ?=
 
+# Website demo feature secrets (NOT the governance framework) — set via
+# `make deploy CLOUDFLARE_TURNSTILE_SECRET=...`, forwarded as SAM
+# --parameter-overrides below. Empty/unset is fine; the matching
+# template.yaml Parameter defaults to "".
+CLOUDFLARE_TURNSTILE_SECRET ?=
+
 AWS_ARGS := --region $(REGION)
 ifdef PROFILE
   AWS_ARGS += --profile $(PROFILE)
+endif
+
+PARAM_OVERRIDES :=
+ifneq ($(strip $(CLOUDFLARE_TURNSTILE_SECRET)),)
+  PARAM_OVERRIDES += CloudflareTurnstileSecret=$(CLOUDFLARE_TURNSTILE_SECRET)
 endif
 
 .PHONY: build deploy destroy get-key get-url test-api test-demo logs help
@@ -21,7 +32,7 @@ help:
 	@echo "  logs        tail Lambda CloudWatch logs"
 	@echo "  destroy     delete the CloudFormation stack"
 	@echo ""
-	@echo "Overrides:  STACK_NAME, REGION, PROFILE"
+	@echo "Overrides:  STACK_NAME, REGION, PROFILE, CLOUDFLARE_TURNSTILE_SECRET"
 
 test-demo:
 	python -m pytest tests/demo/ -v
@@ -34,7 +45,8 @@ deploy: build
 		--stack-name $(STACK_NAME) \
 		--capabilities CAPABILITY_IAM \
 		--resolve-s3 \
-		$(AWS_ARGS)
+		$(AWS_ARGS) \
+		$(if $(strip $(PARAM_OVERRIDES)),--parameter-overrides $(PARAM_OVERRIDES),)
 
 get-key:
 	@KEY_ID=$$(aws cloudformation describe-stacks \
