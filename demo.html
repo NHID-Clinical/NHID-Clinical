@@ -149,8 +149,8 @@
           <input type="tel" id="demo-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your phone number" style="flex:1;min-width:200px"/>
           <button class="cta-button" id="demo-call-btn" type="button">Receive a Call from Beacon</button>
         </div>
-        <!-- data-sitekey is a placeholder pending Cloudflare Turnstile dashboard setup (one-time manual step, same pattern as agents/compass_system_prompt.md's pending agent_id) -->
-        <div class="cf-turnstile" id="demo-call-turnstile" data-sitekey="sitekey_pending_cloudflare_dashboard_creation" data-callback="nhidOnTurnstileSuccess"></div>
+        <!-- Cloudflare Turnstile site key (public). The matching secret key is never committed — it's passed only at deploy time via `make deploy CLOUDFLARE_TURNSTILE_SECRET=...` and verified server-side in handler._verify_turnstile(). -->
+        <div class="cf-turnstile" id="demo-call-turnstile" data-sitekey="0x4AAAAAADoOpjQr1DAbFwwY" data-callback="nhidOnTurnstileSuccess"></div>
         <p id="demo-call-status" hidden aria-live="polite" style="margin-top:.75rem"></p>
       </div>
 
