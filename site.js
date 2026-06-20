@@ -278,3 +278,77 @@
   w.setAttribute('agent-id', COMPASS_AGENT_ID);
   document.body.appendChild(w);
 })();
+
+/* ── Demo line live status (website demo feature, not the framework) ───────
+   Renders a session_id's accumulated status from GET /v1/demo/call-status
+   into a container element. Shared between the Twilio scripted inbound demo
+   (demo.html) and, later, the Beacon outbound demo. */
+window.NHIDDemoStatus = (function () {
+  var GATE_RULE_IDS = ['IDG-01', 'PDX-01', 'DBC-01', 'EIT-01'];
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function render(containerEl, statusJson) {
+    if (!containerEl) return;
+    var turns = (statusJson && statusJson.turns) || [];
+
+    var criticalHit = {};
+    GATE_RULE_IDS.forEach(function (id) { criticalHit[id] = false; });
+    turns.forEach(function (t) {
+      var violations = (t.decision && t.decision.violations) || [];
+      violations.forEach(function (v) {
+        if (v.severity === 'critical' && criticalHit.hasOwnProperty(v.rule_id)) {
+          criticalHit[v.rule_id] = true;
+        }
+      });
+    });
+
+    var badgesHtml = GATE_RULE_IDS.map(function (id) {
+      var failed = criticalHit[id];
+      var cls = failed ? 'badge nhid-demo-badge-fail' : 'badge badge-green';
+      return '<span class="' + cls + '">' + id + (failed ? ' ✗' : ' ✓') + '</span>';
+    }).join(' ');
+
+    var logHtml = turns.map(function (t) {
+      var d = t.decision || {};
+      if (d.type === 'summary') {
+        return '<div class="nhid-demo-turn"><strong>Call ended</strong> — ' +
+          (d.critical_violation_count || 0) + ' critical control violation(s) detected.</div>';
+      }
+      var ruleIds = (d.violations || []).map(function (v) { return v.rule_id; }).join(', ') || 'none';
+      return '<div class="nhid-demo-turn">Turn ' + escapeHtml(t.turn_index) + ': <code>' +
+        escapeHtml(d.action || '') + '</code> — violations: ' + escapeHtml(ruleIds) + '</div>';
+    }).join('');
+
+    var scriptLabel = statusJson && statusJson.script_label;
+    var statusLine = scriptLabel
+      ? '<p class="sub">Scenario: ' + escapeHtml(scriptLabel) +
+        (statusJson.completed ? ' (completed)' : ' (in progress)') + '</p>'
+      : '<p class="sub">Waiting for a call…</p>';
+
+    containerEl.innerHTML =
+      '<div class="card nhid-demo-status-card">' +
+      statusLine +
+      '<div class="nhid-demo-badges">' + badgesHtml + '</div>' +
+      '<div class="nhid-demo-log">' + (logHtml || '<p class="sub">No turns yet.</p>') + '</div>' +
+      '</div>';
+  }
+
+  function poll(containerEl, statusUrl, intervalMs) {
+    intervalMs = intervalMs || 2000;
+    function tick() {
+      fetch(statusUrl)
+        .then(function (resp) { return resp.ok ? resp.json() : {}; })
+        .then(function (json) { render(containerEl, json); })
+        .catch(function () {});
+    }
+    tick();
+    return setInterval(tick, intervalMs);
+  }
+
+  return { render: render, poll: poll };
+})();

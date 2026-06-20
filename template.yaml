@@ -21,6 +21,11 @@ Resources:
       Description: NHID Clinical policy engine conformance checker
       Policies:
         - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DemoCallStatusTable
+      Environment:
+        Variables:
+          DEMO_CALL_STATUS_TABLE: !Ref DemoCallStatusTable
       Events:
         ConformancePost:
           Type: Api
@@ -104,6 +109,36 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /health
             Method: GET
+        TwilioDemoVoicePost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/webhooks/twilio-demo/voice
+            Method: POST
+        DemoCallStatusGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/demo/call-status
+            Method: GET
+
+  # ── Website demo feature: live status store (NOT the governance framework) ─
+  # Backs the Twilio scripted inbound demo line and (later) the Beacon
+  # outbound demo. TTL self-cleans sessions ~1hr after their last write.
+  DemoCallStatusTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: nhid-demo-call-status
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: session_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: session_id
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   # ── API Gateway REST API ─────────────────────────────────────────────────
   NHIDApi:

@@ -31,6 +31,8 @@ def lambda_handler(event: dict, context) -> dict:
       GET  /v1/vendor/metrics/summary        — per-vendor metrics, API key required
       POST /v1/pilot/enroll                  — pilot enrollment, no API key required
       POST /v1/cts/evaluate                  — run conformance test suite, no API key required
+      POST /v1/webhooks/twilio-demo/voice    — scripted demo line TwiML, no API key (website demo, not framework)
+      GET  /v1/demo/call-status              — live demo call status, no API key (website demo, not framework)
     """
     method = event.get("httpMethod", "POST")
     path = event.get("path", "")
@@ -40,11 +42,18 @@ def lambda_handler(event: dict, context) -> dict:
             return _handle_badge(event, path)
         if "/vendor/metrics/summary" in path:
             return _handle_metrics_summary(event)
+        if "/demo/call-status" in path:
+            return _handle_demo_call_status(event)
         return _ok({
             "status": "healthy",
             "policy_engine_version": POLICY_ENGINE_VERSION,
             "nhid_spec_version": NHID_SPEC_VERSION,
         })
+
+    # Twilio scripted inbound demo line (website demo feature, not the framework)
+    if "/webhooks/twilio-demo/voice" in path:
+        from functions.twilio_demo_handler import _handle_twilio_demo_voice
+        return _handle_twilio_demo_voice(event)
 
     # Pilot enrollment
     if "/pilot/enroll" in path:
@@ -220,6 +229,31 @@ def _handle_metrics_summary(event: dict) -> dict:
         return _error(500, f"Metrics query failed: {exc}")
 
     return _ok(metrics)
+
+
+def _handle_demo_call_status(event: dict) -> dict:
+    """Live status for the Twilio scripted demo line. Polled by the website.
+
+    session_id="latest" looks up whichever demo call is most recently in
+    progress — visitors watching the site don't know their own call's
+    Twilio CallSid, so this lets anyone watch the live call without typing
+    anything in.
+    """
+    params = event.get("queryStringParameters") or {}
+    session_id = (params.get("session_id") or "").strip()
+    if not session_id:
+        return _error(400, "Missing required query parameter: session_id")
+
+    from functions import demo_status_store
+    if session_id == "latest":
+        session_id = demo_status_store.LATEST_SESSION_KEY
+
+    try:
+        status = demo_status_store.get_status(session_id)
+    except Exception as exc:  # noqa: BLE001
+        return _error(500, f"Status lookup failed: {exc}")
+
+    return _ok(status)
 
 
 def _handle_pilot_enroll(event: dict) -> dict:
