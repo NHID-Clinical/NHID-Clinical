@@ -18,10 +18,26 @@ ACCOUNT_SID_ENV = "TWILIO_ACCOUNT_SID"
 AUTH_TOKEN_ENV = "TWILIO_AUTH_TOKEN"
 SMS_FROM_ENV = "TWILIO_SMS_FROM"
 
+#: Resource texted to people who opt in (phone keypress on the demo line, or
+#: the web opt-in form). Overridable at deploy time via STARTER_PACK_URL
+#: (template.yaml StarterPackUrl) without a code change.
+DEFAULT_STARTER_PACK_URL = "https://nhid-clinical.org/shadow-evaluation-guide.html"
+
 
 def sms_enabled() -> bool:
     """True only when account SID, auth token, and a sending number are all set."""
     return all(os.environ.get(k) for k in (ACCOUNT_SID_ENV, AUTH_TOKEN_ENV, SMS_FROM_ENV))
+
+
+def starter_pack_body() -> str:
+    """The single canonical starter-pack SMS body, with the carrier-required
+    STOP/HELP and rate-disclosure language. Matches what is registered with
+    the A2P 10DLC campaign."""
+    url = os.environ.get("STARTER_PACK_URL") or DEFAULT_STARTER_PACK_URL
+    return (
+        f"NHID Clinical: here's your starter pack — {url} "
+        "Reply STOP to opt out, HELP for help. Msg & data rates may apply."
+    )
 
 
 def send_sms(

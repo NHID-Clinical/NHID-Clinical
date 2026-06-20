@@ -15,7 +15,6 @@ governance framework itself.
 
 from __future__ import annotations
 
-import os
 import re
 import urllib.parse
 from typing import Any, Callable, Optional
@@ -27,10 +26,6 @@ from functions.demo_scripts import SCRIPT_LABELS, SCRIPTS
 from src.nhid_policy_engine_v1 import evaluate_all
 
 VOICE_WEBHOOK_PATH = "/v1/webhooks/twilio-demo/voice"
-
-#: Resource texted to callers who opt in via the end-of-demo menu. Overridable
-#: at deploy time (template.yaml StarterPackUrl) without a code change.
-_DEFAULT_STARTER_PACK_URL = "https://nhid-clinical.org/shadow-evaluation-guide.html"
 
 _DIGIT_TO_SCRIPT: dict[str, str] = {"1": "compliant", "2": "noncompliant"}
 _DEFAULT_SCRIPT = "compliant"
@@ -181,14 +176,6 @@ def _closing_summary_text(turns: list[dict[str, Any]]) -> str:
     )
 
 
-def _starter_pack_sms_body() -> str:
-    url = os.environ.get("STARTER_PACK_URL") or _DEFAULT_STARTER_PACK_URL
-    return (
-        f"NHID Clinical: here's your starter pack — {url} "
-        "Reply STOP to opt out, HELP for help. Msg & data rates may apply."
-    )
-
-
 def _handle_twilio_demo_voice(
     event: dict[str, Any],
     *,
@@ -241,7 +228,7 @@ def _handle_twilio_demo_voice(
             sent = False
             if to_number:
                 try:
-                    sent = bool(sms_sender(to_number, _starter_pack_sms_body()))
+                    sent = bool(sms_sender(to_number, twilio_sms.starter_pack_body()))
                 except Exception:
                     sent = False
             confirmation = (

@@ -53,6 +53,7 @@ def lambda_handler(event: dict, context) -> dict:
       POST /v1/webhooks/twilio-demo/voice    — scripted demo line TwiML, no API key (website demo, not framework)
       GET  /v1/demo/call-status              — live demo call status, no API key (website demo, not framework)
       POST /v1/demo/call                     — trigger Beacon outbound demo call, Turnstile+rate-limited (website demo, not framework)
+      POST /v1/demo/sms-opt-in               — web opt-in to text the starter-pack link, consent+Turnstile+rate-limited (website demo, not framework)
       POST /v1/webhooks/elevenlabs/postcall  — ElevenLabs post-call webhook for the Beacon demo, no API key (website demo, not framework)
     """
     method = event.get("httpMethod", "POST")
@@ -75,6 +76,10 @@ def lambda_handler(event: dict, context) -> dict:
     if "/webhooks/twilio-demo/voice" in path:
         from functions.twilio_demo_handler import _handle_twilio_demo_voice
         return _handle_twilio_demo_voice(event)
+
+    # Starter-pack SMS web opt-in (website demo feature, not the framework)
+    if "/demo/sms-opt-in" in path:
+        return _handle_demo_sms_optin(event)
 
     # Beacon outbound call demo (website demo feature, not the framework)
     if "/demo/call" in path:
@@ -286,6 +291,72 @@ def _verify_turnstile(token: str) -> bool:
 def _source_ip(event: dict) -> str:
     identity = (event.get("requestContext") or {}).get("identity") or {}
     return identity.get("sourceIp") or "unknown"
+
+
+#: Starter-pack SMS web opt-in — sends real SMS, so rate-limit per IP/number.
+_SMS_OPTIN_IP_LIMIT = 5
+_SMS_OPTIN_PHONE_LIMIT = 3
+
+
+def _handle_demo_sms_optin(event: dict) -> dict:
+    """Web opt-in: a visitor submits their number + explicit consent on the
+    site's /sms-opt-in.html form to receive the one-time starter-pack link by
+    text. CAPTCHA- and rate-limited; sends a real SMS via functions.twilio_sms.
+    The submitted consent + this server-side gate are the documented A2P 10DLC
+    opt-in for the campaign."""
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    # Explicit opt-in consent is mandatory — never text without it.
+    if not body.get("consent"):
+        return _error(400, "Consent is required to receive a text message")
+
+    if not _verify_turnstile(str(body.get("turnstile_token", ""))):
+        return _error(400, "CAPTCHA verification failed")
+
+    phone = str(body.get("phone", "")).strip()
+    if not phone:
+        return _error(400, "Missing required field: 'phone'")
+
+    digits = re.sub(r"\D", "", phone)
+    if not digits.startswith("1"):
+        digits = "1" + digits
+    if len(digits) != 11:
+        return _error(400, "Phone number must be a valid US number in E.164 format")
+    e164 = "+" + digits
+
+    from functions import rate_limiter
+    if not rate_limiter.check_and_increment(
+        f"smsoptin-ip:{_source_ip(event)}",
+        limit=_SMS_OPTIN_IP_LIMIT,
+        window_seconds=_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS,
+    ):
+        return _error(429, "Rate limit exceeded. Please try again later.")
+    if not rate_limiter.check_and_increment(
+        f"smsoptin-phone:{e164}",
+        limit=_SMS_OPTIN_PHONE_LIMIT,
+        window_seconds=_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS,
+    ):
+        return _error(429, "This number has requested too many texts recently.")
+
+    from functions import twilio_sms
+    if not twilio_sms.sms_enabled() or not _HTTPX_OK:
+        return _error(503, "SMS service not configured")
+
+    try:
+        sent = twilio_sms.send_sms(e164, twilio_sms.starter_pack_body())
+    except Exception as exc:  # noqa: BLE001
+        return _error(502, f"SMS send failed: {exc}")
+    if not sent:
+        return _error(502, "SMS send failed")
+
+    return _ok({"status": "sent"})
 
 
 def _handle_demo_call(event: dict) -> dict:
