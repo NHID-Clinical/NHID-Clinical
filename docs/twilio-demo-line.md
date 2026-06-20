@@ -35,6 +35,10 @@ expose phone number purchase via SAM/CFN resources.
    compliant scenario, 2 for the non-compliant one), then advances one
    scripted turn per request, auto-redirecting itself via TwiML
    `<Redirect>` until the script (`functions/demo_scripts.py`) is exhausted.
+   When a scenario finishes, instead of hanging up the caller hears an
+   end-of-demo menu: press 1 to hear the other scenario (replayed under the
+   same `CallSid` via `demo_status_store.reset_session`), or press 2 (or
+   stay silent) to end the demo.
 3. Every turn is evaluated through the same `adapters/call_progress_adapter.py`
    + `src/nhid_policy_engine_v1.py` pipeline production traffic uses — only
    the scripted speech is fake.
