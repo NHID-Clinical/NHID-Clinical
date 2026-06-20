@@ -15,17 +15,22 @@ governance framework itself.
 
 from __future__ import annotations
 
+import os
 import re
 import urllib.parse
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 from xml.sax.saxutils import escape
 
 from adapters.call_progress_adapter import to_nhid_event
-from functions import demo_status_store
+from functions import demo_status_store, twilio_sms
 from functions.demo_scripts import SCRIPT_LABELS, SCRIPTS
 from src.nhid_policy_engine_v1 import evaluate_all
 
 VOICE_WEBHOOK_PATH = "/v1/webhooks/twilio-demo/voice"
+
+#: Resource texted to callers who opt in via the end-of-demo menu. Overridable
+#: at deploy time (template.yaml StarterPackUrl) without a code change.
+_DEFAULT_STARTER_PACK_URL = "https://nhid-clinical.org/shadow-evaluation-guide.html"
 
 _DIGIT_TO_SCRIPT: dict[str, str] = {"1": "compliant", "2": "noncompliant"}
 _DEFAULT_SCRIPT = "compliant"
@@ -86,17 +91,30 @@ def _other_script(script_name: str) -> str:
     return "noncompliant" if script_name == "compliant" else "compliant"
 
 
-def _end_menu_twiml(summary_text: str, other_script: str, action_url: str) -> dict[str, Any]:
+def _end_menu_twiml(
+    summary_text: str,
+    other_script: str,
+    action_url: str,
+    *,
+    include_sms: bool = False,
+) -> dict[str, Any]:
     """End-of-demo menu: speak the scenario summary, then offer to hear the
-    other scenario (press 1) or end the demo (press 2). The trailing Hangup
-    covers the no-input case."""
+    other scenario (press 1) or end the demo (press 2). When include_sms is set
+    (SMS is configured), also offer to text the starter-pack link (press 3),
+    with the carrier-required rate disclosure. The trailing Hangup covers the
+    no-input case."""
     other_label = SCRIPT_LABELS[other_script].lower()
+    prompt = f"Press 1 to hear the {other_label}. "
+    if include_sms:
+        prompt += (
+            "Press 3 to get the starter pack link by text; "
+            "message and data rates may apply. "
+        )
+    prompt += "Or press 2 to end the demo."
     body = (
         _say(summary_text)
         + f'\n  <Gather numDigits="1" action="{escape(action_url)}" method="POST" timeout="8">'
-        + _say(
-            f"Press 1 to hear the {other_label}, or press 2 to end the demo."
-        )
+        + _say(prompt)
         + "\n  </Gather>"
         + _say("No selection received. Goodbye.")
         + "\n  <Hangup/>"
@@ -163,7 +181,21 @@ def _closing_summary_text(turns: list[dict[str, Any]]) -> str:
     )
 
 
-def _handle_twilio_demo_voice(event: dict[str, Any], *, status_table=None) -> dict[str, Any]:
+def _starter_pack_sms_body() -> str:
+    url = os.environ.get("STARTER_PACK_URL") or _DEFAULT_STARTER_PACK_URL
+    return (
+        f"NHID Clinical: here's your starter pack — {url} "
+        "Reply STOP to opt out, HELP for help. Msg & data rates may apply."
+    )
+
+
+def _handle_twilio_demo_voice(
+    event: dict[str, Any],
+    *,
+    status_table=None,
+    sms_enabled: Optional[bool] = None,
+    sms_sender: Optional[Callable[[str, str], bool]] = None,
+) -> dict[str, Any]:
     raw_body = event.get("body") or ""
     params = urllib.parse.parse_qs(raw_body)
 
@@ -177,6 +209,12 @@ def _handle_twilio_demo_voice(event: dict[str, Any], *, status_table=None) -> di
     if not call_sid:
         return _twiml_response(_say_and_hangup("This demo line requires a valid call session."))
 
+    # SMS is offered only when configured; injectable for tests.
+    if sms_enabled is None:
+        sms_enabled = twilio_sms.sms_enabled()
+    if sms_sender is None:
+        sms_sender = twilio_sms.send_sms
+
     action_url = _voice_webhook_url(event)
     existing = demo_status_store.get_status(call_sid, table=status_table)
     script_name = existing.get("script")
@@ -185,8 +223,9 @@ def _handle_twilio_demo_voice(event: dict[str, Any], *, status_table=None) -> di
 
     if demo_completed:
         # The scenario finished and the caller is answering the end-of-demo
-        # menu: press 1 replays the scenario they didn't choose, anything
-        # else (including 2 or no input) ends the demo.
+        # menu: press 1 replays the scenario they didn't choose, press 3 texts
+        # the starter-pack link (when SMS is configured), anything else
+        # (including 2 or no input) ends the demo.
         if digits == "1":
             script_name = _other_script(script_name or _DEFAULT_SCRIPT)
             demo_status_store.reset_session(call_sid, table=status_table)
@@ -196,6 +235,25 @@ def _handle_twilio_demo_voice(event: dict[str, Any], *, status_table=None) -> di
                 "disclosure_timestamp": None,
                 "escalation_available": True,
             }
+        elif digits == "3" and sms_enabled:
+            # IVR keypress is the SMS opt-in; text the caller's own number.
+            to_number = _field("From")
+            sent = False
+            if to_number:
+                try:
+                    sent = bool(sms_sender(to_number, _starter_pack_sms_body()))
+                except Exception:
+                    sent = False
+            confirmation = (
+                "Your starter pack link is on its way by text."
+                if sent
+                else "Sorry, I couldn't send the text right now."
+            )
+            # Re-offer the 1/2 menu (without the SMS option) so the caller can
+            # still hear the other scenario or end.
+            return _end_menu_twiml(
+                confirmation, _other_script(script_name or _DEFAULT_SCRIPT), action_url, include_sms=False
+            )
         else:
             return _twiml_response(
                 _say_and_hangup("Thanks for exploring the NHID Clinical demo. Goodbye.")
@@ -234,7 +292,9 @@ def _handle_twilio_demo_voice(event: dict[str, Any], *, status_table=None) -> di
                 table=status_table,
             )
             demo_status_store.set_latest(stored, table=status_table)
-        return _end_menu_twiml(_closing_summary_text(turns), _other_script(script_name), action_url)
+        return _end_menu_twiml(
+            _closing_summary_text(turns), _other_script(script_name), action_url, include_sms=sms_enabled
+        )
 
     turn = script[turn_index]
     body = {

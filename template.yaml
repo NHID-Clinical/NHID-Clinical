@@ -20,6 +20,24 @@ Parameters:
     NoEcho: true
     Default: ""
     Description: ElevenLabs provisioned phone number ID for Beacon outbound calls.
+  TwilioAccountSid:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Twilio Account SID, used to send the starter-pack SMS from the inbound demo line.
+  TwilioAuthToken:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Twilio Auth Token, paired with the Account SID for SMS sends.
+  TwilioSmsFrom:
+    Type: String
+    Default: ""
+    Description: SMS-capable Twilio number (or Messaging Service SID) the starter-pack texts are sent from.
+  StarterPackUrl:
+    Type: String
+    Default: "https://nhid-clinical.org/shadow-evaluation-guide.html"
+    Description: URL texted to callers who opt in to the starter-pack SMS at the end of the demo.
 
 Globals:
   Function:
@@ -51,6 +69,10 @@ Resources:
           CLOUDFLARE_TURNSTILE_SECRET: !Ref CloudflareTurnstileSecret
           ELEVENLABS_API_KEY: !Ref ElevenLabsApiKey
           ELEVENLABS_PHONE_NUMBER_ID: !Ref ElevenLabsPhoneNumberId
+          TWILIO_ACCOUNT_SID: !Ref TwilioAccountSid
+          TWILIO_AUTH_TOKEN: !Ref TwilioAuthToken
+          TWILIO_SMS_FROM: !Ref TwilioSmsFrom
+          STARTER_PACK_URL: !Ref StarterPackUrl
       Events:
         ConformancePost:
           Type: Api

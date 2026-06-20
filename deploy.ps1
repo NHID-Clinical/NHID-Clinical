@@ -33,7 +33,16 @@ param(
     # forwarded as a SAM --parameter-override only when non-empty.
     [string]$CloudflareTurnstileSecret = "",
     [string]$ElevenLabsApiKey          = "",
-    [string]$ElevenLabsPhoneNumberId   = ""
+    [string]$ElevenLabsPhoneNumberId   = "",
+
+    # Twilio SMS for the inbound demo line's "text me the starter pack" option.
+    # Leave empty to keep that option hidden (offered only when all three are set).
+    [string]$TwilioAccountSid          = "",
+    [string]$TwilioAuthToken           = "",
+    [string]$TwilioSmsFrom             = "",
+    # Optional override of the link texted to callers (template default points
+    # at the shadow-evaluation guide).
+    [string]$StarterPackUrl            = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -84,12 +93,20 @@ $overrides = @()
 if ($CloudflareTurnstileSecret) { $overrides += "CloudflareTurnstileSecret=$CloudflareTurnstileSecret" }
 if ($ElevenLabsApiKey)          { $overrides += "ElevenLabsApiKey=$ElevenLabsApiKey" }
 if ($ElevenLabsPhoneNumberId)   { $overrides += "ElevenLabsPhoneNumberId=$ElevenLabsPhoneNumberId" }
+if ($TwilioAccountSid)          { $overrides += "TwilioAccountSid=$TwilioAccountSid" }
+if ($TwilioAuthToken)           { $overrides += "TwilioAuthToken=$TwilioAuthToken" }
+if ($TwilioSmsFrom)             { $overrides += "TwilioSmsFrom=$TwilioSmsFrom" }
+if ($StarterPackUrl)            { $overrides += "StarterPackUrl=$StarterPackUrl" }
 
 # Masked summary — never echo the secret values themselves.
 $setNames = @()
 if ($CloudflareTurnstileSecret) { $setNames += "CloudflareTurnstileSecret" }
 if ($ElevenLabsApiKey)          { $setNames += "ElevenLabsApiKey" }
 if ($ElevenLabsPhoneNumberId)   { $setNames += "ElevenLabsPhoneNumberId" }
+if ($TwilioAccountSid)          { $setNames += "TwilioAccountSid" }
+if ($TwilioAuthToken)           { $setNames += "TwilioAuthToken" }
+if ($TwilioSmsFrom)             { $setNames += "TwilioSmsFrom" }
+if ($StarterPackUrl)            { $setNames += "StarterPackUrl" }
 Write-Host ""
 Write-Host "Stack:   $StackName" -ForegroundColor Cyan
 Write-Host "Region:  $Region"   -ForegroundColor Cyan
