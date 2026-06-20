@@ -10,6 +10,16 @@ Parameters:
     NoEcho: true
     Default: ""
     Description: Cloudflare Turnstile secret key, used to verify CAPTCHA tokens on public demo forms.
+  ElevenLabsApiKey:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: ElevenLabs API key for the Beacon outbound call demo.
+  ElevenLabsPhoneNumberId:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: ElevenLabs provisioned phone number ID for Beacon outbound calls.
 
 Globals:
   Function:
@@ -39,6 +49,8 @@ Resources:
           DEMO_CALL_STATUS_TABLE: !Ref DemoCallStatusTable
           RATE_LIMIT_TABLE: !Ref RateLimitTable
           CLOUDFLARE_TURNSTILE_SECRET: !Ref CloudflareTurnstileSecret
+          ELEVENLABS_API_KEY: !Ref ElevenLabsApiKey
+          ELEVENLABS_PHONE_NUMBER_ID: !Ref ElevenLabsPhoneNumberId
       Events:
         ConformancePost:
           Type: Api
@@ -134,6 +146,18 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/demo/call-status
             Method: GET
+        DemoCallPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/demo/call
+            Method: POST
+        ElevenLabsPostCallWebhookPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/webhooks/elevenlabs/postcall
+            Method: POST
 
   # ── Website demo feature: live status store (NOT the governance framework) ─
   # Backs the Twilio scripted inbound demo line and (later) the Beacon

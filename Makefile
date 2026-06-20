@@ -3,10 +3,12 @@ REGION     ?= us-east-1
 PROFILE    ?=
 
 # Website demo feature secrets (NOT the governance framework) — set via
-# `make deploy CLOUDFLARE_TURNSTILE_SECRET=...`, forwarded as SAM
-# --parameter-overrides below. Empty/unset is fine; the matching
-# template.yaml Parameter defaults to "".
+# e.g. `make deploy CLOUDFLARE_TURNSTILE_SECRET=... ELEVENLABS_API_KEY=...`,
+# forwarded as SAM --parameter-overrides below. Empty/unset is fine; the
+# matching template.yaml Parameters all default to "".
 CLOUDFLARE_TURNSTILE_SECRET ?=
+ELEVENLABS_API_KEY         ?=
+ELEVENLABS_PHONE_NUMBER_ID ?=
 
 AWS_ARGS := --region $(REGION)
 ifdef PROFILE
@@ -16,6 +18,12 @@ endif
 PARAM_OVERRIDES :=
 ifneq ($(strip $(CLOUDFLARE_TURNSTILE_SECRET)),)
   PARAM_OVERRIDES += CloudflareTurnstileSecret=$(CLOUDFLARE_TURNSTILE_SECRET)
+endif
+ifneq ($(strip $(ELEVENLABS_API_KEY)),)
+  PARAM_OVERRIDES += ElevenLabsApiKey=$(ELEVENLABS_API_KEY)
+endif
+ifneq ($(strip $(ELEVENLABS_PHONE_NUMBER_ID)),)
+  PARAM_OVERRIDES += ElevenLabsPhoneNumberId=$(ELEVENLABS_PHONE_NUMBER_ID)
 endif
 
 .PHONY: build deploy destroy get-key get-url test-api test-demo logs help
@@ -32,7 +40,8 @@ help:
 	@echo "  logs        tail Lambda CloudWatch logs"
 	@echo "  destroy     delete the CloudFormation stack"
 	@echo ""
-	@echo "Overrides:  STACK_NAME, REGION, PROFILE, CLOUDFLARE_TURNSTILE_SECRET"
+	@echo "Overrides:  STACK_NAME, REGION, PROFILE, CLOUDFLARE_TURNSTILE_SECRET,"
+	@echo "            ELEVENLABS_API_KEY, ELEVENLABS_PHONE_NUMBER_ID (for /v1/demo/call)"
 
 test-demo:
 	python -m pytest tests/demo/ -v
