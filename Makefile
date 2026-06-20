@@ -7,7 +7,7 @@ ifdef PROFILE
   AWS_ARGS += --profile $(PROFILE)
 endif
 
-.PHONY: build deploy destroy get-key get-url test-api logs help
+.PHONY: build deploy destroy get-key get-url test-api test-demo logs help
 
 help:
 	@echo "Targets:"
@@ -16,10 +16,15 @@ help:
 	@echo "  get-key     print the live API key value"
 	@echo "  get-url     print the conformance endpoint URL"
 	@echo "  test-api    curl the live endpoint with tests/sample_request.json"
+	@echo "  test-demo   run the website demo-feature tests (tests/demo/) — separate from"
+	@echo "              the framework's conformance baseline (python -m pytest tests/)"
 	@echo "  logs        tail Lambda CloudWatch logs"
 	@echo "  destroy     delete the CloudFormation stack"
 	@echo ""
 	@echo "Overrides:  STACK_NAME, REGION, PROFILE"
+
+test-demo:
+	python -m pytest tests/demo/ -v
 
 build:
 	sam build $(AWS_ARGS)
