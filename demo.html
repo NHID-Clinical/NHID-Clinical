@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical live demo line — call a number and watch a real conformance evaluation pass or fail in real time."/>
+  <title>Live Demo Line | NHID-Clinical</title>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+
+<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
+  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+</div>
+
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Specification <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/specification.html">Specification</a>
+          <a href="/technical-stack.html">Technical Stack</a>
+          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Implement <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/developers.html">Developers</a>
+          <a href="/interoperability.html">Interoperability</a>
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Pilot <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/community.html">Community</a>
+          <a href="/roadmap.html">Roadmap</a>
+          <a href="/news.html">News</a>
+        </div>
+      </div>
+      <a href="/simulator.html">Simulator</a>
+      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Map &#x2197;</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/about.html">About</a>
+  <a href="/simulator.html">Simulator</a>
+  <strong class="mobile-nav-group">Specification</strong>
+  <a href="/specification.html">Specification</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <strong class="mobile-nav-group">Implement</strong>
+  <a href="/developers.html">Developers</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <strong class="mobile-nav-group">Pilot</strong>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/community.html">Community</a>
+  <a href="/roadmap.html">Roadmap</a>
+  <a href="/news.html">News</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Map &#x2197;</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero">
+    <div class="container">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Live Demo Line</span></div>
+      <p class="eyebrow"><span class="status-dot"></span> Live</p>
+      <h1>Call the demo line. Watch it pass or fail, live.</h1>
+      <p class="lede">A scripted, deterministic phone call — no AI variance — run through the exact same NHID-Clinical evaluation pipeline that production traffic goes through. Only the speech is fake.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:860px">
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3>1. Call the demo number</h3>
+        <p class="sub">Dial <strong id="demo-phone-number">the demo number (see below)</strong> from any phone.</p>
+        <div class="callout" role="note">
+          The demo phone number is provisioned manually in the Twilio Console (not managed by this repo's
+          infrastructure-as-code) — see <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/twilio-demo-line.md">docs/twilio-demo-line.md</a>
+          for the current number and setup steps.
+        </div>
+        <p>Press <strong>1</strong> for a call that satisfies the disclosure and PHI-protection controls. Press <strong>2</strong> for one that violates them.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem">
+        <h3>2. Or get a call directly from Beacon</h3>
+        <p class="sub">Beacon — our outbound demo agent — calls your phone and the conversation is evaluated against the same four controls once the call ends. This costs us real calling minutes per request, so it's CAPTCHA- and rate-limited.</p>
+        <div class="call-demo-form" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+          <input type="tel" id="demo-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your phone number" style="flex:1;min-width:200px"/>
+          <button class="cta-button" id="demo-call-btn" type="button">Receive a Call from Beacon</button>
+        </div>
+        <!-- data-sitekey is a placeholder pending Cloudflare Turnstile dashboard setup (one-time manual step, same pattern as agents/compass_system_prompt.md's pending agent_id) -->
+        <div class="cf-turnstile" id="demo-call-turnstile" data-sitekey="sitekey_pending_cloudflare_dashboard_creation" data-callback="nhidOnTurnstileSuccess"></div>
+        <p id="demo-call-status" hidden aria-live="polite" style="margin-top:.75rem"></p>
+      </div>
+
+      <div class="card">
+        <h3>3. Watch it evaluated live</h3>
+        <p class="sub">Every turn of the call — disclosure, PHI requests, escalation — is run through <code>adapters/call_progress_adapter.py</code> + <code>src/nhid_policy_engine_v1.py</code> exactly like a real vendor webhook, and shown below as it happens.</p>
+        <div id="nhid-demo-status-container"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">How this works</p>
+        <h2>This is the same evaluation pipeline production traffic uses.</h2>
+        <p>The two call scripts are the only fake part. The conformance evaluation — IDG-01, PDX-01, DBC-01, EIT-01 — is real.</p>
+      </div>
+      <a class="closing-button" href="/developers.html">Read the Developer Docs →</a>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
+      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
+      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+<script>
+  (function () {
+    var API_BASE = "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod";
+    var container = document.getElementById("nhid-demo-status-container");
+    if (container && window.NHIDDemoStatus) {
+      window.NHIDDemoStatus.poll(container, API_BASE + "/v1/demo/call-status?session_id=latest", 2000);
+    }
+  })();
+</script>
+<script>
+  // Beacon outbound call demo form. Turnstile's data-callback (see the
+  // .cf-turnstile div above) fills in window.nhidTurnstileToken before submit
+  // is allowed -- this is the one demo route with real per-call cost, so it's
+  // gated by CAPTCHA + server-side rate limiting (functions/rate_limiter.py).
+  window.nhidTurnstileToken = "";
+  window.nhidOnTurnstileSuccess = function (token) {
+    window.nhidTurnstileToken = token;
+  };
+
+  (function () {
+    var API_BASE = "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod";
+    var btn = document.getElementById("demo-call-btn");
+    var input = document.getElementById("demo-phone");
+    var status = document.getElementById("demo-call-status");
+    if (!btn || !input || !status) return;
+
+    function setStatus(msg, ok) {
+      status.textContent = msg;
+      status.hidden = false;
+      status.style.color = ok === false ? "var(--red, #c0392b)" : "var(--teal)";
+    }
+
+    btn.addEventListener("click", function () {
+      if (!window.nhidTurnstileToken) {
+        setStatus("Please complete the CAPTCHA above first.", false);
+        return;
+      }
+      var digits = input.value.replace(/\D/g, "");
+      if (!digits.startsWith("1")) digits = "1" + digits;
+      if (digits.length !== 11) {
+        setStatus("Please enter a valid US phone number.", false);
+        return;
+      }
+      var e164 = "+" + digits;
+      btn.disabled = true;
+      setStatus("Dialing…");
+      fetch(API_BASE + "/v1/demo/call", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: e164, turnstile_token: window.nhidTurnstileToken }),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.status === "dialing") {
+            setStatus("Beacon is calling you now. Results appear above within a few seconds of the call ending.");
+          } else {
+            setStatus("Could not initiate call: " + (d.error || "unknown error"), false);
+          }
+        })
+        .catch(function () {
+          setStatus("Network error — please try again.", false);
+        })
+        .finally(function () { btn.disabled = false; });
+    });
+  })();
+</script>
+</body>
+</html>

@@ -2,6 +2,25 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: NHID Clinical Policy Engine - Hosted Conformance API
 
+Parameters:
+  # ── Website demo feature secrets (NOT the governance framework) ─────────
+  # Forwarded via `make deploy CLOUDFLARE_TURNSTILE_SECRET=...` — see Makefile.
+  CloudflareTurnstileSecret:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Cloudflare Turnstile secret key, used to verify CAPTCHA tokens on public demo forms.
+  ElevenLabsApiKey:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: ElevenLabs API key for the Beacon outbound call demo.
+  ElevenLabsPhoneNumberId:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: ElevenLabs provisioned phone number ID for Beacon outbound calls.
+
 Globals:
   Function:
     Timeout: 30
@@ -21,6 +40,17 @@ Resources:
       Description: NHID Clinical policy engine conformance checker
       Policies:
         - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DemoCallStatusTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RateLimitTable
+      Environment:
+        Variables:
+          DEMO_CALL_STATUS_TABLE: !Ref DemoCallStatusTable
+          RATE_LIMIT_TABLE: !Ref RateLimitTable
+          CLOUDFLARE_TURNSTILE_SECRET: !Ref CloudflareTurnstileSecret
+          ELEVENLABS_API_KEY: !Ref ElevenLabsApiKey
+          ELEVENLABS_PHONE_NUMBER_ID: !Ref ElevenLabsPhoneNumberId
       Events:
         ConformancePost:
           Type: Api
@@ -104,6 +134,66 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /health
             Method: GET
+        TwilioDemoVoicePost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/webhooks/twilio-demo/voice
+            Method: POST
+        DemoCallStatusGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/demo/call-status
+            Method: GET
+        DemoCallPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/demo/call
+            Method: POST
+        ElevenLabsPostCallWebhookPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/webhooks/elevenlabs/postcall
+            Method: POST
+
+  # ── Website demo feature: live status store (NOT the governance framework) ─
+  # Backs the Twilio scripted inbound demo line and (later) the Beacon
+  # outbound demo. TTL self-cleans sessions ~1hr after their last write.
+  DemoCallStatusTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: nhid-demo-call-status
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: session_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: session_id
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  # ── Website demo feature: rate-limit counters (NOT the governance framework) ─
+  # Backs functions/rate_limiter.py — abuse deterrence for public demo forms
+  # (e.g. the Beacon outbound-call demo). TTL self-cleans windows.
+  RateLimitTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: nhid-demo-rate-limit
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: rl_key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: rl_key
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   # ── API Gateway REST API ─────────────────────────────────────────────────
   NHIDApi:

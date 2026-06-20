@@ -1,6 +1,7 @@
 """Lambda handler for the NHID Clinical conformance check API."""
 import json
 import os
+import re
 import sys
 
 # When SAM packages with CodeUri: ., the repo root is /var/task.
@@ -13,6 +14,24 @@ from src.nhid_policy_engine_v1 import (  # noqa: E402
     evaluate_all,
 )
 from src.nhid_cas import _tier_for_cas  # noqa: E402
+
+try:
+    import httpx
+    _HTTPX_OK = True
+except ImportError:
+    _HTTPX_OK = False
+
+TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+TURNSTILE_SECRET_ENV = "CLOUDFLARE_TURNSTILE_SECRET"
+
+#: Beacon's live ElevenLabs agent — see agents/beacon_system_prompt.md / beacon.config.json.
+_BEACON_AGENT_ID = "agent_4001krn32nmwe5t8mqzgee0w84rj"
+
+#: Outbound demo calls cost real Twilio/ElevenLabs minutes, unlike every other
+#: demo-suffixed route — these limits exist to cap that cost, not just deter bots.
+_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS = 3600
+_DEMO_CALL_IP_LIMIT = 5
+_DEMO_CALL_PHONE_LIMIT = 3
 
 
 def lambda_handler(event: dict, context) -> dict:
@@ -31,6 +50,10 @@ def lambda_handler(event: dict, context) -> dict:
       GET  /v1/vendor/metrics/summary        — per-vendor metrics, API key required
       POST /v1/pilot/enroll                  — pilot enrollment, no API key required
       POST /v1/cts/evaluate                  — run conformance test suite, no API key required
+      POST /v1/webhooks/twilio-demo/voice    — scripted demo line TwiML, no API key (website demo, not framework)
+      GET  /v1/demo/call-status              — live demo call status, no API key (website demo, not framework)
+      POST /v1/demo/call                     — trigger Beacon outbound demo call, Turnstile+rate-limited (website demo, not framework)
+      POST /v1/webhooks/elevenlabs/postcall  — ElevenLabs post-call webhook for the Beacon demo, no API key (website demo, not framework)
     """
     method = event.get("httpMethod", "POST")
     path = event.get("path", "")
@@ -40,11 +63,27 @@ def lambda_handler(event: dict, context) -> dict:
             return _handle_badge(event, path)
         if "/vendor/metrics/summary" in path:
             return _handle_metrics_summary(event)
+        if "/demo/call-status" in path:
+            return _handle_demo_call_status(event)
         return _ok({
             "status": "healthy",
             "policy_engine_version": POLICY_ENGINE_VERSION,
             "nhid_spec_version": NHID_SPEC_VERSION,
         })
+
+    # Twilio scripted inbound demo line (website demo feature, not the framework)
+    if "/webhooks/twilio-demo/voice" in path:
+        from functions.twilio_demo_handler import _handle_twilio_demo_voice
+        return _handle_twilio_demo_voice(event)
+
+    # Beacon outbound call demo (website demo feature, not the framework)
+    if "/demo/call" in path:
+        return _handle_demo_call(event)
+
+    # ElevenLabs post-call webhook for the Beacon outbound demo (website demo feature)
+    if "/webhooks/elevenlabs/postcall" in path:
+        from functions.elevenlabs_postcall_handler import _handle_elevenlabs_postcall_webhook
+        return _handle_elevenlabs_postcall_webhook(event)
 
     # Pilot enrollment
     if "/pilot/enroll" in path:
@@ -220,6 +259,120 @@ def _handle_metrics_summary(event: dict) -> dict:
         return _error(500, f"Metrics query failed: {exc}")
 
     return _ok(metrics)
+
+
+def _verify_turnstile(token: str) -> bool:
+    """Verify a Cloudflare Turnstile token server-side. False on any failure
+    (missing token, missing secret, network error, or Cloudflare rejection) —
+    callers should treat that as "reject the request", not "skip the check"."""
+    if not token:
+        return False
+    secret = os.environ.get(TURNSTILE_SECRET_ENV, "")
+    if not secret or not _HTTPX_OK:
+        return False
+
+    try:
+        resp = httpx.post(
+            TURNSTILE_VERIFY_URL,
+            data={"secret": secret, "response": token},
+            timeout=10.0,
+        )
+        resp.raise_for_status()
+        return bool(resp.json().get("success"))
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def _source_ip(event: dict) -> str:
+    identity = (event.get("requestContext") or {}).get("identity") or {}
+    return identity.get("sourceIp") or "unknown"
+
+
+def _handle_demo_call(event: dict) -> dict:
+    """Trigger an outbound ElevenLabs (Beacon) call to the provided phone
+    number. The one demo route with real per-call Twilio/ElevenLabs cost --
+    gated by Turnstile CAPTCHA and per-IP/per-number rate limits before any
+    network call is made."""
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    if not _verify_turnstile(str(body.get("turnstile_token", ""))):
+        return _error(400, "CAPTCHA verification failed")
+
+    phone = str(body.get("phone", "")).strip()
+    if not phone:
+        return _error(400, "Missing required field: 'phone'")
+
+    digits = re.sub(r"\D", "", phone)
+    if not digits.startswith("1"):
+        digits = "1" + digits
+    if len(digits) != 11:
+        return _error(400, "Phone number must be a valid US number in E.164 format")
+    e164 = "+" + digits
+
+    from functions import rate_limiter
+    if not rate_limiter.check_and_increment(
+        f"ip:{_source_ip(event)}", limit=_DEMO_CALL_IP_LIMIT, window_seconds=_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS
+    ):
+        return _error(429, "Rate limit exceeded. Please try again later.")
+    if not rate_limiter.check_and_increment(
+        f"phone:{e164}", limit=_DEMO_CALL_PHONE_LIMIT, window_seconds=_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS
+    ):
+        return _error(429, "This phone number has received too many demo calls recently.")
+
+    api_key = os.environ.get("ELEVENLABS_API_KEY", "")
+    phone_number_id = os.environ.get("ELEVENLABS_PHONE_NUMBER_ID", "")
+    if not api_key or not phone_number_id or not _HTTPX_OK:
+        return _error(503, "Outbound call service not configured")
+
+    url = f"https://api.elevenlabs.io/v1/convai/phone-numbers/{phone_number_id}/outbound-call"
+    try:
+        resp = httpx.post(
+            url,
+            json={"agent_id": _BEACON_AGENT_ID, "to_number": e164},
+            headers={"xi-api-key": api_key},
+            timeout=10.0,
+        )
+        resp.raise_for_status()
+        resp_body = resp.json()
+    except Exception as exc:  # noqa: BLE001
+        return _error(502, f"Outbound call failed: {exc}")
+
+    return _ok({
+        "status": "dialing",
+        "call_id": resp_body.get("call_id", resp_body.get("conversation_id", "")),
+    })
+
+
+def _handle_demo_call_status(event: dict) -> dict:
+    """Live status for the Twilio scripted demo line. Polled by the website.
+
+    session_id="latest" looks up whichever demo call is most recently in
+    progress — visitors watching the site don't know their own call's
+    Twilio CallSid, so this lets anyone watch the live call without typing
+    anything in.
+    """
+    params = event.get("queryStringParameters") or {}
+    session_id = (params.get("session_id") or "").strip()
+    if not session_id:
+        return _error(400, "Missing required query parameter: session_id")
+
+    from functions import demo_status_store
+    if session_id == "latest":
+        session_id = demo_status_store.LATEST_SESSION_KEY
+
+    try:
+        status = demo_status_store.get_status(session_id)
+    except Exception as exc:  # noqa: BLE001
+        return _error(500, f"Status lookup failed: {exc}")
+
+    return _ok(status)
 
 
 def _handle_pilot_enroll(event: dict) -> dict:

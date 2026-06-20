@@ -1641,6 +1641,13 @@ body, .site-header, .mobile-nav, .site-footer,
 .badge-green { background: rgba(16,163,108,0.12); color: #10a36c; }
 .badge-gray  { background: var(--blue-soft); color: var(--body); }
 
+/* ── Demo line live status (website demo feature, not the framework) ─────── */
+.nhid-demo-badge-fail { background: rgba(207,34,46,0.12); color: #cf222e; }
+.nhid-demo-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+.nhid-demo-log { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem; }
+.nhid-demo-turn { font-size: 0.85rem; color: var(--body); line-height: 1.5; }
+.nhid-demo-turn code { font-family: "IBM Plex Mono", "Fira Code", "Courier New", monospace; font-size: 0.8rem; }
+
 /* ── Download section (homepage + specs page) ───────────────────────────── */
 .download-section {
   padding-block: 4rem;
@@ -3033,5 +3040,10 @@ textarea { resize: vertical; min-height: 120px; }
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
   pointer-events: none;
+}
+
+/* ElevenLabs widget (Compass) — ensure it stays above all content */
+elevenlabs-convai {
+  z-index: 9999;
 }
 
