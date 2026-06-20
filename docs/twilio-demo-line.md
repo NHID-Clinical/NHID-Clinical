@@ -11,8 +11,9 @@ expose phone number purchase via SAM/CFN resources.
 ## One-time setup
 
 1. In the [Twilio Console](https://console.twilio.com/), buy a phone number
-   (Phone Numbers → Buy a number). Voice capability is required; SMS/MMS are
-   not used by this feature.
+   (Phone Numbers → Buy a number). Voice capability is required; SMS is used
+   only for the optional starter-pack-link feature (see "Starter-pack SMS"
+   below), which is off unless Twilio messaging credentials are configured.
 2. Deploy this repo's stack (`make deploy` on macOS/Linux, or `.\deploy.ps1` on
    Windows PowerShell) and note the API Gateway base URL from the `ApiBaseUrl`
    stack output (both print it at the end of a successful deploy).
@@ -38,7 +39,25 @@ expose phone number purchase via SAM/CFN resources.
    When a scenario finishes, instead of hanging up the caller hears an
    end-of-demo menu: press 1 to hear the other scenario (replayed under the
    same `CallSid` via `demo_status_store.reset_session`), or press 2 (or
-   stay silent) to end the demo.
+   stay silent) to end the demo. When SMS is configured (see below), the menu
+   also offers press 3 to text the caller a starter-pack link.
+
+## Starter-pack SMS (optional)
+
+The end-of-demo menu offers a "press 3 to get the starter pack link by text"
+option **only when** Twilio messaging is configured. The IVR keypress is the
+opt-in, and the link is texted to the caller's own number (`From`).
+
+This requires:
+- A Twilio number (or Messaging Service) registered for US A2P 10DLC messaging.
+- Three deploy parameters: `TwilioAccountSid`, `TwilioAuthToken`, `TwilioSmsFrom`
+  (plus optional `StarterPackUrl`, which defaults to the shadow-evaluation
+  guide). Pass them via `make deploy` / `.\deploy.ps1`.
+
+When any of the three are unset, the SMS option is simply not spoken, so the
+demo line works unchanged before registration is complete. Sending lives in
+`functions/twilio_sms.py` (`sms_enabled()` / `send_sms()`); the texted body
+includes the carrier-required `STOP`/`HELP` and rate-disclosure language.
 3. Every turn is evaluated through the same `adapters/call_progress_adapter.py`
    + `src/nhid_policy_engine_v1.py` pipeline production traffic uses — only
    the scripted speech is fake.

@@ -194,6 +194,74 @@ def test_end_menu_press_2_ends_the_demo():
     assert "Goodbye" in resp["body"]
 
 
+def _drive_to_end_menu(call_sid: str, table: _FakeTable, sms_enabled: bool) -> dict:
+    """Pick the compliant scenario and advance to the end-of-demo menu."""
+    _handle_twilio_demo_voice(_event(call_sid), status_table=table, sms_enabled=sms_enabled)
+    _handle_twilio_demo_voice(_event(call_sid, digits="1"), status_table=table, sms_enabled=sms_enabled)
+    resp = {"body": ""}
+    for _ in range(20):
+        resp = _handle_twilio_demo_voice(_event(call_sid), status_table=table, sms_enabled=sms_enabled)
+        if "<Gather" in resp["body"]:
+            break
+    return resp
+
+
+def test_sms_option_hidden_when_not_configured():
+    table = _FakeTable()
+    resp = _drive_to_end_menu("CA-nosms", table, sms_enabled=False)
+    assert "Press 3" not in resp["body"]
+
+
+def test_sms_option_offered_when_configured():
+    table = _FakeTable()
+    resp = _drive_to_end_menu("CA-sms", table, sms_enabled=True)
+    assert "Press 3 to get the starter pack link by text" in resp["body"]
+    assert "message and data rates may apply" in resp["body"]
+
+
+def test_press_3_texts_caller_and_confirms():
+    table = _FakeTable()
+    _drive_to_end_menu("CA-text", table, sms_enabled=True)
+
+    sent: list[tuple[str, str]] = []
+
+    def fake_sender(to: str, body: str) -> bool:
+        sent.append((to, body))
+        return True
+
+    event = {
+        "httpMethod": "POST",
+        "path": "/v1/webhooks/twilio-demo/voice",
+        "headers": {},
+        "body": urllib.parse.urlencode({"CallSid": "CA-text", "Digits": "3", "From": "+15551234567"}),
+    }
+    resp = _handle_twilio_demo_voice(event, status_table=table, sms_enabled=True, sms_sender=fake_sender)
+
+    assert len(sent) == 1
+    to, body = sent[0]
+    assert to == "+15551234567"
+    assert "https://nhid-clinical.org/shadow-evaluation-guide.html" in body
+    assert "STOP" in body  # carrier-required opt-out language
+    assert "on its way by text" in resp["body"]
+    # After texting, the caller can still hear the other scenario or end.
+    assert "Press 1 to hear the non-compliant call" in resp["body"]
+    assert "Press 3" not in resp["body"]  # not re-offered
+
+
+def test_press_3_without_caller_number_fails_gracefully():
+    table = _FakeTable()
+    _drive_to_end_menu("CA-nofrom", table, sms_enabled=True)
+
+    def fake_sender(to: str, body: str) -> bool:  # pragma: no cover - must not be called
+        raise AssertionError("should not send without a caller number")
+
+    resp = _handle_twilio_demo_voice(
+        _event("CA-nofrom", digits="3"), status_table=table, sms_enabled=True, sms_sender=fake_sender
+    )
+    assert "couldn't send" in resp["body"]
+    assert "<Gather" in resp["body"]  # still offers the 1/2 menu
+
+
 def test_latest_mirror_tracks_call_progress_for_anonymous_viewers():
     table = _FakeTable()
     _run_full_call("CA-mirrored", "2", table)
