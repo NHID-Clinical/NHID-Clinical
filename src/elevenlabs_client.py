@@ -84,6 +84,24 @@ def _extract_canonical_prompt(prompt_path: Path) -> Optional[str]:
     return "\n".join(lines).strip() or None
 
 
+def _extract_canonical_first_message(prompt_path: Path) -> Optional[str]:
+    """Load the canonical first message from its ```first_message fence, if present."""
+    if not prompt_path.exists():
+        return None
+    text = prompt_path.read_text(encoding="utf-8")
+    m = re.search(r"```first_message\s*\n(.*?)```", text, re.DOTALL)
+    return m.group(1).strip() if m else None
+
+
+def _extract_canonical_name(prompt_path: Path) -> Optional[str]:
+    """Load the canonical agent display name from its '- **Name**: X' line, if present."""
+    if not prompt_path.exists():
+        return None
+    text = prompt_path.read_text(encoding="utf-8")
+    m = re.search(r"^\s*-\s*\*\*Name\*\*:\s*(.+?)\s*$", text, re.MULTILINE)
+    return m.group(1).strip() if m else None
+
+
 def _write_canonical_from_live(prompt_path: Path, agent_id: str, prompt: str, first_message: str) -> None:
     """Persist a live prompt as the canonical baseline file."""
     prompt_path.parent.mkdir(parents=True, exist_ok=True)
@@ -115,11 +133,16 @@ def sync_prompt(
     dry_run: bool = False,
 ) -> dict:
     """
-    1. Pull the agent's live system prompt.
-    2. Diff against the canonical prompt file.
+    1. Pull the agent's live system prompt, first message, and display name.
+    2. Diff each against its canonical counterpart in the prompt file.
     3. Report every divergence.
     4. If canonical exists and differs, push it (unless dry_run).
     Returns a dict summarising what changed.
+
+    first_message and name are pushed alongside the prompt because ElevenLabs
+    treats them as separate fields the LLM never sees — a stale dashboard
+    default in either (e.g. a leftover placeholder greeting/name) survives a
+    prompt-only sync and is never visible to the LLM-driven diff above.
     """
     live_config = client.get_agent_config(agent_id)
     live_prompt = (
@@ -135,11 +158,14 @@ def sync_prompt(
         .get("agent", {})
         .get("first_message", "")
     ) or ""
+    live_name = live_config.get("name", "") or ""
 
     canonical_prompt = _extract_canonical_prompt(prompt_path)
+    canonical_first_msg = _extract_canonical_first_message(prompt_path)
+    canonical_name = _extract_canonical_name(prompt_path)
 
     report: dict[str, Any] = {
-        "live_name": live_config.get("name", ""),
+        "live_name": live_name,
         "live_first_message": live_first_msg,
         "live_prompt_chars": len(live_prompt),
         "canonical_found": canonical_prompt is not None,
@@ -155,7 +181,7 @@ def sync_prompt(
         )
         return report
 
-    # Line-level diff
+    # Line-level diff of the system prompt
     live_lines = live_prompt.splitlines()
     canon_lines = canonical_prompt.splitlines()
     for i, (l, c) in enumerate(zip(live_lines, canon_lines)):
@@ -168,15 +194,23 @@ def sync_prompt(
             f"line count: live={len(live_lines)} canonical={len(canon_lines)}"
         )
 
+    if canonical_first_msg is not None and live_first_msg.strip() != canonical_first_msg.strip():
+        report["divergences"].append(
+            f"first_message: live={live_first_msg[:80]!r}  canonical={canonical_first_msg[:80]!r}"
+        )
+    if canonical_name is not None and live_name.strip() != canonical_name.strip():
+        report["divergences"].append(
+            f"name: live={live_name[:80]!r}  canonical={canonical_name[:80]!r}"
+        )
+
     if report["divergences"] and not dry_run:
-        # Repo is source of truth — push canonical
-        patch = {
-            "conversation_config": {
-                "agent": {
-                    "prompt": {"prompt": canonical_prompt},
-                }
-            }
-        }
+        # Repo is source of truth — push canonical prompt + first_message + name
+        agent_patch: dict[str, Any] = {"prompt": {"prompt": canonical_prompt}}
+        if canonical_first_msg is not None:
+            agent_patch["first_message"] = canonical_first_msg
+        patch: dict[str, Any] = {"conversation_config": {"agent": agent_patch}}
+        if canonical_name is not None:
+            patch["name"] = canonical_name
         client.patch_agent_config(agent_id, patch)
         report["pushed"] = True
 
