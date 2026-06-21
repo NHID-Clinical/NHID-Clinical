@@ -124,6 +124,33 @@ class TestExtractCanonicalPrompt:
         assert elc._extract_canonical_prompt(path) == "plain prompt text\nmore text"
 
 
+# ── _extract_canonical_first_message / _extract_canonical_name ───────────────────
+
+class TestExtractCanonicalFirstMessageAndName:
+    def test_extracts_first_message_fence(self, tmp_path):
+        path = tmp_path / "agent_system_prompt.md"
+        path.write_text(
+            "## First message\n\n```first_message\nhi there.\n```\n",
+            encoding="utf-8",
+        )
+        assert elc._extract_canonical_first_message(path) == "hi there."
+
+    def test_first_message_returns_none_if_absent(self, tmp_path):
+        path = tmp_path / "agent_system_prompt.md"
+        path.write_text("```prompt\nNo first message section here.\n```\n", encoding="utf-8")
+        assert elc._extract_canonical_first_message(path) is None
+
+    def test_extracts_name_line(self, tmp_path):
+        path = tmp_path / "agent_system_prompt.md"
+        path.write_text("## Agent identity\n\n- **Name**: Compass\n", encoding="utf-8")
+        assert elc._extract_canonical_name(path) == "Compass"
+
+    def test_name_returns_none_if_absent(self, tmp_path):
+        path = tmp_path / "agent_system_prompt.md"
+        path.write_text("```prompt\nNo name line here.\n```\n", encoding="utf-8")
+        assert elc._extract_canonical_name(path) is None
+
+
 # ── sync_prompt ───────────────────────────────────────────────────────────────
 
 class TestSyncPrompt:
@@ -198,6 +225,60 @@ class TestSyncPrompt:
         report = sync_prompt(client, AGENT_ID, prompt_path, dry_run=True)
 
         assert report["divergences"]
+        assert report["pushed"] is False
+
+    def test_pushes_first_message_and_name_on_divergence(self, tmp_path, monkeypatch):
+        prompt_path = tmp_path / "test_system_prompt.md"
+        prompt_path.write_text(
+            "- **Name**: Compass\n\n"
+            "## System prompt\n\n```prompt\nSame prompt text.\n```\n\n"
+            "## First message\n\n```first_message\nhi, I'm Compass.\n```\n",
+            encoding="utf-8",
+        )
+
+        def fake_get(url, headers, timeout):
+            live = _live_config(prompt="Same prompt text.", first_message="Need help?")
+            live["name"] = "Nicole"
+            return _FakeResponse(live)
+
+        patched = {}
+
+        def fake_patch(url, headers, json, timeout):
+            patched["payload"] = json
+            return _FakeResponse({"ok": True})
+
+        monkeypatch.setattr(elc.httpx, "get", fake_get)
+        monkeypatch.setattr(elc.httpx, "patch", fake_patch)
+        client = ElevenLabsClient("test-key")
+
+        report = sync_prompt(client, AGENT_ID, prompt_path)
+
+        assert report["pushed"] is True
+        assert any("first_message" in d for d in report["divergences"])
+        assert any(d.startswith("name:") for d in report["divergences"])
+        assert patched["payload"]["conversation_config"]["agent"]["first_message"] == "hi, I'm Compass."
+        assert patched["payload"]["name"] == "Compass"
+
+    def test_no_first_message_or_name_divergence_when_matching(self, tmp_path, monkeypatch):
+        prompt_path = tmp_path / "test_system_prompt.md"
+        prompt_path.write_text(
+            "- **Name**: Compass\n\n"
+            "## System prompt\n\n```prompt\nSame prompt text.\n```\n\n"
+            "## First message\n\n```first_message\nhi, I'm Compass.\n```\n",
+            encoding="utf-8",
+        )
+
+        def fake_get(url, headers, timeout):
+            live = _live_config(prompt="Same prompt text.", first_message="hi, I'm Compass.")
+            live["name"] = "Compass"
+            return _FakeResponse(live)
+
+        monkeypatch.setattr(elc.httpx, "get", fake_get)
+        client = ElevenLabsClient("test-key")
+
+        report = sync_prompt(client, AGENT_ID, prompt_path)
+
+        assert report["divergences"] == []
         assert report["pushed"] is False
 
 
