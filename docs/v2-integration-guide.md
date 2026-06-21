@@ -17,7 +17,7 @@ at any rung.
 No keys, no code changes. POST any call transcript to the hosted API:
 
 ```bash
-curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/demo/check \
+curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/demo/check \
   -H "Content-Type: application/json" \
   -d @your_call_event.json | python3 -m json.tool
 ```
@@ -42,7 +42,7 @@ Add one HTTP call to your existing end-of-call handler:
 ```python
 import requests
 
-NHID = "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod"
+NHID = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
 
 def on_call_complete(vendor_payload):
     result = requests.post(f"{NHID}/v1/adapters/vapi/check",

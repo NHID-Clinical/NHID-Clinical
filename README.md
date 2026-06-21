@@ -121,9 +121,9 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 | Control | Name | Requirement |
 | :--- | :--- | :--- |
 | **IDG-01** | Identity Disclosure Gate | AI agent must identify itself as automated **before** any PHI exchange |
-| **PDX-01** | PHI Data Exchange Gate | No protected data until identity is disclosed |
+| **PDX-01** | Pre-Data Exchange Gate | No protected data until identity is disclosed |
 | **DBC-01** | Deceptive Behavior Check | No synthetic voice artifacts designed to impersonate a human |
-| **EIT-01** | Escalation & Intervention | Human escalation path must be communicated and available |
+| **EIT-01** | Escalation Implementation Test | Human escalation path must be communicated and available |
 
 Plus one supplemental control, **ATR-01** (Audit Trail Requirement) — every call must produce a machine-readable audit trace.
 
