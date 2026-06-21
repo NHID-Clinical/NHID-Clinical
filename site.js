@@ -276,6 +276,7 @@
 
   var w = document.createElement('elevenlabs-convai');
   w.setAttribute('agent-id', COMPASS_AGENT_ID);
+  w.setAttribute('action-text', 'Ask about NHID-Clinical');
   document.body.appendChild(w);
 })();
 
