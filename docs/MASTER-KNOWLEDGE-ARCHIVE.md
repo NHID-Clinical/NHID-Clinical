@@ -663,7 +663,7 @@ NHID-Clinical/
 
 ### 6.3 Live API — Endpoint Reference
 
-**Base URL:** `https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod`
+**Base URL:** `https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod`
 
 | Method | Path | Auth | Purpose |
 | :--- | :--- | :--- | :--- |
@@ -1085,7 +1085,7 @@ When resuming a Claude Code session after context limit:
 
 ```bash
 # Test a non-compliant VAPI call (PHI requested before identity disclosure → IDG-01 + PDX-01 FAIL)
-curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
+curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
   -H "Content-Type: application/json" \
   -d @tests/demo_scenarios/vapi_noncompliant.json | python3 -m json.tool
 ```
@@ -1429,7 +1429,7 @@ The National Plan and Provider Enumeration System (NPPES) is the authoritative s
 Vendors achieving CAS ≥ 0.75 (Conditional Trust) may embed the NHID-Clinical compliance badge:
 
 ```html
-<img src="https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/public/vendor/{vendor_id}/badge"
+<img src="https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/public/vendor/{vendor_id}/badge"
      alt="NHID-Clinical Compliant" />
 ```
 
@@ -1707,7 +1707,7 @@ Hi [Name],
 Here's how to get started with NHID-Clinical conformance checking:
 
 STEP 1 (5 min): Test immediately, no signup needed
-curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/[PLATFORM]/check \
+curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/[PLATFORM]/check \
   -H "Content-Type: application/json" \
   -d @your_call_payload.json
 
@@ -1718,7 +1718,7 @@ STEP 3 (1 day, optional): Full v2 cryptographic identity
 [Link to v2-integration-guide.md Tier 2]
 
 For a 90-day shadow pilot with no vendor changes:
-POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/pilot/enroll
+POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/pilot/enroll
 {"org_name": "[YOUR ORG]", "contact_email": "[EMAIL]", "vendor_platform": "[PLATFORM]"}
 
 Questions? Discord: https://discord.gg/CU7BwHwVYC
@@ -1896,7 +1896,7 @@ NHID_SPEC_VERSION = "1.3"
 UNIT_EXPECTED = 270  # scripts/validate_ci.py
 
 # Live API
-API_BASE = "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod"
+API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
 
 # CAS thresholds
 CAS_VERIFIED_TRUST = 0.90
