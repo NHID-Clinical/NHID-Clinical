@@ -18,12 +18,19 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-270%20passing-brightgreen"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="TypeScript Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen"></a>
-  <a href="https://nhid-clinical.org/specification.html"><img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc"></a>
-  <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey"></a>
-  <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026"><img alt="NIST" src="https://img.shields.io/badge/NIST-2025--0035--0026-0b6ebc"></a>
-  <a href="https://discord.gg/CU7BwHwVYC"><img alt="Discord" src="https://img.shields.io/badge/Discord-join-5865f2?logo=discord&logoColor=white"></a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-270%20passing-brightgreen?style=flat-square"></a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="TypeScript Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square"></a>
+  <a href="https://nhid-clinical.org/specification.html"><img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square"></a>
+  <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?style=flat-square"></a>
+  <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026"><img alt="NIST" src="https://img.shields.io/badge/NIST-2025--0035--0026-0b6ebc?style=flat-square"></a>
+  <a href="https://discord.gg/CU7BwHwVYC"><img alt="Discord" src="https://img.shields.io/badge/Discord-join-5865f2?style=flat-square&logo=discord&logoColor=white"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/NHID-Clinical/NHID-Clinical?style=flat-square&color=0b6ebc&label=stars"></a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/NHID-Clinical/NHID-Clinical?style=flat-square&color=0e9f6e"></a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/NHID-Clinical/NHID-Clinical?style=flat-square&color=4b5563"></a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical"><img alt="Repo Size" src="https://img.shields.io/github/repo-size/NHID-Clinical/NHID-Clinical?style=flat-square&color=4b5563"></a>
 </p>
 
 <p align="center">
@@ -31,18 +38,15 @@
 </p>
 
 <p align="center">
-  <img alt="Python" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg">
-  <img alt="TypeScript" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg">
-  <img alt="Node.js" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg">
-  <img alt="Jest" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/jest/jest-plain.svg">
-  <img alt="HTML5" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg">
-  <img alt="CSS3" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg">
-  <img alt="AWS" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/amazonwebservices/amazonwebservices-original-wordmark.svg">
-  <img alt="GitHub Actions" height="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/githubactions/githubactions-original.svg">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=py,ts,nodejs,jest,html,css,aws,githubactions&theme=dark">
+    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=py,ts,nodejs,jest,html,css,aws,githubactions&theme=light">
+    <img alt="Stack: Python, TypeScript, Node.js, Jest, HTML5, CSS3, AWS, GitHub Actions" src="https://skillicons.dev/icons?i=py,ts,nodejs,jest,html,css,aws,githubactions&theme=light">
+  </picture>
 </p>
 
 <p align="center">
-  <img alt="FHIR" src="https://img.shields.io/badge/FHIR-R4%20base%20spec-E0322F?logo=fhir&logoColor=white">
+  <img alt="FHIR" src="https://img.shields.io/badge/FHIR-R4%20base%20spec-E0322F?style=flat-square&logo=fhir&logoColor=white">
 </p>
 
 <p align="center">
@@ -139,32 +143,21 @@ Plus one supplemental control, **ATR-01** (Audit Trail Requirement) — every ca
 How the four controls plus ATR-01 play out on a real call — same sequence the CTS suite and live adapters evaluate against.
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    participant Caller
-    participant Agent as AI Voice Agent
-    participant Engine as NHID Policy Engine
-    participant Human as Human Agent
+flowchart LR
+    A["📞 Call starts"]:::start --> B{"Identity disclosed<br/>before PHI?"}:::neutral
+    B -->|No — PHI requested first| C["🚫 DENY_DATA<br/>IDG-01 + PDX-01 FAIL"]:::deny
+    C --> D["👤 Escalate to human<br/>EIT-01"]:::neutral
+    B -->|Yes| E["🔐 PHI exchange<br/>checked: PDX-01, DBC-01"]:::neutral
+    E --> F{"Caller requests<br/>a human?"}:::neutral
+    F -->|Yes| D
+    F -->|No| G["✅ Call completes"]:::ok
+    D --> H["📋 Audit trace generated<br/>ATR-01"]:::ok
+    G --> H
 
-    Caller->>Agent: Initiates call
-    Agent->>Engine: Emit event (call_start)
-    Agent->>Caller: Disclose automated identity — IDG-01
-    Engine->>Engine: Evaluate IDG-01
-
-    alt Disclosure missing or PHI requested first
-        Engine-->>Agent: DENY_DATA (IDG-01 / PDX-01 FAIL)
-        Agent->>Human: Escalate — EIT-01
-    else Disclosure confirmed
-        Caller->>Agent: Provides PHI
-        Agent->>Engine: Emit event (data_exchange)
-        Engine->>Engine: Evaluate PDX-01, DBC-01
-        opt Caller requests a human
-            Agent->>Human: Escalate — EIT-01
-        end
-    end
-
-    Agent->>Engine: Emit full call trace
-    Engine->>Engine: Generate machine-readable audit trace — ATR-01
+    classDef start fill:#0b6ebc,stroke:#063752,color:#ffffff
+    classDef deny fill:#d64545,stroke:#7a1f1f,color:#ffffff
+    classDef ok fill:#0e9f6e,stroke:#066a49,color:#ffffff
+    classDef neutral fill:#4b5563,stroke:#262b33,color:#ffffff
 ```
 
 <p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
