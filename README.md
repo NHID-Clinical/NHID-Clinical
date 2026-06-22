@@ -22,7 +22,7 @@
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="TypeScript Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen"></a>
   <a href="https://nhid-clinical.org/specification.html"><img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc"></a>
   <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey"></a>
-  <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026"><img alt="NIST" src="https://img.shields.io/badge/NIST-2025--0035--0026-blue"></a>
+  <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026"><img alt="NIST" src="https://img.shields.io/badge/NIST-2025--0035--0026-0b6ebc"></a>
   <a href="https://discord.gg/CU7BwHwVYC"><img alt="Discord" src="https://img.shields.io/badge/Discord-join-5865f2?logo=discord&logoColor=white"></a>
 </p>
 
@@ -59,6 +59,7 @@
 
 - [Live API — Try It Now](#live-api--try-it-now)
 - [The Four Controls](#the-four-controls)
+- [Conformance Flow](#conformance-flow)
 - [Five-Layer Trust Stack](#five-layer-trust-stack)
 - [Regulatory Alignment](#regulatory-alignment)
 - [Repository Structure](#repository-structure)
@@ -128,6 +129,43 @@ curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/a
 Plus one supplemental control, **ATR-01** (Audit Trail Requirement) — every call must produce a machine-readable audit trace.
 
 18-case CTS suite · same inputs → identical trace output · 270 passing in the Python test suite (18 skipped without a running server) + 66 passing in the TypeScript middleware
+
+<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
+
+---
+
+## Conformance Flow
+
+How the four controls plus ATR-01 play out on a real call — same sequence the CTS suite and live adapters evaluate against.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Caller
+    participant Agent as AI Voice Agent
+    participant Engine as NHID Policy Engine
+    participant Human as Human Agent
+
+    Caller->>Agent: Initiates call
+    Agent->>Engine: Emit event (call_start)
+    Agent->>Caller: Disclose automated identity — IDG-01
+    Engine->>Engine: Evaluate IDG-01
+
+    alt Disclosure missing or PHI requested first
+        Engine-->>Agent: DENY_DATA (IDG-01 / PDX-01 FAIL)
+        Agent->>Human: Escalate — EIT-01
+    else Disclosure confirmed
+        Caller->>Agent: Provides PHI
+        Agent->>Engine: Emit event (data_exchange)
+        Engine->>Engine: Evaluate PDX-01, DBC-01
+        opt Caller requests a human
+            Agent->>Human: Escalate — EIT-01
+        end
+    end
+
+    Agent->>Engine: Emit full call trace
+    Engine->>Engine: Generate machine-readable audit trace — ATR-01
+```
 
 <p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
 
