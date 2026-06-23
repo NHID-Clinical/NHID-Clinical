@@ -5,11 +5,12 @@
 > Agent created in the ElevenLabs dashboard; `agents/compass.config.json` and
 > `site.js`'s `COMPASS_AGENT_ID` already point at the real id. Remaining
 > one-time step — pull the live voice/model into the repo, then push this
-> prompt to confirm it matches what's configured live:
+> prompt + `text_only: true` (see Sync history, 2026-06-23) to confirm the
+> live agent matches what's configured here:
 >   ```bash
 >   export ELEVENLABS_API_KEY=your_key
 >   python scripts/sync_agent_config.py --agent compass --pull   # pull live voice/model once
->   python scripts/sync_agent_config.py --agent compass          # push this prompt
+>   python scripts/sync_agent_config.py --agent compass          # push this prompt + text_only
 >   ```
 
 ## Agent identity
@@ -104,3 +105,4 @@ hi, I'm Compass — ask me anything about NHID-Clinical, how it works, or how to
 | 2026-06-20 | repo authored | Initial canonical prompt, written before the live agent exists. Run `--pull` after creating the agent and dashboard-configuring voice/model, then re-push this prompt. |
 | 2026-06-20 | agent created | Compass agent created in ElevenLabs dashboard as `agent_3801kvj9xbdaeh29c85900jb4wxj`; content guardrails (all categories, end-conversation) and the Spotlight prompt-injection guardrail enabled. `agents/compass.config.json` and `site.js`'s `COMPASS_AGENT_ID` updated with the real id. Voice/model still pending a `--pull`. |
 | 2026-06-21 | bug found + fixed (repo → ElevenLabs, pending push) | Live widget was greeting visitors as "Nicole" (an ElevenLabs dashboard placeholder name/greeting) instead of Compass — `sync_prompt` in `src/elevenlabs_client.py` only ever diffed/pushed the `prompt.prompt` field, never the agent's `first_message` or top-level `name`, so those two fields kept their dashboard defaults no matter how many times the prompt was synced. Fixed `sync_prompt` to also diff and push `first_message` (from this file's `## First message` fence) and `name` (from the `**Name**: Compass` line above). Run `python scripts/sync_agent_config.py --agent compass` with `ELEVENLABS_API_KEY` set to push the fix live. |
+| 2026-06-23 | bug found + fixed (repo → ElevenLabs, pending push) | Live widget defaulted to a voice-call entry point ("Start a call", mic UI, call never answered) instead of a chat box — `agents/compass.config.json` never set `text_only`, so the agent kept the ElevenLabs dashboard's default (`conversation_config.conversation.text_only: false`), even though this prompt's own "Role" line says "text-chat widget... not a phone agent." This field is not controllable from the `<elevenlabs-convai>` HTML attributes in `site.js` (`agent-id`/`action-text` only) — it has to be pushed to the live agent. Added `"text_only": true` to `agents/compass.config.json` and taught `scripts/sync_agent_config.py` / `push_voice_and_model` to push and `pull_voice_and_model` to pull it, same pattern as `voice_id`/`llm`. **Immediate manual fix** (until the script is run with a real API key): in the ElevenLabs dashboard, open the Compass agent → Advanced tab → enable "Text only". **Durable fix**: `export ELEVENLABS_API_KEY=...` then `python scripts/sync_agent_config.py --agent compass` to push `text_only: true` from this repo going forward. |

@@ -14,7 +14,10 @@ Adding a new agent
 -------------------
   1. Create the agent in the ElevenLabs dashboard (this script does not create agents).
   2. Add agents/<name>_system_prompt.md (prompt, same format as beacon_system_prompt.md)
-     and agents/<name>.config.json ({"agent_id": "agent_...", "voice_id": null, "llm": null}).
+     and agents/<name>.config.json ({"agent_id": "agent_...", "voice_id": null, "llm": null,
+     "text_only": true|false}) — text_only must be set explicitly: it's what determines
+     whether the embedded widget shows a chat entry point or a voice-call entry point,
+     and the dashboard default (voice-only) does not match a text-chat-widget agent.
   3. python scripts/sync_agent_config.py --agent <name> --pull   # populate voice_id/llm once
   4. python scripts/sync_agent_config.py --agent <name>          # push going forward
 """
@@ -56,26 +59,36 @@ def _save_config(agent_name: str, config: dict) -> None:
 
 
 def push_voice_and_model(client: ElevenLabsClient, agent_id: str, config: dict, *, dry_run: bool) -> dict:
-    """Push voice_id/llm from the repo's config.json to the live agent, if set."""
+    """Push voice_id/llm/text_only from the repo's config.json to the live agent, if set.
+
+    text_only governs whether the embedded widget shows a chat entry point or a
+    voice-call entry point (see https://elevenlabs.io/docs/agents-platform/guides/chat-mode) —
+    it is not controllable from the <elevenlabs-convai> HTML attributes in site.js, only
+    from this field, so it has to be pushed here rather than left as a dashboard default.
+    """
     payload: dict = {}
     if config.get("voice_id"):
         payload.setdefault("conversation_config", {}).setdefault("tts", {})["voice_id"] = config["voice_id"]
     if config.get("llm"):
         payload.setdefault("conversation_config", {}).setdefault("agent", {}).setdefault("prompt", {})["llm"] = config["llm"]
+    if config.get("text_only") is not None:
+        payload.setdefault("conversation_config", {}).setdefault("conversation", {})["text_only"] = config["text_only"]
     if not payload:
-        return {"pushed": False, "reason": "voice_id/llm not set in config — nothing to push"}
+        return {"pushed": False, "reason": "voice_id/llm/text_only not set in config — nothing to push"}
     if not dry_run:
         client.patch_agent_config(agent_id, payload)
     return {"pushed": not dry_run, "payload": payload}
 
 
 def pull_voice_and_model(client: ElevenLabsClient, agent_name: str, agent_id: str, config: dict) -> dict:
-    """Pull live voice_id/llm into the repo's config.json."""
+    """Pull live voice_id/llm/text_only into the repo's config.json."""
     live = client.get_agent_config(agent_id)
     agent_cfg = live.get("conversation_config", {}).get("agent", {})
     tts_cfg = live.get("conversation_config", {}).get("tts", {})
+    conversation_cfg = live.get("conversation_config", {}).get("conversation", {})
     config["voice_id"] = tts_cfg.get("voice_id", config.get("voice_id"))
     config["llm"] = agent_cfg.get("prompt", {}).get("llm", config.get("llm"))
+    config["text_only"] = conversation_cfg.get("text_only", config.get("text_only"))
     _save_config(agent_name, config)
     return config
 
@@ -110,7 +123,8 @@ def main() -> int:
               f"{prompt_report['prompt_chars']} chars -> {prompt_path}")
         updated_config = pull_voice_and_model(client, args.agent, agent_id, config)
         print(f"Pulled voice/model config -> {_config_path(args.agent)}: "
-              f"voice_id={updated_config.get('voice_id')!r} llm={updated_config.get('llm')!r}")
+              f"voice_id={updated_config.get('voice_id')!r} llm={updated_config.get('llm')!r} "
+              f"text_only={updated_config.get('text_only')!r}")
         return 0
 
     print(f"Syncing {args.agent} ({agent_id})...")
