@@ -144,6 +144,15 @@
       <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Integration is a ladder, not an all-or-nothing commitment. Tier 0 needs nothing but <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">curl</code>; Tier 2's cryptographic identity layer (NHID-Auth v2) is optional. Full walkthrough: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/v2-integration-guide.md" style="color:var(--blue)">v2-integration-guide.md</a>.</p>
       <img src="/assets/diagrams/integration-ladder.svg" alt="Staged integration ladder: Tier 0 paste a payload to the hosted demo endpoint in 15 minutes with no keys; Tier 1 wire one HTTP call into your end-of-call webhook in about 2 hours for continuous CAS monitoring; Tier 2 adds cryptographic agent identity via NHID-Auth v2 in about a day, with NPI-bound passports and scoped delegation" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:2.5rem" loading="lazy"/>
 
+      <!-- ── Front Desk Walkthrough ────────────────────────────────────── -->
+
+      <h2 style="margin-bottom:1rem">See the Controls Run: The Front-Desk Walkthrough</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Before the schemas and YAML below, here's what IDG&#8209;01, PDX&#8209;01, DBC&#8209;01, and EIT&#8209;01 actually enforce on a call, staged as a doctor's-office check-in desk. Run the conformant pass, then the three failure/escalation scenarios; hover any booth for its live <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">rule_engine.config</code>.</p>
+      <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1rem;background:var(--paper)">
+        <iframe src="/assets/media/front-desk-walkthrough.html" title="Interactive walkthrough of NHID-Clinical's four behavioral controls at a simulated clinic front desk" loading="lazy" style="display:block;width:100%;height:900px;border:0" sandbox="allow-scripts"></iframe>
+      </div>
+      <p style="color:var(--ink-soft);font-size:.82rem;line-height:1.6;margin:0 0 2.5rem">Illustrative — dialogue, mock config payloads, and artwork are for explanation only. Control names, field names, and the engine's deterministic priority order are taken directly from <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">docs/nhid-clinical-technical-specification.md</code> and <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/nhid_cas.py</code>.</p>
+
       <!-- ── Artifacts ──────────────────────────────────────────────────── -->
 
       <h2 style="margin-bottom:1.5rem">Reference Artifacts</h2>
