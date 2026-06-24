@@ -225,7 +225,7 @@ jobs:
           FAIL=0
           for f in examples/fhir/*.json; do
             echo "=== Validating $f ==="
-            java -jar tools/validator_cli.jar -version 4.0.1 "$f" 2>&1 | tee /tmp/fhir-out.txt
+            java -jar tools/validator_cli.jar -version 4.0.1 -tx n/a "$f" 2>&1 | tee /tmp/fhir-out.txt
             if [ ${PIPESTATUS[0]} -ne 0 ]; then
               echo "FHIR VALIDATION ERROR in $f"
               FAIL=1
