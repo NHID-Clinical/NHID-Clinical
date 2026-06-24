@@ -1338,14 +1338,21 @@ NHID-Clinical aligns with the NIST AI RMF's GOVERN, MAP, MEASURE, and MANAGE fun
 
 NIST's Center for AI Standards and Innovation (CAISI) is the agency's primary point of contact for
 testing and collaborative research on commercial AI systems, including AI agent security and
-evaluation. As of this writing, CAISI has not published a specific named framework governing
-cross-organizational AI agent identity — this is an open gap, not a solved problem with an existing
-standard to cite. NHID-Auth v2 is offered as a candidate approach to that gap, not as an
-implementation of an existing CAISI deliverable.
+evaluation. On 2026-02-17, CAISI launched its **AI Agent Standards Initiative**, organized around
+three pillars: industry-led interoperability standards, community-developed open-source protocols,
+and identity/authorization/security research for autonomous agents — the last pillar includes an
+NCCoE concept paper (Feb 2026) on adapting human-identity frameworks (OAuth, SAML) for AI agents.
+As of this writing, the Initiative is still at the RFI/listening-session/concept-paper stage; NIST's
+planned deliverable — an "AI Agent Interoperability Profile" — is targeted for Q4 2026 and has not
+been published. There is **no published NIST framework yet** governing cross-organizational AI
+agent identity. NHID-Auth v2 is offered as a candidate approach to that open gap, not as an
+implementation of an existing CAISI deliverable, and NHID-Clinical has no affiliation with or
+endorsement from CAISI or the Initiative.
 
 **NHID-Clinical's relevant design choices:**
 - Ed25519 NPI-bound delegation chains (NHID-Auth v2) as a candidate pattern for cross-org AI agent
-  identity, consistent with CAISI's stated interest in AI agent security and evaluation
+  identity, consistent with the problem space CAISI's Initiative has identified (agent identity and
+  authorization research) but predating and independent of it
 - Provider → Agent delegation with monotonic scope narrowing, consistent with least-privilege
   principles
 - Call-SID nonce binding to prevent credential replay across calls
