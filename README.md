@@ -79,7 +79,7 @@ The conformance API is live. No signup, no key required for the demo and vendor 
 
 ```bash
 # Test a non-compliant VAPI call (PHI requested before identity disclosure → IDG-01 + PDX-01 FAIL)
-curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
+curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
   -H "Content-Type: application/json" \
   -d @tests/demo_scenarios/vapi_noncompliant.json | python3 -m json.tool
 ```

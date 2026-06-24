@@ -29,7 +29,7 @@ _TIER_COLORS = {
 }
 _DEFAULT_COLOR = "#6e7781"  # grey for unknown / no data
 
-_API_BASE = "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod"
+_API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
 
 
 def generate_badge_svg(vendor_id: str, score: float, tier: str | None = None) -> str:

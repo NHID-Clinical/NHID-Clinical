@@ -7,7 +7,7 @@ The API is hosted — **you POST to it; there is nothing to subscribe to, buy, o
 ## Step 1 — One curl, instant result (30 seconds)
 
 ```bash
-curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
+curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
   -H "Content-Type: application/json" \
   -d @tests/demo_scenarios/vapi_noncompliant.json | python3 -m json.tool
 ```
@@ -51,7 +51,7 @@ import requests
 
 def on_call_analyzed(retell_payload):
     result = requests.post(
-        "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/retell/check",
+        "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/retell/check",
         json=retell_payload,
         timeout=10,
     ).json()
@@ -66,7 +66,7 @@ For near-real-time checks, POST each conversation turn to the call-progress webh
 You maintain `session_state` between turns; the API is stateless:
 
 ```bash
-curl -s -X POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/webhooks/call-progress \
+curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/webhooks/call-progress \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "call_001", "turn_index": 3,

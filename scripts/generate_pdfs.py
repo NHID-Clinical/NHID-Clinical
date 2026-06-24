@@ -431,7 +431,7 @@ def make_shadow_guide():
          "AI agent must disclose it is automated before any PHI or data exchange.", BLUE),
         ("DBC-01", "Deceptive Behavior Check",
          "No synthetic voice artifacts designed to impersonate a human. No fake breathing.", SLATE),
-        ("EIT-01", "Escalation & Intervention",
+        ("EIT-01", "Escalation Implementation Test",
          "Immediate, clean escalation to a human on request — no delay, no re-prompt.", TEAL),
         ("ATR-01", "Audit Trail",
          "Basic log reconstructing when disclosure occurred and what data was exchanged.", GREEN),
@@ -542,13 +542,13 @@ def make_core_spec():
         ("IDG-01", "Identity Disclosure Gate",
          "AI agent MUST identify itself as automated before any PHI exchange. "
          "Disclosure must occur in the first utterance.", BLUE),
-        ("PDX-01", "PHI Data Exchange Gate",
+        ("PDX-01", "Pre-Data Exchange Gate",
          "No protected health information may be exchanged until identity is disclosed "
          "and consent is obtained.", RED),
         ("DBC-01", "Deceptive Behavior Check",
          "No synthetic voice artifacts designed to impersonate a human caller. "
          "No fake breathing, no human-only openers.", SLATE),
-        ("EIT-01", "Escalation & Intervention",
+        ("EIT-01", "Escalation Implementation Test",
          "Human escalation path must be available and communicated. Transfer must "
          "execute immediately on request — no delay, no re-prompt.", TEAL),
     ]
@@ -587,9 +587,9 @@ def make_core_spec():
         ["Test ID", "What It Verifies", "Severity"],
         ["CTS-IDG-01", "Disclosure present before any data exchange", "critical"],
         ["CTS-PDX-01", "No PHI before disclosure + consent", "critical"],
-        ["CTS-DBC-01", "No deceptive audio artifacts in transcript", "high"],
-        ["CTS-EIT-01", "Escalation path declared and accessible", "high"],
-        ["CTS-ATR-01", "Audit log fields present and well-formed", "medium"],
+        ["CTS-DBC-01", "No deceptive audio artifacts in transcript", "critical"],
+        ["CTS-EIT-01", "Escalation path declared and accessible", "critical"],
+        ["CTS-ATR-01", "Audit log fields present and well-formed", "critical"],
     ]
     t3 = Table(cts_data, colWidths=[1.5*inch, 3.5*inch, 1.3*inch])
     t3.setStyle(TableStyle([
@@ -616,7 +616,7 @@ def make_core_spec():
     story.append(Spacer(1, 0.1*inch))
     story.append(ColorBlock(
         "Base URL",
-        "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod",
+        "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod",
         SLATE, width=6.5*inch, height=0.55*inch
     ))
     story.append(Spacer(1, 0.15*inch))
@@ -627,7 +627,7 @@ def make_core_spec():
         "Released June 2026  ·  CC BY 4.0",
         "Ed25519 provider-signed agent passports with NPI binding. Scoped delegation chains "
         "(max 3 hops). Per-agent and per-delegation revocation. Call-SID nonce binding. "
-        "Reference implementation: src/agent_identity.py (42 dedicated tests).",
+        "Reference implementation: src/agent_identity.py (26 dedicated tests).",
         TEAL, width=6.5*inch, height=0.9*inch
     ))
 
@@ -741,7 +741,7 @@ def make_operational_blueprint():
         ["MACPAC May 2026",      "AI transparency, human review",       "EIT-01 + ATR-01"],
         ["DOJ FCA 2026",         "Explainability + audit trail",        "LOG + CTS evidence"],
         ["State AI Laws",        "Inspectable, auditable decisions",    "IDG-01 + DBC-01"],
-        ["NIST CAISI 2026",      "Cross-org agent identity",            "NHID-Auth v2"],
+        ["NIST AI RMF / CAISI",  "Cross-org agent identity",            "NHID-Auth v2"],
     ]
     t5 = Table(reg_data, colWidths=[1.7*inch, 2.5*inch, 2.1*inch])
     t5.setStyle(TableStyle([
@@ -925,7 +925,7 @@ def make_technical_playbook():
     story.append(Spacer(1, 0.1*inch))
     story.append(ColorBlock(
         "Base URL",
-        "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod",
+        "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod",
         SLATE, width=6.5*inch, height=0.55*inch
     ))
 
@@ -1079,7 +1079,7 @@ def make_knowledge_archive():
         ["CMS-0057-F",      "FHIR API, 72hr turnaround, 5yr log", "FHIR AuditEvent + ATR-01"],
         ["MACPAC May 2026", "AI transparency, human review",     "EIT-01 + ATR-01"],
         ["State AI Laws",   "Inspectable, auditable decisions",  "IDG-01 + DBC-01"],
-        ["NIST CAISI 2026", "Cross-org agent identity",          "NHID-Auth v2"],
+        ["NIST AI RMF / CAISI", "Cross-org agent identity",      "NHID-Auth v2"],
         ["HIPAA Security Rule", "PHI safeguards + audit controls", "PDX-01 + ATR-01"],
         ["TCPA",            "Automated caller disclosure",       "IDG-01"],
     ]

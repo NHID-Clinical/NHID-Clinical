@@ -14,7 +14,7 @@
   },
   "servers": [
     {
-      "url": "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod",
+      "url": "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod",
       "description": "Hosted reference deployment"
     }
   ],
