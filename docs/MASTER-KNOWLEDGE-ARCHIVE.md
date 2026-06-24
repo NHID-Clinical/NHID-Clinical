@@ -1229,7 +1229,7 @@ and cross-org authorization, relevant to the work of NIST's Center for AI Standa
 | Document | Reference | Relevance |
 | :--- | :--- | :--- |
 | CMS-0057-F | 88 FR 80236 | Interoperability, FHIR API, claims turnaround |
-| MACPAC Report | May 2026 | AI transparency, human review requirements |
+| MACPAC Report | Apr–Jun 2026 | AI transparency, human review requirements |
 | NIST SP 800-207 | Zero Trust Architecture | Cross-org authorization patterns |
 | NIST AI RMF | AI 100-1 | AI risk management framework |
 | FTC Act § 5 | Unfair deceptive acts | DBC-01 legal basis |
@@ -1240,11 +1240,13 @@ and cross-org authorization, relevant to the work of NIST's Center for AI Standa
 Many states have enacted or are enacting AI disclosure laws requiring automated callers to identify
 themselves. NHID-Clinical's IDG-01 control preemptively satisfies these requirements. Key states:
 
-- **California** SB 1047 (AI safety), AB 302 (AI chatbot disclosure)
-- **Colorado** SB 24-205 (high-risk AI systems)
-- **Texas** HB 4337 (AI transparency)
-- **Illinois** GIPA amendments
-- **New York** AI hiring and automated decision laws
+- **California** SB 243 (companion-chatbot AI disclosure); SB 1047 (AI safety) was vetoed
+  Sept 29, 2024 and is not in effect
+- **Colorado** SB 24-205 (high-risk AI systems) — enforcement delayed to January 1, 2027 by
+  SB 26-189 (signed May 14, 2026)
+- **Texas** HB 149 (TRAIGA, AI transparency)
+- **Illinois** BIPA (biometric disclosure)
+- **New York** automated-decision/AEDT laws — enforcement found largely ineffective to date
 
 ---
 
@@ -1257,10 +1259,10 @@ themselves. NHID-Clinical's IDG-01 control preemptively satisfies these requirem
 | **CMS-0057-F** | FHIR API compliance | FHIR AuditEvent R4 | `src/fhir_audit_emitter.py` |
 | **CMS-0057-F** | 72-hour claim turnaround | ATR-01 audit timestamps | Event timestamp fields |
 | **CMS-0057-F** | 5-year record retention | FHIR Bundle persistence | AuditEvent `period` field |
-| **MACPAC May 2026** | AI transparency disclosure | IDG-01 Identity Gate | Disclosure on turn 1 |
-| **MACPAC May 2026** | Human review path | EIT-01 Escalation Gate | Transfer on request |
-| **DOJ FCA 2026** | AI explainability | Policy engine determinism | CTS trace evidence |
-| **DOJ FCA 2026** | Audit trail | ATR-01 + FHIR Bundle | 7-milestone event log |
+| **MACPAC, Apr–Jun 2026** | AI transparency disclosure | IDG-01 Identity Gate | Disclosure on turn 1 |
+| **MACPAC, Apr–Jun 2026** | Human review path | EIT-01 Escalation Gate | Transfer on request |
+| **DOJ FCA (anticipated exposure)** | AI explainability | Policy engine determinism | CTS trace evidence |
+| **DOJ FCA (anticipated exposure)** | Audit trail | ATR-01 + FHIR Bundle | 7-milestone event log |
 | **State AI Laws** | Inspectable AI decisions | IDG-01 + DBC-01 | CAS score per call |
 | **State AI Laws** | Auditable AI decisions | ATR-01 event log | Machine-readable trace |
 | **NIST AI RMF / CAISI** | Cross-org agent identity | NHID-Auth v2 | `src/agent_identity.py` |
@@ -1288,10 +1290,11 @@ themselves. NHID-Clinical's IDG-01 control preemptively satisfies these requirem
 4. **Attestation**: Each AI agent call produces a machine-readable audit bundle that can serve
    as evidence in CMS attestation processes.
 
-### 14.3 MACPAC May 2026 Deep Dive
+### 14.3 MACPAC Apr–Jun 2026 Deep Dive
 
-**Context:** MACPAC (Medicaid and CHIP Payment and Access Commission) May 2026 report on AI in
-Medicaid operations raised specific transparency and human review requirements.
+**Context:** MACPAC (Medicaid and CHIP Payment and Access Commission) raised AI-in-Medicaid
+transparency and human-review requirements across an April 2026 Commission meeting, May 12, 2026
+industry coverage of its recommendations, and its formal June 2026 Report to Congress.
 
 **NHID-Clinical response:**
 
@@ -1364,7 +1367,9 @@ endorsement from CAISI or the Initiative.
 
 ### 16.1 CMS-0057-F (Interoperability and Prior Authorization)
 
-**Publication:** 88 FR 80236 (December 13, 2023) — effective January 1, 2026
+**Publication:** 88 FR 80236 (December 13, 2023) — operational provisions (turnaround-time cuts,
+metrics reporting) effective January 1, 2026; FHIR API build-out requirements (Patient Access,
+Provider Access, Payer-to-Payer, Prior Auth APIs) have a compliance date of January 1, 2027
 
 **Key provisions affecting AI voice agents:**
 

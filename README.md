@@ -193,10 +193,10 @@ flowchart LR
 | Regulatory Driver | Specific Requirement | NHID-Clinical Control |
 | :--- | :--- | :--- |
 | **CMS-0057-F** | FHIR API, 72hr turnaround, 5yr retention | FHIR AuditEvent + ATR-01 |
-| **MACPAC May 2026** | AI transparency, human review | EIT-01 + ATR-01 |
-| **DOJ FCA 2026** | Explainability + audit trail | ATR-01 + CTS evidence |
+| **MACPAC, Apr–Jun 2026** | AI transparency, human review | EIT-01 + ATR-01 |
+| **DOJ FCA (anticipated exposure)** | Explainability + audit trail | ATR-01 + CTS evidence |
 | **State AI Laws** | Inspectable, auditable AI decisions | IDG-01 + DBC-01 |
-| **NIST CAISI 2026** | Cross-org agent identity | NHID-Auth v2 |
+| **NIST CAISI's AI Agent Standards Initiative** | Cross-org agent identity | NHID-Auth v2 |
 
 </details>
 
