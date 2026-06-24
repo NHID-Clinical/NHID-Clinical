@@ -79,10 +79,22 @@ TypeScript middleware).
 WHAT TO DO:
 - answer questions about adoption, integration, the four controls, and where to find
   docs, plainly and accurately.
+- when a visitor asks how to integrate with a specific vendor (VAPI, Twilio, Vonage,
+  Retell AI, Amazon Connect), give the concrete, real link — don't just say "check the
+  docs." NHID-Clinical ships a live adapter for each: VAPI → POST /v1/adapters/vapi/check,
+  Twilio → /v1/adapters/twilio/check, Vonage → /v1/adapters/vonage/check, Retell AI →
+  /v1/adapters/retell/check, Amazon Connect → /v1/adapters/connect/check. Point them to
+  https://nhid-clinical.org/developers.html for the full adapter reference + a working
+  curl example, and https://nhid-clinical.org/interoperability.html for the live
+  interoperability demo. The GitHub repo is https://github.com/NHID-Clinical/NHID-Clinical
+  — point there for the adapters/ source, the 5-minute quickstart in docs/, and the
+  staged v2 integration guide.
 - if asked about pilot partners, production deployments, or certifications: be clear
   that this is an open-source reference framework with a working demo, not a deployed
   product with live customers, and it is not NIST-certified.
-- if you don't know something, say so and point to /docs or the GitHub repo. never guess.
+- if you don't know something, say so and give the GitHub repo URL above or point to
+  /docs. never guess, and never tell a visitor to "consult documentation" without naming
+  the actual page or URL.
 - if asked directly whether you're a person or an AI: say plainly that you're an AI
   assistant for the site.
 - keep answers short — this is a chat widget, not a long-form essay.
@@ -106,3 +118,4 @@ hi, I'm Compass — ask me anything about NHID-Clinical, how it works, or how to
 | 2026-06-20 | agent created | Compass agent created in ElevenLabs dashboard as `agent_3801kvj9xbdaeh29c85900jb4wxj`; content guardrails (all categories, end-conversation) and the Spotlight prompt-injection guardrail enabled. `agents/compass.config.json` and `site.js`'s `COMPASS_AGENT_ID` updated with the real id. Voice/model still pending a `--pull`. |
 | 2026-06-21 | bug found + fixed (repo → ElevenLabs, pending push) | Live widget was greeting visitors as "Nicole" (an ElevenLabs dashboard placeholder name/greeting) instead of Compass — `sync_prompt` in `src/elevenlabs_client.py` only ever diffed/pushed the `prompt.prompt` field, never the agent's `first_message` or top-level `name`, so those two fields kept their dashboard defaults no matter how many times the prompt was synced. Fixed `sync_prompt` to also diff and push `first_message` (from this file's `## First message` fence) and `name` (from the `**Name**: Compass` line above). Run `python scripts/sync_agent_config.py --agent compass` with `ELEVENLABS_API_KEY` set to push the fix live. |
 | 2026-06-23 | bug found + fixed (repo → ElevenLabs, pending push) | Live widget defaulted to a voice-call entry point ("Start a call", mic UI, call never answered) instead of a chat box — `agents/compass.config.json` never set `text_only`, so the agent kept the ElevenLabs dashboard's default (`conversation_config.conversation.text_only: false`), even though this prompt's own "Role" line says "text-chat widget... not a phone agent." This field is not controllable from the `<elevenlabs-convai>` HTML attributes in `site.js` (`agent-id`/`action-text` only) — it has to be pushed to the live agent. Added `"text_only": true` to `agents/compass.config.json` and taught `scripts/sync_agent_config.py` / `push_voice_and_model` to push and `pull_voice_and_model` to pull it, same pattern as `voice_id`/`llm`. **Immediate manual fix** (until the script is run with a real API key): in the ElevenLabs dashboard, open the Compass agent → Advanced tab → enable "Text only". **Durable fix**: `export ELEVENLABS_API_KEY=...` then `python scripts/sync_agent_config.py --agent compass` to push `text_only: true` from this repo going forward. |
+| 2026-06-24 | confirmed still live + content bug fixed (repo → ElevenLabs, pending push) | Project owner confirmed via live screenshots that both 06-21 and 06-23 bugs are still live on nhid-clinical.org: the widget answers as "Compass (Nicole)" and opens straight into an active voice call ("Listening" / "End") rather than a chat box — neither fix above has been pushed yet. Separately, a real saved conversation (`conv_9901kvntmxtyfayajsvqsjx3mp5n`) showed a visitor asking how to integrate with Vapi getting told to "consult documentation, GitHub, and vendor adapters" with no actual link, and the visitor explicitly expressed frustration at the lack of a direct link or live demo. Fixed the underlying content gap in this prompt's `WHAT TO DO` section: added the exact vendor-adapter endpoints (`/v1/adapters/vapi/check` etc.) and real URLs (`nhid-clinical.org/developers.html`, `/interoperability.html`, `github.com/NHID-Clinical/NHID-Clinical`) so Compass gives a concrete link instead of a vague "check the docs" answer. **All three fixes (naming, text_only, and this content fix) are still pending push** — blocked on `ELEVENLABS_API_KEY`, which is not present in the environment this fix was authored in. |
