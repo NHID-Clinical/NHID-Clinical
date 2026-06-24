@@ -2,7 +2,7 @@
 # PowerShell module wrapping the hosted NHID-Clinical v1.3 conformance API.
 # Built for payer IT teams who live in PowerShell.
 
-$NHID_BASE_URL = "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod"
+$NHID_BASE_URL = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
 
 function Invoke-NHIDConformanceCheck {
     <#

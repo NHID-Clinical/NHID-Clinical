@@ -1,14 +1,14 @@
 {
   "info": {
     "name": "NHID-Clinical API",
-    "description": "Live conformance API for the NHID-Clinical healthcare voice AI governance standard.\n\nBase URL: https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod\n\nRoutes:\n  GET  /health                       — liveness probe (no auth)\n  POST /v1/conformance/check         — full conformance check (x-api-key required)\n  POST /v1/demo/check                — same as above, no key (rate limited)\n  POST /v1/adapters/vapi/check       — native VAPI call payload (no key)\n  POST /v1/adapters/twilio/check     — native Twilio call payload (no key)\n\nNHID-Clinical is a voluntary open proposal. CC BY 4.0.",
+    "description": "Live conformance API for the NHID-Clinical healthcare voice AI governance standard.\n\nBase URL: https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod\n\nRoutes:\n  GET  /health                       — liveness probe (no auth)\n  POST /v1/conformance/check         — full conformance check (x-api-key required)\n  POST /v1/demo/check                — same as above, no key (rate limited)\n  POST /v1/adapters/vapi/check       — native VAPI call payload (no key)\n  POST /v1/adapters/twilio/check     — native Twilio call payload (no key)\n\nNHID-Clinical is a voluntary open proposal. CC BY 4.0.",
     "version": "2.0.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
       "key": "base_url",
-      "value": "https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod"
+      "value": "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
     },
     {
       "key": "api_key",

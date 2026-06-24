@@ -1,7 +1,7 @@
 # NHID-CLINICAL MASTER KNOWLEDGE ARCHIVE
 
 **Version:** 1.2 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-06-17
-**Author:** Brianna Nicole Baynard-Malone · **License:** CC BY 4.0
+**Author:** Brianna Baynard · **License:** CC BY 4.0
 
 > This document is the single authoritative reference for all NHID-Clinical knowledge: technical
 > specification, governance architecture, implementation guide, regulatory alignment, marketing
@@ -1167,8 +1167,9 @@ Expected response:
 
 ### 11.4 NIST Public Comment (Filed: NIST-2025-0035-0026)
 
-NHID-Clinical was submitted as a public comment to NIST's AI Identity and Cross-Org authorization
-framework development (CAISI 2026). Key positions:
+NHID-Clinical was submitted as a public comment to NIST's request for information on AI identity
+and cross-org authorization, relevant to the work of NIST's Center for AI Standards and Innovation
+(CAISI). Key positions:
 - Gap: No existing framework addresses AI agent cross-org NPI authorization
 - Proposal: Layer 2 (behavioral) + Layer 3 (cryptographic) as complementary to STIR/SHAKEN
 - Evidence: Reference implementation with 336 passing tests, live public API
@@ -1262,8 +1263,8 @@ themselves. NHID-Clinical's IDG-01 control preemptively satisfies these requirem
 | **DOJ FCA 2026** | Audit trail | ATR-01 + FHIR Bundle | 7-milestone event log |
 | **State AI Laws** | Inspectable AI decisions | IDG-01 + DBC-01 | CAS score per call |
 | **State AI Laws** | Auditable AI decisions | ATR-01 event log | Machine-readable trace |
-| **NIST CAISI 2026** | Cross-org agent identity | NHID-Auth v2 | `src/agent_identity.py` |
-| **NIST CAISI 2026** | NPI authorization | Ed25519 NPI binding | Delegation chain |
+| **NIST AI RMF / CAISI** | Cross-org agent identity | NHID-Auth v2 | `src/agent_identity.py` |
+| **NIST AI RMF / CAISI** | NPI authorization | Ed25519 NPI binding | Delegation chain |
 | **HIPAA Security Rule** | PHI safeguards | PDX-01 Data Gate | Pre-exchange gate |
 | **HIPAA Security Rule** | Audit controls | ATR-01 + FHIR | Full event trace |
 | **TCPA** | Automated caller disclosure | IDG-01 first message | Disclosure compliance |
@@ -1310,7 +1311,8 @@ Medicaid operations raised specific transparency and human review requirements.
 ### 15.1 NIST Comment: NIST-2025-0035-0026
 
 NHID-Clinical submitted a public comment to NIST's request for information on AI identity and
-cross-organizational authorization (the framework that became CAISI 2026).
+cross-organizational authorization — an area within the remit of NIST's Center for AI Standards
+and Innovation (CAISI).
 
 **Position:**
 - The NPI system creates a unique cross-org identity problem for AI agents in healthcare
@@ -1332,16 +1334,22 @@ NHID-Clinical aligns with the NIST AI RMF's GOVERN, MAP, MEASURE, and MANAGE fun
 | **MEASURE** | CAS score (0.0–1.0); tier classification; per-control pass rates |
 | **MANAGE** | DENY_DATA and ESCALATE_HUMAN actions; real-time call-progress webhook |
 
-### 15.3 NIST CAISI 2026
+### 15.3 NIST AI RMF / CAISI
 
-The NIST Cross-Agency AI Identity (CAISI) framework 2026 addresses how AI agents should be
-authenticated when operating across organizational boundaries.
+NIST's Center for AI Standards and Innovation (CAISI) is the agency's primary point of contact for
+testing and collaborative research on commercial AI systems, including AI agent security and
+evaluation. As of this writing, CAISI has not published a specific named framework governing
+cross-organizational AI agent identity — this is an open gap, not a solved problem with an existing
+standard to cite. NHID-Auth v2 is offered as a candidate approach to that gap, not as an
+implementation of an existing CAISI deliverable.
 
-**NHID-Clinical contribution:**
-- Ed25519 NPI-bound delegation chains (NHID-Auth v2) directly implement the CAISI pattern
-- Provider → Agent delegation with monotonic scope narrowing satisfies least-privilege principles
-- Call-SID nonce binding prevents credential replay across calls
-- Per-agent revocation satisfies credential lifecycle management requirements
+**NHID-Clinical's relevant design choices:**
+- Ed25519 NPI-bound delegation chains (NHID-Auth v2) as a candidate pattern for cross-org AI agent
+  identity, consistent with CAISI's stated interest in AI agent security and evaluation
+- Provider → Agent delegation with monotonic scope narrowing, consistent with least-privilege
+  principles
+- Call-SID nonce binding to prevent credential replay across calls
+- Per-agent revocation for credential lifecycle management
 
 ---
 
@@ -1465,7 +1473,7 @@ Badge tiers: L2 (Verified Trust, CAS ≥ 0.90), L1 (Conditional Trust, CAS ≥ 0
 #### Quaternary: Regulators and Standards Bodies
 - **Problem they have:** No testable reference implementation for AI voice agent behavioral standards
 - **What NHID-Clinical offers:** 336-test open-source reference, live API, NIST comment on record
-- **Call to action:** Use as input to CAISI 2026 and future rulemakings
+- **Call to action:** Use as input to NIST CAISI and future rulemakings
 
 ### 18.2 Core Value Propositions
 
