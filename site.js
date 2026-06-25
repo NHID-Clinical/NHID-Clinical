@@ -137,7 +137,7 @@
     {
       title: 'Community',
       url: '/community.html',
-      keywords: 'community discord reddit contribution feedback technical compliance payer provider help contact get involved',
+      keywords: 'community github discussions issues contribution feedback technical compliance payer provider help contact get involved',
       excerpt: 'Join the NHID-Clinical community to give feedback and help shape the next version of the proposal.'
     },
     {
@@ -145,6 +145,12 @@
       url: '/faq.html',
       keywords: 'faq frequently asked questions who what why how cost hipaa tcpa nist mandatory volunteer impersonation latency background',
       excerpt: 'Frequently asked questions about NHID-Clinical, the scope, HIPAA, NIST, and how to get involved.'
+    },
+    {
+      title: 'Implementation Registry',
+      url: '/registry.html',
+      keywords: 'registry implementations vendors self-attestation cas badge nhid-cas listed conformance certified',
+      excerpt: 'Self-attested NHID-Clinical implementations, with live NHID-CAS conformance badges.'
     }
   ];
 

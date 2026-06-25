@@ -124,8 +124,8 @@ the field-by-field `AuditEvent` mapping table is in
 The Conformance Test Suite (CTS) contains 18 YAML test cases — 16 evaluated at the policy-engine
 layer, 2 HTTP-infrastructure edge cases skipped in unit context — mapping to the five controls
 (identity disclosure, PHI gate, deceptive behavior, escalation, audit trail). The current Python
-test suite passes **270 tests (18 skipped — integration tests requiring a live server)**; combined
-with the TypeScript middleware suite (66 tests), the project's total passing count is **336**.
+test suite passes **284 tests (18 skipped — integration tests requiring a live server)**; combined
+with the TypeScript middleware suite (66 tests), the project's total passing count is **350**.
 Older PDF artifacts referencing 191 or 95 passing tests, or only 2 adapters, predate the adapter
 expansion (Vonage, Retell AI, Amazon Connect added) documented in the Master Knowledge Archive
 changelog and §7 (Implementation Roadmap) — see the

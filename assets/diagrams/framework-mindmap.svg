@@ -108,7 +108,7 @@
   <rect x="580" y="1236" width="243" height="30" rx="7" fill="#333d44"/>
   <text x="594" y="1256" font-size="13" font-weight="500" fill="#f3f4f6">NIST AI Safety Docket Comment</text>
   <rect x="580" y="1278" width="213" height="30" rx="7" fill="#333d44"/>
-  <text x="594" y="1298" font-size="13" font-weight="500" fill="#f3f4f6">Discord &amp; Reddit Channels</text>
+  <text x="594" y="1298" font-size="13" font-weight="500" fill="#f3f4f6">GitHub Discussions</text>
   <rect x="580" y="1320" width="331" height="30" rx="7" fill="#333d44"/>
   <text x="594" y="1340" font-size="13" font-weight="500" fill="#f3f4f6">Open Reference Implementation (CC BY 4.0)</text>
 </svg>

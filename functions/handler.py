@@ -14,6 +14,7 @@ from src.nhid_policy_engine_v1 import (  # noqa: E402
     evaluate_all,
 )
 from src.nhid_cas import _tier_for_cas  # noqa: E402
+from src.nhid_network_resilience import retry_with_backoff  # noqa: E402
 
 try:
     import httpx
@@ -55,6 +56,8 @@ def lambda_handler(event: dict, context) -> dict:
       POST /v1/demo/call                     — trigger Beacon outbound demo call, Turnstile+rate-limited (website demo, not framework)
       POST /v1/demo/sms-opt-in               — web opt-in to text the starter-pack link, consent+Turnstile+rate-limited (website demo, not framework)
       POST /v1/webhooks/elevenlabs/postcall  — ElevenLabs post-call webhook for the Beacon demo, no API key (website demo, not framework)
+      POST /v1/identity/verify-passport      — verify an NHID-Auth v2 agent passport (src/agent_identity.py), no API key required
+      POST /v1/identity/revoke-passport      — durably revoke a delegation_id, API key required
     """
     method = event.get("httpMethod", "POST")
     path = event.get("path", "")
@@ -89,6 +92,12 @@ def lambda_handler(event: dict, context) -> dict:
     if "/webhooks/elevenlabs/postcall" in path:
         from functions.elevenlabs_postcall_handler import _handle_elevenlabs_postcall_webhook
         return _handle_elevenlabs_postcall_webhook(event)
+
+    # NHID-Auth v2 agent passport verification / revocation
+    if "/identity/verify-passport" in path:
+        return _handle_verify_passport(event)
+    if "/identity/revoke-passport" in path:
+        return _handle_revoke_passport(event)
 
     # Pilot enrollment
     if "/pilot/enroll" in path:
@@ -276,14 +285,18 @@ def _verify_turnstile(token: str) -> bool:
     if not secret or not _HTTPX_OK:
         return False
 
-    try:
+    @retry_with_backoff(max_attempts=3)
+    def _post():
         resp = httpx.post(
             TURNSTILE_VERIFY_URL,
             data={"secret": secret, "response": token},
             timeout=10.0,
         )
         resp.raise_for_status()
-        return bool(resp.json().get("success"))
+        return resp
+
+    try:
+        return bool(_post().json().get("success"))
     except Exception:  # noqa: BLE001
         return False
 
@@ -403,7 +416,9 @@ def _handle_demo_call(event: dict) -> dict:
         return _error(503, "Outbound call service not configured")
 
     url = f"https://api.elevenlabs.io/v1/convai/phone-numbers/{phone_number_id}/outbound-call"
-    try:
+
+    @retry_with_backoff(max_attempts=3)
+    def _post():
         resp = httpx.post(
             url,
             json={"agent_id": _BEACON_AGENT_ID, "to_number": e164},
@@ -411,7 +426,10 @@ def _handle_demo_call(event: dict) -> dict:
             timeout=10.0,
         )
         resp.raise_for_status()
-        resp_body = resp.json()
+        return resp
+
+    try:
+        resp_body = _post().json()
     except Exception as exc:  # noqa: BLE001
         return _error(502, f"Outbound call failed: {exc}")
 
@@ -499,6 +517,100 @@ def _handle_cts_evaluate(event: dict) -> dict:
         return _error(500, f"CTS evaluation failed: {exc}")
 
     return _ok(report)
+
+
+def _handle_verify_passport(event: dict) -> dict:
+    """Verify an NHID-Auth v2 agent passport (src/agent_identity.py).
+
+    AgentIdentityManager.verify_passport() only checks its own in-memory
+    revocation dicts, which are empty on every fresh Lambda invocation — so
+    this also checks nhid_event_store's durable revoked_delegations table,
+    which is the revocation store of record across invocations.
+    """
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    delegation_raw = body.get("delegation")
+    signature_b64 = body.get("signature_b64")
+    agent_signature_b64 = body.get("agent_signature_b64")
+    provider_public_key_b64 = body.get("provider_public_key_b64")
+    if not delegation_raw or not signature_b64 or not agent_signature_b64 or not provider_public_key_b64:
+        return _error(
+            400,
+            "Missing required fields: 'delegation', 'signature_b64', "
+            "'agent_signature_b64', 'provider_public_key_b64'",
+        )
+
+    try:
+        from src.agent_identity import AgentIdentityManager, AgentPassport, Delegation
+        delegation = Delegation.from_json(json.dumps(delegation_raw))
+        passport = AgentPassport(
+            delegation=delegation,
+            signature_b64=signature_b64,
+            agent_signature_b64=agent_signature_b64,
+        )
+        manager = AgentIdentityManager()
+        provider_pub = manager.b64_to_public_key(provider_public_key_b64)
+    except Exception as exc:  # noqa: BLE001
+        return _error(400, f"Invalid passport payload: {exc}")
+
+    required_scope = body.get("required_scope")
+    if required_scope is not None and not isinstance(required_scope, list):
+        return _error(400, "'required_scope' must be a list of strings")
+
+    result = manager.verify_passport(
+        passport,
+        provider_pub,
+        call_sid=str(body.get("call_sid", "")),
+        required_scope=required_scope,
+    )
+
+    if result.valid:
+        try:
+            import nhid_event_store as store
+            if store.is_delegation_revoked(delegation.delegation_id):
+                result = type(result)(False, "ERR_REVOKED", delegation_id=delegation.delegation_id)
+        except Exception:  # noqa: BLE001 — read-only FS or no DB: fall back to library-only check
+            pass
+
+    return _ok({
+        "valid": result.valid,
+        "reason": result.reason,
+        "delegation_id": result.delegation_id,
+        "provider_npi": result.provider_npi,
+        "agent_id": result.agent_id,
+        "scope": result.scope,
+    })
+
+
+def _handle_revoke_passport(event: dict) -> dict:
+    """Durably revoke a delegation_id, surviving across stateless invocations."""
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    delegation_id = str(body.get("delegation_id", "")).strip()
+    if not delegation_id:
+        return _error(400, "Missing required field: 'delegation_id'")
+
+    try:
+        import nhid_event_store as store
+        store.record_revocation(delegation_id, reason=str(body.get("reason", "")))
+    except Exception as exc:  # noqa: BLE001
+        return _error(500, f"Revocation failed: {exc}")
+
+    return _ok({"delegation_id": delegation_id, "revoked": True})
 
 
 def _policy_cas(decision, event: dict) -> dict:

@@ -75,7 +75,7 @@ This repository contains no live PHI or secrets.
 2. Make changes
 3. Run tests: `python -m pytest tests/ -q` (173 expected)
 4. Open a PR — big changes: open an Issue first
-Discord: https://discord.gg/CU7BwHwVYC
+Discussions: https://github.com/NHID-Clinical/NHID-Clinical/discussions
 """, encoding='utf-8')
 (ROOT / "CHANGELOG.md").write_text("""# Changelog
 ## [v1.3] - 2026-06
