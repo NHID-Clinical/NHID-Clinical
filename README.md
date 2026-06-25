@@ -18,12 +18,12 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-270%20passing-brightgreen?style=flat-square"></a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-284%20passing-brightgreen?style=flat-square"></a>
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="TypeScript Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square"></a>
   <a href="https://nhid-clinical.org/specification.html"><img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square"></a>
   <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?style=flat-square"></a>
   <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026"><img alt="NIST" src="https://img.shields.io/badge/NIST-2025--0035--0026-0b6ebc?style=flat-square"></a>
-  <a href="https://discord.gg/CU7BwHwVYC"><img alt="Discord" src="https://img.shields.io/badge/Discord-join-5865f2?style=flat-square&logo=discord&logoColor=white"></a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions"><img alt="GitHub Discussions" src="https://img.shields.io/badge/GitHub-Discussions-181717?style=flat-square&logo=github&logoColor=white"></a>
 </p>
 
 <p align="center">
@@ -54,7 +54,7 @@
   <a href="https://nhid-clinical.org/simulator.html">Simulator</a> ·
   <a href="https://nhid-clinical.org/specification.html">Spec</a> ·
   <a href="https://nhid-clinical.org/roadmap.html">v2 Identity Layer</a> ·
-  <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions">Discussions</a>
 </p>
 
 ---
@@ -132,7 +132,7 @@ curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/a
 
 Plus one supplemental control, **ATR-01** (Audit Trail Requirement) — every call must produce a machine-readable audit trace.
 
-18-case CTS suite · same inputs → identical trace output · 270 passing in the Python test suite (18 skipped without a running server) + 66 passing in the TypeScript middleware
+18-case CTS suite · same inputs → identical trace output · 284 passing in the Python test suite (18 skipped without a running server) + 66 passing in the TypeScript middleware
 
 <p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
 
@@ -242,7 +242,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected output: `270 passing` in ~1.4s (requires `cryptography` package for identity tests; ~18 skip when no server is running).
+Expected output: `284 passing` in ~1.4s (requires `cryptography` package for identity tests; ~18 skip when no server is running).
 
 <p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
 
@@ -269,7 +269,7 @@ We are actively seeking payer and provider organizations to run a **90-day shado
 
 [Become a Pilot Partner →](https://nhid-clinical.org/for-payers.html)
 
-[Community](https://nhid-clinical.org/community.html) · [Discord](https://discord.gg/CU7BwHwVYC) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
+[Community](https://nhid-clinical.org/community.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
 <p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
 

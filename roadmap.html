@@ -133,7 +133,7 @@
     <div class="container" style="max-width:52rem">
 
       <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> Released June 2026 under CC BY 4.0. Reference implementation in <code>src/agent_identity.py</code> (26 dedicated tests). Open for production use under the open license.
+        <strong>Status:</strong> Released June 2026 under CC BY 4.0. Reference implementation in <code>src/agent_identity.py</code> (26 dedicated tests). Open for production use under the open license. As of v1.3 final, this is also wired into the hosted conformance API — not just a standalone library — via <code>POST /v1/identity/verify-passport</code> and <code>POST /v1/identity/revoke-passport</code>, with durable revocation that survives across stateless invocations.
       </div>
 
       <!-- Version comparison -->
@@ -258,8 +258,6 @@ python examples/issue_and_verify.py          # end-to-end credential walkthrough
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>

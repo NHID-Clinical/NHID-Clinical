@@ -634,7 +634,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 270 passing unit tests
+│   └── test_*.py                      # 284 passing unit tests
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -803,10 +803,12 @@ All items from the original 7-gap enterprise production readiness plan:
 | + DBC-01 heuristics | 263 | `test_dbc01_heuristics.py` |
 | + Pilot report generator | 268 | `test_pilot_report_generator.py` |
 | + CTS runner (final, 9 tests) | **270** | `test_cts_runner.py` (actual: 9 tests) |
+| + Identity API route (v1.3 final) | 277 | `test_identity_api.py` |
+| + Network resilience (v1.3 final) | **284** | `test_network_resilience.py` |
 
-**Current invariant:** `UNIT_EXPECTED = 270` in `scripts/validate_ci.py`
+**Current invariant:** `UNIT_EXPECTED = 284` in `scripts/validate_ci.py`
 
-**Total suite:** 336 passing (270 Python + 66 TypeScript middleware)
+**Total suite:** 350 passing (284 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -830,7 +832,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 270 passed (6 skipped when no server running = integration tests)
+# Expected: 284 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -850,11 +852,11 @@ PyJWT>=2.8.0
 
 ### 8.3 CI Invariant
 
-The CI pipeline enforces exactly `UNIT_EXPECTED = 270` passing tests with 0 failures:
+The CI pipeline enforces exactly `UNIT_EXPECTED = 284` passing tests with 0 failures:
 
 ```python
 # scripts/validate_ci.py
-UNIT_EXPECTED = 270
+UNIT_EXPECTED = 284
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -988,7 +990,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 270`) must hold after
+1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 284`) must hold after
    every change. Run `python scripts/validate_ci.py` before committing.
 
 2. **"Impersonation Latency" is the permanent canonical term.** It must never be renamed,
@@ -1018,7 +1020,7 @@ When Claude Code or any LLM is working on this repository:
 4. Update CI job name in .github/workflows/ci.yml:
    name: "Unit invariant: <new count> passed, 0 skipped"
 5. Update README.md badge: [![Tests](https://img.shields.io/badge/tests-<N>%20passing-brightgreen)]
-6. Update README.md description: "336 passing across the Python test suite (270) and TypeScript..."
+6. Update README.md description: "350 passing across the Python test suite (284) and TypeScript..."
    → adjust both numbers
 7. Update .github/CONTRIBUTING.md expected count
 8. Stage all changed files explicitly and commit atomically
@@ -1054,8 +1056,8 @@ When Claude Code or any LLM is working on this repository:
 When resuming a Claude Code session after context limit:
 
 > "Continue from where you left off. The plan file is at
-> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 270.
-> All 270 tests pass. The most recent completed task was [X]. The next task is [Y]."
+> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 284.
+> All 284 tests pass. The most recent completed task was [X]. The next task is [Y]."
 
 ---
 
@@ -1073,7 +1075,7 @@ When resuming a Claude Code session after context limit:
 | Technical Stack | `/technical-stack.html` | Five-layer architecture deep dive |
 | Roadmap | `/roadmap.html` | NHID-Auth v2 specification and integration path |
 | Interoperability | `/interoperability.html` | Vendor adapter table + integration tiers |
-| Community | `/community.html` | Discord, contributing, pilot partner info |
+| Community | `/community.html` | GitHub Discussions/Issues, contributing, pilot partner info |
 | Shadow Evaluation | `/shadow-evaluation-guide.html` | 90-day shadow pilot playbook |
 
 ### 10.2 Hero Section Messaging
@@ -1106,11 +1108,11 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/tests-336%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/tests-350%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![License: CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey)](...)
 [![NIST](https://img.shields.io/badge/NIST-2025--0035--0026-blue)](...)
-[![Discord](https://img.shields.io/badge/Discord-join-5865f2?logo=discord&logoColor=white)](...)
+[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?logo=github&logoColor=white)](...)
 ```
 
 ---
@@ -1172,7 +1174,7 @@ and cross-org authorization, relevant to the work of NIST's Center for AI Standa
 (CAISI). Key positions:
 - Gap: No existing framework addresses AI agent cross-org NPI authorization
 - Proposal: Layer 2 (behavioral) + Layer 3 (cryptographic) as complementary to STIR/SHAKEN
-- Evidence: Reference implementation with 336 passing tests, live public API
+- Evidence: Reference implementation with 350 passing tests, live public API
 - Ask: Recognition of voluntary behavioral baselines as complementary to formal standards
 
 ---
@@ -1458,7 +1460,7 @@ Badge tiers: L2 (Verified Trust, CAS ≥ 0.90), L1 (Conditional Trust, CAS ≥ 0
 ### 17.4 Contact
 
 - **Email:** contact@nhid-clinical.org
-- **Discord:** https://discord.gg/CU7BwHwVYC
+- **GitHub Discussions:** https://github.com/NHID-Clinical/NHID-Clinical/discussions
 - **GitHub Issues:** https://github.com/NHID-Clinical/NHID-Clinical/issues
 
 ---
@@ -1484,7 +1486,7 @@ Badge tiers: L2 (Verified Trust, CAS ≥ 0.90), L1 (Conditional Trust, CAS ≥ 0
 
 #### Quaternary: Regulators and Standards Bodies
 - **Problem they have:** No testable reference implementation for AI voice agent behavioral standards
-- **What NHID-Clinical offers:** 336-test open-source reference, live API, NIST comment on record
+- **What NHID-Clinical offers:** 350-test open-source reference, live API, NIST comment on record
 - **Call to action:** Use as input to NIST CAISI and future rulemakings
 
 ### 18.2 Core Value Propositions
@@ -1492,7 +1494,7 @@ Badge tiers: L2 (Verified Trust, CAS ≥ 0.90), L1 (Conditional Trust, CAS ≥ 0
 1. **"Zero to CAS score in 30 seconds."** One curl command, no signup, real compliance verdict.
 
 2. **"The only open reference implementation of behavioral AI disclosure for healthcare."**
-   CC BY 4.0, 336 tests, deterministic engine, live API.
+   CC BY 4.0, 350 tests, deterministic engine, live API.
 
 3. **"Built by someone who watched it fail in production."** Former payer operations. Not an
    academic exercise. These are the specific failure modes observed on live calls.
@@ -1509,14 +1511,14 @@ Badge tiers: L2 (Verified Trust, CAS ≥ 0.90), L1 (Conditional Trust, CAS ≥ 0
 - Lead with live curl demo → instant result
 - Show all four controls as a table
 - Five-layer stack as a table
-- Link to simulator, spec, Discord
+- Link to simulator, spec, GitHub Discussions
 
 #### LinkedIn / Professional
 - Lead with the problem: "AI agents are calling insurance companies without identifying themselves"
 - Highlight regulatory pressure (CMS-0057-F, MACPAC 2026, NIST CAISI)
-- Invite: pilot partner program, Discord community
+- Invite: pilot partner program, GitHub Discussions community
 
-#### Discord Community
+#### GitHub Discussions Community
 - Technical discussion: schema design, edge cases, new adapters
 - Policy discussion: regulatory developments, state AI laws
 - Pilot data sharing: anonymized CAS distributions from shadow evaluations
@@ -1610,7 +1612,7 @@ After extensive debugging, two key precision rules were established:
 | Item | Notes |
 | :--- | :--- |
 | **Live NPPES NPI validation** | Replace format-only check with NPPES API call; cache results |
-| **Persistent revocation store** | RDS or DynamoDB for production AgentIdentityManager |
+| **Persistent revocation store** | ~~RDS or DynamoDB for production AgentIdentityManager~~ — delivered in v1.3 final as a SQLite `revoked_delegations` table (`nhid_event_store.py`), wired into `POST /v1/identity/verify-passport` / `POST /v1/identity/revoke-passport` (`functions/handler.py`, 2026-06-25). A managed datastore swap remains open if call volume outgrows SQLite, but the durability gap itself (in-memory revocation dying every stateless Lambda invocation) is closed. |
 | **WebSocket streaming evaluation** | True per-utterance evaluation (not turn-by-turn POST) |
 | **STIR/SHAKEN Layer 1 correlation** | Correlate A/B/C attestation level with CAS score |
 
@@ -1629,7 +1631,7 @@ After extensive debugging, two key precision rules were established:
 | :--- | :--- |
 | **FHIR R4B/R5 upgrade path** | Monitor HL7 R5 adoption; plan migration |
 | **IHE BALP conformance** | If CMS mandates BALP, implement named IG validation |
-| **Multi-language disclosure support** | Spanish, Mandarin initial support for DBC-01 |
+| **Multi-language disclosure support** | ~~Spanish, Mandarin initial support for DBC-01~~ — delivered in v1.3 final (`agents/beacon_system_prompt.md`, 2026-06-25) |
 | **Audio fingerprinting DBC-01** | Direct audio stream integration for artifact detection |
 
 ### 20.4 Research Questions
@@ -1741,7 +1743,7 @@ For a 90-day shadow pilot with no vendor changes:
 POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/pilot/enroll
 {"org_name": "[YOUR ORG]", "contact_email": "[EMAIL]", "vendor_platform": "[PLATFORM]"}
 
-Questions? Discord: https://discord.gg/CU7BwHwVYC
+Questions? GitHub Discussions: https://github.com/NHID-Clinical/NHID-Clinical/discussions
 ```
 
 ### 21.6 Pilot Report Sections Template
@@ -1846,7 +1848,7 @@ accredited by any standards body. It is designed to be input to future standards
 to replace formal standards processes.
 
 **Q: Has NHID-Clinical been validated by healthcare organizations?**
-A: NHID-Clinical has a live public API with 336 passing tests and a NIST public comment on
+A: NHID-Clinical has a live public API with 350 passing tests and a NIST public comment on
 record (NIST-2025-0035-0026). Formal healthcare organization validation (payer shadow pilots)
 is ongoing.
 
@@ -1913,7 +1915,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_EXPECTED = 270  # scripts/validate_ci.py
+UNIT_EXPECTED = 284  # scripts/validate_ci.py
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -1952,7 +1954,7 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_handler_cas.py` | 5 | CAS block in API responses |
 | `test_badge_generator.py` | 5 | SVG badge generation |
 | `test_pilot_report_generator.py` | 5 | Pilot report generator |
-| **Total** | **270 passed, 18 skipped** | All Python unit tests |
+| **Total** | **284 passed, 18 skipped** | All Python unit tests |
 
 ### 23.4 Pre-Generated Failure Traces
 

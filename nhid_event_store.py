@@ -63,6 +63,13 @@ def _get_db_connection() -> sqlite3.Connection:
     conn.execute(
         "CREATE INDEX IF NOT EXISTS idx_cr_vendor_ts ON conformance_results(vendor_id, timestamp);"
     )
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS revoked_delegations ("
+        "delegation_id TEXT PRIMARY KEY,"
+        "reason TEXT,"
+        "revoked_at TEXT NOT NULL"
+        ");"
+    )
     conn.commit()
     return conn
 
@@ -394,6 +401,48 @@ def record_conformance_result(
             conn.close()
 
     _run_sqlite_with_retry(operation)
+
+
+# ── NHID-Auth v2 delegation revocation (durable, survives stateless Lambda) ───
+
+def record_revocation(delegation_id: str, reason: str = "") -> None:
+    """Durably revoke a delegation_id. AgentIdentityManager's own revocation
+    dicts are in-memory and reset every Lambda invocation, so this table is
+    the revocation store of record for verify_passport callers."""
+    if not delegation_id:
+        raise ValueError("delegation_id is required")
+
+    def operation():
+        conn = _get_db_connection()
+        try:
+            with conn:
+                conn.execute(
+                    "INSERT OR REPLACE INTO revoked_delegations (delegation_id, reason, revoked_at) "
+                    "VALUES (?, ?, ?)",
+                    (delegation_id, reason, _utc_timestamp()),
+                )
+        finally:
+            conn.close()
+
+    _run_sqlite_with_retry(operation)
+
+
+def is_delegation_revoked(delegation_id: str) -> bool:
+    if not delegation_id:
+        return False
+
+    def operation():
+        conn = _get_db_connection()
+        try:
+            row = conn.execute(
+                "SELECT 1 FROM revoked_delegations WHERE delegation_id = ? LIMIT 1",
+                (delegation_id,),
+            ).fetchone()
+            return row is not None
+        finally:
+            conn.close()
+
+    return _run_sqlite_with_retry(operation)
 
 
 def get_vendor_metrics(vendor_id: str, days: int = 30) -> Dict[str, Any]:

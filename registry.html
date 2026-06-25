@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Regulatory Alignment — How the proposal maps to CMS-0057-F, MACPAC, DOJ FCA enforcement, and state AI laws."/>
-  <title>Regulatory Alignment | NHID-Clinical</title>
+  <meta name="description" content="NHID-Clinical Implementation Registry — self-attested vendor implementations with live NHID-CAS badges."/>
+  <title>Implementation Registry | NHID-Clinical</title>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -46,6 +46,7 @@
           <a href="/interoperability.html">Interoperability</a>
           <a href="/evidence-pack.html">Evidence Pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+          <a href="/registry.html">Implementation Registry</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -101,6 +102,7 @@
   <a href="/interoperability.html">Interoperability</a>
   <a href="/evidence-pack.html">Evidence Pack</a>
   <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <a href="/registry.html">Implementation Registry</a>
   <strong class="mobile-nav-group">Pilot</strong>
   <a href="/for-payers.html">For Payers</a>
   <a href="/community.html">Community</a>
@@ -120,95 +122,45 @@
 <main>
   <section class="inner-hero">
     <div class="container">
-      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Regulatory Alignment</span></div>
-      <p class="eyebrow">Alignment · June 2026</p>
-      <h1>Regulatory Alignment</h1>
-      <p class="lede">How NHID-Clinical maps to current healthcare AI governance requirements.</p>
+      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Implementation Registry</span></div>
+      <p class="eyebrow">Registry · June 2026</p>
+      <h1>Implementation Registry</h1>
+      <p class="lede">Self-attested NHID-Clinical implementations, with live NHID-CAS conformance badges.</p>
     </div>
   </section>
 
   <section class="page-section">
     <div class="container" style="max-width:52rem">
       <div class="callout" role="note" style="margin-bottom:2rem">
-        <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+        <strong>This is a self-attestation list, not a certification.</strong> NHID-Clinical does not
+        certify, audit, or warrant any vendor's implementation. A listing means the vendor ran the
+        public conformance test suite (CTS) against their own integration and chose to publish the
+        result. Badge scores update from each vendor's own live <code>/v1/public/vendor/{id}/badge</code>
+        endpoint call — verify independently before relying on them for procurement decisions.
       </div>
 
-      <h2>How NHID-Clinical Maps to Current Requirements</h2>
-      <p style="margin-bottom:1.5rem">This is not legal advice. NHID-Clinical is voluntary. The table below shows how the controls relate to key regulations and guidance as of June 2026.</p>
-
-      <table style="width:100%;border-collapse:collapse;margin-bottom:2rem">
-        <thead>
-          <tr style="border-bottom:2px solid var(--border);text-align:left">
-            <th style="padding:.75rem">Regulatory Driver</th>
-            <th style="padding:.75rem">Specific Requirement</th>
-            <th style="padding:.75rem">NHID-Clinical Control</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.75rem">CMS-0057-F Prior Auth Final Rule</td>
-            <td style="padding:.75rem">FHIR API, 72-hour turnaround, 5-year retention</td>
-            <td style="padding:.75rem">HL7 FHIR R4 AuditEvent (validated) + session trace (ATR-01) — <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/fhir-auditevent-mapping.md">mapping spec</a></td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.75rem">MACPAC May 2026</td>
-            <td style="padding:.75rem">AI transparency in prior auth, human review pathway</td>
-            <td style="padding:.75rem">IDG-01 + EIT-01 (escalation) + ATR-01</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.75rem">DOJ FCA 2026 Enforcement Focus</td>
-            <td style="padding:.75rem">Explainability + audit trail for AI-assisted billing</td>
-            <td style="padding:.75rem">Structured trace + CTS conformance (ATR-01)</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.75rem">State AI Laws (CA, TX, MD, etc.)</td>
-            <td style="padding:.75rem">Inspectable, auditable AI decisions</td>
-            <td style="padding:.75rem">IDG-01 + DBC-01 + L1/L2/L3 tiers</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.75rem">NIST AI RMF / CAISI</td>
-            <td style="padding:.75rem">Cross-org agent identity + authorization</td>
-            <td style="padding:.75rem">NHID-Auth v2 + NIST-2025-0035-0026 comment</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2 style="margin-top:2.5rem">FHIR R4 AuditEvent Emission</h2>
-      <p style="margin-bottom:1rem">Every NHID-Clinical conformance test suite (CTS) execution produces a HL7 FHIR R4 <code>Bundle</code> of <code>AuditEvent</code> resources — one per conformance milestone. These Bundles are validated against the FHIR R4 base specification (version 4.0.1) in CI before every merge.</p>
-
-      <div style="background:var(--bg-alt);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:.9rem;line-height:1.7">
-        <strong>What is emitted per call:</strong>
-        <ol style="margin:.5rem 0 0 1.25rem;padding:0">
-          <li><strong>nhid-session-start</strong> — call session initialised (DCM Application Activity)</li>
-          <li><strong>nhid-identity-disclosure</strong> — IDG-01 gate evaluated; outcome reflects pass/fail (DCM Security Alert)</li>
-          <li><strong>nhid-auth-verification</strong> — provider NPI authorization recorded, when present (DCM User Authentication)</li>
-          <li><strong>nhid-phi-gate</strong> — PDX-01 pre-data-exchange gate decision (DCM Security Alert)</li>
-          <li><strong>nhid-phi-exchange</strong> — PHI exchange begins, when gate cleared (DCM Patient Record)</li>
-          <li><strong>nhid-escalation</strong> — EIT-01 escalation event, when triggered (DCM Application Activity)</li>
-          <li><strong>nhid-call-end</strong> — session terminated; outcome reflects aggregate policy decision (DCM Application Activity)</li>
-        </ol>
+      <h2>Listed Implementations</h2>
+      <div id="registry-list" style="margin:1.5rem 0">
+        <p style="color:var(--body)">Loading…</p>
       </div>
 
-      <div style="background:var(--bg-alt);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:.9rem;line-height:1.7">
-        <strong>Conformance scope:</strong> Validated against HL7 FHIR R4 base specification only.
-        No conformance to any named HL7 Implementation Guide is claimed or implied.
-        DICOM audit event type codes (DCM 110100, 110110, 110113, 110114) are used for <code>AuditEvent.type</code>.
-        Three agent slices capture the AI voice agent (requestor), payer system (destination),
-        and provider organisation (on-behalf-of, when NPI is present).
-      </div>
-
+      <h2 style="margin-top:2.5rem">How to Get Listed</h2>
+      <p style="margin-bottom:1rem">
+        Run the conformance test suite against your integration, then complete the
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md">vendor trust questionnaire</a>
+        and open a pull request adding your entry to
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/content/registry_entries.json">content/registry_entries.json</a>.
+        Each entry needs a <code>vendor_id</code> matching the one used when recording conformance results
+        (see <code>record_conformance_result()</code> in <code>nhid_event_store.py</code>), so your badge
+        renders live CAS data instead of the unknown/grey default.
+      </p>
       <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/fhir-auditevent-mapping.md"
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md"
            class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
-          AuditEvent Mapping Spec →
+          Vendor Trust Questionnaire →
         </a>
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/examples/fhir/nhid-compliant-call-bundle.json"
-           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
-          Example Bundle (JSON) →
-        </a>
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/examples/fhir/README.md"
-           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
-          Payer Ingestion Guide →
+        <a href="/developers.html#adapters" class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
+          Adapter Reference →
         </a>
       </div>
     </div>
@@ -228,5 +180,47 @@
 </footer>
 
 <script src="/site.js"></script>
+<script>
+(function () {
+  var listEl = document.getElementById('registry-list');
+  var BADGE_BASE = 'https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/public/vendor/';
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function renderEntries(entries) {
+    if (!entries.length) {
+      listEl.innerHTML = '<p style="color:var(--body)">No implementations are listed yet. ' +
+        'Be the first — see "How to Get Listed" below.</p>';
+      return;
+    }
+    var rows = entries.map(function (e) {
+      var badgeUrl = BADGE_BASE + encodeURIComponent(e.vendor_id) + '/badge';
+      return '<tr style="border-bottom:1px solid var(--border)">' +
+        '<td style="padding:.75rem">' + escapeHtml(e.name || e.vendor_id) + '</td>' +
+        '<td style="padding:.75rem">' + (e.website ? '<a href="' + escapeHtml(e.website) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(e.website) + '</a>' : '—') + '</td>' +
+        '<td style="padding:.75rem">' + escapeHtml(e.integration_type || '—') + '</td>' +
+        '<td style="padding:.75rem"><img src="' + badgeUrl + '" alt="NHID-CAS badge for ' + escapeHtml(e.vendor_id) + '" /></td>' +
+        '</tr>';
+    }).join('');
+    listEl.innerHTML = '<table style="width:100%;border-collapse:collapse">' +
+      '<thead><tr style="border-bottom:2px solid var(--border);text-align:left">' +
+      '<th style="padding:.75rem">Implementation</th>' +
+      '<th style="padding:.75rem">Website</th>' +
+      '<th style="padding:.75rem">Integration</th>' +
+      '<th style="padding:.75rem">NHID-CAS</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  fetch('/content/registry_entries.json')
+    .then(function (r) { return r.json(); })
+    .then(renderEntries)
+    .catch(function () {
+      listEl.innerHTML = '<p style="color:var(--body)">No implementations are listed yet. ' +
+        'Be the first — see "How to Get Listed" below.</p>';
+    });
+})();
+</script>
 </body>
 </html>

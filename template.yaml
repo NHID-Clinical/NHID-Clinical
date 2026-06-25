@@ -186,6 +186,20 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/webhooks/elevenlabs/postcall
             Method: POST
+        IdentityVerifyPassportPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/identity/verify-passport
+            Method: POST
+        IdentityRevokePassportPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/identity/revoke-passport
+            Method: POST
+            Auth:
+              ApiKeyRequired: true
 
   # ── Website demo feature: live status store (NOT the governance framework) ─
   # Backs the Twilio scripted inbound demo line and (later) the Beacon

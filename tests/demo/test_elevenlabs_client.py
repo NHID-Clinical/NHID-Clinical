@@ -2,7 +2,7 @@
 Tests for src/elevenlabs_client.py — agent-config-as-code.
 
 Website demo feature test (NOT part of the NHID-Clinical governance framework's
-270-passed conformance baseline). Run via `make test-demo` /
+284-passed conformance baseline). Run via `make test-demo` /
 `python -m pytest tests/demo/ -v`, never via the default `pytest tests/` invocation.
 
 All HTTP calls are monkeypatched — no real network access, no ElevenLabs credits spent.

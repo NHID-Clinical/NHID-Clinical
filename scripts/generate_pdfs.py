@@ -512,7 +512,7 @@ def make_core_spec():
     stats = [
         ("4", "Controls"),
         ("18", "CTS Tests"),
-        ("270", "Tests Passing"),
+        ("284", "Tests Passing"),
         ("6", "Adapters\n(VAPI, Twilio, +4)"),
     ]
     stat_cells = []
