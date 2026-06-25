@@ -1177,6 +1177,12 @@ and cross-org authorization, relevant to the work of NIST's Center for AI Standa
 - Evidence: Reference implementation with 350 passing tests, live public API
 - Ask: Recognition of voluntary behavioral baselines as complementary to formal standards
 
+The RFI itself ("Request for Information Regarding Security Considerations for Artificial
+Intelligence Agents") was opened by a January 8, 2026 Federal Register notice and covers five
+topic areas: threat identification, lifecycle security, cybersecurity framework gaps, security
+measurement, and environmental controls. The comment period closed March 9, 2026. See 15.1 below
+for comment-volume and discoverability context.
+
 ---
 
 ## 12. Diagrams & Visual Concepts
@@ -1327,6 +1333,26 @@ and Innovation (CAISI).
 - Voluntary frameworks can move faster than formal standards and establish de facto baselines
 
 **URL:** [https://www.regulations.gov/comment/NIST-2025-0035-0026](https://www.regulations.gov/comment/NIST-2025-0035-0026)
+
+#### 15.1.1 Comment Volume & Discoverability
+
+Context worth stating plainly, since it's easy to overclaim and easy to mistake for
+endorsement:
+
+- NIST does not review, vet, or endorse RFI comments before publishing them — it is
+  required to post every timely comment as-is. Acceptance onto the docket is not a
+  quality signal.
+- The docket drew **932 public comments** in total before the period closed
+  March 9, 2026. This submission is one of 932, not a uniquely selected one.
+- Because regulations.gov is a high-authority `.gov` domain, this comment (and its
+  attached PDF) is independently indexed by Google and surfaced by AI search tools
+  when searching the project name or author's name. That's a normal consequence of
+  public-record indexing, not a deliberate SEO or PR effort.
+
+Sources:
+- [Docket NIST-2025-0035](https://www.regulations.gov/docket/NIST-2025-0035)
+- [Federal Register notice (2026-01-08)](https://www.federalregister.gov/documents/2026/01/08/2026-00206/request-for-information-regarding-security-considerations-for-artificial-intelligence-agents)
+- [NIST news release: CAISI Issues RFI About Securing AI Agent Systems](https://www.nist.gov/news-events/news/2026/01/caisi-issues-request-information-about-securing-ai-agent-systems)
 
 ### 15.2 NIST AI Risk Management Framework (AI RMF)
 
