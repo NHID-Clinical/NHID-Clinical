@@ -45,6 +45,10 @@ def _prompt_path(agent_name: str) -> Path:
     return AGENTS_DIR / f"{agent_name}_system_prompt.md"
 
 
+def _workflow_path(agent_name: str) -> Path:
+    return AGENTS_DIR / f"{agent_name}_workflow.json"
+
+
 def _load_config(agent_name: str) -> dict:
     path = _config_path(agent_name)
     if not path.exists():
@@ -93,6 +97,39 @@ def pull_voice_and_model(client: ElevenLabsClient, agent_name: str, agent_id: st
     return config
 
 
+def push_workflow(client: ElevenLabsClient, agent_id: str, workflow_path: Path, *, dry_run: bool) -> dict:
+    """Push agents/<name>_workflow.json (the call-flow graph) to the live agent, if present.
+
+    Keys starting with "_" (e.g. "_schema_status") are repo-only annotations and are
+    stripped before sending — see that file's own header for why this graph is marked
+    unverified against ElevenLabs' real schema.
+    """
+    if not workflow_path.exists():
+        return {"pushed": False, "reason": f"{workflow_path} not found — no workflow graph to push"}
+    workflow = json.loads(workflow_path.read_text(encoding="utf-8"))
+    workflow = {k: v for k, v in workflow.items() if not k.startswith("_")}
+    if not workflow:
+        return {"pushed": False, "reason": f"{workflow_path} has no nodes/edges — nothing to push"}
+    payload = {"conversation_config": {"workflow": workflow}}
+    if not dry_run:
+        client.patch_agent_config(agent_id, payload)
+    return {"pushed": not dry_run, "payload": payload}
+
+
+def pull_workflow(client: ElevenLabsClient, agent_id: str, workflow_path: Path) -> dict:
+    """Pull the live workflow graph into agents/<name>_workflow.json, preserving any
+    leading-underscore annotation keys already in the repo file (e.g. "_schema_status")."""
+    live = client.get_agent_config(agent_id)
+    live_workflow = live.get("conversation_config", {}).get("workflow") or {}
+    existing_notes = {}
+    if workflow_path.exists():
+        existing = json.loads(workflow_path.read_text(encoding="utf-8"))
+        existing_notes = {k: v for k, v in existing.items() if k.startswith("_")}
+    merged = {**existing_notes, **live_workflow}
+    workflow_path.write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
+    return {"node_count": len(live_workflow.get("nodes", [])), "edge_count": len(live_workflow.get("edges", []))}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Sync an ElevenLabs agent's prompt/voice/model config with this repo.",
@@ -116,6 +153,7 @@ def main() -> int:
 
     client = ElevenLabsClient(api_key)
     prompt_path = _prompt_path(args.agent)
+    workflow_path = _workflow_path(args.agent)
 
     if args.pull:
         prompt_report = pull_prompt(client, agent_id, prompt_path)
@@ -125,6 +163,9 @@ def main() -> int:
         print(f"Pulled voice/model config -> {_config_path(args.agent)}: "
               f"voice_id={updated_config.get('voice_id')!r} llm={updated_config.get('llm')!r} "
               f"text_only={updated_config.get('text_only')!r}")
+        workflow_report = pull_workflow(client, agent_id, workflow_path)
+        print(f"Pulled workflow graph -> {workflow_path}: "
+              f"{workflow_report['node_count']} node(s), {workflow_report['edge_count']} edge(s)")
         return 0
 
     print(f"Syncing {args.agent} ({agent_id})...")
@@ -143,6 +184,14 @@ def main() -> int:
         print(f"  config: {config_report['reason']}")
     else:
         print(f"  config: dry-run, would push {config_report.get('payload')}")
+
+    workflow_report = push_workflow(client, agent_id, workflow_path, dry_run=args.dry_run)
+    if workflow_report.get("pushed"):
+        print(f"  pushed workflow graph: {workflow_path}")
+    elif workflow_report.get("reason"):
+        print(f"  workflow: {workflow_report['reason']}")
+    else:
+        print(f"  workflow: dry-run, would push {workflow_path}")
 
     return 0
 
