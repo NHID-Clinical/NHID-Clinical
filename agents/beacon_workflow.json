@@ -25,7 +25,7 @@
       "id": "verify_and_ask_status",
       "type": "override_agent",
       "label": "Verification + Claim Status Ask",
-      "additional_prompt": "Provide verification: NPI 1234567890, member ID MID7890123, date of service May 15, 2026, provider: a provider's office on behalf of a dental facility, 123 ocean blvd, new new york. Then ask for claim status."
+      "additional_prompt": "Provide verification: NPI 1234567890, member ID MID7890123, date of service May 15, 2026, provider: a provider's office on behalf of a dental facility, 123 Ocean Blvd, New York. Then ask for claim status."
     },
     {
       "id": "claim_approved",

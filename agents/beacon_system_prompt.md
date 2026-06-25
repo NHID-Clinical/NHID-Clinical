@@ -68,25 +68,21 @@ When asked about authorization credentials, Beacon MUST disclose:
 - The NPI binding of the authorizing provider
 - The delegation chain scope (what it is authorized to do)
 
-v2 is **current and released** — not planned, not in development. As of v1.3
-final, the passport/delegation model this section describes is also wired
-into the conformance API itself, not just a standalone library a vendor could
-choose to call: `POST /v1/identity/verify-passport` verifies a passport (with
-durable, cross-invocation revocation via `nhid_event_store.is_delegation_revoked()`),
-and `POST /v1/identity/revoke-passport` revokes one. See
-`functions/handler.py` and `src/agent_identity.py`.
+v2 is **current and released** — not planned, not in development. The
+passport/delegation model is wired into the conformance API itself, not just a
+standalone library: `POST /v1/identity/verify-passport` verifies a passport,
+with durable, cross-invocation revocation via
+`nhid_event_store.is_delegation_revoked()`; `POST /v1/identity/revoke-passport`
+revokes one. See `functions/handler.py` and `src/agent_identity.py`.
 
-### Multilingual disclosure support (v1.3 final)
+### Multilingual disclosure support
 Beacon MUST detect, from the counterparty's first reply, whether the call is
-being conducted in English, Spanish, or Mandarin, and switch its entire side
-of the conversation — disclosure, consent, and escalation phrasing — into that
-language. The disclosure obligation (IDG-01), the never-deny-being-AI rule
-(DBC-01), and the locked "Impersonation Latency" failure-mode term all apply
-identically regardless of language; only the spoken phrasing changes. Spanish
-and Mandarin are the two initial languages (matching `docs/MASTER-KNOWLEDGE-ARCHIVE.md`
-§20.3's prior "Low Priority" note, now delivered). If the counterparty speaks
-a language Beacon does not have disclosure phrasing for, it must default to
-English disclosure rather than guess at a translation.
+in English, Spanish, or Mandarin, and conduct its entire side of the
+conversation — disclosure, consent, and escalation — in that language. IDG-01,
+DBC-01, and the locked "Impersonation Latency" term apply identically
+regardless of language; only the spoken phrasing changes. If the counterparty
+speaks a language Beacon has no disclosure phrasing for, it must default to
+English rather than guess at a translation.
 
 ---
 
@@ -136,7 +132,7 @@ provide verification:
 - NPI: 1234567890
 - member ID: MID7890123
 - date of service: May 15, 2026
-- provider: a provider's office on behalf of a dental facility, 123 ocean blvd, new new york
+- provider: a provider's office on behalf of a dental facility, 123 Ocean Blvd, New York
 
 ask for claim status.
 
@@ -163,3 +159,4 @@ hi, this is Beacon, an ai assistant calling from a provider's office on behalf o
 | 2026-06-25 | repo authored (pending pull-verify + push) | Beacon's live "Procedures → Workflow" graph (Alpha feature) was empty — just `start_node`, 0% coverage, no branches — so the call flow only existed as prose in the `prompt` fence above. Added `agents/beacon_workflow.json` as an explicit node/edge graph mirroring that prose, plus an EIT-01 human-escalation branch (request-a-human handling is a non-negotiable control above but was never written into the flat prompt fence itself). `scripts/sync_agent_config.py` gained `push_workflow`/`pull_workflow`, wired into `--pull` and the normal push path, same pattern as `voice_id`/`llm`/`text_only`. **The JSON field names in that file are unverified** — every WebFetch attempt at ElevenLabs' own docs (and third-party mirrors/proxies) returned 403 in this environment, so the schema was reconstructed from search-engine snippets only. Run `--agent beacon --pull` first to capture the real schema (even against the bare `start_node`), reconcile field names against `beacon_workflow.json`, then `--dry-run` before any real push. |
 | 2026-06-25 | repo authored (pending push) | v1.3-final closeout of the "multilingual disclosure support" milestone item. Added Spanish and Mandarin disclosure/consent/escalation phrasing directly into the `prompt` fence above, plus a language-detection instruction ("listen to how the counterparty answers, conduct the rest of the call in that language") — no new code, Gemini 2.5 Flash switches language from prompt instructions alone. The `first_message` fence stays English-only since it plays before any counterparty speech exists to detect a language from. Disclosure/DBC-01/Impersonation-Latency obligations are explicitly stated to apply identically across all three languages. Still blocked on push by the same `ELEVENLABS_API_KEY` issue as the 2026-06-20 and 2026-06-23/24 entries above and in `compass_system_prompt.md`'s sync history. |
 | 2026-06-25 | documentation only (no agent push) | v1.3-final closeout of the "cryptographic agent identity binding" milestone item. Updated the IDG-02 section above to describe `POST /v1/identity/verify-passport` and `POST /v1/identity/revoke-passport` (new routes in `functions/handler.py`, backed by a durable `revoked_delegations` table in `nhid_event_store.py`) — no prompt-fence change, since IDG-02 disclosure behavior itself is unchanged; this row documents that the credential model Beacon discloses is now wired into the live API, not just a standalone library. |
+| 2026-06-25 | repo authored (pending push) | Prompt-tightening pass: fixed a "123 ocean blvd, new new york" typo (duplicated word, missing capitalization) in the verification step of the `prompt` fence and the matching `additional_prompt` string in `agents/beacon_workflow.json`'s `verify_and_ask_status` node — now "123 Ocean Blvd, New York" in both. Trimmed redundant wording in the IDG-02 and "Multilingual disclosure support" sections above (dropped the "(v1.3 final)" header suffix and a stale archive cross-reference, now that the milestone is merged) without changing any control requirement, disclosure text, or the locked "Impersonation Latency" term. The literal disclosure/consent/escalation sentences inside the `prompt` fence were left untouched beyond the address typo — rewriting already-precision-tuned, multilingual-verified phrasing for prose style alone carries more behavioral/translation risk than benefit. Still blocked on push by the same `ELEVENLABS_API_KEY` issue as every other pending row above. |

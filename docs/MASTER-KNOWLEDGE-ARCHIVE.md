@@ -1624,6 +1624,7 @@ After extensive debugging, two key precision rules were established:
 | **Vonage/Retell webhook templates** | Pre-built webhook configs for these platforms |
 | **Attestation registry** | Persistent public ledger of active delegations (read-only) |
 | **CAS trend API** | `/v1/vendor/metrics/cas-history` (30-day sparkline) |
+| **Live implementation registry** | ~~Static page listing certified/self-attested implementations~~ — delivered in v1.3 final as `registry.html` + `content/registry_entries.json` (seeded empty, `[]`). Self-attestation only — NHID-Clinical does not certify vendors. Each entry (once added) links the live badge endpoint and shows `cas_avg`/`pass_rate` via `get_vendor_metrics()` (`nhid_event_store.py`). |
 
 ### 20.3 Low Priority
 
@@ -1633,6 +1634,8 @@ After extensive debugging, two key precision rules were established:
 | **IHE BALP conformance** | If CMS mandates BALP, implement named IG validation |
 | **Multi-language disclosure support** | ~~Spanish, Mandarin initial support for DBC-01~~ — delivered in v1.3 final (`agents/beacon_system_prompt.md`, 2026-06-25) |
 | **Audio fingerprinting DBC-01** | Direct audio stream integration for artifact detection |
+| **Payer-initiated call guidance** | ~~How IDG-01/PDX-01/DBC-01 apply when the call direction is reversed~~ — delivered in v1.3 final as `docs/payer-initiated-calls.md`, referencing the gap in `traces/nhid-trace-08-bot-to-bot-no-gate.md`. |
+| **SIP header standards feedback** | ~~Position paper proposing a disclosure SIP header for AI voice agents~~ — delivered in v1.3 final as `docs/sip-header-integration-feedback.md`, referencing IETF draft `draft-gudlab-agentid-protocol-00` and the gap noted in `trace_generator.py:355`. |
 
 ### 20.4 Research Questions
 
