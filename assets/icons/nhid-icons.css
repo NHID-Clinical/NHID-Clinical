@@ -1,0 +1,130 @@
+/* NHID-Clinical Icon System — hexagon-framed icon pack.
+   Source spec: design_handoff_icon_system/README.md (24 core icons + voice-state matrix).
+   Sprite: /assets/icons/nhid-icons.svg. Usage:
+     <svg class="nhid-icon"><use href="/assets/icons/nhid-icons.svg#nhid-hex-frame"/><use href="/assets/icons/nhid-icons.svg#nhid-hex-frame-inner"/><use href="/assets/icons/nhid-icons.svg#nhid-icon-accept-consent"/></svg>
+*/
+
+@property --frame-stroke-width {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 5;
+}
+
+.nhid-icon {
+  --frame-stroke: #1f3a8a;
+  --frame-stroke-width: 5;
+  display: block;
+  overflow: visible;
+  width: 86px;
+  height: auto;
+  transition: filter 220ms cubic-bezier(.4,0,.2,1), transform 220ms cubic-bezier(.4,0,.2,1);
+}
+
+.nhid-icon--small { width: 62px; }
+
+/* Frame stroke themes (rotate navy → teal → slate across a grid, or force one) */
+.nhid-icon--navy  { --frame-stroke: #1f3a8a; }
+.nhid-icon--teal  { --frame-stroke: #2b8db0; }
+.nhid-icon--slate { --frame-stroke: #2e3f54; }
+
+/* Voice-state matrix status variants: only frame stroke + glyph accent/base + opacity change. */
+.nhid-icon--status-active   { --icon-accent: #188EAA; --icon-base: #0B2E63; --frame-stroke: #2b8db0; opacity: 1; }
+.nhid-icon--status-inactive { --icon-accent: #9FB0BC; --icon-base: #9FB0BC; --frame-stroke: #aebccb; opacity: .5; }
+.nhid-icon--status-success  { --icon-accent: #1F9D5B; --icon-base: #0B2E63; --frame-stroke: #1F9D5B; opacity: 1; }
+.nhid-icon--status-warning  { --icon-accent: #E0922B; --icon-base: #0B2E63; --frame-stroke: #E0922B; opacity: 1; }
+.nhid-icon--status-error    { --icon-accent: #D64545; --icon-base: #0B2E63; --frame-stroke: #D64545; opacity: 1; }
+
+.nhid-icon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 11px;
+  padding: 20px 12px 18px;
+  background: var(--paper, #fff);
+  border: 1px solid var(--line, #e3eaf0);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(13,108,166,0.06);
+  transition: transform 220ms cubic-bezier(.4,0,.2,1);
+}
+
+/* Hover — frame brightens, lifts. Internal glyph never moves on hover (frame is the signal layer). */
+.nhid-icon-card:hover:not(.is-disabled) {
+  transform: translateY(-2px);
+}
+.nhid-icon-card:hover:not(.is-disabled) .nhid-icon {
+  --frame-stroke-width: 5.5;
+  filter: brightness(1.12) drop-shadow(0 4px 14px rgba(24,142,170,0.28));
+}
+
+/* Active / selected — frame shifts toward cyan, brief confirm bloom. */
+.nhid-icon.is-active {
+  --frame-stroke: #2b8db0;
+  filter: drop-shadow(0 0 6px rgba(62,206,206,0.55));
+  animation: nhid-icon-confirm 340ms cubic-bezier(.16,1,.3,1);
+}
+@keyframes nhid-icon-confirm {
+  0%   { transform: scale(1); }
+  55%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* Loading — calm breathing pulse on the frame stroke; glyph dims. No fast spinner. */
+.nhid-icon.is-loading {
+  animation: nhid-icon-breathe 2000ms linear infinite;
+}
+@keyframes nhid-icon-breathe {
+  0%, 100% { --frame-stroke-width: 5; opacity: 1; }
+  50%      { --frame-stroke-width: 5.6; opacity: .7; }
+}
+
+/* Authorization-pending — hexagon frame breathing loop while a grant is outstanding. */
+.nhid-icon.is-pending-auth {
+  animation: nhid-icon-auth-pulse 1800ms ease-in-out infinite;
+}
+@keyframes nhid-icon-auth-pulse {
+  0%, 100% { --frame-stroke-width: 5; filter: opacity(1); }
+  50%      { --frame-stroke-width: 5.6; filter: opacity(.55); }
+}
+
+/* Disabled — desaturate, no motion. */
+.nhid-icon.is-disabled {
+  filter: grayscale(1) opacity(.4);
+  animation: none;
+  cursor: not-allowed;
+}
+.nhid-icon-card.is-disabled,
+.nhid-icon-card:has(.nhid-icon.is-disabled) {
+  pointer-events: none;
+}
+
+/* Voice-interaction continuous loops (apply to the accent sub-elements of the matching icon). */
+.nhid-icon--listening .nhid-icon-wave { animation: nhid-icon-wave-breathe 1800ms ease-in-out infinite; }
+.nhid-icon--listening .nhid-icon-wave:nth-of-type(2) { animation-delay: 200ms; }
+@keyframes nhid-icon-wave-breathe { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
+
+.nhid-icon--speaking .nhid-icon-wave { animation: nhid-icon-ripple 1400ms ease-out infinite; }
+.nhid-icon--speaking .nhid-icon-wave:nth-of-type(2) { animation-delay: 220ms; }
+@keyframes nhid-icon-ripple { 0% { opacity: .25; } 40% { opacity: 1; } 100% { opacity: .25; } }
+
+.nhid-icon--processing .nhid-icon-dot { animation: nhid-icon-dot-fade 1600ms ease-in-out infinite; }
+.nhid-icon--processing .nhid-icon-dot:nth-of-type(2) { animation-delay: 180ms; }
+.nhid-icon--processing .nhid-icon-dot:nth-of-type(3) { animation-delay: 360ms; }
+@keyframes nhid-icon-dot-fade { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+
+/* Reduced motion: replace every loop/glow with its static end-state. Information stays, motion goes. */
+@media (prefers-reduced-motion: reduce) {
+  .nhid-icon,
+  .nhid-icon-card,
+  .nhid-icon.is-active,
+  .nhid-icon.is-loading,
+  .nhid-icon.is-pending-auth,
+  .nhid-icon--listening .nhid-icon-wave,
+  .nhid-icon--speaking .nhid-icon-wave,
+  .nhid-icon--processing .nhid-icon-dot {
+    animation: none !important;
+    transition: none !important;
+  }
+  .nhid-icon-card:hover:not(.is-disabled) { transform: none; }
+  .nhid-icon-card:hover:not(.is-disabled) .nhid-icon { filter: brightness(1.12); }
+  .nhid-icon.is-loading { opacity: .85; }
+}
