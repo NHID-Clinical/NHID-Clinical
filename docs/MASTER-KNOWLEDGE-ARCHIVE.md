@@ -326,6 +326,54 @@ detection directly, guarding against regression of the threading bug described a
 All 294 unit tests pass under the updated invariant. See §5.2 for the canonical
 session/event structures these builders populate, and §23.3 for the test file index.
 
+**Fabricate Battle-Test Corpus (`adapters/fabricate_adapter.py`, June 2026):** Until this
+point, `compute_detection_rates()` only had hand-authored single-turn fixtures to run
+against. `adapters/fabricate_adapter.py` converts a Tonic Fabricate two-table CSV export
+(`fixtures/fabricate/conversations.csv`, 550 rows; `fixtures/fabricate/turns.csv`, 4,839
+rows) into the same conversation-list shape the evaluator consumes, so it can run against a
+much larger, naturalistic corpus instead of fixtures alone.
+
+| Target field | Source | Rationale |
+| :--- | :--- | :--- |
+| `expected_violations` | The 5 `*_violation` booleans on the conversation row → rule_id strings | Direct 1:1 mapping into `compute_detection_rates()` |
+| `escalation_path_available` | `not eit01_violation` | In violation conversations the agent stonewalls a transfer request; in clean ones it's honored |
+| `identity_assertion_text` | `turns.csv.text`, only for `speaker == "agent"` | DBC-01's impersonation-phrase heuristic reads this field specifically |
+| `disclosure_timestamp` | Sticky — set on the first turn where `is_identity_disclosure == 1`, carried forward to every later turn | A disclosure made once must not "expire" |
+| `deceptive_artifact_flags`, `phi_accessed` | Always `[]` | Fabricate's schema has no structured equivalent; the engine's speech-text pattern matching already covers this corpus's phrasing |
+
+**Real-corpus run.** `python3 adapters/fabricate_adapter.py fixtures/fabricate/conversations.csv fixtures/fabricate/turns.csv --out conversations.json`
+followed by `python3 scripts/run_batch_eval.py conversations.json` (§5.2) against the full
+550-conversation corpus produced:
+
+| Rule | Detection rate |
+| :--- | :--- |
+| IDG-01 | 100.0% |
+| EIT-01 | 94.7% |
+| PDX-01 | 58.6% |
+| DBC-01 | 0.5% |
+| ATR-01 | 0.0% |
+
+**Findings, not papered over:**
+- **DBC-01 (0.5%)** is a genuine engine phrase-matching gap: the corpus's naturalistic
+  evasive/false-reassurance language mostly doesn't match `_DBC_IMPERSONATION_PHRASES` /
+  `_assertion_implies_human()` verbatim. This is a detection-coverage limitation in
+  `nhid_policy_engine_v1.py`, not an adapter bug.
+- **ATR-01 (0.0%)** is an inherent corpus/adapter limitation: Fabricate's CSV only flags
+  *that* an ATR-01 violation occurred, not *which* required audit field (`actor_id`,
+  `replay_mode`, `external_calls_cached`) is missing, so the adapter has no structural
+  signal to act on.
+
+**Test count impact:**
+
+| | Before | After |
+| :--- | :--- | :--- |
+| Unit tests | 294 | **303** |
+| `UNIT_EXPECTED` (`scripts/validate_ci.py`) | 294 | **303** |
+
+All 303 unit tests pass under the updated invariant (`tests/test_fabricate_adapter.py`, 9
+tests). See §5.3 for where this adapter sits relative to the vendor adapters, §23.1 for the
+file index, and §23.3 for the per-file test breakdown. Shipped via PR #307.
+
 ---
 
 ## 3. Governance Architecture
@@ -634,6 +682,12 @@ DATA_REQUEST_KEYWORDS = {
 Disclosure is valid only if it precedes any data request. Late disclosure after PHI exchange does
 not satisfy IDG-01.
 
+**`adapters/fabricate_adapter.py`** is structurally different from the five adapters above:
+instead of converting one vendor payload into a single `(session, event)` pair for the live
+request pipeline, it converts a two-table Fabricate CSV export into a list of full multi-turn
+conversations for batch detection-rate evaluation via `compute_detection_rates()` (§2.5). It
+does not participate in the `to_nhid_event` → `evaluate_all` pipeline diagrammed above.
+
 ### 5.4 Turn-by-Turn Evaluation (Call Progress Webhook)
 
 For near-real-time compliance monitoring during an active call:
@@ -687,7 +741,8 @@ NHID-Clinical/
 │   ├── vonage_adapter.py
 │   ├── retell_adapter.py
 │   ├── amazon_connect_adapter.py
-│   └── call_progress_adapter.py       # Turn-by-turn webhook
+│   ├── call_progress_adapter.py       # Turn-by-turn webhook
+│   └── fabricate_adapter.py           # Fabricate CSV corpus → batch eval (§2.5)
 ├── functions/
 │   └── handler.py                     # Lambda entry point (362 lines)
 ├── tests/
@@ -697,7 +752,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 294 passing unit tests
+│   └── test_*.py                      # 303 passing unit tests
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -868,11 +923,12 @@ All items from the original 7-gap enterprise production readiness plan:
 | + CTS runner (final, 9 tests) | **270** | `test_cts_runner.py` (actual: 9 tests) |
 | + Identity API route (v1.3 final) | 277 | `test_identity_api.py` |
 | + Network resilience (v1.3 final) | 284 | `test_network_resilience.py` |
-| + Synthetic eval loop fix (DBC-01/EIT-01 threading) | **294** | `test_synthetic_eval_loop.py` |
+| + Synthetic eval loop fix (DBC-01/EIT-01 threading) | 294 | `test_synthetic_eval_loop.py` |
+| + Fabricate Battle-Test Corpus adapter | **303** | `test_fabricate_adapter.py` |
 
-**Current invariant:** `UNIT_EXPECTED = 294` in `scripts/validate_ci.py`
+**Current invariant:** `UNIT_EXPECTED = 303` in `scripts/validate_ci.py`
 
-**Total suite:** 360 passing (294 Python + 66 TypeScript middleware)
+**Total suite:** 369 passing (303 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -896,7 +952,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 294 passed (18 skipped when no server running = integration tests)
+# Expected: 303 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -916,11 +972,11 @@ PyJWT>=2.8.0
 
 ### 8.3 CI Invariant
 
-The CI pipeline enforces exactly `UNIT_EXPECTED = 294` passing tests with 0 failures:
+The CI pipeline enforces exactly `UNIT_EXPECTED = 303` passing tests with 0 failures:
 
 ```python
 # scripts/validate_ci.py
-UNIT_EXPECTED = 294
+UNIT_EXPECTED = 303
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -1054,7 +1110,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 294`) must hold after
+1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 303`) must hold after
    every change. Run `python scripts/validate_ci.py` before committing.
 
 2. **"Impersonation Latency" is the permanent canonical term.** It must never be renamed,
@@ -1084,7 +1140,7 @@ When Claude Code or any LLM is working on this repository:
 4. Update CI job name in .github/workflows/ci.yml:
    name: "Unit invariant: <new count> passed, 0 skipped"
 5. Update README.md badge: [![Tests](https://img.shields.io/badge/tests-<N>%20passing-brightgreen)]
-6. Update README.md description: "360 passing across the Python test suite (294) and TypeScript..."
+6. Update README.md description: "369 passing across the Python test suite (303) and TypeScript..."
    → adjust both numbers
 7. Update .github/CONTRIBUTING.md expected count
 8. Stage all changed files explicitly and commit atomically
@@ -1120,8 +1176,8 @@ When Claude Code or any LLM is working on this repository:
 When resuming a Claude Code session after context limit:
 
 > "Continue from where you left off. The plan file is at
-> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 294.
-> All 294 tests pass. The most recent completed task was [X]. The next task is [Y]."
+> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 303.
+> All 303 tests pass. The most recent completed task was [X]. The next task is [Y]."
 
 ---
 
@@ -1991,6 +2047,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 | `adapters/retell_adapter.py` | 161 | Retell AI adapter |
 | `adapters/amazon_connect_adapter.py` | 174 | Amazon Connect Contact Lens adapter |
 | `adapters/call_progress_adapter.py` | 144 | Turn-by-turn webhook adapter |
+| `adapters/fabricate_adapter.py` | 132 | Fabricate two-table CSV corpus → batch eval adapter |
 | `agents/beacon_system_prompt.md` | 110 | Reference agent (Beacon) system prompt |
 | `schema/nhid_trace_schema_v1.json` | 376 | JSON Schema Draft 2020-12 event schema |
 | `tests/nhid_conformance_test_suite_v1.yaml` | 632 | 18 CTS test cases |
@@ -2008,7 +2065,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_EXPECTED = 294  # scripts/validate_ci.py
+UNIT_EXPECTED = 303  # scripts/validate_ci.py
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2048,7 +2105,8 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_badge_generator.py` | 5 | SVG badge generation |
 | `test_pilot_report_generator.py` | 5 | Pilot report generator |
 | `test_synthetic_eval_loop.py` | 10 | Synthetic conversation detection-rate evaluator |
-| **Total** | **294 passed, 18 skipped** | All Python unit tests |
+| `test_fabricate_adapter.py` | 9 | Fabricate CSV corpus adapter field mapping |
+| **Total** | **303 passed, 18 skipped** | All Python unit tests |
 
 ### 23.4 Pre-Generated Failure Traces
 
