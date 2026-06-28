@@ -15,6 +15,7 @@ from src.nhid_policy_engine_v1 import (  # noqa: E402
 )
 from src.nhid_cas import _tier_for_cas  # noqa: E402
 from src.nhid_network_resilience import retry_with_backoff  # noqa: E402
+from src.dbc01_review_routing import should_route_to_review  # noqa: E402
 
 try:
     import httpx
@@ -653,7 +654,39 @@ def _policy_cas(decision, event: dict) -> dict:
     }
 
 
+def _route_for_human_review(decision, cas: dict, event: dict) -> dict:
+    """Queue the session for human review per docs/dbc01-human-review-sop.md
+    if it meets either routing criterion. Never raises — a queueing failure
+    (e.g. read-only FS, no DB available) must not break the conformance
+    response itself."""
+    routing = should_route_to_review(decision, cas)
+    if not routing.route:
+        return {"queued": False, "trigger_reason": None, "queue_id": None}
+
+    queue_id = None
+    try:
+        import nhid_event_store as store
+        governance = event.get("healthcare_governance") or {}
+        row = store.enqueue_dbc01_review(
+            session_id=event.get("session_id"),
+            event_id=event.get("event_id"),
+            request_id=event.get("request_id"),
+            trigger_reason=routing.trigger_reason,
+            severity=routing.severity,
+            identity_assertion_text=governance.get("identity_assertion_text"),
+            cas_score=cas.get("score"),
+            cas_tier=cas.get("tier"),
+        )
+        queue_id = row.get("id")
+    except Exception:  # noqa: BLE001 — read-only FS or no DB: still report the routing decision
+        pass
+
+    return {"queued": True, "trigger_reason": routing.trigger_reason, "queue_id": queue_id}
+
+
 def _decision_to_dict(decision, event: dict | None = None) -> dict:
+    event = event or {}
+    cas = _policy_cas(decision, event)
     result = {
         "conformant": len(decision.violations) == 0,
         "action": decision.action.value,
@@ -670,7 +703,8 @@ def _decision_to_dict(decision, event: dict | None = None) -> dict:
         "next_state": decision.next_state,
         "twiml_fallback": decision.twiml_fallback,
         "gather_speech": decision.gather_speech,
-        "cas": _policy_cas(decision, event or {}),
+        "cas": cas,
+        "human_review": _route_for_human_review(decision, cas, event),
     }
     return result
 

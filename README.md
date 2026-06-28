@@ -18,7 +18,7 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-306%20passing-brightgreen?style=flat-square"></a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-327%20passing-brightgreen?style=flat-square"></a>
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="TypeScript Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square"></a>
   <a href="https://nhid-clinical.org/specification.html"><img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square"></a>
   <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?style=flat-square"></a>
@@ -132,7 +132,7 @@ curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/a
 
 Plus one supplemental control, **ATR-01** (Audit Trail Requirement) — every call must produce a machine-readable audit trace.
 
-18-case CTS suite · same inputs → identical trace output · 306 passing in the Python test suite (18 skipped without a running server) + 66 passing in the TypeScript middleware
+18-case CTS suite · same inputs → identical trace output · 327 passing in the Python test suite (18 skipped without a running server) + 66 passing in the TypeScript middleware
 
 <p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
 
@@ -242,7 +242,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected output: `306 passing` in ~1.4s (requires `cryptography` package for identity tests; ~18 skip when no server is running).
+Expected output: `327 passing` in ~1.4s (requires `cryptography` package for identity tests; ~18 skip when no server is running).
 
 <p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
 

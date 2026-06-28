@@ -86,3 +86,30 @@ Zero false positives across the full corpus → eligible to merge, additive
 only, with a regression test in `tests/test_dbc01_heuristics.py`. Any false
 positives → reject; rely on this SOP's human-review queue for that
 phrasing instead of forcing it into the deterministic engine.
+
+## Operational tooling
+
+The routing criteria above are now code-enforced, not just procedural.
+`src/dbc01_review_routing.should_route_to_review()` evaluates every
+conformance check's `PolicyDecision` and CAS result against this SOP's
+"what routes" / "what does NOT route" criteria; `functions/handler.py`
+calls it from `_decision_to_dict()` and, when it routes, persists the
+session to `nhid_event_store`'s `dbc01_review_queue` table via
+`enqueue_dbc01_review()`. The handler's JSON response carries the outcome
+in a `human_review` block: `{"queued": bool, "trigger_reason": str|None,
+"queue_id": int|None}`.
+
+Reviewers work the queue with `scripts/resolve_dbc01_review.py`:
+
+```
+python3 scripts/resolve_dbc01_review.py --list
+python3 scripts/resolve_dbc01_review.py --resolve 3 --disposition false_positive --reviewer alice
+python3 scripts/resolve_dbc01_review.py --resolve 3 --disposition confirmed_impersonation \
+    --reviewer alice --notes "escalated per org incident process"
+```
+
+`--list` prints every pending row (session, trigger reason, severity, CAS
+score, and the triggering `identity_assertion_text` when present).
+`--resolve` requires `--disposition` to be `confirmed_impersonation` or
+`false_positive`; it raises rather than silently overwriting if the queue
+id is unknown or already resolved — resolution is a one-way transition.
