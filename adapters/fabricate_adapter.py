@@ -61,8 +61,8 @@ def load_turns_by_conversation(turns_csv_path: str) -> dict[str, list[dict[str, 
     return turns_by_conversation
 
 
-def build_turn(raw_turn: dict[str, Any], disclosure_made: bool) -> dict[str, Any]:
-    """Map one turns.csv row (plus running disclosure state) to a synthetic_eval_loop turn."""
+def build_turn(raw_turn: dict[str, Any], disclosure_timestamp: str | None) -> dict[str, Any]:
+    """Map one turns.csv row (plus the persisted first disclosure timestamp) to a synthetic_eval_loop turn."""
     speech_text = raw_turn.get("text", "") or ""
     speaker = raw_turn.get("speaker", "unknown")
 
@@ -71,7 +71,7 @@ def build_turn(raw_turn: dict[str, Any], disclosure_made: bool) -> dict[str, Any
         "identity_assertion_text": speech_text if speaker == "agent" else "",
         "deceptive_artifact_flags": [],
         "phi_accessed": [],
-        "disclosure_timestamp": raw_turn.get("created_at") if disclosure_made else None,
+        "disclosure_timestamp": disclosure_timestamp,
     }
 
 
@@ -87,11 +87,13 @@ def fabricate_conversation_to_eval_shape(
     escalation_path_available = not _is_truthy(conversation_row.get("eit01_violation", "0"))
 
     turns: list[dict[str, Any]] = []
-    disclosure_made = False
+    disclosure_timestamp: str | None = None
     for raw_turn in raw_turns:
-        if _is_truthy(raw_turn.get("is_identity_disclosure", "0")):
-            disclosure_made = True
-        turn = build_turn(raw_turn, disclosure_made)
+        if disclosure_timestamp is None and _is_truthy(
+            raw_turn.get("is_identity_disclosure", "0")
+        ):
+            disclosure_timestamp = raw_turn.get("created_at")
+        turn = build_turn(raw_turn, disclosure_timestamp)
         turn["escalation_path_available"] = escalation_path_available
         turns.append(turn)
 

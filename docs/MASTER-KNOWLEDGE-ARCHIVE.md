@@ -376,8 +376,8 @@ file index, and §23.3 for the per-file test breakdown. Shipped via PR #307.
 
 **Follow-up: DBC-01 additive coverage expansion (June 2026).** After the initial run above
 showed a 0.5% DBC-01 detection rate, the corpus was mined directly for real agent-turn text in
-`dbc01_violation=1` conversations that escaped `_assertion_implies_human()`. Per §9.1 invariant
-#7, candidates were required to be multi-word, contextual, *and* absent from all 350
+`dbc01_violation=1` conversations that escaped `_assertion_implies_human()`. Per invariant #7 of
+§9.1, candidates were required to be multi-word, contextual, *and* absent from all 350
 `dbc01_violation=0` agent turns in the corpus (zero measured false-positive risk on this
 dataset) before being added — this ruled out generic reassurance language like `"i'll
 personally"` (20 violation hits, but also 5 false-positive hits in compliant transcripts) and
@@ -401,6 +401,42 @@ This is a modest, honest improvement — most DBC-01 violations in this corpus a
 ("ownership framing," "implied human we-language" per the `adversarial_tactics` column) rather
 than lexical, so substring matching has a structural ceiling here regardless of phrase-list
 size. Unit tests: 303 → **306**.
+
+**Follow-up: the ceiling, proven (June 2026).** The question of "should we keep expanding the
+phrase list to close the gap" was settled empirically rather than by judgment call.
+`scripts/mine_heuristic_candidate.py` (new, generalizes the manual mining process above) was run
+against two broader keyword candidates over the full 550-conversation corpus:
+
+| Candidate | New true positives | New false positives |
+| :--- | :--- | :--- |
+| Broad (`human`, `person`, `real `) | 142 | **260** |
+| Negation-filtered (excludes "not a human", "ai system", etc.) | 106 | **153** |
+
+Both produce more false positives than true positives — the false positives are agents
+*correctly* disclosing AI status or discussing legitimate escalation ("I can connect you with a
+human claims specialist"), lexically indistinguishable from impersonation without genuine
+semantic understanding. This confirms substring matching has a real ceiling here, not a
+phrase-list-size problem, and rules out further keyword broadening per §9.1 invariant #7
+(zero-false-positive bar).
+
+**ATR-01's 0.0%, re-examined.** The original finding (above) attributed this to the Fabricate
+adapter lacking a signal for *which* audit field is missing. Tracing it further: even with that
+signal, the result would be unchanged — `src/synthetic_eval_loop.py:build_event()` hardcodes
+`execution_context`, `replay_mode`, and `external_calls_cached` as literal constants for every
+turn, regardless of corpus input. No conversational corpus can exercise ATR-01 through this eval
+path; it is correctly verified instead by `tests/failure_injection_harness.py` and the
+`ATR-01-FAIL-MISSING` case in `tests/nhid_conformance_test_suite_v1.yaml`, which construct
+malformed events directly. The 0.0% on `evidence-pack.html` is accurately hedged ("known weak
+points... active areas of work") but the root cause is eval-path plumbing, not heuristic quality.
+
+**Resolution: human-in-the-loop, formalized.** Rather than force more brittle phrase-matching
+code, the residual DBC-01 gap is now routed to a documented review procedure
+(`docs/dbc01-human-review-sop.md`) built on mechanisms that already existed but were never
+operationalized: `PolicyAction.LOG_ONLY` (non-blocking but logged) and NHID-CAS's `Review
+Required` / `Denied / Degraded` trust tiers (`src/nhid_cas.py`, `_tier_for_cas()`). The mining
+methodology itself is captured as a Claude Code Skill
+(`.claude/skills/nhid-corpus-heuristic-mining/SKILL.md`) so future phrase-drift investigations
+follow the same vet-before-merge discipline rather than ad hoc guessing.
 
 ---
 
@@ -1809,7 +1845,7 @@ NHID-Clinical is not positioned against any existing product. It fills a gap:
 
 ### 19.4 Adapter Design Decisions
 
-- All adapters share the same `to_nhid_event(payload) → (session, event)` contract
+- All live vendor adapters share the same `to_nhid_event(payload) → (session, event)` contract — `adapters/fabricate_adapter.py` is the one exception, a batch-eval path that emits full multi-turn conversations for `compute_detection_rates()` instead (§5.3)
 - Disclosure is valid only if it precedes PHI request (even if minimal time difference)
 - ATR-01 required fields (`actor_id`, `replay_mode`, `external_calls_cached`) must be set by every adapter
 - Bot-to-bot detection uses `counterparty_type` field, not speech analysis
