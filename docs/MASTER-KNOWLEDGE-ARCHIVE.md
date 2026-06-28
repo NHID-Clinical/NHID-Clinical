@@ -970,6 +970,53 @@ All items from the original 7-gap enterprise production readiness plan:
 | WebSocket streaming evaluation | Low | True turn-by-turn vs. current stateless webhook |
 | TypeScript/Node.js policy engine port | Low | For vendors preferring JS-native integration |
 
+### 7.4 Production-Readiness vs Enterprise-Readiness Assessment (June 2026)
+
+A factual, unhedged snapshot of where NHID-Clinical stands against
+"production-grade," "enterprise-ready," and "plug-in-today" — for internal
+reference and as the basis for any public-facing maturity framing.
+
+**Verdict:** reference implementation, pre-pilot stage. Not enterprise
+production-ready; not yet a turnkey plug-in.
+
+- **Auth/ops gap.** The public demo API requires `x-api-key` on only two
+  routes (`/v1/conformance/check`, `/v1/vendor/metrics/summary`,
+  `template.yaml:81,111-113`); all `/v1/adapters/*` routes are open. No
+  real multi-tenant auth, no per-key rate limiting, no key
+  provisioning/revocation infrastructure, no monitoring/alerting beyond a
+  bare Lambda execution role, no SLA, no incident-response plan (self-
+  reported as absent in `docs/csa-ai-caiq-summary.md`).
+- **NHID-Auth v2 is a library, not a service.** Revocation in
+  `src/agent_identity.py` is in-memory only (`self.revocation_list:
+  Dict[str, int]`) — no KMS/HSM, no persistence. Key custody is explicitly
+  the deploying organization's responsibility per
+  `docs/nhid-auth-pki-and-oauth2-integration.md`.
+- **No third-party validation.** No SOC2, no HIPAA BAA, no penetration
+  test, no external security audit — only a self-administered CSA AI CAIQ
+  (`docs/csa-ai-caiq-v1.1-self-assessment.xlsx`).
+- **Zero completed pilots.** "Actively seeking pilot partners" is accurate
+  and already stated truthfully on the public site (`index.html`,
+  `for-payers.html`, `about.html`).
+- **Single maintainer, CC BY 4.0 license, no commercial support entity.**
+- **FHIR scope is base R4 only** — correctly never claims HL7 IG
+  conformance.
+- **Real-corpus detection rates** (Fabricate Battle-Test Corpus, 550
+  conversations / 4,839 turns — see §2.5): IDG-01 100%, EIT-01 94.7%,
+  PDX-01 58.6%, DBC-01 2.5% (post phrase-expansion; was 0.5%), ATR-01 0.0%
+  (corpus/adapter structural limitation, not yet a heuristic gap). The
+  headline controls (IDG-01, EIT-01) hold up against real conversational
+  phrasing; DBC-01 and ATR-01 do not yet.
+- **Independent outside corroboration.** A third-party review of the
+  site's public positioning and adoption traction (user-supplied, June
+  2026) reached the same conclusion without seeing this assessment:
+  traction is "mostly passive, top-of-funnel," with "no public pilots
+  announced" — external confirmation of the pre-pilot framing above.
+
+**What is genuinely strong:** real test discipline (not theater — see §2.5
+and §7.2), substantive and non-overstated regulatory positioning (§14–§16),
+and public-facing honesty that already avoids claiming certification,
+IG conformance, or pilots that haven't happened.
+
 ---
 
 ## 8. Coding & Development
