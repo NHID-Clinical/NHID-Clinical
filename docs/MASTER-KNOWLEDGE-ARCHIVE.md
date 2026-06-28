@@ -376,8 +376,8 @@ file index, and §23.3 for the per-file test breakdown. Shipped via PR #307.
 
 **Follow-up: DBC-01 additive coverage expansion (June 2026).** After the initial run above
 showed a 0.5% DBC-01 detection rate, the corpus was mined directly for real agent-turn text in
-`dbc01_violation=1` conversations that escaped `_assertion_implies_human()`. Per §9.1 invariant
-#7, candidates were required to be multi-word, contextual, *and* absent from all 350
+`dbc01_violation=1` conversations that escaped `_assertion_implies_human()`. Per invariant #7 of
+§9.1, candidates were required to be multi-word, contextual, *and* absent from all 350
 `dbc01_violation=0` agent turns in the corpus (zero measured false-positive risk on this
 dataset) before being added — this ruled out generic reassurance language like `"i'll
 personally"` (20 violation hits, but also 5 false-positive hits in compliant transcripts) and
@@ -1809,7 +1809,7 @@ NHID-Clinical is not positioned against any existing product. It fills a gap:
 
 ### 19.4 Adapter Design Decisions
 
-- All adapters share the same `to_nhid_event(payload) → (session, event)` contract
+- All live vendor adapters share the same `to_nhid_event(payload) → (session, event)` contract — `adapters/fabricate_adapter.py` is the one exception, a batch-eval path that emits full multi-turn conversations for `compute_detection_rates()` instead (§5.3)
 - Disclosure is valid only if it precedes PHI request (even if minimal time difference)
 - ATR-01 required fields (`actor_id`, `replay_mode`, `external_calls_cached`) must be set by every adapter
 - Bot-to-bot detection uses `counterparty_type` field, not speech analysis

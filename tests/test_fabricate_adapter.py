@@ -147,9 +147,10 @@ class TestDisclosureStickiness:
     def test_disclosure_carries_forward_to_later_turns(self):
         result = fabricate_conversation_to_eval_shape(_CONV_DBC01, _TURNS_DBC01)
         turns = result["turns"]
-        assert turns[0]["disclosure_timestamp"] is not None
-        assert turns[1]["disclosure_timestamp"] is not None
-        assert turns[2]["disclosure_timestamp"] is not None
+        original_timestamp = turns[0]["disclosure_timestamp"]
+        assert original_timestamp is not None
+        assert turns[1]["disclosure_timestamp"] == original_timestamp
+        assert turns[2]["disclosure_timestamp"] == original_timestamp
 
     def test_no_disclosure_yields_none(self):
         result = fabricate_conversation_to_eval_shape(_CONV_EIT01, _TURNS_EIT01)
