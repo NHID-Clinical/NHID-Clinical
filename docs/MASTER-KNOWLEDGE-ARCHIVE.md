@@ -227,6 +227,9 @@ core behavioral tests map to the five controls:
 **Determinism guarantee:** Same inputs → identical output on every run. No randomness, no LLM
 calls, no external I/O in the policy engine.
 
+See §2.5 for the synthetic-conversation evaluation loop that exercises these same controls
+outside the YAML-based CTS fixtures.
+
 ### 2.4 Impersonation Latency — The Core Failure Mode
 
 Impersonation Latency is the canonical term for the failure mode NHID-Clinical exists to prevent.
@@ -265,6 +268,63 @@ Disclosure in the first message yields `IL(turns) = 0` — the conformant target
 This definition is deterministic: both anchors are required ATR-01 event fields, so IL is computable from any conformant audit trail with no human judgment.
 
 ![Impersonation Latency — formal measurement diagram](assets/archive/fig7-il-formula.svg)
+
+### 2.5 Synthetic Evaluation Loop & Regression Tests (June 2026)
+
+**Module:** `src/synthetic_eval_loop.py`
+
+This module provides a per-control detection-rate evaluator for batches of synthetic
+conversation fixtures. It mirrors the session/event construction pattern established in
+`src/cts_runner.py`, exposing:
+
+| Function | Purpose |
+| :--- | :--- |
+| `build_session(turn)` | Constructs the canonical `session` dict for a turn, threading per-turn overrides such as `escalation_path_available` and `counterparty_type`. |
+| `build_event(turn, session)` | Constructs the canonical `event` dict, including the nested `healthcare_governance` block (`deceptive_artifact_flags`, `disclosure_timestamp`, `phi_accessed`, etc.). |
+| `extract_rule_ids(decision)` | Pulls `rule_id` values off the `BoundaryViolation` objects returned by `evaluate_all`. |
+| `evaluate_conversation(...)` | Runs a full conversation's turns through `evaluate_all` and aggregates violations. |
+| `compute_detection_rates(...)` | Aggregates per-control detection counts across a batch of evaluated conversations. |
+| `print_report(...)` | Prints a formatted detection-rate summary. |
+
+**Root cause and fix:** The initial implementation of `build_session()` and `build_event()`
+did not correctly thread certain turn-level overrides into the nested locations the policy
+engine actually reads:
+
+- `escalation_path_available` was not propagated into `session["escalation_path_available"]`
+- `deceptive_artifact_flags` was not propagated into
+  `event["healthcare_governance"]["deceptive_artifact_flags"]`
+
+Because DBC-01 and EIT-01 both key off these two fields, conversations exercising those
+controls evaluated as silently compliant — a wiring gap in the harness, not a defect in
+`evaluate_all` itself. The fix threads both overrides through to their correct nested
+locations in `build_session()`/`build_event()`.
+
+**Regression coverage:** `tests/test_synthetic_eval_loop.py`
+
+| Fixture | Target control(s) |
+| :--- | :--- |
+| `CONV-CONFORM-001` | None (conformant baseline) |
+| `CONV-IDG01-PDX01-001` | IDG-01, PDX-01 |
+| `CONV-DBC01-001` | DBC-01 |
+| `CONV-EIT01-001` | EIT-01 |
+| `CONV-ATR01-001` | ATR-01 |
+
+Each fixture is a single-turn conversation constructed to trip exactly one control (or
+none). Test classes `TestExtractRuleIds`, `TestDetectionRates`, and
+`TestEvaluateConversation` cover rule-ID extraction, per-control detection-rate
+computation, and conversation-level evaluation respectively. Two tests —
+`test_dbc01_detected_not_zero` and `test_eit01_detected_not_zero` — assert non-zero
+detection directly, guarding against regression of the threading bug described above.
+
+**Test count impact:**
+
+| | Before | After |
+| :--- | :--- | :--- |
+| Unit tests | 284 | **294** |
+| `UNIT_EXPECTED` (`scripts/validate_ci.py`) | 284 | **294** |
+
+All 294 unit tests pass under the updated invariant. See §5.2 for the canonical
+session/event structures these builders populate, and §23.3 for the test file index.
 
 ---
 
@@ -544,6 +604,9 @@ event = {
 }
 ```
 
+`src/synthetic_eval_loop.py` builds both of these structures from synthetic conversation
+fixtures for batch detection-rate evaluation; see §2.5.
+
 ### 5.3 Vendor Adapter Pipeline
 
 Every vendor adapter follows this pipeline:
@@ -634,7 +697,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 284 passing unit tests
+│   └── test_*.py                      # 294 passing unit tests
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -804,11 +867,12 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Pilot report generator | 268 | `test_pilot_report_generator.py` |
 | + CTS runner (final, 9 tests) | **270** | `test_cts_runner.py` (actual: 9 tests) |
 | + Identity API route (v1.3 final) | 277 | `test_identity_api.py` |
-| + Network resilience (v1.3 final) | **284** | `test_network_resilience.py` |
+| + Network resilience (v1.3 final) | 284 | `test_network_resilience.py` |
+| + Synthetic eval loop fix (DBC-01/EIT-01 threading) | **294** | `test_synthetic_eval_loop.py` |
 
-**Current invariant:** `UNIT_EXPECTED = 284` in `scripts/validate_ci.py`
+**Current invariant:** `UNIT_EXPECTED = 294` in `scripts/validate_ci.py`
 
-**Total suite:** 350 passing (284 Python + 66 TypeScript middleware)
+**Total suite:** 360 passing (294 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -832,7 +896,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 284 passed (18 skipped when no server running = integration tests)
+# Expected: 294 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -852,11 +916,11 @@ PyJWT>=2.8.0
 
 ### 8.3 CI Invariant
 
-The CI pipeline enforces exactly `UNIT_EXPECTED = 284` passing tests with 0 failures:
+The CI pipeline enforces exactly `UNIT_EXPECTED = 294` passing tests with 0 failures:
 
 ```python
 # scripts/validate_ci.py
-UNIT_EXPECTED = 284
+UNIT_EXPECTED = 294
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -990,7 +1054,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 284`) must hold after
+1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 294`) must hold after
    every change. Run `python scripts/validate_ci.py` before committing.
 
 2. **"Impersonation Latency" is the permanent canonical term.** It must never be renamed,
@@ -1020,7 +1084,7 @@ When Claude Code or any LLM is working on this repository:
 4. Update CI job name in .github/workflows/ci.yml:
    name: "Unit invariant: <new count> passed, 0 skipped"
 5. Update README.md badge: [![Tests](https://img.shields.io/badge/tests-<N>%20passing-brightgreen)]
-6. Update README.md description: "350 passing across the Python test suite (284) and TypeScript..."
+6. Update README.md description: "360 passing across the Python test suite (294) and TypeScript..."
    → adjust both numbers
 7. Update .github/CONTRIBUTING.md expected count
 8. Stage all changed files explicitly and commit atomically
@@ -1056,8 +1120,8 @@ When Claude Code or any LLM is working on this repository:
 When resuming a Claude Code session after context limit:
 
 > "Continue from where you left off. The plan file is at
-> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 284.
-> All 284 tests pass. The most recent completed task was [X]. The next task is [Y]."
+> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 294.
+> All 294 tests pass. The most recent completed task was [X]. The next task is [Y]."
 
 ---
 
@@ -1944,7 +2008,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_EXPECTED = 284  # scripts/validate_ci.py
+UNIT_EXPECTED = 294  # scripts/validate_ci.py
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -1983,7 +2047,8 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_handler_cas.py` | 5 | CAS block in API responses |
 | `test_badge_generator.py` | 5 | SVG badge generation |
 | `test_pilot_report_generator.py` | 5 | Pilot report generator |
-| **Total** | **284 passed, 18 skipped** | All Python unit tests |
+| `test_synthetic_eval_loop.py` | 10 | Synthetic conversation detection-rate evaluator |
+| **Total** | **294 passed, 18 skipped** | All Python unit tests |
 
 ### 23.4 Pre-Generated Failure Traces
 
