@@ -314,6 +314,12 @@ _DBC_IMPERSONATION_PHRASES: tuple[str, ...] = (
     "this is a human representative",
     "a person calling",
     "real person calling",
+    # Sourced from real-corpus mining (fixtures/fabricate, June 2026): multi-word
+    # ownership-framing phrases that appeared only in DBC-01-violation transcripts
+    # and zero compliant-baseline transcripts in the 550-conversation corpus.
+    "personally take care of",
+    "i will personally",
+    "team has already reviewed",
 )
 
 
