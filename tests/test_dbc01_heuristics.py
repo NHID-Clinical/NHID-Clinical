@@ -94,3 +94,30 @@ class TestDBC01Heuristics:
     def test_assertion_implies_human_helper_case_insensitive(self):
         assert _assertion_implies_human("I AM A HUMAN") is not None
         assert _assertion_implies_human("totally automated system") is None
+
+    def test_personally_take_care_of_triggers_major(self):
+        session, event = _make_event(
+            "I'll personally take care of coordinating those with you to expedite the review."
+        )
+        d = evaluate_dbc01(session, event)
+        assert d.action == PolicyAction.LOG_ONLY
+        majors = [v for v in d.violations if v.severity == ViolationSeverity.MAJOR]
+        assert len(majors) == 1
+
+    def test_i_will_personally_triggers_major(self):
+        session, event = _make_event(
+            "Let me assure you that I will personally take care of this and ensure we get you a clear answer today."
+        )
+        d = evaluate_dbc01(session, event)
+        assert d.action == PolicyAction.LOG_ONLY
+        assert any(v.rule_id == "DBC-01" and v.severity == ViolationSeverity.MAJOR
+                   for v in d.violations)
+
+    def test_team_has_already_reviewed_triggers_major(self):
+        session, event = _make_event(
+            "My team has already reviewed this file and there's a coverage limitation issue here."
+        )
+        d = evaluate_dbc01(session, event)
+        assert d.action == PolicyAction.LOG_ONLY
+        majors = [v for v in d.violations if v.severity == ViolationSeverity.MAJOR]
+        assert len(majors) == 1
