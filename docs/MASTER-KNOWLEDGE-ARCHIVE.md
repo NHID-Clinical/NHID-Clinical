@@ -438,6 +438,19 @@ methodology itself is captured as a Claude Code Skill
 (`.claude/skills/nhid-corpus-heuristic-mining/SKILL.md`) so future phrase-drift investigations
 follow the same vet-before-merge discipline rather than ad hoc guessing.
 
+**The SOP, code-enforced (June 2026).** The procedure above described what a reviewer should do
+once a session needs a human look — it did not make the system route anything. That gap is
+closed: `src/dbc01_review_routing.should_route_to_review()` evaluates the SOP's criteria (any
+DBC-01 violation in `decision.violations`, or CAS below `CAS_CONDITIONAL_TRUST`) against every
+conformance check; `functions/handler.py`'s `_decision_to_dict()` calls it and, on a route,
+persists the session to a new `dbc01_review_queue` table in `nhid_event_store.py` via
+`enqueue_dbc01_review()`. The handler's JSON response now carries the outcome in a `human_review`
+block. Reviewers work the queue with `scripts/resolve_dbc01_review.py --list` /
+`--resolve <id> --disposition confirmed_impersonation|false_positive`, which records a one-way
+disposition rather than allowing silent re-resolution. The SOP itself documents this tooling in
+its own "Operational tooling" section. This is additive, DB-backed state — it does not change
+`evaluate_dbc01()`'s detection logic or rates measured above.
+
 ---
 
 ## 3. Governance Architecture
@@ -816,7 +829,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 306 passing unit tests
+│   └── test_*.py                      # 330 passing unit tests
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -989,11 +1002,13 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Network resilience (v1.3 final) | 284 | `test_network_resilience.py` |
 | + Synthetic eval loop fix (DBC-01/EIT-01 threading) | 294 | `test_synthetic_eval_loop.py` |
 | + Fabricate Battle-Test Corpus adapter | 303 | `test_fabricate_adapter.py` |
-| + DBC-01 corpus-mined phrase expansion (additive) | **306** | `test_dbc01_heuristics.py` (+3) |
+| + DBC-01 corpus-mined phrase expansion (additive) | 306 | `test_dbc01_heuristics.py` (+3) |
+| + DBC-01 human-review routing + queue store | 327 | `test_dbc01_review_routing.py`, `test_dbc01_review_queue_store.py`, `test_handler_human_review.py` (+21) |
+| + CodeRabbit review fixes (idempotency + handler regression tests) | **330** | `test_dbc01_review_queue_store.py`, `test_handler_human_review.py` (+3) |
 
-**Current invariant:** `UNIT_EXPECTED = 306` in `scripts/validate_ci.py`
+**Current invariant:** `UNIT_EXPECTED = 330` in `scripts/validate_ci.py`
 
-**Total suite:** 372 passing (306 Python + 66 TypeScript middleware)
+**Total suite:** 396 passing (330 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1064,7 +1079,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 306 passed (18 skipped when no server running = integration tests)
+# Expected: 330 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1084,11 +1099,11 @@ PyJWT>=2.8.0
 
 ### 8.3 CI Invariant
 
-The CI pipeline enforces exactly `UNIT_EXPECTED = 306` passing tests with 0 failures:
+The CI pipeline enforces exactly `UNIT_EXPECTED = 330` passing tests with 0 failures:
 
 ```python
 # scripts/validate_ci.py
-UNIT_EXPECTED = 306
+UNIT_EXPECTED = 330
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -1222,7 +1237,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 306`) must hold after
+1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 330`) must hold after
    every change. Run `python scripts/validate_ci.py` before committing.
 
 2. **"Impersonation Latency" is the permanent canonical term.** It must never be renamed,
@@ -1288,8 +1303,8 @@ When Claude Code or any LLM is working on this repository:
 When resuming a Claude Code session after context limit:
 
 > "Continue from where you left off. The plan file is at
-> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 306.
-> All 306 tests pass. The most recent completed task was [X]. The next task is [Y]."
+> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 330.
+> All 330 tests pass. The most recent completed task was [X]. The next task is [Y]."
 
 ---
 
@@ -2185,7 +2200,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_EXPECTED = 306  # scripts/validate_ci.py
+UNIT_EXPECTED = 330  # scripts/validate_ci.py
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2226,7 +2241,10 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_pilot_report_generator.py` | 5 | Pilot report generator |
 | `test_synthetic_eval_loop.py` | 10 | Synthetic conversation detection-rate evaluator |
 | `test_fabricate_adapter.py` | 9 | Fabricate CSV corpus adapter field mapping |
-| **Total** | **306 passed, 18 skipped** | All Python unit tests |
+| `test_dbc01_review_queue_store.py` | 12 | `dbc01_review_queue` table CRUD (enqueue/list/get/resolve, incl. idempotency) |
+| `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
+| `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
+| **Total** | **330 passed, 18 skipped** | All Python unit tests |
 
 ### 23.4 Pre-Generated Failure Traces
 

@@ -70,6 +70,29 @@ def _get_db_connection() -> sqlite3.Connection:
         "revoked_at TEXT NOT NULL"
         ");"
     )
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS dbc01_review_queue ("
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "session_id TEXT,"
+        "event_id TEXT,"
+        "request_id TEXT,"
+        "timestamp TEXT NOT NULL,"
+        "trigger_reason TEXT NOT NULL,"
+        "severity TEXT,"
+        "identity_assertion_text TEXT,"
+        "cas_score REAL,"
+        "cas_tier TEXT,"
+        "status TEXT NOT NULL DEFAULT 'pending',"
+        "disposition TEXT,"
+        "reviewer TEXT,"
+        "resolved_at TEXT,"
+        "notes TEXT,"
+        "UNIQUE(session_id, event_id, request_id)"
+        ");"
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_review_queue_status ON dbc01_review_queue(status);"
+    )
     conn.commit()
     return conn
 
@@ -439,6 +462,122 @@ def is_delegation_revoked(delegation_id: str) -> bool:
                 (delegation_id,),
             ).fetchone()
             return row is not None
+        finally:
+            conn.close()
+
+    return _run_sqlite_with_retry(operation)
+
+
+# ── DBC-01 human-review queue (docs/dbc01-human-review-sop.md) ───────────────
+
+REVIEW_DISPOSITIONS = ("confirmed_impersonation", "false_positive")
+
+
+def enqueue_dbc01_review(
+    session_id: str | None,
+    event_id: str | None,
+    request_id: str | None,
+    trigger_reason: str,
+    severity: str | None = None,
+    identity_assertion_text: str | None = None,
+    cas_score: float | None = None,
+    cas_tier: str | None = None,
+) -> Dict[str, Any]:
+    """Queue a session for human review. Returns the inserted row."""
+    if not trigger_reason:
+        raise ValueError("trigger_reason is required")
+
+    def operation():
+        conn = _get_db_connection()
+        try:
+            with conn:
+                conn.execute(
+                    "INSERT INTO dbc01_review_queue "
+                    "(session_id, event_id, request_id, timestamp, trigger_reason, severity, "
+                    "identity_assertion_text, cas_score, cas_tier, status) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending') "
+                    "ON CONFLICT(session_id, event_id, request_id) DO NOTHING",
+                    (
+                        session_id,
+                        event_id,
+                        request_id,
+                        _utc_timestamp(),
+                        trigger_reason,
+                        severity,
+                        identity_assertion_text,
+                        cas_score,
+                        cas_tier,
+                    ),
+                )
+                row = conn.execute(
+                    "SELECT * FROM dbc01_review_queue WHERE session_id IS ? AND event_id IS ? "
+                    "AND request_id IS ?",
+                    (session_id, event_id, request_id),
+                ).fetchone()
+                return _row_to_dict(row)
+        finally:
+            conn.close()
+
+    return _run_sqlite_with_retry(operation)
+
+
+def list_pending_dbc01_reviews() -> List[Dict[str, Any]]:
+    def operation():
+        conn = _get_db_connection()
+        try:
+            rows = conn.execute(
+                "SELECT * FROM dbc01_review_queue WHERE status = 'pending' ORDER BY id ASC"
+            ).fetchall()
+            return [_row_to_dict(row) for row in rows]
+        finally:
+            conn.close()
+
+    return _run_sqlite_with_retry(operation)
+
+
+def get_dbc01_review(queue_id: int) -> Optional[Dict[str, Any]]:
+    def operation():
+        conn = _get_db_connection()
+        try:
+            row = conn.execute(
+                "SELECT * FROM dbc01_review_queue WHERE id = ?", (queue_id,)
+            ).fetchone()
+            return _row_to_dict(row) if row else None
+        finally:
+            conn.close()
+
+    return _run_sqlite_with_retry(operation)
+
+
+def resolve_dbc01_review(
+    queue_id: int, disposition: str, reviewer: str = "", notes: str = ""
+) -> Dict[str, Any]:
+    """Resolve a pending review with a disposition. One-way transition —
+    raises if the queue_id doesn't exist or is already resolved."""
+    if disposition not in REVIEW_DISPOSITIONS:
+        raise ValueError(f"disposition must be one of {REVIEW_DISPOSITIONS}, got {disposition!r}")
+
+    def operation():
+        conn = _get_db_connection()
+        try:
+            with conn:
+                cur = conn.execute(
+                    "UPDATE dbc01_review_queue SET status = 'resolved', disposition = ?, "
+                    "reviewer = ?, resolved_at = ?, notes = ? WHERE id = ? AND status = 'pending'",
+                    (disposition, reviewer, _utc_timestamp(), notes, queue_id),
+                )
+                if cur.rowcount == 0:
+                    row = conn.execute(
+                        "SELECT * FROM dbc01_review_queue WHERE id = ?", (queue_id,)
+                    ).fetchone()
+                    if row is None:
+                        raise ValueError(f"No review queued with id={queue_id}")
+                    raise ValueError(f"Review id={queue_id} is already resolved")
+
+                resolved = conn.execute(
+                    "SELECT * FROM dbc01_review_queue WHERE id = ?", (queue_id,)
+                ).fetchone()
+                return _row_to_dict(resolved)
         finally:
             conn.close()
 
