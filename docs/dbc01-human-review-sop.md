@@ -32,8 +32,8 @@ SOP is that procedure.
 A session **must** be queued for human review when any of the following is
 true:
 
-1. **`evaluate_dbc01()` returns `LOG_ONLY` with a `MAJOR`-severity violation**
-   (`reason_code == "DBC01_IMPERSONATION_PHRASE_DETECTED"`). The phrase match
+1. **A DBC-01 violation in `decision.violations` routes to human review**
+   (MAJOR for phrase matches, CRITICAL for artifact flags). The phrase match
    fired — this is the highest-confidence signal the deterministic engine can
    give you, and it does not block the call by design (`§2.1` of the
    archive). Treat the non-blocking behavior as "log for review," not

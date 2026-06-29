@@ -681,7 +681,7 @@ def _route_for_human_review(decision, cas: dict, event: dict) -> dict:
     except Exception:  # noqa: BLE001 — read-only FS or no DB: still report the routing decision
         pass
 
-    return {"queued": True, "trigger_reason": routing.trigger_reason, "queue_id": queue_id}
+    return {"queued": queue_id is not None, "trigger_reason": routing.trigger_reason, "queue_id": queue_id}
 
 
 def _decision_to_dict(decision, event: dict | None = None) -> dict:

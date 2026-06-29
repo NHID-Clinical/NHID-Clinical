@@ -37,6 +37,16 @@ class TestEnqueue:
         with pytest.raises(ValueError, match="trigger_reason"):
             store.enqueue_dbc01_review("sess-1", "evt-1", "req-1", trigger_reason="")
 
+    def test_duplicate_identity_is_idempotent(self):
+        first = store.enqueue_dbc01_review(
+            "sess-dup", "evt-dup", "req-dup", trigger_reason="CAS_REVIEW_REQUIRED"
+        )
+        second = store.enqueue_dbc01_review(
+            "sess-dup", "evt-dup", "req-dup", trigger_reason="CAS_REVIEW_REQUIRED"
+        )
+        assert first["id"] == second["id"]
+        assert len(store.list_pending_dbc01_reviews()) == 1
+
 
 class TestListPending:
     def test_lists_only_pending(self):

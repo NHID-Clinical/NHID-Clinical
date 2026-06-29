@@ -86,7 +86,8 @@ def _get_db_connection() -> sqlite3.Connection:
         "disposition TEXT,"
         "reviewer TEXT,"
         "resolved_at TEXT,"
-        "notes TEXT"
+        "notes TEXT,"
+        "UNIQUE(session_id, event_id, request_id)"
         ");"
     )
     conn.execute(
@@ -490,11 +491,12 @@ def enqueue_dbc01_review(
         conn = _get_db_connection()
         try:
             with conn:
-                cur = conn.execute(
+                conn.execute(
                     "INSERT INTO dbc01_review_queue "
                     "(session_id, event_id, request_id, timestamp, trigger_reason, severity, "
                     "identity_assertion_text, cas_score, cas_tier, status) "
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')",
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending') "
+                    "ON CONFLICT(session_id, event_id, request_id) DO NOTHING",
                     (
                         session_id,
                         event_id,
@@ -508,7 +510,9 @@ def enqueue_dbc01_review(
                     ),
                 )
                 row = conn.execute(
-                    "SELECT * FROM dbc01_review_queue WHERE id = ?", (cur.lastrowid,)
+                    "SELECT * FROM dbc01_review_queue WHERE session_id IS ? AND event_id IS ? "
+                    "AND request_id IS ?",
+                    (session_id, event_id, request_id),
                 ).fetchone()
                 return _row_to_dict(row)
         finally:
@@ -557,19 +561,19 @@ def resolve_dbc01_review(
         conn = _get_db_connection()
         try:
             with conn:
-                row = conn.execute(
-                    "SELECT * FROM dbc01_review_queue WHERE id = ?", (queue_id,)
-                ).fetchone()
-                if row is None:
-                    raise ValueError(f"No review queued with id={queue_id}")
-                if row["status"] != "pending":
-                    raise ValueError(f"Review id={queue_id} is already resolved")
-
-                conn.execute(
+                cur = conn.execute(
                     "UPDATE dbc01_review_queue SET status = 'resolved', disposition = ?, "
-                    "reviewer = ?, resolved_at = ?, notes = ? WHERE id = ?",
+                    "reviewer = ?, resolved_at = ?, notes = ? WHERE id = ? AND status = 'pending'",
                     (disposition, reviewer, _utc_timestamp(), notes, queue_id),
                 )
+                if cur.rowcount == 0:
+                    row = conn.execute(
+                        "SELECT * FROM dbc01_review_queue WHERE id = ?", (queue_id,)
+                    ).fetchone()
+                    if row is None:
+                        raise ValueError(f"No review queued with id={queue_id}")
+                    raise ValueError(f"Review id={queue_id} is already resolved")
+
                 resolved = conn.execute(
                     "SELECT * FROM dbc01_review_queue WHERE id = ?", (queue_id,)
                 ).fetchone()

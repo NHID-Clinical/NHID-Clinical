@@ -14,6 +14,7 @@ from src.dbc01_review_routing import (
     DBC01_PHRASE_TRIGGER,
     should_route_to_review,
 )
+from src.nhid_cas import CAS_CONDITIONAL_TRUST
 from src.nhid_policy_engine_v1 import (
     BoundaryViolation,
     PolicyAction,
@@ -73,13 +74,19 @@ class TestDBC01ViolationRouting:
 class TestCASRouting:
     def test_cas_below_conditional_trust_routes(self):
         decision = _decision([], action=PolicyAction.CONTINUE_AI)
-        result = should_route_to_review(decision, cas={"score": 0.5, "tier": "Review Required"})
+        result = should_route_to_review(
+            decision,
+            cas={"score": CAS_CONDITIONAL_TRUST - 0.01, "tier": "Review Required"},
+        )
         assert result.route is True
         assert result.trigger_reason == CAS_REVIEW_TRIGGER
 
     def test_cas_at_or_above_conditional_trust_does_not_route(self):
         decision = _decision([], action=PolicyAction.CONTINUE_AI)
-        result = should_route_to_review(decision, cas={"score": 0.9, "tier": "Verified Trust"})
+        result = should_route_to_review(
+            decision,
+            cas={"score": CAS_CONDITIONAL_TRUST, "tier": "Verified Trust"},
+        )
         assert result.route is False
 
     def test_no_cas_and_no_dbc01_violation_does_not_route(self):
