@@ -343,7 +343,8 @@ much larger, naturalistic corpus instead of fixtures alone.
 
 **Real-corpus run.** `python3 adapters/fabricate_adapter.py fixtures/fabricate/conversations.csv fixtures/fabricate/turns.csv --out conversations.json`
 followed by `python3 scripts/run_batch_eval.py conversations.json` (§5.2) against the full
-550-conversation corpus produced:
+550-conversation corpus produced (**superseded by §2.5.1** — these numbers were distorted by
+adapter wiring bugs and label leakage; kept for history):
 
 | Rule | Detection rate |
 | :--- | :--- |
@@ -450,6 +451,90 @@ block. Reviewers work the queue with `scripts/resolve_dbc01_review.py --list` /
 disposition rather than allowing silent re-resolution. The SOP itself documents this tooling in
 its own "Operational tooling" section. This is additive, DB-backed state — it does not change
 `evaluate_dbc01()`'s detection logic or rates measured above.
+
+### 2.5.1 v1.1 Eval Repair (July 2026) — supersedes the per-rule rates in §2.5
+
+**Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
+(v1.1 is a patch-set label, not a release). Suite: **330 passed / 18 skipped / 0 failed**;
+`UNIT_EXPECTED = 330` holds (3 tests rewritten in place, net count 0).
+
+The detection rates reported in §2.5 (DBC-01 0.5→2.5%, EIT-01 94.7%, PDX-01 58.6%) were
+re-measured after a full replay of `src/nhid_policy_engine_v1.py` via
+`adapters/fabricate_adapter.py` + `src/synthetic_eval_loop.py` against four Fabricate
+battle-test corpora (CSV 550 convs / 127 compliant; `nhid_v2_iso_corpus` 175/35;
+`nhid_adversarial_battery` 175/35; `nhid_baseline_corpus` 200/57). The old numbers had
+**three distinct root causes — only one a real engine gap**:
+
+1. **Wiring/adapter bugs (harness fed the engine bad input).** The adapter blanked
+   `identity_assertion_text` on caller turns, so IDG-01 fired on essentially every
+   post-disclosure caller turn — a disclosure made once does not expire when the caller
+   speaks. ATR-01 is untestable in transcript replay (no audit envelope; consistent with the
+   re-examination above) and is now dropped from expectations during conversion, with a count
+   logged to stderr. PDX-01 expectations on corpora that disclose at turn 0 put every PHI
+   probe out of pre-disclosure scope; also dropped with a logged reason.
+2. **Label leakage (the eval could not fail even in principle).** The v1.0 adapter set
+   `escalation_path_available = (not eit01_violation)` — the ground-truth label wired
+   directly into the detector's input. EIT-01's ~95–100% "detection" was meaningless.
+   Removed; escalation is now derived from the transcript.
+3. **One genuine engine gap: DBC-01 mid-call implied humanity.** The engine only scanned the
+   disclosed `identity_assertion_text` against the impersonation lexicon; it never looked at
+   mid-call agent language that *implies* a human ("our team", "I'll personally take care of
+   this"). This is the one thing that warranted an engine change.
+
+**Engine changes (live path, `src/nhid_policy_engine_v1.py`):** DBC-01 Tier C
+`_speech_implies_human()` + implied-humanity lexicons; EIT-01 honor verification — a new
+CRITICAL `EIT01_ESCALATION_NOT_HONORED` keyed off `escalation_outcome`, backward-compatible
+(fires only when the field is set). **Note:** Tier C is new production detection behavior with
+a measured ~4–11% FP rate on compliant speech (see tradeoff below); whether to keep it live in
+Beacon/Lambda or gate it eval-only is an open decision (owner: Bree).
+
+**Adapter changes (`adapters/fabricate_adapter.py`):** leakage removed; sticky caller-turn
+disclosure assertion; caller-anchored ask-again escalation semantics; ATR-01/PDX-01-turn-0
+exclusions (logged); CSV+JSONL ingestion; `convert` alias retained.
+
+**Corrected per-control confusion matrix (v1.1).** Detection is measured over conversations
+declaring each expected violation; FP over the disjoint `scenario_type == "compliant"`
+population. Reproduce any row with `scripts/confusion_matrix.py` (new; usage in file header):
+
+| Corpus | IDG-01 | PDX-01 | DBC-01 | EIT-01 |
+| :--- | :--- | :--- | :--- | :--- |
+| CSV 550 | 100% (0 FP) | 100% (0 FP) | 91.5% (3.9% FP) | 98.2% (2.4% FP) |
+| v2_iso | n/a | n/a | 86.7% (0 FP) | 98.6% (5.7% FP) |
+| adversarial | 100% (0 FP) | 100% (0 FP) | 97.7% (11.4% FP) | 97.5% (0 FP) |
+| baseline | 100% (0 FP) | 100% (0 FP) | 87.0% (1.8% FP) | 100% (1.8% FP) |
+
+(v2_iso is IDG/PDX-clean by construction — disclosure at turn 0, no turn-0 PHI.) DBC-01:
+0.5–2.5% → **87–98%**. EIT-01 held ~98% *after* de-leaking, so that number now means something.
+These are engine detection measurements against synthetic corpora — not conformance or
+certification claims.
+
+**EIT-01 escalation semantics (decision):** caller-anchored ask-again — a caller request
+stands until the caller has to repeat it; the honor window runs to the caller's *next*
+request; an agent turn honoring inside the window clears it, otherwise it is a deflection.
+This beat "honored anywhere" (~43–60% detection; true violations use transfer language early
+to talk callers *out* of handoffs) and "honored after last ask" (43% on adversarial). It cut
+ISO EIT FP 17.1% → 5.7% and CSV 5.5% → 2.4%. The 2 residual ISO FPs are label-semantics
+mismatches (info-gather-then-transfer `NHID-V2-ISO-00159`; conditional escalation
+`NHID-V2-ISO-00172`), inherent to turn-level boolean labels — documented, not chased.
+
+**DBC-01 lexicon tradeoff (decision: keep as-is):** the FP cost concentrates in three
+high-value phrases — `our team` (344 TP / 2 FP), `i'll personally` (40/2), `my team` (30/2).
+Trimming any of them to shed ~2 FPs each costs 30–344 real detections. The FP rate is the
+honest precision cost of high-recall implied-humanity detection. Residual DBC misses are
+subtle single-cue cases (e.g. `NHID-V2-ISO-00003/00040`, `NHID-ADV-00147/00171`,
+`NHID-CONV-00023/00033`) — the recall cost of not widening the lexicon into compliant speech,
+consistent with the §9.1 invariant #7 ceiling proven above.
+
+**Test-contract changes (3 tests rewritten in place in `tests/test_fabricate_adapter.py`,
+each marked `v1.1 CONTRACT CHANGE`):** `TestEscalationPathAvailable` → `TestEscalationOutcome`
+(the old tests locked in the label leakage; they now assert transcript-derived
+honored/deflected outcomes), and `TestIdentityAssertionText.test_populated_only_for_agent_turns`
+→ `test_agent_own_words_caller_carries_sticky_disclosure` (the old expectation *was* the
+IDG-01 caller-turn FP bug). Revertible without touching the engine.
+
+**Known limits (documented, not masked):** ATR-01 remains untestable in replay — verify via
+`tests/failure_injection_harness.py` against a live server; the 18 skips are exactly those
+integration tests. See `NHID_v1.1_eval_writeup.md` (handoff artifact) for the full narrative.
 
 ---
 
