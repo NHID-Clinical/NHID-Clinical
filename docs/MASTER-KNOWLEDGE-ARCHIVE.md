@@ -534,7 +534,8 @@ IDG-01 caller-turn FP bug). Revertible without touching the engine.
 
 **Known limits (documented, not masked):** ATR-01 remains untestable in replay — verify via
 `tests/failure_injection_harness.py` against a live server; the 18 skips are exactly those
-integration tests. See `NHID_v1.1_eval_writeup.md` (handoff artifact) for the full narrative.
+integration tests. See `docs/devlog_2026-07-02_eval-repair.md` for the condensed journal of
+this repair.
 
 ---
 
