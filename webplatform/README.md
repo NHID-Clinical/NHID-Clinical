@@ -33,6 +33,7 @@ python -m uvicorn webplatform.app:app --host 0.0.0.0 --port 8080
 | Dashboard | `/` | CAS trust-tier distribution, per-control detection rates, audit KPIs | Payer executives |
 | Transcript Analyzer | `/analyzer` | Runs a transcript through the live engine (decision + CAS + violations + review routing) | Ops / QA |
 | Synthetic Generator | `/generator` | Runs the real eval loop over the Fabricate corpus; ingests events | Your team |
+| Conformance Suite | `/conformance` | Runs the 18 CTS cases + the disjoint-population confusion matrix (detection **and** FP) | Regulators / team |
 | Vendor Verification | `/vendors` | Adapter conformance check + Ed25519 passport verify (with tamper demo) | Vendors |
 | Audit Log | `/audit` | Durable event trail + DBC-01 human-review queue (one-way resolution) | Regulators |
 
@@ -43,6 +44,7 @@ python -m uvicorn webplatform.app:app --host 0.0.0.0 --port 8080
 - `GET  /api/scenarios`
 - `POST /api/analyze`  `{scenario}` or `{turns, conversation_id}`
 - `POST /api/generate` `{sample_size, persist}`
+- `GET  /api/cts`  · `GET /api/confusion?sample_size=N`
 - `POST /api/verify/passport` `{tamper}` or `{mode:"supplied", passport:{…}}`
 - `POST /api/adapters/{vendor}/check`  (vendor ∈ vapi, twilio, vonage, retell, connect)
 - `GET  /api/audit/events?limit=N` · `GET /api/audit/reviews`

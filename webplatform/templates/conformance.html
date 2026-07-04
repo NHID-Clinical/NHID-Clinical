@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Conformance Suite{% endblock %}
+{% block content %}
+<h1>Conformance Suite &amp; Confusion Matrix</h1>
+<p class="sub">For regulators &amp; the core team: the canonical CTS test cases (pass/fail against the real engine) and the honest disjoint-population confusion matrix (detection <em>and</em> false positives).</p>
+
+<div class="card">
+  <div class="row"><h2 style="margin:0">Conformance Test Suite (CTS)</h2>
+    <button id="run-cts" style="margin-left:auto">Run CTS</button>
+    <span class="mut" id="cts-status"></span></div>
+  <p class="mut" style="font-size:13px">Runs <code>src.cts_runner.run_cts</code> via the production <code>/v1/cts/evaluate</code> route over the machine-readable <code>conformance/nhid_conformance_test_suite_v1.yaml</code> cases.</p>
+  <div id="cts"><p class="mut">Not run yet.</p></div>
+</div>
+
+<div class="card" style="margin-top:16px">
+  <div class="row"><h2 style="margin:0">Confusion matrix</h2>
+    <button class="ghost" id="run-cm" style="margin-left:auto">Compute over full corpus</button>
+    <span class="mut" id="cm-status"></span></div>
+  <p class="mut" style="font-size:13px">Detection measured over conversations that declare each violation; false positives over the disjoint <code>scenario_type == "compliant"</code> population. Reuses the exact <code>scripts/confusion_matrix.py</code> computation — ATR-01 excluded by design (untestable in transcript replay).</p>
+  <div id="cm"><p class="mut">Not computed yet.</p></div>
+</div>
+
+<script>
+async function runCts() {
+  spin(el("cts-status"));
+  const d = await api("/api/cts");
+  el("cts-status").textContent = "";
+  const rows = (d.results || []).map(r => `
+    <tr>
+      <td class="mono">${esc(r.test_id)}</td>
+      <td><span class="chip">${esc(r.nhid_test_ref)}</span></td>
+      <td>${r.status === "pass" ? '<span class="pill ok">pass</span>' : (r.status === "skip" ? '<span class="pill warn">skip</span>' : '<span class="pill bad">fail</span>')}</td>
+      <td class="mono" style="font-size:12px">${esc(r.expected_action)} → ${esc(r.actual_action)}</td>
+    </tr>`).join("");
+  el("cts").innerHTML = `
+    <div class="row" style="gap:10px;margin-bottom:10px">
+      <span class="pill ok">${d.passed} passed</span>
+      ${d.failed ? `<span class="pill bad">${d.failed} failed</span>` : ''}
+      <span class="pill warn">${d.skipped} skipped</span>
+      <span class="chip">${d.total} total</span>
+    </div>
+    <table><tr><th>Test</th><th>Control</th><th>Status</th><th>Action (exp → act)</th></tr>${rows}</table>`;
+}
+async function runCm() {
+  spin(el("cm-status"));
+  const d = await api("/api/confusion");
+  el("cm-status").textContent = "";
+  const rows = d.controls.map(c => `
+    <tr>
+      <td><b>${c.control}</b></td>
+      <td class="mono">${c.detected}/${c.expected}</td>
+      <td>
+        <div class="bar" style="width:120px;display:inline-block;vertical-align:middle"><span style="width:${c.detection_pct ?? 0}%"></span></div>
+        <span class="mono" style="margin-left:8px">${c.detection_pct ?? "n/a"}%</span>
+      </td>
+      <td class="mono">${c.fp}/${c.clean}</td>
+      <td class="mono"><span class="${(c.fp_pct||0) > 5 ? 'pill bad' : 'pill ok'}">${c.fp_pct ?? "n/a"}%</span></td>
+    </tr>`).join("");
+  el("cm").innerHTML = `
+    <p class="mut">${d.n_conversations} conversations · ${d.n_compliant} compliant.</p>
+    <table><tr><th>Control</th><th>Detected</th><th>Detection rate</th><th>FP / clean</th><th>FP rate</th></tr>${rows}</table>`;
+}
+el("run-cts").onclick = runCts;
+el("run-cm").onclick = runCm;
+runCts(); runCm();
+</script>
+{% endblock %}
