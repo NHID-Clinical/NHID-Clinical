@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Conformance Dashboard</h1>
+<p class="sub">Live view for payer executives: trust scoring, per-control detection, and audit health — all computed by the real policy engine.</p>
+
+<div class="grid cols-4" id="kpis">
+  <div class="card kpi"><div class="n" id="k-events">—</div><div class="l">Audited events</div></div>
+  <div class="card kpi"><div class="n" id="k-sessions">—</div><div class="l">Sessions</div></div>
+  <div class="card kpi"><div class="n" id="k-results">—</div><div class="l">Conformance checks</div></div>
+  <div class="card kpi"><div class="n" id="k-reviews">—</div><div class="l">Pending human reviews</div></div>
+</div>
+
+<div class="grid cols-2" style="margin-top:16px">
+  <div class="card">
+    <div class="row"><h2 style="margin:0">Per-control detection</h2>
+      <button class="ghost" id="refresh" style="margin-left:auto">Refresh</button></div>
+    <p class="mut" style="font-size:13px">Detection rate over a live sample of the Fabricate corpus (disjoint FP populations; ATR-01 excluded — untestable in replay).</p>
+    <div id="detection"></div>
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">CAS trust-tier distribution</h2>
+    <p class="mut" style="font-size:13px">Call Authorization Score tiers across recorded checks. Thresholds:
+      Verified ≥ <span class="mono" id="t-vt"></span>, Conditional ≥ <span class="mono" id="t-ct"></span>,
+      Review ≥ <span class="mono" id="t-rr"></span>.</p>
+    <div id="tiers"></div>
+  </div>
+</div>
+
+<script>
+async function load() {
+  const d = await api("/api/dashboard");
+  el("k-events").textContent = d.counts.events;
+  el("k-sessions").textContent = d.counts.sessions;
+  el("k-results").textContent = d.counts.conformance_results;
+  el("k-reviews").textContent = d.counts.pending_reviews;
+  el("t-vt").textContent = d.cas_thresholds.verified_trust;
+  el("t-ct").textContent = d.cas_thresholds.conditional_trust;
+  el("t-rr").textContent = d.cas_thresholds.review_required;
+
+  el("detection").innerHTML = d.detection.map(c => `
+    <div style="margin:12px 0">
+      <div class="row"><b>${c.control}</b>
+        <span class="mut" style="margin-left:auto">${c.detected}/${c.expected} · ${c.detection_rate}%</span></div>
+      <div class="bar"><span style="width:${c.detection_rate}%"></span></div>
+    </div>`).join("");
+
+  const tiers = d.cas_tiers;
+  el("tiers").innerHTML = tiers.length
+    ? `<table><tr><th>Tier</th><th>Checks</th></tr>` +
+      tiers.map(t => `<tr><td>${tierPill(t.tier)}</td><td class="mono">${t.count}</td></tr>`).join("") + `</table>`
+    : `<p class="mut">No conformance checks recorded yet. Run the <a href="/analyzer">Transcript Analyzer</a> or <a href="/generator">Synthetic Generator</a> to populate this.</p>`;
+}
+el("refresh").onclick = async () => { spin(el("detection")); await api("/api/dashboard/refresh", "POST"); load(); };
+load();
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Synthetic Generator{% endblock %}
+{% block content %}
+<h1>Synthetic Generator &amp; Evaluation</h1>
+<p class="sub">Runs the real synthetic eval loop over the committed Fabricate battle-test corpus (550 labeled conversations) via the existing <code>fabricate_adapter</code> + <code>compute_detection_rates</code>. Optionally ingests events into the audit store.</p>
+
+<div class="grid cols-2">
+  <div class="card">
+    <label>Sample size (conversations)</label>
+    <input id="size" type="number" min="1" max="550" value="100">
+    <label style="margin-top:12px"><input type="checkbox" id="persist" checked style="width:auto;vertical-align:-2px"> Ingest events into the audit store</label>
+    <div class="row" style="margin-top:14px">
+      <button id="run">Run evaluation</button>
+      <span class="mut" id="status"></span>
+    </div>
+    <p class="mut" style="font-size:13px;margin-top:14px">Detection is measured only over conversations that declare each violation; false positives are measured on the disjoint <code>compliant</code> population. ATR-01 is excluded (untestable in transcript replay — verified via the failure-injection harness instead).</p>
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">Detection results</h2>
+    <div id="out"><p class="mut">No run yet.</p></div>
+  </div>
+</div>
+
+<script>
+async function run() {
+  const size = parseInt(el("size").value || "100", 10);
+  const persist = el("persist").checked;
+  spin(el("status"));
+  const r = await api("/api/generate", "POST", { sample_size: size, persist });
+  el("status").textContent = "";
+  el("out").innerHTML = `
+    <p class="mut">Sampled ${r.sample_size} of ${r.corpus_total} conversations · ingested ${r.ingested_events} events.</p>
+    ${r.controls.map(c => `
+      <div style="margin:12px 0">
+        <div class="row"><b>${c.control}</b>
+          <span class="mut" style="margin-left:auto">${c.detected}/${c.expected} · ${c.detection_rate}%</span></div>
+        <div class="bar"><span style="width:${c.detection_rate}%"></span></div>
+      </div>`).join("")}
+    <p class="mut" style="font-size:13px">Dashboard detection snapshot updated. Visit <a href="/audit">Audit Log</a> to see the ingested events.</p>`;
+}
+el("run").onclick = run;
+</script>
+{% endblock %}

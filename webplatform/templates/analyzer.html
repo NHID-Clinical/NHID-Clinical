@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Transcript Analyzer{% endblock %}
+{% block content %}
+<h1>Transcript Analyzer</h1>
+<p class="sub">Run a call transcript through the live NHID policy engine. Each turn is evaluated by <code>evaluate_all</code>; you get the real decision, CAS score, violations, and human-review routing.</p>
+
+<div class="grid cols-2">
+  <div class="card">
+    <label>Load a demo scenario</label>
+    <div class="row">
+      <select id="scenario">
+        <option value="">— pick a scenario —</option>
+        {% for key, label in scenarios.items() %}
+        <option value="{{ key }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+      <button id="run-scenario">Analyze scenario</button>
+    </div>
+
+    <label style="margin-top:18px">…or paste turns (JSON list of eval-turn objects)</label>
+    <textarea id="turns" spellcheck="false">[
+  {
+    "speaker": "agent",
+    "disclosure_timestamp": "2026-06-01T00:00:00Z",
+    "identity_assertion_text": "Our team has already reviewed your file and I'll personally take care of this.",
+    "speech_text": "Let me pull up your account."
+  }
+]</textarea>
+    <div class="row" style="margin-top:10px">
+      <button id="run-custom">Analyze turns</button>
+      <span class="mut" id="status"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Result</h2>
+    <div id="summary"><p class="mut">No analysis yet.</p></div>
+    <div id="turns-out"></div>
+  </div>
+</div>
+
+<script>
+function render(res) {
+  if (res.error) { el("summary").innerHTML = `<span class="pill bad">${esc(res.error)}</span>`; el("turns-out").innerHTML = ""; return; }
+  const codes = [...new Set(res.violations.map(v => v.rule_id))];
+  el("summary").innerHTML = `
+    <div class="row" style="gap:14px">
+      ${pill(res.conformant, "Conformant", "Non-conformant")}
+      ${tierPill(res.worst_tier)}
+      <span class="chip">min CAS ${res.min_cas}</span>
+      ${res.queued_for_review ? '<span class="pill warn">Queued for human review</span>' : ''}
+    </div>
+    <p style="margin:12px 0 4px" class="mut">Conversation <code>${esc(res.conversation_id)}</code> · ${res.turn_count} turn(s) · violations: ${codes.length ? codes.map(c=>`<span class="chip">${c}</span>`).join(" ") : "<span class='pill ok'>none</span>"}</p>`;
+
+  el("turns-out").innerHTML = res.turns.map(t => `
+    <div class="card" style="background:var(--panel2);margin-top:12px">
+      <div class="row"><b>Turn ${t.turn}</b><span class="chip">${esc(t.speaker)}</span>
+        <span style="margin-left:auto">${pill(t.conformant,"ok","violation")}</span></div>
+      <p class="mono" style="font-size:13px;margin:8px 0">${esc(t.text)}</p>
+      <div class="row" style="gap:8px">
+        <span class="chip">action: ${esc(t.action)}</span>
+        <span class="chip">reason: ${esc(t.reason_code)}</span>
+        <span class="chip">CAS ${t.cas.score} · ${esc(t.cas.tier)}</span>
+      </div>
+      ${t.violations.length ? `<p class="mut" style="margin:8px 0 0">${t.violations.map(v=>`<span class="pill bad" title="${esc(v.description||'')}">${v.rule_id} · ${esc(v.severity)}</span>`).join(" ")}</p>` : ""}
+    </div>`).join("");
+}
+async function runScenario() {
+  const s = el("scenario").value; if (!s) { el("status").textContent = "pick a scenario"; return; }
+  spin(el("status")); render(await api("/api/analyze", "POST", { scenario: s })); el("status").textContent = "";
+}
+async function runCustom() {
+  let turns;
+  try { turns = JSON.parse(el("turns").value); } catch (e) { el("status").innerHTML = '<span class="pill bad">invalid JSON</span>'; return; }
+  spin(el("status")); render(await api("/api/analyze", "POST", { turns, conversation_id: "web-analysis" })); el("status").textContent = "";
+}
+el("run-scenario").onclick = runScenario;
+el("run-custom").onclick = runCustom;
+</script>
+{% endblock %}
