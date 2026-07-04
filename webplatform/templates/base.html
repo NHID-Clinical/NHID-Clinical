@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NHID-Clinical Platform — {% block title %}{{ active }}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script defer src="/static/app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">NHID-Clinical <small>conformance platform</small></div>
+    <nav>
+      {% for item in nav %}
+        <a href="{{ item.href }}" class="{{ 'active' if item.href == active else '' }}">{{ item.label }}</a>
+      {% endfor %}
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    Policy engine v{{ versions.policy_engine_version }} · NHID-Clinical spec v{{ versions.nhid_spec_version }}
+    · every result is produced by the real engine, not a mock.
+  </footer>
+</body>
+</html>
