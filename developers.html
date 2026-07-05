@@ -10,7 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -46,6 +48,8 @@
           <a href="/interoperability.html">Interoperability</a>
           <a href="/evidence-pack.html">Evidence Pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -101,6 +105,8 @@
   <a href="/interoperability.html">Interoperability</a>
   <a href="/evidence-pack.html">Evidence Pack</a>
   <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
   <strong class="mobile-nav-group">Pilot</strong>
   <a href="/for-payers.html">For Payers</a>
   <a href="/community.html">Community</a>
@@ -137,6 +143,21 @@
         <strong>Pre&#8209;standardization draft.</strong> The artifacts linked below are a reference implementation of the NHID&#8209;Clinical v1.3 specification. They demonstrate that the specification can be implemented, replayed, and evaluated through deterministic trace artifacts and conformance testing. These tools are not a certification program, and there is no external certification authority. Conformance testing is self&#8209;administered. All artifacts are open for community review and feedback.
       </div>
 
+      <!-- ── Integration Ladder ────────────────────────────────────────── -->
+
+      <h2 style="margin-bottom:1rem">Staged Integration — Stop at Any Rung</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Integration is a ladder, not an all-or-nothing commitment. Tier 0 needs nothing but <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">curl</code>; Tier 2's cryptographic identity layer (NHID-Auth v2) is optional. Full walkthrough: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/v2-integration-guide.md" style="color:var(--blue)">v2-integration-guide.md</a>.</p>
+      <img src="/assets/diagrams/integration-ladder.svg" alt="Staged integration ladder: Tier 0 paste a payload to the hosted demo endpoint in 15 minutes with no keys; Tier 1 wire one HTTP call into your end-of-call webhook in about 2 hours for continuous CAS monitoring; Tier 2 adds cryptographic agent identity via NHID-Auth v2 in about a day, with NPI-bound passports and scoped delegation" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:2.5rem" loading="lazy"/>
+
+      <!-- ── Front Desk Walkthrough ────────────────────────────────────── -->
+
+      <h2 style="margin-bottom:1rem">See the Controls Run: The Front-Desk Walkthrough</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Before the schemas and YAML below, here's what IDG&#8209;01, PDX&#8209;01, DBC&#8209;01, and EIT&#8209;01 actually enforce on a call, staged as a doctor's-office check-in desk. Run the conformant pass, then the three failure/escalation scenarios; hover any booth for its live <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">rule_engine.config</code>.</p>
+      <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1rem;background:var(--paper)">
+        <iframe src="/assets/media/front-desk-walkthrough.html" title="Interactive walkthrough of NHID-Clinical's four behavioral controls at a simulated clinic front desk" loading="lazy" style="display:block;width:100%;height:900px;border:0" sandbox="allow-scripts"></iframe>
+      </div>
+      <p style="color:var(--ink-soft);font-size:.82rem;line-height:1.6;margin:0 0 2.5rem">Illustrative — dialogue, mock config payloads, and artwork are for explanation only. Control names, field names, and the engine's deterministic priority order are taken directly from <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">docs/nhid-clinical-technical-specification.md</code> and <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/nhid_cas.py</code>.</p>
+
       <!-- ── Artifacts ──────────────────────────────────────────────────── -->
 
       <h2 style="margin-bottom:1.5rem">Reference Artifacts</h2>
@@ -158,7 +179,7 @@
           <div style="flex:1;min-width:0">
             <h3 style="margin:0 0 .35rem;font-size:1.05rem">Policy Engine</h3>
             <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">src/nhid_policy_engine_v1.py</code>
-            <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">Pure Python reference implementation of the five core conformance tests plus a bot&#8209;to&#8209;bot detection rule. No external dependencies; fully deterministic.</p>
+            <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">Pure Python reference implementation of the four core controls plus the supplemental ATR-01 audit-trail control, and a bot&#8209;to&#8209;bot detection rule. No external dependencies; fully deterministic.</p>
           </div>
         </div>
       </div>
@@ -196,6 +217,28 @@
         </div>
       </div>
 
+      <!-- Artifact 6 -->
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;background:var(--paper)">
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <h3 style="margin:0 0 .35rem;font-size:1.05rem">Payer-Initiated Call Guidance</h3>
+            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">docs/payer-initiated-calls.md</code>
+            <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">Policy-extension guide for the reversed call direction — a payer's AI agent calling a provider — covering how IDG&#8209;01, PDX&#8209;01, and DBC&#8209;01 apply when NHID&#8209;Clinical's controls were originally framed around inbound calls.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artifact 7 -->
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;background:var(--paper)">
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <h3 style="margin:0 0 .35rem;font-size:1.05rem">SIP Header Integration Feedback</h3>
+            <code style="font-size:.82rem;color:var(--blue);background:var(--bg-alt);padding:.15rem .4rem;border-radius:3px;word-break:break-all">docs/sip-header-integration-feedback.md</code>
+            <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 0">Standards-feedback position paper proposing an <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">Identity-Disclosure</code> SIP header convention for AI voice agents, referencing the IETF AgentID Protocol draft.</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Interactive demo -->
       <div style="border:1px solid var(--border);border-radius:8px;padding:1.5rem 1.75rem;margin-bottom:2.5rem;background:var(--paper);border-left:3px solid var(--blue)">
         <div style="flex:1;min-width:0">
@@ -215,7 +258,7 @@ python -m pytest tests/ -v
 python -m jsonschema schema/nhid_trace_schema_v1.json
 python tests/trace_generator.py --offline</pre>
 
-      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod</code> and will be automatically skipped if the server is not reachable.</p>
+      <p style="color:var(--body);font-size:.9rem;line-height:1.75;margin-top:.75rem">Unit tests run without a server. Integration tests require a FastAPI instance at <code style="font-size:.85rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod</code> and will be automatically skipped if the server is not reachable.</p>
 
       <!-- ── Hosted API ─────────────────────────────────────────────────────── -->
 
@@ -224,15 +267,23 @@ python tests/trace_generator.py --offline</pre>
         <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">A public conformance endpoint is available for integration testing without self-hosting. Send any NHID-Clinical v1.3 event and receive a structured policy decision.</p>
         <div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.25rem;margin-bottom:1rem">
           <p style="margin:0 0 .4rem;font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase">Endpoint</p>
-          <code style="font-size:.85rem;color:var(--blue);word-break:break-all">POST https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/conformance/check</code>
+          <code style="font-size:.85rem;color:var(--blue);word-break:break-all">POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/conformance/check</code>
         </div>
         <p style="color:var(--body);font-size:.88rem;line-height:1.75;margin:0 0 .75rem">Requests require an <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">x-api-key</code> header. The <a href="/simulator.html" style="color:var(--blue)">Governance Simulator</a> uses a rate-limited demo key automatically. To obtain a key for your integration, contact <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue)">contact@nhid-clinical.org</a>.</p>
         <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.25rem;font-size:.82rem;line-height:1.8;overflow-x:auto;color:var(--body);margin:0">curl -s -X POST \
-  https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/conformance/check \
+  https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/conformance/check \
   -H "x-api-key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"session":{"turn_count":1,"escalation_path_available":true},"event":{...}}'</pre>
-        <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:.85rem 0 0">Returns: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">{"conformant": true/false, "action": "...", "violations": [...], "next_state": "..."}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json" style="color:var(--blue)">sample_request.json</a> for a complete example.</p>
+        <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:.85rem 0 0">Returns: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">{"conformant": true/false, "action": "...", "violations": [...], "next_state": "...", "cas": {"score": ..., "tier": ...}}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json" style="color:var(--blue)">sample_request.json</a> for a complete example.</p>
+      </div>
+
+      <!-- ── CAS Tiers ──────────────────────────────────────────────────────── -->
+
+      <div style="margin-top:2.5rem">
+        <h2 style="margin-bottom:1rem;font-size:1.15rem">Call Authorization Score (CAS) — Tier Thresholds</h2>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Every conformance and adapter response includes a <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">cas</code> block. The score is a 0.0–1.0 composite; the band it falls in determines the suggested action.</p>
+        <img src="/assets/diagrams/cas-scoring-tiers.svg" alt="CAS tier thresholds: 0.90 and above is Verified Trust L2 with full access; 0.75 and above is Conditional Trust L1 with reduced scope; 0.50 and above requires human review; 0.20 and above is denied or degraded with a lower-risk fallback; below 0.20 is a hard denial with a typed error code, logged to the FHIR AuditEvent trail regardless of outcome" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border)" loading="lazy"/>
       </div>
 
       <!-- ── Vendor Quick-Start ─────────────────────────────────────────────── -->
@@ -263,16 +314,28 @@ python tests/trace_generator.py --offline</pre>
               <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:#16a34a;font-weight:600">✅ Live</td>
             </tr>
             <tr>
-              <td style="padding:.6rem .9rem;color:var(--body)">Bland.ai</td>
-              <td style="padding:.6rem .9rem"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/bland/check</code></td>
-              <td style="padding:.6rem .9rem;color:var(--body)">—</td>
-              <td style="padding:.6rem .9rem;color:var(--ink-soft)">🔲 Planned</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Vonage</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border)"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/vonage/check</code></td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">None</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:#16a34a;font-weight:600">✅ Live</td>
+            </tr>
+            <tr>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Retell AI</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border)"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/retell/check</code></td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">None</td>
+              <td style="padding:.6rem .9rem;border-bottom:1px solid var(--border);color:#16a34a;font-weight:600">✅ Live</td>
+            </tr>
+            <tr>
+              <td style="padding:.6rem .9rem;color:var(--body)">Amazon Connect</td>
+              <td style="padding:.6rem .9rem"><code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/connect/check</code></td>
+              <td style="padding:.6rem .9rem;color:var(--body)">None</td>
+              <td style="padding:.6rem .9rem;color:#16a34a;font-weight:600">✅ Live</td>
             </tr>
           </tbody>
         </table>
         <p style="color:var(--body);font-size:.88rem;font-weight:600;margin:0 0 .4rem">Example — VAPI non-compliant call (bot requests PHI before disclosing identity):</p>
         <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.81rem;line-height:1.8;overflow-x:auto;color:var(--body);margin:0 0 .75rem">curl -s -X POST \
-  https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/adapters/vapi/check \
+  https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
   -H "Content-Type: application/json" \
   -d '{
     "call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
@@ -289,7 +352,7 @@ python tests/trace_generator.py --offline</pre>
 
       <div style="margin-top:2.5rem;padding:1.25rem 1.5rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
         <p style="font-weight:700;margin:0 0 .4rem;color:var(--body)">Vendor Interoperability</p>
-        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0">The <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">adapters/</code> directory contains format adapters that convert vendor-specific call transcripts to NHID-Clinical event traces. Available: Twilio Voice Intelligence, VAPI. See the <a href="/interoperability.html" style="color:var(--blue);font-weight:500">interoperability demo →</a></p>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0">The <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">adapters/</code> directory contains format adapters that convert vendor-specific call transcripts to NHID-Clinical event traces. Available: VAPI, Twilio Voice Intelligence, Vonage, Retell AI, Amazon Connect Contact Lens. See the <a href="/interoperability.html" style="color:var(--blue);font-weight:500">interoperability demo →</a></p>
       </div>
 
       <!-- ── Disclaimer ─────────────────────────────────────────────────── -->
@@ -314,18 +377,28 @@ python tests/trace_generator.py --offline</pre>
   </section>
 </main>
 
+
+<section class="page-section" style="padding-top:0">
+  <div class="container" style="max-width:60rem">
+    <div class="premium-callout">
+      <h3>Architecture, visualized</h3>
+      <p>The interactive five-layer trust stack on the homepage shows where adapters, the policy engine, NHID-Auth v2, and the audit ledger sit relative to each other.</p>
+      <a href="/#trust-stack">View the Trust Stack →</a>&nbsp;&nbsp; <a href="/simulator.html?scenario=idg-01">Deep-link a scenario: /simulator.html?scenario=idg-01 →</a>&nbsp;&nbsp;
+    </div>
+  </div>
+</section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
 
   </div>
+  <p class="footer-copy" style="margin-top:.4rem">This is a living open proposal — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
 </footer>
 
 <script src="/site.js"></script>

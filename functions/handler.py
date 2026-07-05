@@ -3,8 +3,6 @@ import json
 import os
 import re
 import sys
-import urllib.error
-import urllib.request
 
 # When SAM packages with CodeUri: ., the repo root is /var/task.
 # This insert ensures `src` and `adapters` are importable whether running locally or in Lambda.
@@ -16,6 +14,26 @@ from src.nhid_policy_engine_v1 import (  # noqa: E402
     evaluate_all,
 )
 from src.nhid_cas import _tier_for_cas  # noqa: E402
+from src.nhid_network_resilience import retry_with_backoff  # noqa: E402
+from src.dbc01_review_routing import should_route_to_review  # noqa: E402
+
+try:
+    import httpx
+    _HTTPX_OK = True
+except ImportError:
+    _HTTPX_OK = False
+
+TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+TURNSTILE_SECRET_ENV = "CLOUDFLARE_TURNSTILE_SECRET"
+
+#: Beacon's live ElevenLabs agent — see agents/beacon_system_prompt.md / beacon.config.json.
+_BEACON_AGENT_ID = "agent_4001krn32nmwe5t8mqzgee0w84rj"
+
+#: Outbound demo calls cost real Twilio/ElevenLabs minutes, unlike every other
+#: demo-suffixed route — these limits exist to cap that cost, not just deter bots.
+_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS = 3600
+_DEMO_CALL_IP_LIMIT = 5
+_DEMO_CALL_PHONE_LIMIT = 3
 
 
 def lambda_handler(event: dict, context) -> dict:
@@ -34,6 +52,13 @@ def lambda_handler(event: dict, context) -> dict:
       GET  /v1/vendor/metrics/summary        — per-vendor metrics, API key required
       POST /v1/pilot/enroll                  — pilot enrollment, no API key required
       POST /v1/cts/evaluate                  — run conformance test suite, no API key required
+      POST /v1/webhooks/twilio-demo/voice    — scripted demo line TwiML, no API key (website demo, not framework)
+      GET  /v1/demo/call-status              — live demo call status, no API key (website demo, not framework)
+      POST /v1/demo/call                     — trigger Beacon outbound demo call, Turnstile+rate-limited (website demo, not framework)
+      POST /v1/demo/sms-opt-in               — web opt-in to text the starter-pack link, consent+Turnstile+rate-limited (website demo, not framework)
+      POST /v1/webhooks/elevenlabs/postcall  — ElevenLabs post-call webhook for the Beacon demo, no API key (website demo, not framework)
+      POST /v1/identity/verify-passport      — verify an NHID-Auth v2 agent passport (src/agent_identity.py), no API key required
+      POST /v1/identity/revoke-passport      — durably revoke a delegation_id, API key required
     """
     method = event.get("httpMethod", "POST")
     path = event.get("path", "")
@@ -43,11 +68,37 @@ def lambda_handler(event: dict, context) -> dict:
             return _handle_badge(event, path)
         if "/vendor/metrics/summary" in path:
             return _handle_metrics_summary(event)
+        if "/demo/call-status" in path:
+            return _handle_demo_call_status(event)
         return _ok({
             "status": "healthy",
             "policy_engine_version": POLICY_ENGINE_VERSION,
             "nhid_spec_version": NHID_SPEC_VERSION,
         })
+
+    # Twilio scripted inbound demo line (website demo feature, not the framework)
+    if "/webhooks/twilio-demo/voice" in path:
+        from functions.twilio_demo_handler import _handle_twilio_demo_voice
+        return _handle_twilio_demo_voice(event)
+
+    # Starter-pack SMS web opt-in (website demo feature, not the framework)
+    if "/demo/sms-opt-in" in path:
+        return _handle_demo_sms_optin(event)
+
+    # Beacon outbound call demo (website demo feature, not the framework)
+    if "/demo/call" in path:
+        return _handle_demo_call(event)
+
+    # ElevenLabs post-call webhook for the Beacon outbound demo (website demo feature)
+    if "/webhooks/elevenlabs/postcall" in path:
+        from functions.elevenlabs_postcall_handler import _handle_elevenlabs_postcall_webhook
+        return _handle_elevenlabs_postcall_webhook(event)
+
+    # NHID-Auth v2 agent passport verification / revocation
+    if "/identity/verify-passport" in path:
+        return _handle_verify_passport(event)
+    if "/identity/revoke-passport" in path:
+        return _handle_revoke_passport(event)
 
     # Pilot enrollment
     if "/pilot/enroll" in path:
@@ -56,10 +107,6 @@ def lambda_handler(event: dict, context) -> dict:
     # Hosted CTS evaluation
     if "/cts/evaluate" in path:
         return _handle_cts_evaluate(event)
-
-    # Outbound call demo route
-    if "/demo/call" in path:
-        return _handle_demo_call(event)
 
     # Turn-by-turn call-progress webhook (no DB writes, stateless)
     if "/webhooks/call-progress" in path:
@@ -99,62 +146,6 @@ def lambda_handler(event: dict, context) -> dict:
         return _error(500, f"Policy evaluation failed: {exc}")
 
     return _ok(_decision_to_dict(decision, policy_event))
-
-
-_BEACON_AGENT_ID = "agent_4001krn32nmwe5t8mqzgee0w84rj"
-
-
-def _handle_demo_call(event: dict) -> dict:
-    """Trigger an outbound ElevenLabs call to the provided phone number."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
-
-    phone = str(body.get("phone", "")).strip()
-    if not phone:
-        return _error(400, "Missing required field: 'phone'")
-
-    digits = re.sub(r"\D", "", phone)
-    if not digits.startswith("1"):
-        digits = "1" + digits
-    if len(digits) != 11:
-        return _error(400, "Phone number must be a valid US number in E.164 format")
-    e164 = "+" + digits
-
-    api_key = os.environ.get("ELEVENLABS_API_KEY", "")
-    phone_number_id = os.environ.get("ELEVENLABS_PHONE_NUMBER_ID", "")
-    if not api_key or not phone_number_id:
-        return _error(503, "Outbound call service not configured")
-
-    url = f"https://api.elevenlabs.io/v1/convai/phone-numbers/{phone_number_id}/outbound-call"
-    payload = json.dumps({
-        "agent_id": _BEACON_AGENT_ID,
-        "to_number": e164,
-    }).encode()
-
-    req = urllib.request.Request(
-        url,
-        data=payload,
-        headers={"xi-api-key": api_key, "Content-Type": "application/json"},
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            resp_body = json.loads(resp.read())
-            return _ok({
-                "status": "dialing",
-                "call_id": resp_body.get("call_id", resp_body.get("conversation_id", "")),
-            })
-    except urllib.error.HTTPError as exc:
-        err_text = exc.read().decode("utf-8", errors="replace")
-        return _error(exc.code, f"ElevenLabs API error: {err_text}")
-    except Exception as exc:  # noqa: BLE001
-        return _error(500, f"Outbound call failed: {exc}")
 
 
 def _handle_vendor(event: dict, vendor: str) -> dict:
@@ -285,6 +276,195 @@ def _handle_metrics_summary(event: dict) -> dict:
     return _ok(metrics)
 
 
+def _verify_turnstile(token: str) -> bool:
+    """Verify a Cloudflare Turnstile token server-side. False on any failure
+    (missing token, missing secret, network error, or Cloudflare rejection) —
+    callers should treat that as "reject the request", not "skip the check"."""
+    if not token:
+        return False
+    secret = os.environ.get(TURNSTILE_SECRET_ENV, "")
+    if not secret or not _HTTPX_OK:
+        return False
+
+    @retry_with_backoff(max_attempts=3)
+    def _post():
+        resp = httpx.post(
+            TURNSTILE_VERIFY_URL,
+            data={"secret": secret, "response": token},
+            timeout=10.0,
+        )
+        resp.raise_for_status()
+        return resp
+
+    try:
+        return bool(_post().json().get("success"))
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def _source_ip(event: dict) -> str:
+    identity = (event.get("requestContext") or {}).get("identity") or {}
+    return identity.get("sourceIp") or "unknown"
+
+
+#: Starter-pack SMS web opt-in — sends real SMS, so rate-limit per IP/number.
+_SMS_OPTIN_IP_LIMIT = 5
+_SMS_OPTIN_PHONE_LIMIT = 3
+
+
+def _handle_demo_sms_optin(event: dict) -> dict:
+    """Web opt-in: a visitor submits their number + explicit consent on the
+    site's /sms-opt-in.html form to receive the one-time starter-pack link by
+    text. CAPTCHA- and rate-limited; sends a real SMS via functions.twilio_sms.
+    The submitted consent + this server-side gate are the documented A2P 10DLC
+    opt-in for the campaign."""
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    # Explicit opt-in consent is mandatory — never text without it.
+    if not body.get("consent"):
+        return _error(400, "Consent is required to receive a text message")
+
+    if not _verify_turnstile(str(body.get("turnstile_token", ""))):
+        return _error(400, "CAPTCHA verification failed")
+
+    phone = str(body.get("phone", "")).strip()
+    if not phone:
+        return _error(400, "Missing required field: 'phone'")
+
+    digits = re.sub(r"\D", "", phone)
+    if not digits.startswith("1"):
+        digits = "1" + digits
+    if len(digits) != 11:
+        return _error(400, "Phone number must be a valid US number in E.164 format")
+    e164 = "+" + digits
+
+    from functions import rate_limiter
+    if not rate_limiter.check_and_increment(
+        f"smsoptin-ip:{_source_ip(event)}",
+        limit=_SMS_OPTIN_IP_LIMIT,
+        window_seconds=_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS,
+    ):
+        return _error(429, "Rate limit exceeded. Please try again later.")
+    if not rate_limiter.check_and_increment(
+        f"smsoptin-phone:{e164}",
+        limit=_SMS_OPTIN_PHONE_LIMIT,
+        window_seconds=_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS,
+    ):
+        return _error(429, "This number has requested too many texts recently.")
+
+    from functions import twilio_sms
+    if not twilio_sms.sms_enabled() or not _HTTPX_OK:
+        return _error(503, "SMS service not configured")
+
+    try:
+        sent = twilio_sms.send_sms(e164, twilio_sms.starter_pack_body())
+    except Exception as exc:  # noqa: BLE001
+        return _error(502, f"SMS send failed: {exc}")
+    if not sent:
+        return _error(502, "SMS send failed")
+
+    return _ok({"status": "sent"})
+
+
+def _handle_demo_call(event: dict) -> dict:
+    """Trigger an outbound ElevenLabs (Beacon) call to the provided phone
+    number. The one demo route with real per-call Twilio/ElevenLabs cost --
+    gated by Turnstile CAPTCHA and per-IP/per-number rate limits before any
+    network call is made."""
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    if not _verify_turnstile(str(body.get("turnstile_token", ""))):
+        return _error(400, "CAPTCHA verification failed")
+
+    phone = str(body.get("phone", "")).strip()
+    if not phone:
+        return _error(400, "Missing required field: 'phone'")
+
+    digits = re.sub(r"\D", "", phone)
+    if not digits.startswith("1"):
+        digits = "1" + digits
+    if len(digits) != 11:
+        return _error(400, "Phone number must be a valid US number in E.164 format")
+    e164 = "+" + digits
+
+    from functions import rate_limiter
+    if not rate_limiter.check_and_increment(
+        f"ip:{_source_ip(event)}", limit=_DEMO_CALL_IP_LIMIT, window_seconds=_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS
+    ):
+        return _error(429, "Rate limit exceeded. Please try again later.")
+    if not rate_limiter.check_and_increment(
+        f"phone:{e164}", limit=_DEMO_CALL_PHONE_LIMIT, window_seconds=_DEMO_CALL_RATE_LIMIT_WINDOW_SECONDS
+    ):
+        return _error(429, "This phone number has received too many demo calls recently.")
+
+    api_key = os.environ.get("ELEVENLABS_API_KEY", "")
+    phone_number_id = os.environ.get("ELEVENLABS_PHONE_NUMBER_ID", "")
+    if not api_key or not phone_number_id or not _HTTPX_OK:
+        return _error(503, "Outbound call service not configured")
+
+    url = f"https://api.elevenlabs.io/v1/convai/phone-numbers/{phone_number_id}/outbound-call"
+
+    @retry_with_backoff(max_attempts=3)
+    def _post():
+        resp = httpx.post(
+            url,
+            json={"agent_id": _BEACON_AGENT_ID, "to_number": e164},
+            headers={"xi-api-key": api_key},
+            timeout=10.0,
+        )
+        resp.raise_for_status()
+        return resp
+
+    try:
+        resp_body = _post().json()
+    except Exception as exc:  # noqa: BLE001
+        return _error(502, f"Outbound call failed: {exc}")
+
+    return _ok({
+        "status": "dialing",
+        "call_id": resp_body.get("call_id", resp_body.get("conversation_id", "")),
+    })
+
+
+def _handle_demo_call_status(event: dict) -> dict:
+    """Live status for the Twilio scripted demo line. Polled by the website.
+
+    session_id="latest" looks up whichever demo call is most recently in
+    progress — visitors watching the site don't know their own call's
+    Twilio CallSid, so this lets anyone watch the live call without typing
+    anything in.
+    """
+    params = event.get("queryStringParameters") or {}
+    session_id = (params.get("session_id") or "").strip()
+    if not session_id:
+        return _error(400, "Missing required query parameter: session_id")
+
+    from functions import demo_status_store
+    if session_id == "latest":
+        session_id = demo_status_store.LATEST_SESSION_KEY
+
+    try:
+        status = demo_status_store.get_status(session_id)
+    except Exception as exc:  # noqa: BLE001
+        return _error(500, f"Status lookup failed: {exc}")
+
+    return _ok(status)
+
+
 def _handle_pilot_enroll(event: dict) -> dict:
     """Pilot enrollment — validates the request and returns next steps."""
     raw_body = event.get("body") or ""
@@ -340,6 +520,100 @@ def _handle_cts_evaluate(event: dict) -> dict:
     return _ok(report)
 
 
+def _handle_verify_passport(event: dict) -> dict:
+    """Verify an NHID-Auth v2 agent passport (src/agent_identity.py).
+
+    AgentIdentityManager.verify_passport() only checks its own in-memory
+    revocation dicts, which are empty on every fresh Lambda invocation — so
+    this also checks nhid_event_store's durable revoked_delegations table,
+    which is the revocation store of record across invocations.
+    """
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    delegation_raw = body.get("delegation")
+    signature_b64 = body.get("signature_b64")
+    agent_signature_b64 = body.get("agent_signature_b64")
+    provider_public_key_b64 = body.get("provider_public_key_b64")
+    if not delegation_raw or not signature_b64 or not agent_signature_b64 or not provider_public_key_b64:
+        return _error(
+            400,
+            "Missing required fields: 'delegation', 'signature_b64', "
+            "'agent_signature_b64', 'provider_public_key_b64'",
+        )
+
+    try:
+        from src.agent_identity import AgentIdentityManager, AgentPassport, Delegation
+        delegation = Delegation.from_json(json.dumps(delegation_raw))
+        passport = AgentPassport(
+            delegation=delegation,
+            signature_b64=signature_b64,
+            agent_signature_b64=agent_signature_b64,
+        )
+        manager = AgentIdentityManager()
+        provider_pub = manager.b64_to_public_key(provider_public_key_b64)
+    except Exception as exc:  # noqa: BLE001
+        return _error(400, f"Invalid passport payload: {exc}")
+
+    required_scope = body.get("required_scope")
+    if required_scope is not None and not isinstance(required_scope, list):
+        return _error(400, "'required_scope' must be a list of strings")
+
+    result = manager.verify_passport(
+        passport,
+        provider_pub,
+        call_sid=str(body.get("call_sid", "")),
+        required_scope=required_scope,
+    )
+
+    if result.valid:
+        try:
+            import nhid_event_store as store
+            if store.is_delegation_revoked(delegation.delegation_id):
+                result = type(result)(False, "ERR_REVOKED", delegation_id=delegation.delegation_id)
+        except Exception:  # noqa: BLE001 — read-only FS or no DB: fall back to library-only check
+            pass
+
+    return _ok({
+        "valid": result.valid,
+        "reason": result.reason,
+        "delegation_id": result.delegation_id,
+        "provider_npi": result.provider_npi,
+        "agent_id": result.agent_id,
+        "scope": result.scope,
+    })
+
+
+def _handle_revoke_passport(event: dict) -> dict:
+    """Durably revoke a delegation_id, surviving across stateless invocations."""
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        return _error(400, "Request body is required")
+
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError as exc:
+        return _error(400, f"Invalid JSON: {exc}")
+
+    delegation_id = str(body.get("delegation_id", "")).strip()
+    if not delegation_id:
+        return _error(400, "Missing required field: 'delegation_id'")
+
+    try:
+        import nhid_event_store as store
+        store.record_revocation(delegation_id, reason=str(body.get("reason", "")))
+    except Exception as exc:  # noqa: BLE001
+        return _error(500, f"Revocation failed: {exc}")
+
+    return _ok({"delegation_id": delegation_id, "revoked": True})
+
+
 def _policy_cas(decision, event: dict) -> dict:
     """Disclosure-level CAS derived from policy violations and event audit fields.
 
@@ -380,7 +654,39 @@ def _policy_cas(decision, event: dict) -> dict:
     }
 
 
+def _route_for_human_review(decision, cas: dict, event: dict) -> dict:
+    """Queue the session for human review per docs/dbc01-human-review-sop.md
+    if it meets either routing criterion. Never raises — a queueing failure
+    (e.g. read-only FS, no DB available) must not break the conformance
+    response itself."""
+    routing = should_route_to_review(decision, cas)
+    if not routing.route:
+        return {"queued": False, "trigger_reason": None, "queue_id": None}
+
+    queue_id = None
+    try:
+        import nhid_event_store as store
+        governance = event.get("healthcare_governance") or {}
+        row = store.enqueue_dbc01_review(
+            session_id=event.get("session_id"),
+            event_id=event.get("event_id"),
+            request_id=event.get("request_id"),
+            trigger_reason=routing.trigger_reason,
+            severity=routing.severity,
+            identity_assertion_text=governance.get("identity_assertion_text"),
+            cas_score=cas.get("score"),
+            cas_tier=cas.get("tier"),
+        )
+        queue_id = row.get("id")
+    except Exception:  # noqa: BLE001 — read-only FS or no DB: still report the routing decision
+        pass
+
+    return {"queued": queue_id is not None, "trigger_reason": routing.trigger_reason, "queue_id": queue_id}
+
+
 def _decision_to_dict(decision, event: dict | None = None) -> dict:
+    event = event or {}
+    cas = _policy_cas(decision, event)
     result = {
         "conformant": len(decision.violations) == 0,
         "action": decision.action.value,
@@ -397,7 +703,8 @@ def _decision_to_dict(decision, event: dict | None = None) -> dict:
         "next_state": decision.next_state,
         "twiml_fallback": decision.twiml_fallback,
         "gather_speech": decision.gather_speech,
-        "cas": _policy_cas(decision, event or {}),
+        "cas": cas,
+        "human_review": _route_for_human_review(decision, cas, event),
     }
     return result
 

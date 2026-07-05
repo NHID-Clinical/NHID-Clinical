@@ -1,0 +1,64 @@
+{
+  "_schema_status": "UNVERIFIED DRAFT. elevenlabs.io blocked every WebFetch attempt (403) in this environment, so the node/edge field names below (id/type/label/additional_prompt/condition/source/target) are reconstructed from search-engine snippets of ElevenLabs' docs and changelog, not confirmed against the live API or an official schema dump. Before relying on this: run `python scripts/sync_agent_config.py --agent beacon --pull` once (even against the current empty start_node) to see the real shape the API returns, diff it against this file, fix field names to match, THEN `--dry-run` to inspect the exact payload, THEN push for real. Do not skip the --pull step.",
+  "_design_intent": "Mirrors the existing flat system prompt in agents/beacon_system_prompt.md as an explicit graph, plus an EIT-01 human-escalation branch (request-a-human handling isn't written into the flat prompt's ```prompt fence today, even though EIT-01 requires it — added here as a node reachable from every conversational step, per the non-negotiable control list in that file).",
+  "nodes": [
+    { "id": "start_node", "type": "start" },
+    {
+      "id": "disclosure_dept_check",
+      "type": "override_agent",
+      "label": "IDG-01 Disclosure + Department Check",
+      "additional_prompt": "Open with the exact disclosure: \"hi, this is Beacon, an ai assistant calling from a provider's office on behalf of a dental facility. i'm calling to check on a claim status. is this the right department?\" Do not proceed past this node until the counterparty confirms department. Never reference PHI (member ID, DOB, diagnosis codes, prior auth numbers) before this disclosure is confirmed (PDX-01)."
+    },
+    {
+      "id": "consent_ask",
+      "type": "override_agent",
+      "label": "Consent to Continue with AI",
+      "additional_prompt": "Ask: \"are you comfortable continuing with an AI assistant, or would you prefer to speak with a human from our office?\""
+    },
+    {
+      "id": "consent_refused",
+      "type": "override_agent",
+      "label": "Consent Refused — Close",
+      "additional_prompt": "Acknowledge immediately: \"I understand. I'm sorry, I am unable to transfer you to a human representative at this time. Please call back during business hours or contact us at a different number.\" Then end the call."
+    },
+    {
+      "id": "verify_and_ask_status",
+      "type": "override_agent",
+      "label": "Verification + Claim Status Ask",
+      "additional_prompt": "Provide verification: NPI 1234567890, member ID MID7890123, date of service May 15, 2026, provider: a provider's office on behalf of a dental facility, 123 Ocean Blvd, New York. Then ask for claim status."
+    },
+    {
+      "id": "claim_approved",
+      "type": "override_agent",
+      "label": "Claim Approved — Close",
+      "additional_prompt": "Thank the representative for confirming the claim is approved, then end the call."
+    },
+    {
+      "id": "claim_denied",
+      "type": "override_agent",
+      "label": "Claim Denied — Reference ID + Reason",
+      "additional_prompt": "Generate a reference ID in the form REF-20260515-[4 random digits]. Ask for the denial reason. Thank the representative, then end the call."
+    },
+    {
+      "id": "human_escalation",
+      "type": "override_agent",
+      "label": "EIT-01 Human Escalation",
+      "additional_prompt": "Acknowledge the request to speak with a human immediately. No live transfer destination is configured for this demo — say so plainly, offer an alternative contact method (call back during business hours, or a different number), then end the call. Never invoke a transfer tool that has nowhere to send the call."
+    },
+    { "id": "end_node", "type": "end" }
+  ],
+  "edges": [
+    { "source": "start_node", "target": "disclosure_dept_check", "condition": { "type": "unconditional" } },
+    { "source": "disclosure_dept_check", "target": "consent_ask", "condition": { "type": "llm", "prompt": "the counterparty has confirmed this is the correct department for a claim status check" } },
+    { "source": "disclosure_dept_check", "target": "human_escalation", "condition": { "type": "llm", "prompt": "the counterparty is asking to speak with a human instead of continuing with the AI assistant" } },
+    { "source": "consent_ask", "target": "consent_refused", "condition": { "type": "llm", "prompt": "the counterparty declines to continue with an AI assistant or asks for a human" } },
+    { "source": "consent_ask", "target": "verify_and_ask_status", "condition": { "type": "llm", "prompt": "the counterparty agrees to continue with the AI assistant" } },
+    { "source": "verify_and_ask_status", "target": "claim_approved", "condition": { "type": "llm", "prompt": "the representative states the claim is approved" } },
+    { "source": "verify_and_ask_status", "target": "claim_denied", "condition": { "type": "llm", "prompt": "the representative states the claim is denied" } },
+    { "source": "verify_and_ask_status", "target": "human_escalation", "condition": { "type": "llm", "prompt": "the counterparty is asking to speak with a human instead of continuing with the AI assistant" } },
+    { "source": "consent_refused", "target": "end_node", "condition": { "type": "unconditional" } },
+    { "source": "claim_approved", "target": "end_node", "condition": { "type": "unconditional" } },
+    { "source": "claim_denied", "target": "end_node", "condition": { "type": "unconditional" } },
+    { "source": "human_escalation", "target": "end_node", "condition": { "type": "unconditional" } }
+  ]
+}

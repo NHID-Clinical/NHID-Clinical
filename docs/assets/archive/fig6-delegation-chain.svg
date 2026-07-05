@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360">
+<rect width="760" height="360" fill="#0F172A"/>
+<text x="380" y="28" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="700" fill="#F8FAFC" letter-spacing="1">NHID-AUTH v2 — DELEGATION CHAIN</text>
+<defs><marker id="a3" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#14B8A6"/></marker></defs>
+<rect x="0" y="70" width="148" height="110" rx="8" fill="#14B8A6"/>
+<rect x="0" y="70" width="148" height="4" rx="3" fill="#14B8A6"/>
+<text x="74" y="96" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#0F172A">Provider Org</text>
+<text x="74" y="113" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">NPI: 1234567890</text>
+<text x="74" y="134" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#67E8F9">claims_inquiry</text>
+<text x="74" y="149" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#67E8F9">eligibility_check</text>
+<line x1="148" y1="125" x2="196" y2="125" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#a3)"/>
+<text x="172" y="115" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#94A3B8">narrowing</text>
+<rect x="204" y="70" width="148" height="110" rx="8" fill="#334155"/>
+<text x="278" y="96" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">AI Vendor</text>
+<text x="278" y="113" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">Hop 1</text>
+<text x="278" y="134" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#67E8F9">claims_inquiry</text>
+<text x="278" y="149" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#67E8F9">eligibility_check</text>
+<line x1="352" y1="125" x2="400" y2="125" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#a3)"/>
+<text x="376" y="115" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#94A3B8">narrowing</text>
+<rect x="408" y="70" width="148" height="110" rx="8" fill="#334155"/>
+<text x="482" y="96" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">Sub-Vendor</text>
+<text x="482" y="113" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">Hop 2</text>
+<text x="482" y="134" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#67E8F9">claims_inquiry</text>
+<line x1="556" y1="125" x2="604" y2="125" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#a3)"/>
+<text x="580" y="115" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#94A3B8">narrowing</text>
+<rect x="612" y="70" width="148" height="110" rx="8" fill="#334155"/>
+<text x="686" y="96" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">Agent Instance</text>
+<text x="686" y="113" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#94A3B8">Hop 3 (max)</text>
+<text x="686" y="134" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#67E8F9">claims_inquiry</text>
+<text x="380" y="216" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11.5" fill="#14B8A6" font-weight="700">Ed25519 signatures at every hop  ·  Scope can only narrow  ·  Max 3 hops  ·  Call-SID nonce binding</text>
+<text x="380" y="236" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#94A3B8">Per-agent and per-delegation revocation  ·  NPI validation on provider node</text>
+</svg>

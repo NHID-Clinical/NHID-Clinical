@@ -3,15 +3,41 @@ Transform: AWS::Serverless-2016-10-31
 Description: NHID Clinical Policy Engine - Hosted Conformance API
 
 Parameters:
+  # ── Website demo feature secrets (NOT the governance framework) ─────────
+  # Forwarded via `make deploy CLOUDFLARE_TURNSTILE_SECRET=...` — see Makefile.
+  CloudflareTurnstileSecret:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Cloudflare Turnstile secret key, used to verify CAPTCHA tokens on public demo forms.
   ElevenLabsApiKey:
     Type: String
-    Default: ""
     NoEcho: true
-    Description: ElevenLabs API key for Beacon outbound call triggering
+    Default: ""
+    Description: ElevenLabs API key for the Beacon outbound call demo.
   ElevenLabsPhoneNumberId:
     Type: String
+    NoEcho: true
     Default: ""
-    Description: ElevenLabs provisioned phone number ID for Beacon outbound calls
+    Description: ElevenLabs provisioned phone number ID for Beacon outbound calls.
+  TwilioAccountSid:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Twilio Account SID, used to send the starter-pack SMS from the inbound demo line.
+  TwilioAuthToken:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Twilio Auth Token, paired with the Account SID for SMS sends.
+  TwilioSmsFrom:
+    Type: String
+    Default: ""
+    Description: SMS-capable Twilio number (or Messaging Service SID) the starter-pack texts are sent from.
+  StarterPackUrl:
+    Type: String
+    Default: "https://nhid-clinical.org/shadow-evaluation-guide.html"
+    Description: URL texted to callers who opt in to the starter-pack SMS at the end of the demo.
 
 Globals:
   Function:
@@ -32,10 +58,21 @@ Resources:
       Description: NHID Clinical policy engine conformance checker
       Policies:
         - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DemoCallStatusTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RateLimitTable
       Environment:
         Variables:
+          DEMO_CALL_STATUS_TABLE: !Ref DemoCallStatusTable
+          RATE_LIMIT_TABLE: !Ref RateLimitTable
+          CLOUDFLARE_TURNSTILE_SECRET: !Ref CloudflareTurnstileSecret
           ELEVENLABS_API_KEY: !Ref ElevenLabsApiKey
           ELEVENLABS_PHONE_NUMBER_ID: !Ref ElevenLabsPhoneNumberId
+          TWILIO_ACCOUNT_SID: !Ref TwilioAccountSid
+          TWILIO_AUTH_TOKEN: !Ref TwilioAuthToken
+          TWILIO_SMS_FROM: !Ref TwilioSmsFrom
+          STARTER_PACK_URL: !Ref StarterPackUrl
       Events:
         ConformancePost:
           Type: Api
@@ -81,12 +118,6 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/adapters/connect/check
             Method: POST
-        DemoCallPost:
-          Type: Api
-          Properties:
-            RestApiId: !Ref NHIDApi
-            Path: /v1/demo/call
-            Method: POST
         CallProgressPost:
           Type: Api
           Properties:
@@ -125,6 +156,86 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /health
             Method: GET
+        TwilioDemoVoicePost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/webhooks/twilio-demo/voice
+            Method: POST
+        DemoCallStatusGet:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/demo/call-status
+            Method: GET
+        DemoCallPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/demo/call
+            Method: POST
+        DemoSmsOptInPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/demo/sms-opt-in
+            Method: POST
+        ElevenLabsPostCallWebhookPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/webhooks/elevenlabs/postcall
+            Method: POST
+        IdentityVerifyPassportPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/identity/verify-passport
+            Method: POST
+        IdentityRevokePassportPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/identity/revoke-passport
+            Method: POST
+            Auth:
+              ApiKeyRequired: true
+
+  # ── Website demo feature: live status store (NOT the governance framework) ─
+  # Backs the Twilio scripted inbound demo line and (later) the Beacon
+  # outbound demo. TTL self-cleans sessions ~1hr after their last write.
+  DemoCallStatusTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: nhid-demo-call-status
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: session_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: session_id
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  # ── Website demo feature: rate-limit counters (NOT the governance framework) ─
+  # Backs functions/rate_limiter.py — abuse deterrence for public demo forms
+  # (e.g. the Beacon outbound-call demo). TTL self-cleans windows.
+  RateLimitTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: nhid-demo-rate-limit
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: rl_key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: rl_key
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   # ── API Gateway REST API ─────────────────────────────────────────────────
   NHIDApi:

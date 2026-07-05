@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -46,6 +47,8 @@
           <a href="/interoperability.html">Interoperability</a>
           <a href="/evidence-pack.html">Evidence Pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -101,6 +104,8 @@
   <a href="/interoperability.html">Interoperability</a>
   <a href="/evidence-pack.html">Evidence Pack</a>
   <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
   <strong class="mobile-nav-group">Pilot</strong>
   <a href="/for-payers.html">For Payers</a>
   <a href="/community.html">Community</a>
@@ -129,6 +134,62 @@
   <section class="page-section">
     <div class="container" style="max-width:800px">
       <div class="news-list">
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-badge badge-release">Release</span>
+            <time class="news-date">June 2026</time>
+          </div>
+          <h2>DBC-01 Coverage Expanded from Real-Corpus Mining</h2>
+          <p>Detection of DBC-01 (Deceptive Behavior Claim) against real conversational phrasing — measured on the Fabricate Battle-Test Corpus (550 real-world voice AI conversations) — was 0.5% prior to this update. Mining the corpus for missed phrasing patterns and additively expanding the heuristic phrase list raised that to 2.5%.</p>
+          <ul style="margin:.5rem 0 .75rem;padding-left:1.25rem;color:var(--body);font-size:.93rem;line-height:1.8">
+            <li>DBC-01 real-corpus detection: 0.5% → 2.5%</li>
+            <li>3 new heuristic phrases added, additive only — no existing phrases removed or renamed</li>
+            <li>3 new regression tests added; full suite at 306 passing</li>
+            <li>IDG-01 (100%) and EIT-01 (94.7%) continue to hold up well against real phrasing; PDX-01 (58.6%), DBC-01, and ATR-01 (0%) remain known weak points and active work — see the <a class="news-link" href="/evidence-pack.html" style="display:inline">Evidence Pack</a> for the full breakdown</li>
+          </ul>
+        </article>
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-badge badge-comm">Community</span>
+            <time class="news-date">June 2026</time>
+          </div>
+          <h2>Community Channels Consolidated to GitHub</h2>
+          <p>Discord and Reddit are no longer used for NHID-Clinical community discussion. All community activity — questions, implementation experiences, and proposal feedback — now happens in GitHub Discussions on the main repository.</p>
+          <div class="news-actions">
+            <a class="news-link" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer">Join the Discussion →</a>
+          </div>
+        </article>
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-badge badge-release">Release</span>
+            <time class="news-date">June 2026</time>
+          </div>
+          <h2>v1.3 Final — Milestone Closeout</h2>
+          <p>Six previously-open items are closed out under the existing v1.3 spec version — no version bump, no v1.4 branding. Shipped this cycle:</p>
+          <ul style="margin:.5rem 0 .75rem;padding-left:1.25rem;color:var(--body);font-size:.93rem;line-height:1.8">
+            <li><a class="news-link" href="/registry.html" style="display:inline">Implementation Registry</a> — self-attestation listing for vendor implementations, seeded empty</li>
+            <li>Spanish and Mandarin disclosure support for Beacon's voice agent</li>
+            <li>Cryptographic agent identity binding (NHID-Auth) wired into the conformance API, with durable passport-revocation storage</li>
+            <li>Production failure-mode handling — bounded retries with jittered backoff on outbound network calls</li>
+            <li>Payer-initiated call guidance and a SIP header standards-feedback position paper</li>
+            <li>284 passing Python tests (18 skipped), 66 passing TypeScript middleware tests</li>
+          </ul>
+          <div class="news-actions">
+            <a class="news-link" href="/registry.html">View the Registry →</a>
+            <a class="news-link" href="/developers.html">Developers &amp; Artifacts →</a>
+          </div>
+        </article>
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-badge badge-comm">Community</span>
+            <time class="news-date">June 2026</time>
+          </div>
+          <h2>Community Channels Consolidated to GitHub</h2>
+          <p>Discord and Reddit are no longer used for NHID-Clinical community discussion. All community activity — questions, implementation experiences, and proposal feedback — now happens in GitHub Discussions on the main repository.</p>
+          <div class="news-actions">
+            <a class="news-link" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer">Join the Discussion →</a>
+          </div>
+        </article>
         <article class="news-card">
           <div class="news-meta">
             <span class="news-badge badge-release">Release</span>
@@ -179,7 +240,7 @@
             <time class="news-date">January 2026</time>
           </div>
           <h2>Submitted to NIST</h2>
-          <p>NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security). Comment ID: NIST-2025-0035-0026. This is a public comment — not a regulatory filing or endorsement.</p>
+          <p>NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security). Comment ID: NIST-2025-0035-0026. This is a public comment — not a regulatory filing or endorsement. The RFI drew 932 public comments in total before the period closed in March 2026.</p>
           <div class="news-actions">
             <a class="news-link" href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">View on Regulations.gov →</a>
           </div>
@@ -190,7 +251,7 @@
             <time class="news-date">May 2026</time>
           </div>
           <h2>Community Channels Open</h2>
-          <p>The NHID-Clinical Discord and r/NonHumanAuth subreddit are now open for community discussion. Join to ask questions about this proposal, share implementation experiences, and contribute to future versions.</p>
+          <p>NHID-Clinical community discussion channels are now open. Join to ask questions about this proposal, share implementation experiences, and contribute to future versions. (Update, June 2026: community discussion has since moved to GitHub Discussions — see the June 2026 announcement above.)</p>
           <div class="news-actions">
             <a class="news-link" href="/community.html">Join the community →</a>
           </div>
@@ -204,11 +265,10 @@
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>

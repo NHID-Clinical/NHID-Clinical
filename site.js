@@ -137,7 +137,7 @@
     {
       title: 'Community',
       url: '/community.html',
-      keywords: 'community discord reddit contribution feedback technical compliance payer provider help contact get involved',
+      keywords: 'community github discussions issues contribution feedback technical compliance payer provider help contact get involved',
       excerpt: 'Join the NHID-Clinical community to give feedback and help shape the next version of the proposal.'
     },
     {
@@ -145,6 +145,12 @@
       url: '/faq.html',
       keywords: 'faq frequently asked questions who what why how cost hipaa tcpa nist mandatory volunteer impersonation latency background',
       excerpt: 'Frequently asked questions about NHID-Clinical, the scope, HIPAA, NIST, and how to get involved.'
+    },
+    {
+      title: 'Implementation Registry',
+      url: '/registry.html',
+      keywords: 'registry implementations vendors self-attestation cas badge nhid-cas listed conformance certified',
+      excerpt: 'Self-attested NHID-Clinical implementations, with live NHID-CAS conformance badges.'
     }
   ];
 
@@ -259,4 +265,102 @@
       if (trigger) trigger.classList.add('is-active');
     }
   });
+})();
+
+/* ── ElevenLabs Conversational AI widget (Compass — site FAQ/support agent) ──
+   Separate from Beacon (the outbound claims-call demo agent): Compass answers
+   visitor questions about adopting/integrating NHID-Clinical. See
+   agents/compass_system_prompt.md. Replace COMPASS_AGENT_ID once the agent is
+   created in the ElevenLabs dashboard (see that file for setup steps).
+
+   Uses the current @elevenlabs/convai-widget-embed package, not the legacy
+   elevenlabs.io/convai-widget/index.js bundle — the legacy bundle predates
+   the agent-level "chat mode" setting and always renders the call-only UI
+   regardless of the dashboard's text-only configuration. */
+(function () {
+  var COMPASS_AGENT_ID = 'agent_3801kvj9xbdaeh29c85900jb4wxj';
+
+  var s = document.createElement('script');
+  s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+  s.async = true;
+  s.type = 'text/javascript';
+  document.head.appendChild(s);
+
+  var w = document.createElement('elevenlabs-convai');
+  w.setAttribute('agent-id', COMPASS_AGENT_ID);
+  document.body.appendChild(w);
+})();
+
+/* ── Demo line live status (website demo feature, not the framework) ───────
+   Renders a session_id's accumulated status from GET /v1/demo/call-status
+   into a container element. Shared between the Twilio scripted inbound demo
+   (demo.html) and, later, the Beacon outbound demo. */
+window.NHIDDemoStatus = (function () {
+  var GATE_RULE_IDS = ['IDG-01', 'PDX-01', 'DBC-01', 'EIT-01'];
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function render(containerEl, statusJson) {
+    if (!containerEl) return;
+    var turns = (statusJson && statusJson.turns) || [];
+
+    var criticalHit = {};
+    GATE_RULE_IDS.forEach(function (id) { criticalHit[id] = false; });
+    turns.forEach(function (t) {
+      var violations = (t.decision && t.decision.violations) || [];
+      violations.forEach(function (v) {
+        if (v.severity === 'critical' && criticalHit.hasOwnProperty(v.rule_id)) {
+          criticalHit[v.rule_id] = true;
+        }
+      });
+    });
+
+    var badgesHtml = GATE_RULE_IDS.map(function (id) {
+      var failed = criticalHit[id];
+      var cls = failed ? 'badge nhid-demo-badge-fail' : 'badge badge-green';
+      return '<span class="' + cls + '">' + id + (failed ? ' ✗' : ' ✓') + '</span>';
+    }).join(' ');
+
+    var logHtml = turns.map(function (t) {
+      var d = t.decision || {};
+      if (d.type === 'summary') {
+        return '<div class="nhid-demo-turn"><strong>Call ended</strong> — ' +
+          (d.critical_violation_count || 0) + ' critical control violation(s) detected.</div>';
+      }
+      var ruleIds = (d.violations || []).map(function (v) { return v.rule_id; }).join(', ') || 'none';
+      return '<div class="nhid-demo-turn">Turn ' + escapeHtml(t.turn_index) + ': <code>' +
+        escapeHtml(d.action || '') + '</code> — violations: ' + escapeHtml(ruleIds) + '</div>';
+    }).join('');
+
+    var scriptLabel = statusJson && statusJson.script_label;
+    var statusLine = scriptLabel
+      ? '<p class="sub">Scenario: ' + escapeHtml(scriptLabel) +
+        (statusJson.completed ? ' (completed)' : ' (in progress)') + '</p>'
+      : '<p class="sub">Waiting for a call…</p>';
+
+    containerEl.innerHTML =
+      '<div class="card nhid-demo-status-card">' +
+      statusLine +
+      '<div class="nhid-demo-badges">' + badgesHtml + '</div>' +
+      '<div class="nhid-demo-log">' + (logHtml || '<p class="sub">No turns yet.</p>') + '</div>' +
+      '</div>';
+  }
+
+  function poll(containerEl, statusUrl, intervalMs) {
+    intervalMs = intervalMs || 2000;
+    function tick() {
+      fetch(statusUrl)
+        .then(function (resp) { return resp.ok ? resp.json() : {}; })
+        .then(function (json) { render(containerEl, json); })
+        .catch(function () {});
+    }
+    tick();
+    return setInterval(tick, intervalMs);
+  }
+
+  return { render: render, poll: poll };
 })();

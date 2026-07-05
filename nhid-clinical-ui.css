@@ -1641,6 +1641,13 @@ body, .site-header, .mobile-nav, .site-footer,
 .badge-green { background: rgba(16,163,108,0.12); color: #10a36c; }
 .badge-gray  { background: var(--blue-soft); color: var(--body); }
 
+/* ── Demo line live status (website demo feature, not the framework) ─────── */
+.nhid-demo-badge-fail { background: rgba(207,34,46,0.12); color: #cf222e; }
+.nhid-demo-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+.nhid-demo-log { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem; }
+.nhid-demo-turn { font-size: 0.85rem; color: var(--body); line-height: 1.5; }
+.nhid-demo-turn code { font-family: "IBM Plex Mono", "Fira Code", "Courier New", monospace; font-size: 0.8rem; }
+
 /* ── Download section (homepage + specs page) ───────────────────────────── */
 .download-section {
   padding-block: 4rem;
@@ -3035,84 +3042,8 @@ textarea { resize: vertical; min-height: 120px; }
   pointer-events: none;
 }
 
-/* ── Beacon outbound call demo form ──────────────────────────────────────── */
-.call-demo-form {
-  display: flex;
-  gap: .5rem;
-  flex-wrap: wrap;
-  align-items: center;
+/* ElevenLabs widget (Compass) — ensure it stays above all content */
+elevenlabs-convai {
+  z-index: 9999;
 }
 
-.call-demo-form input[type="tel"] {
-  flex: 1;
-  min-width: 10rem;
-  max-width: 16rem;
-  padding: .65rem 1rem;
-  border: 1.5px solid var(--line);
-  border-radius: .5rem;
-  font-size: .95rem;
-  font-family: inherit;
-  color: var(--ink);
-  background: var(--surface);
-  transition: border-color 180ms ease, box-shadow 180ms ease;
-}
-
-.call-demo-form input[type="tel"]:focus {
-  outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(11,110,188,.12);
-}
-
-[data-theme="dark"] .call-demo-form input[type="tel"] {
-  background: rgba(255,255,255,.06);
-  border-color: rgba(255,255,255,.15);
-  color: var(--ink);
-}
-
-#call-status {
-  margin-top: .5rem;
-  font-size: .88rem;
-  font-weight: 500;
-  color: var(--teal);
-}
-
-/* ── Beacon outbound call demo form ──────────────────────────────────────── */
-.call-demo-form {
-  display: flex;
-  gap: .5rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.call-demo-form input[type="tel"] {
-  flex: 1;
-  min-width: 10rem;
-  max-width: 16rem;
-  padding: .65rem 1rem;
-  border: 1.5px solid var(--line);
-  border-radius: .5rem;
-  font-size: .95rem;
-  font-family: inherit;
-  color: var(--ink);
-  background: var(--surface);
-  transition: border-color 180ms ease, box-shadow 180ms ease;
-}
-
-.call-demo-form input[type="tel"]:focus {
-  outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(11,110,188,.12);
-}
-
-[data-theme="dark"] .call-demo-form input[type="tel"] {
-  background: rgba(255,255,255,.06);
-  border-color: rgba(255,255,255,.15);
-  color: var(--ink);
-}
-
-#call-status {
-  margin-top: .5rem;
-  font-size: .88rem;
-  font-weight: 500;
-  color: var(--teal);
-}

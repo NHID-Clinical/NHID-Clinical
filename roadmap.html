@@ -10,7 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -45,6 +47,8 @@
           <a href="/interoperability.html">Interoperability</a>
           <a href="/evidence-pack.html">Evidence Pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -100,6 +104,8 @@
   <a href="/interoperability.html">Interoperability</a>
   <a href="/evidence-pack.html">Evidence Pack</a>
   <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
   <strong class="mobile-nav-group">Pilot</strong>
   <a href="/for-payers.html">For Payers</a>
   <a href="/community.html">Community</a>
@@ -132,7 +138,7 @@
     <div class="container" style="max-width:52rem">
 
       <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> Released June 2026 under CC BY 4.0. Reference implementation in <code>src/agent_identity.py</code> (42 dedicated tests). Open for production use under the open license.
+        <strong>Status:</strong> Released June 2026 under CC BY 4.0. Reference implementation in <code>src/agent_identity.py</code> (26 dedicated tests). Open for production use under the open license. As of v1.3 final, this is also wired into the hosted conformance API — not just a standalone library — via <code>POST /v1/identity/verify-passport</code> and <code>POST /v1/identity/revoke-passport</code>, with durable revocation that survives across stateless invocations.
       </div>
 
       <!-- Version comparison -->
@@ -174,6 +180,11 @@
         </tbody>
       </table>
 
+      <!-- Trust stack diagram -->
+      <h2 style="margin-top:2.5rem">Where v2 Sits in the Trust Stack</h2>
+      <p class="lede" style="font-size:.93rem;margin-top:.5rem">v2 is one layer in a stack that starts at a real gap (no cross-org NPI authorization exists today) and ends at a healthcare-native audit trail. Layers 2–4 are NHID-Clinical's contribution; Layer 3 (this page) is optional.</p>
+      <img src="/assets/diagrams/trust-stack-3d.jpg" alt="Five-layer trust stack: STIR/SHAKEN carrier certification at top, NHID-Clinical disclosure layer, NHID-Auth with Ed25519 signatures and NPI Passports, FHIR R4 Audit logging, and OpenTelemetry metrics and traces at the base" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-top:1rem" loading="lazy"/>
+
       <!-- What the reference implementation contains -->
       <h2 style="margin-top:2.5rem">What the Reference Implementation Contains</h2>
       <div style="display:grid;gap:.85rem;margin-top:1.25rem">
@@ -209,7 +220,7 @@
       <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-python -m pytest tests/test_identity.py -v   # v2 identity layer (42 tests)
+python -m pytest tests/test_identity.py -v   # v2 identity layer (26 tests)
 python examples/issue_and_verify.py          # end-to-end credential walkthrough</pre>
 
       <!-- What is not done -->
@@ -244,18 +255,28 @@ python examples/issue_and_verify.py          # end-to-end credential walkthrough
   </section>
 </main>
 
+
+<section class="page-section" style="padding-top:0">
+  <div class="container" style="max-width:60rem">
+    <div class="premium-callout">
+      <h3>Where this is heading</h3>
+      <p>Milestones are commitments to the open proposal, not product promises. Pilot results directly shape v2.</p>
+      <a href="/for-payers.html">Become a shadow-evaluation partner →</a>&nbsp;&nbsp;
+    </div>
+  </div>
+</section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>
+  <p class="footer-copy" style="margin-top:.4rem">This is a living open proposal — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
 </footer>
 
 <script src="/site.js"></script>

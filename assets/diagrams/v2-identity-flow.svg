@@ -66,6 +66,6 @@
   <text x="575" y="642" font-size="11.5" fill="#fecaca" text-anchor="middle">ERR_SCOPE_VIOLATION · ERR_NONCE_MISMATCH</text>
 
   <!-- Footer note -->
-  <text x="400" y="695" font-size="12.5" fill="#5b6472" text-anchor="middle">Public reference code: src/agent_identity.py · 42 dedicated tests · not production-ready</text>
+  <text x="400" y="695" font-size="12.5" fill="#5b6472" text-anchor="middle">Public reference code: src/agent_identity.py · 26 dedicated tests · not production-ready</text>
   <text x="400" y="715" font-size="12.5" fill="#5b6472" text-anchor="middle">No finalized specification yet — pilot results will shape the v2 spec.</text>
 </svg>

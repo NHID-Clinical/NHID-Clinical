@@ -10,10 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <!-- Mermaid CDN -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>mermaid.initialize({ startOnLoad: true, theme: 'default' });</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -48,6 +50,8 @@
           <a href="/interoperability.html">Interoperability</a>
           <a href="/evidence-pack.html">Evidence Pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -103,6 +107,8 @@
   <a href="/interoperability.html">Interoperability</a>
   <a href="/evidence-pack.html">Evidence Pack</a>
   <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
   <strong class="mobile-nav-group">Pilot</strong>
   <a href="/for-payers.html">For Payers</a>
   <a href="/community.html">Community</a>
@@ -196,7 +202,7 @@ sequenceDiagram
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal applies to <strong>B2B administrative voice workflows</strong> — AI systems calling payer offices on behalf of providers, vendors, or plan administrators. It does not apply to patient-facing calls, clinical decision support, or internal tooling.</p>
 
       <h2 style="margin-top:2.5rem">What This Is Not</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certification, no audit process, no enforcement mechanism, and no registry. The full proposal document (PDF below) contains more detail for interested practitioners.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certifying body, no audit process, and no enforcement mechanism. The <a href="/registry.html" style="color:var(--blue);font-weight:600">Implementation Registry</a> is self-attestation only — vendors list themselves and link their own live conformance metrics; NHID-Clinical does not verify or certify entries. The full proposal document (PDF below) contains more detail for interested practitioners.</p>
 
       <h2 style="margin-top:2.5rem">Known Gaps (v1.3)</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">v1.3 addresses <em>observable behavior</em> — disclosure timing, deceptive artifacts, escalation path, audit logging. It does not address caller authorization. Because NPIs are public, a malicious AI can trivially impersonate a provider unless a cryptographic authorization handshake is enforced — <a href="/roadmap.html" style="color:var(--blue);font-weight:600">NHID-Auth v2</a> (released June 2026, CC BY 4.0) addresses this with Ed25519 provider-signed agent passports and NPI binding. NHID-Clinical v1.3 tells you the caller was automated; NHID-Auth v2 tells you the caller was authorized.</p>
@@ -266,17 +272,27 @@ sequenceDiagram
   </section>
 </main>
 
+
+<section class="page-section" style="padding-top:0">
+  <div class="container" style="max-width:60rem">
+    <div class="premium-callout">
+      <h3>See this specification in multi-framework context</h3>
+      <p>Every v1.3 control maps into the broader governance landscape — CCM, NIST AI RMF, ISO, and the EU AI Act.</p>
+      <a href="https://ai-governance-map.vercel.app/">Explore in the AI Governance Map →</a>&nbsp;&nbsp; <a href="/simulator.html">Try the controls in the Simulator →</a>&nbsp;&nbsp;
+    </div>
+  </div>
+</section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
     <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
   </div>
+  <p class="footer-copy" style="margin-top:.4rem">This is a living open proposal — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
 </footer>
 
 <script src="/site.js"></script>

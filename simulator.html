@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <style>
 /* ── Simulator variables (extend site palette) ──────────────── */
@@ -286,6 +287,7 @@
   .sim-lg  { grid-template-columns: 1fr; }
 }
   </style>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -320,6 +322,8 @@
           <a href="/interoperability.html">Interoperability</a>
           <a href="/evidence-pack.html">Evidence Pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -375,6 +379,8 @@
   <a href="/interoperability.html">Interoperability</a>
   <a href="/evidence-pack.html">Evidence Pack</a>
   <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
   <strong class="mobile-nav-group">Pilot</strong>
   <a href="/for-payers.html">For Payers</a>
   <a href="/community.html">Community</a>
@@ -448,6 +454,7 @@
 
       <div class="sim-sb-foot">
         <button class="sim-run-btn" id="run-btn" type="button">Run Simulation</button>
+        <a class="btn-ghost" href="/evidence-pack.html" style="display:block;text-align:center;margin-top:.6rem;color:var(--ink);border-color:var(--line)">Download Evidence Bundle →</a>
         <p class="sim-foot-disc">Synthetic data only. Same inputs → identical trace output.</p>
       </div>
     </aside>
@@ -533,11 +540,10 @@
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>
@@ -549,7 +555,7 @@
 'use strict';
 
 /* ── Live API (public demo route — no key required) ─────────── */
-var ENDPOINT='https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/demo/check';
+var ENDPOINT='https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/demo/check';
 
 function buildEvent(key,c){
   var now=new Date().toISOString();
@@ -1248,6 +1254,28 @@ document.getElementById('try-failing-btn').addEventListener('click',function(){
   document.querySelectorAll('input[name="b"]').forEach(function(b){b.checked=false;});
   document.getElementById('run-btn').click();
 });
+
+/* ── Deep-link support: ?scenario=<name|control-id> pre-selects a scenario.
+   Lets external tools (e.g. the AI Governance Map) link straight into a
+   pre-loaded scenario. Control IDs map to the closest scenario. ─────────── */
+(function(){
+  var q=new URLSearchParams(window.location.search).get('scenario');
+  if(!q) return;
+  q=q.toLowerCase();
+  var ALIAS={
+    'idg-01':'spoofed-identity','idg01':'spoofed-identity',
+    'dbc-01':'spoofed-identity','dbc01':'spoofed-identity',
+    'pdx-01':'eligibility','pdx01':'eligibility',
+    'eit-01':'handoff','eit01':'handoff',
+    'atr-01':'prior-auth','atr01':'prior-auth'
+  };
+  var key=SC[q]?q:ALIAS[q];
+  if(key&&SC[key]){
+    scEl.value=key;
+    scEl.dispatchEvent(new Event('change'));
+    scEl.scrollIntoView({block:'center'});
+  }
+})();
 
 })();
 </script>

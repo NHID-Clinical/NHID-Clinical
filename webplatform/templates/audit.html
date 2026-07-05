@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Audit Log{% endblock %}
+{% block content %}
+<h1>Audit Log &amp; Human-Review Queue</h1>
+<p class="sub">For regulators &amp; reviewers: the durable event trail and the DBC-01 human-review queue, backed by the real <code>nhid_event_store</code> (SQLite). Resolutions are one-way.</p>
+
+<div class="grid cols-2">
+  <div class="card">
+    <div class="row"><h2 style="margin:0">Pending DBC-01 reviews</h2>
+      <button class="ghost" id="r-refresh" style="margin-left:auto">Refresh</button></div>
+    <div id="reviews"><p class="mut">Loading…</p></div>
+  </div>
+  <div class="card">
+    <div class="row"><h2 style="margin:0">Recent audited events</h2>
+      <button class="ghost" id="e-refresh" style="margin-left:auto">Refresh</button></div>
+    <div id="events"><p class="mut">Loading…</p></div>
+  </div>
+</div>
+
+<script>
+async function loadReviews() {
+  const d = await api("/api/audit/reviews");
+  if (!d.reviews.length) { el("reviews").innerHTML = '<p class="mut">No pending reviews. Analyze a DBC-01 or low-CAS transcript to populate this queue.</p>'; return; }
+  el("reviews").innerHTML = `<table><tr><th>ID</th><th>Session</th><th>Trigger</th><th></th></tr>` +
+    d.reviews.map(r => `<tr>
+      <td class="mono">${r.id}</td>
+      <td class="mono" title="${esc(r.session_id)}">${esc((r.session_id||"").slice(0,10))}…</td>
+      <td><span class="chip">${esc(r.trigger_reason||"")}</span></td>
+      <td class="row" style="gap:6px">
+        <button data-id="${r.id}" data-d="confirmed_impersonation">confirm</button>
+        <button class="ghost" data-id="${r.id}" data-d="false_positive">false-pos</button>
+      </td></tr>`).join("") + `</table>`;
+  document.querySelectorAll("#reviews button").forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    await api(`/api/audit/reviews/${b.dataset.id}/resolve`, "POST", { disposition: b.dataset.d });
+    loadReviews();
+  });
+}
+async function loadEvents() {
+  const d = await api("/api/audit/events?limit=40");
+  if (!d.events.length) { el("events").innerHTML = '<p class="mut">No events yet. Run the Analyzer or Generator.</p>'; return; }
+  el("events").innerHTML = `<table><tr><th>Type</th><th>Session</th><th>Action</th><th>Reason</th></tr>` +
+    d.events.map(e => `<tr>
+      <td><span class="chip">${esc(e.event_type||"")}</span></td>
+      <td class="mono" title="${esc(e.session_id)}">${esc((e.session_id||"").slice(0,10))}…</td>
+      <td class="mono">${esc(e.policy_action||"—")}</td>
+      <td class="mono" style="font-size:12px">${esc(e.reason_code||"—")}</td>
+    </tr>`).join("") + `</table>`;
+}
+el("r-refresh").onclick = loadReviews;
+el("e-refresh").onclick = loadEvents;
+loadReviews(); loadEvents();
+</script>
+{% endblock %}

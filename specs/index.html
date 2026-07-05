@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -107,10 +108,37 @@
         </article>
 
         <article class="download-card">
-          <h3>NHID-Clinical Voice AI Framework — Slide Deck</h3>
-          <p>A presentation walkthrough of the framework: the impersonation latency problem, the v1.3 controls, the five-layer trust stack, and the v2 identity layer. Use it to brief your own team or procurement group.</p>
-          <a href="/specs/NHID-Clinical-Voice-AI-Framework.pdf" class="download-link" download>Download PDF <span>→</span></a>
-          <a href="/specs/NHID-Clinical-Voice-AI-Framework.pptx" class="download-link" download>Download PPTX <span>→</span></a>
+          <h3>v1.3 Core Specification</h3>
+          <p>The normative reference: the four core behavioral controls (IDG-01, PDX-01, DBC-01, EIT-01) plus the supplemental ATR-01 audit-trail control, the 18-case CTS conformance suite, and the scoring rubric used to evaluate an agent's behavioral trace.</p>
+          <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>Operational Blueprint</h3>
+          <p>A deployment-oriented walkthrough for engineering and compliance teams: integration tiers, adapter coverage, the CAS scoring model, and the FHIR AuditEvent export.</p>
+          <a href="/specs/NHID-Clinical-Operational-Blueprint-v1.3.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>Shadow Evaluation Guide</h3>
+          <p>A practical guide for running NHID-Clinical's conformance checks alongside an existing voice AI deployment without changing production behavior — observe first, enforce later.</p>
+          <a href="/specs/NHID-Clinical-Shadow-Evaluation-Guide.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>v2 Technical Playbook</h3>
+          <p>The reference implementation guide for NHID-Auth v2: Ed25519 agent passports, NPI binding, scoped delegation, and how it composes with the v1.3 behavioral baseline.</p>
+          <a href="/specs/NHID-Clinical-v2-Technical-Playbook.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>Knowledge Archive</h3>
+          <p>A public-safe distillation of the project's full knowledge base: executive vision, governance, identity and trust, technical architecture, and regulatory alignment in one document.</p>
+          <a href="/specs/NHID-Clinical-Knowledge-Archive.pdf" class="download-link" download>Download PDF <span>→</span></a>
           <span class="license-badge">CC BY 4.0</span>
         </article>
       </div>
@@ -135,11 +163,10 @@
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>

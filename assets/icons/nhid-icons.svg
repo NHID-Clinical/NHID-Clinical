@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<defs>
+  <linearGradient id="nhid-hexFill" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F5F7F9"/>
+    <stop offset="0.55" stop-color="#E8EBEF"/>
+    <stop offset="1" stop-color="#D2D8DE"/>
+  </linearGradient>
+
+  <!-- Shared hexagon frame: composite as <use href="#nhid-hex-frame"/> then optionally <use href="#nhid-hex-frame-inner"/> -->
+  <symbol id="nhid-hex-frame" viewBox="0 0 100 110">
+    <polygon points="50,4 94,29 94,81 50,106 6,81 6,29" fill="url(#nhid-hexFill)" style="stroke:var(--frame-stroke,#1f3a8a);stroke-width:var(--frame-stroke-width,5);stroke-linejoin:round"/>
+  </symbol>
+  <symbol id="nhid-hex-frame-inner" viewBox="0 0 100 110">
+    <polygon points="50,9.5 89,31 89,79 50,100.5 11,79 11,31" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linejoin="round"/>
+  </symbol>
+
+  <!-- Consent & Authorization -->
+  <symbol id="nhid-icon-accept-consent" viewBox="0 0 100 110">
+    <circle cx="50" cy="54" r="21" fill="rgba(24,142,170,0.12)" stroke="none"/>
+    <circle cx="50" cy="54" r="21" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M40 54.5 l6.5 7.5 13.5 -16" fill="none" stroke="#188EAA" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-decline-consent" viewBox="0 0 100 110">
+    <circle cx="50" cy="54" r="21" fill="rgba(214,69,69,0.10)" stroke="none"/>
+    <circle cx="50" cy="54" r="21" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="43" y1="47" x2="57" y2="61" stroke="#D64545" stroke-width="5" stroke-linecap="round"/>
+    <line x1="57" y1="47" x2="43" y2="61" stroke="#D64545" stroke-width="5" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="nhid-icon-revoke-consent" viewBox="0 0 100 110">
+    <path d="M50 35 l15 5.5 v11 c0 11 -7 16.5 -15 21 c-8 -4.5 -15 -10 -15 -21 v-11 z" fill="rgba(224,146,43,0.10)" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50 35 l15 5.5 v11 c0 11 -7 16.5 -15 21 c-8 -4.5 -15 -10 -15 -21 v-11 z" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M57 51 a8.5 8.5 0 1 1 -3 -7" fill="none" stroke="#E0922B" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M54 41 l1 6 -6 0" fill="none" stroke="#E0922B" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <!-- Voice Interaction: accent/base colors are CSS-custom-property driven so state classes (active/inactive/success/warning/error) can recolor them. -->
+  <symbol id="nhid-icon-listening" viewBox="0 0 100 110">
+    <rect x="43" y="32" width="14" height="25" rx="7" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <path d="M37 50 a13 13 0 0 0 26 0" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="50" y1="63" x2="50" y2="72" stroke-width="4.4" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="43" y1="72" x2="57" y2="72" stroke-width="4.4" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <path class="nhid-icon-wave" d="M67 45 a9 11 0 0 1 0 18" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <path class="nhid-icon-wave" d="M33 45 a9 11 0 0 0 0 18" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-accent,#188EAA)"/>
+  </symbol>
+  <symbol id="nhid-icon-speaking" viewBox="0 0 100 110">
+    <path d="M37 49 h6 l10 -8 v26 l-10 -8 h-6 z" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <path class="nhid-icon-wave" d="M60 47 a8 9 0 0 1 0 14" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <path class="nhid-icon-wave" d="M66 42 a14 15 0 0 1 0 24" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-accent,#188EAA)"/>
+  </symbol>
+  <symbol id="nhid-icon-muted" viewBox="0 0 100 110">
+    <rect x="43" y="32" width="14" height="25" rx="7" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <path d="M37 50 a13 13 0 0 0 26 0" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="50" y1="63" x2="50" y2="72" stroke-width="4.4" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="43" y1="72" x2="57" y2="72" stroke-width="4.4" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="33" y1="34" x2="67" y2="70" stroke-width="5" stroke-linecap="round" style="stroke:var(--icon-accent,#D64545)"/>
+  </symbol>
+  <symbol id="nhid-icon-processing" viewBox="0 0 100 110">
+    <path d="M33 48 a21 21 0 0 1 34 0" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <circle class="nhid-icon-dot" cx="39" cy="58" r="3" stroke="none" style="fill:var(--icon-base,#0B2E63)"/>
+    <circle class="nhid-icon-dot" cx="50" cy="58" r="3" stroke="none" style="fill:var(--icon-base,#0B2E63)"/>
+    <circle class="nhid-icon-dot" cx="61" cy="58" r="3" stroke="none" style="fill:var(--icon-base,#0B2E63)"/>
+  </symbol>
+
+  <!-- AI Identity & Disclosure -->
+  <symbol id="nhid-icon-ai-verified-agent" viewBox="0 0 100 110">
+    <rect x="34" y="36" width="32" height="28" rx="8" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="50" y1="30" x2="50" y2="36" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+    <circle cx="50" cy="28" r="2.5" fill="#0B2E63" stroke="none"/>
+    <circle cx="43" cy="49" r="2.6" fill="#0B2E63" stroke="none"/>
+    <circle cx="57" cy="49" r="2.6" fill="#0B2E63" stroke="none"/>
+    <line x1="44" y1="57" x2="56" y2="57" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+    <circle cx="63" cy="63" r="8" fill="#188EAA" stroke="none"/>
+    <path d="M59 63 l3 3 5 -6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-disclosure-alert" viewBox="0 0 100 110">
+    <path d="M32 38 h36 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 h-18 l-9 8 v-8 h-9 a4 4 0 0 1 -4 -4 v-20 a4 4 0 0 1 4 -4 z" fill="rgba(11,110,188,0.07)" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="50" y1="46" x2="50" y2="55" stroke="#188EAA" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="50" cy="61" r="1.7" fill="#188EAA" stroke="none"/>
+  </symbol>
+  <symbol id="nhid-icon-verified-status" viewBox="0 0 100 110">
+    <circle cx="50" cy="54" r="15" fill="rgba(24,142,170,0.12)" stroke="none"/>
+    <circle cx="50" cy="54" r="15" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M43 54 l5 5 10 -12" fill="none" stroke="#188EAA" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="50" y1="34" x2="50" y2="38" stroke="#188EAA" stroke-width="3" stroke-linecap="round"/>
+    <line x1="50" y1="70" x2="50" y2="74" stroke="#188EAA" stroke-width="3" stroke-linecap="round"/>
+    <line x1="30" y1="54" x2="34" y2="54" stroke="#188EAA" stroke-width="3" stroke-linecap="round"/>
+    <line x1="66" y1="54" x2="70" y2="54" stroke="#188EAA" stroke-width="3" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- Clinical Escalation & Handoff -->
+  <symbol id="nhid-icon-patient-intake" viewBox="0 0 100 110">
+    <rect x="35" y="35" width="30" height="41" rx="4" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="43" y="31" width="14" height="7" rx="2" fill="#fff" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="50" cy="50" r="4.5" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M41 67 a9 9 0 0 1 18 0" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-handoff-to-human" viewBox="0 0 100 110">
+    <circle cx="38" cy="46" r="5" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M30 65 a8 9 0 0 1 16 0" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="62" cy="46" r="5" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M54 65 a8 9 0 0 1 16 0" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="45" y1="54" x2="55" y2="54" stroke="#188EAA" stroke-width="4" stroke-linecap="round"/>
+    <path d="M51 50 l5 4 -5 4" fill="none" stroke="#188EAA" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-escalate-to-human" viewBox="0 0 100 110">
+    <circle cx="50" cy="62" r="6" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M40 78 a10 10 0 0 1 20 0" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="50" y1="50" x2="50" y2="35" stroke="#188EAA" stroke-width="5" stroke-linecap="round"/>
+    <path d="M43 42 l7 -7 7 7" fill="none" stroke="#188EAA" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-clinical-action" viewBox="0 0 100 110">
+    <path d="M40 34 v13 a10 10 0 0 0 20 0 v-13" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="40" cy="33" r="2.6" fill="#0B2E63" stroke="none"/>
+    <circle cx="60" cy="33" r="2.6" fill="#0B2E63" stroke="none"/>
+    <path d="M50 67 v4 a9 9 0 0 0 9 9" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="60" cy="78" r="5.5" fill="rgba(24,142,170,0.12)" stroke="none"/>
+    <circle cx="60" cy="78" r="5.5" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-emergency-routing" viewBox="0 0 100 110">
+    <path d="M50 34 l16 28 h-32 z" fill="rgba(214,69,69,0.10)" stroke="#D64545" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="50" y1="46" x2="50" y2="54" stroke="#D64545" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="50" cy="59" r="1.7" fill="#D64545" stroke="none"/>
+  </symbol>
+
+  <!-- Security & Access -->
+  <symbol id="nhid-icon-access-control" viewBox="0 0 100 110">
+    <circle cx="43" cy="47" r="9" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="43" cy="47" r="3" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M49 53 l16 16" fill="none" stroke="#0B2E63" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="60" y1="64" x2="64" y2="60" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+    <line x1="64" y1="68" x2="68" y2="64" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="nhid-icon-identity-verification" viewBox="0 0 100 110">
+    <path d="M36 54 a14 16 0 0 1 28 0" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M41 54 a9 11 0 0 1 18 0" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M46 54 a4.5 6 0 0 1 9 0" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="50" y1="51" x2="50" y2="64" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+    <path d="M40 61 a12 9 0 0 0 20 0" fill="none" stroke="#188EAA" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-secure-data-privacy" viewBox="0 0 100 110">
+    <rect x="38" y="52" width="24" height="21" rx="4" fill="rgba(11,46,99,0.05)" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M43 52 v-5 a7 7 0 0 1 14 0 v5" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="50" cy="60" r="2.5" fill="#0B2E63" stroke="none"/>
+    <line x1="50" y1="62" x2="50" y2="67" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="nhid-icon-cryptographic-attestation" viewBox="0 0 100 110">
+    <circle cx="50" cy="50" r="14" fill="rgba(24,142,170,0.12)" stroke="none"/>
+    <circle cx="50" cy="50" r="14" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M44 50 l4 4 9 -10" fill="none" stroke="#188EAA" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M44 62 l-4 13 8 -5" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M56 62 l4 13 -8 -5" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <!-- Communication & Records -->
+  <symbol id="nhid-icon-realtime-communication" viewBox="0 0 100 110">
+    <path d="M37 38 a3 3 0 0 1 4 -1 l6 5 a3 3 0 0 1 0 4 l-3 3 a18 18 0 0 0 12 12 l3 -3 a3 3 0 0 1 4 0 l5 6 a3 3 0 0 1 -1 4 c-6 6 -16 4 -24 -4 c-8 -8 -10 -18 -4 -24 z" fill="rgba(11,110,188,0.07)" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M62 36 a8 8 0 0 1 6 6" fill="none" stroke="#188EAA" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M60 31 a14 14 0 0 1 11 11" fill="none" stroke="#188EAA" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-patient-interaction" viewBox="0 0 100 110">
+    <path d="M30 38 h26 a4 4 0 0 1 4 4 v12 a4 4 0 0 1 -4 4 h-13 l-8 7 v-7 h-5 a4 4 0 0 1 -4 -4 v-12 a4 4 0 0 1 4 -4 z" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M58 53 h11 a3 3 0 0 1 3 3 v8 a3 3 0 0 1 -3 3 h-2 v5 l-6 -5 h-3 a3 3 0 0 1 -3 -3 v-8 a3 3 0 0 1 3 -3 z" fill="rgba(24,142,170,0.10)" stroke="#188EAA" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-clinical-environment" viewBox="0 0 100 110">
+    <rect x="36" y="42" width="28" height="33" rx="3" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="50" y1="49" x2="50" y2="63" stroke="#188EAA" stroke-width="4.4" stroke-linecap="round"/>
+    <line x1="43" y1="56" x2="57" y2="56" stroke="#188EAA" stroke-width="4.4" stroke-linecap="round"/>
+    <line x1="42" y1="75" x2="42" y2="70" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+    <line x1="58" y1="75" x2="58" y2="70" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="nhid-icon-audit-log" viewBox="0 0 100 110">
+    <path d="M38 32 h18 l10 10 v34 h-28 z" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M56 32 v10 h10" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="43" y1="52" x2="60" y2="52" stroke="#0B2E63" stroke-width="3" stroke-linecap="round"/>
+    <line x1="43" y1="58" x2="60" y2="58" stroke="#0B2E63" stroke-width="3" stroke-linecap="round"/>
+    <path d="M44 66 l4 4 9 -10" fill="none" stroke="#188EAA" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-icon-session-timestamp" viewBox="0 0 100 110">
+    <circle cx="48" cy="52" r="16" fill="none" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="48" y1="52" x2="48" y2="43" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+    <line x1="48" y1="52" x2="55" y2="56" stroke="#0B2E63" stroke-width="4.4" stroke-linecap="round"/>
+    <circle cx="64" cy="64" r="8" fill="#188EAA" stroke="none"/>
+    <path d="M60 64 l3 3 5 -6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <!-- Status badges for the voice-state matrix (composite on top of a voice icon; color via currentColor) -->
+  <symbol id="nhid-badge-check" viewBox="0 0 100 110">
+    <circle cx="74" cy="34" r="9" fill="currentColor"/>
+    <path d="M70 34 l3 3 5 -6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="nhid-badge-warn" viewBox="0 0 100 110">
+    <circle cx="74" cy="34" r="9" fill="currentColor"/>
+    <line x1="74" y1="30" x2="74" y2="35.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="74" cy="38.4" r="1.3" fill="#fff"/>
+  </symbol>
+  <symbol id="nhid-badge-err" viewBox="0 0 100 110">
+    <circle cx="74" cy="34" r="9" fill="currentColor"/>
+    <line x1="71" y1="31" x2="77" y2="37" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+    <line x1="77" y1="31" x2="71" y2="37" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+  </symbol>
+</defs>
+</svg>

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Vendor Verification{% endblock %}
+{% block content %}
+<h1>Vendor Verification</h1>
+<p class="sub">For integrating vendors: check a native call payload through a real adapter, and verify an NHID-Auth v2 agent passport (Ed25519) end to end.</p>
+
+<div class="grid cols-2">
+  <div class="card">
+    <h2 style="margin-top:0">Adapter conformance check</h2>
+    <p class="mut" style="font-size:13px">Posts a native vendor payload to the real <code>/v1/adapters/&lt;vendor&gt;/check</code> route (same code path as production).</p>
+    <label>Vendor</label>
+    <select id="vendor">
+      {% for a in adapters %}<option value="{{ a }}">{{ a }}</option>{% endfor %}
+    </select>
+    <label style="margin-top:12px">Payload (JSON)</label>
+    <textarea id="payload" spellcheck="false">{
+  "call": { "id": "call-demo-001", "startedAt": "2026-06-01T00:00:00Z" },
+  "messages": [
+    { "role": "bot", "message": "Hello, this is an automated AI assistant. I am an AI, not a human.", "secondsFromStart": 0 },
+    { "role": "user", "message": "Okay, go ahead.", "secondsFromStart": 4 }
+  ]
+}</textarea>
+    <div class="row" style="margin-top:10px"><button id="check">Run adapter check</button><span class="mut" id="astatus"></span></div>
+    <pre class="out" id="aout" style="margin-top:12px">—</pre>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">NHID-Auth v2 passport verification</h2>
+    <p class="mut" style="font-size:13px">Mints a real Ed25519 agent passport server-side and verifies it through the production <code>/v1/identity/verify-passport</code> route. Toggle <b>tamper</b> to prove signature rejection.</p>
+    <div class="row">
+      <button id="mint">Generate &amp; verify valid passport</button>
+      <button class="ghost" id="mint-bad">Verify tampered passport</button>
+    </div>
+    <span class="mut" id="pstatus"></span>
+    <div id="pout" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<script>
+el("check").onclick = async () => {
+  let payload;
+  try { payload = JSON.parse(el("payload").value); } catch(e){ el("astatus").innerHTML='<span class="pill bad">invalid JSON</span>'; return; }
+  spin(el("astatus"));
+  const r = await api(`/api/adapters/${el("vendor").value}/check`, "POST", payload);
+  el("astatus").textContent = "";
+  el("aout").textContent = JSON.stringify(r, null, 2);
+};
+async function mint(tamper) {
+  spin(el("pstatus"));
+  const r = await api("/api/verify/passport", "POST", { tamper });
+  el("pstatus").textContent = "";
+  const p = r.passport_preview || {};
+  el("pout").innerHTML = `
+    <div class="row" style="gap:12px">${pill(r.valid, "VALID passport", "REJECTED")}<span class="chip">${esc(r.reason||"")}</span></div>
+    <table style="margin-top:12px">
+      <tr><th>delegation_id</th><td class="mono">${esc(p.delegation_id||r.delegation_id||"—")}</td></tr>
+      <tr><th>provider_npi</th><td class="mono">${esc(p.provider_npi||r.provider_npi||"—")}</td></tr>
+      <tr><th>agent_id</th><td class="mono">${esc(p.agent_id||r.agent_id||"—")}</td></tr>
+      <tr><th>scope</th><td class="mono">${esc((p.scope||r.scope||[]).join(", "))}</td></tr>
+    </table>`;
+}
+el("mint").onclick = () => mint(false);
+el("mint-bad").onclick = () => mint(true);
+</script>
+{% endblock %}

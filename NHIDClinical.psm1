@@ -1,114 +1,111 @@
 # NHIDClinical.psm1
-# Official PowerShell module for NHID-Clinical v1.3
-# Built for payer IT teams who live in PowerShell
+# PowerShell module wrapping the hosted NHID-Clinical v1.3 conformance API.
+# Built for payer IT teams who live in PowerShell.
 
-$NHID_BASE_URL = "https://nhid-clinical.org"
+$NHID_BASE_URL = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
 
-function New-NHIDAttestation {
+function Invoke-NHIDConformanceCheck {
     <#
     .SYNOPSIS
-    Generate a signed attestation proving an AI agent is authorized by a provider.
+    Evaluate a single NHID-Clinical event against the v1.3 behavioral controls
+    (IDG-01, PDX-01, DBC-01, EIT-01) and return the policy decision plus CAS score.
+    Uses /v1/conformance/check if $env:NHID_API_KEY is set, otherwise /v1/demo/check.
     .EXAMPLE
-    New-NHIDAttestation -DelegatingNPI "1234567890" -VendorId "my-vendor"
+    Invoke-NHIDConformanceCheck -SessionId "call_123" -ActorId "agent-001" -SpeechText "What are my coverage options?" -DisclosureText "I am an automated system calling on behalf of your provider."
     #>
     param(
-        [Parameter(Mandatory=$true)][string]$DelegatingNPI,
-        [Parameter(Mandatory=$false)][string]$VendorId = "my-vendor",
-        [Parameter(Mandatory=$false)][string[]]$Scope = @("claims_inquiry","eligibility_check"),
-        [Parameter(Mandatory=$false)][int]$DaysValid = 365
+        [Parameter(Mandatory=$true)][string]$SessionId,
+        [Parameter(Mandatory=$true)][string]$ActorId,
+        [Parameter(Mandatory=$true)][string]$SpeechText,
+        [Parameter(Mandatory=$false)][string]$DisclosureText = "",
+        [Parameter(Mandatory=$false)][bool]$EscalationPathAvailable = $true,
+        [Parameter(Mandatory=$false)][int]$TurnCount = 1
     )
+    $now = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
     $body = @{
-        delegating_entity = $DelegatingNPI
-        authorized_actor  = $VendorId
-        scope             = $Scope
-        expires_at        = (Get-Date).AddDays($DaysValid).ToString("o")
-    } | ConvertTo-Json
-    Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/attest" -Method POST -Body $body -ContentType "application/json" -Headers @{ "X-API-Key" = $env:NHID_API_KEY }
-}
+        session = @{
+            turn_count                = $TurnCount
+            escalation_path_available = $EscalationPathAvailable
+        }
+        event = @{
+            event_id              = [guid]::NewGuid().ToString()
+            timestamp              = $now
+            session_id             = $SessionId
+            request_id             = "req-$([guid]::NewGuid().ToString().Substring(0,8))"
+            event_type             = "POLICY"
+            actor_id               = $ActorId
+            state_before           = "ACTIVE"
+            state_after            = "ACTIVE"
+            counterparty_type      = "human_operator"
+            healthcare_governance  = @{
+                disclosure_timestamp     = $now
+                identity_assertion_text  = $DisclosureText
+                deceptive_artifact_flags = @()
+                escalation_timestamp     = $null
+                escalation_outcome       = $null
+                phi_accessed             = @()
+            }
+            input_payload = @{ speech_text = $SpeechText }
+        }
+    } | ConvertTo-Json -Depth 10
 
-function Invoke-NHIDPayerScreen {
-    <#
-    .SYNOPSIS
-    Screen an incoming AI voice call before exchanging any data.
-    Returns accept/reject/escalate decision in under 200ms.
-    .EXAMPLE
-    Invoke-NHIDPayerScreen -CallerNPI "1234567890" -ReferenceId "abc-123" -RequestedScope "claims_inquiry"
-    #>
-    param(
-        [Parameter(Mandatory=$true)][string]$CallerNPI,
-        [Parameter(Mandatory=$true)][string]$ReferenceId,
-        [Parameter(Mandatory=$true)][string]$RequestedScope
-    )
-    $body = @{
-        caller_npi       = $CallerNPI
-        reference_id     = $ReferenceId
-        requested_scope  = $RequestedScope
-    } | ConvertTo-Json
-    $result = Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/payer/screen" -Method POST -Body $body -ContentType "application/json"
-    if ($result.recommended_action -eq "accept") {
-        Write-Host "GREEN LANE - $($result.reason)" -ForegroundColor Green
-    } elseif ($result.recommended_action -eq "escalate") {
-        Write-Host "ESCALATE - $($result.reason)" -ForegroundColor Yellow
+    if ($env:NHID_API_KEY) {
+        $result = Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/conformance/check" -Method POST -Body $body -ContentType "application/json" -Headers @{ "x-api-key" = $env:NHID_API_KEY }
     } else {
-        Write-Host "REJECT - $($result.reason)" -ForegroundColor Red
+        $result = Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/demo/check" -Method POST -Body $body -ContentType "application/json"
+    }
+
+    if ($result.conformant) {
+        Write-Host "CONFORMANT - $($result.action) [CAS $($result.cas.score) / $($result.cas.tier)]" -ForegroundColor Green
+    } else {
+        Write-Host "VIOLATION - $($result.action) ($($result.reason_code)) [CAS $($result.cas.score) / $($result.cas.tier)]" -ForegroundColor Red
     }
     return $result
 }
 
-function Test-NHIDCompliance {
+function Get-NHIDVendorMetrics {
     <#
     .SYNOPSIS
-    Evaluate a voice transcript against NHID-Clinical disclosure and escalation rules.
+    Get aggregated conformance metrics (call volume, pass rate, CAS stats) for a vendor.
+    Requires $env:NHID_API_KEY.
     .EXAMPLE
-    Test-NHIDCompliance -SessionId "call_123" -AgentId "vendor_1" -Transcript "I want to speak to a human" -DisclosureConfirmed $true
+    Get-NHIDVendorMetrics -VendorId "my-vendor" -Days 30
     #>
     param(
-        [Parameter(Mandatory=$true)][string]$SessionId,
-        [Parameter(Mandatory=$true)][string]$AgentId,
-        [Parameter(Mandatory=$true)][string]$Transcript,
-        [Parameter(Mandatory=$false)][bool]$DisclosureConfirmed = $false
+        [Parameter(Mandatory=$true)][string]$VendorId,
+        [Parameter(Mandatory=$false)][int]$Days = 30
     )
-    $body = @{
-        session_id           = $SessionId
-        agent_id             = $AgentId
-        transcript_text      = $Transcript
-        disclosure_confirmed = $DisclosureConfirmed
-    } | ConvertTo-Json
-    $result = Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/policy/evaluate" -Method POST -Body $body -ContentType "application/json" -Headers @{ "X-API-Key" = $env:NHID_API_KEY }
-    if ($result.action -eq "allow") {
-        Write-Host "COMPLIANT - $($result.reason_code)" -ForegroundColor Green
-    } elseif ($result.action -eq "disclose") {
-        Write-Host "DISCLOSE REQUIRED - $($result.reason_code)" -ForegroundColor Yellow
-    } else {
-        Write-Host "ESCALATE - $($result.reason_code)" -ForegroundColor Red
-    }
-    return $result
+    Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/vendor/metrics/summary?vendor_id=$VendorId&days=$Days" -Method GET -Headers @{ "x-api-key" = $env:NHID_API_KEY }
 }
 
-function Get-NHIDStateRequirements {
+function Register-NHIDPilot {
     <#
     .SYNOPSIS
-    Get US state AI disclosure requirements mapped to NHID-Clinical rules.
+    Enroll your organization in the NHID-Clinical shadow evaluation pilot.
     .EXAMPLE
-    Get-NHIDStateRequirements
-    Get-NHIDStateRequirements | ConvertTo-Json
-    #>
-    Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/compliance/states" -Method GET
-}
-
-function Export-NHIDAuditFHIR {
-    <#
-    .SYNOPSIS
-    Export audit trail as HL7 FHIR AuditEvent bundle or CSV.
-    .EXAMPLE
-    Export-NHIDAuditFHIR -SessionId "call_123" -Format fhir
-    Export-NHIDAuditFHIR -SessionId "call_123" -Format csv
+    Register-NHIDPilot -OrgName "Example Health Plan" -ContactEmail "you@example.com"
     #>
     param(
-        [Parameter(Mandatory=$true)][string]$SessionId,
-        [Parameter(Mandatory=$false)][ValidateSet("fhir","csv")][string]$Format = "fhir"
+        [Parameter(Mandatory=$true)][string]$OrgName,
+        [Parameter(Mandatory=$true)][string]$ContactEmail
     )
-    Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/audit/export/$SessionId`?format=$Format" -Method GET
+    $body = @{ org_name = $OrgName; contact_email = $ContactEmail } | ConvertTo-Json
+    Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/pilot/enroll" -Method POST -Body $body -ContentType "application/json"
 }
 
-Export-ModuleMember -Function New-NHIDAttestation, Invoke-NHIDPayerScreen, Test-NHIDCompliance, Get-NHIDStateRequirements, Export-NHIDAuditFHIR
+function Invoke-NHIDConformanceTestSuite {
+    <#
+    .SYNOPSIS
+    Run the hosted NHID conformance test suite (CTS), optionally a subset of test IDs.
+    .EXAMPLE
+    Invoke-NHIDConformanceTestSuite
+    Invoke-NHIDConformanceTestSuite -TestIds @("CTS-IDG-01-01","CTS-PDX-01-01")
+    #>
+    param(
+        [Parameter(Mandatory=$false)][string[]]$TestIds
+    )
+    $body = if ($TestIds) { @{ test_ids = $TestIds } | ConvertTo-Json } else { "{}" }
+    Invoke-RestMethod -Uri "$NHID_BASE_URL/v1/cts/evaluate" -Method POST -Body $body -ContentType "application/json"
+}
+
+Export-ModuleMember -Function Invoke-NHIDConformanceCheck, Get-NHIDVendorMetrics, Register-NHIDPilot, Invoke-NHIDConformanceTestSuite

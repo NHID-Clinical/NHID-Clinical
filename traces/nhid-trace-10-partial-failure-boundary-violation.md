@@ -57,4 +57,12 @@ next iteration
 
 ---
 
+---
+
+note (v1.3 final)
+
+This trace documents a *policy-decision* partial failure (a boundary violation logged while the session continues). A related but distinct partial-failure class — *infrastructure* jitter on outbound calls (Cloudflare Turnstile verification, the ElevenLabs outbound-call POST) — is addressed structurally in `src/nhid_network_resilience.py`'s `retry_with_backoff`, wired into `functions/handler.py::_verify_turnstile()` and `_handle_demo_call()`. That module retries transient network/5xx/429 failures with jittered backoff; it does not change the policy-decision class of partial failure described above, which remains an explicit LOG_ONLY-vs-ESCALATE_HUMAN policy question, not a retry question.
+
+---
+
 NHID-Clinical is mapping where deterministic orchestration breaks in real-world healthcare voice AI systems.

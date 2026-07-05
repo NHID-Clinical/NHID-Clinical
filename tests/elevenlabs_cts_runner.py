@@ -41,7 +41,6 @@ import json
 import os
 import re
 import sys
-import textwrap
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -49,13 +48,11 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-# ── Optional deps (graceful missing) ─────────────────────────────────────────
-try:
-    import httpx
-    _HTTPX_OK = True
-except ImportError:
-    _HTTPX_OK = False
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from src.elevenlabs_client import ElevenLabsClient, sync_prompt  # noqa: E402
+
+# ── Optional deps (graceful missing) ─────────────────────────────────────────
 try:
     import websockets
     _WS_OK = True
@@ -67,9 +64,6 @@ except ImportError:
 
 AGENT_ID              = "agent_4001krn32nmwe5t8mqzgee0w84rj"
 CANONICAL_PROMPT_PATH = Path(__file__).parent.parent / "agents" / "beacon_system_prompt.md"
-API_BASE              = "https://api.elevenlabs.io"
-API_AGENTS            = f"{API_BASE}/v1/convai/agents/{AGENT_ID}"
-API_CONVS             = f"{API_BASE}/v1/convai/conversations"
 WS_CONV               = f"wss://api.elevenlabs.io/v1/convai/conversation?agent_id={AGENT_ID}"
 
 INSUFFICIENT_CREDITS_STATUS = {402, 429}
@@ -534,155 +528,6 @@ def evaluate_scenario(scenario: dict, transcript: list[dict]) -> ScenarioResult:
     return result
 
 
-# ── ElevenLabs API client ─────────────────────────────────────────────────────
-
-class ElevenLabsClient:
-    def __init__(self, api_key: str) -> None:
-        if not _HTTPX_OK:
-            raise ImportError("httpx is required: pip install httpx")
-        self._key = api_key
-        self._headers = {
-            "xi-api-key": api_key,
-            "Content-Type": "application/json",
-        }
-
-    # ── Agent config ──────────────────────────────────────────────────────
-
-    def get_agent_config(self) -> dict:
-        """Fetch Beacon's live configuration."""
-        resp = httpx.get(API_AGENTS, headers=self._headers, timeout=15)
-        resp.raise_for_status()
-        return resp.json()
-
-    def patch_agent_config(self, payload: dict) -> dict:
-        """Push updated configuration to Beacon."""
-        resp = httpx.patch(API_AGENTS, headers=self._headers, json=payload, timeout=15)
-        resp.raise_for_status()
-        return resp.json()
-
-    # ── Conversation fetch ────────────────────────────────────────────────
-
-    def get_conversation(self, conv_id: str) -> dict:
-        """Fetch a completed conversation including transcript with time_in_call_secs."""
-        resp = httpx.get(
-            f"{API_CONVS}/{conv_id}",
-            headers=self._headers,
-            timeout=15,
-        )
-        resp.raise_for_status()
-        return resp.json()
-
-
-# ── Prompt sync ───────────────────────────────────────────────────────────────
-
-def _extract_canonical_prompt() -> Optional[str]:
-    """Load canonical system prompt from agents/beacon_system_prompt.md."""
-    if not CANONICAL_PROMPT_PATH.exists():
-        return None
-    text = CANONICAL_PROMPT_PATH.read_text(encoding="utf-8")
-    # Extract content between ```prompt ... ``` fences if present
-    m = re.search(r"```prompt\s*\n(.*?)```", text, re.DOTALL)
-    if m:
-        return m.group(1).strip()
-    # Otherwise use the full file, stripping markdown headers
-    lines = [ln for ln in text.splitlines() if not ln.startswith("#")]
-    return "\n".join(lines).strip() or None
-
-
-def sync_prompt(client: ElevenLabsClient, *, dry_run: bool = False) -> dict:
-    """
-    Task 1 — SYNC CHECK
-    -------------------
-    1. Pull Beacon's live system prompt.
-    2. Diff against canonical prompt in agents/beacon_system_prompt.md.
-    3. Report every divergence.
-    4. If canonical exists and differs, push it (unless --dry-run).
-    Returns a dict summarising what changed.
-    """
-    live_config = client.get_agent_config()
-    live_prompt = (
-        live_config
-        .get("conversation_config", {})
-        .get("agent", {})
-        .get("prompt", {})
-        .get("prompt", "")
-    ) or ""
-    live_first_msg = (
-        live_config
-        .get("conversation_config", {})
-        .get("agent", {})
-        .get("first_message", "")
-    ) or ""
-
-    canonical_prompt = _extract_canonical_prompt()
-
-    report: dict[str, Any] = {
-        "live_name": live_config.get("name", ""),
-        "live_first_message": live_first_msg,
-        "live_prompt_chars": len(live_prompt),
-        "canonical_found": canonical_prompt is not None,
-        "divergences": [],
-        "pushed": False,
-    }
-
-    if canonical_prompt is None:
-        # Write current live prompt as the canonical baseline
-        _write_canonical_from_live(live_prompt, live_first_msg)
-        report["divergences"].append(
-            "canonical file not found — written from live config as new baseline"
-        )
-        return report
-
-    # Line-level diff
-    live_lines = live_prompt.splitlines()
-    canon_lines = canonical_prompt.splitlines()
-    for i, (l, c) in enumerate(zip(live_lines, canon_lines)):
-        if l.strip() != c.strip():
-            report["divergences"].append(
-                f"line {i + 1}: live={l[:80]!r}  canonical={c[:80]!r}"
-            )
-    if len(live_lines) != len(canon_lines):
-        report["divergences"].append(
-            f"line count: live={len(live_lines)} canonical={len(canon_lines)}"
-        )
-
-    if report["divergences"] and not dry_run:
-        # Repo is source of truth — push canonical
-        patch = {
-            "conversation_config": {
-                "agent": {
-                    "prompt": {"prompt": canonical_prompt},
-                }
-            }
-        }
-        client.patch_agent_config(patch)
-        report["pushed"] = True
-
-    return report
-
-
-def _write_canonical_from_live(prompt: str, first_message: str) -> None:
-    """Persist live prompt as the canonical baseline when the file doesn't exist."""
-    CANONICAL_PROMPT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    header = textwrap.dedent(f"""\
-        # Beacon — NHID-Clinical Reference System Prompt
-        > Canonical source of truth for agent `{AGENT_ID}`.
-        > Last synced from live: {now}
-        > Repo is source of truth. Push changes here; runner will sync to ElevenLabs.
-
-        ## First message
-
-        {first_message}
-
-        ## System prompt
-
-        ```prompt
-    """)
-    footer = "\n```\n"
-    CANONICAL_PROMPT_PATH.write_text(header + prompt + footer, encoding="utf-8")
-
-
 # ── WebSocket conversation runner ─────────────────────────────────────────────
 
 async def _run_conversation_ws(turns: list[tuple[str, str]], api_key: str) -> list[dict]:
@@ -902,7 +747,7 @@ async def _main() -> int:
     if args.sync_prompt and not args.dry_run:
         print("Syncing canonical prompt to Beacon…")
         client = ElevenLabsClient(api_key)
-        sync_report = sync_prompt(client, dry_run=False)
+        sync_report = sync_prompt(client, AGENT_ID, CANONICAL_PROMPT_PATH, dry_run=False)
         print(f"  Agent:   {sync_report['live_name']}")
         if sync_report["divergences"]:
             for d in sync_report["divergences"]:

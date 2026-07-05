@@ -10,7 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -46,6 +48,8 @@
           <a href="/interoperability.html">Interoperability</a>
           <a href="/evidence-pack.html">Evidence Pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -101,6 +105,8 @@
   <a href="/interoperability.html">Interoperability</a>
   <a href="/evidence-pack.html">Evidence Pack</a>
   <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
   <strong class="mobile-nav-group">Pilot</strong>
   <a href="/for-payers.html">For Payers</a>
   <a href="/community.html">Community</a>
@@ -119,77 +125,37 @@
 
 <main>
 
-  <!-- ── Section 1: Hero ─────────────────────────────────────────────────── -->
-  <section class="hero-section">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <h1>NHID-Clinical</h1>
-        <p class="hero-body"><strong>Practical controls for AI voice agents in payer–provider calls, built by a former payer operations associate who saw the problem firsthand on live calls.</strong></p>
-        <p class="hero-body">I worked in payer operations — eligibility, claims, prior authorization — protecting PHI on live calls. Starting in 2025, our call center began receiving AI voice agents calling on behalf of provider offices. They passed verification, so we treated them as regular calls. Over time the problems became consistent: disclosure after PHI had already moved, no way to verify authorization, no escalation path. This project documents those patterns and proposes a voluntary, testable behavioral baseline. It is not a standard and not a certification. It is an open reference implementation.</p>
-        <div class="callout">
-          <strong>Current state:</strong>
-          The v1.3 conformance API is live — no key required for demo and vendor routes.
-          VAPI and Twilio adapters accept native call payloads and return a pass/fail result.
-          The v2 cryptographic authorization layer is public reference code in the repository.
-          Zero production pilots — we are seeking the first shadow evaluation partners.
-          — <a href="/for-payers.html">Start a shadow evaluation →</a>
-        </div>
-        <p class="hero-body" style="margin-top:1rem;font-size:.9rem;color:var(--ink-soft)">CC BY 4.0 &nbsp;·&nbsp; NIST Public Comment: NIST-2025-0035-0026</p>
-        <div class="hero-actions" style="flex-wrap:wrap;gap:.75rem">
-          <div class="call-demo-form">
-            <input type="tel" id="demo-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your phone number" />
-            <button class="cta-button" id="demo-call-btn" type="button">Receive a Call from Beacon</button>
-          </div>
-          <a class="secondary-button" href="/simulator.html">Governance Simulator <span aria-hidden="true">→</span></a>
-        </div>
-        <div id="call-status" hidden aria-live="polite"></div>
-        <script>
-        (function () {
-          var btn = document.getElementById('demo-call-btn');
-          var inp = document.getElementById('demo-phone');
-          var status = document.getElementById('call-status');
-          if (!btn || !inp || !status) return;
+  <!-- ── Section 1: Cinematic Hero ───────────────────────────────────────── -->
+  <section class="section-premium hero-premium">
+    <div class="container">
+      <span class="hero-kicker">Open proposal · v1.3 behavioral baseline</span>
+      <h1>NHID-Clinical</h1>
+      <p class="tagline">Open Behavioral Baseline for Transparent AI Voice Agents in Healthcare</p>
+      <p class="disclaimer"><strong>Practical controls for AI voice agents in payer–provider calls, built by a former payer operations associate who saw the problem firsthand on live calls.</strong></p>
+      <p class="disclaimer">I worked in payer operations — eligibility, claims, prior authorization — protecting PHI on live calls. Starting in 2025, our call center began receiving AI voice agents calling on behalf of provider offices. They passed verification, so we treated them as regular calls. Over time the problems became consistent: disclosure after PHI had already moved, no way to verify authorization, no escalation path. This project documents those patterns and proposes a voluntary, testable behavioral baseline. It is not a standard and not a certification. It is an open reference implementation.</p>
+      <p class="disclaimer">A voluntary, testable reference implementation. Submitted as public comment to NIST (NIST-2025-0035-0026). <strong>Not a product. Not a certification. Not an official standard.</strong> An open proposal for the ecosystem. CC&nbsp;BY&nbsp;4.0.</p>
 
-          function setStatus(msg, ok) {
-            status.textContent = msg;
-            status.hidden = false;
-            status.style.color = ok === false ? 'var(--red, #c0392b)' : 'var(--teal)';
-          }
-
-          btn.addEventListener('click', function () {
-            var raw = inp.value.replace(/\D/g, '');
-            if (!raw.startsWith('1')) raw = '1' + raw;
-            if (raw.length !== 11) {
-              setStatus('Please enter a valid US phone number.', false);
-              return;
-            }
-            var e164 = '+' + raw;
-            btn.disabled = true;
-            setStatus('Dialing…');
-            fetch('https://dc2ipcqs7k.execute-api.us-east-2.amazonaws.com/prod/v1/demo/call', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ phone: e164 })
-            })
-            .then(function (r) { return r.json(); })
-            .then(function (d) {
-              if (d.status === 'dialing') {
-                setStatus('Beacon is calling you now. Expect disclosure within the first sentence.');
-              } else {
-                setStatus('Could not initiate call: ' + (d.error || 'unknown error'), false);
-              }
-            })
-            .catch(function () {
-              setStatus('Network error — please try again.', false);
-            })
-            .finally(function () { btn.disabled = false; });
-          });
-        })();
-        </script>
+      <div class="hero-actions-premium">
+        <a href="/specification.html" class="btn-premium">Read the v1.3 Specification</a>
+        <a href="/simulator.html" class="btn-premium">Launch Governance Simulator</a>
+        <a href="https://ai-governance-map.vercel.app/" class="btn-ghost">Explore Full Context in AI Governance Map</a>
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical" class="btn-ghost">GitHub · Contribute</a>
       </div>
-      <div class="hero-art" aria-label="NHID-Clinical logo">
-        <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical" />
-        <img class="theme-img theme-img-dark" src="/assets/logo-dark.jpg" alt="NHID-Clinical" />
+
+      <picture class="premium-3d">
+        <source srcset="/assets/images/3d-renders/nexus-trust-bridge.webp" type="image/webp"/>
+        <img src="/assets/images/3d-svg/nexus.svg" class="premium-3d"
+             alt="Illustrative 3D visualization of the NHID-Clinical Trust Verification Nexus — a verification bridge between payer and provider domains with disclosure, verification, and escalation gates. Conceptual render for clarity."/>
+      </picture>
+      <p class="visual-caption">Illustrative visualization of the trust verification pathway — conceptual render for clarity, not a product diagram.</p>
+
+      <div class="callout" style="margin-top:2rem;background:rgba(148,163,184,.07);border:1px solid var(--premium-line);color:#b7c3d8">
+        <strong style="color:#e2e8f0">Current state:</strong>
+        The v1.3 conformance API is live — no key required for demo and vendor routes.
+        VAPI and Twilio adapters accept native call payloads and return a pass/fail result.
+        The v2 cryptographic authorization layer is public reference code in the repository.
+        Zero production pilots — we are seeking the first shadow evaluation partners.
+        — <a href="/for-payers.html">Start a shadow evaluation →</a>
       </div>
     </div>
   </section>
@@ -204,6 +170,104 @@
         </div>
         <a class="cta-button" href="/for-payers.html" style="flex-shrink:0;white-space:nowrap">Become a Pilot Partner <span aria-hidden="true">→</span></a>
       </div>
+    </div>
+  </section>
+
+  <!-- ── Visualizing the Five-Layer Trust Stack ──────────────────────────── -->
+  <section class="section-premium" id="trust-stack">
+    <div class="container">
+      <h2>Visualizing the Five-Layer Trust Stack</h2>
+      <p class="lead">The proposal's architecture in one picture: each layer is testable on its own, and together they turn "trust me" into a verifiable pathway. Click a layer to see what it does and where to try it.</p>
+      <div class="stack-wrap">
+        <div>
+          <picture class="premium-3d">
+            <source srcset="/assets/images/3d-renders/trust-stack-ziggurat.webp" type="image/webp"/>
+            <img src="/assets/images/3d-svg/trust-stack.svg" class="premium-3d" style="max-width:34rem"
+                 alt="Illustrative 3D visualization of the NHID-Clinical five-layer trust stack as a stepped monument: network foundation, behavioral disclosure gates, cryptographic authorization, audit ledger, observability spire. Conceptual render for clarity."/>
+          </picture>
+          <p class="visual-caption">Conceptual render for clarity — the authoritative definitions live in the specification.</p>
+        </div>
+        <div>
+          <div role="tablist" aria-label="Trust stack layers" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem">
+            <button class="btn-ghost stack-layer" role="tab" data-layer="l5" aria-selected="false">Layer 5 · Observability &amp; CAS</button>
+            <button class="btn-ghost stack-layer" role="tab" data-layer="l4" aria-selected="false">Layer 4 · Audit Ledger (ATR-01)</button>
+            <button class="btn-ghost stack-layer" role="tab" data-layer="l3" aria-selected="false">Layer 3 · Cryptographic Authorization (NHID-Auth v2)</button>
+            <button class="btn-ghost stack-layer active" role="tab" data-layer="l2" aria-selected="true">Layer 2 · Behavioral Disclosure Controls</button>
+            <button class="btn-ghost stack-layer" role="tab" data-layer="l1" aria-selected="false">Layer 1 · Network &amp; Transport Foundation</button>
+          </div>
+          <div class="stack-detail" id="stack-detail" role="tabpanel" aria-live="polite"></div>
+        </div>
+      </div>
+      <p class="disclaimer-small">This is an open voluntary reference implementation, not a product or certification. Layer definitions and control text are normative only in the <a href="/specification.html">v1.3 specification</a>.</p>
+    </div>
+  </section>
+
+  <script>
+  (function(){
+    var LAYERS = {
+      l1: { tag: "Layer 1", title: "Network & Transport Foundation",
+        body: "The carrier plumbing every call rides on — SIP, telephony metadata, transport security. NHID-Clinical does not replace it; it builds testable behavior on top of it and proposes SIP-header attestation hooks for the future.",
+        links: [["Interoperability notes","/interoperability.html"],["Technical stack","/technical-stack.html"]] },
+      l2: { tag: "Layer 2", title: "Behavioral Disclosure Controls (IDG-01 · PDX-01 · DBC-01 · EIT-01)",
+        body: "The heart of v1.3: disclose non-human identity before anything else (IDG-01), verify before any PHI moves (PDX-01), never imply a human is speaking (DBC-01), and honor a request for a human (EIT-01). Each is deterministic and testable.",
+        links: [["Try in Simulator","/simulator.html?scenario=spoofed-identity"],["Read the controls","/specification.html"]] },
+      l3: { tag: "Layer 3", title: "Cryptographic Authorization (NHID-Auth v2)",
+        body: "Ed25519 agent passports: a provider signs a delegation binding an agent key to an NPI and scope; the receiving side verifies offline. Reference code is public in the repository — no registry, no gatekeeper.",
+        links: [["Developer guide","/developers.html"],["v2 integration","/technical-stack.html"]] },
+      l4: { tag: "Layer 4", title: "Audit Ledger (ATR-01)",
+        body: "Every event carries a complete, replayable audit envelope — actor, timestamps, state transitions, execution context. Missing fields are CRITICAL findings. Evidence, not vibes.",
+        links: [["Evidence pack","/evidence-pack.html"],["Audit requirements","/specification.html"]] },
+      l5: { tag: "Layer 5", title: "Observability & Call Authorization Score",
+        body: "CAS condenses identity assurance, operational confidence, and envelope completeness into one 0–1 score with plain trust tiers. Below the conditional-trust threshold, a human reviews. Scores are measurements, not certifications.",
+        links: [["Governance Simulator","/simulator.html"],["For payers","/for-payers.html"]] }
+    };
+    var detail = document.getElementById("stack-detail");
+    var tabs = document.querySelectorAll(".stack-layer");
+    function show(id){
+      var L = LAYERS[id]; if(!L || !detail) return;
+      detail.innerHTML = '<span class="layer-tag">'+L.tag+'</span><h3>'+L.title+'</h3><p>'+L.body+'</p>'+
+        '<div class="stack-links">'+L.links.map(function(a){return '<a href="'+a[1]+'">'+a[0]+' →</a>';}).join("")+'</div>';
+      tabs.forEach(function(t){ var on = t.dataset.layer===id; t.classList.toggle("active",on); t.setAttribute("aria-selected", on?"true":"false"); });
+    }
+    tabs.forEach(function(t){ t.addEventListener("click", function(){ show(t.dataset.layer); }); });
+    show("l2");
+  })();
+  </script>
+
+  <!-- ── The Impersonation Latency Crisis ────────────────────────────────── -->
+  <section class="section-premium" id="latency-problem" style="padding-top:3.5rem">
+    <div class="container">
+      <h2>The Impersonation Latency Crisis</h2>
+      <p class="lead">Impersonation latency is the measurable trust delay between an AI agent initiating a call and the receiving system verifying that the caller is authorized to represent the claimed provider organization. In many current healthcare workflows, that delay is effectively infinite — because no standard verification pathway exists.</p>
+
+      <picture class="premium-3d">
+        <source srcset="/assets/images/3d-renders/impersonation-vs-verified.webp" type="image/webp"/>
+        <img src="/assets/images/3d-svg/latency-split.svg" class="premium-3d"
+             alt="Illustrative 3D visualization contrasting the impersonation latency problem (left: an unverified caller reaching PHI with no checks) with the verified trust pathway enabled by NHID-Clinical (right: disclosure gate, verification checkpoint, sealed PHI, human escalation). Conceptual render for clarity."/>
+      </picture>
+
+      <div class="two-column">
+        <div class="col-bad">
+          <h3>Without a Standard</h3>
+          <ul>
+            <li>No proactive identity disclosure</li>
+            <li>PHI potentially exchanged before verification</li>
+            <li>No consistent escalation or audit trail</li>
+            <li>Infinite trust delay for the receiving system</li>
+          </ul>
+        </div>
+        <div class="col-good">
+          <h3>With NHID-Clinical v1.3</h3>
+          <ul>
+            <li>Mandatory early disclosure gate (IDG-01)</li>
+            <li>Pre-data exchange verification checkpoint (PDX-01)</li>
+            <li>Defined human handoff + full audit requirements (EIT-01 · ATR-01)</li>
+            <li>Measurable, testable trust pathway</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="disclaimer-small">This is an open voluntary reference implementation, not a product or certification. It is contributed to improve ecosystem trust and has been submitted as public comment to NIST (NIST-2025-0035-0026).</p>
     </div>
   </section>
 
@@ -252,9 +316,9 @@
   <!-- ── Video Overview ─────────────────────────────────────────────────── -->
   <section class="page-section" style="padding-top:1rem">
     <div class="container" style="max-width:52rem">
-      <h2 style="margin-bottom:.5rem">The AI Dilemma</h2>
-      <p style="color:var(--body);margin-bottom:1.25rem">What happens when AI voice agents call your office and you can't tell whether to trust them.</p>
-      <video controls preload="metadata" style="width:100%;border-radius:12px;border:1px solid var(--line);background:#000" aria-label="The AI Dilemma — NHID-Clinical">
+      <h2 style="margin-bottom:.5rem">How NHID-Clinical Works</h2>
+      <p style="color:var(--body);margin-bottom:1.25rem">From the disclosure problem AI voice agents create, to the four controls, five-layer trust stack, and audit trail that catch it — in under a minute.</p>
+      <video controls preload="metadata" style="width:100%;border-radius:12px;border:1px solid var(--line);background:#000" aria-label="How NHID-Clinical Works — NHID-Clinical">
         <source src="/assets/media/video.mp4" type="video/mp4"/>
         Your browser does not support embedded video. <a href="/assets/media/video.mp4">Download the video</a>.
       </video>
@@ -282,7 +346,7 @@
         </div>
         <div class="content-card">
           <h3>Specification (v1.3)</h3>
-          <p>The full control set: IDG-01, DBC-01, EIT-01, ATR-01, and the event schema.</p>
+          <p>The full control set: IDG-01, PDX-01, DBC-01, EIT-01, ATR-01, and the event schema.</p>
           <a class="card-link" href="/specification.html">Read the specification →</a>
         </div>
         <div class="content-card">
@@ -350,6 +414,7 @@
             <h2 class="nist-heading">Submitted to NIST docket NIST-2025-0035</h2>
             <p class="nist-body">NHID-Clinical was submitted as a public comment to NIST's AI-agent security docket in January 2026. This is a public comment — not an endorsement, not a standard. It puts the problem on the record.</p>
             <p class="nist-meta">Comment ID: NIST-2025-0035-0026 &nbsp;·&nbsp; January 12, 2026</p>
+            <p class="nist-meta">CAISI's RFI drew 932 public comments before closing March 9, 2026 — this is one of them, not a uniquely selected or vetted submission.</p>
             <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" class="nist-link" target="_blank" rel="noopener noreferrer">View on Regulations.gov →</a>
           </div>
         </div>
@@ -381,14 +446,14 @@
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
       <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/CU7BwHwVYC">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>
+  <p class="footer-copy" style="margin-top:.4rem">This is a living open proposal — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
 </footer>
 
 <script src="/site.js"></script>
