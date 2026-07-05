@@ -3042,8 +3042,3 @@ textarea { resize: vertical; min-height: 120px; }
   pointer-events: none;
 }
 
-/* ElevenLabs widget (Compass) — ensure it stays above all content */
-elevenlabs-convai {
-  z-index: 9999;
-}
-

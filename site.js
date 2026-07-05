@@ -267,29 +267,8 @@
   });
 })();
 
-/* ── ElevenLabs Conversational AI widget (Compass — site FAQ/support agent) ──
-   Separate from Beacon (the outbound claims-call demo agent): Compass answers
-   visitor questions about adopting/integrating NHID-Clinical. See
-   agents/compass_system_prompt.md. Replace COMPASS_AGENT_ID once the agent is
-   created in the ElevenLabs dashboard (see that file for setup steps).
 
-   Uses the current @elevenlabs/convai-widget-embed package, not the legacy
-   elevenlabs.io/convai-widget/index.js bundle — the legacy bundle predates
-   the agent-level "chat mode" setting and always renders the call-only UI
-   regardless of the dashboard's text-only configuration. */
-(function () {
-  var COMPASS_AGENT_ID = 'agent_3801kvj9xbdaeh29c85900jb4wxj';
 
-  var s = document.createElement('script');
-  s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-  s.async = true;
-  s.type = 'text/javascript';
-  document.head.appendChild(s);
-
-  var w = document.createElement('elevenlabs-convai');
-  w.setAttribute('agent-id', COMPASS_AGENT_ID);
-  document.body.appendChild(w);
-})();
 
 /* ── Demo line live status (website demo feature, not the framework) ───────
    Renders a session_id's accumulated status from GET /v1/demo/call-status
