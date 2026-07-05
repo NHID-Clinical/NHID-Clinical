@@ -9,149 +9,108 @@
 </p>
 
 <p align="center">
-  <b>A voluntary behavioral baseline for AI voice agents in B2B healthcare payer–provider calls — with an open cryptographic authorization layer (v2) in reference implementation.</b>
+  <b>A voluntary behavioral baseline for transparent AI voice agents in B2B healthcare payer–provider calls.</b><br>
+  Open reference implementation with a cryptographic authorization layer (NHID-Auth v2).
 </p>
 
 <p align="center">
-  Built by a former payer operations associate who saw the problem firsthand on live calls. Not a standard. Not a certification. An open, testable reference.
+  Built by a former payer operations associate who saw the <strong>impersonation latency</strong> problem firsthand on live calls.<br>
+  <strong>Not a standard. Not a certification. Not a product.</strong> An open, testable reference for the ecosystem.
+</p>
+
+<p align="center">
+  <a href="https://nhid-clinical.org"><strong>Website</strong></a> ·
+  <a href="https://nhid-clinical.org/simulator.html">Simulator</a> ·
+  <a href="https://nhid-clinical.org/specification.html">Specification</a> ·
+  <a href="https://nhid-clinical.org/roadmap.html">v2 Identity</a> ·
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions">Discussions</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-330%20passing-brightgreen?style=flat-square"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="TypeScript Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square"></a>
-  <a href="https://nhid-clinical.org/specification.html"><img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square"></a>
-  <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="License: CC BY 4.0" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?style=flat-square"></a>
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-330%20passing-brightgreen?style=flat-square">
+  <img alt="Middleware Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square">
+  <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
+  <img alt="License" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?style=flat-square">
   <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026"><img alt="NIST" src="https://img.shields.io/badge/NIST-2025--0035--0026-0b6ebc?style=flat-square"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions"><img alt="GitHub Discussions" src="https://img.shields.io/badge/GitHub-Discussions-181717?style=flat-square&logo=github&logoColor=white"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/NHID-Clinical/NHID-Clinical?style=flat-square&color=0b6ebc&label=stars"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/NHID-Clinical/NHID-Clinical?style=flat-square&color=0e9f6e"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/NHID-Clinical/NHID-Clinical?style=flat-square&color=4b5563"></a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical"><img alt="Repo Size" src="https://img.shields.io/github/repo-size/NHID-Clinical/NHID-Clinical?style=flat-square&color=4b5563"></a>
+  <sub>The NIST badge links to a public comment submitted to a NIST RFI docket — not a NIST endorsement, adoption, or certification.</sub>
 </p>
 
-<p align="center">
-  <sub>The NIST badge links to a public comment submitted to a NIST RFI docket — it is not a NIST endorsement, adoption, or certification.</sub>
-</p>
+---
+
+**Impersonation latency** is the core problem: the measurable trust delay when an AI voice agent operates and exchanges PHI without disclosing its non-human identity. NHID-Clinical makes that delay observable and testable with four deterministic controls, a supplemental audit-trail requirement, and a live conformance API.
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=py,ts,nodejs,jest,html,css,aws,githubactions&theme=dark">
-    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=py,ts,nodejs,jest,html,css,aws,githubactions&theme=light">
-    <img alt="Stack: Python, TypeScript, Node.js, Jest, HTML5, CSS3, AWS, GitHub Actions" src="https://skillicons.dev/icons?i=py,ts,nodejs,jest,html,css,aws,githubactions&theme=light">
+    <source srcset="assets/images/3d-renders/nexus-trust-bridge.webp" type="image/webp">
+    <img alt="Illustrative 3D visualization of the NHID-Clinical Trust Verification Nexus" src="assets/images/3d-svg/nexus.svg" width="720">
   </picture>
+  <br>
+  <sub><em>Illustrative visualization of the trust verification pathway — conceptual render for clarity, not a product diagram.</em></sub>
 </p>
 
-<p align="center">
-  <img alt="FHIR" src="https://img.shields.io/badge/FHIR-R4%20base%20spec-E0322F?style=flat-square&logo=fhir&logoColor=white">
-</p>
-
-<p align="center">
-  <a href="https://nhid-clinical.org">Website</a> ·
-  <a href="https://nhid-clinical.org/simulator.html">Simulator</a> ·
-  <a href="https://nhid-clinical.org/specification.html">Spec</a> ·
-  <a href="https://nhid-clinical.org/roadmap.html">v2 Identity Layer</a> ·
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions">Discussions</a>
-</p>
-
----
-
-## Table of Contents
-
-- [Live API — Try It Now](#live-api--try-it-now)
-- [The Four Controls](#the-four-controls)
-- [Conformance Flow](#conformance-flow)
-- [Five-Layer Trust Stack](#five-layer-trust-stack)
-- [Regulatory Alignment](#regulatory-alignment)
-- [Repository Structure](#repository-structure)
-- [Quick Start](#quick-start)
-- [NHID-Auth v2 — Cryptographic Agent Identity](#nhid-auth-v2--cryptographic-agent-identity)
-- [Contributing & Pilot Partners](#contributing--pilot-partners)
-
----
-
-## Live API — Try It Now
-
-The conformance API is live. No signup, no key required for the demo and vendor adapter routes.
-
-```bash
-# Test a non-compliant VAPI call (PHI requested before identity disclosure → IDG-01 + PDX-01 FAIL)
-curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
-  -H "Content-Type: application/json" \
-  -d @tests/demo_scenarios/vapi_noncompliant.json | python3 -m json.tool
-```
-
-```json
-{
-  "conformant": false,
-  "action": "DENY_DATA",
-  "violations": [
-    { "rule_id": "IDG-01", "severity": "critical" },
-    { "rule_id": "PDX-01", "severity": "critical" }
-  ]
-}
-```
-
-<details>
-<summary><b>Full endpoint reference</b> (click to expand)</summary>
-
-| Endpoint | Auth | Purpose |
-| :--- | :--- | :--- |
-| `POST /v1/demo/check` | none | Raw NHID event → conformance result |
-| `POST /v1/adapters/vapi/check` | none | Native VAPI payload → conformance result |
-| `POST /v1/adapters/twilio/check` | none | Native Twilio payload → conformance result |
-| `POST /v1/adapters/vonage/check` | none | Native Vonage payload → conformance result |
-| `POST /v1/adapters/retell/check` | none | Native Retell AI payload → conformance result |
-| `POST /v1/adapters/connect/check` | none | Amazon Connect Contact Lens → conformance result |
-| `POST /v1/webhooks/call-progress` | none | Turn-by-turn in-call evaluation |
-| `GET /v1/public/vendor/{id}/badge` | none | Public CAS badge SVG (embeddable) |
-| `GET /v1/vendor/metrics/summary` | `x-api-key` | Per-vendor pass rate + CAS trend |
-| `POST /v1/pilot/enroll` | none | Shadow pilot enrollment |
-| `POST /v1/cts/evaluate` | none | Run CTS YAML test suite against the policy engine |
-| `POST /v1/conformance/check` | `x-api-key` | Production conformance check |
-
-</details>
-
-**New here?** Start with the [5-minute quickstart](docs/5-minute-quickstart.md), then the [staged v2 integration guide](docs/v2-integration-guide.md) (Tier 0: 15 min → Tier 2: 1 day).
-
-<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
-
----
-
-## The Four Controls
+## The Four Core Controls (v1.3)
 
 | Control | Name | Requirement |
 | :--- | :--- | :--- |
-| **IDG-01** | Identity Disclosure Gate | AI agent must identify itself as automated **before** any PHI exchange |
+| **IDG-01** | Identity Disclosure Gate | Disclose non-human identity **before** any PHI exchange |
 | **PDX-01** | Pre-Data Exchange Gate | No protected data until identity is disclosed |
-| **DBC-01** | Deceptive Behavior Check | No synthetic voice artifacts designed to impersonate a human |
-| **EIT-01** | Escalation Implementation Test | Human escalation path must be communicated and available |
+| **DBC-01** | Deceptive Behavior Check | No mimicry of human voice or behavior |
+| **EIT-01** | Escalation Implementation Test | Clear human handoff path, honored on request |
 
-Plus one supplemental control, **ATR-01** (Audit Trail Requirement) — every call must produce a machine-readable audit trace.
+Plus **ATR-01** (audit trail) — every call must produce a machine-readable trace.  
+18-case CTS suite · same inputs → identical output · **330** Python tests passing (+ 66 TypeScript middleware tests)
 
-18-case CTS suite · same inputs → identical trace output · 330 passing in the Python test suite (18 skipped without a running server) + 66 passing in the TypeScript middleware
+[**Try the Governance Simulator →**](https://nhid-clinical.org/simulator.html)
 
-<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
+## Five-Layer Trust Stack
 
----
+<p align="center">
+  <picture>
+    <source srcset="assets/images/3d-renders/trust-stack-ziggurat.webp" type="image/webp">
+    <img alt="Illustrative 3D visualization of the five-layer trust stack" src="assets/images/3d-svg/trust-stack.svg" width="640">
+  </picture>
+</p>
+
+| Layer | Standard | Role |
+| :--- | :--- | :--- |
+| **0** | NPI Gap | The problem — no cross-org NPI authorization for AI agents |
+| **1** | STIR/SHAKEN (RFC 8224) | Carrier number authentication |
+| **2** | **NHID-Clinical v1.3** | Behavioral disclosure baseline — 4 controls + ATR-01 |
+| **3** | NHID-Auth v2 | Cryptographic authorization — reference implementation live |
+| **4** | FHIR AuditEvent R4 (base spec) | Healthcare-native audit logging |
+| **5** | OpenTelemetry | Enterprise observability export |
+
+[Full technical architecture →](https://nhid-clinical.org/technical-stack.html)
+
+## The Impersonation Latency Crisis
+
+<p align="center">
+  <picture>
+    <source srcset="assets/images/3d-renders/impersonation-vs-verified.webp" type="image/webp">
+    <img alt="Contrast between unverified caller path and NHID-Clinical verified pathway" src="assets/images/3d-svg/latency-split.svg" width="720">
+  </picture>
+  <br>
+  <sub><em>Without a standard: disclosure after PHI moves, no audit trail. With v1.3: early disclosure, verification checkpoint, human escalation, sealed audit.</em></sub>
+</p>
 
 ## Conformance Flow
 
-How the four controls plus ATR-01 play out on a real call — same sequence the CTS suite and live adapters evaluate against.
+How the controls play out on a real call — the same sequence the CTS suite and live adapters evaluate.
 
 ```mermaid
 flowchart LR
-    A["📞 Call starts"]:::start --> B{"Identity disclosed<br/>before PHI?"}:::neutral
-    B -->|No — PHI requested first| C["🚫 DENY_DATA<br/>IDG-01 + PDX-01 FAIL"]:::deny
-    C --> D["👤 Escalate to human<br/>EIT-01"]:::neutral
-    B -->|Yes| E["🔐 PHI exchange<br/>checked: PDX-01, DBC-01"]:::neutral
-    E --> F{"Caller requests<br/>a human?"}:::neutral
+    A["Call starts"]:::start --> B{"Identity disclosed<br/>before PHI?"}:::neutral
+    B -->|No| C["DENY_DATA<br/>IDG-01 + PDX-01"]:::deny
+    C --> D["Escalate to human<br/>EIT-01"]:::neutral
+    B -->|Yes| E["PHI exchange<br/>PDX-01, DBC-01"]:::neutral
+    E --> F{"Human requested?"}:::neutral
     F -->|Yes| D
-    F -->|No| G["✅ Call completes"]:::ok
-    D --> H["📋 Audit trace generated<br/>ATR-01"]:::ok
+    F -->|No| G["Call completes"]:::ok
+    D --> H["Audit trace<br/>ATR-01"]:::ok
     G --> H
 
     classDef start fill:#0b6ebc,stroke:#063752,color:#ffffff
@@ -160,78 +119,35 @@ flowchart LR
     classDef neutral fill:#4b5563,stroke:#262b33,color:#ffffff
 ```
 
-<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
+## Live API — Try It Now
 
----
+No signup or API key required for demo and vendor adapter routes.
 
-## Five-Layer Trust Stack
-
-| Layer | Standard | Role |
-| :--- | :--- | :--- |
-| **0** | NPI Gap | The problem — no existing diagram addresses cross-org NPI authorization |
-| **1** | STIR/SHAKEN (RFC 8224) | Carrier number authentication — A/B/C attestation |
-| **2** | **NHID-Clinical v1.3** | Behavioral disclosure baseline — 4 core controls + ATR-01 |
-| **3** | NHID-Auth v2 | Cryptographic authorization layer — reference implementation live (CC BY 4.0) |
-| **4** | FHIR AuditEvent R4 (base spec only) | Healthcare-native audit logging |
-| **5** | OpenTelemetry spans | SIEM / enterprise observability export |
-
-<p align="center">
-  <img alt="Five-Layer Trust Stack diagram" src="assets/diagrams/trust-stack.svg" width="640">
-</p>
-
-[Full technical architecture →](https://nhid-clinical.org/technical-stack.html)
-
-<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
-
----
-
-## Regulatory Alignment
-
-<details open>
-<summary><b>Regulatory drivers mapped to controls</b></summary>
-
-| Regulatory Driver | Specific Requirement | NHID-Clinical Control |
-| :--- | :--- | :--- |
-| **CMS-0057-F** | FHIR API, 72hr turnaround, 5yr retention | FHIR AuditEvent + ATR-01 |
-| **MACPAC, Apr–Jun 2026** | AI transparency, human review | EIT-01 + ATR-01 |
-| **DOJ FCA (anticipated exposure)** | Explainability + audit trail | ATR-01 + CTS evidence |
-| **State AI Laws** | Inspectable, auditable AI decisions | IDG-01 + DBC-01 |
-| **NIST CAISI's AI Agent Standards Initiative** | Cross-org agent identity | NHID-Auth v2 |
-
-</details>
-
-[Full regulatory alignment matrix →](https://nhid-clinical.org/regulatory-alignment.html)
-
-<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
-
----
-
-## Repository Structure
+```bash
+curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
+  -H "Content-Type: application/json" \
+  -d @tests/demo_scenarios/vapi_noncompliant.json | python -m json.tool
+```
 
 <details>
-<summary><b>Show full directory tree</b></summary>
+<summary><b>Full endpoint reference</b></summary>
 
-```
-NHID-Clinical/
-├── schema/          # Canonical event schema (JSON Schema Draft 2020-12)
-├── src/             # Policy engine + cryptographic identity layer (pure Python)
-├── tests/           # Conformance suite (YAML) + failure harness (pytest) + trace generator
-│   └── demo_scenarios/  # Pre-built VAPI + Twilio test payloads
-├── traces/          # 10 pre-generated failure traces
-├── adapters/        # Vendor adapters — VAPI, Twilio, Vonage, Retell, Amazon Connect
-├── functions/       # AWS Lambda handler
-├── vendor/          # Vendor compliance dashboard (static HTML, no build step)
-├── tools/           # Pilot report generator
-├── docs/            # 5-minute quickstart, staged v2 integration guide
-├── NHIDClinical.psm1  # PowerShell module for payer teams
-└── specs/           # PDF artifacts — Core Specification + Operational Blueprint
-```
+| Endpoint | Auth | Purpose |
+| :--- | :--- | :--- |
+| `POST /v1/demo/check` | none | Raw NHID event → conformance result |
+| `POST /v1/adapters/vapi/check` | none | Native VAPI payload → result |
+| `POST /v1/adapters/twilio/check` | none | Native Twilio payload → result |
+| `POST /v1/adapters/vonage/check` | none | Native Vonage payload → result |
+| `POST /v1/adapters/retell/check` | none | Native Retell AI payload → result |
+| `POST /v1/adapters/connect/check` | none | Amazon Connect → result |
+| `POST /v1/webhooks/call-progress` | none | Turn-by-turn in-call evaluation |
+| `GET /v1/public/vendor/{id}/badge` | none | Public CAS badge SVG |
+| `POST /v1/cts/evaluate` | none | Run CTS YAML suite |
+| `POST /v1/conformance/check` | `x-api-key` | Production conformance check |
 
 </details>
 
-<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
-
----
+**New here?** [5-minute quickstart](docs/5-minute-quickstart.md) · [v2 integration guide](docs/v2-integration-guide.md) (Tier 0 → Tier 2)
 
 ## Quick Start
 
@@ -242,15 +158,42 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected output: `330 passing` in ~1.4s (requires `cryptography` package for identity tests; ~18 skip when no server is running).
+Expected: **330 passing** in ~1.4s (~18 skip without a running server). Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
 
-<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
+<details>
+<summary><b>Repository structure</b></summary>
 
----
+```
+NHID-Clinical/
+├── schema/          # Event schema (JSON Schema Draft 2020-12)
+├── src/             # Policy engine + NHID-Auth v2 identity layer
+├── tests/           # CTS (YAML) + pytest harness + demo scenarios
+├── traces/          # 10 canonical failure traces
+├── adapters/        # VAPI, Twilio, Vonage, Retell, Amazon Connect
+├── functions/       # AWS Lambda handler
+├── docs/            # Quickstart, integration guides, knowledge archive
+└── specs/           # PDF artifacts (Overview, Core Spec, Blueprint)
+```
 
-## NHID-Auth v2 — Cryptographic Agent Identity
+</details>
 
-v1.3 verifies disclosure behavior. v2 verifies authorization: provider-signed agent credentials with NPI binding, scoped delegation chains (max 3 hops), per-agent revocation, and call-SID nonce binding. Reference implementation in `src/agent_identity.py` (26 tests). Released June 2026 under CC BY 4.0.
+<details>
+<summary><b>Regulatory alignment (summary)</b></summary>
+
+| Driver | Requirement | NHID-Clinical Control |
+| :--- | :--- | :--- |
+| CMS-0057-F | FHIR API, audit retention | FHIR AuditEvent + ATR-01 |
+| MACPAC 2026 | AI transparency, human review | EIT-01 + ATR-01 |
+| State AI laws | Auditable AI decisions | IDG-01 + DBC-01 |
+| NIST CAISI RFI | Cross-org agent identity | NHID-Auth v2 |
+
+[Full matrix →](https://nhid-clinical.org/regulatory-alignment.html)
+
+</details>
+
+## NHID-Auth v2
+
+v1.3 verifies disclosure behavior. v2 verifies authorization: Ed25519 agent passports, NPI binding, scoped delegation (max 3 hops), revocation, and call-SID nonce binding. Reference code in `src/agent_identity.py`.
 
 ```bash
 python -m pytest tests/test_identity.py -v
@@ -259,19 +202,11 @@ python examples/issue_and_verify.py
 
 [Details →](https://nhid-clinical.org/roadmap.html)
 
-<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
-
----
-
 ## Contributing & Pilot Partners
 
-We are actively seeking payer and provider organizations to run a **90-day shadow evaluation** — no vendor changes required.
+We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required.
 
-[Become a Pilot Partner →](https://nhid-clinical.org/for-payers.html)
-
-[Community](https://nhid-clinical.org/community.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
-
-<p align="right"><a href="#nhid-clinical">⬆ Back to top</a></p>
+[**For Payers →**](https://nhid-clinical.org/for-payers.html) · [Community](https://nhid-clinical.org/community.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
 ---
 
