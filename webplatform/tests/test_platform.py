@@ -127,6 +127,31 @@ def test_audit_events_and_review_resolution():
     assert len(events) > 0
 
 
+def test_conformance_page_renders():
+    r = client.get("/conformance")
+    assert r.status_code == 200
+    assert "Conformance Suite" in r.text
+
+
+def test_cts_runs_all_cases():
+    body = client.get("/api/cts").json()
+    assert body["total"] >= 18
+    assert body["failed"] == 0
+    assert body["passed"] >= 1
+    assert isinstance(body["results"], list) and len(body["results"]) == body["total"]
+
+
+def test_confusion_matrix_detection_and_fp():
+    body = client.get("/api/confusion?sample_size=550").json()
+    controls = {c["control"]: c for c in body["controls"]}
+    assert set(controls) == {"IDG-01", "PDX-01", "DBC-01", "EIT-01"}
+    # DBC-01 baseline on the full corpus (as of 2026-07): 183/200 detected, 5 FP.
+    assert controls["DBC-01"]["detected"] == 183
+    assert controls["DBC-01"]["expected"] == 200
+    assert controls["DBC-01"]["fp"] == 5
+    assert body["n_compliant"] == 127
+
+
 def test_bad_disposition_rejected():
     client.post("/api/analyze", json={"scenario": "dbc01"})
     reviews = client.get("/api/audit/reviews").json()["reviews"]

@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <style>
 /* ── Simulator variables (extend site palette) ──────────────── */
@@ -453,6 +454,7 @@
 
       <div class="sim-sb-foot">
         <button class="sim-run-btn" id="run-btn" type="button">Run Simulation</button>
+        <a class="btn-ghost" href="/evidence-pack.html" style="display:block;text-align:center;margin-top:.6rem;color:var(--ink);border-color:var(--line)">Download Evidence Bundle →</a>
         <p class="sim-foot-disc">Synthetic data only. Same inputs → identical trace output.</p>
       </div>
     </aside>
@@ -1252,6 +1254,28 @@ document.getElementById('try-failing-btn').addEventListener('click',function(){
   document.querySelectorAll('input[name="b"]').forEach(function(b){b.checked=false;});
   document.getElementById('run-btn').click();
 });
+
+/* ── Deep-link support: ?scenario=<name|control-id> pre-selects a scenario.
+   Lets external tools (e.g. the AI Governance Map) link straight into a
+   pre-loaded scenario. Control IDs map to the closest scenario. ─────────── */
+(function(){
+  var q=new URLSearchParams(window.location.search).get('scenario');
+  if(!q) return;
+  q=q.toLowerCase();
+  var ALIAS={
+    'idg-01':'spoofed-identity','idg01':'spoofed-identity',
+    'dbc-01':'spoofed-identity','dbc01':'spoofed-identity',
+    'pdx-01':'eligibility','pdx01':'eligibility',
+    'eit-01':'handoff','eit01':'handoff',
+    'atr-01':'prior-auth','atr01':'prior-auth'
+  };
+  var key=SC[q]?q:ALIAS[q];
+  if(key&&SC[key]){
+    scEl.value=key;
+    scEl.dispatchEvent(new Event('change'));
+    scEl.scrollIntoView({block:'center'});
+  }
+})();
 
 })();
 </script>

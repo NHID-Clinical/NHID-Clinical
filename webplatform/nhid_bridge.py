@@ -21,7 +21,7 @@ from typing import Any
 
 # ── Make the existing repo importable regardless of CWD ──────────────────────
 _REPO_ROOT = Path(__file__).resolve().parent.parent
-for _p in (str(_REPO_ROOT), str(_REPO_ROOT / "src")):
+for _p in (str(_REPO_ROOT), str(_REPO_ROOT / "src"), str(_REPO_ROOT / "scripts")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -52,6 +52,7 @@ from src.synthetic_eval_loop import (  # noqa: E402
     compute_detection_rates,
 )
 from adapters.fabricate_adapter import convert_csv  # noqa: E402
+from confusion_matrix import compute as _compute_matrix  # noqa: E402  (scripts/)
 
 CORPUS_CONV = str(_REPO_ROOT / "fixtures" / "fabricate" / "conversations.csv")
 CORPUS_TURNS = str(_REPO_ROOT / "fixtures" / "fabricate" / "turns.csv")
@@ -242,6 +243,34 @@ def generate_and_evaluate(sample_size: int = 100, persist: bool = False) -> dict
         "controls": controls,
         "ingested_events": ingested,
     }
+
+
+# ── Confusion matrix (reuses scripts/confusion_matrix.compute) ───────────────
+def confusion_matrix(sample_size: int = 550) -> dict:
+    """Detection + disjoint-population false-positive matrix over a corpus sample.
+
+    Reuses the exact `compute()` the CLI uses (scripts/confusion_matrix.py), so
+    the numbers match `python3 scripts/confusion_matrix.py` byte for byte on the
+    full corpus. ATR-01 is excluded by design (untestable in transcript replay).
+    """
+    corpus = _load_corpus()
+    sample = corpus[: max(1, min(sample_size, len(corpus)))]
+    result = _compute_matrix(sample)
+    for c in result["controls"]:
+        c["detection_pct"] = (round(c["detection_rate"] * 100, 1)
+                              if c["detection_rate"] is not None else None)
+        c["fp_pct"] = (round(c["fp_rate"] * 100, 1)
+                       if c["fp_rate"] is not None else None)
+        # Trim id lists for transport; keep counts.
+        c["missed_sample"] = c.pop("missed")[:8]
+        c["fp_sample"] = c.pop("fp_ids")[:8]
+    return result
+
+
+# ── Conformance Test Suite (reuses the real /v1/cts/evaluate route) ──────────
+def run_cts(test_ids: list[str] | None = None) -> dict:
+    body = {"test_ids": test_ids} if test_ids else {}
+    return _invoke("/v1/cts/evaluate", body)
 
 
 # ── Vendor adapter conformance check (reuses the real adapter routes) ────────

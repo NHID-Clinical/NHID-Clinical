@@ -51,7 +51,15 @@ def load(argv: list[str]) -> list[dict]:
     raise SystemExit(__doc__)
 
 
-def run(conversations: list[dict]) -> None:
+def compute(conversations: list[dict]) -> dict:
+    """Pure confusion-matrix computation shared by the CLI and other callers.
+
+    Detection is measured over conversations that declare each control in
+    `expected_violations`; false positives over the DISJOINT population of
+    conversations whose `scenario_type == "compliant"`. ATR-01 is excluded
+    (untestable in transcript replay). Returns structured results; prints
+    nothing.
+    """
     detect = {c: {"expected": 0, "detected": 0, "missed": []} for c in ALL_CONTROLS}
     fp = {c: {"clean": 0, "fp": 0, "fp_ids": []} for c in ALL_CONTROLS}
 
@@ -80,6 +88,33 @@ def run(conversations: list[dict]) -> None:
                 if ctrl in detected and ctrl not in expected:
                     fp[ctrl]["fp"] += 1
                     fp[ctrl]["fp_ids"].append(cid)
+
+    controls = []
+    for ctrl in ALL_CONTROLS:
+        d, f = detect[ctrl], fp[ctrl]
+        controls.append({
+            "control": ctrl,
+            "expected": d["expected"],
+            "detected": d["detected"],
+            "detection_rate": (d["detected"] / d["expected"]) if d["expected"] else None,
+            "missed": d["missed"],
+            "clean": f["clean"],
+            "fp": f["fp"],
+            "fp_rate": (f["fp"] / f["clean"]) if f["clean"] else None,
+            "fp_ids": f["fp_ids"],
+        })
+    return {"n_conversations": len(conversations),
+            "n_compliant": n_compliant, "controls": controls}
+
+
+def run(conversations: list[dict]) -> None:
+    result = compute(conversations)
+    by = {c["control"]: c for c in result["controls"]}
+    detect = {c: {"expected": by[c]["expected"], "detected": by[c]["detected"],
+                  "missed": by[c]["missed"]} for c in ALL_CONTROLS}
+    fp = {c: {"clean": by[c]["clean"], "fp": by[c]["fp"],
+              "fp_ids": by[c]["fp_ids"]} for c in ALL_CONTROLS}
+    n_compliant = result["n_compliant"]
 
     print(f"\nCorpus: {len(conversations)} conversations "
           f"({n_compliant} scenario_type=compliant)\n")

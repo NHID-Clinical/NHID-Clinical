@@ -46,6 +46,7 @@ NAV = [
     {"href": "/", "label": "Dashboard"},
     {"href": "/analyzer", "label": "Transcript Analyzer"},
     {"href": "/generator", "label": "Synthetic Generator"},
+    {"href": "/conformance", "label": "Conformance Suite"},
     {"href": "/vendors", "label": "Vendor Verification"},
     {"href": "/audit", "label": "Audit Log"},
 ]
@@ -73,6 +74,11 @@ def analyzer(request: Request):
 @app.get("/generator")
 def generator(request: Request):
     return _page(request, "generator.html", "/generator")
+
+
+@app.get("/conformance")
+def conformance(request: Request):
+    return _page(request, "conformance.html", "/conformance")
 
 
 @app.get("/vendors")
@@ -144,6 +150,16 @@ async def api_generate(request: Request):
     global _detection_snapshot
     _detection_snapshot = result["controls"]
     return result
+
+
+@app.get("/api/confusion")
+def api_confusion(sample_size: int = 550):
+    return bridge.confusion_matrix(sample_size)
+
+
+@app.get("/api/cts")
+def api_cts():
+    return bridge.run_cts()
 
 
 @app.post("/api/verify/passport")
