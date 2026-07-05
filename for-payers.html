@@ -181,21 +181,26 @@
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>For Payers</span></div>
         <p class="eyebrow">Shadow Evaluation · 90 Days · Observe Only</p>
         <h1>For Payers: Shadow Evaluation Guide</h1>
-        <p class="lede">A practical starting point for payer operations teams establishing a behavioral baseline for AI voice agent transparency — no vendor changes, no production risk.</p>
+        <p class="lede">Establish a behavioral baseline for AI voice agent transparency — <strong>zero vendor changes, zero production risk.</strong> Run in parallel with live traffic; observe, collect evidence, decide what to require later.</p>
+        <div class="payer-hero-visual">
+          <picture class="premium-3d">
+            <source srcset="/assets/images/3d-renders/impersonation-vs-verified.webp" type="image/webp"/>
+            <img src="/assets/images/3d-svg/latency-split.svg" alt="Illustrative 3D visualization contrasting unverified impersonation latency with a verified NHID-Clinical trust pathway. Conceptual render for clarity."/>
+          </picture>
+          <p class="visual-caption">Impersonation latency vs. verified disclosure pathway</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ── Pilot Banner ──────────────────────────────────────────────────────── -->
-  <section class="page-section" style="padding-top:1.5rem;padding-bottom:.5rem">
+  <section class="page-section" style="padding-top:1rem;padding-bottom:.5rem">
     <div class="container" style="max-width:52rem">
-      <div style="background:linear-gradient(135deg,var(--blue-soft),var(--teal-soft));border:1px solid var(--line);border-radius:1rem;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
-        <div style="font-size:1.75rem;line-height:1">🤝</div>
+      <div class="pilot-banner" style="background:linear-gradient(135deg,var(--blue-soft),var(--teal-soft));border:1px solid var(--line);border-radius:1rem;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
         <div style="flex:1;min-width:14rem">
           <strong style="display:block;font-size:1rem;color:var(--ink);margin-bottom:.25rem">Interested in becoming a pilot partner?</strong>
-          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are actively seeking payer and provider organizations to run the 90-day shadow evaluation below. No vendor changes required — observe only.</p>
+          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are actively seeking payer and provider organizations for the 90-day shadow evaluation below. You would be among the first.</p>
         </div>
-        <a class="cta-button" href="mailto:contact@nhid-clinical.org?subject=Pilot%20Partner%20Interest" style="flex-shrink:0;white-space:nowrap">Get in Touch <span aria-hidden="true">→</span></a>
+        <a class="cta-button" href="/community.html" style="flex-shrink:0;white-space:nowrap">Get in Touch <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
@@ -203,129 +208,103 @@
   <section class="page-section">
     <div class="container" style="max-width:52rem">
 
-      <!-- Disclaimer -->
-      <div style="background:#fee2e2;border-left:4px solid #b91c1c;padding:1rem 1.25rem;border-radius:0 6px 6px 0;font-size:.93rem;line-height:1.7;margin-bottom:2rem">
-        <strong>⚠️ Important:</strong> No payer has piloted or adopted NHID-Clinical yet. You would be among the first. This is a voluntary reference model from a solo founder.
+      <div class="callout" role="note" style="margin-bottom:2rem;border-color:#b91c1c;background:#fef2f2">
+        <strong>Important:</strong> NHID-Clinical is an early-stage open proposal. No payer has piloted or adopted it yet. This is a voluntary reference model — not an accredited standard or regulatory requirement.
       </div>
 
-      <div style="padding:1.5rem;background:#eff6ff;border-radius:8px;margin-bottom:2.5rem">
-          <h3 style="margin-top:0;font-size:1.1rem">Regulatory Alignment</h3>
-          <p style="font-size:0.95rem;line-height:1.6">How NHID-Clinical v1.3 maps to CMS-0057-F, MACPAC 2026, DOJ FCA enforcement, and state AI laws.</p>
-          <p style="margin-bottom:0;font-size:0.95rem"><a href="/regulatory-alignment.html" style="color:#0ea5e9;font-weight:500">See the regulatory alignment matrix →</a></p>
-      </div>
-
-      <!-- Metrics table -->
-      <h2>What You Gain From a Pilot</h2>
-      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.93rem">
+      <h2>What You Gain</h2>
+      <table class="premium-metrics">
         <thead>
           <tr>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Metric</th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Today (typical)</th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Target with NHID-Clinical</th>
+            <th>Metric</th>
+            <th>Today (typical)</th>
+            <th>Target with NHID-Clinical</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top">Verification latency ("are you human?")</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">3–5 minutes or call terminated</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)"><strong>&lt;5 seconds</strong></td>
+            <td>Verification latency</td>
+            <td>3–5 min or call terminated</td>
+            <td>&lt; 5 seconds</td>
           </tr>
           <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);vertical-align:top">Audit effort per vendor</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Manual call review (hours)</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)"><strong>~2 minutes (run test suite)</strong></td>
+            <td>Audit effort per vendor</td>
+            <td>Manual call review (hours)</td>
+            <td>~2 minutes (test suite)</td>
           </tr>
           <tr>
-            <td style="padding:.7rem .9rem;color:var(--body);vertical-align:top">RFP disclosure language</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">Custom per vendor</td>
-            <td style="padding:.7rem .9rem;color:var(--body)"><strong>One standard clause</strong></td>
+            <td>RFP disclosure language</td>
+            <td>Custom per vendor</td>
+            <td>One standard clause</td>
+          </tr>
+          <tr>
+            <td>Escalation response time</td>
+            <td>Untracked</td>
+            <td>≤ 2 seconds, logged</td>
           </tr>
         </tbody>
       </table>
 
-      <!-- Pilot steps -->
-      <h2 style="margin-top:2.5rem">Step-by-Step Pilot Instructions</h2>
-      <div style="display:grid;gap:.85rem;margin-top:1.25rem">
+      <h2>How the 90-Day Shadow Evaluation Works</h2>
+      <div class="payer-phase-grid">
 
         <div class="pilot-card">
-          <p class="step-header"><span class="step-num">1</span> Weeks 1–2: Add RFP Language</p>
-          <p>Copy and paste this exact clause into your next voice AI vendor RFP or BAA amendment:</p>
-          <pre>"The vendor's AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all B2B calls, including disclosure timestamps and opt-out handling. The payer may run the open-source conformance test suite against vendor output."</pre>
-          <p style="margin-top:.65rem"><em>If you already have a vendor contract in place, send this clause as a formal amendment request.</em></p>
+          <p class="step-header"><span class="step-num">1</span> Weeks 1–2 — Add RFP Language</p>
+          <p>Insert this clause into your next voice AI vendor RFP or BAA amendment:</p>
+          <pre>"The vendor's AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all B2B administrative calls, including disclosure timestamps and opt-out handling. The payer may run the open-source conformance test suite against vendor output at any time."</pre>
+          <p style="margin-top:.65rem"><em>Existing contract? Send as a formal amendment request.</em></p>
         </div>
 
         <div class="pilot-card">
-          <p class="step-header"><span class="step-num">2</span> Weeks 3–6: Request Sandbox Testing</p>
-          <p>Ask your vendor or technical contact to test NHID-Clinical against their voice agent in a sandbox environment. It takes <strong>under 5 minutes</strong>.</p>
-          <p><strong>Step-by-step Instructions for the Vendor:</strong></p>
+          <p class="step-header"><span class="step-num">2</span> Weeks 3–6 — Vendor Sandbox Testing</p>
+          <p>Ask your vendor to run the open-source suite — results in under 5 minutes.</p>
           <ol>
-            <li><strong>Clone the repository</strong><br><code>git clone https://github.com/NHID-Clinical/NHID-Clinical.git</code></li>
-            <li><strong>Install dependencies</strong><br><code>pip install -r requirements.txt</code></li>
-            <li><strong>Run the conformance test suite</strong><br><code>python -m pytest tests/ -v</code></li>
-            <li><strong>Send us the results</strong>
-              <ul>
-                <li>Screenshot or copy the full terminal output (especially the summary at the end)</li>
-                <li>Optionally include 10–100 sample trace logs from the test run</li>
-              </ul>
-            </li>
-          </ol>
-          <p style="margin-top:.65rem">📎 <strong>Template email to vendor:</strong> <a href="#email-template" style="color:var(--blue)">See below ↓</a></p>
-        </div>
-
-        <div class="pilot-card">
-          <p class="step-header"><span class="step-num">3</span> Weeks 7–10: Validate the Logs Yourself</p>
-          <p>Run the same test suite against the vendor's logs:</p>
-          <ol>
-            <li>Clone the repository (if you haven't already)</li>
-            <li>Place the vendor's JSON logs in the <code>traces/</code> folder</li>
-            <li>Run <code>python -m pytest tests/ -v</code> — look for all tests passing</li>
-            <li>Manually verify three things:
-              <ul style="margin-top:.35rem">
-                <li>✅ Disclosure timestamp appears before any NPI/member ID request</li>
-                <li>✅ No deceptive artifacts (fake breathing, human-only names)</li>
-                <li>✅ Opt-out requests trigger a human transfer within 2 seconds</li>
-              </ul>
-            </li>
+            <li><code>git clone https://github.com/NHID-Clinical/NHID-Clinical.git</code></li>
+            <li><code>pip install -r requirements.txt</code></li>
+            <li><code>python -m pytest tests/ -v</code></li>
+            <li>Send full terminal output (+ optional sample traces)</li>
           </ol>
         </div>
 
         <div class="pilot-card">
-          <p class="step-header"><span class="step-num">4</span> Weeks 11–12: Measure the Impact</p>
-          <p>Compare two metrics before and after vendor implementation:</p>
+          <p class="step-header"><span class="step-num">3</span> Weeks 7–10 — Validate Logs Yourself</p>
+          <ol>
+            <li>Place vendor JSON traces in <code>traces/</code></li>
+            <li>Run <code>python -m pytest tests/ -v</code></li>
+            <li>Verify: disclosure before NPI/member ID; no deceptive artifacts; escalation ≤ 2s on request</li>
+          </ol>
+        </div>
+
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">4</span> Weeks 11–12 — Measure Impact</p>
           <ul>
-            <li><strong>Average verification latency</strong> — time from call start to disclosure (target: &lt;5 seconds)</li>
-            <li><strong>Escalation call volume</strong> — calls requiring human intervention due to identity uncertainty (target: &gt;30% reduction)</li>
+            <li><strong>Verification latency</strong> (target &lt; 5s)</li>
+            <li><strong>Escalation volume</strong> from identity uncertainty (target &gt; 30% reduction)</li>
           </ul>
-          <p style="margin-top:.65rem"><em>If you don't have these metrics today, start collecting them now.</em></p>
         </div>
 
         <div class="pilot-card">
-          <p class="step-header"><span class="step-num">5</span> Decide on Next Steps</p>
-          <p>Based on results:</p>
+          <p class="step-header"><span class="step-num">5</span> Decide Next Steps</p>
           <ul>
-            <li><strong>All tests passed + metrics improved:</strong> Consider requiring NHID-Clinical conformance in all vendor contracts.</li>
-            <li><strong>Tests failed or metrics unchanged:</strong> Work with vendor on remediation, or disqualify them from future bids.</li>
+            <li><strong>Tests pass + metrics improve</strong> → consider requiring conformance in future contracts</li>
+            <li><strong>Tests fail or flat metrics</strong> → remediation or disqualify from future bids</li>
           </ul>
         </div>
 
       </div>
 
-      <!-- Production readiness note -->
       <div class="callout" role="note" style="margin-top:2.5rem">
-        <strong>Production readiness note:</strong>
-        <strong>v1.3 (current)</strong> covers disclosure and audit — suitable for shadow pilots.
-        <strong>v2</strong> adds cryptographic agent identity and delegation, for deployments where you need to verify the agent is actually authorized by the provider it claims to represent. A public reference implementation is in the repository.
-        <a href="/roadmap.html" style="color:var(--blue);font-weight:500">Read the v2 roadmap →</a>
-        <p style="margin-top:.75rem;font-size:.92rem;color:var(--ink-soft)"><strong>Why this matters:</strong> NPIs are public. Any AI can look up a provider's NPI in the NPPES registry and use it on a call. v1.3 tells you the caller was automated; it does not tell you the caller was actually authorized by that provider. That gap is real and easy to exploit. NHID-Auth v2 addresses it with provider-signed agent credentials.</p>
+        <strong>v1.3 vs. v2:</strong> v1.3 covers disclosure behavior and audit trails — suitable for shadow evaluations today. v2 adds cryptographic agent identity (NHID-Auth v2) for when you must verify the agent was authorized by the provider it claims to represent. NPIs are public; v1.3 alone does not prove authorization.
+        <a href="/roadmap.html" style="color:var(--blue);font-weight:600;display:inline-block;margin-top:.5rem">Read the v2 roadmap →</a>
       </div>
 
-      <!-- Evidence and evaluation links -->
-      <div style="margin-top:2.5rem">
-        <h2>Evaluation resources</h2>
-        <p style="font-size:0.95rem;margin-bottom:.5rem"><a href="/shadow-evaluation-guide.html" style="color:#0ea5e9;font-weight:500">Shadow Evaluation Guide →</a> — Step-by-step 90-day process for establishing a behavioral baseline.</p>
-        <p style="font-size:0.95rem;margin-bottom:.5rem"><a href="/evidence-pack.html" style="color:#0ea5e9;font-weight:500">Evidence Pack →</a> — System behavior guarantees, anonymized failure trace example, and audit readiness model.</p>
-        <p style="font-size:0.95rem"><a href="/regulatory-alignment.html" style="color:#0ea5e9;font-weight:500">Regulatory alignment matrix →</a> — How v1.3 maps to CMS-0057-F, MACPAC, and DOJ FCA enforcement.</p>
-      </div>
+      <h2 style="margin-top:2.5rem">Evaluation Resources</h2>
+      <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
+        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--blue)">Shadow Evaluation Guide →</a> <span style="color:var(--body)">— full 90-day process</span></li>
+        <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--blue)">Evidence Pack →</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
+        <li><a href="/regulatory-alignment.html" style="font-weight:600;color:var(--blue)">Regulatory Alignment →</a> <span style="color:var(--body)">— CMS-0057-F, MACPAC, DOJ FCA, state AI laws</span></li>
+        <li><a href="/demo.html" style="font-weight:600;color:var(--blue)">Live Demo Line (Beacon) →</a> <span style="color:var(--body)">— call <a href="tel:+17176706772">+1 (717) 670-6772</a> (website demo)</span></li>
+      </ul>
 
     </div>
   </section>
@@ -334,21 +313,21 @@
     <div class="closing-panel">
       <div>
         <p class="section-kicker">Get involved</p>
-        <h2>Read the proposal and share your reaction.</h2>
-        <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
+        <h2>Read the proposal. Share what you think.</h2>
+        <p>Whether it is right, wrong, incomplete, or misses the real problem — that feedback shapes the next version.</p>
       </div>
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
     </div>
   </section>
 </main>
 
-
 <section class="page-section" style="padding-top:0">
   <div class="container" style="max-width:60rem">
     <div class="premium-callout">
-      <h3>Procurement &amp; Shadow Evaluation, at a glance</h3>
-      <p>A 90-day shadow evaluation runs beside your live traffic: no vendor changes, no production risk, deterministic evidence out. Checklist: (1) pick one call type, (2) mirror transcripts to the conformance API, (3) review the evidence bundle with your compliance team.</p>
-      <a href="/shadow-evaluation-guide.html">Read the Shadow Evaluation Guide →</a>&nbsp;&nbsp; <a href="/evidence-pack.html">See what the evidence looks like →</a>&nbsp;&nbsp;
+      <h3>Procurement at a glance</h3>
+      <p>Shadow evaluation checklist: (1) pick one call type, (2) mirror transcripts to the conformance API, (3) review the evidence bundle with compliance. No production risk.</p>
+      <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide →</a>&nbsp;&nbsp;
+      <a href="/specs/NHID-Clinical-Operational-Blueprint-v1.3.pdf">Operational Blueprint (PDF) →</a>
     </div>
   </div>
 </section>

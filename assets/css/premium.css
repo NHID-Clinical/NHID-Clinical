@@ -49,6 +49,58 @@
 img.premium-3d, svg.premium-3d, picture.premium-3d img {
   width: 100%; max-width: 1100px; margin: 2rem auto 0; display: block;
   border-radius: 12px;
+  box-shadow: 0 28px 72px rgba(8, 42, 91, 0.14), 0 0 0 1px rgba(190, 213, 226, 0.5);
+}
+
+.hero-art-nexus picture.premium-3d,
+.hero-art-nexus picture.premium-3d img {
+  margin: 0;
+  max-width: none;
+  border-radius: 14px;
+}
+
+.visual-caption {
+  font-size: .78rem;
+  color: var(--body);
+  text-align: center;
+  margin: .65rem 0 0;
+  font-style: italic;
+}
+
+.premium-metrics {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0 2rem;
+  font-size: .93rem;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(8, 42, 91, 0.08);
+}
+.premium-metrics th {
+  text-align: left;
+  padding: .75rem 1rem;
+  background: var(--ink, #082a5b);
+  color: #fff;
+  font-weight: 600;
+  font-size: .85rem;
+}
+.premium-metrics td {
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-soft);
+  vertical-align: top;
+}
+.premium-metrics tr:nth-child(even) td { background: rgba(234, 245, 251, 0.45); }
+.premium-metrics td:last-child { color: var(--teal); font-weight: 600; }
+
+.payer-hero-visual {
+  margin-top: 1.5rem;
+  max-width: 42rem;
+}
+.payer-phase-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
 }
 
 .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-top: 2.2rem; }

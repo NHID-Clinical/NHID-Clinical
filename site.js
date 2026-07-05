@@ -343,3 +343,35 @@ window.NHIDDemoStatus = (function () {
 
   return { render: render, poll: poll };
 })();
+
+/* ── Compass / ElevenLabs widget — permanently removed ───────────────────────
+   Strips stale embeds if a cached script or third-party injection re-adds them. */
+(function () {
+  'use strict';
+  function purgeWidget() {
+    document.querySelectorAll('elevenlabs-convai').forEach(function (el) {
+      el.remove();
+    });
+    document.querySelectorAll('[class*="convai"], [id*="convai"]').forEach(function (el) {
+      if (el.tagName && el.tagName.toLowerCase() === 'elevenlabs-convai') return;
+      var cn = (el.className && String(el.className)) || '';
+      if (/elevenlabs|convai/i.test(cn) || /elevenlabs|convai/i.test(el.id || '')) {
+        el.remove();
+      }
+    });
+    document.querySelectorAll('script[src*="elevenlabs"]').forEach(function (s) {
+      if (/convai|widget/i.test(s.src)) s.remove();
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', purgeWidget);
+  } else {
+    purgeWidget();
+  }
+  if (typeof MutationObserver !== 'undefined') {
+    new MutationObserver(purgeWidget).observe(document.documentElement, {
+      childList: true,
+      subtree: true
+    });
+  }
+})();

@@ -323,6 +323,32 @@ p { margin: 0; }
   color: #14B8A6;
 }
 
+.hero-bullets {
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: .55rem;
+  max-width: 44rem;
+}
+.hero-bullets li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: .92rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.hero-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--teal);
+}
+
 .hero-copy h1 {
   margin: 1.5rem 0 0;
   color: var(--ink);
@@ -3070,6 +3096,20 @@ textarea { resize: vertical; min-height: 120px; }
 [data-theme="dark"] .stack-row-active {
   background: rgba(11,110,188,.16);
   border-color: rgba(11,110,188,.4);
+}
+
+/* ── ElevenLabs Compass widget — permanently disabled on public site ─────── */
+elevenlabs-convai,
+[class*="elevenlabs-convai"],
+[id*="elevenlabs-convai"],
+.convai-widget,
+iframe[src*="elevenlabs.io"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
 }
 
 /* ── Visual depth polish ──────────────────────────────────────────────────── */
