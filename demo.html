@@ -136,14 +136,13 @@
   <section class="page-section">
     <div class="container" style="max-width:860px">
       <div class="card" style="margin-bottom:1.5rem">
-        <h3>1. Call the demo number</h3>
-        <p class="sub">Dial <strong id="demo-phone-number">the demo number (see below)</strong> from any phone.</p>
+        <h3>1. Call the Live Demo Line (Beacon)</h3>
+        <p class="sub">Dial <a class="demo-line-phone" href="tel:+17176706772"><strong id="demo-phone-number">+1 (717) 670-6772</strong></a> from any phone.</p>
         <div class="callout" role="note">
-          The demo phone number is provisioned manually in the Twilio Console (not managed by this repo's
-          infrastructure-as-code) — see <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/twilio-demo-line.md">docs/twilio-demo-line.md</a>
-          for the current number and setup steps.
+          This is the public <strong>Grok Voice / Beacon</strong> inbound demo line — a website demo feature, not a personal contact number.
+          Say something like <em>&ldquo;I am an automated assistant&hellip;&rdquo;</em> to exercise disclosure controls (IDG-01, DBC-01, and related gates).
         </div>
-        <p>Press <strong>1</strong> for a call that satisfies the disclosure and PHI-protection controls. Press <strong>2</strong> for one that violates them.</p>
+        <p>After the call ends, evaluation results appear below in real time through the same pipeline production traffic uses.</p>
       </div>
 
       <div class="card" style="margin-bottom:1.5rem">
@@ -180,7 +179,7 @@
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
-    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0<br/><span class="footer-demo-line"><strong>Live Demo Line (Beacon)</strong> — <a href="tel:+17176706772">+1 (717) 670-6772</a> <span class="footer-demo-note">(website demo, not personal contact)</span></span></p>
     <div>
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
