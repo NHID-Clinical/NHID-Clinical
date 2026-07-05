@@ -1,5 +1,9 @@
 name: Deploy GitHub Pages
 
+# Canonical Pages deploy — slim _site artifact only (~17 MB).
+# If "pages build and deployment" also runs and fails, switch repo Settings →
+# Pages → Build and deployment → Source: "GitHub Actions" (not "Deploy from branch").
+
 on:
   push:
     branches: [main]
@@ -12,7 +16,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -23,6 +27,16 @@ jobs:
 
       - name: Assemble slim static site
         run: bash scripts/build_pages_site.sh
+
+      - name: Verify artifact size
+        run: |
+          BYTES=$(du -sb _site | cut -f1)
+          MB=$(awk "BEGIN {printf \"%.2f\", $BYTES/1024/1024}")
+          echo "Artifact size: ${MB} MB"
+          if [ "$BYTES" -gt 41943040 ]; then
+            echo "::error::Pages artifact is ${MB} MB (limit 40 MB). Slim the site before deploy."
+            exit 1
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -35,10 +49,28 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages (attempt 1)
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v4
         with:
           timeout: 600000
+
+      - name: Wait before retry
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 45
+
+      - name: Deploy to GitHub Pages (attempt 2)
+        id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
+
+      - name: Fail if all deploy attempts failed
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry.outcome == 'failure'
+        run: |
+          echo "::error::Pages deploy failed after 2 attempts (often caused by concurrent legacy 'pages build and deployment' runs)."
+          exit 1
