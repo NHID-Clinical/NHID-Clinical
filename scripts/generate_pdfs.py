@@ -30,6 +30,7 @@ OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "specs")
 ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
 FONT_DIR = os.path.join(ASSETS_DIR, "fonts")
 LOGO_PATH = os.path.join(ASSETS_DIR, "brand-icon.png")
+LOGO_LIGHT_PATH = os.path.join(ASSETS_DIR, "logo-light.jpg")
 
 # ── Brand font: Inter (matches --sans / --display in nhid-clinical-ui.css) ──
 try:
@@ -101,14 +102,18 @@ class ColorBlock(Flowable):
 
 class TitleBanner(Flowable):
     """Full-width title banner."""
-    def __init__(self, title, subtitle, version, bg=DARK, width=6.5*inch):
+    def __init__(self, title, subtitle, version, bg=DARK, width=6.5*inch,
+                 logo_path=None, logo_w=34, logo_h=34, height=1.6*inch):
         super().__init__()
         self.title = title
         self.subtitle = subtitle
         self.version = version
         self.bg = bg
         self._width = width
-        self._height = 1.6 * inch
+        self._height = height
+        self.logo_path = logo_path or LOGO_PATH
+        self.logo_w = logo_w
+        self.logo_h = logo_h
 
     def draw(self):
         c = self.canv
@@ -122,7 +127,7 @@ class TitleBanner(Flowable):
         c.setFont(FONT_BOLD, 20)
         c.drawString(18, self._height - 40, self.title)
         # subtitle — shrink to fit so long subtitles never run into the logo
-        logo_clearance = 52 if os.path.exists(LOGO_PATH) else 0
+        logo_clearance = (self.logo_w + 24) if os.path.exists(self.logo_path) else 0
         avail = self._width - 36 - logo_clearance
         sub_size = 11
         while sub_size > 8 and pdfmetrics.stringWidth(self.subtitle, FONT_REGULAR, sub_size) > avail:
@@ -142,12 +147,17 @@ class TitleBanner(Flowable):
         c.setFont(FONT_REGULAR, 9)
         c.drawCentredString(151, 18, "June 2026 · CC BY 4.0")
         # logo mark, top-right
-        if os.path.exists(LOGO_PATH):
+        if os.path.exists(self.logo_path):
             try:
-                logo_h = 34
-                logo_w = 34
-                c.drawImage(LOGO_PATH, self._width - logo_w - 18, self._height - logo_h - 16,
-                            width=logo_w, height=logo_h, mask="auto", preserveAspectRatio=True)
+                c.drawImage(
+                    self.logo_path,
+                    self._width - self.logo_w - 18,
+                    self._height - self.logo_h - 16,
+                    width=self.logo_w,
+                    height=self.logo_h,
+                    mask="auto",
+                    preserveAspectRatio=True,
+                )
             except Exception:
                 pass
 
@@ -512,7 +522,7 @@ def make_core_spec():
     stats = [
         ("4", "Controls"),
         ("18", "CTS Tests"),
-        ("284", "Tests Passing"),
+        ("330", "Tests Passing"),
         ("6", "Adapters\n(VAPI, Twilio, +4)"),
     ]
     stat_cells = []
@@ -1152,6 +1162,227 @@ def make_knowledge_archive():
     return path
 
 
+# ── Document 6: v1.3 Public Overview (operational brief) ─────────────────────
+
+def make_v13_overview():
+    """Public operational reference model — payer-facing brief aligned with
+    docs/MASTER-KNOWLEDGE-ARCHIVE.md."""
+    path = os.path.join(OUT_DIR, "NHID-Clinical-v1.3-Overview.pdf")
+    doc = SimpleDocTemplate(path, pagesize=letter,
+                            leftMargin=inch, rightMargin=inch,
+                            topMargin=0.75*inch, bottomMargin=0.75*inch)
+    H1, H2, BODY, SMALL, DISC = _styles()
+    overview_logo = LOGO_LIGHT_PATH if os.path.exists(LOGO_LIGHT_PATH) else LOGO_PATH
+    story = []
+
+    story.append(TitleBanner(
+        "NHID-Clinical",
+        "A Voluntary Open Proposal for Agent Identity in Payer–Provider Voice Calls",
+        "v1.3",
+        logo_path=overview_logo,
+        logo_w=72,
+        logo_h=72,
+        height=1.85 * inch,
+    ))
+    story.append(Spacer(1, 0.12 * inch))
+
+    meta_style = ParagraphStyle(
+        "Meta", fontName=FONT_REGULAR, fontSize=8.5, textColor=DGRAY, leading=12, spaceAfter=2
+    )
+    for line in [
+        "<b>PUBLIC OPERATIONAL REFERENCE MODEL</b>",
+        "Version: 1.3 (June 2026)  ·  Author: Brianna Baynard (Independent)",
+        "Status: Public Reference Model  ·  Feedback: contact@nhid-clinical.org",
+        "NIST Public Comment: NIST-2025-0035-0026",
+    ]:
+        story.append(Paragraph(line, meta_style))
+    story.append(Spacer(1, 0.12 * inch))
+
+    story.append(Paragraph(
+        "⚠  NHID-Clinical is an early-stage open proposal. It is not an accredited standard, "
+        "not a certification program, and not a regulatory requirement.",
+        DISC
+    ))
+    story.append(Spacer(1, 0.12 * inch))
+
+    # ── Page 1: Problem + behaviors ──────────────────────────────────────────
+    story.append(Paragraph("Public Brief: The Impersonation Latency", H1))
+    story.append(Paragraph(
+        "When an AI agent calls a payer's prior authorization or benefits verification line, "
+        "the receiving party often lacks reliable, consistent disclosure about whether the caller "
+        "is human-operated or system-operated.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "This uncertainty causes repeated clarifications, call transfers, manual fallback routing, "
+        "and often 10+ repeat calls for a single routine task. In observed payer operations, "
+        "agents frequently request member IDs, NPIs, or dates of birth within the first 15 seconds "
+        "with no prior statement that the caller is automated.",
+        BODY
+    ))
+    story.append(ColorBlock(
+        "Impersonation Latency",
+        "The duration of time an AI agent operates and exchanges PHI without disclosing its "
+        "non-human identity. NHID-Clinical median observation: 3 turns before first disclosure "
+        "attempt. This term is permanent and must never be renamed.",
+        SLATE, width=6.5 * inch, height=0.95 * inch
+    ))
+    story.append(Spacer(1, 0.08 * inch))
+    story.append(Paragraph(
+        "<b>Focus area:</b> This proposal provides a standardized, voluntary blueprint to establish "
+        "clear expectations around identity disclosure at the initiation of machine-to-human "
+        "B2B voice interactions in healthcare administrative workflows.",
+        BODY
+    ))
+    story.append(Spacer(1, 0.1 * inch))
+
+    story.append(Paragraph("Proposed Core Behaviors (v1.3)", H1))
+    behaviors = [
+        ("IDG-01 — Early disclosure",
+         "The agent states its non-human identity at the beginning of the interaction, before "
+         "any substantive workflow execution or PHI request."),
+        ("PDX-01 — Pre-data exchange gate",
+         "No protected health information (member ID, NPI, DOB, claim number, etc.) may be "
+         "exchanged until IDG-01 disclosure is confirmed."),
+        ("DBC-01 — No deception",
+         "The agent never claims to be human and does not use deceptive artifacts designed to "
+         "imply human presence."),
+        ("EIT-01 — Human escalation",
+         "A human escalation path is communicated and honored immediately when the receiving "
+         "party requests a person."),
+        ("ATR-01 — Audit trace (supplemental)",
+         "Every call produces a machine-readable JSON event trace with disclosure timestamps, "
+         "state transitions, and execution context — deterministic under identical input conditions."),
+    ]
+    for title, body_txt in behaviors:
+        story.append(Paragraph(f"<b>{title}.</b> {body_txt}", BODY))
+
+    story.append(Spacer(1, 0.1 * inch))
+    story.append(Paragraph("An Important Distinction", H1))
+    story.append(Paragraph(
+        "NHID-Clinical does not verify caller identity or agent authenticity. It standardizes "
+        "<b>observable disclosure and trace behaviors</b> only. These behaviors are documented with "
+        "RFC 2119 keywords (MUST, SHOULD, MAY) in the full v1.3 specification, but they are not "
+        "legally binding — purely a voluntary public operational reference model.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "Cryptographic authorization (NHID-Auth v2 — Ed25519 agent passports, NPI-bound delegation) "
+        "is documented as a separate reference layer for when behavioral controls alone are "
+        "insufficient. It is public reference code, not a deployed trust infrastructure.",
+        SMALL
+    ))
+
+    story.append(PageBreak())
+
+    # ── Page 2: Resources + payer value ──────────────────────────────────────
+    story.append(Paragraph("Available Resources & Tooling", H1))
+    story.append(Paragraph(
+        "The following resources are available on <b>nhid-clinical.org</b> and in the public "
+        "GitHub repository to support evaluation and voluntary adoption:",
+        BODY
+    ))
+    resources = [
+        "A working JSON event schema for call traces (nhid_trace_schema_v1.json).",
+        "A deterministic policy engine that produces stable trace output under identical input "
+        "conditions (modulo timestamps and non-deterministic IDs).",
+        "An 18-case conformance test suite (CTS) in machine-readable YAML plus a pytest failure "
+        "injection harness (330 passing unit tests in the reference implementation).",
+        "10 canonical trace files in traces/ demonstrating real-world scenarios (eligibility, "
+        "prior auth, claims status, bot-to-bot, audit gaps, and more).",
+        "Six vendor adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress) "
+        "accepting native call payloads and returning pass/fail conformance results.",
+        "A live public conformance API — demo routes require no API key.",
+        "Governance Simulator, Shadow Evaluation Guide, and Evidence Pack for payer operations teams.",
+    ]
+    for item in resources:
+        story.append(Paragraph(f"•  {item}", BODY))
+
+    story.append(Spacer(1, 0.1 * inch))
+    story.append(ColorBlock(
+        "Note on Scope",
+        "There are no certification claims, no HIPAA compliance claims, and no regulatory authority "
+        "claims associated with this reference model. CAS (Call Authorization Score) is a "
+        "measurement, not a certification seal.",
+        AMBER, width=6.5 * inch, height=0.8 * inch
+    ))
+    story.append(Spacer(1, 0.12 * inch))
+
+    story.append(Paragraph("The Payer Value Proposition", H1))
+    story.append(Paragraph(
+        "A regional payer that encourages its provider-facing vendors to adopt NHID-Clinical gains "
+        "machine-auditable proof of how each voice agent handles identity disclosure — without "
+        "writing custom contract language or building internal validation tooling from scratch.",
+        BODY
+    ))
+    value_props = [
+        "<b>Reduces audit friction:</b> Trace logs can be reviewed by your compliance team or "
+        "fed into anomaly detection baselines.",
+        "<b>Enables vendor transparency:</b> Require NHID-Clinical conformance as a lightweight "
+        "RFP clause, not a heavy, expensive certification.",
+        "<b>Supports asset inventorying:</b> Operations and security teams can treat NHID-Clinical "
+        "traces as an observable signal alongside API keys and service accounts.",
+        "<b>Zero production pilots to date:</b> NHID-Clinical is seeking its first shadow "
+        "evaluation partners — you would be among the first.",
+    ]
+    for item in value_props:
+        story.append(Paragraph(f"•  {item}", BODY))
+
+    story.append(PageBreak())
+
+    # ── Page 3: Tactical guidance + disclaimers ────────────────────────────
+    story.append(Paragraph("Tactical Guidance for Payers", H1))
+    story.append(Paragraph(
+        "To leverage this proposal, payers can take the following immediate steps:",
+        BODY
+    ))
+    steps = [
+        "Read this operational brief and the Shadow Evaluation Guide (90-day observe-only methodology).",
+        "Ask your voice AI vendors (prior auth automation, benefits verification tools) whether "
+        "they can produce NHID-Clinical-compatible traces in a sandbox.",
+        "Run the conformance test suite against their output — the test harness is ready on the "
+        "Developers page and in the public repository.",
+        "Optionally add voluntary conformance to your vendor onboarding checklist — not as a "
+        "pass/fail hurdle, but as a transparency preference.",
+    ]
+    for i, step in enumerate(steps, 1):
+        story.append(Paragraph(f"{i}. {step}", BODY))
+
+    story.append(Spacer(1, 0.1 * inch))
+    story.append(Paragraph(
+        "You do not need to become a certification body, and you do not need intensive legal "
+        "sign-off. This is a practical coordination tool, not a compliance mandate.",
+        BODY
+    ))
+    story.append(Spacer(1, 0.12 * inch))
+
+    story.append(Paragraph("Governance & Disclaimers", H1))
+    disclaimers = [
+        "This is not an official standard (neither ANSI, ISO, nor HL7).",
+        "It is not a certification — no one is certified, and no seal is offered.",
+        "It is strictly voluntary — there is no legal obligation or regulatory authority.",
+        "It does not provide inherent HIPAA compliance, security guarantees, or liability protection.",
+        "FHIR R4 AuditEvent mapping validates against the base spec (v4.0.1) only — no named "
+        "Implementation Guide conformance (e.g., IHE BALP) is claimed.",
+    ]
+    for item in disclaimers:
+        story.append(Paragraph(f"•  {item}", BODY))
+
+    story.append(Spacer(1, 0.12 * inch))
+    story.append(ColorBlock(
+        "Access & Feedback",
+        "Full technical artifacts: nhid-clinical.org/developers  ·  "
+        "Specification: nhid-clinical.org/specification.html  ·  "
+        "GitHub: github.com/NHID-Clinical/NHID-Clinical  ·  "
+        "Feedback: GitHub Issues or contact@nhid-clinical.org",
+        BLUE, width=6.5 * inch, height=0.85 * inch
+    ))
+
+    doc.build(story, onFirstPage=_footer_canvas, onLaterPages=_footer_canvas)
+    print(f"  ✓  {path}")
+    return path
+
+
 if __name__ == "__main__":
     print("Generating PDFs...")
     make_shadow_guide()
@@ -1159,4 +1390,5 @@ if __name__ == "__main__":
     make_operational_blueprint()
     make_technical_playbook()
     make_knowledge_archive()
+    make_v13_overview()
     print("Done.")
