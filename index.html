@@ -125,37 +125,34 @@
 
 <main>
 
-  <!-- ── Section 1: Cinematic Hero ───────────────────────────────────────── -->
-  <section class="section-premium hero-premium">
-    <div class="container">
-      <span class="hero-kicker">Open proposal · v1.3 behavioral baseline</span>
-      <h1>NHID-Clinical</h1>
-      <p class="tagline">Open Behavioral Baseline for Transparent AI Voice Agents in Healthcare</p>
-      <p class="disclaimer"><strong>Practical controls for AI voice agents in payer–provider calls, built by a former payer operations associate who saw the problem firsthand on live calls.</strong></p>
-      <p class="disclaimer">I worked in payer operations — eligibility, claims, prior authorization — protecting PHI on live calls. Starting in 2025, our call center began receiving AI voice agents calling on behalf of provider offices. They passed verification, so we treated them as regular calls. Over time the problems became consistent: disclosure after PHI had already moved, no way to verify authorization, no escalation path. This project documents those patterns and proposes a voluntary, testable behavioral baseline. It is not a standard and not a certification. It is an open reference implementation.</p>
-      <p class="disclaimer">A voluntary, testable reference implementation. Submitted as public comment to NIST (NIST-2025-0035-0026). <strong>Not a product. Not a certification. Not an official standard.</strong> An open proposal for the ecosystem. CC&nbsp;BY&nbsp;4.0.</p>
-
-      <div class="hero-actions-premium">
-        <a href="/specification.html" class="btn-premium">Read the v1.3 Specification</a>
-        <a href="/simulator.html" class="btn-premium">Launch Governance Simulator</a>
-        <a href="https://ai-governance-map.vercel.app/" class="btn-ghost">Explore Full Context in AI Governance Map</a>
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical" class="btn-ghost">GitHub · Contribute</a>
+  <!-- ── Section 1: Hero ───────────────────────────────────────────────────── -->
+  <section class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="hero-kicker">Open proposal · v1.3 behavioral baseline</span>
+        <h1>NHID-Clinical</h1>
+        <p class="hero-subtitle">Open Behavioral Baseline for Transparent AI Voice Agents in Healthcare</p>
+        <p class="hero-body"><strong>Practical controls for AI voice agents in payer–provider calls, built by a former payer operations associate who saw the problem firsthand on live calls.</strong></p>
+        <p class="hero-body">I worked in payer operations — eligibility, claims, prior authorization — protecting PHI on live calls. Starting in 2025, our call center began receiving AI voice agents calling on behalf of provider offices. They passed verification, so we treated them as regular calls. Over time the problems became consistent: disclosure after PHI had already moved, no way to verify authorization, no escalation path. This project documents those patterns and proposes a voluntary, testable behavioral baseline. It is not a standard and not a certification. It is an open reference implementation.</p>
+        <p class="hero-body" style="font-size:.9rem;color:var(--ink-soft)">A voluntary, testable reference implementation. Submitted as public comment to NIST (NIST-2025-0035-0026). <strong>Not a product. Not a certification. Not an official standard.</strong> An open proposal for the ecosystem. CC&nbsp;BY&nbsp;4.0.</p>
+        <div class="hero-actions-premium">
+          <a href="/specification.html" class="btn-premium">Read the v1.3 Specification</a>
+          <a href="/simulator.html" class="btn-premium">Launch Governance Simulator</a>
+          <a href="https://ai-governance-map.vercel.app/" class="btn-ghost">Explore Full Context in AI Governance Map</a>
+          <a href="https://github.com/NHID-Clinical/NHID-Clinical" class="btn-ghost">GitHub · Contribute</a>
+        </div>
+        <div class="callout" style="margin-top:1.5rem">
+          <strong>Current state:</strong>
+          The v1.3 conformance API is live — no key required for demo and vendor routes.
+          VAPI and Twilio adapters accept native call payloads and return a pass/fail result.
+          The v2 cryptographic authorization layer is public reference code in the repository.
+          Zero production pilots — we are seeking the first shadow evaluation partners.
+          — <a href="/for-payers.html">Start a shadow evaluation →</a>
+        </div>
       </div>
-
-      <picture class="premium-3d">
-        <source srcset="/assets/images/3d-renders/nexus-trust-bridge.webp" type="image/webp"/>
-        <img src="/assets/images/3d-svg/nexus.svg" class="premium-3d"
-             alt="Illustrative 3D visualization of the NHID-Clinical Trust Verification Nexus — a verification bridge between payer and provider domains with disclosure, verification, and escalation gates. Conceptual render for clarity."/>
-      </picture>
-      <p class="visual-caption">Illustrative visualization of the trust verification pathway — conceptual render for clarity, not a product diagram.</p>
-
-      <div class="callout" style="margin-top:2rem;background:rgba(148,163,184,.07);border:1px solid var(--premium-line);color:#b7c3d8">
-        <strong style="color:#e2e8f0">Current state:</strong>
-        The v1.3 conformance API is live — no key required for demo and vendor routes.
-        VAPI and Twilio adapters accept native call payloads and return a pass/fail result.
-        The v2 cryptographic authorization layer is public reference code in the repository.
-        Zero production pilots — we are seeking the first shadow evaluation partners.
-        — <a href="/for-payers.html">Start a shadow evaluation →</a>
+      <div class="hero-art" aria-label="NHID-Clinical logo">
+        <img class="theme-img theme-img-light" src="/assets/logo-light.jpg" alt="NHID-Clinical" />
+        <img class="theme-img theme-img-dark" src="/assets/logo-dark.jpg" alt="NHID-Clinical" />
       </div>
     </div>
   </section>

@@ -308,6 +308,21 @@ p { margin: 0; }
   animation: pulse-dot 2.8s ease-out infinite;
 }
 
+.hero-kicker {
+  display: inline-block;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-size: .72rem;
+  color: var(--teal);
+  border: 1px solid rgba(20, 184, 166, .35);
+  padding: .3rem .7rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+[data-theme="dark"] .hero-kicker {
+  color: #14B8A6;
+}
+
 .hero-copy h1 {
   margin: 1.5rem 0 0;
   color: var(--ink);
@@ -405,6 +420,14 @@ p { margin: 0; }
   object-fit: cover;
   object-position: 76% center;
   mix-blend-mode: multiply;
+}
+
+/* Theme-aware logo pair in hero-art */
+.hero-art img.theme-img {
+  object-fit: contain;
+  object-position: center;
+  padding: 1.5rem;
+  mix-blend-mode: normal;
 }
 
 .floating-note {

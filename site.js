@@ -21,8 +21,8 @@
     syncThemeImages(theme);
   }
 
-  /* Set correct images on initial load */
-  syncThemeImages(document.documentElement.getAttribute('data-theme') || 'light');
+  /* Apply stored theme on load (syncs images + mobile label) */
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
 
   document.querySelectorAll('.theme-toggle').forEach(function (btn) {
     btn.addEventListener('click', function () {
