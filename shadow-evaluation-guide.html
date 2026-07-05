@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <style>
     .phase-card {
@@ -24,36 +25,7 @@
       color: var(--ink);
       margin-bottom: .4rem;
     }
-    .phase-card p {
-      margin: 0;
-      color: var(--body);
-      font-size: .93rem;
-      line-height: 1.8;
-    }
-    .controls-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      font-size: .93rem;
-    }
-    .controls-table thead th {
-      text-align: left;
-      padding: .65rem .9rem;
-      border-bottom: 2px solid var(--border);
-      color: var(--ink-soft);
-      font-weight: 600;
-      background: none;
-    }
-    .controls-table tbody td {
-      padding: .7rem .9rem;
-      border-bottom: 1px solid var(--border);
-      color: var(--body);
-      vertical-align: top;
-      line-height: 1.6;
-    }
-    .controls-table tbody tr:last-child td {
-      border-bottom: none;
-    }
+    .phase-card p { margin: 0; color: var(--body); font-size: .93rem; line-height: 1.8; }
     .controls-table .control-id {
       font-family: monospace;
       font-size: .88rem;
@@ -179,7 +151,14 @@
         <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/for-payers.html">For Payers</a><span>/</span><span>Shadow Evaluation Guide</span></div>
         <p class="eyebrow">Behavioral Baseline &middot; Shadow Mode &middot; 90 Days</p>
         <h1>Shadow Evaluation Guide</h1>
-        <p class="lede">A structured, no-cost process for payer operations teams to establish a behavioral baseline for incoming AI voice calls — without changing anything in your call flow.</p>
+        <p class="lede">A structured, no-cost process for payer operations teams to establish a behavioral baseline for incoming AI voice calls — <strong>without changing anything in your call flow.</strong></p>
+        <div class="payer-hero-visual" style="margin-top:1.25rem">
+          <picture class="premium-3d">
+            <source srcset="/assets/images/3d-renders/impersonation-vs-verified.webp" type="image/webp"/>
+            <img src="/assets/images/3d-svg/latency-split.svg" alt="Illustrative 3D visualization contrasting unverified impersonation latency with a verified NHID-Clinical trust pathway. Conceptual render for clarity."/>
+          </picture>
+          <p class="visual-caption">What shadow mode measures: disclosure timing vs. impersonation latency</p>
+        </div>
         <div style="margin-top:1.25rem">
           <a class="secondary-button" href="/specs/NHID-Clinical-Shadow-Evaluation-Guide.pdf" download style="display:inline-flex;align-items:center;gap:.5rem">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -213,7 +192,7 @@
       </ul>
 
       <h2 style="margin-top:2.5rem">The 90-Day Structure</h2>
-      <div style="display:grid;gap:1rem;margin-top:1rem">
+      <div class="payer-phase-grid" style="margin-top:1rem">
         <div class="phase-card">
           <strong>Month 1 — Behavioral Baseline</strong>
           <p>Log incoming calls. Identify which callers are AI voice agents. Record disclosure timing, escalation behavior, and audit trail presence.</p>
@@ -228,8 +207,8 @@
         </div>
       </div>
 
-      <h2 style="margin-top:2.5rem">The Four Controls You Are Observing</h2>
-      <table class="controls-table">
+      <h2 style="margin-top:2.5rem">The Controls You Are Observing</h2>
+      <table class="premium-metrics controls-table">
         <thead>
           <tr>
             <th>Control</th>
@@ -240,6 +219,10 @@
           <tr>
             <td class="control-id">IDG-01</td>
             <td>Disclose AI identity at call start, before any data exchange.</td>
+          </tr>
+          <tr>
+            <td class="control-id">PDX-01</td>
+            <td>No PHI or credentials exchanged before identity disclosure is confirmed.</td>
           </tr>
           <tr>
             <td class="control-id">DBC-01</td>
@@ -261,11 +244,24 @@
         Email <a href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation" style="color:var(--blue);font-weight:600">contact@nhid-clinical.org</a> with the subject line <strong>"Shadow Evaluation"</strong>. Include your role and the workflows you want to observe.
       </p>
 
-      <div style="margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;gap:1.5rem;flex-wrap:wrap;font-size:.9rem;align-items:center">
-        <a href="/for-payers.html" style="color:var(--blue);font-weight:600">&larr; Back to For Payers</a>
-        <a href="/evidence-pack.html" style="color:var(--blue);font-weight:600">Evidence Pack (what you'd produce) &rarr;</a>
-      </div>
+      <h2 style="margin-top:2.5rem">Related Resources</h2>
+      <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
+        <li><a href="/for-payers.html" style="font-weight:600;color:var(--blue)">For Payers guide &rarr;</a> <span style="color:var(--body)">— full 90-day pilot framing</span></li>
+        <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--blue)">Evidence Pack &rarr;</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
+        <li><a href="/demo.html" style="font-weight:600;color:var(--blue)">Live Demo Line (Beacon) &rarr;</a> <span style="color:var(--body)">— call <a href="tel:+17176706772">+1 (717) 670-6772</a></span></li>
+      </ul>
 
+    </div>
+  </section>
+
+  <section class="page-section" style="padding-top:0">
+    <div class="container" style="max-width:60rem">
+      <div class="premium-callout">
+        <h3>Shadow mode in one sentence</h3>
+        <p>Observe today's AI voice traffic against IDG-01, PDX-01, DBC-01, EIT-01, and ATR-01 — log what passes, what fails, what is ambiguous — then decide what to require in the next contract cycle.</p>
+        <a href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation">Start shadow evaluation &rarr;</a>&nbsp;&nbsp;
+        <a href="/specs/NHID-Clinical-Shadow-Evaluation-Guide.pdf">Download PDF &rarr;</a>
+      </div>
     </div>
   </section>
 
