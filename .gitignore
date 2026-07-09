@@ -32,3 +32,6 @@ assets/media/impersonation-latency-trap.mp4
 
 # Pages build output
 _site/
+
+# Local virtualenv
+.venv/

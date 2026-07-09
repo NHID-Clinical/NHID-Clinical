@@ -1431,16 +1431,18 @@ def make_v13_overview():
     # ── Page 1: Problem + behaviors ──────────────────────────────────────────
     story.append(Paragraph("Public Brief: The Impersonation Latency", H1))
     story.append(Paragraph(
-        "When an AI agent calls a payer's prior authorization or benefits verification line, "
-        "the receiving party often lacks reliable, consistent disclosure about whether the caller "
-        "is human-operated or system-operated.",
+        "NHID-Clinical targets one specific failure: an AI agent can begin interacting and "
+        "requesting sensitive information before the receiving party can verify that the caller "
+        "is a non-human system and that it is authorized to act for the claimed organization.",
         BODY
     ))
     story.append(Paragraph(
         "This uncertainty causes repeated clarifications, call transfers, manual fallback routing, "
         "and often 10+ repeat calls for a single routine task. In observed payer operations, "
         "agents frequently request member IDs, NPIs, or dates of birth within the first 15 seconds "
-        "with no prior statement that the caller is automated.",
+        "with no prior statement that the caller is automated. Current telephony and IAM layers "
+        "authenticate numbers or accounts, but do not provide portable proof that a specific AI "
+        "caller is authorized to represent a particular provider organization.",
         BODY
     ))
     story.append(ColorBlock(
@@ -1454,7 +1456,16 @@ def make_v13_overview():
     story.append(Paragraph(
         "<b>Focus area:</b> This proposal provides a standardized, voluntary blueprint to establish "
         "clear expectations around identity disclosure at the initiation of machine-to-human "
-        "B2B voice interactions in healthcare administrative workflows.",
+        "B2B voice interactions in healthcare administrative workflows. It does not address model "
+        "fairness, clinical safety, or output quality — those remain separate governance "
+        "responsibilities.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "<b>Evidence status:</b> the governance gap is well documented and prototype feasibility is "
+        "demonstrated, but large-scale production evidence is still limited. The recommended next "
+        "step for most organizations is a focused shadow pilot on their own call traffic "
+        "(see docs/pilot-kit in the repository).",
         BODY
     ))
     story.append(Spacer(1, 0.1 * inch))
