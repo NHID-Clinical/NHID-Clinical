@@ -7,6 +7,10 @@ __pycache__/
 *.pdf
 docs/*
 !docs/*.md
+!docs/pilot-kit/
+!docs/pilot-kit/*.md
+!docs/pilot-kit/*.py
+!docs/pilot-kit/*.json
 !docs/assets/
 !docs/assets/archive/
 !docs/assets/archive/*.svg
@@ -28,3 +32,6 @@ assets/media/impersonation-latency-trap.mp4
 
 # Pages build output
 _site/
+
+# Local virtualenv
+.venv/

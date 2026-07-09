@@ -41,7 +41,9 @@
 
 ---
 
-**Impersonation latency** is the core problem: the measurable trust delay when an AI voice agent operates and exchanges PHI without disclosing its non-human identity. NHID-Clinical makes that delay observable and testable with four deterministic controls, a supplemental audit-trail requirement, and a live conformance API.
+NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, a per-call Call Authorization Score (CAS), and an optional cryptographic layer (NHID-Auth v2) for proving delegated authority. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
+
+The governance gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is a focused shadow pilot on their own traffic — the [**Tier 0 Shadow Pilot Kit**](docs/pilot-kit/README.md) makes that a 2–4 week exercise.
 
 <p align="center">
   <picture>
@@ -204,7 +206,7 @@ python examples/issue_and_verify.py
 
 ## Contributing & Pilot Partners
 
-We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required.
+We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required. Start small: the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) produces usable impersonation-latency and CAS data from your own call logs in 2–4 weeks.
 
 [**For Payers →**](https://nhid-clinical.org/for-payers.html) · [Community](https://nhid-clinical.org/community.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 

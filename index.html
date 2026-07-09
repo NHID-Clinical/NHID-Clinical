@@ -132,7 +132,7 @@
         <span class="hero-kicker">Open proposal · v1.3 behavioral baseline</span>
         <h1>NHID-Clinical</h1>
         <p class="hero-subtitle">Open Behavioral Baseline for Transparent AI Voice Agents in Healthcare</p>
-        <p class="hero-body"><strong>Practical controls for AI voice agents in payer–provider calls</strong> — built by a former payer operations associate who saw disclosure failures on live eligibility, claims, and prior-auth lines.</p>
+        <p class="hero-body"><strong>A voluntary control layer for AI voice agents in payer–provider calls</strong> — targeting one specific failure: agents requesting sensitive information before the receiving party can verify they are non-human and authorized. Built by a former payer operations associate who saw it happen on live eligibility, claims, and prior-auth lines.</p>
         <ul class="hero-bullets">
           <li>Voluntary, testable behavioral baseline — not a standard or certification</li>
           <li>Four controls + conformance API + 330 passing tests in the open repo</li>
@@ -255,7 +255,8 @@
   <section class="section-premium" id="latency-problem" style="padding-top:3.5rem">
     <div class="container">
       <h2>The Impersonation Latency Crisis</h2>
-      <p class="lead">Impersonation latency is the measurable trust delay between an AI agent initiating a call and the receiving system verifying that the caller is authorized to represent the claimed provider organization. In many current healthcare workflows, that delay is effectively infinite — because no standard verification pathway exists.</p>
+      <p class="lead">Impersonation latency is the time window in which an AI agent is already interacting and exchanging information while its identity and authorization remain unverified. In payer–provider voice calls, that window frequently covers member IDs, NPIs, dates of birth, and claim data — before any clear disclosure that the caller is automated. Telephony and IAM layers authenticate numbers or accounts, but they do not provide portable proof that a specific AI caller is authorized to represent a particular provider organization.</p>
+      <p class="lead" style="margin-top:.75rem">The gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is measurement on their own traffic — see the <a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit">Tier 0 Shadow Pilot Kit</a>.</p>
 
       <picture class="premium-3d">
         <source srcset="/assets/images/3d-renders/impersonation-vs-verified.webp" type="image/webp"/>

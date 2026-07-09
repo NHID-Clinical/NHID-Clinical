@@ -100,6 +100,41 @@ traceable, auditable, and trustworthy:
 - Call Authorization Scores (CAS) become a procurement criterion for healthcare AI vendors
 - The behavioral baseline is adopted as input to federal AI regulatory frameworks
 
+### 1.6 Tightened Executive Summary (2026-07-08)
+
+> Added 2026-07-08 as the canonical short-form positioning for the playbook, README, and
+> website. Supplements §1.1–1.3; does not replace them.
+
+NHID-Clinical is a voluntary control layer for AI voice agents in B2B healthcare calls. It
+targets one specific failure: AI agents beginning to operate and request sensitive
+information before the receiving party can verify they are non-human and properly
+authorized.
+
+It delivers five concrete, testable controls (IDG-01 through ATR-01), a per-call Call
+Authorization Score (CAS), and an optional cryptographic layer (NHID-Auth v2) for proving
+delegated authority. It does **not** address fairness, clinical safety, model quality, or
+full AI governance — those remain separate responsibilities (see
+`docs/scope-boundary-fairness-clinical.md`).
+
+This positioning is written for payer compliance teams, voice AI vendors, and provider
+operations leaders who need a practical way to measure and manage caller identity risk in
+administrative voice workflows. The underlying governance gap is well documented, but
+large-scale production evidence is still limited. The strongest next step for most
+organizations is running a focused shadow pilot to generate their own data
+(`docs/pilot-kit/`).
+
+**The problem, stated tightly.** Impersonation Latency is the time window in which an AI
+agent is already interacting and exchanging information while its identity and
+authorization remain unverified. In payer–provider voice calls, this window frequently
+allows AI agents to request member IDs, NPIs, dates of birth, and claim data before any
+clear disclosure that they are automated. Current telephony and IAM layers authenticate
+numbers or accounts, but they do not provide portable proof that a specific AI caller is
+authorized to represent a particular provider organization. Prototype work shows that
+disclosure checking and cryptographic verification are technically feasible with low
+latency; there is still limited public data from large-scale live healthcare deployments.
+The immediate priority for most organizations should therefore be measurement through
+shadow pilots rather than broad policy changes.
+
 ---
 
 ## 2. NHID-Clinical Core Framework
@@ -2435,6 +2470,19 @@ assert len(decision.violations) == 0
 - §2.4.1 "Formal Measurement Definition" inserted after §2.4: time form `IL = t(disclosure) − t(connect)`, turn form `IL(turns)`, exposure weighting, perceptual variant (survey-only exclusion), and determinism guarantee (both anchors are ATR-01 required fields)
 - All ASCII diagrams replaced with brand-compliant SVG figures (fig1–fig7); 300-DPI PNGs generated for PDF; `fig7-il-formula.svg` updated from placeholder to full formal measurement diagram
 - PDF rebuilt with page footer "NHID-Clinical · CC BY 4.0 · nhid-clinical.org"
+
+### 2026-07-08 — Tightening pass (additive)
+
+**Additions:**
+- §1.6 "Tightened Executive Summary" — canonical short-form positioning (specific failure
+  targeted, five controls + CAS + NHID-Auth v2, explicit out-of-scope statement, honest
+  evidence-gap framing, shadow-pilot-first recommendation); applied to README and
+  `index.html` in the same change set
+- Tier 0 Shadow Pilot Kit shipped under `docs/pilot-kit/` (capture schema, measurement
+  script reusing the engine + `_policy_cas`, 30-day plan, report template)
+- `docs/scope-boundary-fairness-clinical.md` — scope-boundary note for fairness and
+  clinical governance (out of scope; integration points documented; optional ATR-01
+  linkage fields recorded as an OPEN schema decision, owner Bree — not implemented)
 
 ---
 
