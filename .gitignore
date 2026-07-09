@@ -7,6 +7,10 @@ __pycache__/
 *.pdf
 docs/*
 !docs/*.md
+!docs/pilot-kit/
+!docs/pilot-kit/*.md
+!docs/pilot-kit/*.py
+!docs/pilot-kit/*.json
 !docs/assets/
 !docs/assets/archive/
 !docs/assets/archive/*.svg

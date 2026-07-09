@@ -82,7 +82,8 @@ rate-limit tier (50k req/month). Request a key at contact@nhid-clinical.org.
 
 ---
 
-Next steps: [v2 staged integration guide](v2-integration-guide.md) ·
+Next steps: [Tier 0 Shadow Pilot Kit](pilot-kit/README.md) ·
+[v2 staged integration guide](v2-integration-guide.md) ·
 [Shadow pilot program](https://nhid-clinical.org/for-payers.html)
 
 NHID-Clinical is a voluntary open proposal (CC BY 4.0). Not an accredited standard.
