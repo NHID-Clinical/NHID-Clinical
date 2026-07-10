@@ -45,6 +45,8 @@ NHID-Clinical targets one specific failure: an AI voice agent begins operating a
 
 The governance gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is a focused shadow pilot on their own traffic — the [**Tier 0 Shadow Pilot Kit**](docs/pilot-kit/README.md) makes that a 2–4 week exercise.
 
+**Standards alignment (mapped, not certified):** Supports EU AI Act Article 50 transparency obligations for AI systems interacting with humans; maps to NIST AI RMF Map/Measure functions for identity and disclosure risk; and aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability. Full cross-walk available in docs.
+
 <p align="center">
   <picture>
     <source srcset="assets/images/3d-renders/nexus-trust-bridge.webp" type="image/webp">
@@ -188,6 +190,8 @@ NHID-Clinical/
 | MACPAC 2026 | AI transparency, human review | EIT-01 + ATR-01 |
 | State AI laws | Auditable AI decisions | IDG-01 + DBC-01 |
 | NIST CAISI RFI | Cross-org agent identity | NHID-Auth v2 |
+| EU AI Act Art. 50 | Transparency for AI interacting with humans | IDG-01 + DBC-01 |
+| ISO/IEC 42001 | AI management system transparency controls | Full control set + ATR-01 |
 
 [Full matrix →](https://nhid-clinical.org/regulatory-alignment.html)
 
