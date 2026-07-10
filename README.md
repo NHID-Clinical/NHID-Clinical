@@ -133,6 +133,12 @@ flowchart TD
     class Audit audit
 ```
 
+## Sequence of Interaction (Disclosure Gate)
+
+<p align="center">
+  <img alt="Sequence of Interaction - Disclosure Gate" src="assets/diagrams/sequence-of-interaction.svg" width="800">
+</p>
+
 ## Live API — Try It Now
 
 No signup or API key required for demo and vendor adapter routes.
