@@ -41,19 +41,18 @@
 
 ---
 
+**Compliant with EU AI Act Art. 50 and mapped to NIST AI RMF 1.0.**
+
 NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, a per-call Call Authorization Score (CAS), and an optional cryptographic layer (NHID-Auth v2) for proving delegated authority. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
 
 The governance gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is a focused shadow pilot on their own traffic — the [**Tier 0 Shadow Pilot Kit**](docs/pilot-kit/README.md) makes that a 2–4 week exercise.
 
-**Standards alignment (mapped, not certified):** Supports EU AI Act Article 50 transparency obligations for AI systems interacting with humans; maps to NIST AI RMF Map/Measure functions for identity and disclosure risk; and aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability. Full cross-walk available in docs.
+**Standards alignment (mapped, not certified):** Explicitly supports EU AI Act Article 50 transparency obligations for AI systems interacting with humans. Mapped to NIST AI RMF 1.0 Map and Measure functions for identity disclosure and risk. Aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability.
 
 <p align="center">
-  <picture>
-    <source srcset="assets/images/3d-renders/nexus-trust-bridge.webp" type="image/webp">
-    <img alt="Illustrative 3D visualization of the NHID-Clinical Trust Verification Nexus" src="assets/images/3d-svg/nexus.svg" width="720">
-  </picture>
+  <img alt="NHID-Clinical Trust Verification Pathway" src="assets/images/3d-svg/nexus.svg" width="720">
   <br>
-  <sub><em>Illustrative visualization of the trust verification pathway — conceptual render for clarity, not a product diagram.</em></sub>
+  <sub><em>Clean vector visualization of the trust verification pathway — conceptual, not a product diagram.</em></sub>
 </p>
 
 ## The Four Core Controls (v1.3)
@@ -73,10 +72,7 @@ Plus **ATR-01** (audit trail) — every call must produce a machine-readable tra
 ## Five-Layer Trust Stack
 
 <p align="center">
-  <picture>
-    <source srcset="assets/images/3d-renders/trust-stack-ziggurat.webp" type="image/webp">
-    <img alt="Illustrative 3D visualization of the five-layer trust stack" src="assets/images/3d-svg/trust-stack.svg" width="640">
-  </picture>
+  <img alt="Five-layer trust stack" src="assets/images/3d-svg/trust-stack.svg" width="640">
 </p>
 
 | Layer | Standard | Role |
@@ -93,10 +89,7 @@ Plus **ATR-01** (audit trail) — every call must produce a machine-readable tra
 ## The Impersonation Latency Crisis
 
 <p align="center">
-  <picture>
-    <source srcset="assets/images/3d-renders/impersonation-vs-verified.webp" type="image/webp">
-    <img alt="Contrast between unverified caller path and NHID-Clinical verified pathway" src="assets/images/3d-svg/latency-split.svg" width="720">
-  </picture>
+  <img alt="Impersonation vs verified pathway" src="assets/images/3d-svg/latency-split.svg" width="720">
   <br>
   <sub><em>Without a standard: disclosure after PHI moves, no audit trail. With v1.3: early disclosure, verification checkpoint, human escalation, sealed audit.</em></sub>
 </p>
@@ -192,6 +185,7 @@ NHID-Clinical/
 | NIST CAISI RFI | Cross-org agent identity | NHID-Auth v2 |
 | EU AI Act Art. 50 | Transparency for AI interacting with humans | IDG-01 + DBC-01 |
 | ISO/IEC 42001 | AI management system transparency controls | Full control set + ATR-01 |
+| NIST AI RMF 1.0 | Map & Measure functions for identity risk | Full framework + CAS |
 
 [Full matrix →](https://nhid-clinical.org/regulatory-alignment.html)
 
