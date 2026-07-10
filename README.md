@@ -99,21 +99,38 @@ Plus **ATR-01** (audit trail) — every call must produce a machine-readable tra
 How the controls play out on a real call — the same sequence the CTS suite and live adapters evaluate.
 
 ```mermaid
-flowchart LR
-    A["Call starts"]:::start --> B{"Identity disclosed<br/>before PHI?"}:::neutral
-    B -->|No| C["DENY_DATA<br/>IDG-01 + PDX-01"]:::deny
-    C --> D["Escalate to human<br/>EIT-01"]:::neutral
-    B -->|Yes| E["PHI exchange<br/>PDX-01, DBC-01"]:::neutral
-    E --> F{"Human requested?"}:::neutral
-    F -->|Yes| D
-    F -->|No| G["Call completes"]:::ok
-    D --> H["Audit trace<br/>ATR-01"]:::ok
-    G --> H
+flowchart TD
+    Start(["Call Starts"]) --> Disclosure{"IDG-01<br/>Identity disclosed<br/>before any PHI?"}
+    
+    Disclosure -->|No| Deny["DENY_DATA<br/>IDG-01 + PDX-01"]
+    Deny --> Escalate{"EIT-01<br/>Human escalation<br/>requested?"}
+    
+    Disclosure -->|Yes| PHI["PHI exchange allowed<br/>PDX-01 + DBC-01 checks"]
+    PHI --> HumanCheck{"EIT-01<br/>Human handoff<br/>requested?"}
+    
+    HumanCheck -->|Yes| Escalate
+    HumanCheck -->|No| Complete(["Call Completes"])
+    
+    Escalate -->|Honored| Handoff["Human handoff<br/>path available"]
+    Escalate -->|Not honored| FailEsc["EIT-01 Fail"]
+    
+    Handoff --> Audit
+    FailEsc --> Audit
+    Complete --> Audit["ATR-01<br/>Machine-readable<br/>audit trail sealed"]
+    
+    Audit --> End(["End of Call"])
 
-    classDef start fill:#0b6ebc,stroke:#063752,color:#ffffff
-    classDef deny fill:#d64545,stroke:#7a1f1f,color:#ffffff
-    classDef ok fill:#0e9f6e,stroke:#066a49,color:#ffffff
-    classDef neutral fill:#4b5563,stroke:#262b33,color:#ffffff
+    classDef start fill:#0F172A,stroke:#14B8A6,stroke-width:2px,color:#F1F5F9
+    classDef decision fill:#1E2937,stroke:#67E8F9,stroke-width:2px,color:#F1F5F9
+    classDef deny fill:#7F1D1D,stroke:#EF4444,stroke-width:2px,color:#FEE2E2
+    classDef ok fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#D1FAE5
+    classDef audit fill:#0F172A,stroke:#14B8A6,stroke-width:2px,color:#A5F3FC
+
+    class Start,End start
+    class Disclosure,Escalate,HumanCheck decision
+    class Deny,FailEsc deny
+    class PHI,Handoff,Complete ok
+    class Audit audit
 ```
 
 ## Live API — Try It Now
