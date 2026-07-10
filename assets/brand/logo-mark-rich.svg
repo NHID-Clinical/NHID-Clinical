@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="NHID-Clinical mark">
+  <!-- NHID-Clinical primary mark — rich material variant (SVG approximation of
+       the glass/metal render: per-shape gradients + rim light). Same geometry
+       as logo-mark.svg; keep the two files' paths in sync. -->
+  <defs>
+    <linearGradient id="gSlab" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#1b3a5f"/><stop offset="1" stop-color="#0a1a30"/>
+    </linearGradient>
+    <linearGradient id="gQuad" x1="0.15" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#6493c6"/><stop offset="0.55" stop-color="#3b6aa0"/><stop offset="1" stop-color="#27517f"/>
+    </linearGradient>
+    <linearGradient id="gWedge" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#35c2ab"/><stop offset="0.6" stop-color="#189a8a"/><stop offset="1" stop-color="#0e7568"/>
+    </linearGradient>
+    <linearGradient id="gDot" x1="0.2" y1="0.1" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#2c5787"/><stop offset="1" stop-color="#122e52"/>
+    </linearGradient>
+    <linearGradient id="gTile" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#aadfe4"/><stop offset="1" stop-color="#6db6bd"/>
+    </linearGradient>
+    <linearGradient id="gRim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/><stop offset="0.4" stop-color="#ffffff" stop-opacity="0.08"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g stroke="url(#gRim)" stroke-width="2.5">
+    <rect x="28" y="148" width="150" height="214" rx="44" fill="url(#gSlab)"/>
+    <path d="M252 14 H318 Q362 14 362 58 V264 Q362 290 346 301 Q336 308 328 300 L214 186 Q206 178 206 166 V58 Q206 14 252 14 Z" fill="url(#gQuad)"/>
+    <path d="M232 230 Q222 222 218 234 V426 Q218 470 262 470 H318 Q362 470 362 426 V362 Z" fill="url(#gWedge)"/>
+    <circle cx="446" cy="146" r="52" fill="url(#gDot)"/>
+    <rect x="398" y="304" width="106" height="106" rx="30" fill="url(#gTile)"/>
+  </g>
+</svg>

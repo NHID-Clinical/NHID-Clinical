@@ -198,5 +198,71 @@
     <line x1="71" y1="31" x2="77" y2="37" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
     <line x1="77" y1="31" x2="71" y2="37" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
   </symbol>
+
+  <!-- v1.3 control icons (added with the brand-system pass): one per control
+       plus core primitives. Same grammar as above: 100x110 box, 4.4 stroke,
+       ink base via the icon-base CSS variable so dark surfaces recolor it,
+       teal accent via the icon-accent CSS variable, rounded caps/joins. -->
+  <symbol id="nhid-icon-idg01" viewBox="0 0 100 110">
+    <!-- IDG-01 Identity Disclosure Gate: speech bubble declaring non-human identity -->
+    <path d="M32 36 h36 q6 0 6 6 v20 q0 6 -6 6 h-16 l-9 9 v-9 h-11 q-6 0 -6 -6 v-20 q0 -6 6 -6 z" fill="rgba(24,142,170,0.10)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="38" y1="47" x2="38" y2="57" stroke-width="4.2" stroke-linecap="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <line x1="47" y1="43" x2="47" y2="61" stroke-width="4.2" stroke-linecap="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <line x1="56" y1="47" x2="56" y2="57" stroke-width="4.2" stroke-linecap="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <line x1="64" y1="50" x2="64" y2="54" stroke-width="4.2" stroke-linecap="round" style="stroke:var(--icon-accent,#188EAA)"/>
+  </symbol>
+  <symbol id="nhid-icon-pdx01" viewBox="0 0 100 110">
+    <!-- PDX-01 Pre-Data Exchange Gate: data document held behind a lock -->
+    <path d="M34 32 h22 l10 10 v28 q0 4 -4 4 h-28 q-4 0 -4 -4 v-34 q0 -4 4 -4 z" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <path d="M56 32 v10 h10" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <rect x="52" y="58" width="20" height="15" rx="3.5" fill="rgba(24,142,170,0.14)" stroke-width="4.2" stroke-linejoin="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <path d="M56.5 58 v-5 a5.5 5.5 0 0 1 11 0 v5" fill="none" stroke-width="4.2" stroke-linecap="round" style="stroke:var(--icon-accent,#188EAA)"/>
+  </symbol>
+  <symbol id="nhid-icon-dbc01" viewBox="0 0 100 110">
+    <!-- DBC-01 Deceptive Behavior Check: human-mimicry mask, struck through -->
+    <path d="M36 36 q14 -7 28 0 q3 14 -3 24 q-5 9 -11 11 q-6 -2 -11 -11 q-6 -10 -3 -24 z" fill="rgba(214,69,69,0.08)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <circle cx="43.5" cy="49" r="2.4" style="fill:var(--icon-base,#0B2E63)"/>
+    <circle cx="56.5" cy="49" r="2.4" style="fill:var(--icon-base,#0B2E63)"/>
+    <path d="M44 60 q6 4 12 0" fill="none" stroke-width="3.6" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="30" y1="76" x2="70" y2="32" stroke="#D64545" stroke-width="5" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="nhid-icon-eit01" viewBox="0 0 100 110">
+    <!-- EIT-01 Escalation Implementation Test: honored handoff to a person -->
+    <circle cx="63" cy="42" r="8" fill="none" stroke-width="4.4" style="stroke:var(--icon-base,#0B2E63)"/>
+    <path d="M50 74 q0 -13 13 -13 q13 0 13 13" fill="none" stroke-width="4.4" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <path d="M26 46 h16 m0 0 l-6 -6 m6 6 l-6 6" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <path d="M26 62 h10" fill="none" stroke-width="4.4" stroke-linecap="round" opacity="0.55" style="stroke:var(--icon-accent,#188EAA)"/>
+  </symbol>
+  <symbol id="nhid-icon-atr01" viewBox="0 0 100 110">
+    <!-- ATR-01 Audit Trail Requirements: sealed machine-readable record -->
+    <rect x="30" y="30" width="34" height="46" rx="5" fill="none" stroke-width="4.4" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="38" y1="42" x2="56" y2="42" stroke-width="3.6" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="38" y1="51" x2="56" y2="51" stroke-width="3.6" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="38" y1="60" x2="49" y2="60" stroke-width="3.6" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <circle cx="65" cy="67" r="10" fill="rgba(24,142,170,0.14)" stroke-width="4.2" style="stroke:var(--icon-accent,#188EAA)"/>
+    <path d="M61 67 l3 3.4 6 -7" fill="none" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-accent,#188EAA)"/>
+  </symbol>
+  <symbol id="nhid-icon-impersonation-latency" viewBox="0 0 100 110">
+    <!-- Impersonation Latency: the timed window before identity resolution -->
+    <circle cx="46" cy="54" r="19" fill="none" stroke-width="4.4" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="46" y1="54" x2="46" y2="42" stroke-width="4" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <line x1="46" y1="54" x2="55" y2="59" stroke="#D64545" stroke-width="4" stroke-linecap="round"/>
+    <line x1="72" y1="48" x2="72" y2="60" stroke-width="4" stroke-linecap="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <line x1="79" y1="44" x2="79" y2="64" stroke-width="4" stroke-linecap="round" opacity="0.7" style="stroke:var(--icon-accent,#188EAA)"/>
+  </symbol>
+  <symbol id="nhid-icon-cas" viewBox="0 0 100 110">
+    <!-- CAS: Call Authorization Score gauge -->
+    <path d="M28 66 a22 22 0 0 1 44 0" fill="none" stroke-width="4.4" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <path d="M28 66 a22 22 0 0 1 9 -17.6" fill="none" stroke="#D64545" stroke-width="4.4" stroke-linecap="round" opacity="0.75"/>
+    <path d="M63.5 48.5 a22 22 0 0 1 8.5 17.5" fill="none" stroke-width="4.4" stroke-linecap="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <line x1="50" y1="66" x2="61" y2="53" stroke-width="4.4" stroke-linecap="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <circle cx="50" cy="66" r="3.4" style="fill:var(--icon-base,#0B2E63)"/>
+  </symbol>
+  <symbol id="nhid-icon-trust-stack" viewBox="0 0 100 110">
+    <!-- Five-layer trust stack -->
+    <path d="M50 30 l22 10 -22 10 -22 -10 z" fill="rgba(24,142,170,0.14)" stroke-width="4.2" stroke-linejoin="round" style="stroke:var(--icon-accent,#188EAA)"/>
+    <path d="M28 54 l22 10 22 -10" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--icon-base,#0B2E63)"/>
+    <path d="M28 66 l22 10 22 -10" fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" opacity="0.55" style="stroke:var(--icon-base,#0B2E63)"/>
+  </symbol>
 </defs>
 </svg>

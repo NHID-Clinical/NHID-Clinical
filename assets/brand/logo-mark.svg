@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="NHID-Clinical mark">
+  <!-- NHID-Clinical primary mark — flat/minimal variant.
+       Five geometric forms composing an abstract "N" with a speech-bubble
+       silhouette: left slab, upper quad with diagonal cut, teal counter-wedge,
+       signal dot, data tile. The white diagonal channel between quad and wedge
+       is the load-bearing negative space. Palette: ink navy / steel blue / teal. -->
+  <g>
+    <!-- Left slab -->
+    <rect x="28" y="148" width="150" height="214" rx="44" fill="#0f2440"/>
+    <!-- Upper quad: rounded top, diagonal cut toward lower-left -->
+    <path d="M252 14 H318 Q362 14 362 58 V264 Q362 290 346 301 Q336 308 328 300 L214 186 Q206 178 206 166 V58 Q206 14 252 14 Z" fill="#3b6aa0"/>
+    <!-- Teal counter-wedge with rounded foot -->
+    <path d="M232 230 Q222 222 218 234 V426 Q218 470 262 470 H318 Q362 470 362 426 V362 Z" fill="#189a8a"/>
+    <!-- Signal dot -->
+    <circle cx="446" cy="146" r="52" fill="#16385f"/>
+    <!-- Data tile -->
+    <rect x="398" y="304" width="106" height="106" rx="30" fill="#7fc4c9"/>
+  </g>
+</svg>

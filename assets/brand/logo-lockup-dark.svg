@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1480 260" role="img" aria-label="NHID-Clinical">
+  <!-- Horizontal lockup, dark backgrounds: lifted mark + light wordmark. -->
+  <g transform="translate(10,10) scale(0.469)">
+    <rect x="28" y="148" width="150" height="214" rx="44" fill="#33516f"/>
+    <path d="M252 14 H318 Q362 14 362 58 V264 Q362 290 346 301 Q336 308 328 300 L214 186 Q206 178 206 166 V58 Q206 14 252 14 Z" fill="#6f9cd0"/>
+    <path d="M232 230 Q222 222 218 234 V426 Q218 470 262 470 H318 Q362 470 362 426 V362 Z" fill="#2fbfa9"/>
+    <circle cx="446" cy="146" r="52" fill="#456f9f"/>
+    <rect x="398" y="304" width="106" height="106" rx="30" fill="#9fdbe0"/>
+  </g>
+  <text x="300" y="128" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="88" font-weight="700" letter-spacing="1" fill="#e8f1fb">NHID<tspan fill="#2fbfa9">-</tspan>Clinical</text>
+  <text x="304" y="188" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif" font-size="34" font-weight="500" letter-spacing="6" fill="#a0b8d0">TRANSPARENT AI VOICE AGENTS IN HEALTHCARE</text>
+</svg>
