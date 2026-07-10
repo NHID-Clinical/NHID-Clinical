@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 560" role="img" aria-label="NHID-Clinical conformance shield">
+  <!-- Glass shield + voice waveform motif, for conformance/audit surfaces. -->
+  <defs>
+    <linearGradient id="sGlass" x1="0.2" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#b8c9dd" stop-opacity="0.85"/>
+      <stop offset="0.45" stop-color="#5f7fa5" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#2c4a6e" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="sEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="sSheen" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield body -->
+  <path d="M240 18 C300 52 366 66 432 70 C438 214 430 330 384 414 C346 483 296 524 240 546 C184 524 134 483 96 414 C50 330 42 214 48 70 C114 66 180 52 240 18 Z"
+        fill="url(#sGlass)" stroke="url(#sEdge)" stroke-width="5"/>
+  <!-- Sheen -->
+  <path d="M240 30 C296 60 356 74 420 79 C424 170 420 250 402 318 C300 290 180 300 70 250 C62 190 58 130 60 79 C124 74 184 60 240 30 Z"
+        fill="url(#sSheen)"/>
+  <!-- Waveform -->
+  <g stroke="#f2f7fc" stroke-width="7" stroke-linecap="round" opacity="0.95">
+    <line x1="96"  y1="272" x2="96"  y2="288"/>
+    <line x1="118" y1="266" x2="118" y2="294"/>
+    <line x1="140" y1="256" x2="140" y2="304"/>
+    <line x1="162" y1="244" x2="162" y2="316"/>
+    <line x1="184" y1="252" x2="184" y2="308"/>
+    <line x1="206" y1="228" x2="206" y2="332"/>
+    <line x1="228" y1="196" x2="228" y2="364"/>
+    <line x1="250" y1="212" x2="250" y2="348"/>
+    <line x1="272" y1="180" x2="272" y2="380"/>
+    <line x1="294" y1="224" x2="294" y2="336"/>
+    <line x1="316" y1="248" x2="316" y2="312"/>
+    <line x1="338" y1="258" x2="338" y2="302"/>
+    <line x1="360" y1="266" x2="360" y2="294"/>
+    <line x1="382" y1="272" x2="382" y2="288"/>
+  </g>
+</svg>

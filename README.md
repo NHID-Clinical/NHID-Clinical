@@ -2,9 +2,9 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.jpg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.jpg">
-    <img alt="NHID-Clinical" src="assets/logo-light.jpg" width="480">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/logo-lockup-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/brand/logo-lockup.svg">
+    <img alt="NHID-Clinical" src="assets/brand/logo-lockup.svg" width="520">
   </picture>
 </p>
 
@@ -50,7 +50,7 @@ The governance gap is well documented; large-scale production evidence is still 
 **Standards alignment (mapped, not certified):** Explicitly supports EU AI Act Article 50 transparency obligations for AI systems interacting with humans. Mapped to NIST AI RMF 1.0 Map and Measure functions for identity disclosure and risk. Aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability.
 
 <p align="center">
-  <img alt="NHID-Clinical Trust Verification Pathway" src="assets/images/3d-svg/nexus.svg" width="720">
+  <img alt="NHID-Clinical trust verification pathway: payer and provider bridged by conformance verification" src="assets/images/3d-svg/nexus.svg" width="760">
   <br>
   <sub><em>Clean vector visualization of the trust verification pathway — conceptual, not a product diagram.</em></sub>
 </p>
@@ -61,7 +61,7 @@ The governance gap is well documented; large-scale production evidence is still 
 | :--- | :--- | :--- |
 | **IDG-01** | Identity Disclosure Gate | Disclose non-human identity **before** any PHI exchange |
 | **PDX-01** | Pre-Data Exchange Gate | No protected data until identity is disclosed |
-| **DBC-01** | Deceptive Behavior Check | No mimicry of human voice or behavior |
+| **DBC-01** | Deceptive Behavior Check | No synthetic human-presence artifacts (e.g. fake breathing/hesitation) or explicit human-status claims |
 | **EIT-01** | Escalation Implementation Test | Clear human handoff path, honored on request |
 
 Plus **ATR-01** (audit trail) — every call must produce a machine-readable trace.  
@@ -72,7 +72,8 @@ Plus **ATR-01** (audit trail) — every call must produce a machine-readable tra
 ## Five-Layer Trust Stack
 
 <p align="center">
-  <img alt="Five-layer trust stack" src="assets/images/3d-svg/trust-stack.svg" width="640">
+  <img alt="Five-layer trust stack: STIR/SHAKEN, NHID-Clinical v1.3, NHID-Auth v2, FHIR AuditEvent R4, OpenTelemetry" src="assets/images/3d-svg/trust-stack.svg" width="680">
+
 </p>
 
 | Layer | Standard | Role |
@@ -89,7 +90,8 @@ Plus **ATR-01** (audit trail) — every call must produce a machine-readable tra
 ## The Impersonation Latency Crisis
 
 <p align="center">
-  <img alt="Impersonation vs verified pathway" src="assets/images/3d-svg/latency-split.svg" width="720">
+  <img alt="Contrast between unverified caller path and NHID-Clinical verified pathway" src="assets/images/3d-svg/latency-split.svg" width="760">
+
   <br>
   <sub><em>Without a standard: disclosure after PHI moves, no audit trail. With v1.3: early disclosure, verification checkpoint, human escalation, sealed audit.</em></sub>
 </p>

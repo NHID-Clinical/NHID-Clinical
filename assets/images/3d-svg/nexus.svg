@@ -1,30 +1,58 @@
-<svg width="800" height="420" viewBox="0 0 800 420" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="800" height="420" fill="#0F172A"/>
-  <text x="400" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="#F1F5F9">Trust Verification Pathway</text>
-  <text x="400" y="56" text-anchor="middle" font-family="Inter" font-size="12" fill="#94A3B8">From untrusted AI caller → verified, authorized, auditable exchange</text>
-  <rect x="40" y="120" width="120" height="200" rx="12" fill="#1E2937" stroke="#64748B" stroke-width="2"/>
-  <text x="100" y="160" text-anchor="middle" font-family="Inter" font-size="12" font-weight="600" fill="#94A3B8">AI Agent</text>
-  <text x="100" y="180" text-anchor="middle" font-family="Inter" font-size="11" fill="#64748B">Unverified</text>
-  <circle cx="100" cy="230" r="28" fill="#334155" stroke="#64748B" stroke-width="2"/>
-  <text x="100" y="236" text-anchor="middle" font-family="Inter" font-size="11" fill="#94A3B8">?</text>
-  <rect x="180" y="200" width="440" height="40" rx="6" fill="#134E4A" stroke="#14B8A6" stroke-width="2"/>
-  <rect x="220" y="180" width="70" height="80" rx="6" fill="#0F172A" stroke="#14B8A6" stroke-width="2"/>
-  <text x="255" y="210" text-anchor="middle" font-family="Inter" font-size="10" font-weight="600" fill="#5EEAD4">IDG-01</text>
-  <text x="255" y="226" text-anchor="middle" font-family="Inter" font-size="9" fill="#99F6E4">Disclose</text>
-  <rect x="320" y="180" width="70" height="80" rx="6" fill="#0F172A" stroke="#14B8A6" stroke-width="2"/>
-  <text x="355" y="210" text-anchor="middle" font-family="Inter" font-size="10" font-weight="600" fill="#5EEAD4">PDX-01</text>
-  <text x="355" y="226" text-anchor="middle" font-family="Inter" font-size="9" fill="#99F6E4">Gate PHI</text>
-  <rect x="420" y="180" width="70" height="80" rx="6" fill="#0F172A" stroke="#14B8A6" stroke-width="2"/>
-  <text x="455" y="210" text-anchor="middle" font-family="Inter" font-size="10" font-weight="600" fill="#5EEAD4">EIT-01</text>
-  <text x="455" y="226" text-anchor="middle" font-family="Inter" font-size="9" fill="#99F6E4">Escalate</text>
-  <rect x="520" y="180" width="70" height="80" rx="6" fill="#0F172A" stroke="#14B8A6" stroke-width="2"/>
-  <text x="555" y="210" text-anchor="middle" font-family="Inter" font-size="10" font-weight="600" fill="#5EEAD4">ATR-01</text>
-  <text x="555" y="226" text-anchor="middle" font-family="Inter" font-size="9" fill="#99F6E4">Audit</text>
-  <rect x="640" y="120" width="120" height="200" rx="12" fill="#134E4A" stroke="#14B8A6" stroke-width="2"/>
-  <text x="700" y="160" text-anchor="middle" font-family="Inter" font-size="12" font-weight="600" fill="#5EEAD4">Verified</text>
-  <text x="700" y="180" text-anchor="middle" font-family="Inter" font-size="11" fill="#99F6E4">Trusted</text>
-  <circle cx="700" cy="230" r="28" fill="#0F766E" stroke="#14B8A6" stroke-width="2"/>
-  <text x="700" y="236" text-anchor="middle" font-family="Inter" font-size="16" fill="#5EEAD4">✓</text>
-  <text x="400" y="320" text-anchor="middle" font-family="Inter" font-size="12" fill="#94A3B8">Every gate must pass before PHI moves. Full audit trail sealed at end.</text>
-  <text x="400" y="360" text-anchor="middle" font-family="Inter" font-size="11" fill="#64748B">Optional NHID-Auth v2 cryptographic passport sits on top of the behavioral layer</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" role="img" aria-labelledby="nx-t nx-d">
+  <title id="nx-t">Trust Verification Nexus — conceptual visualization</title>
+  <desc id="nx-d">Illustrative visualization of the NHID-Clinical verification pathway: a payer domain and a provider domain bridged by a central conformance shield carrying a voice waveform, with the brand mark above. Conceptual render for clarity; not a product diagram.</desc>
+  <defs>
+    <radialGradient id="nxGlow" cx="0.5" cy="0.42" r="0.6"><stop offset="0" stop-color="#e8f8f4"/><stop offset="1" stop-color="#ffffff"/></radialGradient>
+    <linearGradient id="nxNode" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#33516f"/><stop offset="1" stop-color="#16385f"/></linearGradient>
+    <linearGradient id="nxPath" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3b6aa0"/><stop offset="0.5" stop-color="#189a8a"/><stop offset="1" stop-color="#3b6aa0"/></linearGradient>
+    <linearGradient id="nxGlass" x1="0.2" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#b8c9dd" stop-opacity="0.9"/><stop offset="0.5" stop-color="#5f7fa5" stop-opacity="0.95"/><stop offset="1" stop-color="#2c4a6e"/>
+    </linearGradient>
+    <linearGradient id="nxEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.75"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.12"/></linearGradient>
+    <style>
+      .lab { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:17px; font-weight:700; fill:#082a5b; }
+      .sub { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:13px; fill:#5d6b7a; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="620" fill="url(#nxGlow)"/>
+
+  <!-- connecting pathway -->
+  <path d="M190 330 H810" stroke="url(#nxPath)" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="360" cy="330" r="6" fill="#189a8a"/><circle cx="500" cy="330" r="6" fill="#189a8a"/><circle cx="640" cy="330" r="6" fill="#189a8a"/>
+
+  <!-- payer domain -->
+  <g>
+    <rect x="70" y="286" width="150" height="88" rx="22" fill="url(#nxNode)"/>
+    <text x="145" y="336" text-anchor="middle" class="lab" fill="#e8f1fb">Payer</text>
+  </g>
+  <!-- provider domain -->
+  <g>
+    <rect x="780" y="286" width="150" height="88" rx="22" fill="url(#nxNode)"/>
+    <text x="855" y="336" text-anchor="middle" class="lab" fill="#e8f1fb">Provider</text>
+  </g>
+
+  <!-- brand mark, small, above the shield -->
+  <g transform="translate(456,70) scale(0.175)">
+    <rect x="28" y="148" width="150" height="214" rx="44" fill="#0f2440"/>
+    <path d="M252 14 H318 Q362 14 362 58 V264 Q362 290 346 301 Q336 308 328 300 L214 186 Q206 178 206 166 V58 Q206 14 252 14 Z" fill="#3b6aa0"/>
+    <path d="M232 230 Q222 222 218 234 V426 Q218 470 262 470 H318 Q362 470 362 426 V362 Z" fill="#189a8a"/>
+    <circle cx="446" cy="146" r="52" fill="#16385f"/>
+    <rect x="398" y="304" width="106" height="106" rx="30" fill="#7fc4c9"/>
+  </g>
+
+  <!-- central conformance shield -->
+  <g transform="translate(410,168) scale(0.38)">
+    <path d="M240 18 C300 52 366 66 432 70 C438 214 430 330 384 414 C346 483 296 524 240 546 C184 524 134 483 96 414 C50 330 42 214 48 70 C114 66 180 52 240 18 Z"
+          fill="url(#nxGlass)" stroke="url(#nxEdge)" stroke-width="5"/>
+    <g stroke="#f2f7fc" stroke-width="7" stroke-linecap="round" opacity="0.95">
+      <line x1="120" y1="272" x2="120" y2="288"/><line x1="148" y1="258" x2="148" y2="302"/>
+      <line x1="176" y1="240" x2="176" y2="320"/><line x1="204" y1="212" x2="204" y2="348"/>
+      <line x1="232" y1="188" x2="232" y2="372"/><line x1="260" y1="214" x2="260" y2="346"/>
+      <line x1="288" y1="178" x2="288" y2="382"/><line x1="316" y1="228" x2="316" y2="332"/>
+      <line x1="344" y1="250" x2="344" y2="310"/><line x1="360" y1="266" x2="360" y2="294"/>
+    </g>
+  </g>
+  <text x="500" y="470" text-anchor="middle" class="lab">Conformance verification</text>
+  <text x="500" y="492" text-anchor="middle" class="sub">disclosure · pre-data gate · escalation · sealed audit</text>
 </svg>
