@@ -1,124 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" role="img" aria-labelledby="nx-t nx-d">
-  <title id="nx-t">Governance Trust Nexus — conceptual visualization</title>
-  <desc id="nx-d">Illustrative visualization of a verification bridge spanning the gap between payer and provider domains, with glowing teal pathways representing identity disclosure and verification protocols. Conceptual render for clarity; not a product diagram.</desc>
-  <defs>
-    <linearGradient id="nxSky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0F172A"/><stop offset=".65" stop-color="#0a1122"/><stop offset="1" stop-color="#070c18"/>
-    </linearGradient>
-    <radialGradient id="nxGlow" cx=".5" cy=".38" r=".62">
-      <stop offset="0" stop-color="#14B8A6" stop-opacity=".28"/><stop offset=".5" stop-color="#14B8A6" stop-opacity=".07"/><stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="nxPylon" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#1e293b"/><stop offset=".5" stop-color="#334155"/><stop offset="1" stop-color="#15202f"/>
-    </linearGradient>
-    <linearGradient id="nxDeck" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#475569"/><stop offset=".5" stop-color="#293548"/><stop offset="1" stop-color="#151d2c"/>
-    </linearGradient>
-    <linearGradient id="nxBeam" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#14B8A6" stop-opacity="0"/><stop offset=".5" stop-color="#2dd4bf"/><stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="nxGold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#e7c877"/><stop offset="1" stop-color="#8a6c25"/>
-    </linearGradient>
-    <filter id="nxBlur"><feGaussianBlur stdDeviation="7"/></filter>
-    <filter id="nxSoft"><feGaussianBlur stdDeviation="1.4"/></filter>
-  </defs>
-
-  <rect width="1600" height="640" fill="url(#nxSky)"/>
-  <rect width="1600" height="640" fill="url(#nxGlow)"/>
-
-  <!-- starfield / data particles -->
-  <g fill="#94a3b8" opacity=".5">
-    <circle cx="140" cy="90" r="1.4"/><circle cx="340" cy="60" r="1"/><circle cx="520" cy="130" r="1.2"/>
-    <circle cx="760" cy="55" r="1.5"/><circle cx="980" cy="100" r="1"/><circle cx="1180" cy="70" r="1.3"/>
-    <circle cx="1370" cy="120" r="1"/><circle cx="1500" cy="80" r="1.4"/><circle cx="640" cy="170" r="1"/>
-    <circle cx="1080" cy="160" r="1.1"/><circle cx="240" cy="180" r="1"/><circle cx="1460" cy="190" r="1.2"/>
-  </g>
-
-  <!-- chasm between domains -->
-  <path d="M0 520 L560 520 Q620 470 660 620 L0 640 Z" fill="#0b1424"/>
-  <path d="M1600 520 L1040 520 Q980 470 940 620 L1600 640 Z" fill="#0b1424"/>
-  <path d="M660 620 Q800 700 940 620 L1600 640 L0 640 Z" fill="#060a14"/>
-  <path d="M660 618 Q800 690 940 618" stroke="#14B8A6" stroke-opacity=".35" stroke-width="2" fill="none" filter="url(#nxSoft)"/>
-
-  <!-- PAYER citadel (left) -->
-  <g>
-    <rect x="120" y="300" width="200" height="220" fill="url(#nxPylon)" stroke="#3b4a63" stroke-width="1.5"/>
-    <rect x="150" y="250" width="140" height="60" fill="#26334a" stroke="#3b4a63"/>
-    <rect x="185" y="205" width="70" height="55" fill="#1c2941" stroke="#3b4a63"/>
-    <rect x="212" y="168" width="16" height="42" fill="url(#nxGold)"/>
-    <circle cx="220" cy="160" r="7" fill="#2dd4bf"><animate attributeName="opacity" values="1;.35;1" dur="3.2s" repeatCount="indefinite"/></circle>
-    <g fill="#14B8A6" opacity=".8">
-      <rect x="145" y="330" width="18" height="26"/><rect x="181" y="330" width="18" height="26"/>
-      <rect x="217" y="330" width="18" height="26"/><rect x="253" y="330" width="18" height="26"/>
-      <rect x="145" y="386" width="18" height="26" opacity=".55"/><rect x="217" y="386" width="18" height="26" opacity=".55"/>
-    </g>
-    <text x="220" y="560" fill="#8fa0bd" font-family="Inter,system-ui,sans-serif" font-size="21" font-weight="600" text-anchor="middle" letter-spacing="4">PAYER DOMAIN</text>
-  </g>
-
-  <!-- PROVIDER citadel (right) -->
-  <g>
-    <rect x="1280" y="300" width="200" height="220" fill="url(#nxPylon)" stroke="#3b4a63" stroke-width="1.5"/>
-    <rect x="1310" y="250" width="140" height="60" fill="#26334a" stroke="#3b4a63"/>
-    <rect x="1345" y="205" width="70" height="55" fill="#1c2941" stroke="#3b4a63"/>
-    <rect x="1372" y="168" width="16" height="42" fill="url(#nxGold)"/>
-    <circle cx="1380" cy="160" r="7" fill="#2dd4bf"><animate attributeName="opacity" values=".35;1;.35" dur="3.2s" repeatCount="indefinite"/></circle>
-    <g fill="#14B8A6" opacity=".8">
-      <rect x="1305" y="330" width="18" height="26"/><rect x="1341" y="330" width="18" height="26"/>
-      <rect x="1377" y="330" width="18" height="26"/><rect x="1413" y="330" width="18" height="26"/>
-      <rect x="1341" y="386" width="18" height="26" opacity=".55"/><rect x="1413" y="386" width="18" height="26" opacity=".55"/>
-    </g>
-    <text x="1380" y="560" fill="#8fa0bd" font-family="Inter,system-ui,sans-serif" font-size="21" font-weight="600" text-anchor="middle" letter-spacing="4">PROVIDER DOMAIN</text>
-  </g>
-
-  <!-- verification bridge -->
-  <g>
-    <!-- suspension arcs -->
-    <path d="M320 430 Q800 220 1280 430" stroke="#3b4a63" stroke-width="7" fill="none"/>
-    <path d="M320 430 Q800 236 1280 430" stroke="#0f9c8c" stroke-width="2" fill="none" opacity=".8"/>
-    <!-- deck -->
-    <rect x="300" y="428" width="1000" height="30" fill="url(#nxDeck)" stroke="#3b4a63" stroke-width="1.4"/>
-    <rect x="300" y="424" width="1000" height="5" fill="url(#nxBeam)" filter="url(#nxSoft)"/>
-    <!-- suspender cables -->
-    <g stroke="#334155" stroke-width="2.4">
-      <line x1="440" y1="384" x2="440" y2="428"/><line x1="560" y1="352" x2="560" y2="428"/>
-      <line x1="680" y1="330" x2="680" y2="428"/><line x1="800" y1="323" x2="800" y2="428"/>
-      <line x1="920" y1="330" x2="920" y2="428"/><line x1="1040" y1="352" x2="1040" y2="428"/>
-      <line x1="1160" y1="384" x2="1160" y2="428"/>
-    </g>
-
-    <!-- three verification gates on the deck -->
-    <g font-family="Inter,system-ui,sans-serif" font-size="15.5" font-weight="700" text-anchor="middle">
-      <g>
-        <rect x="528" y="336" width="64" height="92" rx="6" fill="#111c30" stroke="#14B8A6" stroke-width="2"/>
-        <path d="M544 380 h32 M560 364 v32" stroke="#2dd4bf" stroke-width="3.4"/>
-        <text x="560" y="326" fill="#6ee7d5">IDG-01</text>
-        <text x="560" y="478" fill="#8fa0bd" font-weight="500" font-size="13.5">Disclose identity</text>
-      </g>
-      <g>
-        <rect x="768" y="322" width="64" height="106" rx="6" fill="#111c30" stroke="#14B8A6" stroke-width="2"/>
-        <circle cx="800" cy="366" r="15" fill="none" stroke="#2dd4bf" stroke-width="3.2"/>
-        <path d="M794 366 l5 6 9 -12" stroke="#2dd4bf" stroke-width="3.2" fill="none"/>
-        <text x="800" y="312" fill="#6ee7d5">PDX-01</text>
-        <text x="800" y="478" fill="#8fa0bd" font-weight="500" font-size="13.5">Verify before PHI</text>
-      </g>
-      <g>
-        <rect x="1008" y="336" width="64" height="92" rx="6" fill="#111c30" stroke="#14B8A6" stroke-width="2"/>
-        <path d="M1026 396 q14 -26 28 0 M1040 372 a7 7 0 1 0 .1 0" stroke="#2dd4bf" stroke-width="3" fill="none"/>
-        <text x="1040" y="326" fill="#6ee7d5">EIT-01</text>
-        <text x="1040" y="478" fill="#8fa0bd" font-weight="500" font-size="13.5">Human escalation</text>
-      </g>
-    </g>
-
-    <!-- moving verified-call pulse -->
-    <circle r="6.5" fill="#2dd4bf" filter="url(#nxSoft)">
-      <animateMotion dur="6s" repeatCount="indefinite" path="M330 442 H1270"/>
-    </circle>
-    <circle r="13" fill="#14B8A6" opacity=".25" filter="url(#nxBlur)">
-      <animateMotion dur="6s" repeatCount="indefinite" path="M330 442 H1270"/>
-    </circle>
-  </g>
-
-  <!-- ambient reflection -->
-  <ellipse cx="800" cy="612" rx="430" ry="15" fill="#14B8A6" opacity=".07" filter="url(#nxBlur)"/>
+<svg width="800" height="420" viewBox="0 0 800 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="420" fill="#0F172A"/>
+  <text x="400" y="36" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="#F1F5F9">Trust Verification Pathway</text>
+  <text x="400" y="56" text-anchor="middle" font-family="Inter" font-size="12" fill="#94A3B8">From untrusted AI caller → verified, authorized, auditable exchange</text>
+  <rect x="40" y="120" width="120" height="200" rx="12" fill="#1E2937" stroke="#64748B" stroke-width="2"/>
+  <text x="100" y="160" text-anchor="middle" font-family="Inter" font-size="12" font-weight="600" fill="#94A3B8">AI Agent</text>
+  <text x="100" y="180" text-anchor="middle" font-family="Inter" font-size="11" fill="#64748B">Unverified</text>
+  <circle cx="100" cy="230" r="28" fill="#334155" stroke="#64748B" stroke-width="2"/>
+  <text x="100" y="236" text-anchor="middle" font-family="Inter" font-size="11" fill="#94A3B8">?</text>
+  <rect x="180" y="200" width="440" height="40" rx="6" fill="#134E4A" stroke="#14B8A6" stroke-width="2"/>
+  <rect x="220" y="180" width="70" height="80" rx="6" fill="#0F172A" stroke="#14B8A6" stroke-width="2"/>
+  <text x="255" y="210" text-anchor="middle" font-family="Inter" font-size="10" font-weight="600" fill="#5EEAD4">IDG-01</text>
+  <text x="255" y="226" text-anchor="middle" font-family="Inter" font-size="9" fill="#99F6E4">Disclose</text>
+  <rect x="320" y="180" width="70" height="80" rx="6" fill="#0F172A" stroke="#14B8A6" stroke-width="2"/>
+  <text x="355" y="210" text-anchor="middle" font-family="Inter" font-size="10" font-weight="600" fill="#5EEAD4">PDX-01</text>
+  <text x="355" y="226" text-anchor="middle" font-family="Inter" font-size="9" fill="#99F6E4">Gate PHI</text>
+  <rect x="420" y="180" width="70" height="80" rx="6" fill="#0F172A" stroke="#14B8A6" stroke-width="2"/>
+  <text x="455" y="210" text-anchor="middle" font-family="Inter" font-size="10" font-weight="600" fill="#5EEAD4">EIT-01</text>
+  <text x="455" y="226" text-anchor="middle" font-family="Inter" font-size="9" fill="#99F6E4">Escalate</text>
+  <rect x="520" y="180" width="70" height="80" rx="6" fill="#0F172A" stroke="#14B8A6" stroke-width="2"/>
+  <text x="555" y="210" text-anchor="middle" font-family="Inter" font-size="10" font-weight="600" fill="#5EEAD4">ATR-01</text>
+  <text x="555" y="226" text-anchor="middle" font-family="Inter" font-size="9" fill="#99F6E4">Audit</text>
+  <rect x="640" y="120" width="120" height="200" rx="12" fill="#134E4A" stroke="#14B8A6" stroke-width="2"/>
+  <text x="700" y="160" text-anchor="middle" font-family="Inter" font-size="12" font-weight="600" fill="#5EEAD4">Verified</text>
+  <text x="700" y="180" text-anchor="middle" font-family="Inter" font-size="11" fill="#99F6E4">Trusted</text>
+  <circle cx="700" cy="230" r="28" fill="#0F766E" stroke="#14B8A6" stroke-width="2"/>
+  <text x="700" y="236" text-anchor="middle" font-family="Inter" font-size="16" fill="#5EEAD4">✓</text>
+  <text x="400" y="320" text-anchor="middle" font-family="Inter" font-size="12" fill="#94A3B8">Every gate must pass before PHI moves. Full audit trail sealed at end.</text>
+  <text x="400" y="360" text-anchor="middle" font-family="Inter" font-size="11" fill="#64748B">Optional NHID-Auth v2 cryptographic passport sits on top of the behavioral layer</text>
 </svg>
