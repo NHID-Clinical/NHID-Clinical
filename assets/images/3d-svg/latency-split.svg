@@ -30,18 +30,15 @@
   <line x1="800" y1="30" x2="800" y2="530" stroke="#33415c" stroke-width="2" stroke-dasharray="6 8"/>
 
   <g font-family="Inter,system-ui,sans-serif">
-    <!-- ══════ LEFT: without a standard ══════ -->
     <text x="400" y="66" fill="#f2a6a9" font-size="24" font-weight="800" text-anchor="middle" letter-spacing="1.5">WITHOUT A STANDARD</text>
     <text x="400" y="94" fill="#8fa0bd" font-size="14.5" text-anchor="middle">trust delay: effectively infinite — no verification pathway exists</text>
 
-    <!-- unknown caller -->
     <g>
       <circle cx="150" cy="280" r="46" fill="#182338" stroke="#5b3140" stroke-width="2.4"/>
       <text x="150" y="292" fill="#f2a6a9" font-size="34" font-weight="800" text-anchor="middle">?</text>
       <text x="150" y="352" fill="#8fa0bd" font-size="13.5" text-anchor="middle">unverified AI caller</text>
     </g>
 
-    <!-- direct line straight to PHI, gate broken -->
     <path d="M200 280 H640" stroke="#e5484d" stroke-width="3.4" marker-end="url(#lsArrR)" stroke-dasharray="12 7"/>
     <g transform="translate(370 236)">
       <rect width="90" height="88" rx="6" fill="#131c2e" stroke="#5b3140" stroke-width="2"/>
@@ -50,7 +47,6 @@
       <text x="45" y="112" fill="#8fa0bd" font-size="12.5" text-anchor="middle">no disclosure · no check</text>
     </g>
 
-    <!-- exposed PHI vault -->
     <g transform="translate(600 216)">
       <rect width="128" height="128" rx="10" fill="url(#lsSteel)" stroke="#5b3140" stroke-width="2.4"/>
       <rect x="18" y="34" width="92" height="12" rx="3" fill="#e5484d" opacity=".75"/>
@@ -60,18 +56,15 @@
       <text x="64" y="152" fill="#8fa0bd" font-size="12.5" text-anchor="middle">data moves before identity is known</text>
     </g>
 
-    <!-- infinite latency dial -->
     <g transform="translate(330 420)">
       <circle cx="70" cy="40" r="38" fill="#131c2e" stroke="#5b3140" stroke-width="2.2"/>
       <text x="70" y="52" fill="#f2a6a9" font-size="30" font-weight="800" text-anchor="middle">∞</text>
       <text x="70" y="102" fill="#8fa0bd" font-size="13" text-anchor="middle">impersonation latency</text>
     </g>
 
-    <!-- ══════ RIGHT: verified pathway ══════ -->
     <text x="1200" y="66" fill="#6ee7d5" font-size="24" font-weight="800" text-anchor="middle" letter-spacing="1.5">WITH NHID-CLINICAL v1.3</text>
     <text x="1200" y="94" fill="#8fa0bd" font-size="14.5" text-anchor="middle">a measurable, testable trust pathway</text>
 
-    <!-- disclosed caller -->
     <g>
       <circle cx="920" cy="280" r="46" fill="#0e2230" stroke="#14B8A6" stroke-width="2.4"/>
       <text x="920" y="272" fill="#6ee7d5" font-size="15.5" font-weight="800" text-anchor="middle">AI</text>
@@ -81,7 +74,6 @@
       <text x="920" y="352" fill="#8fa0bd" font-size="13.5" text-anchor="middle">identity asserted up front</text>
     </g>
 
-    <!-- gate 1: IDG-01 -->
     <path d="M968 280 H1030" stroke="#2dd4bf" stroke-width="3.2" marker-end="url(#lsArrT)"/>
     <g transform="translate(1034 232)">
       <rect width="84" height="96" rx="6" fill="#0d1626" stroke="#14B8A6" stroke-width="2"/>
@@ -90,7 +82,6 @@
       <text x="42" y="118" fill="#8fa0bd" font-size="12" text-anchor="middle">disclosure gate</text>
     </g>
 
-    <!-- gate 2: PDX-01 -->
     <path d="M1122 280 H1180" stroke="#2dd4bf" stroke-width="3.2" marker-end="url(#lsArrT)"/>
     <g transform="translate(1184 232)">
       <rect width="84" height="96" rx="6" fill="#0d1626" stroke="#14B8A6" stroke-width="2"/>
@@ -100,7 +91,6 @@
       <text x="42" y="118" fill="#8fa0bd" font-size="12" text-anchor="middle">verify before PHI</text>
     </g>
 
-    <!-- sealed PHI vault + human escalation -->
     <path d="M1272 280 H1330" stroke="#2dd4bf" stroke-width="3.2" marker-end="url(#lsArrT)"/>
     <g transform="translate(1334 216)">
       <rect width="128" height="128" rx="10" fill="url(#lsSteel)" stroke="#14B8A6" stroke-width="2.4"/>
@@ -111,7 +101,6 @@
       <text x="64" y="152" fill="#8fa0bd" font-size="12.5" text-anchor="middle">exchange after verification (EIT-01 · ATR-01)</text>
     </g>
 
-    <!-- measurable latency dial -->
     <g transform="translate(1130 420)">
       <circle cx="70" cy="40" r="38" fill="#0d1626" stroke="#14B8A6" stroke-width="2.2"/>
       <path d="M70 40 L70 14" stroke="#2dd4bf" stroke-width="3.2"/>
@@ -120,7 +109,6 @@
       <text x="70" y="102" fill="#8fa0bd" font-size="13" text-anchor="middle">measurable trust delay</text>
     </g>
 
-    <!-- verified pulse -->
     <circle r="5.5" fill="#2dd4bf" filter="url(#lsSoft)">
       <animateMotion dur="4.6s" repeatCount="indefinite" path="M968 280 H1330"/>
     </circle>
