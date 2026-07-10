@@ -154,11 +154,8 @@
         </div>
       </div>
       <div class="hero-art hero-art-nexus" aria-label="Governance Trust Nexus visualization">
-        <picture class="premium-3d">
-          <source srcset="/assets/images/3d-renders/nexus-trust-bridge.webp" type="image/webp"/>
-          <img src="/assets/images/3d-svg/nexus.svg" alt="Illustrative 3D visualization of the Governance Trust Nexus — a verification bridge between payer and provider voice workflows. Conceptual render for clarity."/>
-        </picture>
-        <p class="visual-caption">Governance Trust Nexus — illustrative 3D render</p>
+        <img src="/assets/images/3d-svg/nexus.svg" alt="Clean enterprise visualization of the Governance Trust Nexus — a verification bridge between payer and provider voice workflows." class="premium-3d"/>
+        <p class="visual-caption">Governance Trust Nexus — clean enterprise diagram</p>
       </div>
     </div>
   </section>
@@ -197,20 +194,17 @@
       <p class="lead">The proposal's architecture in one picture: each layer is testable on its own, and together they turn "trust me" into a verifiable pathway. Click a layer to see what it does and where to try it.</p>
       <div class="stack-wrap">
         <div>
-          <picture class="premium-3d">
-            <source srcset="/assets/images/3d-renders/trust-stack-ziggurat.webp" type="image/webp"/>
-            <img src="/assets/images/3d-svg/trust-stack.svg" class="premium-3d" style="max-width:34rem"
-                 alt="Illustrative 3D visualization of the NHID-Clinical five-layer trust stack as a stepped monument: network foundation, behavioral disclosure gates, cryptographic authorization, audit ledger, observability spire. Conceptual render for clarity."/>
-          </picture>
-          <p class="visual-caption">Conceptual render for clarity — the authoritative definitions live in the specification.</p>
+          <img src="/assets/images/3d-svg/trust-stack.svg" class="premium-3d" style="max-width:34rem"
+               alt="Clean enterprise Five-Layer Trust Stack: network foundation, behavioral disclosure gates, cryptographic authorization, audit ledger, observability."/>
+          <p class="visual-caption">Clean enterprise diagram — the authoritative definitions live in the specification.</p>
         </div>
         <div>
           <div role="tablist" aria-label="Trust stack layers" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem">
-            <button class="btn-ghost stack-layer" role="tab" data-layer="l5" aria-selected="false">Layer 5 · Observability &amp; CAS</button>
+            <button class="btn-ghost stack-layer" role="tab" data-layer="l5" aria-selected="false">Layer 5 · Observability & CAS</button>
             <button class="btn-ghost stack-layer" role="tab" data-layer="l4" aria-selected="false">Layer 4 · Audit Ledger (ATR-01)</button>
             <button class="btn-ghost stack-layer" role="tab" data-layer="l3" aria-selected="false">Layer 3 · Cryptographic Authorization (NHID-Auth v2)</button>
             <button class="btn-ghost stack-layer active" role="tab" data-layer="l2" aria-selected="true">Layer 2 · Behavioral Disclosure Controls</button>
-            <button class="btn-ghost stack-layer" role="tab" data-layer="l1" aria-selected="false">Layer 1 · Network &amp; Transport Foundation</button>
+            <button class="btn-ghost stack-layer" role="tab" data-layer="l1" aria-selected="false">Layer 1 · Network & Transport Foundation</button>
           </div>
           <div class="stack-detail" id="stack-detail" role="tabpanel" aria-live="polite"></div>
         </div>
@@ -258,11 +252,8 @@
       <p class="lead">Impersonation latency is the time window in which an AI agent is already interacting and exchanging information while its identity and authorization remain unverified. In payer–provider voice calls, that window frequently covers member IDs, NPIs, dates of birth, and claim data — before any clear disclosure that the caller is automated. Telephony and IAM layers authenticate numbers or accounts, but they do not provide portable proof that a specific AI caller is authorized to represent a particular provider organization.</p>
       <p class="lead" style="margin-top:.75rem">The gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is measurement on their own traffic — see the <a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit">Tier 0 Shadow Pilot Kit</a>.</p>
 
-      <picture class="premium-3d">
-        <source srcset="/assets/images/3d-renders/impersonation-vs-verified.webp" type="image/webp"/>
-        <img src="/assets/images/3d-svg/latency-split.svg" class="premium-3d"
-             alt="Illustrative 3D visualization contrasting the impersonation latency problem (left: an unverified caller reaching PHI with no checks) with the verified trust pathway enabled by NHID-Clinical (right: disclosure gate, verification checkpoint, sealed PHI, human escalation). Conceptual render for clarity."/>
-      </picture>
+      <img src="/assets/images/3d-svg/latency-split.svg" class="premium-3d"
+           alt="Clean enterprise diagram contrasting the impersonation latency problem (left) with the verified trust pathway enabled by NHID-Clinical (right)."/>
 
       <div class="two-column">
         <div class="col-bad">
