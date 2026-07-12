@@ -3175,3 +3175,26 @@ iframe[src*="elevenlabs.io"] {
   pointer-events: none;
 }
 
+
+/* ── Status strip (replaces legacy caution banner) ──────────────────────── */
+.status-strip {
+  background: #082a5b;
+  color: #d6e4f5;
+  font-size: .8rem;
+  line-height: 1.55;
+  letter-spacing: .005em;
+  text-align: center;
+  padding: 9px 20px;
+  border-bottom: 2px solid #188eaa;
+}
+.status-strip-inner {
+  display: block;
+  max-width: 74rem;
+  margin: 0 auto;
+}
+.status-strip strong { color: #ffffff; font-weight: 600; }
+.status-strip a { color: #7fd4e6; text-decoration: underline; }
+[data-theme="dark"] .status-strip {
+  background: #050f1c;
+  border-bottom-color: #3ecece;
+}

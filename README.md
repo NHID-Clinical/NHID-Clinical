@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  Built by a former payer operations associate who saw the <strong>impersonation latency</strong> problem firsthand on live calls.<br>
+  Built from direct payer operations experience — the <strong>impersonation latency</strong> problem, seen firsthand on live eligibility, claims, and prior-authorization lines.<br>
   <strong>Not a standard. Not a certification. Not a product.</strong> An open, testable reference for the ecosystem.
 </p>
 
@@ -47,6 +47,8 @@ NHID-Clinical targets one specific failure: an AI voice agent begins operating a
 
 The governance gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is a focused shadow pilot on their own traffic — the [**Tier 0 Shadow Pilot Kit**](docs/pilot-kit/README.md) makes that a 2–4 week exercise.
 
+For a one-page overview aimed at hospital, payer, compliance, and procurement leaders, see the [**Executive Brief**](docs/executive-brief.md).
+
 **Standards alignment (mapped, not certified):** Explicitly supports EU AI Act Article 50 transparency obligations for AI systems interacting with humans. Mapped to NIST AI RMF 1.0 Map and Measure functions for identity disclosure and risk. Aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability.
 
 <p align="center">
@@ -54,6 +56,28 @@ The governance gap is well documented; large-scale production evidence is still 
   <br>
   <sub><em>Clean vector visualization of the trust verification pathway — conceptual, not a product diagram.</em></sub>
 </p>
+
+## Status
+
+An honest maturity snapshot. NHID-Clinical is a working reference implementation, not a production-scale product.
+
+**Available today**
+- Deterministic policy engine with 330 passing tests
+- Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
+- Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
+- Conformance Test Suite and a per-call Call Authorization Score (CAS)
+- NHID-Auth v2 cryptographic authorization layer, published as public reference code
+
+**In progress**
+- First shadow-evaluation partners (observe-only, no vendor changes)
+- Raster brand assets and expanded interoperability adapters
+
+**Not yet**
+- Production-scale deployments
+- A certification, accreditation, or standard
+- Any regulatory endorsement
+
+This is a voluntary framework — **not an accredited standard, certification, or regulatory requirement.**
 
 ## The Four Core Controls (v1.3)
 
@@ -87,7 +111,7 @@ Plus **ATR-01** (audit trail) — every call must produce a machine-readable tra
 
 [Full technical architecture →](https://nhid-clinical.org/technical-stack.html)
 
-## The Impersonation Latency Crisis
+## The Impersonation Latency Problem
 
 <p align="center">
   <img alt="Contrast between unverified caller path and NHID-Clinical verified pathway" src="assets/images/3d-svg/latency-split.svg" width="760">
@@ -226,6 +250,21 @@ python examples/issue_and_verify.py
 ```
 
 [Details →](https://nhid-clinical.org/roadmap.html)
+
+## Repository layout
+
+| Path | What's there |
+| :-- | :-- |
+| `*.html` (root) | The public website, served by GitHub Pages — `index.html` plus the section pages (about, specification, for-payers, and so on). |
+| `nhid_*.py`, `app.py`, `main.py`, `llm.py` (root) | Reference implementation: the deterministic policy engine, conformance API, event store, and call handling. |
+| `src/` | Packaged Python modules used by the engine and tests (e.g. agent identity). |
+| `adapters/` | Vendor call-payload adapters (VAPI, Twilio). |
+| `middleware/` | TypeScript middleware and its test suite. |
+| `tests/` | The Python conformance and invariant tests (330 passing). |
+| `scripts/` | CI guards — `validate_ci.py`, `check_baseline.py`, `check_number_drift.py` — and tooling. |
+| `schema/` | Event and audit-trace schemas. |
+| `docs/` | Specification docs, the [Executive Brief](docs/executive-brief.md), the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md), and the knowledge archive. |
+| `assets/` | Brand SVGs, diagrams, images, and site CSS. |
 
 ## Contributing & Pilot Partners
 

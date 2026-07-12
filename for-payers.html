@@ -69,8 +69,8 @@
 </head>
 <body>
 
-<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
-  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+<div class="status-strip">
+  <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
 </div>
 
 <header class="site-header">
@@ -124,7 +124,7 @@
         <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <a class="primary-pill" href="/for-payers.html">Start a pilot</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -206,11 +206,34 @@
     </div>
   </section>
 
+  <!-- ── Start here: Tier 0 quick start ─────────────────────────────────── -->
+  <section class="page-section" style="padding-top:1rem;padding-bottom:.5rem">
+    <div class="container" style="max-width:52rem">
+      <h2 style="margin-bottom:.35rem">Start here — a pilot in three steps</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.7;margin-bottom:1.25rem">The Tier 0 Shadow Pilot Kit runs on your own call logs. Observe-only, no vendor changes, usable numbers in 2–4 weeks.</p>
+      <div style="display:grid;gap:1rem">
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">1</span> Get the kit</p>
+          <p>Download the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/README.md">Tier 0 Shadow Pilot Kit</a> — a minimal event schema, a measurement script, and a report template.</p>
+        </div>
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">2</span> Run it on your logs</p>
+          <p>Map a sample of your call records to the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/minimal-event-schema.json">minimal event schema</a>, then run <code>measure_pilot.py</code>. Nothing touches production.</p>
+        </div>
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">3</span> Read your numbers</p>
+          <p>You get impersonation-latency and disclosure metrics on your own traffic in a <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/pilot-report-template.md">ready-to-share report</a>. Use it to decide what to require of vendors.</p>
+        </div>
+      </div>
+      <p style="margin-top:1rem;font-size:.95rem"><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--blue)">See the full shadow-evaluation guide →</a></p>
+    </div>
+  </section>
+
   <section class="page-section">
     <div class="container" style="max-width:52rem">
 
       <div class="callout" role="note" style="margin-bottom:2rem;border-color:#b91c1c;background:#fef2f2">
-        <strong>Important:</strong> NHID-Clinical is an early-stage open proposal. No payer has piloted or adopted it yet. This is a voluntary reference model — not an accredited standard or regulatory requirement.
+        <strong>Important:</strong> No payer has adopted NHID-Clinical in production yet. It is a voluntary reference model, not an accredited standard, certification, or regulatory requirement.
       </div>
 
       <h2>What You Gain</h2>
@@ -301,10 +324,11 @@
 
       <h2 style="margin-top:2.5rem">Evaluation Resources</h2>
       <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
+        <li><a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md" style="font-weight:600;color:var(--blue)">Executive Brief →</a> <span style="color:var(--body)">— one-page overview for leadership and procurement</span></li>
         <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--blue)">Shadow Evaluation Guide →</a> <span style="color:var(--body)">— full 90-day process</span></li>
         <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--blue)">Evidence Pack →</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
         <li><a href="/regulatory-alignment.html" style="font-weight:600;color:var(--blue)">Regulatory Alignment →</a> <span style="color:var(--body)">— CMS-0057-F, MACPAC, DOJ FCA, state AI laws</span></li>
-        <li><a href="/demo.html" style="font-weight:600;color:var(--blue)">Live Demo Line (Beacon) →</a> <span style="color:var(--body)">— call <a href="tel:+17176706772">+1 (717) 670-6772</a> (website demo)</span></li>
+        <li><a href="/demo.html" style="font-weight:600;color:var(--blue)">Reference demonstration line →</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
       </ul>
 
     </div>
@@ -314,7 +338,7 @@
     <div class="closing-panel">
       <div>
         <p class="section-kicker">Get involved</p>
-        <h2>Read the proposal. Share what you think.</h2>
+        <h2>Read the specification. Share what you think.</h2>
         <p>Whether it is right, wrong, incomplete, or misses the real problem — that feedback shapes the next version.</p>
       </div>
       <a class="closing-button" href="/community.html">Join the Discussion →</a>
@@ -334,7 +358,7 @@
 </section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
-    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0<br/><span class="footer-demo-line"><strong>Live Demo Line (Beacon)</strong> — <a href="tel:+17176706772">+1 (717) 670-6772</a> <span class="footer-demo-note">(website demo, not personal contact)</span></span></p>
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
@@ -343,7 +367,7 @@
     </div>
 
   </div>
-  <p class="footer-copy" style="margin-top:.4rem">This is a living open proposal — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
+  <p class="footer-copy" style="margin-top:.4rem">This is an open, actively maintained framework — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
 </footer>
 
 <script src="/site.js"></script>
