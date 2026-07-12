@@ -135,12 +135,6 @@
       excerpt: 'Deterministic pass/fail tests for NHID-Clinical v1.3 conformance.'
     },
     {
-      title: 'Community',
-      url: '/community.html',
-      keywords: 'community github discussions issues contribution feedback technical compliance payer provider help contact get involved',
-      excerpt: 'Join the NHID-Clinical community to give feedback and help shape the next version of the proposal.'
-    },
-    {
       title: 'FAQ',
       url: '/faq.html',
       keywords: 'faq frequently asked questions who what why how cost hipaa tcpa nist mandatory volunteer impersonation latency background',
