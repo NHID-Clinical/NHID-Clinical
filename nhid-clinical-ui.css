@@ -3198,3 +3198,20 @@ iframe[src*="elevenlabs.io"] {
   background: #050f1c;
   border-bottom-color: #3ecece;
 }
+
+/* ── Numbered step badge (homepage "Start in 3 steps") ──────────────────── */
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 800;
+  font-size: .95rem;
+  flex-shrink: 0;
+  margin-bottom: .6rem;
+}
+[data-theme="dark"] .step-num { background: var(--teal); color: #06202b; }
