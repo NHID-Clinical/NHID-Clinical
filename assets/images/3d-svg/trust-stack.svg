@@ -1,71 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="tz-t tz-d">
-  <title id="tz-t">Five-Layer Trust Stack — conceptual visualization</title>
-  <desc id="tz-d">Illustrative isometric visualization of the NHID-Clinical five-layer trust architecture: STIR/SHAKEN carrier authentication, NHID-Clinical v1.3 behavioral disclosure (highlighted), NHID-Auth v2 cryptographic authorization, FHIR AuditEvent R4 audit logging, and OpenTelemetry observability. Layer order matches the specification's five-layer trust stack.</desc>
-  <defs>
-    <linearGradient id="tsL1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5c6d84"/><stop offset="1" stop-color="#44546a"/></linearGradient>
-    <linearGradient id="tsL2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#35c2ab"/><stop offset="1" stop-color="#148f80"/></linearGradient>
-    <linearGradient id="tsL3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6493c6"/><stop offset="1" stop-color="#3b6aa0"/></linearGradient>
-    <linearGradient id="tsL4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c5787"/><stop offset="1" stop-color="#16385f"/></linearGradient>
-    <linearGradient id="tsL5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#aadfe4"/><stop offset="1" stop-color="#7fc4c9"/></linearGradient>
-    <style>
-      .lbl { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:21px; font-weight:700; fill:#082a5b; }
-      .sub { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:15px; font-weight:400; fill:#5d6b7a; }
-      .num { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:16px; font-weight:700; fill:#ffffff; }
-      .side { opacity:0.72; } .side2 { opacity:0.5; }
-    </style>
-  </defs>
+  <title id="tz-t">Five-Layer Trust Stack</title>
+  <desc id="tz-d">The NHID-Clinical five-layer trust architecture as a flat stack: OpenTelemetry observability, FHIR AuditEvent R4 audit logging, NHID-Auth v2 cryptographic authorization, NHID-Clinical v1.3 behavioral disclosure (highlighted), and STIR/SHAKEN carrier authentication, over the Layer 0 NPI gap.</desc>
+  <style>
+    .card { fill:#ffffff; stroke:#e3ebf2; stroke-width:1.5; }
+    .band { fill:#f4f8fc; stroke:#dbe5f0; stroke-width:1.5; }
+    .bandhi { fill:#e8f8f4; stroke:#8fd3c8; stroke-width:2; }
+    .lbl { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:21px; font-weight:700; fill:#082a5b; }
+    .lblhi { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:21px; font-weight:700; fill:#0e7568; }
+    .sub { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:15px; font-weight:400; fill:#5d6b7a; }
+    .num { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:19px; font-weight:700; fill:#ffffff; }
+    .note { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:15px; font-style:italic; fill:#5d6b7a; }
+  </style>
 
-  <ellipse cx="235" cy="500" rx="205" ry="30" fill="#0f2440" opacity="0.10"/>
-  <text x="30" y="536" class="sub" font-style="italic">Layer 0 — the NPI gap: no cross-organization authorization for AI agents.</text>
+  <rect x="6" y="6" width="888" height="548" rx="18" class="card"/>
+
+  <!-- L5 -->
+  <rect x="40" y="40" width="820" height="72" rx="12" class="band"/>
+  <circle cx="88" cy="76" r="22" fill="#16385f"/><text x="88" y="83" text-anchor="middle" class="num">5</text>
+  <text x="132" y="70" class="lbl">OpenTelemetry</text>
+  <text x="132" y="94" class="sub">Enterprise observability export</text>
+
+  <!-- L4 -->
+  <rect x="40" y="128" width="820" height="72" rx="12" class="band"/>
+  <circle cx="88" cy="164" r="22" fill="#16385f"/><text x="88" y="171" text-anchor="middle" class="num">4</text>
+  <text x="132" y="158" class="lbl">FHIR AuditEvent R4</text>
+  <text x="132" y="182" class="sub">Healthcare-native audit logging (base spec)</text>
+
+  <!-- L3 -->
+  <rect x="40" y="216" width="820" height="72" rx="12" class="band"/>
+  <circle cx="88" cy="252" r="22" fill="#0b6ebc"/><text x="88" y="259" text-anchor="middle" class="num">3</text>
+  <text x="132" y="246" class="lbl">NHID-Auth v2</text>
+  <text x="132" y="270" class="sub">Cryptographic authorization — Ed25519 agent passports</text>
+
+  <!-- L2 highlight -->
+  <rect x="40" y="304" width="820" height="72" rx="12" class="bandhi"/>
+  <circle cx="88" cy="340" r="22" fill="#188eaa"/><text x="88" y="347" text-anchor="middle" class="num">2</text>
+  <text x="132" y="334" class="lblhi">NHID-Clinical v1.3</text>
+  <text x="132" y="358" class="sub">Behavioral disclosure baseline — 4 controls + ATR-01</text>
 
   <!-- L1 -->
-  <g>
-    <path class="side" d="M85 452 L85 478 L235 532 L235 506 Z" fill="url(#tsL1)"/>
-    <path class="side2" d="M385 452 L385 478 L235 532 L235 506 Z" fill="url(#tsL1)"/>
-    <path d="M85 452 L235 398 L385 452 L235 506 Z" fill="url(#tsL1)"/>
-    <text x="228" y="461" class="num">1</text>
-    <line x1="392" y1="452" x2="452" y2="452" stroke="#c3ccd6" stroke-width="1.6"/>
-    <text x="462" y="450" class="lbl">STIR/SHAKEN</text>
-    <text x="462" y="472" class="sub">Carrier number authentication (RFC 8224)</text>
-  </g>
-  <!-- L2 highlight -->
-  <g>
-    <path class="side" d="M85 372 L85 398 L235 452 L235 426 Z" fill="url(#tsL2)"/>
-    <path class="side2" d="M385 372 L385 398 L235 452 L235 426 Z" fill="url(#tsL2)"/>
-    <path d="M85 372 L235 318 L385 372 L235 426 Z" fill="url(#tsL2)" stroke="#ffffff" stroke-width="2" stroke-opacity="0.55"/>
-    <text x="228" y="381" class="num">2</text>
-    <line x1="392" y1="372" x2="452" y2="372" stroke="#189a8a" stroke-width="2"/>
-    <text x="462" y="370" class="lbl" fill="#0e7568">NHID-Clinical v1.3</text>
-    <text x="462" y="392" class="sub">Behavioral disclosure baseline — 4 controls + ATR-01</text>
-  </g>
-  <!-- L3 -->
-  <g>
-    <path class="side" d="M85 292 L85 318 L235 372 L235 346 Z" fill="url(#tsL3)"/>
-    <path class="side2" d="M385 292 L385 318 L235 372 L235 346 Z" fill="url(#tsL3)"/>
-    <path d="M85 292 L235 238 L385 292 L235 346 Z" fill="url(#tsL3)"/>
-    <text x="228" y="301" class="num">3</text>
-    <line x1="392" y1="292" x2="452" y2="292" stroke="#c3ccd6" stroke-width="1.6"/>
-    <text x="462" y="290" class="lbl">NHID-Auth v2</text>
-    <text x="462" y="312" class="sub">Cryptographic authorization — Ed25519 agent passports</text>
-  </g>
-  <!-- L4 -->
-  <g>
-    <path class="side" d="M85 212 L85 238 L235 292 L235 266 Z" fill="url(#tsL4)"/>
-    <path class="side2" d="M385 212 L385 238 L235 292 L235 266 Z" fill="url(#tsL4)"/>
-    <path d="M85 212 L235 158 L385 212 L235 266 Z" fill="url(#tsL4)"/>
-    <text x="228" y="221" class="num">4</text>
-    <line x1="392" y1="212" x2="452" y2="212" stroke="#c3ccd6" stroke-width="1.6"/>
-    <text x="462" y="210" class="lbl">FHIR AuditEvent R4</text>
-    <text x="462" y="232" class="sub">Healthcare-native audit logging (base spec)</text>
-  </g>
-  <!-- L5 -->
-  <g>
-    <path class="side" d="M85 132 L85 158 L235 212 L235 186 Z" fill="url(#tsL5)"/>
-    <path class="side2" d="M385 132 L385 158 L235 212 L235 186 Z" fill="url(#tsL5)"/>
-    <path d="M85 132 L235 78 L385 132 L235 186 Z" fill="url(#tsL5)"/>
-    <text x="228" y="141" class="num" fill="#0f2440">5</text>
-    <line x1="392" y1="132" x2="452" y2="132" stroke="#c3ccd6" stroke-width="1.6"/>
-    <text x="462" y="130" class="lbl">OpenTelemetry</text>
-    <text x="462" y="152" class="sub">Enterprise observability export</text>
-  </g>
+  <rect x="40" y="392" width="820" height="72" rx="12" class="band"/>
+  <circle cx="88" cy="428" r="22" fill="#16385f"/><text x="88" y="435" text-anchor="middle" class="num">1</text>
+  <text x="132" y="422" class="lbl">STIR/SHAKEN</text>
+  <text x="132" y="446" class="sub">Carrier number authentication (RFC 8224)</text>
+
+  <text x="40" y="508" class="note">Layer 0 — the NPI gap: no cross-organization authorization for AI agents.</text>
 </svg>

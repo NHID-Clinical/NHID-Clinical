@@ -9,10 +9,9 @@ reference tool — NHID-Clinical remains an open voluntary proposal, never a pro
 
 - Palette: deep navy `#0F172A` base, teal `#14B8A6` accents, slate/silver text,
   sparing gold inlays — identical tokens to `assets/css/premium.css` on the site.
-- Feature visuals: reuse the SAME asset set the site ships. Preferred order per slot:
-  `assets/images/3d-renders/<name>.webp` (raster, when generated) →
-  `assets/images/3d-svg/<name>.svg` (always available, self-contained, animated).
-  Copy the SVGs into the map's public/ dir; they are dependency-free.
+- Feature visuals: reuse the SAME asset set the site ships — the flat, self-contained
+  diagrams in `assets/images/3d-svg/<name>.svg`. Copy the SVGs into the map's public/ dir;
+  they are dependency-free.
 - Alt/caption convention (verbatim pattern): "Illustrative 3D visualization of … —
   conceptual render for clarity." Never present a visual as a product diagram.
 
@@ -94,5 +93,4 @@ Behavior:
 
 If the map's repository is added to this session (`add_repo`), this spec can be
 implemented directly; the asset files referenced in §1 already exist in this repo
-under `assets/images/3d-svg/` and the prompts for the raster set under
-`assets/images/3d-renders/PROMPTS.md`.
+under `assets/images/3d-svg/`.
