@@ -130,26 +130,30 @@
         <h1>NHID-Clinical</h1>
         <p class="hero-subtitle">A behavioral baseline for transparent AI voice agents in healthcare</p>
         <p class="hero-body"><strong>A voluntary control layer for AI voice agents on payer–provider calls.</strong> It addresses one failure mode: an agent asking for sensitive information before the receiving party can confirm it is automated and authorized to act. Built from direct payer operations experience — live eligibility, claims, and prior-authorization lines.</p>
-        <ul class="hero-bullets">
-          <li>Voluntary, testable behavioral baseline — not a standard or certification</li>
-          <li>Four controls + conformance API + 330 passing tests in the open repo</li>
-          <li>NIST public comment NIST-2025-0035-0026 · CC&nbsp;BY&nbsp;4.0</li>
-        </ul>
         <div class="hero-actions-premium">
           <a href="/specification.html" class="btn-premium">Read the v1.3 specification</a>
-          <a href="/for-payers.html" class="btn-premium">Start a shadow pilot</a>
-          <a href="/evidence-pack.html" class="btn-ghost">View the evidence pack</a>
-          <a href="/simulator.html" class="btn-ghost">Open the conformance simulator</a>
-          <a href="https://github.com/NHID-Clinical/NHID-Clinical" class="btn-ghost">GitHub</a>
+          <a href="/for-payers.html" class="btn-premium">Start a pilot</a>
+          <a href="/simulator.html" class="btn-ghost">Open the simulator</a>
         </div>
-        <div class="callout" style="margin-top:1.5rem">
-          <strong>Where this stands today.</strong>
-          The v1.3 conformance API is live; demo and vendor routes need no key.
-          VAPI and Twilio adapters accept native call payloads and return a pass/fail result.
-          The v2 cryptographic authorization layer is published as reference code in the repository.
-          No production pilots yet — we are seeking the first shadow-evaluation partners.
-          <a href="/for-payers.html">Start a shadow evaluation →</a>
+        <div class="impact-metrics" style="grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin-top:1.75rem">
+          <div class="impact-metric">
+            <span class="impact-metric-icon teal">330</span>
+            <div class="impact-metric-body"><strong>330 passing tests</strong><span>Deterministic conformance suite, open repo</span></div>
+          </div>
+          <div class="impact-metric">
+            <span class="impact-metric-icon">4+1</span>
+            <div class="impact-metric-body"><strong>Four controls + CAS</strong><span>IDG-01 · PDX-01 · DBC-01 · EIT-01, plus ATR-01 audit</span></div>
+          </div>
+          <div class="impact-metric">
+            <span class="impact-metric-icon green">API</span>
+            <div class="impact-metric-body"><strong>Live conformance API</strong><span>VAPI + Twilio adapters; no key for demo routes</span></div>
+          </div>
+          <div class="impact-metric">
+            <span class="impact-metric-icon">CC</span>
+            <div class="impact-metric-body"><strong>Open &amp; on record</strong><span>CC BY 4.0 · NIST comment NIST-2025-0035-0026</span></div>
+          </div>
         </div>
+        <p class="disclaimer-small" style="margin-top:1rem">Voluntary and testable — not an accredited standard, certification, or regulatory requirement. No production pilots yet; seeking the first shadow-evaluation partners.</p>
       </div>
       <div class="hero-art hero-art-nexus" aria-label="Governance Trust Nexus visualization">
         <img class="premium-3d" src="/assets/images/3d-svg/nexus.svg" alt="Diagram of the Trust Verification Nexus: a payer domain and a provider domain bridged by a conformance-verification step — disclosure, pre-data gate, escalation, and sealed audit."/>
@@ -158,29 +162,34 @@
     </div>
   </section>
 
-  <!-- ── Pilot Banner ──────────────────────────────────────────────────────── -->
-  <section class="page-section" style="padding-top:1.5rem;padding-bottom:1.5rem">
-    <div class="container" style="max-width:60rem">
-      <div class="pilot-banner" style="background:var(--blue-soft);border:1px solid var(--line);border-radius:1rem;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
-        <div style="flex:1;min-width:14rem">
-          <strong style="display:block;font-size:1rem;color:var(--ink);margin-bottom:.25rem">Call for Pilot Partners</strong>
-          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are seeking payer and provider organizations to run a 90-day shadow evaluation — no vendor changes, no production risk. Pilot results directly shape the v2 specification.</p>
-        </div>
-        <a class="cta-button" href="/for-payers.html" style="flex-shrink:0;white-space:nowrap">Become a Pilot Partner <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Live Demo Line (Beacon) ───────────────────────────────────────────── -->
-  <section class="demo-line-callout" aria-labelledby="demo-line-heading">
+  <!-- ── Start in 3 steps (adopt path) ─────────────────────────────────────── -->
+  <section class="page-section" style="padding-top:2rem">
     <div class="container">
-      <div class="demo-line-callout-inner">
-        <div>
-          <p class="demo-line-kicker">Website demo feature</p>
-          <h2 id="demo-line-heading">See the disclosure controls in a live call</h2>
-          <p>The demo page walks through a real voice call where an agent triggers the NHID-Clinical controls, with a step-by-step script and a reference demonstration line.</p>
+      <p class="section-kicker">Easy to adopt</p>
+      <h2 style="margin-bottom:.35rem">Start in three steps</h2>
+      <p style="color:var(--body);max-width:60ch;margin-bottom:1.75rem">Observe-only, on your own call logs. No vendor changes, no production risk.</p>
+      <div class="content-cards" style="grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))">
+        <div class="content-card">
+          <span class="step-num">1</span>
+          <h3>Read &amp; try</h3>
+          <p>Skim the v1.3 specification and run a scenario in the simulator to see the controls fire.</p>
+          <a class="card-link" href="/simulator.html">Open the simulator →</a>
         </div>
-        <a class="cta-button" href="/demo.html">Try the live demo <span aria-hidden="true">→</span></a>
+        <div class="content-card">
+          <span class="step-num">2</span>
+          <h3>Run a shadow pilot</h3>
+          <p>Measure impersonation latency on your own logs in 2–4 weeks with the Tier 0 Shadow Pilot Kit.</p>
+          <a class="card-link" href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit">Get the pilot kit →</a>
+        </div>
+        <div class="content-card">
+          <span class="step-num">3</span>
+          <h3>Review &amp; decide</h3>
+          <p>Use the evidence pack and your own numbers to decide what to require of vendors.</p>
+          <a class="card-link" href="/evidence-pack.html">Review the evidence →</a>
+        </div>
+      </div>
+      <div style="margin-top:1.5rem">
+        <a class="cta-button" href="/for-payers.html">Start a pilot <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
@@ -247,8 +256,7 @@
   <section class="section-premium" id="latency-problem" style="padding-top:3.5rem">
     <div class="container">
       <h2>The impersonation latency problem</h2>
-      <p class="lead">Impersonation latency is the time window in which an AI agent is already interacting and exchanging information while its identity and authorization remain unverified. In payer–provider voice calls, that window frequently covers member IDs, NPIs, dates of birth, and claim data — before any clear disclosure that the caller is automated. Telephony and IAM layers authenticate numbers or accounts, but they do not provide portable proof that a specific AI caller is authorized to represent a particular provider organization.</p>
-      <p class="lead" style="margin-top:.75rem">The gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is measurement on their own traffic — see the <a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit">Tier 0 Shadow Pilot Kit</a>.</p>
+      <p class="lead" style="max-width:65ch">The window where an AI agent is already talking and exchanging data — member IDs, NPIs, dates of birth, claims — before anyone can confirm it is automated and authorized. Telephony and IAM verify the number or account, not that <em>this</em> caller may act for <em>that</em> provider.</p>
 
       <img src="/assets/images/3d-svg/latency-split.svg" class="premium-3d"
            alt="Diagram contrasting the impersonation latency problem (left: an unverified caller reaching PHI with no checks) with the verified trust pathway enabled by NHID-Clinical (right: disclosure gate, verification checkpoint, sealed PHI, human escalation)."/>
@@ -332,23 +340,14 @@
     </div>
   </section>
 
-  <!-- ── Section 3: CTA Strip ───────────────────────────────────────────── -->
-  <div style="background:var(--mist);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:2rem 0">
-    <div class="container" style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:center">
-      <a class="cta-button" href="/specification.html">Specification</a>
-      <a class="secondary-button" href="/simulator.html">Governance Simulator</a>
-      <a class="secondary-button" href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
-    </div>
-  </div>
-
-  <!-- ── Section 4: Key Tools ───────────────────────────────────────────── -->
+  <!-- ── Key Tools ──────────────────────────────────────────────────────── -->
   <section class="page-section">
     <div class="container">
       <h2 style="margin-bottom:1.75rem">Key tools</h2>
       <div class="content-cards" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
         <div class="content-card">
-          <h3>Policy Engine Playground</h3>
-          <p>Test NHID-Clinical v1.3 controls against synthetic call scenarios in real time.</p>
+          <h3>Simulator</h3>
+          <p>Run the v1.3 controls against call scenarios in real time.</p>
           <a class="card-link" href="/simulator.html">Open the simulator →</a>
         </div>
         <div class="content-card">
@@ -357,63 +356,28 @@
           <a class="card-link" href="/specification.html">Read the specification →</a>
         </div>
         <div class="content-card">
+          <h3>Live demo call</h3>
+          <p>Hear the disclosure controls trigger in a real voice call, with a step-by-step script.</p>
+          <a class="card-link" href="/demo.html">Try the live demo →</a>
+        </div>
+        <div class="content-card">
           <h3>Shadow Evaluation Guide</h3>
-          <p>A structured 90-day process for payers to establish a behavioral baseline — no vendor changes required.</p>
+          <p>The structured 90-day process for payers — no vendor changes required.</p>
           <a class="card-link" href="/shadow-evaluation-guide.html">View the guide →</a>
         </div>
         <div class="content-card">
           <h3>Evidence Pack</h3>
-          <p>System behavior guarantees, anonymized failure trace example, and audit readiness model for procurement teams.</p>
+          <p>Guarantees, a worked failure trace, and the audit-readiness model for procurement.</p>
           <a class="card-link" href="/evidence-pack.html">Review the evidence pack →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── Section 5: Trust Stack Preview ────────────────────────────────── -->
-  <section class="page-section" style="background:var(--mist)">
-    <div class="container" style="max-width:52rem">
-      <h2>Where NHID-Clinical sits in the stack</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem;max-width:60ch">STIR/SHAKEN verifies the phone number. NHID-Clinical is the layer above: it standardizes what the AI agent says about itself, when it says it, and what gets logged. The v2 cryptographic authorization layer — public reference implementation in the repository — verifies whether the agent is actually authorized to act for the provider.</p>
-      <div class="stack-grid">
-        <div class="stack-row">
-          <span class="stack-row-label">Voice carrier</span>
-          <span class="stack-row-desc">PSTN / VoIP transmission</span>
-        </div>
-        <div class="stack-row">
-          <span class="stack-row-label">STIR/SHAKEN</span>
-          <span class="stack-row-desc">Phone number attestation (existing standard)</span>
-        </div>
-        <div class="stack-row stack-row-active">
-          <span class="stack-row-label">NHID-Clinical v1.3</span>
-          <span class="stack-row-desc">Disclosure, escalation, audit trace <span class="stack-layer-badge">this layer</span></span>
-        </div>
-        <div class="stack-row">
-          <span class="stack-row-label">NHID-Auth v2</span>
-          <span class="stack-row-desc">Cryptographic authorization — <a href="/roadmap.html" style="color:var(--blue);font-weight:600">public reference implementation</a></span>
-        </div>
-        <div class="stack-row">
-          <span class="stack-row-label">Payer system</span>
-          <span class="stack-row-desc">Eligibility, claims, authorization workflows</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Section 6: Buyer-Facing Evidence ──────────────────────────────── -->
+  <!-- ── On the record (NIST) ──────────────────────────────────────────── -->
   <section class="page-section">
     <div class="container" style="max-width:52rem">
-      <h2>For procurement and evaluation teams</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">The Evidence Pack documents the reference implementation's deterministic guarantees, a worked anonymized failure trace, the audit readiness model, and a risk register.</p>
-      <p style="margin-top:1.25rem">
-        <a class="card-link" href="/evidence-pack.html" style="font-size:1rem">Review the Evidence Pack →</a>
-      </p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:1.5rem">Starting a shadow evaluation? The Shadow Evaluation Guide walks through the 90-day process.</p>
-      <p style="margin-top:.75rem">
-        <a class="card-link" href="/shadow-evaluation-guide.html" style="font-size:1rem">Shadow Evaluation Guide →</a>
-      </p>
-
-      <div style="margin-top:2.5rem">
+      <div>
         <div class="nist-provenance-card">
           <div class="nist-gov-badge" aria-hidden="true">NIST</div>
           <div>
