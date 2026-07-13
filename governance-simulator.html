@@ -287,6 +287,41 @@
   .sim-sb  { width: 100%; min-width: 0; position: static; }
   .sim-lg  { grid-template-columns: 1fr; }
 }
+
+/* ── Polish pass (additive) ─────────────────────────────────── */
+.sim-gc { box-shadow: var(--sim-gshadow), inset 0 1px 0 rgba(255,255,255,0.28); transition: box-shadow .2s ease, border-color .2s ease; }
+.sim-run-btn { transition: transform .18s ease, box-shadow .18s ease, filter .18s ease; }
+.sim-run-btn:hover { opacity: 1; filter: brightness(1.05); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(11,110,188,0.34),0 1px 2px rgba(11,110,188,0.12); }
+.sim-run-btn:active { transform: translateY(0); }
+.sim-run-btn:focus-visible, .sim-sel:focus-visible, .sim-vt:focus-visible { outline: 2px solid var(--blue,#0b6ebc); outline-offset: 2px; }
+.sim-vt:hover:not(.active) { color: var(--sim-t2); background: rgba(0,0,0,0.03); }
+[data-theme="dark"] .sim-vt:hover:not(.active) { background: rgba(255,255,255,0.05); }
+.sim-empty-txt { max-width: 34ch; margin: 0 auto; }
+.sim-empty-icon { animation: sim-breathe 3.2s ease-in-out infinite; }
+
+/* Results screen */
+.sim-report.on { animation: sim-fade-in .22s ease-out; }
+.sim-rpt-title { position: relative; padding-left: 10px; }
+.sim-rpt-title::before { content: ''; position: absolute; left: 0; top: .1em; bottom: .1em; width: 3px; border-radius: 3px; background: var(--blue,#0b6ebc); }
+.sim-badge { border: 1px solid transparent; animation: sim-pop .2s ease-out both; }
+.sim-bp { border-color: rgba(22,163,74,0.28); }
+.sim-bf { border-color: rgba(220,38,38,0.28); }
+.sim-sp::before, .sim-sf::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; margin-right: 5px; vertical-align: middle; }
+.sim-tl-row { border-radius: 4px; transition: background .15s ease; }
+.sim-tl-row:hover { background: rgba(11,110,188,0.05); }
+
+@keyframes sim-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes sim-pop { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+@keyframes sim-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+@media (max-width: 720px) {
+  .sim-pc { padding: 1.05rem 1.15rem; }
+  .sim-run-btn { padding: .62rem 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sim-report.on, .sim-badge, .sim-empty-icon { animation: none !important; }
+  .sim-run-btn, .sim-gc, .sim-tl-row, .sim-vt { transition: none; }
+}
   </style>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
