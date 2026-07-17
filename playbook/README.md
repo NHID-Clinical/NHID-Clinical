@@ -33,8 +33,8 @@ references to NHID-Clinical concepts.
 
 | # | Chapter | Part | Status |
 | :- | :-- | :-- | :-- |
-| 1 | My Story: Working in Healthcare Operations | I — The Problem | **Drafted** ([chapter](chapters/chapter-01-my-story.md) · [editorial review](editorial/chapter-01-review.md)) |
-| 2 | The Rise of AI Voice Agents | I — The Problem | Not started |
+| 1 | My Story: Working in Healthcare Operations | I — The Problem | **Merged** (PR #327: [chapter](chapters/chapter-01-my-story.md) · [editorial review](editorial/chapter-01-review.md)) |
+| 2 | The Rise of AI Voice Agents | I — The Problem | **Drafted** ([chapter](chapters/chapter-02-the-rise-of-ai-voice-agents.md) · [editorial review](editorial/chapter-02-review.md)) |
 | 3 | The Identity Problem | I — The Problem | Not started |
 | 4 | Impersonation Latency | I — The Problem | Not started |
 | 5 | What is NHID-Clinical? | II — The Framework | Not started |
