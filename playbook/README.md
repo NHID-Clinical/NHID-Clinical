@@ -33,26 +33,40 @@ references to NHID-Clinical concepts.
 
 | # | Chapter | Part | Status |
 | :- | :-- | :-- | :-- |
-| 1 | My Story: Working in Healthcare Operations | I — The Problem | **Merged** (PR #327: [chapter](chapters/chapter-01-my-story.md) · [editorial review](editorial/chapter-01-review.md)) |
-| 2 | The Rise of AI Voice Agents | I — The Problem | **Drafted** ([chapter](chapters/chapter-02-the-rise-of-ai-voice-agents.md) · [editorial review](editorial/chapter-02-review.md)) |
-| 3 | The Identity Problem | I — The Problem | Not started |
-| 4 | Impersonation Latency | I — The Problem | Not started |
-| 5 | What is NHID-Clinical? | II — The Framework | Not started |
-| 6 | The Five Core Controls | II — The Framework | Not started |
-| 7 | Behavioral Governance | II — The Framework | Not started |
-| 8 | Operational Architecture | II — The Framework | Not started |
-| 9 | Shadow Evaluations | III — Implementation | Not started |
-| 10 | Policy Enforcement | III — Implementation | Not started |
-| 11 | Authorization | III — Implementation | Not started |
-| 12 | Audit Trails | III — Implementation | Not started |
-| 13 | Integration with Existing Healthcare Systems | III — Implementation | Not started |
-| 14 | Pilot Programs | IV — Enterprise Adoption | Not started |
-| 15 | Metrics | IV — Enterprise Adoption | Not started |
-| 16 | Risk Management | IV — Enterprise Adoption | Not started |
-| 17 | Governance | IV — Enterprise Adoption | Not started |
-| 18 | Industry Adoption | V — The Future | Not started |
-| 19 | Standards Alignment | V — The Future | Not started |
-| 20 | The Future of Trusted AI Communication | V — The Future | Not started |
+| 1 | My Story: Working in Healthcare Operations | I — The Problem | **Merged** (PR #327: [chapter](chapters/chapter-01-my-story.md) · [review](editorial/chapter-01-review.md)) |
+| 2 | The Rise of AI Voice Agents | I — The Problem | **Merged** (PR #328: [chapter](chapters/chapter-02-the-rise-of-ai-voice-agents.md) · [review](editorial/chapter-02-review.md)) |
+| 3 | The Identity Problem | I — The Problem | **Drafted** ([chapter](chapters/chapter-03-the-identity-problem.md) · [review](editorial/chapter-03-review.md)) |
+| 4 | Impersonation Latency | I — The Problem | **Drafted** ([chapter](chapters/chapter-04-impersonation-latency.md) · [review](editorial/chapter-04-review.md)) |
+| 5 | What is NHID-Clinical? | II — The Framework | **Drafted** ([chapter](chapters/chapter-05-what-is-nhid-clinical.md) · [review](editorial/chapter-05-review.md)) |
+| 6 | The Five Core Controls | II — The Framework | **Drafted** ([chapter](chapters/chapter-06-the-five-core-controls.md) · [review](editorial/chapter-06-review.md)) |
+| 7 | Behavioral Governance | II — The Framework | **Drafted** ([chapter](chapters/chapter-07-behavioral-governance.md) · [review](editorial/chapter-07-review.md)) |
+| 8 | Operational Architecture | II — The Framework | **Drafted** ([chapter](chapters/chapter-08-operational-architecture.md) · [review](editorial/chapter-08-review.md)) |
+| 9 | Shadow Evaluations | III — Implementation | **Drafted** ([chapter](chapters/chapter-09-shadow-evaluations.md) · [review](editorial/chapter-09-review.md)) |
+| 10 | Policy Enforcement | III — Implementation | **Drafted** ([chapter](chapters/chapter-10-policy-enforcement.md) · [review](editorial/chapter-10-review.md)) |
+| 11 | Authorization | III — Implementation | **Drafted** ([chapter](chapters/chapter-11-authorization.md) · [review](editorial/chapter-11-review.md)) |
+| 12 | Audit Trails | III — Implementation | **Drafted** ([chapter](chapters/chapter-12-audit-trails.md) · [review](editorial/chapter-12-review.md)) |
+| 13 | Integration with Existing Healthcare Systems | III — Implementation | **Drafted** ([chapter](chapters/chapter-13-integration-with-existing-healthcare-systems.md) · [review](editorial/chapter-13-review.md)) |
+| 14 | Pilot Programs | IV — Enterprise Adoption | **Drafted** ([chapter](chapters/chapter-14-pilot-programs.md) · [review](editorial/chapter-14-review.md)) |
+| 15 | Metrics | IV — Enterprise Adoption | **Drafted** ([chapter](chapters/chapter-15-metrics.md) · [review](editorial/chapter-15-review.md)) |
+| 16 | Risk Management | IV — Enterprise Adoption | **Drafted** ([chapter](chapters/chapter-16-risk-management.md) · [review](editorial/chapter-16-review.md)) |
+| 17 | Governance | IV — Enterprise Adoption | **Drafted** ([chapter](chapters/chapter-17-governance.md) · [review](editorial/chapter-17-review.md)) |
+| 18 | Industry Adoption | V — The Future | **Drafted** ([chapter](chapters/chapter-18-industry-adoption.md) · [review](editorial/chapter-18-review.md)) |
+| 19 | Standards Alignment | V — The Future | **Drafted** ([chapter](chapters/chapter-19-standards-alignment.md) · [review](editorial/chapter-19-review.md)) |
+| 20 | The Future of Trusted AI Communication | V — The Future | **Drafted** ([chapter](chapters/chapter-20-the-future-of-trusted-ai-communication.md) · [review](editorial/chapter-20-review.md)) |
+
+## Next editorial milestone
+
+All twenty chapters are drafted with per-chapter reviews. The next
+milestone is the **whole-manuscript consistency pass** against the
+accumulated queue (collected in the
+[Chapter 20 review](editorial/chapter-20-review.md), "Whole-manuscript
+notes"): front-matter items (no-legal-advice disclaimer, the
+framework-mechanisms vs. book-synthesis convention, the extraction-card
+list), the composite/anticipated labeling retrofit, the
+invented-precision sweep, claim-strength verb verification against the
+framework's source materials, and the paired figure commissions. After
+that: front matter, then external readers (payer operations, voice-AI
+vendor engineering, compliance audit).
 
 ## Directory layout
 
