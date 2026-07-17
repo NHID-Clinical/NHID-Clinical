@@ -110,6 +110,11 @@ managed by anyone else's program.
 
 ## The Register, Sub-Section by Sub-Section
 
+The four-column register structure below — mitigated, transformed,
+residual, introduced — is this book's arrangement for presenting the
+framework's controls and their limits in risk-register terms; it is a
+recommended translation, not a register format NHID-Clinical specifies.
+
 **Framing the entry.** Title it by the exposure, not the technology:
 *unverified/unauthorized automated callers on payer–provider lines*.
 Scope it bidirectionally (Chapter 2: you receive them and may be
@@ -201,7 +206,10 @@ short-TTL exposure with a clean revocation-and-reissue path. The
 example's point is the register working as designed: the introduced
 risk was named, owned, treated, and — when it materialized — bounded
 by its treatment. Compare the counterfactual in the knowledge-based
-world: a leaked credential file, unbounded in scope and duration.
+world: a leaked credential file still faces each payer's own
+authentication ritual, but authorizes whatever that ritual accepts —
+unscoped and unexpiring, rather than chain-narrowed, TTL-bound, and
+individually revocable.
 
 ## Diagrams to Include
 

@@ -94,7 +94,7 @@ The regime is also the enforcement stack's foundation. Chapter 10's
 Rung 4 — the calm, evidenced, relationship-level consequences where
 most enforcement should live — is only as strong as the metrics
 behind it. A vendor conversation opened with "your tier mix slid
-eleven points this quarter, here are the traces" is procurement with
+materially this quarter, here are the traces" is procurement with
 gravity; the same conversation opened with "our reps feel like your
 bot got worse" is Chapter 1 again. And Chapter 19's regulatory
 conversations consume the same feed: transparency obligations and
@@ -153,8 +153,13 @@ instrument metrics is reading a gauge it never calibrates.
 
 ## From Instrument to Target, Carefully
 
-The hardening path for any metric in this system has four stations,
-and skipping one is how metrics regimes injure themselves.
+The metrics themselves — latency, its companions, CAS and its tiers —
+are the framework's. The four-station hardening path that follows is
+this book's recommended discipline for promoting a metric from private
+reading to contractual threshold; NHID-Clinical does not itself specify
+these stations. The hardening path for any metric in this system has
+four stations, and skipping one is how metrics regimes injure
+themselves.
 
 **Station one: private instrument.** The metric is read by its owners,
 version-stamped, verified against hand-checks. Duration: until stable

@@ -6,6 +6,10 @@
 
 ## The Question in the Steering Committee
 
+*The steering-committee scene below is a composite, built to walk through a
+category question every adopting organization eventually faces — not an
+account of a specific health plan.*
+
 A health plan's technology steering committee has read something like Part I
 of this book — a briefing from their operations VP about automated callers,
 a compliance memo about disclosure gaps. The CIO has one question for the
@@ -175,6 +179,8 @@ but not built. A reader in a position to influence that path — vendor,
 payer, standards body — is reading an invitation, not a spec sheet.
 
 ## Real-World Examples
+
+*(Composite illustrations, per the chapter's opening note.)*
 
 **The procurement misfire.** An organization routes NHID-Clinical to its
 software-procurement process. The process asks for a vendor legal entity,

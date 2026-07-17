@@ -6,6 +6,12 @@
 
 ## The Afternoon Dispute
 
+*This is Chapter 3's composite dispute scenario, replayed with the audit
+layer this Part describes now in place — a constructed contrast, not a
+reported case. Real disputes do not always resolve this cleanly; where no
+delegation and no disclosure exist for a flagged call, this same evidence
+set is what a breach investigation, not a tidy resolution, starts from.*
+
 Run Chapter 3's ninety-day dispute one final time — same orthopedic
 group, same assertion that calls were made in its name, same
 compliance officer. But this payer has spent Part III building what the
@@ -185,6 +191,8 @@ the records exist without being able to answer anything on a deadline.
 
 ## Real-World Examples
 
+*(Composite illustrations, per the chapter's opening note.)*
+
 **The pipeline gap that looked like a violation.** A vendor's calls
 begin showing disclosure-timestamp-without-assertion-text — outcome
 code 4, not 8. An organization without the distinction would have
@@ -206,12 +214,12 @@ traces are why it wasn't a negotiation.
 **The audit that improved the vendor.** A payer shares, with a
 cooperative vendor, the FHIR bundles for the vendor's own degraded
 calls — evidence-grade, milestone-coded, no interpretation attached.
-The vendor's engineers localize their regression (a prompt change had
-moved disclosure two turns later) in a day, because the evidence was
-positional. Sharing audit *with* counterparties, rather than
-brandishing it *at* them, is the coordination-failure framing's
-audit-layer expression — and it only works with records precise
-enough to debug from.
+Because the evidence is positional, the vendor's engineers can localize
+whatever regression produced it — a prompt change, a platform migration,
+a mapping drift — far faster than from a summary complaint. Sharing
+audit *with* counterparties, rather than brandishing it *at* them, is the
+coordination-failure framing's audit-layer expression — and it only
+works with records precise enough to debug from.
 
 ## Diagrams to Include
 

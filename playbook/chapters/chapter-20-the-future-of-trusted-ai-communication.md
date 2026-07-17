@@ -6,6 +6,12 @@
 
 ## The Call That Ends Differently
 
+*What follows is not a report of a second call — it is the author's own
+projection of how the opening call in Chapter 1 could go if every
+mechanism this book describes were deployed and working. It is a
+hypothetical, written in the same first-person voice as Chapter 1
+because it revisits the same seat, not because it happened.*
+
 One last time, the call from Chapter 1.
 
 A payer representative's line rings a few minutes after nine. Before
@@ -18,8 +24,8 @@ inquiry, valid this hour, bound to this call. And a screen the
 representative barely glances at shows the resolution: disclosed,
 turn one; delegation verified; NPI active and enrolled.
 
-The call takes six minutes instead of nine, because the
-authentication ritual that once consumed the opening — the identifier
+The call runs several minutes shorter than the one in Chapter 1, because
+the authentication ritual that once consumed the opening — the identifier
 recital that proved nothing — has collapsed into the setup handshake.
 The representative's attention goes where it always should have gone:
 the claims themselves. If she wants a human on the other end, she
@@ -41,8 +47,11 @@ what the crossing means beyond healthcare's phone lines.
 
 ## Executive Summary
 
-The book closes by naming the arc it has traced: three eras of AI
-communication trust. The **detection era** — Chapter 1's world, where
+The three eras named below are this book's synthesis — a way of reading
+the arc from Part I's problem through Part III's cryptographic layer —
+not a staging model NHID-Clinical itself defines. The book closes by
+naming the arc it has traced: three eras of AI communication trust. The
+**detection era** — Chapter 1's world, where
 receiving organizations tried to identify machines by their tells,
 and lost as the tells vanished. The **disclosure era** — the
 behavioral baseline's world, where honest agents announce themselves
@@ -142,7 +151,8 @@ trend makes non-optional.
 call that ends differently, the representative's role has quietly
 shifted: from identity interrogator — a job Chapter 1 proved
 impossible — to exception handler and escalation destination, the
-human path EIT-01 guarantees. That is a better job, and an honest
+human path EIT-01 requires be kept working. That is a better job, and
+an honest
 book notes the transition it is arguing for: less time performing
 authentication theater, more time on the judgment calls machines
 should not make. The floor worker who inspired this framework is

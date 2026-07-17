@@ -6,6 +6,10 @@
 
 ## Two Calls
 
+*The pair of calls below is a constructed contrast, not a reported
+incident — built to make one duration visible, not to report a measured
+result.*
+
 Two calls arrive at the same payer queue, a few minutes apart, from agents
 performing the same task: a claims-status inquiry on behalf of a provider
 practice.
@@ -135,9 +139,11 @@ before any protected data moves (PDX-01). Latency: one turn, seconds,
 pre-PHI. That floor is not aspirational — it is what the conformance suite
 tests and what the deterministic policy engine enforces by refusing to route
 anything before the disclosure gate clears. Zero-latency behavior is a
-design choice available to every vendor today, at no technical cost. The
-distance between an ecosystem's actual distribution and that floor is a
-choice someone is making.
+design choice available to every vendor today, at no technical cost — the
+open cost is instead on the receiving side, in whether disclosed calls are
+handled without penalty (Chapter 10's asymmetry) rather than punished for
+disclosing. The distance between an ecosystem's actual distribution and
+that floor is a choice someone is making.
 
 ## The Companion Metrics
 
@@ -186,13 +192,19 @@ the path of least resistance. Claims beyond that are not on offer.
 
 ## Real-World Examples
 
-**The distribution with two humps.** A payer runs the Tier 0 measurement on
-one workflow's traffic and finds a bimodal shape: a cluster of calls
-disclosing at turn one — vendors that made the design choice — and a long
-tail disclosing never. Almost nothing in between. The lesson: latency is not
-a skill that ecosystems improve gradually; it is a binary design decision
-visible in the data. Procurement conversations change immediately — the ask
-is not "improve," it is "move to the first hump."
+*(Composite illustrations and one anticipated dynamic, individually
+labeled below — none is a reported pilot result.)*
+
+**The distribution with two humps (illustrative pattern).** A payer running
+the Tier 0 measurement on one workflow's traffic may find a bimodal shape: a
+cluster of calls disclosing at turn one — vendors that made the design
+choice — and a long tail disclosing never, with almost nothing in between.
+No published pilot has reported this exact shape; it is the pattern this
+book expects from the mechanics described above, and it is what a pilot
+team should look for. If it holds, the lesson follows: latency is not a
+skill that ecosystems improve gradually; it is a binary design decision
+visible in the data, and the procurement ask becomes not "improve" but
+"move to the first hump."
 
 **The turn that carried everything.** Two flagged calls show latency of
 four turns each. Pre-disclosure PHI exposure shows one requested nothing in
@@ -200,13 +212,16 @@ those turns; the other collected member ID, date of birth, and claim number
 by turn three. Identical latency, incomparable exposure — the example that
 justifies never reporting the duration without the exposure companion.
 
-**The vendor who asks to be measured.** A voice-AI vendor, ahead of a payer's
-questionnaire, submits its own call payloads through the public adapter
-routes and quotes its first-turn disclosure rate and CAS distribution in a
-sales response. Nothing in the framework required this; the existence of the
-metric made it a competitive move. This is the incentive inversion Chapter 2
-called for — the honest agent finally has something to gain — and it costs
-the payer nothing to have created it beyond asking for numbers.
+**The vendor who asks to be measured (anticipated dynamic).** The public
+adapter routes make this possible, not yet documented as observed: a
+voice-AI vendor, ahead of a payer's questionnaire, submits its own call
+payloads through the routes and quotes its first-turn disclosure rate and
+CAS distribution in a sales response. Nothing in the framework requires
+this; the existence of the metric makes it a possible competitive move.
+This is the incentive inversion Chapter 2 called for — the honest agent
+finally has something to gain — and Chapter 18 returns to it as one of the
+adoption dynamics the framework's structure makes available, not one yet
+confirmed at scale.
 
 ## Diagrams to Include
 

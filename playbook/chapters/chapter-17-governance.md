@@ -34,7 +34,13 @@ which is what governance actually means.
 
 ## Executive Summary
 
-Governance for this program is four structures and three disciplines.
+The framework supplies the mechanisms a governance program operates on —
+the review SOP, versioned policy, CAS thresholds, the boundary language
+about the framework's own status. The four-structures-and-three-
+disciplines organization below is this book's recommended way to
+institutionalize those mechanisms; NHID-Clinical does not itself
+prescribe a governance structure. Governance for this program is four
+structures and three disciplines.
 
 **The structures.** A **decision body** — typically a standing AI
 communications governance committee, or an existing AI governance or

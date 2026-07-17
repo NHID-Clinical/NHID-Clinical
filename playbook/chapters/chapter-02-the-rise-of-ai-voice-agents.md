@@ -6,6 +6,9 @@
 
 ## The Other End of the Line
 
+*The practice-manager scenario below is a composite illustration of a
+common adoption path, not an account of a specific organization.*
+
 Consider the call from Chapter 1 again — the family practice calling to verify
 eligibility and chase two claims — but this time from the other end of the
 line.
@@ -248,6 +251,9 @@ curve is to instrument it.
 
 ## Real-World Examples
 
+*(Composite illustrations built from the adoption mechanics described
+above, except where a specific trace or document is cited by name.)*
+
 **The delegated adopter.** A provider organization outsources revenue cycle
 management. The billing vendor, optimizing its own cost base, deploys voice
 agents for payer follow-up across all its clients. The provider has never
@@ -270,11 +276,13 @@ quietly obsolete.
 documentation. It calls a practice whose after-hours line is answered by the
 practice's own AI assistant. Neither side's deployment anticipated the other;
 neither agent has a way to verify the other; whatever happens next happens
-between two machines with no governing rule. This is not a thought experiment
-— it is the documented gap that forced the payer-initiated-calls extension and
-trace 08. It is also this book's cleanest demonstration that "just have staff
-detect the bots" has expired as a strategy: increasingly, there is no staff on
-the call to do the detecting.
+between two machines with no governing rule. The scenario is illustrative, but
+the gap it dramatizes is not hypothetical: it is documented in the framework's
+trace library as a canonical failure shape (trace 08) and is precisely what
+forced the payer-initiated-calls policy extension — a specified gap in the
+controls, not a reported field incident. It is also this book's cleanest
+demonstration that "just have staff detect the bots" has expired as a
+strategy: increasingly, there is no staff on the call to do the detecting.
 
 ## Diagrams to Include
 

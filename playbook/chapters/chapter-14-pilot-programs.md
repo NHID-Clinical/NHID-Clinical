@@ -29,7 +29,7 @@ decision about what, if anything, we do next."
 
 The meeting shrinks to five people — sponsor, operations lead, data
 engineer, compliance analyst, and a call-center supervisor — which is
-the size the work actually has. Fourteen months later, this
+the size the work actually has. A year on, this
 organization runs conformance checking on live traffic with contract
 exhibits at two vendors. Asked what made it work, the operations
 director gives the answer this chapter exists to generalize: "We
@@ -74,8 +74,8 @@ specifically against them.
 
 The gap between a successful shadow evaluation and a changed
 organization is entirely organizational, and it is where most
-governance initiatives actually fail. The kit guarantees that four
-weeks of work yields honest numbers; it cannot guarantee that anyone
+governance initiatives actually fail. The kit is designed to yield
+honest numbers from four weeks of work; it cannot guarantee that anyone
 acts on them, that the numbers survive their first hostile meeting, or
 that the pilot isn't strangled at kickoff by the program apparatus of a
 company that has forgotten how to do small things. Enterprise adoption

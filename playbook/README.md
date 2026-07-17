@@ -56,17 +56,26 @@ references to NHID-Clinical concepts.
 
 ## Next editorial milestone
 
-All twenty chapters are drafted with per-chapter reviews. The next
-milestone is the **whole-manuscript consistency pass** against the
-accumulated queue (collected in the
-[Chapter 20 review](editorial/chapter-20-review.md), "Whole-manuscript
-notes"): front-matter items (no-legal-advice disclaimer, the
-framework-mechanisms vs. book-synthesis convention, the extraction-card
-list), the composite/anticipated labeling retrofit, the
-invented-precision sweep, claim-strength verb verification against the
-framework's source materials, and the paired figure commissions. After
-that: front matter, then external readers (payer operations, voice-AI
-vendor engineering, compliance audit).
+All twenty chapters are drafted with per-chapter reviews, and the
+manuscript has been through a full [consistency audit](editorial/consistency-audit.md)
+followed by a revision pass applying the audit's Critical and Important
+findings: the Chapter 11 revocation-scenario capability fix; the
+composite/anticipated labeling retrofit across Chapters 2–13; the
+invented-precision sweep; guarantee-verb and topology-scope precision
+fixes; the trace-08, receiving-side-PDX-01, and knowledge-based-world
+counterfactual alignment fixes; and attribution sentences distinguishing
+this book's synthesis (the enforcement ladder, metric stations, register
+columns, governance structure, three-eras arc) from NHID-Clinical's own
+mechanisms, across Chapters 10, 13, 15–18, and 20.
+
+Remaining before external readers: the Editorial-tier items from the
+audit's change log (tone and scope calibration, softenings, figure-caption
+consistency), front matter (evidence-reading convention, framework-vs-book
+convention, disclaimers block, extraction-card index, origin-story note,
+terminology reference), and the row-by-row alignment-verb verification in
+Chapter 19 against the framework's source materials. After that: external
+readers (payer operations, voice-AI vendor engineering, compliance
+audit).
 
 ## Directory layout
 

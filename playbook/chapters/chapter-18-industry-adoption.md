@@ -197,13 +197,14 @@ standards bodies.
 
 **The custodial pattern (anticipated).** A regional management
 services organization — already handling credentialing and billing
-for two hundred small practices — adds delegation custody to its
-service catalog: it holds provider root keys in its KMS, signs and
-revokes on documented provider instruction, and answers the
-liability question with the same professional-services insurance
-that covers its other fiduciary functions. The pattern matters
-because it is how small-practice participation likely scales:
-through intermediaries practices already trust, not through
+for a roster of small practices — adds delegation custody to its
+service catalog: it holds provider root keys in its KMS and signs and
+revokes on documented provider instruction. How such an arrangement
+addresses liability is a determination each organization's own counsel
+would need to make against its specific contracts and insurance —
+this book takes no position beyond noting the question exists. The
+pattern matters because it is how small-practice participation likely
+scales: through intermediaries practices already trust, not through
 practices becoming key-management shops.
 
 **The fork that converged (composite).** A large payer, impatient

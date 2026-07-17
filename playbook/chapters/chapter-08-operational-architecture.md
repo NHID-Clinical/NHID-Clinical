@@ -6,6 +6,10 @@
 
 ## The Whiteboard Question
 
+*The architect and her whiteboard session below are a composite,
+constructed to walk through how the architecture actually deploys — not
+an account of a specific organization's review.*
+
 An enterprise architect at a regional payer has been handed Chapters 5
 through 7 and a marker. Her security lead, her telephony manager, and a
 skeptical platform engineer are looking at a whiteboard on which she has
@@ -77,10 +81,12 @@ The architecture also matters for what it refuses to centralize. The
 framework does not stand between organizations and their calls, does not
 require a shared broker, and does not demand real-time dependence on
 anyone's hosted service — self-hosting the engine yields identical
-verdicts by the determinism property. For risk-averse healthcare
-infrastructure teams, "adoptable without new critical-path dependencies"
-is the difference between a pilot this quarter and a steering-committee
-graveyard.
+verdicts by the determinism property, at matching engine versions. For
+risk-averse healthcare infrastructure teams, "adoptable without new
+critical-path dependencies" — true of the post-call topology recommended
+below; the in-call topology is, by design, a call-path dependency once
+adopted — is the difference between a pilot this quarter and a
+steering-committee graveyard.
 
 ## The Event Schema: the Contract Everything Reads
 
@@ -159,10 +165,11 @@ for real conformance checking; and public **CAS badge** rendering for
 vendors who choose visibility (Chapter 18's subject).
 
 Hosted versus self-hosted is a deployment decision, not a trust decision:
-the engine is public reference code, and determinism guarantees the same
-inputs score identically in either topology. Organizations with data-
-residency constraints run the engine inside their boundary and lose
-nothing but the convenience of someone else's uptime.
+the engine is public reference code, and determinism means the same
+inputs score identically in either topology, provided both run the same
+engine version. Organizations with data-residency constraints run the
+engine inside their boundary and lose nothing but the convenience of
+someone else's uptime.
 
 ## The Audit Spine and the Stack Above
 
@@ -185,6 +192,8 @@ reality; it does not re-litigate it.
 
 ## Real-World Examples
 
+*(Composite illustrations, per the chapter's opening note.)*
+
 **The two-hour integration.** A platform engineer wires the post-call
 topology exactly as the integration guide sketches: the voice platform's
 end-of-call webhook forwards its native payload to the matching adapter
@@ -192,8 +201,9 @@ route; the response's CAS score and conformance flag are stored beside the
 call record; an alert fires on non-conformance. No call-path change, no
 new failure mode on live traffic — if the conformance service is down,
 calls proceed and evaluation backfills. This is the topology every
-organization should run first, and for monitoring purposes, possibly
-forever.
+organization should run first, and monitoring value from it does not
+disappear once in-call enforcement exists — the two are complementary,
+not sequential replacements.
 
 **The self-hosting decision.** A payer's security review balks at posting
 call events, even de-identified, to an external API. Resolution: clone the
@@ -206,9 +216,9 @@ these two deployments agree?" — a checkable question. The review closes.
 live pilot call, claiming the agent "was about to disclose." The trace
 shows turn one: empty speech payload (a platform hiccup), action BLOCK,
 reason `MISSING_INPUT`; turn two arrived on a blocked session
-(`SESSION_BLOCKED`). The dispute dissolves into an infrastructure fix —
-retry empty-payload turns — and both sides learned the fail-closed
-behavior from the reason codes alone. No meeting required.
+(`SESSION_BLOCKED`). The dispute becomes an infrastructure fix — retry
+empty-payload turns — and both sides learned the fail-closed behavior
+from the reason codes alone rather than from a dispute meeting.
 
 ## Diagrams to Include
 

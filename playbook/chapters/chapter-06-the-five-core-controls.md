@@ -58,8 +58,8 @@ good, only whether its behavior was honest, sequenced, escapable, and
 recorded. And the controls are *pairwise deliberate*: IDG-01 and PDX-01 are
 two sides of one gate (disclose before data; no data before disclosure),
 DBC-01 guards the gate against being satisfied deceptively, EIT-01
-guarantees an exit when conduct fails anyway, and ATR-01 makes all of it
-provable after the fact.
+requires a working exit when conduct fails anyway, and ATR-01 makes all
+of it provable after the fact.
 
 ## Why It Matters
 
@@ -118,10 +118,12 @@ IDG-01 by never disclosing; it violates PDX-01 the moment a member ID is
 requested pre-disclosure — even if disclosure arrives a turn later. Keeping
 them separate lets measurement distinguish "discloses late" from "collects
 data early," which the pre-disclosure PHI exposure metric (Chapter 4)
-depends on. On the receiving side, PDX-01 also names the payer's own
-obligation: representatives should not *volunteer* protected data to an
-undisclosed caller — the control reads on the exchange, not just the
-request. And in the bot-to-bot case, PDX-01 is the block: the documented
+depends on. On the receiving side, this book reads PDX-01's principle as
+extending to the payer's own conduct — representatives should not
+*volunteer* protected data to an undisclosed caller — as an operational
+practice this playbook recommends, not a behavior the conformance test
+suite evaluates; the CTS scores the calling agent, not the receiving
+party. And in the bot-to-bot case, PDX-01 is the block: the documented
 policy decision for an undisclosed AI counterparty halts data exchange
 until that counterparty's identity is established.
 
@@ -202,6 +204,9 @@ Chapter 15 governs its use as a metric before anyone is tempted to make it
 a target.
 
 ## Real-World Examples
+
+*(Constructed illustrations of how the controls score a call, not
+reported incidents.)*
 
 **The eventually-honest agent.** An agent discloses cleanly — at turn five,
 after collecting a member ID "to route your call efficiently." Under a

@@ -13,18 +13,22 @@ practice had terminated that vendor's contract three weeks earlier, and
 one workflow's worth of agents never got the memo.
 
 Now run the same call against an organization operating the framework's
-cryptographic layer. At call setup, alongside its spoken disclosure, the
-agent's runtime presents its **agent passport**: a signed object
-asserting that the practice — identified by its ten-digit NPI — delegated
-claims-inquiry authority to this vendor, which sub-delegated it to this
-specific agent keypair, valid through a stated window, bound to this
-call's SID. The payer's verifier checks the signature chain against the
-practice's known public key and returns a one-word answer.
+cryptographic layer with production-hardened key custody and persistent
+revocation — the deployment state this chapter's migration path describes,
+not the in-process reference implementation on its own. At call setup,
+alongside its spoken disclosure, the agent's runtime presents its **agent
+passport**: a signed object asserting that the practice — identified by
+its ten-digit NPI — delegated claims-inquiry authority to this vendor,
+which sub-delegated it to this specific agent keypair, valid through a
+stated window, bound to this call's SID. The payer's verifier checks the
+signature chain against the practice's known public key and returns a
+one-word answer.
 
 Three weeks ago, that answer was *valid*. Today it is *revoked* — the
 practice's offboarding checklist included one new line, "revoke vendor
-delegations," and revocation is permanent and propagates to verification
-immediately. The call gates exactly as Chapter 10's Rung 3 prescribes:
+delegations," and revocation is permanent by design and, in this
+production configuration, propagates to verification immediately. The
+call gates exactly as Chapter 10's Rung 3 prescribes:
 no data, verified-callback offer, complete trace — and this time the
 trace contains the *reason* in cryptographic form: a passport that
 verified against a revoked delegation. The dispute that took Chapter 3's
@@ -192,6 +196,9 @@ it is made at integration time.
 
 ## Real-World Examples
 
+*(Composite illustrations built from the delegation mechanics described
+above, not reported incidents.)*
+
 **The offboarding line-item.** The opening scenario's quiet hero is a
 checklist: the practice's vendor-termination procedure gained one step,
 "revoke delegations." Authorization infrastructure is only as good as
@@ -207,8 +214,11 @@ within the narrowest scope above it, only until TTL or revocation, only
 on calls whose SIDs match issued delegations. The blast radius is a
 scope, not an identity. Contrast the same breach in the
 knowledge-based world of Chapter 3, where a breached billing platform's
-identifiers authorized *anything* against *any* payer indefinitely.
-Narrowing chains don't prevent compromise; they price it.
+identifiers still faced each payer's own authentication ritual, but
+authorized whatever that ritual accepted — unscoped and unexpiring,
+against every payer relying on the same knowledge-match check —
+rather than a chain-narrowed, TTL-bound, revocable scope. Narrowing
+chains don't prevent compromise; they price it.
 
 **The two-tenant near-miss.** A vendor platform provisions one signing
 key across all its provider tenants "for simplicity." Nothing goes
