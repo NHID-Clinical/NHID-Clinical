@@ -6,6 +6,10 @@
 
 ## The Integration Engineer's Week
 
+*The engineer and her week below are a composite, constructed to walk
+through what integration actually involves — not an account of a
+specific payer's project.*
+
 Monday morning, a platform engineer at a payer receives the ticket that
 Part III has been building toward: *integrate NHID-Clinical conformance
 checking with our production call stack.* She has read the architecture
@@ -24,7 +28,9 @@ route; verdict, CAS, and violations store beside the call record; the
 FHIR bundle flows to the audit store. Thursday is the CTS parity replay
 and the runbook. Friday she writes the part nobody assigned her but the
 book insisted on: a one-page seam map — every system the integration
-touches, who owns it, and which chapter's discipline governs it.
+touches, who owns it, and which chapter's discipline governs it. The
+seam map is this book's recommended practice for organizing integration
+work, not an artifact NHID-Clinical itself specifies.
 
 Her retro note to the architect is the chapter in one line: "The code
 was the easy week. Everything that matters now is seams — vendors,
@@ -158,24 +164,34 @@ cautions Chapter 15 supplies. Organizations that start at stage three
 negotiate blind; those that start at stage one are requiring only what
 any honest vendor can sign today.
 
-**The BAA question belongs to counsel, with one observation.** Where
-conformance checking involves a party processing call data containing
-PHI, business-associate machinery may apply, and the framework's
-materials include a BAA template as a starting artifact. This book
-adds only the operational note: self-hosting the engine (Chapter 8's
-option) changes the data-flow question entirely, and is the usual
-resolution where the seam gets contentious.
+**The BAA question belongs to counsel, with one observation.** This book
+does not offer legal advice, and whether business-associate machinery
+applies to a given conformance-checking arrangement is a determination
+for the adopting organization's own counsel, based on its specific data
+flows. Where conformance checking involves a party processing call data
+containing PHI, that machinery may apply, and the framework's materials
+include a BAA template as a starting artifact for counsel to work from —
+not a substitute for that review. This book adds only the operational
+note: self-hosting the engine (Chapter 8's option) changes the data-flow
+question entirely, and is the resolution worth raising with counsel where
+the seam gets contentious.
 
 ## Real-World Examples
 
-**The vendor who was already conformant.** A payer sends the
-questionnaire to its three known vendors. One returns it same-week
-with trace samples attached — its platform, it turns out, had built
-against the public adapter routes months earlier for its own QA. The
-contract exhibit that follows is a formality. The example's point:
-the open reference implementation means vendor-side integration can
-precede any payer's request, and procurement's job becomes
-*discovering* conformance as often as demanding it.
+*(Composite illustrations; "the vendor who was already conformant" is an
+anticipated dynamic the public routes make possible, not a documented
+case.)*
+
+**The vendor who was already conformant (anticipated dynamic).** A payer
+sends the questionnaire to its three known vendors. One returns it
+same-week with trace samples attached — its platform, it turns out, had
+built against the public adapter routes months earlier for its own QA.
+Nothing has been reported at this scale yet; the public routes make the
+scenario possible, not documented. The contract exhibit that follows is
+a formality. The example's point: the open reference implementation
+means vendor-side integration can precede any payer's request, and
+procurement's job becomes *discovering* conformance as often as
+demanding it.
 
 **The audit store that wasn't.** A mid-size payer's compliance
 "system" turns out to be a shared drive and an EHR module that
@@ -192,8 +208,8 @@ than opening a special negotiation. The vendor signs without
 escalation — the exhibit asks only for behavior the vendor's
 marketing already claims. Sixty days later the first trace deliveries
 arrive and the relationship has an evidence channel it never had.
-Total additional negotiation cost: one redline round. Contract seams
-cross cheapest when they ride existing paper cycles.
+Total additional negotiation cost: minimal. Contract seams cross
+cheapest when they ride existing paper cycles.
 
 ## Diagrams to Include
 

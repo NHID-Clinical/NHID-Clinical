@@ -6,6 +6,9 @@
 
 ## The Meeting Where Nothing Was Promised
 
+*The kickoff meeting below is a composite, constructed to show how a
+Tier 0 pilot is chartered — not an account of a specific organization.*
+
 A director of payer operations convenes four people: a call-center
 supervisor, a data engineer, a compliance analyst, and herself. The agenda
 is one line — *measure the AI-caller situation on our own traffic* — and
@@ -160,6 +163,8 @@ certification reading, and so should your report.
 
 ## Real-World Examples
 
+*(Composite illustrations, per the chapter's opening note.)*
+
 **The workflow contrast.** A composite of the pattern the kit is built to
 surface: prior-auth calls show materially longer latency and more
 pre-disclosure PHI requests than claims-status calls — the higher-stakes
@@ -178,11 +183,12 @@ and because an *absurd* result caught early is the pilot working as
 designed: implausible numbers are mapping bugs until proven otherwise.
 
 **The null result that wasn't null.** A pilot finds low automated-call
-volume and high first-turn disclosure in its sample — and a 9% escalation
-dishonor rate concentrated in one vendor's traffic. The headline metric
-was reassuring; the companion metric found the problem. Running the full
-metric set even when the marquee number looks fine is the lesson, and it
-is Chapter 4's "latency never travels alone" made operational.
+volume and high first-turn disclosure in its sample — and a measurable
+escalation-dishonor rate concentrated in one vendor's traffic. The
+headline metric was reassuring; the companion metric found the problem.
+Running the full metric set even when the marquee number looks fine is
+the lesson, and it is Chapter 4's "latency never travels alone" made
+operational.
 
 ## Diagrams to Include
 

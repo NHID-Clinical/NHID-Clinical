@@ -6,6 +6,10 @@
 
 ## The Same Call, Under Policy
 
+*This scene is a constructed projection — Chapter 1's real call replayed
+against the enforcement ladder this chapter proposes — not a reported
+outcome of a deployed system.*
+
 One more time, Chapter 1's call — but now it arrives at an organization
 that has done everything this book has described so far: a baseline from
 its shadow pilot, the conformance service wired in-call on the
@@ -27,10 +31,11 @@ latency recorded at two turns, PHI exchange proceeds under the normal
 workflow, CAS lands in Conditional Trust, nobody hangs up on anybody. In
 the other, the caller deflects — "I'm calling from the provider's
 office" — and the policy's next rung engages: no protected data moves
-(the PDX-01 obligation is now the *representative's* procedure too), the
-caller is offered a callback through the provider's verified number on
-file, and the call ends with a disposition code and a complete trace
-instead of a shrug.
+(this book's reading of the PDX-01 principle extends it into the
+*representative's* own procedure — a recommended practice, not a CTS-
+tested requirement), the caller is offered a callback through the
+provider's verified number on file, and the call ends with a disposition
+code and a complete trace instead of a shrug.
 
 Neither future involved detecting anything. The policy never asked "is
 this a bot?" — it asked "has disclosure occurred?", a question with a
@@ -99,7 +104,11 @@ punishment.
 
 ## The Enforcement Ladder
 
-Five rungs, each with its trigger class, its action, and its record.
+The framework supplies the mechanisms below — the engine's actions,
+reason codes, review routing, and CAS thresholds; the five-rung ladder
+that arranges them into a graduated response is this book's recommended
+practice, not a structure specified by NHID-Clinical itself. Five rungs,
+each with its trigger class, its action, and its record.
 
 **Rung 0 — Log.** Trigger: everything. Every evaluated call produces its
 trace and CAS regardless of outcome. Not properly enforcement, but the
@@ -171,15 +180,20 @@ difference between enforcement and caprice.
 
 ## Real-World Examples
 
-**The prompt that became a norm.** An organization deploys Rung 2 and
-finds — the pattern its pilot data predicts — that most undisclosed
-agents *disclose immediately when prompted*: their operators never chose
-concealment; they simply optimized openings for task completion because
-nothing ever asked otherwise. Within a quarter, first-turn disclosure in
-that organization's inbound traffic rises measurably: vendors adapt
-openings to the known prompt. A single receiving-side script, applied
-consistently, moved vendor behavior without one contract change — the
-unilateral-improvement claim, cashed.
+*(Composite illustrations; "the prompt that became a norm" is an
+anticipated dynamic reasoned from the ladder's incentive structure, not a
+reported result.)*
+
+**The prompt that became a norm (anticipated dynamic).** An organization
+deploys Rung 2. The mechanism this book expects: most undisclosed agents
+*disclose immediately when prompted*, because their operators never chose
+concealment — they simply optimized openings for task completion because
+nothing ever asked otherwise. If that mechanism holds, first-turn
+disclosure in that organization's inbound traffic should rise measurably
+over time as vendors adapt openings to the known prompt: a single
+receiving-side script, applied consistently, moving vendor behavior
+without one contract change — the unilateral-improvement claim this
+chapter argues for, not yet one it can report as observed.
 
 **The block that wasn't a block.** A biller's legitimate agent hits Rung
 3 repeatedly over two days — it is misconfigured to deflect the

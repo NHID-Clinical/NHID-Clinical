@@ -6,6 +6,11 @@
 
 ## The Flag That Wasn't
 
+*The scene below is a constructed illustration of a real, measured
+phenomenon — the false-positive economics that follow are the project's
+actual evaluation-corpus data; the specific analyst and call are not a
+reported incident.*
+
 A compliance analyst opens the morning review queue. Overnight, a call has
 been flagged for DBC-01 review: an AI agent, mid-way through a claims call,
 said — *"I can connect you with a human claims specialist if you'd
@@ -189,6 +194,10 @@ continuously re-audits the boundary's placement. The two layers supervise
 each other.
 
 ## Real-World Examples
+
+*(Composite illustrations built around the framework's measured
+false-positive data, except the counter-example, which is a familiar
+review-queue failure pattern rather than an observed case.)*
 
 **The flag that wasn't (resolved).** The opening sentence, dispositioned:
 refuted in under a minute by a reviewer reading one line of context, logged

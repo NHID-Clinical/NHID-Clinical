@@ -6,6 +6,10 @@
 
 ## Ninety Days Later
 
+*The dispute below is a composite scenario, constructed to show how the
+three identity questions fail together — not an account of a specific
+payer or provider.*
+
 The dispute arrives the way disputes do — long after anyone can do anything
 about the call itself.
 
@@ -242,6 +246,8 @@ matures, not harder. That inversion is the entire architecture of Part II in
 one sentence.
 
 ## Real-World Examples
+
+*(Composite illustrations, per the chapter's opening note.)*
 
 **The dispute with no facts.** The opening scenario, generalized. Note the
 asymmetry it reveals: every party involved has *records* — the payer has
