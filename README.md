@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <b>A voluntary behavioral baseline for transparent AI voice agents in B2B healthcare payer–provider calls.</b><br>
-  Open reference implementation with a cryptographic authorization layer (NHID-Auth v2).
+  <b>An operational AI-governance framework for disclosed non-human actors operating under delegated authority in healthcare interactions.</b><br>
+  NHID-Clinical does not govern the AI model. It governs the identity, disclosure, authorization, and auditability of AI-operated interactions across organizational boundaries.
 </p>
 
 <p align="center">
@@ -41,9 +41,31 @@
 
 ---
 
-**Compliant with EU AI Act Art. 50 and mapped to NIST AI RMF 1.0.**
+**Designed to support the transparency obligations described in EU AI Act Article 50; mapped to NIST AI RMF 1.0.**
 
 NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, a per-call Call Authorization Score (CAS), and an optional cryptographic layer (NHID-Auth v2) for proving delegated authority. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
+
+## What NHID-Clinical is / is not
+
+**Is** — an operational AI-governance framework with two layers:
+
+- a **governance / accountability layer** — AI-caller disclosure (IDG-01, DBC-01), no-data-before-disclosure sequencing (PDX-01), human escalation (EIT-01), and machine-readable audit (ATR-01), evaluated by a deterministic conformance test suite; and
+- a **non-human-actor identity and delegated-authorization layer** — NHID-Auth v2: NPI-anchored, scoped, revocable delegation with per-call binding (reference design).
+
+**Is not** — it does **not** govern the AI model (accuracy, bias, drift, clinical safety, output quality — [out of scope by design](docs/scope-boundary-fairness-clinical.md)). It is **not** a universal AI-identity system, an autonomous-agent framework, an accredited standard, or a certification.
+
+See [docs/positioning.md](docs/positioning.md) for the full category thesis, [docs/terminology.md](docs/terminology.md) for controlled vocabulary, and [docs/claim-boundaries.md](docs/claim-boundaries.md) for what may and may not be claimed.
+
+## Composes with — does not replace
+
+NHID-Clinical sits beside the healthcare and identity stack; it replaces none of it:
+
+- **FHIR / SMART on FHIR** — audit substrate. NHID-Clinical emits FHIR R4 `AuditEvent`; FHIR carries the data, NHID-Clinical governs the AI actor exchanging or requesting it.
+- **OAuth 2.x / OIDC** — transport/client authorization ("may this client call this API"); NHID-Auth authorizes the specific interaction ("was this call delegated, in this scope"). Two separate checks; neither substitutes for the other.
+- **IAM platforms** — govern actors *you* provision; NHID-Clinical governs a *counterparty's* agent you never provisioned, arriving with no login step.
+- **AI governance frameworks** (NIST AI RMF, ISO/IEC 42001) — meta-frameworks NHID-Clinical maps to as evidence targets, not competitors.
+
+**Healthcare differentiation** — three load-bearing design choices: **NPI-anchored delegation** (the provider's NPI is the delegation trust root), **FHIR-compatible audit evidence**, and a **risk model validated against payer–provider operational workflows**.
 
 The governance gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is a focused shadow pilot on their own traffic — the [**Tier 0 Shadow Pilot Kit**](docs/pilot-kit/README.md) makes that a 2–4 week exercise.
 
@@ -212,7 +234,7 @@ Expected: **330 passing** in ~1.4s (~18 skip without a running server). Live dem
 ```
 NHID-Clinical/
 ├── schema/          # Event schema (JSON Schema Draft 2020-12)
-├── src/             # Policy engine + NHID-Auth v2 identity layer
+├── src/             # Policy engine + NHID-Auth v2 non-human-actor identity/delegation layer
 ├── tests/           # CTS (YAML) + pytest harness + demo scenarios
 ├── traces/          # 10 canonical failure traces
 ├── adapters/        # VAPI, Twilio, Vonage, Retell, Amazon Connect
