@@ -32,11 +32,15 @@
 - [x] **Scope boundary published** —
   [docs/scope-boundary-fairness-clinical.md](scope-boundary-fairness-clinical.md)
   (model fairness, clinical safety, and quality explicitly out of scope).
-- [ ] **EU AI Act wording reconciled repo-wide** — the softened "designed to
-  support Article 50" wording is applied in README and the positioning docs;
-  the public website HTML and the manuscript still contain stronger phrasings.
-  Marketing HTML is out of scope for this pass by rule; reconcile before a
-  wider public push.
+- [x] **EU AI Act wording reconciled (public-facing)** — the only strong
+  "compliant with Article 50" self-claim was the README banner, now "designed
+  to support the transparency obligations described in EU AI Act Article 50."
+  A repo-wide sweep confirms the website HTML carries **no** equivalent
+  self-claim: its EU AI Act references are tool descriptions ("maturity radar
+  for tracking compliance across frameworks"), "sits alongside," and mapping
+  language — all preserved as-is. The manuscript retains an *analytical*
+  discussion of the claim (Ch. 19), intentionally left untouched as
+  out-of-scope manuscript content.
 
 ## Technical
 
