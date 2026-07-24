@@ -16,6 +16,24 @@ reference materials in this repository — the v1.3 specification, the
 implementation. Where the framework's own materials describe something as
 immature, in progress, or not yet proven, the manuscript says so.
 
+> **Positioning note.** This manuscript's title and Chapter 5 framing still
+> use the earlier "trusted AI voice agents" language. Aligning them with the
+> current [category positioning](../docs/positioning.md) — *operational AI
+> governance for disclosed non-human actors under delegated authority across
+> healthcare organizational boundaries* — is a deliberate, deferred revision
+> pass, not part of the release-structure work. Treat the title as pending.
+
+## Artifact metadata
+
+| Field | Value |
+| :-- | :-- |
+| **Title** | NHID-Clinical: The Operational Playbook *(subtitle pending positioning alignment — see note above)* |
+| **Version** | Draft manuscript · tracks NHID-Clinical **v1.3** + NHID-Auth v2 (reference) |
+| **Status** | 20 chapters drafted with per-chapter editorial reviews; consistency audit + revision pass complete |
+| **Purpose** | An operational implementation guide: why NHID-Clinical exists, the problem it solves, and how healthcare organizations adopt it |
+| **License** | CC BY 4.0 · Brianna Baynard |
+| **Canonical positioning** | [docs/positioning.md](../docs/positioning.md) · [docs/terminology.md](../docs/terminology.md) · [docs/claim-boundaries.md](../docs/claim-boundaries.md) |
+
 ## Audience
 
 Healthcare executives · AI governance leaders · compliance teams · payer and
@@ -77,11 +95,66 @@ Chapter 19 against the framework's source materials. After that: external
 readers (payer operations, voice-AI vendor engineering, compliance
 audit).
 
+## Control mapping
+
+The framework's controls and where the manuscript treats each in depth
+(governance/accountability layer, plus the identity/delegation layer):
+
+| Control / concept | Layer | Primary chapter(s) |
+| :-- | :-- | :-- |
+| IDG-01 — Identity Disclosure Gate | Governance | 6 |
+| PDX-01 — Pre-Data Exchange Gate | Governance | 6 |
+| DBC-01 — Deceptive Behavior Check | Governance | 6, 7 |
+| EIT-01 — Escalation Implementation Test | Governance | 6 |
+| ATR-01 — Audit Trail | Governance | 6, 12 |
+| Call Authorization Score (CAS) | Governance | 6, 15 |
+| Conformance test suite / deterministic engine | Governance | 8, 10 |
+| NHID-Auth v2 — delegated authorization | Identity / delegation | 11 |
+| Impersonation latency (the target metric) | Cross-cutting | 4, 15 |
+
+## Implementation guidance
+
+The adoption path runs through Parts III–IV: shadow evaluation (Ch. 9),
+policy enforcement (Ch. 10), authorization (Ch. 11), audit trails (Ch. 12),
+integration (Ch. 13), pilot programs (Ch. 14), metrics (Ch. 15), risk
+management (Ch. 16), and governance (Ch. 17). The observe-only
+[Tier 0 Shadow Pilot Kit](../docs/pilot-kit/README.md) is the recommended
+first step.
+
+## Adoption checklist
+
+Adoption readiness and release readiness are tracked in
+[docs/release-readiness-checklist.md](../docs/release-readiness-checklist.md).
+For an organization evaluating adoption, the operational entry points are the
+[Executive Brief](../docs/executive-brief.md), the shadow pilot kit, and the
+[vendor trust questionnaire](../docs/vendor-trust-questionnaire.md).
+
+## References & licensing
+
+- Specification: [docs/nhid-clinical-technical-specification.md](../docs/nhid-clinical-technical-specification.md)
+- NHID-Auth v2 / PKI + OAuth2: [docs/nhid-auth-pki-and-oauth2-integration.md](../docs/nhid-auth-pki-and-oauth2-integration.md)
+- FHIR AuditEvent mapping: [docs/fhir-auditevent-mapping.md](../docs/fhir-auditevent-mapping.md)
+- Scope boundary: [docs/scope-boundary-fairness-clinical.md](../docs/scope-boundary-fairness-clinical.md)
+- Positioning / terminology / claim boundaries: see Artifact metadata above.
+- Licensing: **CC BY 4.0** · Brianna Baynard · NIST-2025-0035-0026 (a public
+  comment, not a NIST endorsement, adoption, or certification).
+
+## Release artifact
+
+The intended distributable form of the playbook is a **single compiled PDF**
+of all twenty chapters with title page, table of contents, part dividers, and
+running headers. A working generation pipeline exists —
+Markdown → styled HTML → PDF via headless Chromium — and has produced a
+complete draft render. The pipeline is not yet committed to the repository as
+a reproducible build target; wiring it in (e.g. a `make playbook-pdf` target)
+is a release-packaging follow-up. **Do not treat any rendered PDF as final
+until the deferred positioning-alignment pass (title/Chapter 5) lands.**
+
 ## Directory layout
 
 ```
 playbook/
-├── README.md            # This file — outline and status tracker
+├── README.md            # This file — outline, artifact manifest, status tracker
 ├── chapters/            # Manuscript chapters, one Markdown file each
-└── editorial/           # Post-draft editorial reviews, one per chapter
+└── editorial/           # Post-draft editorial reviews + consistency audit
 ```
