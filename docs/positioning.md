@@ -32,7 +32,11 @@ Each word is load-bearing:
   test suite and the machine-readable audit output (FHIR AuditEvent), which
   make a claim of conformance *checkable in a terminal* rather than asserted
   on paper. Remove the test suite and "operational" would be an unearned
-  adjective.
+  adjective. To be precise about what "operational" does and does not claim:
+  NHID-Clinical provides operational governance *controls* — executable
+  specifications, conformance testing, and evidence artifacts. It does not
+  *operate* a governance system on anyone's behalf; deployment and
+  enforcement remain the responsibility of implementing organizations.
 - **AI governance** — the umbrella. NHID-Clinical belongs to the part of AI
   governance concerned with the conduct, identity, and accountability of AI
   systems in deployment — not model development, validation, or safety.
@@ -97,6 +101,25 @@ Consequences for how the project talks about itself:
   loses disclosure, escalation, accountability, and audit — which are the
   governance-layer controls and half the point.
 
+### The layers are independent, and not equally mature
+
+Two facts about the layers matter to any adopter or reviewer and should
+never be implied away by the tidy diagram:
+
+- **They are independently adoptable.** The governance layer works without
+  the cryptographic layer — disclosure, escalation, and audit are checkable
+  from interaction records alone. An organization can adopt the behavioral
+  baseline first and defer the identity layer entirely.
+- **They are at different maturity levels.** The **governance layer** is an
+  *implementable reference framework* today (deterministic engine, passing
+  conformance suite, checkable from recorded interactions). The **identity /
+  delegation layer** is a *reference design that still requires federation,
+  a trust registry, and key-lifecycle validation* before it is production
+  infrastructure — its revocation is in-memory in the reference
+  implementation. Present them as two rungs of a ladder, not one finished
+  platform. See [claim-boundaries.md](claim-boundaries.md) for the full
+  maturity table.
+
 ## What NHID-Clinical governs — and does not
 
 **Governs** (the actor's observable conduct and accountability at the
@@ -124,6 +147,18 @@ evaluates whether the agent performed human-presence artifacts or denied
 being AI *on the wire*, not the model that produced that behavior. Keep this
 distinction sharp; blurring it re-enters model-governance territory and
 forfeits the boundary that makes the project defensible.
+
+**Audit artifacts may carry regulated healthcare context.** By design, the
+ATR-01 trail records what happened on the interaction — assertion text,
+requested fields, and workflow context — so depending on implementation, a
+trace may contain PHI or other regulated data. NHID-Clinical does not itself
+define how that record is protected. Deployments must define appropriate
+retention, access controls, encryption, and privacy obligations consistent
+with organizational policy and applicable regulation, and should route
+business-associate and data-flow questions to counsel. Naming this is part of
+the framework's maturity, not a gap in it — a healthcare security reviewer
+expects the question and expects the answer to be "the deploying
+organization owns it."
 
 ## Relationship to adjacent systems
 
@@ -164,9 +199,11 @@ framework, rather than a flat "complements everything":
   authenticated delegation and scoped authority for AI agents is a live
   research topic in the general (non-healthcare) setting. NHID-Clinical does
   **not** claim to have invented delegated authority, scope attenuation, or
-  agent passports. Its contribution is a **healthcare profile** of that
-  pattern, and it should position as downstream of and composable with the
-  general-layer work, not as its origin.
+  agent passports. Its contribution is a **healthcare-specific delegation
+  scheme aligned with emerging authenticated-delegation approaches** — not a
+  "profile," since that word implies an adopted base standard to profile
+  against, and none exists yet. It should position as downstream of and
+  composable with the general-layer work, not as its origin.
 
 **Structurally inadequate for this job — contrast, name the reason.**
 
@@ -193,25 +230,28 @@ authority for AI agents" moves NHID-Clinical from an obscure, uncontested
 niche into an active and rigorously scrutinized research space — which
 *strengthens* defensibility and *reduces* uniqueness at the same time.
 
-Under this positioning, **healthcare-specificity is the differentiation** —
-no longer a mere qualifier:
+Under this positioning, healthcare is the differentiation — but claim it
+precisely. NHID-Clinical's healthcare differentiation comes from **three
+load-bearing design choices**, not a long list:
 
-- the **provider organization (NPI) as the delegation trust root**;
-- **payer–provider administrative workflow** semantics (eligibility, claims
-  status, prior authorization);
-- the **voice channel** and its disclosure problem, where verification must
-  happen with no login step and often no human present;
-- **FHIR-native audit** artifacts that land in systems healthcare compliance
-  teams already operate;
-- the **impersonation-latency** metric, grounded in real administrative call
-  operations;
-- **conformance testing** that makes a vendor's claim checkable rather than
-  attested.
+1. **NPI-anchored delegation** — the provider organization's National
+   Provider Identifier is the cryptographic trust root of the delegation
+   chain. This is a structural, healthcare-specific choice, not framing.
+2. **FHIR-compatible audit evidence** — audit output lands as FHIR R4
+   `AuditEvent`, in the systems healthcare compliance teams already operate.
+3. **A risk model validated against payer–provider operational workflows** —
+   impersonation latency and the disclosure/escalation controls are grounded
+   in real eligibility, claims, and prior-authorization call operations, not
+   an abstract threat model.
 
-General-layer efforts solve authenticated delegation in the abstract.
-NHID-Clinical applies that governance-and-identity model to a specific,
-high-stakes healthcare interaction. Keep "healthcare" in the one-line
-positioning and never drop it.
+State three things a reviewer cannot easily dismiss rather than six they can
+whittle down. The voice channel, workflow vocabulary, and conformance
+tooling are real *supporting* context, but they are not, on their own,
+healthcare-specific — do not lean the moat on them. General-layer efforts
+solve authenticated delegation in the abstract; NHID-Clinical applies that
+governance-and-identity model to a specific, high-stakes healthcare
+interaction through the three choices above. Keep "healthcare" in the
+one-line positioning and never drop it.
 
 ## Standards status (honest)
 

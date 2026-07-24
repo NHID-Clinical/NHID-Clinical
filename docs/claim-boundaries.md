@@ -21,7 +21,9 @@
 - **Delegated authority**: verifiable, NPI-anchored, scoped, expiring,
   revocable authorization to represent a provider organization (NHID-Auth
   v2).
-- **Scope enforcement** via monotonic narrowing across delegation hops.
+- **Scope enforcement** via monotonic narrowing across delegation hops,
+  checked by the verifier at evaluation time (application-layer enforcement,
+  not a cryptographic guarantee on its own).
 - **Escalation** to a human (EIT-01).
 - **Accountability and audit evidence** (ATR-01, FHIR AuditEvent).
 - **Conformance testing** of the above (deterministic engine + CTS).
@@ -38,6 +40,15 @@
 The line: NHID-Clinical scores **observable conduct at the interaction
 boundary**, never model internals and never model outputs.
 
+**Deployment caveat — audit artifacts may carry regulated data.** ATR-01
+traces can contain PHI or other regulated healthcare context depending on
+implementation. The framework does not define how that record is protected;
+deployments must set retention, access-control, encryption, and privacy
+obligations per organizational policy and applicable regulation, and route
+business-associate and data-flow questions to counsel. State this proactively
+— it signals maturity to a healthcare security reviewer, who expects the
+question.
+
 ## Claims to make / claims to avoid
 
 | Make (defensible) | Avoid (overclaim) |
@@ -45,8 +56,8 @@ boundary**, never model internals and never model outputs.
 | "An operational AI governance framework for disclosed non-human actors under delegated authority across healthcare organizational boundaries." | "A healthcare AI governance framework." (implies model/bias/clinical governance) |
 | "Governs the moment a non-human actor crosses an organizational boundary." | "Governs healthcare AI." / "Governs autonomous AI." |
 | "A non-human-actor identity and delegated-authorization protocol (reference implementation)." | "A universal identity layer." / "Trust infrastructure." / "A control plane." |
-| "A healthcare profile of authenticated delegation, composable with SPIFFE/OAuth-style stacks." | "We invented delegated authority / agent identity / scope attenuation." |
-| "Mapped to NIST AI RMF and ISO/IEC 42001; aligns with EU AI Act Art. 50 transparency." | "Compliant with / certified against" any of them. |
+| "A healthcare-specific delegation scheme aligned with emerging authenticated-delegation approaches, composable with SPIFFE/OAuth-style stacks." | "A profile of authenticated delegation" (implies an adopted base standard) · "We invented delegated authority / agent identity / scope attenuation." |
+| "Mapped to NIST AI RMF and ISO/IEC 42001; designed to support the transparency obligations described in EU AI Act Article 50." | "Compliant with / certified against" any of them. |
 | "A voluntary, open proposal and standards candidate." | "An emerging standard." / "The standard for AI agents in healthcare." |
 | "Reference implementation; revocation is in-memory; key custody and federation are documented but not built." | "Production-ready." / "Enterprise infrastructure." |
 | "Disclosure latency is measured on recorded traffic; the framework does not detect covert agents." | "Detects unauthorized/rogue AI callers." |

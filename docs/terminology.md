@@ -48,8 +48,11 @@
   signed, NPI-anchored, expiring, revocable object.
 - **Scope attenuation (monotonic narrowing)** — the safety property of the
   delegation chain: each hop may only restrict, never expand, the authority
-  it received. A compromised middle hop cannot grant itself authority the
-  provider never gave.
+  it received, as checked by the verifier at evaluation time. A compromised
+  middle hop cannot grant itself authority the provider never gave. Say
+  "checked/enforced by the verifier," not "structurally enforced" — the
+  latter implies a cryptographic guarantee where the reference implementation
+  performs application-layer checks.
 - **Agent passport** — the presented credential: a delegation plus the
   provider's signature and the agent's co-signature (NHID-Auth v2 reference
   object).
