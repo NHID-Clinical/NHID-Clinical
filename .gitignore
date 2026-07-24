@@ -33,5 +33,9 @@ assets/media/impersonation-latency-trap.mp4
 # Pages build output
 _site/
 
+# Playbook PDF build working output (never commit the built artifact here;
+# release publication is a separate, gated step — see playbook/build/README.md)
+playbook/dist/
+
 # Local virtualenv
 .venv/

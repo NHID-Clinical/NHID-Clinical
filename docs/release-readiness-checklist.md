@@ -77,6 +77,25 @@
   unsolved at scale; audit artifacts may carry PHI and their protection is the
   deploying organization's responsibility.
 
+## Release packaging (playbook artifact)
+
+- [x] **Reproducible build pipeline committed** — `playbook/build/`
+  (`build_pdf.py` → `render_pdf.py` → `validate_pdf.py`), wired to
+  `make playbook-pdf` / `make playbook-validate`. Portable paths, portable
+  Chromium resolution, stamped PDF metadata, structural validation gate. Output
+  goes to git-ignored `playbook/dist/`.
+- [x] **Licensing metadata defined** — CC BY 4.0 in the artifact front matter
+  (© 2026 Brianna Nicole Baynard; public byline "Brianna Baynard";
+  NIST-2025-0035-0026 disclaimer) and stamped into the PDF document properties
+  (Title/Author/Subject/Keywords/Creator) from a single source of truth.
+- [ ] **Final PDF generated / committed / published** — **intentionally held.**
+  Blocked until the deferred positioning-alignment pass (title/subtitle +
+  Chapter 5) lands. Deferred publish steps: flip the `SUBTITLE` constant and
+  re-render/validate; add a `!specs/…playbook.pdf` gitignore exception and
+  commit the PDF to `specs/`; add a CHANGELOG entry; optionally add a
+  `specs/index.html` download card and/or a git tag + GitHub Release. See
+  [`playbook/build/README.md`](../playbook/build/README.md).
+
 ## Known open items carried into release (disclosed, not resolved)
 
 1. Second independent conformance-passing implementation.

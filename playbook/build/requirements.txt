@@ -1,0 +1,7 @@
+# Build dependencies for the playbook PDF pipeline (playbook/build).
+# Chromium itself is provided by Playwright; in this environment it is
+# pre-installed under $PLAYWRIGHT_BROWSERS_PATH, so `playwright install` is
+# usually unnecessary. render_pdf.py resolves the browser portably.
+markdown>=3.5
+playwright>=1.40
+pymupdf>=1.23

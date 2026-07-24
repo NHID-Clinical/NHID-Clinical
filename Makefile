@@ -26,7 +26,8 @@ ifneq ($(strip $(ELEVENLABS_PHONE_NUMBER_ID)),)
   PARAM_OVERRIDES += ElevenLabsPhoneNumberId=$(ELEVENLABS_PHONE_NUMBER_ID)
 endif
 
-.PHONY: build deploy destroy get-key get-url test-api test-demo logs help
+.PHONY: build deploy destroy get-key get-url test-api test-demo logs help \
+        playbook-pdf playbook-validate
 
 help:
 	@echo "Targets:"
@@ -39,6 +40,10 @@ help:
 	@echo "              the framework's conformance baseline (python -m pytest tests/)"
 	@echo "  logs        tail Lambda CloudWatch logs"
 	@echo "  destroy     delete the CloudFormation stack"
+	@echo ""
+	@echo "  playbook-pdf       build the playbook PDF into playbook/dist/ (not committed;"
+	@echo "                     final publication is gated on the positioning-alignment pass)"
+	@echo "  playbook-validate  structural + metadata checks on the built playbook PDF"
 	@echo ""
 	@echo "Overrides:  STACK_NAME, REGION, PROFILE, CLOUDFLARE_TURNSTILE_SECRET,"
 	@echo "            ELEVENLABS_API_KEY, ELEVENLABS_PHONE_NUMBER_ID (for /v1/demo/call)"
@@ -91,3 +96,14 @@ logs:
 
 destroy:
 	sam delete --stack-name $(STACK_NAME) --no-prompts $(AWS_ARGS)
+
+# --- Playbook PDF (release packaging) --------------------------------------
+# Builds into playbook/dist/ (git-ignored). Does NOT commit or publish a PDF;
+# the distributable artifact is gated on the title/Chapter-5 positioning pass.
+# See playbook/build/README.md.
+playbook-pdf:
+	python3 playbook/build/build_pdf.py
+	python3 playbook/build/render_pdf.py
+
+playbook-validate:
+	python3 playbook/build/validate_pdf.py

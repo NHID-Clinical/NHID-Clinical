@@ -143,12 +143,23 @@ For an organization evaluating adoption, the operational entry points are the
 
 The intended distributable form of the playbook is a **single compiled PDF**
 of all twenty chapters with title page, table of contents, part dividers, and
-running headers. A working generation pipeline exists —
-Markdown → styled HTML → PDF via headless Chromium — and has produced a
-complete draft render. The pipeline is not yet committed to the repository as
-a reproducible build target; wiring it in (e.g. a `make playbook-pdf` target)
-is a release-packaging follow-up. **Do not treat any rendered PDF as final
-until the deferred positioning-alignment pass (title/Chapter 5) lands.**
+running headers. The generation pipeline is a **committed, reproducible build
+target** — Markdown → styled HTML → PDF via headless Chromium, with stamped
+document metadata and an automated structural-validation gate — under
+[`playbook/build/`](build/README.md):
+
+```bash
+make playbook-pdf        # build into playbook/dist/ (git-ignored)
+make playbook-validate   # structural + metadata checks
+```
+
+**The final PDF is intentionally gated and is not committed or published.** The
+manuscript title/subtitle and Chapter 5 still carry the earlier "Trusted AI
+Voice Agents" framing (the deferred positioning-alignment pass); a distributable
+artifact is held until that lands. The deferred publish steps (subtitle flip,
+`specs/` placement with a gitignore exception, CHANGELOG entry, and optional
+download-page card / git tag) are documented in
+[`playbook/build/README.md`](build/README.md).
 
 ## Directory layout
 
