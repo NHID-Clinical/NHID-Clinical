@@ -81,6 +81,12 @@
       excerpt: 'NHID-Clinical defines a minimum behavioral baseline for AI voice agents in B2B healthcare administrative workflows.'
     },
     {
+      title: 'Research Portfolio',
+      url: '/research-portfolio.html',
+      keywords: 'research portfolio publications evidence standards regulatory engagement interactive demonstrations professional profile nist ai rmf public comment ai governance map specification simulator github brianna baynard certifications operational ai governance framework non-human actor accountability delegated authority',
+      excerpt: 'AI governance research, standards work, and technical artifacts: standards engagement, interactive demonstrations, evidence and publications, and professional profile.'
+    },
+    {
       title: 'Governance Simulator',
       url: '/governance-simulator.html',
       keywords: 'governance simulator policy engine playground idg-01 dbc-01 eit-01 atr-01 test scenario synthetic call evaluation interactive',
