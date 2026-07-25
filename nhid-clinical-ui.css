@@ -3215,3 +3215,68 @@ iframe[src*="elevenlabs.io"] {
   margin-bottom: .6rem;
 }
 [data-theme="dark"] .step-num { background: var(--teal); color: #06202b; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Clutch-inspired refinement layer — calm, airy, premium (2026-07)
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  --display: "Raleway", "Inter", system-ui, -apple-system, sans-serif;
+  --cyan: #67E8F9;
+  --teal-bright: #14B8A6;
+  --glow-teal: rgba(20, 184, 166, 0.26);
+  --glow-cyan: rgba(103, 232, 249, 0.30);
+}
+[data-theme="dark"] {
+  --glow-teal: rgba(20, 184, 166, 0.20);
+  --glow-cyan: rgba(103, 232, 249, 0.16);
+}
+
+/* Large, tight, confident headlines */
+h1, h2, h3 { letter-spacing: -0.02em; }
+h1 { font-weight: 800; }
+h2 { font-weight: 700; }
+.hero-copy h1 { font-weight: 800; line-height: 1.04; }
+
+/* Airier rhythm */
+.page-section { padding-block: clamp(3rem, 6vw, 5.5rem); }
+
+/* Scroll-entrance motion (fade + slight rise), reduced-motion safe */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+/* Soft hover bloom on cards */
+.content-card { transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease; }
+.content-card:hover { transform: translateY(-4px); box-shadow: 0 18px 42px -24px rgba(15, 23, 42, .30); border-color: rgba(20, 184, 166, .45); }
+
+/* Hero — airier, with a soft teal/cyan glow behind the illustration */
+.hero-section { position: relative; overflow: clip; padding-block: clamp(3rem, 7vw, 6rem); }
+.hero-glow { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.hero-glow::before, .hero-glow::after { content: ""; position: absolute; border-radius: 50%; filter: blur(72px); }
+.hero-glow::before { width: min(38rem, 62vw); height: min(38rem, 62vw); right: -6rem; top: -5rem; background: radial-gradient(circle, var(--glow-cyan), transparent 68%); }
+.hero-glow::after  { width: min(30rem, 52vw); height: min(30rem, 52vw); right: 5rem; bottom: -9rem; background: radial-gradient(circle, var(--glow-teal), transparent 66%); }
+.hero-grid { position: relative; z-index: 1; }
+
+/* Standards-alignment bar (honest, text-based — not customer logos) */
+.standards-bar { border-block: 1px solid var(--line); padding-block: 1.5rem; }
+.standards-bar-label { font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--body); font-weight: 700; }
+.standards-bar-items { display: flex; flex-wrap: wrap; gap: 1rem 2.4rem; align-items: baseline; margin-top: .7rem; }
+.standards-bar-items b { font-family: var(--display); font-weight: 700; font-size: 1.02rem; color: var(--ink-soft); letter-spacing: -0.01em; }
+.standards-bar-items b small { display: block; font-family: var(--sans); font-weight: 500; font-size: .72rem; color: var(--body); letter-spacing: 0; margin-top: .1rem; }
+
+/* Centered, Clutch-style hero */
+.hero-centered { text-align: center; }
+.hero-centered-inner { max-width: 60rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; }
+.hero-centered h1 { font-size: clamp(2.5rem, 6vw, 4.4rem); line-height: 1.02; margin: .5rem 0 0; color: var(--ink); max-width: 18ch; }
+.hero-centered .hero-kicker { margin-bottom: .3rem; }
+.hero-lead { font-size: clamp(1.04rem, 1.5vw, 1.28rem); color: var(--body); max-width: 58ch; margin: 1.15rem auto 0; line-height: 1.6; }
+.hero-centered .hero-actions-premium { margin-top: 1.7rem; justify-content: center; flex-wrap: wrap; }
+.hero-illo { margin-top: 2.75rem; width: 100%; max-width: 560px; }
+.hero-illo img { width: 100%; height: auto; display: block; }
+
+/* Slim stats strip */
+.stats-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem 3.5rem; text-align: center; }
+.stats-strip .stat b { display: block; font-family: var(--display); font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--ink); letter-spacing: -0.02em; line-height: 1; }
+.stats-strip .stat span { display: block; margin-top: .4rem; font-size: .84rem; color: var(--body); max-width: 20ch; }
