@@ -125,13 +125,14 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero">
-    <div class="container inner-hero-grid">
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>Proposal</span></div>
         <p class="eyebrow">Open Proposal · v1.3</p>
-        <h1>NHID-Clinical v1.3 Specification</h1>
-        <p class="lede">A voluntary framework for naming and addressing impersonation latency in healthcare payer–provider voice workflows.</p>
+        <h1 class="reveal">NHID-Clinical v1.3 Specification</h1>
+        <p class="lede reveal">A voluntary framework for naming and addressing impersonation latency in healthcare payer–provider voice workflows.</p>
       </div>
       <aside class="hero-summary-card">
         <div class="spec-badges">
@@ -170,12 +171,32 @@
 
       <h2 style="margin-top:2.5rem">Suggested Behaviors</h2>
       <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The proposal suggests four behaviors for AI voice agents in these workflows. These are not mandatory requirements — they are a starting point for shared expectations.</p>
-      <ul style="list-style:none;padding:0;margin-top:1.25rem;display:grid;gap:.75rem">
-        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Identify as automated before any data exchange.</strong> The first meaningful act of the call.</li>
-        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Behave like a machine, not a person.</strong> No audio artifacts or behavioral patterns designed to create the impression of human presence.</li>
-        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Provide a clear path to a human.</strong> When requested, the transition should be immediate and unambiguous.</li>
-        <li style="padding:.9rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0;color:var(--body);font-size:.95rem;line-height:1.7"><strong>Maintain a basic record.</strong> Sufficient logging to establish what happened, and when.</li>
-      </ul>
+      <div class="feature-grid" style="margin-top:1.4rem">
+        <div class="feature-card reveal">
+          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3M6 6v11M10 3v18M14 8v7M18 5v13M22 10v3"/></svg></div>
+          <span class="code">IDG-01</span>
+          <h3>Identify as automated before any data exchange.</h3>
+          <p>The first meaningful act of the call.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5a3 3 0 0 1 6 0v2M12 12v3"/></svg></div>
+          <span class="code">DBC-01</span>
+          <h3>Behave like a machine, not a person.</h3>
+          <p>No audio artifacts or behavioral patterns designed to create the impression of human presence.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M21 3l-7 7M8 21H3v-5M3 21l7-7"/><circle cx="12" cy="12" r="1.5"/></svg></div>
+          <span class="code">EIT-01</span>
+          <h3>Provide a clear path to a human.</h3>
+          <p>When requested, the transition should be immediate and unambiguous.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13l2 2 4-4"/></svg></div>
+          <span class="code">ATR-01</span>
+          <h3>Maintain a basic record.</h3>
+          <p>Sufficient logging to establish what happened, and when.</p>
+        </div>
+      </div>
 
       <h2 style="margin-top:2.5rem">Sequence of Interaction</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The following diagram illustrates the disclosure gate in a standard eligibility workflow.</p>
@@ -201,32 +222,32 @@ sequenceDiagram
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal applies to <strong>B2B administrative voice workflows</strong> — AI systems calling payer offices on behalf of providers, vendors, or plan administrators. It does not apply to patient-facing calls, clinical decision support, or internal tooling.</p>
 
       <h2 style="margin-top:2.5rem">What This Is Not</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certifying body, no audit process, and no enforcement mechanism. The <a href="/registry.html" style="color:var(--blue);font-weight:600">Implementation Registry</a> is self-attestation only — vendors list themselves and link their own live conformance metrics; NHID-Clinical does not verify or certify entries. The full proposal document (PDF below) contains more detail for interested practitioners.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certifying body, no audit process, and no enforcement mechanism. The <a href="/registry.html" style="color:var(--teal-bright);font-weight:600">Implementation Registry</a> is self-attestation only — vendors list themselves and link their own live conformance metrics; NHID-Clinical does not verify or certify entries. The full proposal document (PDF below) contains more detail for interested practitioners.</p>
 
       <h2 style="margin-top:2.5rem">Known Gaps (v1.3)</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">v1.3 addresses <em>observable behavior</em> — disclosure timing, deceptive artifacts, escalation path, audit logging. It does not address caller authorization. Because NPIs are public, a malicious AI can trivially impersonate a provider unless a cryptographic authorization handshake is enforced — <a href="/roadmap.html" style="color:var(--blue);font-weight:600">NHID-Auth v2</a> (released June 2026, CC BY 4.0) addresses this with Ed25519 provider-signed agent passports and NPI binding. NHID-Clinical v1.3 tells you the caller was automated; NHID-Auth v2 tells you the caller was authorized.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">v1.3 addresses <em>observable behavior</em> — disclosure timing, deceptive artifacts, escalation path, audit logging. It does not address caller authorization. Because NPIs are public, a malicious AI can trivially impersonate a provider unless a cryptographic authorization handshake is enforced — <a href="/roadmap.html" style="color:var(--teal-bright);font-weight:600">NHID-Auth v2</a> (released June 2026, CC BY 4.0) addresses this with Ed25519 provider-signed agent passports and NPI binding. NHID-Clinical v1.3 tells you the caller was automated; NHID-Auth v2 tells you the caller was authorized.</p>
 
       <div class="spec-highlight-box" style="margin-top:2rem">
-        <strong style="color:var(--blue);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Download &amp; Feedback</strong>
+        <strong style="color:var(--teal-bright);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Download &amp; Feedback</strong>
         <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">
-          <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download style="color:var(--blue);font-weight:600">Download the Public Brief (PDF)</a>
+          <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download style="color:var(--teal-bright);font-weight:600">Download the Public Brief (PDF)</a>
         </p>
-        <p style="color:var(--body);font-size:.9rem;margin-top:.5rem">Feedback: <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue);font-weight:600">contact@nhid-clinical.org</a></p>
+        <p style="color:var(--body);font-size:.9rem;margin-top:.5rem">Feedback: <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright);font-weight:600">contact@nhid-clinical.org</a></p>
       </div>
 
-      <div style="padding:1.5rem;background:#eff6ff;border-radius:8px;margin-top:2rem">
-        <p style="margin:0;color:#1e293b">These behaviors are demonstrated in the <a href="/simulator.html" style="color:#0ea5e9;font-weight:500">Governance Simulator →</a></p>
+      <div style="padding:1.5rem;background:var(--teal-soft);border-radius:8px;margin-top:2rem">
+        <p style="margin:0;color:var(--ink)">These behaviors are demonstrated in the <a href="/simulator.html" style="color:var(--teal-bright);font-weight:500">Governance Simulator →</a></p>
         
         <h3 style="margin-top:1.5rem;font-size:1.1rem">Broader Context</h3>
-        <p style="font-size:0.95rem;line-height:1.6;color:#1e293b">
-          NHID-Clinical is also featured in the <a href="https://ai-governance-map.vercel.app/" target="_blank" style="color:#0ea5e9;font-weight:600">AI Governance Map</a> 
+        <p style="font-size:0.95rem;line-height:1.6;color:var(--ink)">
+          NHID-Clinical is also featured in the <a href="https://ai-governance-map.vercel.app/" target="_blank" style="color:var(--teal-bright);font-weight:600">AI Governance Map</a> 
           — an interactive maturity radar for tracking compliance across frameworks like NIST RMF, EU AI Act, and ISO 42001.
         </p>
 
         <h3 style="margin-top:1.5rem;font-size:1.1rem">Document Family</h3>
         <table style="width:100%;border-collapse:collapse;margin-top:0.75rem;font-size:0.9rem">
             <thead>
-                <tr style="border-bottom:1px solid #cbd5e1;text-align:left">
+                <tr style="border-bottom:1px solid var(--line);text-align:left">
                     <th style="padding:0.5rem">Layer</th>
                     <th style="padding:0.5rem">Artifact</th>
                     <th style="padding:0.5rem">Status</th>
@@ -234,19 +255,19 @@ sequenceDiagram
                 </tr>
             </thead>
             <tbody>
-                <tr style="border-bottom:1px solid #e2e8f0">
+                <tr style="border-bottom:1px solid var(--line)">
                     <td style="padding:0.5rem">Governance standard</td>
                     <td style="padding:0.5rem">NHID-Clinical v1.3</td>
                     <td style="padding:0.5rem">Current</td>
                     <td style="padding:0.5rem">Minimum disclosure baseline</td>
                 </tr>
-                <tr style="border-bottom:1px solid #e2e8f0">
+                <tr style="border-bottom:1px solid var(--line)">
                     <td style="padding:0.5rem">Companion spec</td>
                     <td style="padding:0.5rem">NHID-Auth v2</td>
                     <td style="padding:0.5rem">Draft</td>
                     <td style="padding:0.5rem">Delegated authorization</td>
                 </tr>
-                <tr style="border-bottom:1px solid #e2e8f0">
+                <tr style="border-bottom:1px solid var(--line)">
                     <td style="padding:0.5rem">Reference software</td>
                     <td style="padding:0.5rem">nhid-clinical-api</td>
                     <td style="padding:0.5rem">Pilot</td>
@@ -254,7 +275,7 @@ sequenceDiagram
                 </tr>
             </tbody>
         </table>
-        <p style="margin-top:1rem;font-size:0.9rem"><a href="/technical-stack.html" style="color:#0ea5e9">Five-layer trust architecture →</a> &nbsp;·&nbsp; <a href="/regulatory-alignment.html" style="color:#0ea5e9">Regulatory alignment matrix →</a></p>
+        <p style="margin-top:1rem;font-size:0.9rem"><a href="/technical-stack.html" style="color:var(--teal-bright)">Five-layer trust architecture →</a> &nbsp;·&nbsp; <a href="/regulatory-alignment.html" style="color:var(--teal-bright)">Regulatory alignment matrix →</a></p>
       </div>
     </div>
   </section>
