@@ -81,6 +81,12 @@
       excerpt: 'NHID-Clinical defines a minimum behavioral baseline for AI voice agents in B2B healthcare administrative workflows.'
     },
     {
+      title: 'Research Portfolio',
+      url: '/research-portfolio.html',
+      keywords: 'research portfolio publications evidence standards regulatory engagement interactive demonstrations professional profile nist ai rmf public comment ai governance map specification simulator github brianna baynard certifications operational ai governance framework non-human actor accountability delegated authority',
+      excerpt: 'AI governance research, standards work, and technical artifacts: standards engagement, interactive demonstrations, evidence and publications, and professional profile.'
+    },
+    {
       title: 'Governance Simulator',
       url: '/governance-simulator.html',
       keywords: 'governance simulator policy engine playground idg-01 dbc-01 eit-01 atr-01 test scenario synthetic call evaluation interactive',
@@ -368,4 +374,21 @@ window.NHIDDemoStatus = (function () {
       subtree: true
     });
   }
+})();
+
+/* Scroll-entrance reveal (fade + rise); no-op if reduced motion or no .reveal nodes */
+(function () {
+  if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function run() {
+    var els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    if (reduce) { els.forEach(function (el) { el.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    els.forEach(function (el, i) { el.style.transitionDelay = Math.min(i % 4, 3) * 70 + 'ms'; io.observe(el); });
+  }
+  if (document.readyState !== 'loading') run();
+  else document.addEventListener('DOMContentLoaded', run);
 })();

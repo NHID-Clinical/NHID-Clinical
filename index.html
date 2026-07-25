@@ -9,7 +9,7 @@
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
@@ -34,6 +34,7 @@
     <div class="nav-links">
       <a href="/">Home</a>
       <a href="/about.html">About</a>
+      <a href="/research-portfolio.html">Portfolio</a>
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Specification <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
@@ -94,6 +95,7 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <a href="/about.html">About</a>
+  <a href="/research-portfolio.html">Portfolio</a>
   <a href="/simulator.html">Simulator</a>
   <strong class="mobile-nav-group">Specification</strong>
   <a href="/specification.html">Specification</a>
@@ -122,43 +124,46 @@
 
 <main>
 
-  <!-- ── Section 1: Hero ───────────────────────────────────────────────────── -->
-  <section class="hero-section">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <span class="hero-kicker">Governance control layer · v1.3 · Practitioner-led</span>
-        <h1>NHID-Clinical</h1>
-        <p class="hero-subtitle">A behavioral baseline for transparent AI voice agents in healthcare</p>
-        <p class="hero-body"><strong>A voluntary control layer for AI voice agents on payer–provider calls.</strong> It addresses one failure mode: an agent asking for sensitive information before the receiving party can confirm it is automated and authorized to act. Built from direct payer operations experience — live eligibility, claims, and prior-authorization lines.</p>
-        <div class="hero-actions-premium">
-          <a href="/specification.html" class="btn-premium">Read the v1.3 specification</a>
-          <a href="/for-payers.html" class="btn-premium">Start a pilot</a>
-          <a href="/simulator.html" class="btn-ghost">Open the simulator</a>
-        </div>
-        <div class="impact-metrics" style="grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin-top:1.75rem">
-          <div class="impact-metric">
-            <span class="impact-metric-icon teal">330</span>
-            <div class="impact-metric-body"><strong>330 passing tests</strong><span>Deterministic conformance suite, open repo</span></div>
-          </div>
-          <div class="impact-metric">
-            <span class="impact-metric-icon">4+1</span>
-            <div class="impact-metric-body"><strong>Four controls + CAS</strong><span>IDG-01 · PDX-01 · DBC-01 · EIT-01, plus ATR-01 audit</span></div>
-          </div>
-          <div class="impact-metric">
-            <span class="impact-metric-icon green">API</span>
-            <div class="impact-metric-body"><strong>Live conformance API</strong><span>VAPI + Twilio adapters; no key for demo routes</span></div>
-          </div>
-          <div class="impact-metric">
-            <span class="impact-metric-icon">CC</span>
-            <div class="impact-metric-body"><strong>Open &amp; on record</strong><span>CC BY 4.0 · NIST comment NIST-2025-0035-0026</span></div>
-          </div>
-        </div>
-        <p class="disclaimer-small" style="margin-top:1rem">Voluntary and testable — not an accredited standard, certification, or regulatory requirement. No production pilots yet; seeking the first shadow-evaluation partners.</p>
+  <!-- ── Section 1: Hero (centered) ────────────────────────────────────────── -->
+  <section class="hero-section hero-centered">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container hero-centered-inner">
+      <span class="hero-kicker reveal">Operational AI-governance framework · v1.3</span>
+      <h1 class="reveal">Non-human actor accountability for healthcare voice AI.</h1>
+      <p class="hero-lead reveal">Disclosure, delegated authority, and audit for AI voice agents on payer–provider calls — so an agent can't ask for sensitive information before it is confirmed automated and authorized to act.</p>
+      <div class="hero-actions-premium reveal">
+        <a href="/specification.html" class="btn-premium">Read the v1.3 specification</a>
+        <a href="/for-payers.html" class="btn-premium">Start a pilot</a>
+        <a href="/simulator.html" class="btn-ghost">Open the simulator</a>
       </div>
-      <div class="hero-art hero-art-nexus" aria-label="Governance Trust Nexus visualization">
-        <img class="premium-3d" src="/assets/images/3d-svg/nexus.svg" alt="Diagram of the Trust Verification Nexus: a payer domain and a provider domain bridged by a conformance-verification step — disclosure, pre-data gate, escalation, and sealed audit."/>
-        <p class="visual-caption">Trust Verification Nexus</p>
+      <div class="hero-illo reveal">
+        <img src="/assets/images/3d-svg/hero-orbit.svg" alt="Soft isometric illustration: floating governance platforms connected by verified identity nodes, with disclosure, verification, and audit tokens." loading="eager"/>
       </div>
+      <p class="disclaimer-small" style="margin-top:1.5rem">Voluntary and testable — not an accredited standard, certification, or regulatory requirement. No production pilots yet; seeking the first shadow-evaluation partners.</p>
+    </div>
+  </section>
+
+  <!-- ── Standards alignment bar ───────────────────────────────────────────── -->
+  <section class="page-section" style="padding-block:2rem">
+    <div class="container standards-bar reveal">
+      <p class="standards-bar-label">Mapped to &amp; aligned with</p>
+      <div class="standards-bar-items">
+        <b>NIST AI RMF 1.0<small>Map &amp; Measure functions</small></b>
+        <b>EU AI Act Art. 50<small>Transparency obligations</small></b>
+        <b>ISO/IEC 42001<small>Annex A transparency</small></b>
+        <b>FHIR R4<small>AuditEvent evidence</small></b>
+        <b>STIR/SHAKEN<small>Carrier authentication</small></b>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── By the numbers (stats strip) ──────────────────────────────────────── -->
+  <section class="page-section" style="padding-block:1rem 2.5rem">
+    <div class="container stats-strip reveal">
+      <div class="stat"><b>330</b><span>passing tests in the open repo</span></div>
+      <div class="stat"><b>4 + 1</b><span>controls (IDG · PDX · DBC · EIT) plus ATR-01 audit</span></div>
+      <div class="stat"><b>Live</b><span>conformance API — no key for demo routes</span></div>
+      <div class="stat"><b>CC BY 4.0</b><span>open · NIST comment on record</span></div>
     </div>
   </section>
 
