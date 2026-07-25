@@ -3280,3 +3280,28 @@ h2 { font-weight: 700; }
 .stats-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem 3.5rem; text-align: center; }
 .stats-strip .stat b { display: block; font-family: var(--display); font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--ink); letter-spacing: -0.02em; line-height: 1; }
 .stats-strip .stat span { display: block; margin-top: .4rem; font-size: .84rem; color: var(--body); max-width: 20ch; }
+
+/* Capability (feature) grid — simple stroke icons */
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16.5rem, 1fr)); gap: 1.1rem; }
+.feature-card { padding: 1.5rem 1.5rem; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease; }
+.feature-card:hover { transform: translateY(-4px); box-shadow: 0 18px 42px -24px rgba(15,23,42,.30); border-color: rgba(20,184,166,.45); }
+.feature-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--teal-soft); color: var(--teal-bright); margin-bottom: .95rem; }
+.feature-ico svg { width: 23px; height: 23px; }
+.feature-card .code { font-family: "IBM Plex Mono", monospace; font-size: .72rem; font-weight: 600; color: var(--teal-bright); letter-spacing: .04em; }
+.feature-card h3 { font-size: 1.05rem; margin: .1rem 0 .4rem; color: var(--ink); }
+.feature-card p { font-size: .9rem; color: var(--body); line-height: 1.6; margin: 0; }
+
+/* Split: copy + floating UI mockup */
+.split-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+@media (max-width: 820px) { .split-visual { grid-template-columns: 1fr; gap: 2rem; } }
+.mock-ui { border-radius: 16px; border: 1px solid var(--line); background: var(--paper); box-shadow: 0 34px 64px -34px rgba(15,23,42,.40); overflow: hidden; }
+.mock-ui-bar { display: flex; align-items: center; gap: .45rem; padding: .7rem 1rem; border-bottom: 1px solid var(--line); background: var(--mist); }
+.mock-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.mock-route { font-family: "IBM Plex Mono", monospace; font-size: .76rem; color: var(--body); margin-left: .4rem; }
+.mock-body { padding: 1.25rem 1.4rem; }
+.mock-result { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+.mock-result strong { font-family: var(--display); font-size: 1.05rem; color: var(--ink); }
+.mock-pill { font-size: .76rem; font-weight: 700; color: #0e7568; background: var(--teal-soft); border: 1px solid rgba(20,184,166,.4); padding: .3rem .75rem; border-radius: 999px; }
+.mock-row { display: flex; align-items: center; justify-content: space-between; padding: .58rem 0; border-top: 1px solid var(--line); font-size: .9rem; color: var(--ink-soft); }
+.mock-row .ok { color: var(--teal-bright); font-weight: 800; }
+.mock-tag { margin-top: 1rem; font-size: .72rem; color: var(--body); font-style: italic; }
