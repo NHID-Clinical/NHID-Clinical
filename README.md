@@ -356,5 +356,5 @@ Creator and project lead for NHID-Clinical. Background in healthcare payer opera
 ---
 
 <div align="center">
-  <sub>CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026 · <a href="https://nhid-clinical.org">nhid-clinical.org</a></sub>
+  <sub>CC BY 4.0 · Brianna Baynard · <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a> · <a href="https://nhid-clinical.org">nhid-clinical.org</a></sub>
 </div>
