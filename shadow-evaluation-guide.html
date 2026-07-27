@@ -14,24 +14,13 @@
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <style>
-    .phase-card {
-      padding: 1.2rem 1.5rem;
-      background: var(--bg-alt);
-      border-left: 3px solid var(--blue);
-      border-radius: 0 6px 6px 0;
-    }
-    .phase-card strong {
-      display: block;
-      font-size: .97rem;
-      color: var(--ink);
-      margin-bottom: .4rem;
-    }
-    .phase-card p { margin: 0; color: var(--body); font-size: .93rem; line-height: 1.8; }
+    /* De-blued to brand teal; step-num circles teal in light mode too */
+    .step-num { background: var(--teal-bright); color: #fff; }
     .controls-table .control-id {
       font-family: monospace;
       font-size: .88rem;
       font-weight: 700;
-      color: var(--blue);
+      color: var(--teal-bright);
       white-space: nowrap;
     }
   </style>
@@ -144,13 +133,14 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero">
-    <div class="container inner-hero-grid">
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/for-payers.html">For Payers</a><span>/</span><span>Shadow Evaluation Guide</span></div>
         <p class="eyebrow">Behavioral Baseline &middot; Shadow Mode &middot; 90 Days</p>
-        <h1>Shadow Evaluation Guide</h1>
-        <p class="lede">A structured, no-cost process for payer operations teams to establish a behavioral baseline for incoming AI voice calls — <strong>without changing anything in your call flow.</strong></p>
+        <h1 class="reveal">Shadow Evaluation Guide</h1>
+        <p class="lede reveal">A structured, no-cost process for payer operations teams to establish a behavioral baseline for incoming AI voice calls — <strong>without changing anything in your call flow.</strong></p>
         <div class="payer-hero-visual" style="margin-top:1.25rem">
           <picture class="premium-3d">
             <img src="/assets/images/3d-svg/latency-split.svg" alt="Diagram contrasting unverified impersonation latency with the verified NHID-Clinical trust pathway: early disclosure, pre-data checkpoint, escalation, and sealed audit."/>
@@ -190,17 +180,20 @@
       </ul>
 
       <h2 style="margin-top:2.5rem">The 90-Day Structure</h2>
-      <div class="payer-phase-grid" style="margin-top:1rem">
-        <div class="phase-card">
-          <strong>Month 1 — Behavioral Baseline</strong>
+      <div class="feature-grid" style="margin-top:1.25rem">
+        <div class="feature-card reveal">
+          <span class="step-num" aria-hidden="true">1</span>
+          <h3>Month 1 — Behavioral Baseline</h3>
           <p>Log incoming calls. Identify which callers are AI voice agents. Record disclosure timing, escalation behavior, and audit trail presence.</p>
         </div>
-        <div class="phase-card">
-          <strong>Month 2 — Gap Analysis</strong>
+        <div class="feature-card reveal">
+          <span class="step-num" aria-hidden="true">2</span>
+          <h3>Month 2 — Gap Analysis</h3>
           <p>Evaluate identified AI calls against the v1.3 controls (IDG-01, PDX-01, DBC-01, EIT-01, plus the supplemental ATR-01 audit-trail control). Quantify what passes, what fails, what is ambiguous.</p>
         </div>
-        <div class="phase-card">
-          <strong>Month 3 — Written Assessment</strong>
+        <div class="feature-card reveal">
+          <span class="step-num" aria-hidden="true">3</span>
+          <h3>Month 3 — Written Assessment</h3>
           <p>Compile findings into a short written assessment. Share the anonymized results with the community to help inform the next version of the proposal.</p>
         </div>
       </div>
@@ -239,15 +232,15 @@
 
       <h2 style="margin-top:2.5rem">How to Start</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">
-        Email <a href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation" style="color:var(--blue);font-weight:600">contact@nhid-clinical.org</a> with the subject line <strong>"Shadow Evaluation"</strong>. Include your role and the workflows you want to observe.
+        Email <a href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation" style="color:var(--teal-bright);font-weight:600">contact@nhid-clinical.org</a> with the subject line <strong>"Shadow Evaluation"</strong>. Include your role and the workflows you want to observe.
       </p>
 
       <h2 style="margin-top:2.5rem">Related Resources</h2>
       <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
-        <li><a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit" style="font-weight:600;color:var(--blue)">Tier 0 Shadow Pilot Kit &rarr;</a> <span style="color:var(--body)">— capture schema, measurement script, 30-day plan, report template</span></li>
-        <li><a href="/for-payers.html" style="font-weight:600;color:var(--blue)">For Payers guide &rarr;</a> <span style="color:var(--body)">— full 90-day pilot framing</span></li>
-        <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--blue)">Evidence Pack &rarr;</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
-        <li><a href="/demo.html" style="font-weight:600;color:var(--blue)">Reference demonstration line &rarr;</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
+        <li><a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit" style="font-weight:600;color:var(--teal-bright)">Tier 0 Shadow Pilot Kit &rarr;</a> <span style="color:var(--body)">— capture schema, measurement script, 30-day plan, report template</span></li>
+        <li><a href="/for-payers.html" style="font-weight:600;color:var(--teal-bright)">For Payers guide &rarr;</a> <span style="color:var(--body)">— full 90-day pilot framing</span></li>
+        <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--teal-bright)">Evidence Pack &rarr;</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
+        <li><a href="/demo.html" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line &rarr;</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
       </ul>
 
     </div>
