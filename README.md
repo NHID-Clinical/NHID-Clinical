@@ -340,14 +340,14 @@ We are seeking the first **shadow evaluation partners** — 90 days, observe-onl
 
 [**For Payers →**](https://nhid-clinical.org/for-payers.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
-## Maintainer
+## Creator & Project Lead
 
 <img src="assets/maintainer/brianna-baynard.jpg" width="120" align="left" alt="Brianna Baynard" />
 
 **Brianna Baynard**
 AI Governance & Security Researcher · AIGP · ISC² CC · WGU Cybersecurity
 
-Creator and maintainer of NHID-Clinical. Background in healthcare payer operations, identity-verification workflows, and regulated-data environments. NHID-Clinical grew out of direct experience observing operational gaps in healthcare AI voice workflows, and is maintained as an open reference implementation for technical review — feedback and criticism are welcome.
+Creator and project lead for NHID-Clinical. Background in healthcare payer operations, identity-verification workflows, and regulated-data environments. NHID-Clinical grew out of direct experience observing operational gaps in healthcare AI voice workflows, and is maintained as an open reference implementation for technical review — feedback and criticism are welcome.
 
 [LinkedIn](https://linkedin.com/in/brianna-baynard) · [GitHub](https://github.com/NHID-Clinical/NHID-Clinical) · [Project website](https://nhid-clinical.org)
 
