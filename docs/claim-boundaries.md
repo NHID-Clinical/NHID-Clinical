@@ -58,7 +58,7 @@ question.
 | "A non-human-actor identity and delegated-authorization protocol (reference implementation)." | "A universal identity layer." / "Trust infrastructure." / "A control plane." |
 | "A healthcare-specific delegation scheme aligned with emerging authenticated-delegation approaches, composable with SPIFFE/OAuth-style stacks." | "A profile of authenticated delegation" (implies an adopted base standard) · "We invented delegated authority / agent identity / scope attenuation." |
 | "Mapped to NIST AI RMF and ISO/IEC 42001; designed to support the transparency obligations described in EU AI Act Article 50." | "Compliant with / certified against" any of them. |
-| "A voluntary, open proposal and standards candidate." | "An emerging standard." / "The standard for AI agents in healthcare." |
+| "A voluntary open proposal with standards-oriented artifacts." | "An emerging standard." / "The standard for AI agents in healthcare." / "A standards candidate" (implies a formal standards process has started). |
 | "Reference implementation; revocation is in-memory; key custody and federation are documented but not built." | "Production-ready." / "Enterprise infrastructure." |
 | "Disclosure latency is measured on recorded traffic; the framework does not detect covert agents." | "Detects unauthorized/rogue AI callers." |
 | "Delegation makes compromise scoped and revocable rather than unbounded." | "Prevents impersonation / fraud." |
@@ -85,8 +85,9 @@ this writing; adopt by version from current materials.
 - NHID-Clinical is a **voluntary, open proposal** (CC BY 4.0), submitted as a
   **public comment** to a NIST RFI docket (**NIST-2025-0035-0026**). A public
   comment is **not** a NIST endorsement, adoption, or certification.
-- Current honest label: **standards candidate / input to a potential work
-  item** — not an emerging standard.
+- Current honest label: **a voluntary open proposal with standards-oriented
+  artifacts / input to a potential work item** — not an emerging standard, and
+  not a "standards candidate" in the sense of an opened standards-body process.
 - Gating step to strengthen the standards argument: a **second, independent
   implementation passing the conformance test suite**, plus published
   designs for registry/trust-resolution, revocation and key lifecycle, and
@@ -108,6 +109,59 @@ this writing; adopt by version from current materials.
   parallel art, and disclose the gaps first (in-memory revocation, no
   federation, no second implementation, key lifecycle unspecified). Disclosed
   immaturity is forgiven; immaturity dressed as "infrastructure" is not.
+
+---
+
+## Maintainer / Reviewer Claims Control (v1.x)
+
+This is the **authoritative pre-publish gate** for external claims — the
+operational form of the tables above. It is a project governance control, not an
+informal checklist: it exists to prevent uncontrolled external assertions.
+
+> **Reviewer test.** *Could this claim be independently verified from repository
+> artifacts (code, tests, docs) or public records (the NIST filing)?* If not, it
+> does not ship.
+
+**How to use.** Before any artifact goes out — spec, site copy, deck, comment
+letter, README, social post — every external claim it makes MUST map to an
+allowed row below (or a close paraphrase). If a claim matches a prohibited row,
+or matches nothing here, **cut it or rewrite it to the nearest allowed form.**
+When unsure, default to the weaker claim.
+
+### Allowed — with verifiable basis
+
+| Claim | Verifiable basis |
+| :-- | :-- |
+| "An open **reference implementation** and proposed **control model** for receiver-side governance of inbound healthcare AI agents." *(anchor claim)* | `src/nhid_policy_engine_v1.py` + CTS + adapters + simulator + pilot kit |
+| "**Implements receiver-side enforcement behavior.**" | `PolicyAction` + `evaluate_all()` emit the receiver action; CTS asserts `expected_policy_action` |
+| "**Separates identity disclosure, authorization evaluation, enforcement decision, and evidence capture into distinct control stages.**" | `PolicyDecision` flow (IDG/PDX → decision → Enforcement Profile → ATR-01 / FHIR); `docs/enforcement-profile.md`. This staged separation is a core strength — it is not "a disclosure banner." |
+| "A **deterministic, testable conformance model** (same inputs → identical output)." | `conformance/nhid_conformance_test_suite_v1.yaml` + `src/cts_runner.py`; passing unit suite |
+| "Five controls (IDG/PDX/DBC/EIT/ATR-01) plus a documented **Enforcement Profile — not a sixth control.**" | `docs/enforcement-profile.md`; `evaluate_all` ladder |
+| "Emits **FHIR AuditEvent** evidence for the interaction." | `src/fhir_audit_emitter.py`, `nhid_audit_export.py` |
+| "**Mapped to** NIST AI RMF and ISO/IEC 42001; **designed to support** EU AI Act Art. 50 transparency obligations." | `regulatory-alignment.html` — mapping only |
+| "Addresses an **underserved receiver-side operational gap** for inbound healthcare AI voice agents." | Narrow scope; conservative, hedged |
+| "A **voluntary open proposal with standards-oriented artifacts**; submitted a **public comment** to NIST (NIST-2025-0035-0026)." | Public comment ≠ endorsement or an opened standards process |
+| "Revocation is **checked at verification and in-memory** in the reference implementation." | `src/agent_identity.py` — not live / not cross-org |
+| "A **bot-to-bot disclosure gate** exists for agent-to-agent contexts." | `evaluate_bot_to_bot()` — disclosure only, not mutual authorization |
+
+### Prohibited — and why
+
+| Claim | Why prohibited |
+| :-- | :-- |
+| "NHID is **a standard / the standard / an emerging standard / a standards candidate.**" | No adoption body, no accreditation, no second implementation, no opened standards-body process. |
+| "**Provides authentication of AI agents.**" | Conflates identity declaration, credential verification, authorization, and enforcement. **Use instead:** *"NHID evaluates declared identity, authorization context, and interaction policy. It does not replace an underlying identity provider or cryptographic identity infrastructure."* |
+| "**Nobody** is solving receiver-side enforcement." | False — runtime enforcement is actively researched. Say *"no widely adopted, standardized receiver-side model exists."* |
+| "**Solved agent identity** / **prevents impersonation or fraud.**" | Too broad; NHID makes compromise scoped and revocable, it does not prevent it. |
+| "**Production-ready** / enterprise infrastructure / a trust or control plane." | Reference primitive; in-memory revocation, no registry, no federation, no key lifecycle. |
+| "**Compliant with / certified against** NIST / ISO / EU AI Act." | Mapping ≠ compliance ≠ certification. |
+| "**Detects** unauthorized / rogue / covert AI callers." | Measures disclosure on recorded traffic; does not detect covert agents. |
+| "A **universal identity layer** / a **healthcare AI governance framework.**" | Implies the model/bias/clinical scope NHID explicitly excludes. |
+| "**Adopted by** [any payer / provider / vendor]." | Zero production adoption today. |
+
+**Standing decision (do not reopen):** enforcement is documented as an
+Enforcement Profile over the five controls, **not** an `ENF-01` sixth control —
+the implementation already produces enforcement outcomes, so a sixth control
+would duplicate them. See `docs/enforcement-profile.md`.
 
 ---
 
