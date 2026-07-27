@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <b>An operational AI-governance framework for disclosed non-human actors operating under delegated authority in healthcare interactions.</b><br>
-  NHID-Clinical does not govern the AI model. It governs the identity, disclosure, authorization, and auditability of AI-operated interactions across organizational boundaries.
+  <b>NHID-Clinical is an open reference implementation and proposed control model for receiver-side governance of inbound healthcare AI agents.</b><br>
+  It governs the identity disclosure, authorization, and auditability of AI-operated interactions across organizational boundaries — not the AI model itself.
 </p>
 
 <p align="center">
@@ -44,6 +44,28 @@
 **Designed to support the transparency obligations described in EU AI Act Article 50; mapped to NIST AI RMF 1.0.**
 
 NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, a per-call Call Authorization Score (CAS), and an optional cryptographic layer (NHID-Auth v2) for proving delegated authority. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
+
+## Start here
+
+**Who it's for:** security reviewers · healthcare compliance teams · AI voice vendors · payer / provider pilot teams.
+
+Pick your path — each is runnable today:
+
+**🔍 Reviewers & security teams** — read the boundaries, then run the tests.
+1. Skim [what it is / is not](#what-nhid-clinical-is--is-not) and the [claim boundaries](docs/claim-boundaries.md)
+2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **343 passing**
+3. Inspect the five controls in [`src/nhid_policy_engine_v1.py`](src/nhid_policy_engine_v1.py) and the [Enforcement Profile](docs/enforcement-profile.md)
+4. Read the [Conformance Test Suite](conformance/nhid_conformance_test_suite_v1.yaml) — each case asserts an expected policy action
+
+**🛠 AI voice vendors** — see the controls fire, then find your integration points.
+1. Run the [Governance Simulator](https://nhid-clinical.org/simulator.html)
+2. Send a native call payload to a demo adapter — no key required (see [Live API](#live-api--try-it-now))
+3. Map your call flow to the controls via the [Developer guide](https://nhid-clinical.org/developers.html)
+
+**🏥 Payers & providers** — review the controls, then scope a shadow pilot.
+1. Read [the controls](#the-four-core-controls-v13) and the [For Payers](https://nhid-clinical.org/for-payers.html) framing
+2. Pick one workflow (eligibility, claim status, prior auth)
+3. Run the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) on your own logs — observe-only, 2–4 weeks
 
 ## What NHID-Clinical is / is not
 
