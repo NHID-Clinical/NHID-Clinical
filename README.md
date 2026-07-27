@@ -112,6 +112,7 @@ An honest maturity snapshot. NHID-Clinical is a working reference implementation
 - Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
 - Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
 - Conformance Test Suite and a per-call Call Authorization Score (CAS)
+- Documented **[Enforcement Profile](docs/enforcement-profile.md)** — how each control's `PolicyDecision` maps to a receiver action (a documented layer over the five controls, **not a sixth control**)
 - NHID-Auth v2 cryptographic authorization layer, published as public reference code
 
 **In progress**
@@ -138,6 +139,27 @@ Plus **ATR-01** (audit trail) — every call must produce a machine-readable tra
 18-case CTS suite · same inputs → identical output · **343** Python tests passing (+ 66 TypeScript middleware tests)
 
 [**Try the Governance Simulator →**](https://nhid-clinical.org/simulator.html)
+
+## Enforcement Profile
+
+The controls don't just detect — they emit a **receiver action**. Each call turn evaluates to a single `PolicyDecision`, and when several controls fire at once a fixed **Enforcement Ladder** selects the most-protective action for the receiving system to execute. This is documented behavior of the deterministic engine, **not a sixth control** — full spec in [docs/enforcement-profile.md](docs/enforcement-profile.md).
+
+```mermaid
+flowchart LR
+    C["Five controls<br/>IDG-01 · PDX-01 · DBC-01<br/>EIT-01 · ATR-01"] --> D["PolicyDecision<br/>evaluate_all()"]
+    D --> L["Enforcement Ladder<br/>DENY_DATA → ESCALATE_HUMAN →<br/>DISCLOSE_IDENTITY → LOG_ONLY → CONTINUE_AI"]
+    L --> A(["Receiver action"])
+    D --> E["Evidence<br/>ATR-01 · FHIR AuditEvent"]
+    D --> CAS["CAS<br/>downstream score"]
+    CAS -. low score routes to .-> HR(["Human review"])
+
+    classDef box fill:#0F172A,stroke:#14B8A6,stroke-width:2px,color:#F1F5F9
+    classDef acc fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#D1FAE5
+    class C,D,L,E,CAS box
+    class A,HR acc
+```
+
+<sub>Precedence: `DENY_DATA > ESCALATE_HUMAN > DISCLOSE_IDENTITY > LOG_ONLY > CONTINUE_AI`. CAS may route a call to human review, but it never overrides the `PolicyDecision`.</sub>
 
 ## Five-Layer Trust Stack
 
@@ -317,6 +339,19 @@ python examples/issue_and_verify.py
 We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required. Start small: the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) produces usable impersonation-latency and CAS data from your own call logs in 2–4 weeks.
 
 [**For Payers →**](https://nhid-clinical.org/for-payers.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
+
+## Maintainer
+
+<img src="assets/maintainer/brianna-baynard.jpg" width="120" align="left" alt="Brianna Baynard" />
+
+**Brianna Baynard**
+AI Governance & Security Researcher · AIGP · ISC² CC · WGU Cybersecurity
+
+Creator and maintainer of NHID-Clinical. Background in healthcare payer operations, identity-verification workflows, and regulated-data environments. NHID-Clinical grew out of direct experience observing operational gaps in healthcare AI voice workflows, and is maintained as an open reference implementation for technical review — feedback and criticism are welcome.
+
+[LinkedIn](https://linkedin.com/in/brianna-baynard) · [GitHub](https://github.com/NHID-Clinical/NHID-Clinical) · [Project website](https://nhid-clinical.org)
+
+<br clear="left"/>
 
 ---
 
