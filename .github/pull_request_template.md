@@ -23,6 +23,7 @@ open, voluntary reference — not a standard, certification, or production infra
 - [ ] Guards pass: `scripts/validate_ci.py`, `scripts/check_baseline.py`, `scripts/check_number_drift.py`
 - [ ] No new claims of certification, accredited-standard, or regulatory status
 - [ ] Control names and disclaimers are unchanged (or intentionally updated with rationale below)
+- [ ] Public claims reviewed against `docs/claim-boundaries.md` and its Maintainer/Reviewer Claims Control (applies to any external-facing artifact: site copy, blog post, abstract, deck, announcement, demo page)
 
 ## Notes
 
