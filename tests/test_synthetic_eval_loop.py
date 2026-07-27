@@ -4,8 +4,8 @@ Regression test for src/synthetic_eval_loop.py.
 Proves the per-control detection loop correctly surfaces DBC-01 and EIT-01
 (the two controls a naive turn-builder tends to silently drop — see the
 module docstring in synthetic_eval_loop.py for why) alongside IDG-01,
-PDX-01, and ATR-01. Fixtures mirror the six scenarios documented in
-TODO_nhid-synthetic-data.md.
+PDX-01, and ATR-01. Fixtures mirror the six documented synthetic-data
+scenarios.
 """
 import sys
 import os
@@ -83,7 +83,7 @@ _CONVERSATIONS = [
 ]
 
 # Force an ATR-01 violation on the dedicated fixture by knocking out a
-# required audit field, mirroring Scenario 5 in TODO_nhid-synthetic-data.md.
+# required audit field, mirroring the documented Scenario 5.
 _CONVERSATIONS[4]["turns"][0]["_force_missing_session_id"] = True
 
 

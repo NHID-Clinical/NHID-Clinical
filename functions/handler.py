@@ -26,7 +26,7 @@ except ImportError:
 TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 TURNSTILE_SECRET_ENV = "CLOUDFLARE_TURNSTILE_SECRET"
 
-#: Beacon's live ElevenLabs agent — see agents/beacon_system_prompt.md / beacon.config.json.
+#: Beacon's live ElevenLabs agent (prompt and config maintained privately, outside the public repo).
 _BEACON_AGENT_ID = "agent_4001krn32nmwe5t8mqzgee0w84rj"
 
 #: Outbound demo calls cost real Twilio/ElevenLabs minutes, unlike every other
