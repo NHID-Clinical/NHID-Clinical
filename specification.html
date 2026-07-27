@@ -233,7 +233,7 @@ sequenceDiagram
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal applies to <strong>B2B administrative voice workflows</strong> — AI systems calling payer offices on behalf of providers, vendors, or plan administrators. It does not apply to patient-facing calls, clinical decision support, or internal tooling.</p>
 
       <h2 style="margin-top:2.5rem">What This Is Not</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certifying body, no audit process, and no enforcement mechanism. The <a href="/registry.html" style="color:var(--teal-bright);font-weight:600">Implementation Registry</a> is self-attestation only — vendors list themselves and link their own live conformance metrics; NHID-Clinical does not verify or certify entries. The full proposal document (PDF below) contains more detail for interested practitioners.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certifying body, no audit process, and no enforcement mechanism. NHID-Clinical evaluates declared identity, authorization context, and interaction policy; it does not replace an underlying identity provider or cryptographic identity infrastructure. The <a href="/registry.html" style="color:var(--teal-bright);font-weight:600">Implementation Registry</a> is self-attestation only — vendors list themselves and link their own live conformance metrics; NHID-Clinical does not verify or certify entries. The full proposal document (PDF below) contains more detail for interested practitioners.</p>
 
       <h2 style="margin-top:2.5rem">Known Gaps (v1.3)</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">v1.3 addresses <em>observable behavior</em> — disclosure timing, deceptive artifacts, escalation path, audit logging. It does not address caller authorization. Because NPIs are public, a malicious AI can trivially impersonate a provider unless a cryptographic authorization handshake is enforced — <a href="/roadmap.html" style="color:var(--teal-bright);font-weight:600">NHID-Auth v2</a> (released June 2026, CC BY 4.0) addresses this with Ed25519 provider-signed agent passports and NPI binding. NHID-Clinical v1.3 tells you the caller was automated; NHID-Auth v2 tells you the caller was authorized.</p>
@@ -252,7 +252,7 @@ sequenceDiagram
         <h3 style="margin-top:1.5rem;font-size:1.1rem">Broader Context</h3>
         <p style="font-size:0.95rem;line-height:1.6;color:var(--ink)">
           NHID-Clinical is also featured in the <a href="https://ai-governance-map.vercel.app/" target="_blank" style="color:var(--teal-bright);font-weight:600">AI Governance Map</a> 
-          — an interactive maturity radar for tracking compliance across frameworks like NIST RMF, EU AI Act, and ISO 42001.
+          — an interactive maturity radar for tracking alignment across frameworks like NIST RMF, EU AI Act, and ISO 42001.
         </p>
 
         <h3 style="margin-top:1.5rem;font-size:1.1rem">Document Family</h3>
@@ -267,7 +267,7 @@ sequenceDiagram
             </thead>
             <tbody>
                 <tr style="border-bottom:1px solid var(--line)">
-                    <td style="padding:0.5rem">Governance standard</td>
+                    <td style="padding:0.5rem">Governance control model</td>
                     <td style="padding:0.5rem">NHID-Clinical v1.3</td>
                     <td style="padding:0.5rem">Current</td>
                     <td style="padding:0.5rem">Minimum disclosure baseline</td>
