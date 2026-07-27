@@ -65,6 +65,8 @@ NHID-Clinical sits beside the healthcare and identity stack; it replaces none of
 - **IAM platforms** — govern actors *you* provision; NHID-Clinical governs a *counterparty's* agent you never provisioned, arriving with no login step.
 - **AI governance frameworks** (NIST AI RMF, ISO/IEC 42001) — meta-frameworks NHID-Clinical maps to as evidence targets, not competitors.
 
+NHID-Clinical evaluates declared identity, authorization context, and interaction policy; it does **not** replace an underlying identity provider or cryptographic identity infrastructure.
+
 **Healthcare differentiation** — three load-bearing design choices: **NPI-anchored delegation** (the provider's NPI is the delegation trust root), **FHIR-compatible audit evidence**, and a **risk model validated against payer–provider operational workflows**.
 
 The governance gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is a focused shadow pilot on their own traffic — the [**Tier 0 Shadow Pilot Kit**](docs/pilot-kit/README.md) makes that a 2–4 week exercise.
@@ -139,7 +141,7 @@ Plus **ATR-01** (audit trail) — every call must produce a machine-readable tra
   <img alt="Contrast between unverified caller path and NHID-Clinical verified pathway" src="assets/images/3d-svg/latency-split.svg" width="760">
 
   <br>
-  <sub><em>Without a standard: disclosure after PHI moves, no audit trail. With v1.3: early disclosure, verification checkpoint, human escalation, sealed audit.</em></sub>
+  <sub><em>Without a baseline: disclosure after PHI moves, no audit trail. With v1.3: early disclosure, verification checkpoint, human escalation, sealed audit.</em></sub>
 </p>
 
 ## Conformance Flow
