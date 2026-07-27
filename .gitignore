@@ -35,3 +35,6 @@ _site/
 
 # Local virtualenv
 .venv/
+
+# Internal, development-only material (kept locally, out of the public repo)
+_internal/

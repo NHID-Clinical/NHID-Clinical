@@ -1,0 +1,43 @@
+name: Bug report
+description: A reproducible defect in the reference implementation, conformance API, adapters, or tests.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the reference implementation. For open-ended questions, please use
+        [Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) instead.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Policy engine
+        - Conformance API / adapters
+        - NHID-Auth v2 (agent identity)
+        - Tests / CI
+        - Docs
+        - Website
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What went wrong, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Commands, request payloads, or the failing test — enough for someone else to reproduce it.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: Release tag or commit SHA you are running.
