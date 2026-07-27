@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & discussion
+    url: https://github.com/NHID-Clinical/NHID-Clinical/discussions
+    about: Ask questions, share implementation experiences, and discuss the proposal.
+  - name: Security / responsible disclosure
+    url: https://github.com/NHID-Clinical/NHID-Clinical/blob/main/SECURITY.md
+    about: Report a vulnerability privately per the security policy — please do not open a public issue.
+  - name: Shadow evaluation / pilot
+    url: https://nhid-clinical.org/for-payers.html
+    about: Payer or provider teams interested in a 90-day observe-only shadow evaluation.

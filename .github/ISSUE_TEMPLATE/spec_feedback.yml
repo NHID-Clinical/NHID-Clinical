@@ -1,0 +1,35 @@
+name: Specification feedback
+description: Feedback on the v1.3 controls, scope, or a proposed change to the framework.
+labels: ["spec-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        NHID-Clinical is a voluntary open proposal (CC BY 4.0) — **not an accredited standard, certification,
+        or regulatory requirement.** Feedback from practitioners is exactly what shapes the next version.
+  - type: dropdown
+    id: control
+    attributes:
+      label: Which control or section?
+      options:
+        - IDG-01 — Identity Disclosure Gate
+        - PDX-01 — Pre-Data Exchange Gate
+        - DBC-01 — Deceptive Behavior Check
+        - EIT-01 — Escalation Implementation Test
+        - ATR-01 — Audit Trail
+        - CAS — Call Authorization Score
+        - Scope / applicability
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: feedback
+    attributes:
+      label: Your feedback or proposed change
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale / evidence
+      description: What operational experience, data, or reasoning supports this?
