@@ -151,6 +151,78 @@
       url: '/registry.html',
       keywords: 'registry implementations vendors self-attestation cas badge nhid-cas listed conformance certified',
       excerpt: 'Self-attested NHID-Clinical implementations, with live NHID-CAS conformance badges.'
+    },
+    {
+      title: 'Framework',
+      url: '/framework/',
+      keywords: 'framework open core specification controls nhid-auth reference implementation conformance test suite technical stack regulatory alignment cc by 4.0 open source free',
+      excerpt: 'The open framework: specification, control catalog, NHID-Auth, reference implementation, conformance tests, technical stack, and regulatory alignment.'
+    },
+    {
+      title: 'Controls',
+      url: '/framework/controls.html',
+      keywords: 'controls catalog idg-01 identity disclosure gate pdx-01 pre-data exchange gate dbc-01 deceptive behavior check eit-01 escalation implementation test atr-01 audit trail requirements cas call authorization score',
+      excerpt: 'The control catalog — IDG-01, PDX-01, DBC-01, EIT-01, and ATR-01 — with what each control checks and what conformance looks like.'
+    },
+    {
+      title: 'NHID-Auth',
+      url: '/framework/nhid-auth.html',
+      keywords: 'nhid-auth v2 cryptographic authorization ed25519 agent passport signed delegation npi binding offline verification revocation scope expiration',
+      excerpt: 'The v2 cryptographic authorization layer: Ed25519 agent passports, provider-signed delegation, and offline verification with no registry or gatekeeper.'
+    },
+    {
+      title: 'Reference Implementation',
+      url: '/framework/reference-implementation.html',
+      keywords: 'reference implementation policy engine python typescript middleware vapi twilio adapters powershell module openapi postman trace schema deterministic open source',
+      excerpt: 'A dependency-free Python policy engine, TypeScript middleware, voice-platform adapters, trace schema, and tooling — all open under CC BY 4.0.'
+    },
+    {
+      title: 'Conformance Test Suite',
+      url: '/framework/conformance-suite.html',
+      keywords: 'conformance test suite cts yaml deterministic pass fail machine readable runner verify implementation self attestation procurement evidence',
+      excerpt: 'Machine-readable, deterministic pass/fail conformance tests anyone can run against any implementation.'
+    },
+    {
+      title: 'TrustLayer Platform',
+      url: '/platform/',
+      keywords: 'trustlayer platform operational trust infrastructure healthcare ai agents saas monitoring evidence identity authorization reporting modules enterprise open core comparison',
+      excerpt: 'TrustLayer by NHID-Clinical — operational trust infrastructure that runs the same deterministic controls as the open framework.'
+    },
+    {
+      title: 'Agent Registry',
+      url: '/platform/agent-registry.html',
+      keywords: 'agent registry identity source of truth agent id organization vendor owner purpose permissions expiration status inventory agent sprawl lifecycle',
+      excerpt: 'A source of truth for AI agent identity — agent ID, organization, vendor, owner, purpose, permissions, expiration, and status.'
+    },
+    {
+      title: 'Trust Gateway',
+      url: '/platform/trust-gateway.html',
+      keywords: 'trust gateway runtime enforcement identity verification authorization disclosure check scope enforcement audit event proxy block allow escalate fail closed',
+      excerpt: 'Runtime enforcement: identity verification, authorization, disclosure check, scope enforcement, and audit event before the healthcare system is reached.'
+    },
+    {
+      title: 'Evidence Center',
+      url: '/platform/evidence-center.html',
+      keywords: 'evidence center compliance reports evidence packages event history governance exports nist ai rmf iso 42001 hipaa security documentation fhir auditevent audit ready',
+      excerpt: 'Audit-ready evidence generation — compliance reports, evidence packages, event history, and governance exports.'
+    },
+    {
+      title: 'Continuous Conformance Monitoring',
+      url: '/platform/continuous-conformance.html',
+      keywords: 'continuous conformance monitoring operational regression agent update detected human review required version change scheduled re-run drift',
+      excerpt: 'Turn static conformance tests into operational monitoring that re-runs whenever an agent changes.'
+    },
+    {
+      title: 'Enterprise Workflow',
+      url: '/platform/enterprise.html',
+      keywords: 'enterprise workflow sso single sign on rbac role based access control approvals integrations siem export revocation separation of duties posture',
+      excerpt: 'SSO, RBAC, approval workflows, integrations, and SIEM export for organizations operating AI agents at scale.'
+    },
+    {
+      title: 'Pricing',
+      url: '/pricing.html',
+      keywords: 'pricing plans community developer enterprise free open cc by 4.0 specification never paid hosted sandbox api access conformance reports trust gateway evidence center sso support',
+      excerpt: 'The open framework is free under CC BY 4.0. TrustLayer plans for developers and enterprises operating agents at scale.'
     }
   ];
 

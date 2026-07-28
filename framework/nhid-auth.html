@@ -1,16 +1,18 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Implementation Registry — self-attested vendor implementations with live NHID-CAS badges."/>
-  <title>Implementation Registry | NHID-Clinical</title>
+  <meta name="description" content="NHID-Auth v2 — the open cryptographic authorization layer for healthcare AI agents: Ed25519 agent passports, provider-signed delegation, NPI binding, and offline verification."/>
+  <title>NHID-Auth | NHID-Clinical Framework</title>
+  <link rel="canonical" href="https://nhid-clinical.org/framework/nhid-auth.html"/>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -162,66 +164,74 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero" style="position:relative;overflow:clip">
+
+  <section class="inner-hero">
     <div class="hero-glow" aria-hidden="true"></div>
-    <div class="container" style="position:relative;z-index:1">
-      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Implementation Registry</span></div>
-      <p class="eyebrow">Registry · June 2026</p>
-      <h1 class="reveal">Implementation Registry</h1>
-      <p class="lede reveal">Self-attested NHID-Clinical implementations, with live NHID-CAS conformance badges.</p>
+    <div class="container" style="position:relative;z-index:1;max-width:60rem">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/framework/">Framework</a><span>/</span><span>NHID-Auth</span></div>
+      <p class="eyebrow">Layer 3 · v2 · CC BY 4.0</p>
+      <h1>NHID-Auth</h1>
+      <p class="lede">v1.3 tells you the caller was automated. NHID-Auth tells you the caller was authorized.</p>
     </div>
   </section>
 
   <section class="page-section">
-    <div class="container" style="max-width:52rem">
-      <div class="callout" role="note" style="margin-bottom:2rem">
-        <strong>This is a self-attestation list, not a certification.</strong> NHID-Clinical does not
-        certify, audit, or warrant any vendor's implementation. A listing means the vendor ran the
-        public conformance test suite (CTS) against their own integration and chose to publish the
-        result. Badge scores update from each vendor's own live <code>/v1/public/vendor/{id}/badge</code>
-        endpoint call — verify independently before relying on them for procurement decisions.
+    <div class="container" style="max-width:56rem">
+      <h2>The gap it closes</h2>
+      <p style="color:var(--body);line-height:1.85;margin-top:.75rem">NPIs are public. A caller can state one truthfully and still have no relationship to the organization it names. Behavioral controls establish that a caller disclosed itself as automated; they cannot establish that it was ever delegated authority to act for the provider it claims.</p>
+      <p style="color:var(--body);line-height:1.85;margin-top:.75rem">NHID-Auth addresses that with signed delegation rather than a registry or a gatekeeper. A provider signs a statement binding an agent&rsquo;s public key to an NPI and a bounded scope. The receiving side verifies that signature offline — no lookup, no central authority, no service to call.</p>
+
+      <h2 style="margin-top:2.5rem">How it works</h2>
+      <ol class="gateway-flow">
+        <li class="gateway-step"><span class="gw-num">1</span><strong>Provider signs a delegation</strong><span>The provider organization holds a key pair and signs a passport binding an agent public key to its NPI, a purpose, a scope, and an expiration.</span></li>
+        <li class="gateway-step"><span class="gw-num">2</span><strong>Agent presents the passport</strong><span>The AI agent carries the signed passport into the call alongside its behavioral disclosure.</span></li>
+        <li class="gateway-step"><span class="gw-num">3</span><strong>Receiver verifies offline</strong><span>Ed25519 signature verification against the provider&rsquo;s published public key. No network call to NHID-Clinical, no registry lookup, no dependency on us.</span></li>
+        <li class="gateway-step"><span class="gw-num">4</span><strong>Scope is enforced</strong><span>An agent delegated for eligibility checks cannot use the same passport to pursue claims appeals. Scope is a precondition, not a suggestion.</span></li>
+        <li class="gateway-step is-endpoint"><span class="gw-num">5</span><strong>Expiration and revocation</strong><span>Passports carry an expiry. A provider revokes by rotating keys or publishing a revocation, without coordinating with any third party.</span></li>
+      </ol>
+
+      <h2 style="margin-top:2.5rem">Design properties</h2>
+      <div class="content-cards" style="grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin-top:1.25rem">
+        <div class="content-card">
+          <h3>No registry, no gatekeeper</h3>
+          <p>Verification is a signature check. NHID-Clinical is not in the trust path and cannot become a chokepoint.</p>
+        </div>
+        <div class="content-card">
+          <h3>Offline verifiable</h3>
+          <p>Works when the network does not. Nothing about verification requires reaching an external service in real time.</p>
+        </div>
+        <div class="content-card">
+          <h3>Bounded by construction</h3>
+          <p>Scope and expiration are fields in the signed payload, so an over-broad or stale passport fails verification rather than relying on policy.</p>
+        </div>
+        <div class="content-card">
+          <h3>Open reference code</h3>
+          <p>The implementation is public in the repository under CC BY 4.0. Fork it, port it, or write your own against the format.</p>
+        </div>
       </div>
 
-      <h2>Listed Implementations</h2>
-      <div id="registry-list" style="margin:1.5rem 0">
-        <p style="color:var(--body)">Loading…</p>
+      <div class="status-note">
+        <span>&#9432;</span>
+        <span><b>Status:</b> NHID-Auth v2 is a published open reference implementation, not a deployed identity infrastructure. There are no production issuers yet. It documents a workable approach to delegated agent authority and invites implementers to break it.</span>
       </div>
+    </div>
+  </section>
 
-      <h2 style="margin-top:2.5rem">How to Get Listed</h2>
-      <p style="margin-bottom:1rem">
-        Run the conformance test suite against your integration, then complete the
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md">vendor trust questionnaire</a>
-        and open a pull request adding your entry to
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/content/registry_entries.json">content/registry_entries.json</a>.
-        Each entry needs a <code>vendor_id</code> matching the one used when recording conformance results
-        (see <code>record_conformance_result()</code> in <code>nhid_event_store.py</code>), so your badge
-        renders live CAS data instead of the unknown/grey default.
-      </p>
-      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md"
-           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
-          Vendor Trust Questionnaire →
-        </a>
-        <a href="/developers.html#adapters" class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
-          Adapter Reference →
-        </a>
+  <section class="page-cta">
+    <div class="container">
+      <h2>Work with NHID-Auth</h2>
+      <p>The reference code, the integration notes, and the layer it sits in.</p>
+      <div class="page-cta-grid">
+        <a class="page-cta-card" href="/framework/reference-implementation.html"><b>Reference implementation <span class="arr">&rarr;</span></b><span>Where the code lives and how to run it.</span></a>
+        <a class="page-cta-card" href="/technical-stack.html"><b>The five-layer stack <span class="arr">&rarr;</span></b><span>How Layer 3 relates to the rest.</span></a>
+        <a class="page-cta-card" href="/developers.html"><b>Developer guide <span class="arr">&rarr;</span></b><span>APIs, schemas, and integration.</span></a>
+        <a class="page-cta-card" href="/platform/agent-registry.html"><b>Managed identity <span class="arr">&rarr;</span></b><span>TrustLayer&rsquo;s hosted agent registry.</span></a>
       </div>
+      <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0.</p>
     </div>
   </section>
 </main>
 
-<section class="page-cta">
-  <div class="container">
-    <h2>Where to go next</h2>
-    <p>Four ways into NHID-Clinical, whatever you came to do.</p>
-    <div class="page-cta-grid">
-      <a class="page-cta-card" href="/specification.html"><b>Read the Specification <span class="arr">&rarr;</span></b><span>The v1.3 controls, in full.</span></a>
-      <a class="page-cta-card" href="/simulator.html"><b>Try the Simulator <span class="arr">&rarr;</span></b><span>Run the controls on call scenarios.</span></a>
-      <a class="page-cta-card" href="/evidence-pack.html"><b>Review the Evidence Pack <span class="arr">&rarr;</span></b><span>Guarantees, a failure trace, the audit model.</span></a>
-      <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer"><b>Join the Community <span class="arr">&#x2197;</span></b><span>Questions and feedback on GitHub.</span></a>
-    </div>
-  </div>
-</section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
     <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
@@ -231,50 +241,9 @@
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
     </div>
   </div>
+  <p class="footer-copy" style="margin-top:.4rem">This is an open, actively maintained framework — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
 </footer>
 
 <script src="/site.js"></script>
-<script>
-(function () {
-  var listEl = document.getElementById('registry-list');
-  var BADGE_BASE = 'https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/public/vendor/';
-
-  function escapeHtml(str) {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-
-  function renderEntries(entries) {
-    if (!entries.length) {
-      listEl.innerHTML = '<p style="color:var(--body)">No implementations are listed yet. ' +
-        'Be the first — see "How to Get Listed" below.</p>';
-      return;
-    }
-    var rows = entries.map(function (e) {
-      var badgeUrl = BADGE_BASE + encodeURIComponent(e.vendor_id) + '/badge';
-      return '<tr style="border-bottom:1px solid var(--border)">' +
-        '<td style="padding:.75rem">' + escapeHtml(e.name || e.vendor_id) + '</td>' +
-        '<td style="padding:.75rem">' + (e.website ? '<a href="' + escapeHtml(e.website) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(e.website) + '</a>' : '—') + '</td>' +
-        '<td style="padding:.75rem">' + escapeHtml(e.integration_type || '—') + '</td>' +
-        '<td style="padding:.75rem"><img src="' + badgeUrl + '" alt="NHID-CAS badge for ' + escapeHtml(e.vendor_id) + '" /></td>' +
-        '</tr>';
-    }).join('');
-    listEl.innerHTML = '<table style="width:100%;border-collapse:collapse">' +
-      '<thead><tr style="border-bottom:2px solid var(--border);text-align:left">' +
-      '<th style="padding:.75rem">Implementation</th>' +
-      '<th style="padding:.75rem">Website</th>' +
-      '<th style="padding:.75rem">Integration</th>' +
-      '<th style="padding:.75rem">NHID-CAS</th>' +
-      '</tr></thead><tbody>' + rows + '</tbody></table>';
-  }
-
-  fetch('/content/registry_entries.json')
-    .then(function (r) { return r.json(); })
-    .then(renderEntries)
-    .catch(function () {
-      listEl.innerHTML = '<p style="color:var(--body)">No implementations are listed yet. ' +
-        'Be the first — see "How to Get Listed" below.</p>';
-    });
-})();
-</script>
 </body>
 </html>

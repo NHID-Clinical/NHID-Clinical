@@ -3374,3 +3374,475 @@ main p { line-height: 1.75; }
 .page-cta-card b { font-family: var(--display); font-weight: 700; font-size: 1rem; }
 .page-cta-card span { font-size: .85rem; color: var(--body); line-height: 1.5; }
 .page-cta-card .arr { color: var(--teal-bright); font-weight: 800; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Information architecture layer — open framework / TrustLayer platform
+   Additive only. New class names, existing tokens, dark-theme aware.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Nav density — the IA nav carries 8 top-level items instead of 6, so it needs
+   more room than the original 1060px drawer breakpoint allowed. Below 1240px the
+   existing mobile drawer takes over (it lists every item, grouped); between 1180
+   and 1320px the links tighten rather than squeezing the brand or clipping the CTA. */
+.nav-links > a,
+.nav-dropdown-trigger { white-space: nowrap; }
+
+@media (max-width: 1240px) {
+  .nav-links { display: none; }
+  .menu-button { display: inline-flex; }
+}
+
+@media (max-width: 1380px) and (min-width: 1241px) {
+  .nav-links a,
+  .nav-dropdown-trigger { padding-inline: 0.5rem; font-size: 0.88rem; }
+  .nav-links { gap: 0; }
+}
+
+/* ── Dual-path (open framework vs platform) ──────────────────────────────── */
+.dual-path {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.dual-path-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  background: var(--paper);
+  box-shadow: 0 12px 40px rgba(20, 74, 105, 0.06);
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+}
+.dual-path-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(20, 74, 105, 0.1);
+  border-color: rgba(20, 184, 166, .45);
+}
+.dual-path-card .path-tag {
+  align-self: flex-start;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  padding: .3rem .65rem;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  border: 1px solid rgba(11, 110, 188, .22);
+}
+.dual-path-card.is-platform .path-tag {
+  background: var(--teal-soft);
+  color: var(--teal);
+  border-color: rgba(20, 184, 166, .28);
+}
+.dual-path-card h3 { font-size: 1.25rem; margin: 0; }
+.dual-path-card > p { color: var(--body); font-size: .95rem; line-height: 1.7; margin: 0; }
+.dual-path-card ul {
+  list-style: none;
+  padding: 0;
+  margin: .25rem 0 0;
+  display: grid;
+  gap: .5rem;
+}
+.dual-path-card li {
+  color: var(--body);
+  font-size: .9rem;
+  line-height: 1.6;
+  padding-left: 1.15rem;
+  position: relative;
+}
+.dual-path-card li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: .55em;
+  width: .4rem; height: .4rem;
+  border-radius: 50%;
+  background: var(--teal);
+}
+.dual-path-card .card-link { margin-top: auto; padding-top: .75rem; }
+
+/* ── Open Core vs Platform comparison matrix ─────────────────────────────── */
+.compare-matrix-wrap { overflow-x: auto; margin-top: 1.75rem; }
+.compare-matrix {
+  width: 100%;
+  min-width: 40rem;
+  border-collapse: collapse;
+  font-size: .92rem;
+}
+.compare-matrix th,
+.compare-matrix td {
+  padding: .8rem 1.1rem;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.55;
+}
+.compare-matrix thead th {
+  background: var(--mist);
+  color: var(--ink);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: .78rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.compare-matrix tbody th {
+  background: transparent;
+  color: var(--ink);
+  font-weight: 650;
+  font-size: .92rem;
+  white-space: nowrap;
+}
+.compare-matrix td { color: var(--body); }
+.compare-matrix .yes { color: var(--teal); font-weight: 800; }
+.compare-matrix .no  { color: var(--body); opacity: .6; font-weight: 700; }
+.compare-matrix tbody tr:hover td,
+.compare-matrix tbody tr:hover th { background: rgba(20, 184, 166, .04); }
+
+/* ── Platform module cards ───────────────────────────────────────────────── */
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+.module-card {
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  padding: 1.6rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--paper);
+  text-decoration: none;
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+}
+.module-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 42px -24px rgba(15, 23, 42, .3);
+  border-color: rgba(20, 184, 166, .45);
+}
+.module-card .module-num {
+  font-family: var(--display);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: var(--teal);
+}
+.module-card h3 { font-size: 1.06rem; margin: 0; }
+.module-card p { color: var(--body); font-size: .89rem; line-height: 1.65; margin: 0; }
+.module-card .arr { margin-top: auto; padding-top: .6rem; color: var(--teal); font-weight: 700; font-size: .85rem; }
+
+/* ── Trust Gateway flow ──────────────────────────────────────────────────── */
+.gateway-flow {
+  display: grid;
+  gap: 0;
+  max-width: 34rem;
+  margin: 1.75rem 0 0;
+  list-style: none;
+  padding: 0;
+  counter-reset: gw;
+}
+.gateway-step {
+  position: relative;
+  padding: 1rem 1.25rem 1rem 3.4rem;
+  border: 1px solid var(--line);
+  border-radius: .85rem;
+  background: var(--paper);
+}
+.gateway-step + .gateway-step { margin-top: 1.6rem; }
+.gateway-step + .gateway-step::before {
+  content: "";
+  position: absolute;
+  left: 1.85rem;
+  top: -1.35rem;
+  height: 1.1rem;
+  width: 2px;
+  background: linear-gradient(180deg, var(--teal), rgba(20, 184, 166, .25));
+}
+.gateway-step + .gateway-step::after {
+  content: "";
+  position: absolute;
+  left: 1.5rem;
+  top: -.42rem;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--teal);
+}
+.gateway-step .gw-num {
+  counter-increment: gw;
+  position: absolute;
+  left: 1.1rem;
+  top: 1.05rem;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--teal-soft);
+  border: 1px solid rgba(20, 184, 166, .32);
+  color: var(--teal);
+  font-family: var(--display);
+  font-size: .74rem;
+  font-weight: 800;
+}
+.gateway-step strong { display: block; color: var(--ink); font-family: var(--display); font-size: .98rem; }
+.gateway-step span { display: block; margin-top: .2rem; color: var(--body); font-size: .86rem; line-height: 1.6; }
+.gateway-step.is-endpoint { background: var(--mist); border-style: dashed; }
+
+/* ── Pricing plans ───────────────────────────────────────────────────────── */
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+  align-items: stretch;
+}
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  background: var(--paper);
+  box-shadow: 0 12px 40px rgba(20, 74, 105, .06);
+}
+.plan-card.is-highlight { border-color: rgba(20, 184, 166, .55); }
+.plan-card .plan-name {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.plan-card .plan-price {
+  font-family: var(--display);
+  font-size: 2.3rem;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  color: var(--ink);
+  line-height: 1.1;
+  margin: .6rem 0 .1rem;
+  /* keeps the "$0" and "Contact for pricing" rows on the same baseline
+     so the descriptions below them align across all three cards */
+  min-height: 2.55rem;
+  display: flex;
+  align-items: flex-end;
+}
+.plan-card .plan-price small { font-size: .95rem; font-weight: 500; color: var(--body); letter-spacing: 0; }
+.plan-card .plan-for {
+  color: var(--body);
+  font-size: .88rem;
+  line-height: 1.6;
+  padding-bottom: 1.1rem;
+  margin-bottom: 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+.plan-card ul { list-style: none; padding: 0; margin: 0 0 1.6rem; display: grid; gap: .6rem; }
+.plan-card li {
+  position: relative;
+  padding-left: 1.4rem;
+  color: var(--body);
+  font-size: .9rem;
+  line-height: 1.55;
+}
+.plan-card li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: .38em;
+  width: .62rem; height: .34rem;
+  border-left: 2px solid var(--teal);
+  border-bottom: 2px solid var(--teal);
+  transform: rotate(-45deg);
+}
+.plan-card .plan-cta { margin-top: auto; }
+
+/* ── Field reference table (agent registry etc.) ─────────────────────────── */
+.field-table-wrap { overflow-x: auto; margin-top: 1.5rem; }
+.field-table {
+  width: 100%;
+  min-width: 36rem;
+  border-collapse: collapse;
+  font-size: .91rem;
+}
+.field-table th,
+.field-table td {
+  padding: .7rem 1rem;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.55;
+}
+.field-table thead th {
+  background: var(--mist);
+  color: var(--ink);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.field-table td { color: var(--body); }
+.field-table code {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .84rem;
+  color: var(--ink);
+  background: var(--blue-soft);
+  padding: .1rem .35rem;
+  border-radius: 4px;
+}
+
+/* ── Console panel (illustrative monitoring / evidence output) ───────────── */
+.console-panel {
+  margin-top: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: .9rem;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: 0 12px 40px rgba(20, 74, 105, .06);
+}
+.console-bar {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .65rem 1rem;
+  background: var(--mist);
+  border-bottom: 1px solid var(--line);
+}
+.console-bar .console-title {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: .76rem;
+  color: var(--body);
+  letter-spacing: .02em;
+}
+.console-body { padding: 1.15rem 1.25rem; }
+.console-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  padding: .48rem 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: .89rem;
+  color: var(--body);
+}
+.console-line:last-of-type { border-bottom: 0; }
+.console-line .k { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .84rem; }
+.console-line .v { font-weight: 700; color: var(--ink); text-align: right; }
+.console-line .v.pass { color: var(--teal); }
+.console-line .v.fail { color: #c2410c; }
+[data-theme="dark"] .console-line .v.fail { color: #fb923c; }
+.console-verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  margin-bottom: .9rem;
+  padding-bottom: .8rem;
+  border-bottom: 1px solid var(--line);
+}
+.console-verdict strong { font-family: var(--display); color: var(--ink); font-size: 1rem; }
+.console-pill {
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .3rem .7rem;
+  border-radius: 999px;
+  background: var(--teal-soft);
+  color: var(--teal);
+  border: 1px solid rgba(20, 184, 166, .3);
+}
+.console-pill.is-review {
+  background: rgba(234, 88, 12, .1);
+  color: #c2410c;
+  border-color: rgba(234, 88, 12, .28);
+}
+[data-theme="dark"] .console-pill.is-review { color: #fb923c; }
+.console-note {
+  margin-top: .9rem;
+  font-size: .78rem;
+  color: var(--body);
+  opacity: .85;
+  font-style: italic;
+}
+
+/* ── Audience pathway cards ──────────────────────────────────────────────── */
+.pathway-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.75rem;
+}
+.pathway-card {
+  padding: 1.9rem;
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  background: var(--paper);
+}
+.pathway-card h3 { font-size: 1.15rem; margin: 0 0 .4rem; }
+.pathway-card > p { color: var(--body); font-size: .93rem; line-height: 1.65; margin: 0 0 1.1rem; }
+.pathway-steps { list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: .8rem; counter-reset: pw; }
+.pathway-steps li {
+  counter-increment: pw;
+  position: relative;
+  padding-left: 2.1rem;
+  color: var(--body);
+  font-size: .9rem;
+  line-height: 1.6;
+}
+.pathway-steps li::before {
+  content: counter(pw);
+  position: absolute;
+  left: 0; top: -.05em;
+  width: 1.45rem; height: 1.45rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-family: var(--display);
+  font-size: .72rem;
+  font-weight: 800;
+}
+.pathway-card.is-enterprise .pathway-steps li::before { background: var(--teal-soft); color: var(--teal); }
+.pathway-steps li b { color: var(--ink); font-weight: 650; }
+
+/* ── Status note (honest product-stage disclosure) ───────────────────────── */
+.status-note {
+  display: flex;
+  gap: .7rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+  padding: .95rem 1.15rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--teal);
+  border-radius: .6rem;
+  background: var(--mist);
+  color: var(--body);
+  font-size: .87rem;
+  line-height: 1.65;
+}
+.status-note b { color: var(--ink); }
+
+/* ── Dark-theme surface corrections ──────────────────────────────────────── */
+[data-theme="dark"] .dual-path-card,
+[data-theme="dark"] .module-card,
+[data-theme="dark"] .plan-card,
+[data-theme="dark"] .pathway-card,
+[data-theme="dark"] .gateway-step,
+[data-theme="dark"] .console-panel { background: var(--surface); box-shadow: none; }
+[data-theme="dark"] .compare-matrix thead th,
+[data-theme="dark"] .field-table thead th,
+[data-theme="dark"] .console-bar,
+[data-theme="dark"] .gateway-step.is-endpoint,
+[data-theme="dark"] .status-note { background: var(--bg); }
+[data-theme="dark"] .compare-matrix tbody tr:hover td,
+[data-theme="dark"] .compare-matrix tbody tr:hover th { background: rgba(20, 184, 166, .07); }
+
+@media (max-width: 720px) {
+  .dual-path-card, .plan-card, .pathway-card { padding: 1.5rem; }
+  .gateway-flow { max-width: none; }
+}

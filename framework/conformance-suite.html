@@ -1,16 +1,18 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Implementation Registry — self-attested vendor implementations with live NHID-CAS badges."/>
-  <title>Implementation Registry | NHID-Clinical</title>
+  <meta name="description" content="The NHID-Clinical conformance test suite — machine-readable, deterministic pass/fail tests for IDG-01, PDX-01, DBC-01, EIT-01, and ATR-01, runnable by anyone against any implementation."/>
+  <title>Conformance Test Suite | NHID-Clinical Framework</title>
+  <link rel="canonical" href="https://nhid-clinical.org/framework/conformance-suite.html"/>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -162,66 +164,92 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero" style="position:relative;overflow:clip">
+
+  <section class="inner-hero">
     <div class="hero-glow" aria-hidden="true"></div>
-    <div class="container" style="position:relative;z-index:1">
-      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Implementation Registry</span></div>
-      <p class="eyebrow">Registry · June 2026</p>
-      <h1 class="reveal">Implementation Registry</h1>
-      <p class="lede reveal">Self-attested NHID-Clinical implementations, with live NHID-CAS conformance badges.</p>
+    <div class="container" style="position:relative;z-index:1;max-width:60rem">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/framework/">Framework</a><span>/</span><span>Conformance Test Suite</span></div>
+      <p class="eyebrow">Machine-readable · deterministic · CC BY 4.0</p>
+      <h1>Conformance test suite</h1>
+      <p class="lede">A conformance claim you cannot verify is marketing. This suite makes the claim checkable by anyone, including people with no reason to trust the claimant.</p>
     </div>
   </section>
 
   <section class="page-section">
-    <div class="container" style="max-width:52rem">
-      <div class="callout" role="note" style="margin-bottom:2rem">
-        <strong>This is a self-attestation list, not a certification.</strong> NHID-Clinical does not
-        certify, audit, or warrant any vendor's implementation. A listing means the vendor ran the
-        public conformance test suite (CTS) against their own integration and chose to publish the
-        result. Badge scores update from each vendor's own live <code>/v1/public/vendor/{id}/badge</code>
-        endpoint call — verify independently before relying on them for procurement decisions.
+    <div class="container" style="max-width:60rem">
+      <h2>What it is</h2>
+      <p style="color:var(--body);line-height:1.85;margin-top:.75rem">A machine-readable specification of test cases — published as YAML in the open repository at <code style="font-family:'IBM Plex Mono',monospace;font-size:.9rem">conformance/nhid_conformance_test_suite_v1.yaml</code> — paired with a runner that executes them against an implementation and reports pass or fail per control.</p>
+      <p style="color:var(--body);line-height:1.85;margin-top:.75rem">The test definitions are separate from the runner on purpose. If you write your own engine in another language, you can consume the same YAML and be measured against the same cases.</p>
+
+      <h2 style="margin-top:2.5rem">What it tests</h2>
+      <div class="field-table-wrap">
+        <table class="field-table">
+          <thead><tr><th>Control</th><th>Verifies</th><th>Failure severity</th></tr></thead>
+          <tbody>
+            <tr><td><code>IDG-01</code></td><td>Disclosure occurs before the first operational data exchange, with a recorded timestamp</td><td>Critical</td></tr>
+            <tr><td><code>PDX-01</code></td><td>No protected data moves on any turn not preceded by a confirmed disclosure</td><td>Critical</td></tr>
+            <tr><td><code>DBC-01</code></td><td>No deceptive artifacts and no false or evasive human-status claims</td><td>Critical</td></tr>
+            <tr><td><code>EIT-01</code></td><td>Escalation is available, honored on request, and its outcome is recorded</td><td>High</td></tr>
+            <tr><td><code>ATR-01</code></td><td>Every event carries a complete audit envelope that validates against the trace schema</td><td>Critical</td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <h2>Listed Implementations</h2>
-      <div id="registry-list" style="margin:1.5rem 0">
-        <p style="color:var(--body)">Loading…</p>
+      <h2 style="margin-top:2.5rem">Illustrative result</h2>
+      <div class="console-panel">
+        <div class="console-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="console-title">nhid-cts run --suite v1 --target ./engine</span></div>
+        <div class="console-body">
+          <div class="console-verdict"><strong>Suite result</strong><span class="console-pill">Conformant</span></div>
+          <div class="console-line"><span class="k">IDG-01 &middot; Identity Disclosure Gate</span><span class="v pass">PASS</span></div>
+          <div class="console-line"><span class="k">PDX-01 &middot; Pre-Data Exchange Gate</span><span class="v pass">PASS</span></div>
+          <div class="console-line"><span class="k">DBC-01 &middot; Deceptive Behavior Check</span><span class="v pass">PASS</span></div>
+          <div class="console-line"><span class="k">EIT-01 &middot; Escalation Implementation</span><span class="v pass">PASS</span></div>
+          <div class="console-line"><span class="k">ATR-01 &middot; Audit Trail Requirements</span><span class="v pass">PASS</span></div>
+          <p class="console-note">Illustrative output — not a live test run.</p>
+        </div>
       </div>
 
-      <h2 style="margin-top:2.5rem">How to Get Listed</h2>
-      <p style="margin-bottom:1rem">
-        Run the conformance test suite against your integration, then complete the
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md">vendor trust questionnaire</a>
-        and open a pull request adding your entry to
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/content/registry_entries.json">content/registry_entries.json</a>.
-        Each entry needs a <code>vendor_id</code> matching the one used when recording conformance results
-        (see <code>record_conformance_result()</code> in <code>nhid_event_store.py</code>), so your badge
-        renders live CAS data instead of the unknown/grey default.
-      </p>
-      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
-        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md"
-           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
-          Vendor Trust Questionnaire →
-        </a>
-        <a href="/developers.html#adapters" class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
-          Adapter Reference →
-        </a>
+      <h2 style="margin-top:2.5rem">What a pass does and does not mean</h2>
+      <div class="pass-fail" style="margin-top:1rem">
+        <div class="pass-box">
+          <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">A pass means</strong>
+          <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.9rem;line-height:1.7">
+            <li>Your implementation produced the expected verdict on every published case</li>
+            <li>Someone else can reproduce that result from the same inputs</li>
+            <li>You have evidence to show a counterparty during procurement</li>
+          </ul>
+        </div>
+        <div class="fail-box">
+          <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">A pass does not mean</strong>
+          <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.9rem;line-height:1.7">
+            <li>Certification — there is no certifying body and no accreditation</li>
+            <li>Regulatory compliance in any jurisdiction</li>
+            <li>That your production agents behave this way on live calls</li>
+          </ul>
+        </div>
       </div>
+      <div class="status-note">
+        <span>&#9432;</span>
+        <span><b>Self-attestation only.</b> The <a href="/registry.html" style="color:var(--teal-bright);font-weight:600">Implementation Registry</a> lists implementations that report their own results. NHID-Clinical does not verify, audit, or certify entries.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-cta">
+    <div class="container">
+      <h2>Run it</h2>
+      <p>Locally against your own engine, or continuously against your production agents.</p>
+      <div class="page-cta-grid">
+        <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical"><b>Get the suite <span class="arr">&rarr;</span></b><span>YAML definitions and the runner.</span></a>
+        <a class="page-cta-card" href="/docs.html"><b>Live API explorer <span class="arr">&rarr;</span></b><span>Demo routes, no key required.</span></a>
+        <a class="page-cta-card" href="/evidence-pack.html"><b>Evidence pack <span class="arr">&rarr;</span></b><span>What to show a procurement team.</span></a>
+        <a class="page-cta-card" href="/platform/continuous-conformance.html"><b>Continuous monitoring <span class="arr">&rarr;</span></b><span>Static tests as an ongoing signal.</span></a>
+      </div>
+      <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0.</p>
     </div>
   </section>
 </main>
 
-<section class="page-cta">
-  <div class="container">
-    <h2>Where to go next</h2>
-    <p>Four ways into NHID-Clinical, whatever you came to do.</p>
-    <div class="page-cta-grid">
-      <a class="page-cta-card" href="/specification.html"><b>Read the Specification <span class="arr">&rarr;</span></b><span>The v1.3 controls, in full.</span></a>
-      <a class="page-cta-card" href="/simulator.html"><b>Try the Simulator <span class="arr">&rarr;</span></b><span>Run the controls on call scenarios.</span></a>
-      <a class="page-cta-card" href="/evidence-pack.html"><b>Review the Evidence Pack <span class="arr">&rarr;</span></b><span>Guarantees, a failure trace, the audit model.</span></a>
-      <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer"><b>Join the Community <span class="arr">&#x2197;</span></b><span>Questions and feedback on GitHub.</span></a>
-    </div>
-  </div>
-</section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
     <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
@@ -231,50 +259,9 @@
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
     </div>
   </div>
+  <p class="footer-copy" style="margin-top:.4rem">This is an open, actively maintained framework — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
 </footer>
 
 <script src="/site.js"></script>
-<script>
-(function () {
-  var listEl = document.getElementById('registry-list');
-  var BADGE_BASE = 'https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/public/vendor/';
-
-  function escapeHtml(str) {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-
-  function renderEntries(entries) {
-    if (!entries.length) {
-      listEl.innerHTML = '<p style="color:var(--body)">No implementations are listed yet. ' +
-        'Be the first — see "How to Get Listed" below.</p>';
-      return;
-    }
-    var rows = entries.map(function (e) {
-      var badgeUrl = BADGE_BASE + encodeURIComponent(e.vendor_id) + '/badge';
-      return '<tr style="border-bottom:1px solid var(--border)">' +
-        '<td style="padding:.75rem">' + escapeHtml(e.name || e.vendor_id) + '</td>' +
-        '<td style="padding:.75rem">' + (e.website ? '<a href="' + escapeHtml(e.website) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(e.website) + '</a>' : '—') + '</td>' +
-        '<td style="padding:.75rem">' + escapeHtml(e.integration_type || '—') + '</td>' +
-        '<td style="padding:.75rem"><img src="' + badgeUrl + '" alt="NHID-CAS badge for ' + escapeHtml(e.vendor_id) + '" /></td>' +
-        '</tr>';
-    }).join('');
-    listEl.innerHTML = '<table style="width:100%;border-collapse:collapse">' +
-      '<thead><tr style="border-bottom:2px solid var(--border);text-align:left">' +
-      '<th style="padding:.75rem">Implementation</th>' +
-      '<th style="padding:.75rem">Website</th>' +
-      '<th style="padding:.75rem">Integration</th>' +
-      '<th style="padding:.75rem">NHID-CAS</th>' +
-      '</tr></thead><tbody>' + rows + '</tbody></table>';
-  }
-
-  fetch('/content/registry_entries.json')
-    .then(function (r) { return r.json(); })
-    .then(renderEntries)
-    .catch(function () {
-      listEl.innerHTML = '<p style="color:var(--body)">No implementations are listed yet. ' +
-        'Be the first — see "How to Get Listed" below.</p>';
-    });
-})();
-</script>
 </body>
 </html>
