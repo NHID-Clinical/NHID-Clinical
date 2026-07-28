@@ -8,7 +8,7 @@ from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
-    HRFlowable, KeepTogether, Image, PageBreak
+    HRFlowable, KeepTogether, Image, PageBreak, Preformatted
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
@@ -22,19 +22,47 @@ try:
 except ImportError:
     svg2rlg = None
 
-# ── Brand colors (must match nhid-clinical-ui.css :root) ─────────────────────
-NAVY    = colors.HexColor("#082a5b")
-BLUE    = colors.HexColor("#0b6ebc")
-TEAL    = colors.HexColor("#188eaa")
-DARK    = colors.HexColor("#0f172a")
-SLATE   = colors.HexColor("#334155")
-LGRAY   = colors.HexColor("#f5f6fa")
-MGRAY   = colors.HexColor("#e8eaef")
-DGRAY   = colors.HexColor("#6b7285")
-RED     = colors.HexColor("#c0392b")
-GREEN   = colors.HexColor("#27ae60")
-AMBER   = colors.HexColor("#e67e22")
-WHITE   = colors.white
+# ── Brand palette — aligned with the redesigned nhid-clinical website ────────
+#   The website moved from a blue-heavy system to teal/cyan on deep navy.
+#   Design intent: LIGHT document pages (readable, printable, procurement-safe)
+#   with DEEP-NAVY cover/banner/dark panels. Teal is the primary accent; cyan
+#   is used sparingly for lines/relationships (it is too light to sit behind
+#   white text). This is deliberately NOT a neon or dark-mode document.
+#
+#   Accent / primary
+TEAL_BRIGHT = colors.HexColor("#14B8A6")   # primary accent (site --teal-bright)
+CYAN        = colors.HexColor("#67E8F9")   # bright accent — lines/relationships only
+TEAL        = colors.HexColor("#14B8A6")   # alias: legacy usages → primary teal
+TEAL_DEEP   = colors.HexColor("#0E7E72")   # darker teal for text/fills on white
+#   Structure / dark surfaces
+NAVY        = colors.HexColor("#0B1726")   # deep navy — covers, banners, headers
+SURFACE     = colors.HexColor("#111827")   # dark surface — dark cards/panels
+DARK        = colors.HexColor("#111827")   # alias: legacy dark table headers
+CREAM       = colors.HexColor("#E8E0D0")   # warm text ON dark surfaces
+MUTED       = colors.HexColor("#94A3B8")   # muted text ON dark surfaces
+#   Document body (light pages)
+INK         = colors.HexColor("#0B1726")   # headings on white
+SLATE       = colors.HexColor("#334155")   # body text
+DGRAY       = colors.HexColor("#64748B")   # captions / muted body
+LGRAY       = colors.HexColor("#f1f5f9")   # zebra row background
+MGRAY       = colors.HexColor("#e2e8f0")   # hairline borders
+#   Semantic
+GREEN       = colors.HexColor("#059669")   # success (fills/text on white)
+SUCCESS     = colors.HexColor("#34D399")   # success (bright, on dark surfaces)
+AMBER       = colors.HexColor("#F59E0B")   # warning
+RED         = colors.HexColor("#EF4444")   # failure
+WHITE       = colors.white
+#   Legacy alias retained so existing call sites keep compiling; repointed to
+#   the primary teal so every former "blue" accent now reads teal.
+BLUE        = TEAL_BRIGHT
+
+# ── Per-control accent system (distinct, brand-consistent, dark enough for
+#    white text on the control-card header bars) ──────────────────────────────
+C_IDG = colors.HexColor("#14B8A6")   # teal
+C_PDX = colors.HexColor("#0E7E72")   # deep teal
+C_DBC = colors.HexColor("#475569")   # slate
+C_EIT = colors.HexColor("#0E7490")   # cyan-deep
+C_ATR = colors.HexColor("#059669")   # emerald
 
 OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "specs")
 ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
@@ -47,25 +75,67 @@ VISUAL_CAPTION = (
     "Illustrative 3D visualization — conceptual render for clarity (nhid-clinical.org)"
 )
 
-# ── Brand font: Inter (matches --sans / --display in nhid-clinical-ui.css) ──
-try:
-    pdfmetrics.registerFont(TTFont("Inter", os.path.join(FONT_DIR, "Inter-Regular.ttf")))
-    pdfmetrics.registerFont(TTFont("Inter-Bold", os.path.join(FONT_DIR, "Inter-Bold.ttf")))
-    pdfmetrics.registerFont(TTFont("Inter-SemiBold", os.path.join(FONT_DIR, "Inter-SemiBold.ttf")))
-    pdfmetrics.registerFont(TTFont("Inter-Italic", os.path.join(FONT_DIR, "Inter-Italic.ttf")))
-    pdfmetrics.registerFontFamily(
-        "Inter", normal="Inter", bold="Inter-Bold",
-        italic="Inter-Italic", boldItalic="Inter-Bold"
-    )
-    FONT_REGULAR, FONT_BOLD, FONT_SEMIBOLD, FONT_ITALIC = (
-        "Inter", "Inter-Bold", "Inter-SemiBold", "Inter-Italic"
-    )
-except Exception:
-    # Fallback if assets/fonts/*.ttf are missing — Helvetica is metric-compatible
-    # but will not visually match the website's Inter typeface.
-    FONT_REGULAR, FONT_BOLD, FONT_SEMIBOLD, FONT_ITALIC = (
-        FONT_REGULAR, FONT_BOLD, FONT_BOLD, FONT_ITALIC
-    )
+# ── Typography — aligned with the website hierarchy ──────────────────────────
+#   Display / headlines: Raleway   ·   Body: Inter   ·   Technical: IBM Plex Mono
+#   (matches the website's Raleway / Inter / IBM Plex Mono stack exactly;
+#    JetBrains Mono is also vendored as a drop-in alternative.)
+FONT_REGULAR, FONT_BOLD, FONT_SEMIBOLD, FONT_ITALIC = (
+    "Helvetica", "Helvetica-Bold", "Helvetica-Bold", "Helvetica-Oblique"
+)
+FONT_DISPLAY = FONT_BOLD          # headline face (Raleway if available)
+FONT_DISPLAY_XB = FONT_BOLD       # extra-bold display (covers)
+FONT_MONO = "Courier"             # technical face (JetBrains Mono if available)
+
+
+def _register_fonts():
+    global FONT_REGULAR, FONT_BOLD, FONT_SEMIBOLD, FONT_ITALIC
+    global FONT_DISPLAY, FONT_DISPLAY_XB, FONT_MONO
+
+    def reg(name, filename):
+        pdfmetrics.registerFont(TTFont(name, os.path.join(FONT_DIR, filename)))
+
+    # Body — Inter
+    try:
+        reg("Inter", "Inter-Regular.ttf")
+        reg("Inter-Bold", "Inter-Bold.ttf")
+        reg("Inter-SemiBold", "Inter-SemiBold.ttf")
+        reg("Inter-Italic", "Inter-Italic.ttf")
+        pdfmetrics.registerFontFamily(
+            "Inter", normal="Inter", bold="Inter-Bold",
+            italic="Inter-Italic", boldItalic="Inter-Bold"
+        )
+        FONT_REGULAR, FONT_BOLD, FONT_SEMIBOLD, FONT_ITALIC = (
+            "Inter", "Inter-Bold", "Inter-SemiBold", "Inter-Italic"
+        )
+        FONT_DISPLAY = FONT_DISPLAY_XB = "Inter-Bold"   # fallback before Raleway loads
+    except Exception:
+        pass
+
+    # Display — Raleway (headline character matching the site)
+    try:
+        reg("Raleway-SemiBold", "Raleway-SemiBold.ttf")
+        reg("Raleway-Bold", "Raleway-Bold.ttf")
+        reg("Raleway-ExtraBold", "Raleway-ExtraBold.ttf")
+        FONT_DISPLAY = "Raleway-Bold"
+        FONT_DISPLAY_XB = "Raleway-ExtraBold"
+    except Exception:
+        pass
+
+    # Technical — IBM Plex Mono (the website's actual mono face, for exact parity).
+    # JetBrains Mono is also vendored as a drop-in alternative.
+    try:
+        reg("IBMPlexMono", "IBMPlexMono-Regular.ttf")
+        reg("IBMPlexMono-Medium", "IBMPlexMono-Medium.ttf")
+        FONT_MONO = "IBMPlexMono"
+    except Exception:
+        try:
+            reg("JetBrainsMono", "JetBrainsMono-Regular.ttf")
+            FONT_MONO = "JetBrainsMono"
+        except Exception:
+            pass
+
+
+_register_fonts()
 
 # ── Custom flowables ─────────────────────────────────────────────────────────
 
@@ -372,8 +442,8 @@ class TimelineBar(Flowable):
     def draw(self):
         c = self.canv
         phases = [
-            ("Month 1", "Behavioral\nBaseline", BLUE),
-            ("Month 2", "Gap\nAnalysis", TEAL),
+            ("Month 1", "Behavioral\nBaseline", TEAL_DEEP),
+            ("Month 2", "Gap\nAnalysis", TEAL_BRIGHT),
             ("Month 3", "Written\nAssessment", GREEN),
         ]
         seg_w = self._width / 3
@@ -417,9 +487,9 @@ class LayerStack(Flowable):
         layers = [
             ("0", "NPI Gap",            "The problem — no cross-org NPI auth",                  colors.HexColor("#8e2020")),
             ("1", "STIR/SHAKEN",        "RFC 8224 — carrier number auth (A/B/C attestation)",   colors.HexColor("#9e5a00")),
-            ("2", "NHID-Clinical v1.3", "Behavioral baseline — 4 controls, 5 CTS tests",        BLUE),
-            ("3", "NHID-Auth v2",       "Cryptographic agent identity — Ed25519, NPI binding",   TEAL),
-            ("4", "FHIR / OpenTelemetry","Healthcare-native audit + SIEM export",                GREEN),
+            ("2", "NHID-Clinical v1.3", "Behavioral baseline — 5 controls, 18 CTS tests",       TEAL_DEEP),
+            ("3", "NHID-Auth v2",       "Cryptographic agent identity — Ed25519, NPI binding",  TEAL_BRIGHT),
+            ("4", "FHIR / OpenTelemetry","Healthcare-native audit + SIEM export",               colors.HexColor("#0E7490")),
         ]
         row_h = self._height / len(layers)
         for i, (num, name, desc, col) in enumerate(reversed(layers)):
@@ -489,10 +559,215 @@ class APITable(Flowable):
         return self._width, self._height
 
 
+def _wrap_text(text, font, size, max_w):
+    words = text.split()
+    lines, line = [], ""
+    for w in words:
+        test = (line + " " + w).strip()
+        if pdfmetrics.stringWidth(test, font, size) < max_w:
+            line = test
+        else:
+            if line:
+                lines.append(line)
+            line = w
+    if line:
+        lines.append(line)
+    return lines
+
+
+class CoverPage(Flowable):
+    """Full-bleed navy cover shared by every document in the suite.
+
+    Carries the complete family masthead: wordmark, audience badge, title,
+    subtitle, version · date · CC BY 4.0 · NIST public-comment reference, and
+    the open-proposal disclaimer. A soft teal/cyan halo (low-alpha concentric
+    rings) echoes the website's glow without turning the page neon.
+    """
+    def __init__(self, title, subtitle, version, audience,
+                 date="June 2026", logo_path=None):
+        super().__init__()
+        self.title = title
+        self.subtitle = subtitle
+        self.version = version
+        self.audience = audience
+        self.date = date
+        self.logo_path = logo_path or LOGO_PATH
+        self._width = 6.5 * inch
+        self._height = 9.25 * inch   # fits the content frame; the navy is drawn full-bleed
+
+    def wrap(self, availWidth, availHeight):
+        return self._width, self._height
+
+    def draw(self):
+        c = self.canv
+        W, H = c._pagesize
+        ox, oy = -inch, -0.75 * inch           # page origin relative to flowable
+        # ── full-bleed deep navy field ───────────────────────────────────────
+        c.setFillColor(NAVY)
+        c.rect(ox, oy, W, H, fill=1, stroke=0)
+        # ── soft teal/cyan halo, top-right (simulated glow) ──────────────────
+        cx, cy = ox + W - 1.1 * inch, oy + H - 1.1 * inch
+        for r, col, a in [(3.2*inch, CYAN, 0.06), (2.3*inch, TEAL_BRIGHT, 0.08),
+                          (1.5*inch, TEAL_BRIGHT, 0.10)]:
+            c.setFillColor(col)
+            c.setFillAlpha(a)
+            c.circle(cx, cy, r, fill=1, stroke=0)
+        c.setFillAlpha(1)
+        # ── top accent bar (teal → cyan) ─────────────────────────────────────
+        c.setFillColor(TEAL_BRIGHT)
+        c.rect(ox, oy + H - 6, W * 0.62, 6, fill=1, stroke=0)
+        c.setFillColor(CYAN)
+        c.rect(ox + W * 0.62, oy + H - 6, W * 0.38, 6, fill=1, stroke=0)
+        # ── wordmark ─────────────────────────────────────────────────────────
+        left = ox + inch
+        top = oy + H - 1.2 * inch
+        if os.path.exists(self.logo_path):
+            try:
+                c.drawImage(self.logo_path, left, top - 6, width=30, height=30,
+                            mask="auto", preserveAspectRatio=True)
+            except Exception:
+                pass
+        c.setFillColor = c.setFillColor
+        c.setFillColor(WHITE)
+        c.setFont(FONT_DISPLAY, 17)
+        c.drawString(left + 40, top + 2, "NHID-Clinical")
+        # ── audience badge ───────────────────────────────────────────────────
+        by = top - 0.75 * inch
+        badge = self.audience.upper()
+        bw = pdfmetrics.stringWidth(badge, FONT_SEMIBOLD, 8.5) + 20
+        c.setFillColor(TEAL_BRIGHT)
+        c.setFillAlpha(0.16)
+        c.roundRect(left, by, bw, 20, 5, fill=1, stroke=0)
+        c.setFillAlpha(1)
+        c.setFillColor(CYAN)
+        c.setFont(FONT_SEMIBOLD, 8.5)
+        c.drawString(left + 10, by + 6, badge)
+        # ── title (Raleway extra-bold, wrapped) ──────────────────────────────
+        ty = by - 0.55 * inch
+        c.setFillColor(WHITE)
+        title_lines = _wrap_text(self.title, FONT_DISPLAY_XB, 30, W - 2.2 * inch)
+        for ln in title_lines:
+            c.setFont(FONT_DISPLAY_XB, 30)
+            c.drawString(left, ty, ln)
+            ty -= 34
+        # ── subtitle ─────────────────────────────────────────────────────────
+        ty -= 6
+        c.setFillColor(CREAM)
+        for ln in _wrap_text(self.subtitle, FONT_REGULAR, 12, W - 2.4 * inch):
+            c.setFont(FONT_REGULAR, 12)
+            c.drawString(left, ty, ln)
+            ty -= 17
+        # ── meta line ────────────────────────────────────────────────────────
+        ty -= 20
+        c.setStrokeColor(TEAL_BRIGHT)
+        c.setLineWidth(2)
+        c.line(left, ty + 10, left + 1.2 * inch, ty + 10)
+        ty -= 6
+        c.setFillColor(MUTED)
+        c.setFont(FONT_SEMIBOLD, 9.5)
+        for ln in [
+            f"Version {self.version}  ·  {self.date}  ·  CC BY 4.0",
+            "Author: Brianna Baynard  ·  Independent, practitioner-led",
+            "NIST Public Comment: NIST-2025-0035-0026",
+        ]:
+            c.drawString(left, ty, ln)
+            ty -= 15
+        # ── open-proposal disclaimer, anchored near the foot ─────────────────
+        dy = oy + 1.0 * inch
+        dw = W - 2 * inch
+        c.setStrokeColor(AMBER)
+        c.setLineWidth(1)
+        c.setFillColor(colors.HexColor("#161f14"))
+        disc_lines = _wrap_text(
+            "NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is a "
+            "voluntary open proposal — not an accredited standard, not a certification "
+            "program, and not a regulatory requirement. No HIPAA compliance, security "
+            "guarantees, or liability protection are implied.",
+            FONT_REGULAR, 8.5, dw - 24)
+        box_h = 22 + len(disc_lines) * 12 + 8
+        c.roundRect(left, dy, dw, box_h, 6, fill=1, stroke=1)
+        c.setFillColor(AMBER)
+        c.setFont(FONT_SEMIBOLD, 8)
+        c.drawString(left + 12, dy + box_h - 15, "OPEN PROPOSAL — NOT A STANDARD OR REGULATORY REQUIREMENT")
+        c.setFillColor(CREAM)
+        c.setFont(FONT_REGULAR, 8.5)
+        yy = dy + box_h - 29
+        for ln in disc_lines:
+            c.drawString(left + 12, yy, ln)
+            yy -= 12
+
+
+class ExecutiveSummary(Flowable):
+    """Page-1 executive panel: What it is · Why it matters · Operational impact.
+
+    A light bordered card with a teal spine — designed so a VP grasps the
+    document in well under 90 seconds before any dense prose.
+    """
+    def __init__(self, rows, width=6.5 * inch):
+        super().__init__()
+        self.rows = rows          # list[(label, text)]
+        self._width = width
+        self._pad = 14
+        self._label_w = 1.35 * inch
+        self._text_w = width - self._pad * 2 - self._label_w - 10
+        self._row_lines = [
+            _wrap_text(t, FONT_REGULAR, 9, self._text_w) for _, t in rows
+        ]
+        h = 30  # header
+        for lines in self._row_lines:
+            h += max(len(lines) * 12, 14) + 8
+        self._height = h + 8
+
+    def wrap(self, availWidth, availHeight):
+        return self._width, self._height
+
+    def draw(self):
+        c = self.canv
+        H = self._height
+        c.setFillColor(colors.HexColor("#f4faf9"))
+        c.setStrokeColor(MGRAY)
+        c.setLineWidth(0.75)
+        c.roundRect(0, 0, self._width, H, 8, fill=1, stroke=1)
+        c.setFillColor(TEAL_BRIGHT)
+        c.roundRect(0, 0, 5, H, 2, fill=1, stroke=0)
+        c.rect(3, 0, 2, H, fill=1, stroke=0)
+        c.setFillColor(TEAL_DEEP)
+        c.setFont(FONT_SEMIBOLD, 8.5)
+        c.drawString(self._pad + 6, H - 18, "EXECUTIVE SUMMARY")
+        y = H - 36
+        for (label, _), lines in zip(self.rows, self._row_lines):
+            c.setFillColor(INK)
+            c.setFont(FONT_SEMIBOLD, 9)
+            c.drawString(self._pad + 6, y, label)
+            c.setFillColor(SLATE)
+            c.setFont(FONT_REGULAR, 9)
+            ty = y
+            for ln in lines:
+                c.drawString(self._pad + 6 + self._label_w, ty, ln)
+                ty -= 12
+            y -= max(len(lines) * 12, 14) + 8
+
+
+def _key_metrics(width=6.5 * inch):
+    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 343 Tests · 6 Adapters."""
+    return _stats_row([
+        ("5", "Controls"),
+        ("18", "CTS Cases"),
+        ("343", "Tests"),
+        ("6", "Adapters"),
+    ])
+
+
+def _cover(story, title, subtitle, version, audience, logo_path=None):
+    """Append a full cover page + page break — the shared suite masthead."""
+    story.append(CoverPage(title, subtitle, version, audience, logo_path=logo_path))
+    story.append(PageBreak())
+
+
 def _styles():
     s = getSampleStyleSheet()
-    h1 = ParagraphStyle("H1", fontName=FONT_BOLD, fontSize=14, textColor=NAVY, spaceAfter=4)
-    h2 = ParagraphStyle("H2", fontName=FONT_BOLD, fontSize=11, textColor=BLUE, spaceAfter=4, spaceBefore=10)
+    h1 = ParagraphStyle("H1", fontName=FONT_DISPLAY, fontSize=15, textColor=INK, spaceAfter=4)
+    h2 = ParagraphStyle("H2", fontName=FONT_DISPLAY, fontSize=11.5, textColor=TEAL_DEEP, spaceAfter=4, spaceBefore=10)
     body = ParagraphStyle("Body", fontName=FONT_REGULAR, fontSize=9, textColor=SLATE, leading=14, spaceAfter=4)
     small = ParagraphStyle("Small", fontName=FONT_REGULAR, fontSize=8, textColor=DGRAY, leading=12)
     disc = ParagraphStyle("Disclaimer", fontName=FONT_ITALIC, fontSize=7.5,
@@ -554,8 +829,8 @@ def _stats_row(stats):
     stat_cells = []
     for val, lbl in stats:
         stat_cells.append(Paragraph(
-            f'<font size="22" color="#0b6ebc"><b>{val}</b></font><br/>'
-            f'<font size="8" color="#6b7285">{lbl}</font>',
+            f'<font size="22" color="#14B8A6"><b>{val}</b></font><br/>'
+            f'<font size="8" color="#64748B">{lbl}</font>',
             ParagraphStyle("SC", alignment=TA_CENTER, leading=16)
         ))
     t = Table([stat_cells], colWidths=[1.6 * inch] * len(stats))
@@ -580,12 +855,21 @@ def _open_proposal_disclaimer():
 
 def _footer_canvas(canvas, doc):
     canvas.saveState()
+    # thin teal rule above the footer for a consistent running-foot
+    canvas.setStrokeColor(MGRAY)
+    canvas.setLineWidth(0.5)
+    canvas.line(inch, 0.62 * inch, 7.5 * inch, 0.62 * inch)
     canvas.setFillColor(DGRAY)
     canvas.setFont(FONT_REGULAR, 7.5)
-    canvas.drawString(inch, 0.5 * inch,
+    canvas.drawString(inch, 0.46 * inch,
         "NHID-Clinical  ·  nhid-clinical.org  ·  CC BY 4.0  ·  Brianna Baynard  ·  NIST-2025-0035-0026")
-    canvas.drawRightString(7.5 * inch, 0.5 * inch, f"Page {doc.page}")
+    canvas.drawRightString(7.5 * inch, 0.46 * inch, f"Page {doc.page}")
     canvas.restoreState()
+
+
+def _cover_footer(canvas, doc):
+    """First page is a full-bleed cover — suppress the running footer there."""
+    return
 
 
 # ── Document 1: Shadow Evaluation Guide ──────────────────────────────────────
@@ -598,14 +882,15 @@ def make_shadow_guide():
     H1, H2, BODY, SMALL, DISC = _styles()
     story = []
 
-    story.append(TitleBanner(
+    _cover(
+        story,
         "Shadow Evaluation Guide",
         "NHID-Clinical v1.3  ·  90-Day Behavioral Baseline for AI Voice Agents",
-        "v1.3"
-    ))
-    story.append(Spacer(1, 0.18*inch))
+        "1.3",
+        "Payer Operations",
+    )
 
-    # Disclaimer
+    # Program-specific disclaimer (in addition to the cover's open-proposal notice)
     story.append(Paragraph(
         "⚠  NHID-Clinical is an early-stage open proposal by Brianna Baynard. "
         "It is not an accredited standard or regulatory requirement. No payer has piloted "
@@ -615,12 +900,12 @@ def make_shadow_guide():
     story.append(Spacer(1, 0.15*inch))
 
     # What this is — 4 colored info boxes
-    story.append(Paragraph("What This Is", H1))
+    _section(story, "What This Is", H1)
     info_cards = [
-        ("No Cost",        BLUE,  "No vendor changes. No production risk. Observe-only alongside your current call flow."),
-        ("Shadow Mode",    TEAL,  "Your existing call handling is unchanged. Measure how today's AI voice traffic behaves."),
-        ("No Commitment",  GREEN, "No certification, no SLA. Share anonymized findings with the community if you choose."),
-        ("Clear Goal",     SLATE, "Produce a written behavioral baseline showing AI agent disclosure, escalation, and logging."),
+        ("No Cost",        TEAL_DEEP,   "No vendor changes. No production risk. Observe-only alongside your current call flow."),
+        ("Shadow Mode",    TEAL_BRIGHT, "Your existing call handling is unchanged. Measure how today's AI voice traffic behaves."),
+        ("No Commitment",  GREEN,       "No certification, no SLA. Share anonymized findings with the community if you choose."),
+        ("Clear Goal",     SLATE,       "Produce a written behavioral baseline showing AI agent disclosure, escalation, and logging."),
     ]
     for title, col, body_txt in info_cards:
         story.append(ColorBlock(title, body_txt, col, width=6.5*inch, height=0.85*inch))
@@ -657,13 +942,13 @@ def make_shadow_guide():
 
     controls = [
         ("IDG-01", "Identity Disclosure Gate",
-         "AI agent must disclose it is automated before any PHI or data exchange.", BLUE),
+         "AI agent must disclose it is automated before any PHI or data exchange.", C_IDG),
         ("DBC-01", "Deceptive Behavior Check",
-         "No synthetic voice artifacts designed to impersonate a human. No fake breathing.", SLATE),
+         "No synthetic voice artifacts designed to impersonate a human. No fake breathing.", C_DBC),
         ("EIT-01", "Escalation Implementation Test",
-         "Immediate, clean escalation to a human on request — no delay, no re-prompt.", TEAL),
+         "Immediate, clean escalation to a human on request — no delay, no re-prompt.", C_EIT),
         ("ATR-01", "Audit Trail",
-         "Basic log reconstructing when disclosure occurred and what data was exchanged.", GREEN),
+         "Basic log reconstructing when disclosure occurred and what data was exchanged.", C_ATR),
     ]
     # Two-column card layout
     for i in range(0, len(controls), 2):
@@ -698,7 +983,7 @@ def make_shadow_guide():
         BLUE, width=6.5*inch, height=0.8*inch
     ))
 
-    doc.build(story, onFirstPage=_footer_canvas, onLaterPages=_footer_canvas)
+    doc.build(story, onFirstPage=_cover_footer, onLaterPages=_footer_canvas)
     print(f"  ✓  {path}")
     return path
 
@@ -714,23 +999,14 @@ def make_core_spec():
     story = []
     spec_logo = LOGO_LIGHT_PATH if os.path.exists(LOGO_LIGHT_PATH) else LOGO_PATH
 
-    story.append(TitleBanner(
+    _cover(
+        story,
         "NHID-Clinical v1.3 Core Specification",
         "Behavioral Baseline for AI Voice Agents in B2B Healthcare Payer–Provider Calls",
-        "v1.3",
+        "1.3",
+        "Technical Reference",
         logo_path=spec_logo,
-        logo_w=56,
-        logo_h=56,
-        height=1.75 * inch,
-    ))
-    story.append(Spacer(1, 0.1 * inch))
-    _append_meta_block(story, [
-        "<b>TECHNICAL REFERENCE</b>  ·  Version 1.3 (June 2026)  ·  CC BY 4.0",
-        "Author: Brianna Baynard  ·  NIST Public Comment: NIST-2025-0035-0026",
-        "Repository: github.com/NHID-Clinical/NHID-Clinical  ·  nhid-clinical.org",
-    ])
-    story.append(DisclaimerBanner(_open_proposal_disclaimer()))
-    story.append(Spacer(1, 0.12 * inch))
+    )
     story.append(_svg_visual(
         "nexus.svg",
         caption="Governance Trust Nexus — illustrative bridge between payer and provider voice workflows",
@@ -751,9 +1027,9 @@ def make_core_spec():
     ))
     story.append(Spacer(1, 0.08 * inch))
     story.append(_stats_row([
-        ("4", "Controls"),
+        ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("330", "Unit Tests"),
+        ("343", "Unit Tests"),
         ("6", "Adapters"),
     ]))
     story.append(Spacer(1, 0.12 * inch))
@@ -769,13 +1045,13 @@ def make_core_spec():
     controls = [
         ("IDG-01", "Identity Disclosure Gate",
          "Agent MUST identify itself as automated before any PHI exchange. "
-         "Disclosure in the first substantive utterance.", BLUE),
+         "Disclosure in the first substantive utterance.", C_IDG),
         ("PDX-01", "Pre-Data Exchange Gate",
-         "No PHI (member ID, NPI, DOB, claim number) until IDG-01 disclosure is confirmed.", RED),
+         "No PHI (member ID, NPI, DOB, claim number) until IDG-01 disclosure is confirmed.", C_PDX),
         ("DBC-01", "Deceptive Behavior Check",
-         "No claim of human identity; no deceptive artifacts designed to imply human presence.", SLATE),
+         "No claim of human identity; no deceptive artifacts designed to imply human presence.", C_DBC),
         ("EIT-01", "Escalation Implementation Test",
-         "Human escalation path communicated; transfer executes immediately on request.", TEAL),
+         "Human escalation path communicated; transfer executes immediately on request.", C_EIT),
     ]
     for i in range(0, len(controls), 2):
         row_cards = [ControlCard(*c) for c in controls[i:i + 2]]
@@ -844,7 +1120,7 @@ def make_core_spec():
         TEAL, width=6.5 * inch, height=0.9 * inch
     ))
 
-    doc.build(story, onFirstPage=_footer_canvas, onLaterPages=_footer_canvas)
+    doc.build(story, onFirstPage=_cover_footer, onLaterPages=_footer_canvas)
     print(f"  ✓  {path}")
     return path
 
@@ -860,23 +1136,28 @@ def make_operational_blueprint():
     story = []
     spec_logo = LOGO_LIGHT_PATH if os.path.exists(LOGO_LIGHT_PATH) else LOGO_PATH
 
-    story.append(TitleBanner(
+    _cover(
+        story,
         "Operational Blueprint",
         "NHID-Clinical v1.3  ·  From RFP Language to Audit-Ready Production",
-        "v1.3",
+        "1.3",
+        "Payer & Procurement Reference",
         logo_path=spec_logo,
-        logo_w=56,
-        logo_h=56,
-        height=1.75 * inch,
-    ))
-    story.append(Spacer(1, 0.1 * inch))
-    _append_meta_block(story, [
-        "<b>PAYER &amp; PROCUREMENT REFERENCE</b>  ·  Version 1.3 (June 2026)  ·  CC BY 4.0",
-        "Author: Brianna Baynard  ·  NIST Public Comment: NIST-2025-0035-0026",
-        "Shadow Evaluation Guide: nhid-clinical.org/shadow-evaluation-guide.html",
-    ])
-    story.append(DisclaimerBanner(_open_proposal_disclaimer()))
+    )
+    story.append(ExecutiveSummary([
+        ("What it is",
+         "A payer- and procurement-facing blueprint for turning NHID-Clinical's voluntary "
+         "transparency controls into RFP language and audit-ready vendor accountability."),
+        ("How a payer uses it",
+         "Add one standard conformance clause to a voice-AI vendor RFP or BAA amendment, have the "
+         "vendor run the open test suite, validate the JSON traces yourself, then measure and decide."),
+        ("Operational impact",
+         "Machine-auditable proof of how each voice agent handles identity disclosure — no custom "
+         "contract language, no internal validation tooling, and no production risk."),
+    ]))
     story.append(Spacer(1, 0.12 * inch))
+    story.append(_key_metrics())
+    story.append(Spacer(1, 0.14 * inch))
     story.append(_svg_visual(
         "trust-stack.svg",
         caption="Five-layer trust stack — network foundation through observability",
@@ -952,10 +1233,10 @@ def make_operational_blueprint():
     ))
     story.append(Spacer(1, 0.08 * inch))
     clause_style = ParagraphStyle(
-        "Clause", fontName="Courier", fontSize=8.5, leading=13,
-        backColor=colors.HexColor("#f0f4ff"),
-        borderColor=BLUE, borderWidth=0.75, borderPadding=12,
-        textColor=NAVY
+        "Clause", fontName=FONT_MONO, fontSize=8.5, leading=13,
+        backColor=colors.HexColor("#effcfa"),
+        borderColor=TEAL_BRIGHT, borderWidth=0.75, borderPadding=12,
+        textColor=INK
     )
     story.append(Paragraph(
         '"The vendor\'s AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all '
@@ -990,7 +1271,7 @@ def make_operational_blueprint():
         ["NIST AI RMF / CAISI", "Cross-org agent identity", "NHID-Auth v2"],
     ], [1.7 * inch, 2.5 * inch, 2.1 * inch]))
 
-    doc.build(story, onFirstPage=_footer_canvas, onLaterPages=_footer_canvas)
+    doc.build(story, onFirstPage=_cover_footer, onLaterPages=_footer_canvas)
     print(f"  ✓  {path}")
     return path
 
@@ -1005,12 +1286,13 @@ def make_technical_playbook():
     H1, H2, BODY, SMALL, DISC = _styles()
     story = []
 
-    story.append(TitleBanner(
+    _cover(
+        story,
         "v2 Technical Playbook",
         "NHID-Clinical  ·  Tech Stack, Adoption Tiers & Governance Framework Reference",
-        "v2.0"
-    ))
-    story.append(Spacer(1, 0.18*inch))
+        "2.0",
+        "Engineering Reference",
+    )
 
     story.append(Paragraph(
         "⚠  NHID-Clinical is an early-stage open proposal by Brianna Baynard. "
@@ -1021,7 +1303,7 @@ def make_technical_playbook():
     story.append(Spacer(1, 0.15*inch))
 
     # Core Objectives
-    story.append(Paragraph("Core Objectives", H1))
+    _section(story, "Core Objectives", H1)
     for n in [
         "Establish a voluntary behavioral baseline — disclosure, data-gating, escalation, "
         "and audit — for AI voice agents in B2B healthcare payer–provider calls.",
@@ -1162,7 +1444,7 @@ def make_technical_playbook():
         SLATE, width=6.5*inch, height=0.55*inch
     ))
 
-    doc.build(story, onFirstPage=_footer_canvas, onLaterPages=_footer_canvas)
+    doc.build(story, onFirstPage=_cover_footer, onLaterPages=_footer_canvas)
     print(f"  ✓  {path}")
     return path
 
@@ -1177,12 +1459,13 @@ def make_knowledge_archive():
     H1, H2, BODY, SMALL, DISC = _styles()
     story = []
 
-    story.append(TitleBanner(
+    _cover(
+        story,
         "Knowledge Archive",
         "NHID-Clinical  ·  Public Reference Edition — Vision, Governance & Regulatory Alignment",
-        "v1.2"
-    ))
-    story.append(Spacer(1, 0.18*inch))
+        "1.3",
+        "Policy & Governance Reference",
+    )
 
     story.append(Paragraph(
         "⚠  NHID-Clinical is an early-stage open proposal by Brianna Baynard. "
@@ -1238,13 +1521,13 @@ def make_knowledge_archive():
     story.append(Paragraph("Core Framework — The Four Controls + ATR-01", H1))
     controls = [
         ("IDG-01", "Identity Disclosure Gate",
-         "AI agent must disclose it is automated before any PHI request or exchange.", BLUE),
+         "AI agent must disclose it is automated before any PHI request or exchange.", C_IDG),
         ("PDX-01", "Pre-Data Exchange Gate",
-         "No PHI may be exchanged until IDG-01 disclosure is confirmed.", RED),
+         "No PHI may be exchanged until IDG-01 disclosure is confirmed.", C_PDX),
         ("DBC-01", "Deceptive Behavior Check",
-         "No synthetic voice artifacts or text claims implying human presence.", SLATE),
+         "No synthetic voice artifacts or text claims implying human presence.", C_DBC),
         ("EIT-01", "Escalation Implementation Test",
-         "Human escalation path must be available and honored immediately on request.", TEAL),
+         "Human escalation path must be available and honored immediately on request.", C_EIT),
     ]
     for i in range(0, len(controls), 2):
         row_cards = []
@@ -1261,7 +1544,14 @@ def make_knowledge_archive():
         "v4.0.1) — no named Implementation Guide conformance is claimed.",
         GREEN, width=6.5*inch, height=0.95*inch
     ))
-    story.append(Spacer(1, 0.15*inch))
+    story.append(Spacer(1, 0.14*inch))
+    _mindmap = os.path.join(ASSETS_DIR, "diagrams", "framework-mindmap.svg")
+    if svg2rlg and os.path.exists(_mindmap):
+        story.append(ScaledSvgVisual(
+            _mindmap, width=6.5 * inch,
+            caption="Framework map — core model, five controls, and trust-stack relationships",
+        ))
+    story.append(Spacer(1, 0.12*inch))
 
     story.append(PageBreak())
 
@@ -1380,7 +1670,7 @@ def make_knowledge_archive():
         story.append(Paragraph(q, H2))
         story.append(Paragraph(a, BODY))
 
-    doc.build(story, onFirstPage=_footer_canvas, onLaterPages=_footer_canvas)
+    doc.build(story, onFirstPage=_cover_footer, onLaterPages=_footer_canvas)
     print(f"  ✓  {path}")
     return path
 
@@ -1398,38 +1688,63 @@ def make_v13_overview():
     overview_logo = LOGO_LIGHT_PATH if os.path.exists(LOGO_LIGHT_PATH) else LOGO_PATH
     story = []
 
-    story.append(TitleBanner(
-        "NHID-Clinical",
+    _cover(
+        story,
+        "Public Operational Reference Model",
         "A Voluntary Open Proposal for Agent Identity in Payer–Provider Voice Calls",
-        "v1.3",
+        "1.3",
+        "Executive / Payer Brief",
         logo_path=overview_logo,
-        logo_w=72,
-        logo_h=72,
-        height=1.85 * inch,
-    ))
-    story.append(Spacer(1, 0.12 * inch))
-
-    meta_style = ParagraphStyle(
-        "Meta", fontName=FONT_REGULAR, fontSize=8.5, textColor=DGRAY, leading=12, spaceAfter=2
     )
-    for line in [
-        "<b>PUBLIC OPERATIONAL REFERENCE MODEL</b>",
-        "Version: 1.3 (June 2026)  ·  Author: Brianna Baynard (Independent)",
-        "Status: Public Reference Model  ·  Feedback: contact@nhid-clinical.org",
-        "NIST Public Comment: NIST-2025-0035-0026",
-    ]:
-        story.append(Paragraph(line, meta_style))
-    story.append(Spacer(1, 0.12 * inch))
 
-    story.append(Paragraph(
-        "⚠  NHID-Clinical is an early-stage open proposal. It is not an accredited standard, "
-        "not a certification program, and not a regulatory requirement.",
-        DISC
+    # ── Page 1: executive summary → key metrics → latency visual → behaviors ──
+    story.append(ExecutiveSummary([
+        ("What it is",
+         "A voluntary, open operational reference model for how AI voice agents disclose their "
+         "non-human identity in B2B healthcare payer–provider calls."),
+        ("Why it matters",
+         "An AI agent can begin interacting and requesting sensitive information before the "
+         "receiving party can verify it is a non-human system authorized to act for the claimed "
+         "organization."),
+        ("Operational impact",
+         "Standardized, auditable disclosure gates reduce impersonation latency, repeat calls, and "
+         "manual fallback routing — with no production risk to evaluate."),
+    ]))
+    story.append(Spacer(1, 0.12 * inch))
+    story.append(_key_metrics())
+    story.append(Spacer(1, 0.14 * inch))
+
+    story.append(_svg_visual(
+        "latency-split.svg",
+        caption="Impersonation latency — time an AI agent operates without disclosing its non-human identity",
     ))
-    story.append(Spacer(1, 0.12 * inch))
+    story.append(Spacer(1, 0.14 * inch))
 
-    # ── Page 1: Problem + behaviors ──────────────────────────────────────────
-    story.append(Paragraph("Public Brief: The Impersonation Latency", H1))
+    _section(story, "Proposed Core Behaviors (v1.3)", H1)
+    behaviors = [
+        ("IDG-01 — Early disclosure",
+         "The agent states its non-human identity at the beginning of the interaction, before "
+         "any substantive workflow execution or PHI request."),
+        ("PDX-01 — Pre-data exchange gate",
+         "No protected health information (member ID, NPI, DOB, claim number, etc.) may be "
+         "exchanged until IDG-01 disclosure is confirmed."),
+        ("DBC-01 — No deception",
+         "The agent never claims to be human and does not use deceptive artifacts designed to "
+         "imply human presence."),
+        ("EIT-01 — Human escalation",
+         "A human escalation path is communicated and honored immediately when the receiving "
+         "party requests a person."),
+        ("ATR-01 — Audit trace (supplemental)",
+         "Every call produces a machine-readable JSON event trace with disclosure timestamps, "
+         "state transitions, and execution context — deterministic under identical input conditions."),
+    ]
+    for title, body_txt in behaviors:
+        story.append(Paragraph(f"<b>{title}.</b> {body_txt}", BODY))
+
+    story.append(PageBreak())
+
+    # ── Detailed explanation (moved after the at-a-glance page 1) ─────────────
+    _section(story, "Public Brief: The Impersonation Latency", H1)
     story.append(Paragraph(
         "NHID-Clinical targets one specific failure: an AI agent can begin interacting and "
         "requesting sensitive information before the receiving party can verify that the caller "
@@ -1470,27 +1785,6 @@ def make_v13_overview():
     ))
     story.append(Spacer(1, 0.1 * inch))
 
-    story.append(Paragraph("Proposed Core Behaviors (v1.3)", H1))
-    behaviors = [
-        ("IDG-01 — Early disclosure",
-         "The agent states its non-human identity at the beginning of the interaction, before "
-         "any substantive workflow execution or PHI request."),
-        ("PDX-01 — Pre-data exchange gate",
-         "No protected health information (member ID, NPI, DOB, claim number, etc.) may be "
-         "exchanged until IDG-01 disclosure is confirmed."),
-        ("DBC-01 — No deception",
-         "The agent never claims to be human and does not use deceptive artifacts designed to "
-         "imply human presence."),
-        ("EIT-01 — Human escalation",
-         "A human escalation path is communicated and honored immediately when the receiving "
-         "party requests a person."),
-        ("ATR-01 — Audit trace (supplemental)",
-         "Every call produces a machine-readable JSON event trace with disclosure timestamps, "
-         "state transitions, and execution context — deterministic under identical input conditions."),
-    ]
-    for title, body_txt in behaviors:
-        story.append(Paragraph(f"<b>{title}.</b> {body_txt}", BODY))
-
     story.append(Spacer(1, 0.1 * inch))
     story.append(Paragraph("An Important Distinction", H1))
     story.append(Paragraph(
@@ -1521,7 +1815,7 @@ def make_v13_overview():
         "A deterministic policy engine that produces stable trace output under identical input "
         "conditions (modulo timestamps and non-deterministic IDs).",
         "An 18-case conformance test suite (CTS) in machine-readable YAML plus a pytest failure "
-        "injection harness (330 passing unit tests in the reference implementation).",
+        "injection harness (343 passing unit tests in the reference implementation).",
         "10 canonical trace files in traces/ demonstrating real-world scenarios (eligibility, "
         "prior auth, claims status, bot-to-bot, audit gaps, and more).",
         "Six vendor adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress) "
@@ -1612,7 +1906,149 @@ def make_v13_overview():
         BLUE, width=6.5 * inch, height=0.85 * inch
     ))
 
-    doc.build(story, onFirstPage=_footer_canvas, onLaterPages=_footer_canvas)
+    doc.build(story, onFirstPage=_cover_footer, onLaterPages=_footer_canvas)
+    print(f"  ✓  {path}")
+    return path
+
+
+# ── Document 7: Evidence Pack ────────────────────────────────────────────────
+
+def make_evidence_pack():
+    """Procurement/security-facing evidence summary — mirrors evidence-pack.html.
+    Deterministic guarantees, real-corpus detection evidence, a sample failure
+    trace, and the audit-readiness model. Content faithful to the website page."""
+    path = os.path.join(OUT_DIR, "NHID-Clinical-Evidence-Pack.pdf")
+    doc = SimpleDocTemplate(path, pagesize=letter,
+                            leftMargin=inch, rightMargin=inch,
+                            topMargin=0.75*inch, bottomMargin=0.75*inch)
+    H1, H2, BODY, SMALL, DISC = _styles()
+    story = []
+    spec_logo = LOGO_LIGHT_PATH if os.path.exists(LOGO_LIGHT_PATH) else LOGO_PATH
+
+    _cover(
+        story,
+        "Evidence Pack",
+        "NHID-Clinical v1.3  ·  Deterministic Guarantees, Detection Evidence & Audit Model",
+        "1.3",
+        "Procurement & Security Reference",
+        logo_path=spec_logo,
+    )
+
+    story.append(ExecutiveSummary([
+        ("What it is",
+         "A summary of the deterministic guarantees, real-corpus detection evidence, a sample "
+         "failure trace, and the audit-readiness model behind the reference implementation."),
+        ("Why it matters",
+         "Teams evaluating adoption need to see what the system guarantees, how it behaves against "
+         "real conversational phrasing, and what an auditor could reconstruct from the event store."),
+        ("Operational impact",
+         "Everything here is self-attested and open for community review. NHID-Clinical does not "
+         "issue certifications, conduct audits, or validate vendor implementations."),
+    ]))
+    story.append(Spacer(1, 0.12 * inch))
+    story.append(_key_metrics())
+    story.append(Spacer(1, 0.14 * inch))
+
+    _section(story, "1 · System Behavior Guarantees", H1)
+    guarantees = [
+        ("Deterministic output",
+         "Identical input event + identical policy version produce identical trace output. "
+         "The policy engine is a pure function with no side effects."),
+        ("Replay guarantee",
+         "Any stored trace can be replayed. Policy version is embedded in each event header; "
+         "version mismatches are flagged."),
+        ("Failure invariants",
+         "The engine never raises an unhandled exception. Malformed input returns a deterministic "
+         "error trace; the caller always gets a response."),
+        ("Idempotency",
+         "Submitting the same request_id twice produces the same result — no duplicate state "
+         "transitions and no double-counted events."),
+    ]
+    for i in range(0, len(guarantees), 2):
+        row = [ColorBlock(t, b, C_EIT if j == 0 else TEAL_DEEP, width=3.16 * inch, height=1.15 * inch)
+               for j, (t, b) in enumerate(guarantees[i:i + 2])]
+        tbl = Table([row], colWidths=[3.24 * inch, 3.24 * inch])
+        tbl.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"),
+                                 ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                                 ("RIGHTPADDING", (0, 0), (-1, -1), 0)]))
+        story.append(tbl)
+        story.append(Spacer(1, 0.08 * inch))
+
+    _section(story, "2 · Real-Corpus Detection Rates", H1)
+    story.append(Paragraph(
+        "The CTS YAML suite validates the policy engine against synthetic, hand-authored cases. "
+        "To check behavior against real conversational phrasing, the engine was also run against "
+        "the Fabricate Battle-Test Corpus — 550 real-world voice AI conversations (4,839 turns). "
+        "Detection rate is the share of corpus turns where a control correctly fired. These are "
+        "reported honestly, including where coverage is weak.",
+        SMALL
+    ))
+    story.append(Spacer(1, 0.06 * inch))
+    story.append(_premium_table([
+        ["Control", "Detection Rate", "Notes"],
+        ["IDG-01 (Identity Disclosure)", "100%", "Holds against real phrasing"],
+        ["EIT-01 (Escalation Trigger)", "94.7%", "Holds against real phrasing"],
+        ["PDX-01 (PHI Data Exchange)", "58.6%", "Partial — real-world phrasing diverges from synthetic cases"],
+        ["DBC-01 (Deceptive Behavior Claim)", "2.5%", "Weak — heuristic phrase list does not yet cover most real phrasing"],
+        ["ATR-01 (supplemental)", "0.0%", "Corpus/adapter structural limitation — not a representative test"],
+    ], [2.1 * inch, 1.2 * inch, 3.2 * inch]))
+    story.append(Spacer(1, 0.12 * inch))
+
+    _section(story, "3 · Anonymized Failure Trace Example", H1)
+    story.append(Paragraph(
+        "The example below is synthetic — constructed from observed behavior patterns, with all "
+        "identifying information removed. No real PHI, no real provider data.",
+        SMALL
+    ))
+    story.append(Spacer(1, 0.05 * inch))
+    code_style = ParagraphStyle(
+        "Code", fontName=FONT_MONO, fontSize=7.6, leading=11.5, textColor=CREAM
+    )
+    _trace = Preformatted(
+        'correlation_id: "auth-2026-05-26-001"   ·   policy: nhid-clinical-v1.3\n\n'
+        't=00:00.000  INGEST     POST /voice/process received\n'
+        't=00:00.123  VALIDATE   SpeechResult normalized\n'
+        't=00:00.131  STATE      Session reconstructed: turn_count=0, disclosure=null\n'
+        't=00:00.140  POLICY     IDG-01: DISCLOSE_IDENTITY triggered (turn_count=0)\n'
+        't=00:00.145  EXEC       TwiML disclosure message rendered\n'
+        't=00:00.152  PERSIST    Event written — disclosure_timestamp set',
+        code_style
+    )
+    _panel = Table([[_trace]], colWidths=[6.5 * inch])
+    _panel.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), NAVY),
+        ("BOX", (0, 0), (-1, -1), 0.75, TEAL_DEEP),
+        ("TOPPADDING", (0, 0), (-1, -1), 11),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 11),
+        ("LEFTPADDING", (0, 0), (-1, -1), 13),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 13),
+    ]))
+    story.append(_panel)
+    story.append(Spacer(1, 0.12 * inch))
+
+    _section(story, "4 · Audit Readiness Model", H1)
+    story.append(Paragraph(
+        "An external auditor reconstructing a session from the event store can determine:",
+        BODY
+    ))
+    for pt in [
+        "When the call started and when the first disclosure statement was made.",
+        "Whether disclosure preceded any PHI or credential exchange.",
+        "Whether opt-out or escalation was requested and how it was handled.",
+        "Which policy engine version processed each event.",
+        "Whether any partial failures or boundary violations were recorded.",
+    ]:
+        story.append(Paragraph(f"•  {pt}", BODY))
+    story.append(Spacer(1, 0.1 * inch))
+    story.append(ColorBlock(
+        "Scope of this evidence",
+        "This describes the reference implementation's technical properties. NHID-Clinical does "
+        "not issue certifications, conduct audits, or validate vendor implementations. Everything "
+        "here is self-attested and open for community review.",
+        SLATE, width=6.5 * inch, height=0.8 * inch
+    ))
+
+    doc.build(story, onFirstPage=_cover_footer, onLaterPages=_footer_canvas)
     print(f"  ✓  {path}")
     return path
 
@@ -1625,4 +2061,5 @@ if __name__ == "__main__":
     make_technical_playbook()
     make_knowledge_archive()
     make_v13_overview()
+    make_evidence_pack()
     print("Done.")
