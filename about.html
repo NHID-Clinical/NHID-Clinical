@@ -133,16 +133,33 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container inner-hero-grid" style="position:relative;z-index:1">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>About</span></div>
+        <p class="eyebrow">Why this exists</p>
+        <h1 class="reveal">About NHID-Clinical</h1>
+        <p class="lede reveal">An operational AI governance framework for non-human actor accountability — disclosure, delegated authority, and auditability of AI-operated interactions in healthcare AI workflows.</p>
+      </div>
+      <aside class="hero-summary-card">
+        <div class="spec-badges">
+          <span class="spec-badge">CC BY 4.0</span>
+          <span class="spec-badge">v1.3</span>
+          <span class="spec-badge spec-badge-green">Practitioner-led</span>
+        </div>
+        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem">Created by <strong>Brianna Baynard</strong>, developed independently.<br>Submitted as a public comment to NIST (<a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a>).<br><br>No organizations have adopted or piloted it in production yet.</p>
+        <a class="primary-pill" href="/specification.html" style="width:100%;justify-content:center">Read the Specification →</a>
+      </aside>
+    </div>
+  </section>
+
   <section class="page-section">
     <div class="container" style="max-width:52rem">
 
-      <h1>About NHID-Clinical</h1>
-
-      <p class="lede" style="margin-top:.75rem">An operational AI governance framework for non-human actor accountability — disclosure, delegated authority, and auditability of AI-operated interactions in healthcare AI workflows.</p>
-
       <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">NHID-Clinical was created by Brianna Baynard, who worked directly in healthcare payer operations — live eligibility, claims, and prior-authorization phone lines. She was on the receiving end of hundreds of calls from AI voice agents acting for provider offices, including agents that disclosed their automated status only after PHI had been exchanged, or not at all. NHID-Clinical documents those failure patterns and defines a testable baseline for addressing them. It is published openly under CC BY 4.0 and was submitted as a public comment to NIST (<a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a>).</p>
 
-      <blockquote style="border-left:4px solid var(--blue);margin:1.5rem 0;padding:.75rem 1.25rem;color:var(--body);font-size:1rem;line-height:1.8;font-style:italic">
+      <blockquote class="reveal" style="border-left:4px solid var(--teal-bright);margin:1.5rem 0;padding:.75rem 1.25rem;color:var(--body);font-size:1rem;line-height:1.8;font-style:italic">
         "I sat in the exact seat that payer representatives are in today — receiving calls from systems that sounded human, exchanged sensitive data, and only later admitted they were automated. That firsthand experience showed how much friction, wasted time, and unnecessary risk this creates on both sides."
       </blockquote>
 
@@ -154,14 +171,14 @@
 
       <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">If you work in payer operations, provider offices, or voice AI platforms and see similar patterns, your feedback would be genuinely appreciated.</p>
 
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><a href="mailto:contact@nhid-clinical.org" style="color:var(--blue);font-weight:600">contact@nhid-clinical.org</a></p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright);font-weight:600">contact@nhid-clinical.org</a></p>
 
-      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">For a one-page overview aimed at leadership and procurement teams, see the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md" style="color:var(--blue);font-weight:600">Executive Brief</a>.</p>
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">For a one-page overview aimed at leadership and procurement teams, see the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md" style="color:var(--teal-bright);font-weight:600">Executive Brief</a>.</p>
 
-      <div style="border-top:1px solid var(--border);padding-top:2rem;margin-top:2rem">
+      <div class="reveal" style="border-top:1px solid var(--border);padding-top:2rem;margin-top:2rem">
           <h3 style="font-size:1.1rem">Related Tools</h3>
           <p style="font-size:0.95rem;line-height:1.6">
-            NHID-Clinical is also featured in the <a href="https://ai-governance-map.vercel.app/" target="_blank" style="color:var(--blue);font-weight:600">AI Governance Map</a> 
+            NHID-Clinical is also featured in the <a href="https://ai-governance-map.vercel.app/" target="_blank" style="color:var(--teal-bright);font-weight:600">AI Governance Map</a>
             — an interactive maturity radar for tracking alignment across major frameworks like NIST RMF, EU AI Act, and ISO 42001.
           </p>
       </div>

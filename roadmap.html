@@ -133,13 +133,14 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero">
-    <div class="container inner-hero-grid">
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>Roadmap</span></div>
         <p class="eyebrow">Public Reference Implementation</p>
-        <h1>NHID-Auth v2: Cryptographic Agent Identity</h1>
-        <p class="lede">v1.3 establishes behavioral disclosure. v2 addresses what v1.3 cannot: verifying that an AI agent is actually authorized by the provider it claims to represent. NPIs are public via NPPES — any caller can present a real one. v2 makes that insufficient.</p>
+        <h1 class="reveal">NHID-Auth v2: Cryptographic Agent Identity</h1>
+        <p class="lede reveal">v1.3 establishes behavioral disclosure. v2 addresses what v1.3 cannot: verifying that an AI agent is actually authorized by the provider it claims to represent. NPIs are public via NPPES — any caller can present a real one. v2 makes that insufficient.</p>
       </div>
     </div>
   </section>
@@ -199,22 +200,22 @@
       <h2 style="margin-top:2.5rem">What the Reference Implementation Contains</h2>
       <div style="display:grid;gap:.85rem;margin-top:1.25rem">
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
           <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Provider-Issued Agent Credentials</p>
           <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">An agent's identity is signed by the provider organization it acts for, with the provider's 10-digit NPI bound into the credential. A valid credential requires the provider's private key — something public NPI data cannot produce.</p>
         </div>
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
           <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Scoped, Time-Limited Authorization</p>
           <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Agents carry only the operations their provider granted (eligibility, claim status, prior authorization). Credentials expire on a short TTL. Delegation can be narrowed, never expanded — scope escalation is rejected at verification.</p>
         </div>
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
           <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Immediate Withdrawal</p>
           <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">A provider can revoke a compromised or decommissioned agent; the next verification fails. Revocation works per-agent or per-delegation. No central authority required.</p>
         </div>
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
           <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Call Binding and Out-of-Band Verification</p>
           <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Credentials can be bound to a specific call session, preventing replay across calls. All checks happen via API, not in the voice channel — no latency added to the call. v1.3 behavioral controls run unchanged alongside the v2 layer.</p>
         </div>
@@ -240,14 +241,14 @@ python examples/issue_and_verify.py          # end-to-end credential walkthrough
         <li>Credential delivery during live calls is not yet standardized</li>
         <li>Shadow pilot data will inform the formal v2 specification document</li>
       </ul>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:1rem">The reference implementation is live. If you want to test it against your own threat model or contribute to the formal specification, <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue)">contact us</a>.</p>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:1rem">The reference implementation is live. If you want to test it against your own threat model or contribute to the formal specification, <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright)">contact us</a>.</p>
 
       <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
-        <a href="/for-payers.html" style="color:var(--blue)">← Pilot Guide</a>
+        <a href="/for-payers.html" style="color:var(--teal-bright)">← Pilot Guide</a>
         &nbsp;·&nbsp;
-        <a href="/specification.html" style="color:var(--blue)">v1.3 Spec</a>
+        <a href="/specification.html" style="color:var(--teal-bright)">v1.3 Spec</a>
         &nbsp;·&nbsp;
-        <a href="/technical-stack.html" style="color:var(--blue)">Five-layer trust architecture →</a>
+        <a href="/technical-stack.html" style="color:var(--teal-bright)">Five-layer trust architecture →</a>
       </p>
 
     </div>
