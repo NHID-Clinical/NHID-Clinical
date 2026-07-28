@@ -21,7 +21,7 @@
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: var(--blue);
+      background: var(--teal-bright);
       color: #fff;
       font-size: .8rem;
       font-weight: 700;
@@ -39,7 +39,7 @@
     .pilot-card {
       padding: 1.2rem 1.5rem;
       background: var(--bg-alt);
-      border-left: 3px solid var(--blue);
+      border-left: 3px solid var(--teal-bright);
       border-radius: 0 6px 6px 0;
     }
     .pilot-card p, .pilot-card li { color: var(--body); font-size: .93rem; line-height: 1.75; }
@@ -50,7 +50,7 @@
       background: var(--paper);
       padding: .1rem .35rem;
       border-radius: 3px;
-      color: var(--blue);
+      color: var(--teal-bright);
     }
     .pilot-card pre {
       margin: .65rem 0 0;
@@ -185,13 +185,14 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero">
-    <div class="container inner-hero-grid">
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>For Payers</span></div>
         <p class="eyebrow">Shadow Evaluation · 90 Days · Observe Only</p>
-        <h1>For Payers: Shadow Evaluation Guide</h1>
-        <p class="lede">Establish a behavioral baseline for AI voice agent transparency — <strong>zero vendor changes, zero production risk.</strong> Run in parallel with live traffic; observe, collect evidence, decide what to require later.</p>
+        <h1 class="reveal">For Payers: Shadow Evaluation Guide</h1>
+        <p class="lede reveal">Establish a behavioral baseline for AI voice agent transparency — <strong>zero vendor changes, zero production risk.</strong> Run in parallel with live traffic; observe, collect evidence, decide what to require later.</p>
         <div class="payer-hero-visual">
           <picture class="premium-3d">
             <img src="/assets/images/3d-svg/latency-split.svg" alt="Diagram contrasting unverified impersonation latency with the verified NHID-Clinical trust pathway: early disclosure, pre-data checkpoint, escalation, and sealed audit."/>
@@ -233,7 +234,7 @@
           <p>You get impersonation-latency and disclosure metrics on your own traffic in a <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/pilot-report-template.md">ready-to-share report</a>. Use it to decide what to require of vendors.</p>
         </div>
       </div>
-      <p style="margin-top:1rem;font-size:.95rem"><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--blue)">See the full shadow-evaluation guide →</a></p>
+      <p style="margin-top:1rem;font-size:.95rem"><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">See the full shadow-evaluation guide →</a></p>
     </div>
   </section>
 
@@ -327,16 +328,16 @@
 
       <div class="callout" role="note" style="margin-top:2.5rem">
         <strong>v1.3 vs. v2:</strong> v1.3 covers disclosure behavior and audit trails — suitable for shadow evaluations today. v2 adds cryptographic agent identity (NHID-Auth v2) for when you must verify the agent was authorized by the provider it claims to represent. NPIs are public; v1.3 alone does not prove authorization.
-        <a href="/roadmap.html" style="color:var(--blue);font-weight:600;display:inline-block;margin-top:.5rem">Read the v2 roadmap →</a>
+        <a href="/roadmap.html" style="color:var(--teal-bright);font-weight:600;display:inline-block;margin-top:.5rem">Read the v2 roadmap →</a>
       </div>
 
       <h2 style="margin-top:2.5rem">Evaluation Resources</h2>
       <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
-        <li><a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md" style="font-weight:600;color:var(--blue)">Executive Brief →</a> <span style="color:var(--body)">— one-page overview for leadership and procurement</span></li>
-        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--blue)">Shadow Evaluation Guide →</a> <span style="color:var(--body)">— full 90-day process</span></li>
-        <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--blue)">Evidence Pack →</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
-        <li><a href="/regulatory-alignment.html" style="font-weight:600;color:var(--blue)">Regulatory Alignment →</a> <span style="color:var(--body)">— CMS-0057-F, MACPAC, DOJ FCA, state AI laws</span></li>
-        <li><a href="/demo.html" style="font-weight:600;color:var(--blue)">Reference demonstration line →</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
+        <li><a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md" style="font-weight:600;color:var(--teal-bright)">Executive Brief →</a> <span style="color:var(--body)">— one-page overview for leadership and procurement</span></li>
+        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">Shadow Evaluation Guide →</a> <span style="color:var(--body)">— full 90-day process</span></li>
+        <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--teal-bright)">Evidence Pack →</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
+        <li><a href="/regulatory-alignment.html" style="font-weight:600;color:var(--teal-bright)">Regulatory Alignment →</a> <span style="color:var(--body)">— CMS-0057-F, MACPAC, DOJ FCA, state AI laws</span></li>
+        <li><a href="/demo.html" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line →</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
       </ul>
 
     </div>

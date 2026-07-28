@@ -16,7 +16,7 @@
   <style>
     .guarantee-card {
       padding: 1rem 1.25rem;
-      border-left: 3px solid var(--blue);
+      border-left: 3px solid var(--teal-bright);
       background: var(--bg-alt);
       border-radius: 0 6px 6px 0;
     }
@@ -151,13 +151,14 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero">
-    <div class="container inner-hero-grid">
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
       <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/developers.html">Developers</a><span>/</span><span>Evidence Pack</span></div>
       <p class="eyebrow">For Enterprise &amp; Procurement Teams · v1.3</p>
-      <h1>Evidence Pack</h1>
-      <p class="lede">System behavior guarantees, a worked failure trace, and the audit readiness model — <strong>for teams evaluating adoption.</strong> Self-attested, open for community review.</p>
+      <h1 class="reveal">Evidence Pack</h1>
+      <p class="lede reveal">System behavior guarantees, a worked failure trace, and the audit readiness model — <strong>for teams evaluating adoption.</strong> Self-attested, open for community review.</p>
       <div class="payer-hero-visual" style="margin-top:1.25rem">
         <picture class="premium-3d">
           <img src="/assets/images/3d-svg/trust-stack.svg" alt="Diagram of the five-layer NHID-Clinical trust stack: STIR/SHAKEN, NHID-Clinical v1.3, NHID-Auth v2, FHIR AuditEvent R4, and OpenTelemetry, over the Layer 0 NPI gap."/>
@@ -308,7 +309,7 @@ A payer auditing this session would see:
 
       <!-- ── 3. Failure & Attack Simulation Coverage ──────────────────────── -->
       <h2 style="margin-top:2.5rem">4. Failure &amp; Attack Simulation Coverage</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The <a href="/developers.html" style="color:var(--blue)">failure injection harness</a> covers the following scenarios:</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The <a href="/developers.html" style="color:var(--teal-bright)">failure injection harness</a> covers the following scenarios:</p>
 
       <table class="premium-metrics" style="margin-top:1rem">
         <thead>
@@ -404,9 +405,9 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
 
       <h2 style="margin-top:2.5rem">Related Resources</h2>
       <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
-        <li><a href="/developers.html" style="font-weight:600;color:var(--blue)">Developers reference &rarr;</a> <span style="color:var(--body)">— API, traces, test suite</span></li>
-        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--blue)">Shadow Evaluation Guide &rarr;</a> <span style="color:var(--body)">— 90-day payer observation process</span></li>
-        <li><a href="/governance-simulator.html" style="font-weight:600;color:var(--blue)">Governance Simulator &rarr;</a> <span style="color:var(--body)">— deterministic control walkthrough</span></li>
+        <li><a href="/developers.html" style="font-weight:600;color:var(--teal-bright)">Developers reference &rarr;</a> <span style="color:var(--body)">— API, traces, test suite</span></li>
+        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">Shadow Evaluation Guide &rarr;</a> <span style="color:var(--body)">— 90-day payer observation process</span></li>
+        <li><a href="/governance-simulator.html" style="font-weight:600;color:var(--teal-bright)">Governance Simulator &rarr;</a> <span style="color:var(--body)">— deterministic control walkthrough</span></li>
       </ul>
 
     </div>

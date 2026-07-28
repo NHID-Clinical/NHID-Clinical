@@ -133,12 +133,13 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero">
-    <div class="container">
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container" style="position:relative;z-index:1">
       <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/developers.html">Developers</a><span>/</span><span>Proof Package</span></div>
       <p class="eyebrow">For Enterprise &amp; Procurement Teams · v1.3</p>
-      <h1>Technical Proof Package</h1>
-      <p class="lede">A summary of the deterministic guarantees, audit readiness model, and architectural properties of the NHID-Clinical reference implementation — for teams evaluating adoption or integration.</p>
+      <h1 class="reveal">Technical Proof Package</h1>
+      <p class="lede reveal">A summary of the deterministic guarantees, audit readiness model, and architectural properties of the NHID-Clinical reference implementation — for teams evaluating adoption or integration.</p>
     </div>
   </section>
 
@@ -153,19 +154,19 @@
       <h2 style="margin-top:0">1. System Behavior Specification</h2>
 
       <div style="display:grid;gap:.75rem;margin-top:1rem">
-        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
+        <div style="padding:1rem 1.25rem;border-left:3px solid var(--teal-bright);background:var(--bg-alt);border-radius:0 4px 4px 0">
           <strong style="color:var(--ink)">Deterministic output</strong>
           <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">Identical input event + identical policy version → identical trace output. The policy engine is a pure function with no side effects. Output does not depend on wall-clock time, process state, or external calls.</p>
         </div>
-        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
+        <div style="padding:1rem 1.25rem;border-left:3px solid var(--teal-bright);background:var(--bg-alt);border-radius:0 4px 4px 0">
           <strong style="color:var(--ink)">Replay guarantee</strong>
           <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">Any stored trace can be replayed. The policy version is embedded in each event header. Replay with a different policy version is detected and flagged as a mismatch.</p>
         </div>
-        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
+        <div style="padding:1rem 1.25rem;border-left:3px solid var(--teal-bright);background:var(--bg-alt);border-radius:0 4px 4px 0">
           <strong style="color:var(--ink)">Failure invariants</strong>
           <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">The engine never raises an unhandled exception. Invalid or malformed input returns a deterministic error trace (action: LOG_ONLY, recoverable: true). The caller always gets a response.</p>
         </div>
-        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
+        <div style="padding:1rem 1.25rem;border-left:3px solid var(--teal-bright);background:var(--bg-alt);border-radius:0 4px 4px 0">
           <strong style="color:var(--ink)">Idempotency</strong>
           <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">Submitting the same request_id twice produces the same policy decision. The event store deduplicates on request_id at the PERSIST stage.</p>
         </div>
@@ -173,7 +174,7 @@
 
       <!-- ── 2. Failure simulation ──────────────────────────────────────── -->
       <h2 style="margin-top:2.5rem">2. Failure &amp; Attack Simulation Coverage</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The <a href="/developers.html" style="color:var(--blue)">failure injection harness</a> covers the following scenarios:</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The <a href="/developers.html" style="color:var(--teal-bright)">failure injection harness</a> covers the following scenarios:</p>
 
       <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.88rem;color:var(--body)">
         <thead>
@@ -313,9 +314,9 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
       </div>
 
       <div style="margin-top:2rem;display:flex;flex-wrap:wrap;gap:1rem">
-        <a href="/developers.html" style="color:var(--blue);font-weight:600;font-size:.9rem">← Full technical reference</a>
-        <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download style="color:var(--blue);font-weight:600;font-size:.9rem">Download Public Brief (PDF) →</a>
-        <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue);font-weight:600;font-size:.9rem">Contact →</a>
+        <a href="/developers.html" style="color:var(--teal-bright);font-weight:600;font-size:.9rem">← Full technical reference</a>
+        <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download style="color:var(--teal-bright);font-weight:600;font-size:.9rem">Download Public Brief (PDF) →</a>
+        <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright);font-weight:600;font-size:.9rem">Contact →</a>
       </div>
 
     </div>
