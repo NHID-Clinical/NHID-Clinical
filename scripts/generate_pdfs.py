@@ -76,9 +76,9 @@ VISUAL_CAPTION = (
 )
 
 # ── Typography — aligned with the website hierarchy ──────────────────────────
-#   Display / headlines: Raleway   ·   Body: Inter   ·   Technical: JetBrains Mono
-#   (IBM Plex Mono is also vendored — it is the site's actual mono face; switch
-#    FONT_MONO to it if exact site parity is preferred over the brief's request.)
+#   Display / headlines: Raleway   ·   Body: Inter   ·   Technical: IBM Plex Mono
+#   (matches the website's Raleway / Inter / IBM Plex Mono stack exactly;
+#    JetBrains Mono is also vendored as a drop-in alternative.)
 FONT_REGULAR, FONT_BOLD, FONT_SEMIBOLD, FONT_ITALIC = (
     "Helvetica", "Helvetica-Bold", "Helvetica-Bold", "Helvetica-Oblique"
 )
@@ -121,13 +121,18 @@ def _register_fonts():
     except Exception:
         pass
 
-    # Technical — JetBrains Mono (per brief); IBM Plex Mono also vendored
+    # Technical — IBM Plex Mono (the website's actual mono face, for exact parity).
+    # JetBrains Mono is also vendored as a drop-in alternative.
     try:
-        reg("JetBrainsMono", "JetBrainsMono-Regular.ttf")
-        reg("JetBrainsMono-Bold", "JetBrainsMono-Bold.ttf")
-        FONT_MONO = "JetBrainsMono"
+        reg("IBMPlexMono", "IBMPlexMono-Regular.ttf")
+        reg("IBMPlexMono-Medium", "IBMPlexMono-Medium.ttf")
+        FONT_MONO = "IBMPlexMono"
     except Exception:
-        pass
+        try:
+            reg("JetBrainsMono", "JetBrainsMono-Regular.ttf")
+            FONT_MONO = "JetBrainsMono"
+        except Exception:
+            pass
 
 
 _register_fonts()
@@ -1228,10 +1233,10 @@ def make_operational_blueprint():
     ))
     story.append(Spacer(1, 0.08 * inch))
     clause_style = ParagraphStyle(
-        "Clause", fontName="Courier", fontSize=8.5, leading=13,
-        backColor=colors.HexColor("#f0f4ff"),
-        borderColor=BLUE, borderWidth=0.75, borderPadding=12,
-        textColor=NAVY
+        "Clause", fontName=FONT_MONO, fontSize=8.5, leading=13,
+        backColor=colors.HexColor("#effcfa"),
+        borderColor=TEAL_BRIGHT, borderWidth=0.75, borderPadding=12,
+        textColor=INK
     )
     story.append(Paragraph(
         '"The vendor\'s AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all '
@@ -1997,11 +2002,9 @@ def make_evidence_pack():
     ))
     story.append(Spacer(1, 0.05 * inch))
     code_style = ParagraphStyle(
-        "Code", fontName=FONT_MONO, fontSize=7.6, leading=11.5,
-        textColor=CREAM, backColor=NAVY, borderColor=TEAL_DEEP,
-        borderWidth=0.75, borderPadding=10, spaceAfter=6
+        "Code", fontName=FONT_MONO, fontSize=7.6, leading=11.5, textColor=CREAM
     )
-    story.append(Preformatted(
+    _trace = Preformatted(
         'correlation_id: "auth-2026-05-26-001"   ·   policy: nhid-clinical-v1.3\n\n'
         't=00:00.000  INGEST     POST /voice/process received\n'
         't=00:00.123  VALIDATE   SpeechResult normalized\n'
@@ -2010,7 +2013,17 @@ def make_evidence_pack():
         't=00:00.145  EXEC       TwiML disclosure message rendered\n'
         't=00:00.152  PERSIST    Event written — disclosure_timestamp set',
         code_style
-    ))
+    )
+    _panel = Table([[_trace]], colWidths=[6.5 * inch])
+    _panel.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), NAVY),
+        ("BOX", (0, 0), (-1, -1), 0.75, TEAL_DEEP),
+        ("TOPPADDING", (0, 0), (-1, -1), 11),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 11),
+        ("LEFTPADDING", (0, 0), (-1, -1), 13),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 13),
+    ]))
+    story.append(_panel)
     story.append(Spacer(1, 0.12 * inch))
 
     _section(story, "4 · Audit Readiness Model", H1)
