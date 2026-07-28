@@ -41,6 +41,8 @@ copy_tree "$ROOT/assets" "$OUT/assets" \
 
 copy_tree "$ROOT/alignment" "$OUT/alignment"
 copy_tree "$ROOT/conformance" "$OUT/conformance"
+copy_tree "$ROOT/framework" "$OUT/framework"
+copy_tree "$ROOT/platform" "$OUT/platform"
 copy_tree "$ROOT/simulator" "$OUT/simulator"
 copy_tree "$ROOT/specs" "$OUT/specs"
 

@@ -32,44 +32,57 @@
       </span>
     </a>
     <div class="nav-links">
-      <a href="/">Home</a>
       <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Learn <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
+          <a href="/framework/">Framework overview</a>
           <a href="/specification.html">Specification</a>
+          <a href="/framework/controls.html">Controls</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth</a>
+          <a href="/framework/reference-implementation.html">Reference Implementation</a>
+          <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
           <a href="/technical-stack.html">Technical Stack</a>
           <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-          <a href="/about.html">About</a>
         </div>
       </div>
       <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Evaluate <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Platform <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
-          <a href="/simulator.html">Simulator</a>
-          <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
-          <a href="/evidence-pack.html">Evidence Pack</a>
-          <a href="/for-payers.html">For Payers</a>
+          <a href="/platform/">TrustLayer overview</a>
+          <a href="/platform/agent-registry.html">Agent Registry</a>
+          <a href="/platform/trust-gateway.html">Trust Gateway</a>
+          <a href="/platform/evidence-center.html">Evidence Center</a>
+          <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+          <a href="/platform/enterprise.html">Enterprise Workflow</a>
         </div>
       </div>
+      <a href="/simulator.html">Simulator</a>
       <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Build <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Docs <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
-          <a href="/developers.html">Developers</a>
+          <a href="/developers.html">Developer guide</a>
+          <a href="/docs.html">Live API explorer</a>
           <a href="/interoperability.html">Interoperability</a>
           <a href="/registry.html">Implementation Registry</a>
           <a href="/icon-system.html">Icon System</a>
         </div>
       </div>
       <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Community <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Resources <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
-          <a href="/news.html">News</a>
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/research-portfolio.html">Research Portfolio</a>
           <a href="/roadmap.html">Roadmap</a>
-          <a href="/research-portfolio.html">Portfolio</a>
-          <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub &#x2197;</a>
+          <a href="/news.html">News</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
         </div>
       </div>
-      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Map &#x2197;</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/about.html">About</a>
+      <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -101,27 +114,44 @@
 
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
-  <strong class="mobile-nav-group">Learn</strong>
+  <strong class="mobile-nav-group">Framework</strong>
+  <a href="/framework/">Framework overview</a>
   <a href="/specification.html">Specification</a>
+  <a href="/framework/controls.html">Controls</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth</a>
+  <a href="/framework/reference-implementation.html">Reference Implementation</a>
+  <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
   <a href="/technical-stack.html">Technical Stack</a>
   <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-  <a href="/about.html">About</a>
-  <strong class="mobile-nav-group">Evaluate</strong>
-  <a href="/simulator.html">Simulator</a>
-  <a href="/shadow-evaluation-guide.html">Shadow Evaluation</a>
-  <a href="/evidence-pack.html">Evidence Pack</a>
-  <a href="/for-payers.html">For Payers</a>
-  <strong class="mobile-nav-group">Build</strong>
-  <a href="/developers.html">Developers</a>
+  <strong class="mobile-nav-group">Platform</strong>
+  <a href="/platform/">TrustLayer overview</a>
+  <a href="/platform/agent-registry.html">Agent Registry</a>
+  <a href="/platform/trust-gateway.html">Trust Gateway</a>
+  <a href="/platform/evidence-center.html">Evidence Center</a>
+  <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+  <a href="/platform/enterprise.html">Enterprise Workflow</a>
+  <strong class="mobile-nav-group">Simulator</strong>
+  <a href="/simulator.html">Open the simulator</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <strong class="mobile-nav-group">Docs</strong>
+  <a href="/developers.html">Developer guide</a>
+  <a href="/docs.html">Live API explorer</a>
   <a href="/interoperability.html">Interoperability</a>
   <a href="/registry.html">Implementation Registry</a>
   <a href="/icon-system.html">Icon System</a>
-  <strong class="mobile-nav-group">Community</strong>
-  <a href="/news.html">News</a>
+  <strong class="mobile-nav-group">Resources</strong>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/research-portfolio.html">Research Portfolio</a>
   <a href="/roadmap.html">Roadmap</a>
-  <a href="/research-portfolio.html">Portfolio</a>
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
-  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Map &#x2197;</a>
+  <a href="/news.html">News</a>
+  <a href="/faq.html">FAQ</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+  <strong class="mobile-nav-group">More</strong>
+  <a href="/pricing.html">Pricing</a>
+  <a href="/about.html">About</a>
+  <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -139,18 +169,32 @@
   <section class="hero-section hero-centered">
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container hero-centered-inner">
-      <span class="hero-kicker reveal">Operational AI-governance framework · v1.3</span>
-      <h1 class="reveal">Non-human actor accountability for healthcare voice AI.</h1>
-      <p class="hero-lead reveal">Disclosure, delegated authority, and audit for AI voice agents on payer–provider calls — so an agent can't ask for sensitive information before it is confirmed automated and authorized to act.</p>
+      <span class="hero-kicker reveal">Open framework · v1.3 · CC BY 4.0</span>
+      <h1 class="reveal">NHID-Clinical</h1>
+      <p class="hero-lead reveal">An open framework for healthcare AI agent identity, authorization, disclosure, and audit evidence.</p>
       <div class="hero-actions-premium reveal">
-        <a href="/specification.html" class="btn-premium">Read the v1.3 specification</a>
-        <a href="/for-payers.html" class="btn-premium">Start a pilot</a>
-        <a href="/simulator.html" class="btn-ghost">Open the simulator</a>
+        <a href="/framework/" class="btn-premium">Explore the Open Framework</a>
+        <a href="/platform/" class="btn-ghost">Try TrustLayer Platform</a>
       </div>
+      <p class="reveal" style="max-width:60ch;margin:1.4rem auto 0;color:var(--body);font-size:.98rem;line-height:1.7">The specification, tests, and reference implementation remain open. TrustLayer provides optional production infrastructure for organizations running AI agents at scale.</p>
       <div class="hero-illo reveal">
         <img src="/assets/images/3d-svg/hero-orbit.svg" alt="Soft isometric illustration: floating governance platforms connected by verified identity nodes, with disclosure, verification, and audit tokens." loading="eager"/>
       </div>
       <p class="disclaimer-small" style="margin-top:1.5rem">Voluntary and testable — not an accredited standard, certification, or regulatory requirement. No production pilots yet; seeking the first shadow-evaluation partners.</p>
+    </div>
+  </section>
+
+  <!-- ── Why NHID exists ───────────────────────────────────────────────────── -->
+  <section class="page-section" id="why-nhid">
+    <div class="container" style="max-width:58rem">
+      <p class="section-kicker reveal">Why NHID exists</p>
+      <h2 class="reveal" style="margin-bottom:.75rem">Impersonation latency</h2>
+      <p class="reveal" style="color:var(--ink-soft);font-size:1.08rem;line-height:1.8;border-left:3px solid var(--teal);padding-left:1.25rem">The measurable trust delay between an AI agent initiating a call and the receiving system verifying that the caller is authorized to represent the claimed organization.</p>
+      <p class="reveal" style="color:var(--body);line-height:1.85;margin-top:1.25rem">In most healthcare voice workflows today that delay is effectively infinite, because no standard verification pathway exists. Telephony authenticates the number. Identity systems authenticate the account. Neither establishes that <em>this</em> caller may act for <em>that</em> provider — so operational data changes hands during the gap.</p>
+      <p class="reveal" style="color:var(--body);line-height:1.85;margin-top:.85rem">NHID-Clinical exists to make that delay measurable, then to close it: disclose before data moves, verify delegated authority, enforce scope, and leave a replayable record.</p>
+      <div style="margin-top:1.5rem">
+        <a class="cta-button" href="/framework/controls.html">See how the controls close it <span aria-hidden="true">→</span></a>
+      </div>
     </div>
   </section>
 
@@ -361,6 +405,53 @@
     </div>
   </section>
 
+  <!-- ── Open core vs platform ─────────────────────────────────────────────── -->
+  <section class="page-section" id="open-core-vs-platform">
+    <div class="container">
+      <p class="section-kicker reveal">Open core vs platform</p>
+      <h2 class="reveal" style="margin-bottom:.35rem">What is open, and what is operated</h2>
+      <p class="reveal" style="color:var(--body);max-width:64ch">The left column is free forever under CC BY 4.0 and needs nothing from us. The right column is what TrustLayer runs on your behalf when you would otherwise build and operate it yourself.</p>
+      <div class="compare-matrix-wrap reveal">
+        <table class="compare-matrix">
+          <thead>
+            <tr><th scope="col">Capability</th><th scope="col">Open framework</th><th scope="col">TrustLayer</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Specification</th><td><span class="yes">✓</span> CC BY 4.0, always free</td><td><span class="yes">✓</span> Same specification</td></tr>
+            <tr><th scope="row">Conformance tests</th><td><span class="yes">✓</span> Run them yourself</td><td><span class="yes">✓</span> Hosted and scheduled</td></tr>
+            <tr><th scope="row">Simulator</th><td><span class="yes">✓</span> Open, no account</td><td><span class="yes">✓</span> Plus evaluation of your own agents</td></tr>
+            <tr><th scope="row">Documentation</th><td><span class="yes">✓</span> Public</td><td><span class="yes">✓</span> Public</td></tr>
+            <tr><th scope="row">Reference implementation</th><td><span class="yes">✓</span> Fork it, vendor it, replace it</td><td><span class="yes">✓</span> Managed and operated</td></tr>
+            <tr><th scope="row">Community</th><td><span class="yes">✓</span> Issues, discussions, pull requests</td><td><span class="yes">✓</span> Same community</td></tr>
+            <tr><th scope="row">Hosted monitoring</th><td><span class="no">—</span> Run it yourself</td><td><span class="yes">✓</span> Continuous, on every agent change</td></tr>
+            <tr><th scope="row">Dashboards</th><td><span class="no">—</span></td><td><span class="yes">✓</span> Fleet-wide operational view</td></tr>
+            <tr><th scope="row">Agent registry</th><td><span class="no">—</span> Passport format only</td><td><span class="yes">✓</span> Managed identity lifecycle</td></tr>
+            <tr><th scope="row">Evidence center</th><td><span class="no">—</span> Evidence pack template</td><td><span class="yes">✓</span> Generated audit-ready packages</td></tr>
+            <tr><th scope="row">Enterprise integrations</th><td><span class="no">—</span></td><td><span class="yes">✓</span> SSO, RBAC, SIEM, approvals</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="status-note reveal">
+        <span>&#9432;</span>
+        <span><b>The specification is never paid.</b> No tier, plan, or contract gates the specification, the control catalog, or the conformance test suite. If TrustLayer disappeared tomorrow, every open component would keep working.</span>
+      </div>
+      <div class="dual-path reveal" style="margin-top:1.75rem">
+        <div class="dual-path-card">
+          <span class="path-tag">Open framework</span>
+          <h3>Adopt it yourself</h3>
+          <p>Everything you need to implement, test, and evidence the controls without talking to anyone.</p>
+          <a class="card-link" href="/framework/">Explore the framework →</a>
+        </div>
+        <div class="dual-path-card is-platform">
+          <span class="path-tag">TrustLayer</span>
+          <h3>Operational trust infrastructure</h3>
+          <p>Monitoring, evidence, identity management, authorization, and reporting for AI agents in production.</p>
+          <a class="card-link" href="/platform/">See the platform →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── Live conformance API (floating UI mockup) ─────────────────────────── -->
   <section class="page-section" style="background:var(--mist)">
     <div class="container split-visual">
@@ -473,6 +564,69 @@
           <h3>Evidence Pack</h3>
           <p>Guarantees, a worked failure trace, and the audit-readiness model for procurement.</p>
           <a class="card-link" href="/evidence-pack.html">Review the evidence pack →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Simulator demo ─────────────────────────────────────────────────── -->
+  <section class="page-section" id="simulator-demo" style="background:var(--mist)">
+    <div class="container split-visual">
+      <div class="reveal">
+        <p class="section-kicker">Simulator</p>
+        <h2>The open simulator demonstrates NHID-Clinical controls.</h2>
+        <p style="color:var(--body);max-width:54ch;line-height:1.75;margin-top:.85rem">Sit at a payer desk and watch an AI caller reveal itself too late. The zero-latency modules, dashboard, knowledge base, and evaluation records are all open — no account, no signup, nothing to install.</p>
+        <div class="hero-actions-premium" style="margin-top:1.4rem">
+          <a class="btn-premium" href="/simulator.html">Run a free evaluation</a>
+          <a class="btn-ghost" href="/platform/">Connect your agent to TrustLayer</a>
+        </div>
+        <p class="disclaimer-small" style="margin-top:1rem">The simulator is education and demonstration — not the framework itself, and not a certification.</p>
+      </div>
+      <div class="console-panel reveal" role="img" aria-label="Illustrative simulator evaluation record: four controls pass, one fails, routing to human review.">
+        <div class="console-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="console-title">simulator / evaluation-record</span></div>
+        <div class="console-body">
+          <div class="console-verdict"><strong>Scenario · spoofed identity</strong><span class="console-pill is-review">Human review</span></div>
+          <div class="console-line"><span class="k">IDG-01 · Identity disclosure</span><span class="v pass">PASS</span></div>
+          <div class="console-line"><span class="k">PDX-01 · Pre-data exchange</span><span class="v pass">PASS</span></div>
+          <div class="console-line"><span class="k">DBC-01 · Deceptive behavior</span><span class="v fail">FAIL</span></div>
+          <div class="console-line"><span class="k">EIT-01 · Escalation path</span><span class="v pass">PASS</span></div>
+          <div class="console-line"><span class="k">ATR-01 · Audit trace</span><span class="v pass">PASS</span></div>
+          <p class="console-note">Illustrative evaluation record — open the simulator for a live run.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pathways: developer + enterprise ───────────────────────────────── -->
+  <section class="page-section" id="pathways">
+    <div class="container">
+      <p class="section-kicker reveal">Two ways in</p>
+      <h2 class="reveal" style="margin-bottom:.35rem">Pick the path that matches your job</h2>
+      <p class="reveal" style="color:var(--body);max-width:62ch">Both start free. Neither requires a commercial relationship to get value.</p>
+      <div class="pathway-grid">
+        <div class="pathway-card reveal">
+          <h3>Developer pathway</h3>
+          <p>You are building an AI agent, or integrating one, and need to show it behaves.</p>
+          <ol class="pathway-steps">
+            <li><b>Read the controls.</b> Five deterministic checks, each observable on a real call.</li>
+            <li><b>Run the conformance suite</b> against your engine and read the per-control verdicts.</li>
+            <li><b>Try the live API</b> — demo routes need no key. Send a VAPI or Twilio payload.</li>
+            <li><b>Wire it in</b> using the reference implementation, adapters, and trace schema.</li>
+            <li><b>List your implementation</b> in the self-attested registry when you are ready.</li>
+          </ol>
+          <a class="cta-button" href="/developers.html">Start building <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="pathway-card is-enterprise reveal">
+          <h3>Enterprise pathway</h3>
+          <p>You are a payer, provider organization, or health system receiving or operating AI agent traffic.</p>
+          <ol class="pathway-steps">
+            <li><b>Run a shadow evaluation</b> on your own call logs. Observe-only, no vendor changes.</li>
+            <li><b>Measure your baseline</b> — how long is your impersonation latency today?</li>
+            <li><b>Review the evidence pack</b> and decide what to require of your vendors.</li>
+            <li><b>Register your agents</b> so identity, ownership, and scope are enumerable.</li>
+            <li><b>Operate continuously</b> with monitoring, evidence generation, and enterprise integration.</li>
+          </ol>
+          <a class="cta-button" href="/for-payers.html">Start a shadow evaluation <span aria-hidden="true">→</span></a>
         </div>
       </div>
     </div>
