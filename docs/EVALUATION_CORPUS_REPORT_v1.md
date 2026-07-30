@@ -1,8 +1,8 @@
 # NHID-Clinical Governance Evaluation Corpus v1.0 — Detection Report
 
 **Date**: 2026-07-30  
-**Status**: ✓ Complete — 25 scenarios tested, 83.9% aggregate detection rate  
-**Corpus**: `tests/evaluation_corpus_v1.json` (5 compliant + 10 single-rule + 10 multi-rule)  
+**Status**: ✓ Complete — 25 scenarios tested, 81.2% aggregate detection rate  
+**Corpus**: `tests/evaluation_corpus_v1.json` (5 compliant + 10 single-rule + 10 multi-rule, 100+ turns)  
 
 ---
 
@@ -23,10 +23,10 @@ The evaluation corpus validates NHID-Clinical v1.1 governance enforcement across
 |------|-----------|----------|----------|------|--------|---------|
 | **DBC-01** | 9 | 9 | 9 | **100%** | ✓ STRONG | Explicit deception patterns (human claims, expert assertions) caught reliably |
 | **EIT-01** | 8 | 8 | 8 | **100%** | ✓ STRONG | Escalation deflection/denial/redirect all detected consistently |
-| **IDG-01** | 7 | 7 | 5 | **71.4%** | ⚠ LIMITED | Vague disclosure ("claims system") passes validation; needs semantic NLP |
+| **IDG-01** | 8 | 8 | 5 | **62.5%** | ⚠ LIMITED | Vague disclosure ("claims system", "automated assistant") misses; needs semantic NLP |
 | **PDX-01** | 6 | 6 | 4 | **66.7%** | ⚠ LIMITED | Sub-100ms timing misses caught; simultaneous disclosure+PHI edge case |
 | **ATR-01** | 1 | 1 | 0 | **0%** | — | Not implemented; Phase 2 candidate |
-| **TOTAL** | 25 | 31 | 26 | **83.9%** | ✓ ACCEPTABLE | Overall governance enforcement ready for pilot |
+| **TOTAL** | 25 | 32 | 26 | **81.2%** | ✓ ACCEPTABLE | Overall governance enforcement ready for pilot |
 
 ---
 
@@ -69,20 +69,21 @@ The evaluation corpus validates NHID-Clinical v1.1 governance enforcement across
 
 ---
 
-### IDG-01: Identity Disclosure Gate (71.4% ⚠)
+### IDG-01: Identity Disclosure Gate (62.5% ⚠)
 
-**Test Coverage**: 7 scenarios (explicit disclosure, vague disclosure, no disclosure)
+**Test Coverage**: 8 scenarios (explicit disclosure, vague disclosure, borderline language, no disclosure)
 
-**Detected (5/7)**:
+**Detected (5/8)**:
 - ✓ nhid_ec_idg01_001: No disclosure detected
 - ✓ nhid_ec_combo_001: No disclosure + immediate PHI (double violation)
 - ✓ nhid_ec_combo_005: No disclosure + escalation denied
 - ✓ nhid_ec_combo_007: Triple violation (no disclosure)
 - ✓ nhid_ec_combo_008: Quadruple violation (no disclosure)
 
-**Missed (2/7)**:
+**Missed (3/8)**:
 - ✗ nhid_ec_idg01_002: Vague disclosure ("claims system") — engine validates presence, not quality
-- ✗ nhid_ec_combo_002: Vague disclosure ("this is the claims system") — same root cause
+- ✗ nhid_ec_idg01_003: Borderline AI language ("I'm an automated assistant") — passes as disclosure but lacks explicit AI claim
+- ✗ nhid_ec_combo_002: Vague disclosure ("this is the claims system") — same root cause as nhid_ec_idg01_002
 
 **Root Cause**: Engine checks `disclosure_timestamp is not None` and `identity_assertion_text is non-empty`. Any non-empty string passes, including:
 - Generic system names ("authorization system", "claims system", "provider portal")
@@ -149,10 +150,10 @@ Clear, explicit AI disclosures ("I'm an AI", "I'm automated", "I'm an AI assista
 | Metric | Value | Status |
 |--------|-------|--------|
 | **Rule Strengths** | DBC-01, EIT-01 @ 100% | ✓ STRONG |
-| **Rule Limitations** | IDG-01, PDX-01 @ 67–71% | ⚠ ACCEPTABLE |
+| **Rule Limitations** | IDG-01 @ 62.5%, PDX-01 @ 66.7% | ⚠ ACCEPTABLE |
 | **False-Positive Rate** | 0% | ✓ EXCELLENT |
 | **Multi-Rule Combinations** | 10/10 detected violations across 10 scenarios | ✓ GOOD |
-| **Overall Detection Rate** | 83.9% (26/31 violations) | ✓ ACCEPTABLE |
+| **Overall Detection Rate** | 81.2% (26/32 violations) | ✓ ACCEPTABLE |
 | **Production Readiness** | Pilot-grade enforcement | ✓ YES |
 
 ---

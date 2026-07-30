@@ -246,6 +246,26 @@
       ]
     },
     {
+      "scenario_id": "nhid_ec_idg01_003",
+      "title": "IDG-01: Borderline AI Language (Weak Disclosure)",
+      "description": "Bot uses borderline AI language ('I'm automated') without explicit 'AI' claim",
+      "expected_violations": ["IDG-01"],
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "I'm an automated assistant for authorization checks. What's your member ID?",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-07-30T10:00:00Z",
+          "identity_assertion_text": "I'm an automated assistant",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "phi_accessed": ["member_id"],
+          "timestamp": "2026-07-30T10:00:00.2Z"
+        }
+      ]
+    },
+    {
       "scenario_id": "nhid_ec_pdx01_001",
       "title": "PDX-01: PHI Requested Before Disclosure",
       "description": "Bot requests member ID before disclosing automation",

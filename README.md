@@ -176,8 +176,8 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 
 | Item | Deliverable | Status | Purpose |
 |------|---|---|---|
-| **1** | **Governance Evaluation Corpus v1.0** | ✅ Complete | 25 healthcare scenarios (5 compliant + 10 single-rule + 10 multi-rule) with 99 turns; demonstrates rule-combination coverage |
-| **2** | **Detection Rate Report** | ✅ Complete | 83.9% aggregate detection (26/31 violations); 0% false-positive rate; per-rule accuracy breakdown |
+| **1** | **Governance Evaluation Corpus v1.0** | ✅ Complete | 25 healthcare scenarios (5 compliant + 10 single-rule + 10 multi-rule) with 100+ turns; demonstrates rule-combination coverage |
+| **2** | **Detection Rate Report** | ✅ Complete | 81.2% aggregate detection (26/32 violations); 0% false-positive rate; per-rule accuracy breakdown |
 | **3** | **NHID Audit Event Spec v1.0** | ✅ Complete | Formal audit trail schema, immutability requirements (append-only + hash chain options), 7-year retention, compliance mappings (HIPAA §164.312b) |
 | **4** | **Metrics & Observability v1.0** | ✅ Complete | 6 metric categories, CloudWatch integration, pilot dashboard layout, alert thresholds, weekly reporting template |
 | **5** | **Architecture Overview (Pilot-Ready)** | ✅ Complete | 10-minute executive brief for security architects; governance statement for portfolio; pilot success criteria and go/no-go recommendation |
@@ -185,8 +185,8 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 ### Evidence Summary
 
 **Engine Validation**:
-- ✅ **330 passing unit tests** (comprehensive rule coverage)
-- ✅ **25-scenario evaluation corpus** (83.9% detection, 0% false positives)
+- ✅ **361 passing unit tests** (comprehensive rule coverage)
+- ✅ **25-scenario evaluation corpus** (81.2% detection, 0% false positives)
 - ✅ **Live endpoint tested** against noncompliant VAPI payload
 - ✅ **Deterministic** — same input always produces same output
 

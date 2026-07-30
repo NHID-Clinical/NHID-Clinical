@@ -26,7 +26,7 @@ It intercepts healthcare conversations (phone, chat, web) and enforces five gove
 
 **Production-Validated** = Engine works correctly:
 - ✓ 330 passing unit tests (comprehensive rule coverage)
-- ✓ 25-scenario evaluation corpus (83.9% detection rate across all rule combinations)
+- ✓ 25-scenario evaluation corpus (81.2% detection rate across all rule combinations)
 - ✓ 5 compliant scenarios with 0% false positives
 - ✓ Live endpoint tested against real VAPI adapter
 - ✓ Deterministic (same input always produces same output)
@@ -185,7 +185,7 @@ def check_call(request):
 **Purpose**: Measure detection rates and validate engine behavior
 
 **Components**:
-- 330 unit tests (v1.1 compliance suite)
+- 361 unit tests (v1.1 compliance suite)
 - 25-scenario evaluation corpus (pilot-grade evidence)
 - Detection rate reporter (expected vs. detected violations)
 
@@ -292,7 +292,7 @@ Bot (T=1s): "I can handle this. Here's your authorization status."
 
 ## Evidence Package
 
-### 1. Unit Test Suite (330 tests)
+### 1. Unit Test Suite (361 tests)
 
 **Location**: `tests/`
 
@@ -315,14 +315,14 @@ Bot (T=1s): "I can handle this. Here's your authorization status."
 - 10 single-rule violations (each rule isolated)
 - 10 multi-rule combinations (realistic production scenarios)
 
-**Coverage**: 99 turns across healthcare authorization workflows
+**Coverage**: 100+ turns across healthcare authorization workflows
 
 **Detection Rates**:
 - DBC-01: 100% ✓
 - EIT-01: 100% ✓
-- IDG-01: 71.4% (acceptable; vague disclosure edge case)
+- IDG-01: 62.5% (acceptable; vague/borderline disclosure edge cases)
 - PDX-01: 66.7% (acceptable; sub-100ms timing edge case)
-- Overall: 83.9% (26/31 violations detected)
+- Overall: 81.2% (26/32 violations detected)
 
 ### 3. Detection Report
 
@@ -450,7 +450,7 @@ Monitoring (CloudWatch Metrics)
 
 **Why**:
 - Engine is validation-tested and stable
-- 330 unit tests + 25-scenario corpus + live endpoint validation all pass
+- 361 unit tests + 25-scenario corpus + live endpoint validation all pass
 - False-positive rate is excellent (0% on evaluation corpus)
 - Rules are well-defined and deterministic
 - Audit trail spec is complete (implementation ready)
@@ -478,7 +478,7 @@ Monitoring (CloudWatch Metrics)
 
 ## Governance Statement (Portfolio Use)
 
-**NHID-Clinical v1.1 is a production-validated deterministic governance enforcement engine for automated healthcare systems.** It enforces five compliance rules (disclosure, timing, deception, escalation, audit trail) with 83.9% aggregate detection accuracy and 0% false-positive rate across a 25-scenario evaluation corpus. The engine has passed 330 unit tests and live endpoint validation. It is suitable for limited pilot evaluation (2–3 customers, 4 weeks) but is not an enterprise product; it lacks monitoring infrastructure, SLAs, and compliance agreements required for general availability.
+**NHID-Clinical v1.1 is a production-validated deterministic governance enforcement engine for automated healthcare systems.** It enforces five compliance rules (disclosure, timing, deception, escalation, audit trail) with 81.2% aggregate detection accuracy and 0% false-positive rate across a 25-scenario evaluation corpus. The engine has passed 361 unit tests and live endpoint validation. It is suitable for limited pilot evaluation (2–3 customers, 4 weeks) but is not an enterprise product; it lacks monitoring infrastructure, SLAs, and compliance agreements required for general availability.
 
 ---
 
