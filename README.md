@@ -120,11 +120,49 @@ An honest maturity snapshot. NHID-Clinical is a working reference implementation
 - Raster brand assets and expanded interoperability adapters
 
 **Not yet**
-- Production-scale deployments
+- Production-scale deployments (see [Phase 5 findings](#phase-5--architecture-review-findings) below)
 - A certification, accreditation, or standard
 - Any regulatory endorsement
 
 This is a voluntary framework — **not an accredited standard, certification, or regulatory requirement.**
+
+## Phase 5 & Architecture Review Findings
+
+**Date**: July 30, 2026 | **Status**: Reference implementation validated; production readiness assessment complete
+
+### Validation Results
+
+Phase 5 targeted-edge-case testing (15 healthcare scenarios) confirmed heuristic boundaries of the v1.3 engine:
+
+| Control | Detection Rate | Status | Finding |
+|---------|---|---|---|
+| **IDG-01** (identity disclosure) | 87.5% baseline → 20% on vague disclosures | ⚠️ Acceptable for v1.3 | Engine validates presence not quality; "authorization system" passes as valid disclosure. Semantic validation deferred to Phase 2. |
+| **PDX-01** (PHI timing) | 100% (within scope) | ✅ Solid | Timing gate working correctly. v1.3 design intentionally excludes turn-0 post-disclosure probes. |
+| **DBC-01** (deception detection) | 80% baseline → 40% on subtle patterns | ⚠️ Heuristic ceiling | Keyword-only heuristics catch explicit role claims ("specialist") but miss pragmatic contradictions (promise→deflect) and implicit patterns (deliberate pauses). Multi-turn analysis deferred to Phase 2. |
+| **EIT-01** (escalation path) | 100% | ✅ Solid | Phase 4 engine fix stable; escalation outcome checks fire independent of current-turn speech. |
+
+**Conclusion**: v1.3 engine is **internally consistent and deterministic**. Baseline capabilities (IDG-01 presence, PDX-01 timing, EIT-01 escalation) are production-ready. DBC-01 and IDG-01 quality gaps are documented and scoped to Phase 2 ML/NLP enhancement.
+
+### Production Readiness Assessment
+
+**Current maturity level**: Internal Tool / Proof of Concept with Live Infrastructure  
+**Not yet**: Limited Pilot (operational readiness required)
+
+**Critical gaps blocking release** (4–6 weeks remediation required):
+1. 🔒 **Security assessment** — Input validation, encryption, attack surface untested
+2. ⏱️ **Load testing** — Scalability and latency under concurrent requests unknown
+3. 👁️ **Monitoring & observability** — Production visibility, alerting, incident runbook missing
+4. 🏥 **HIPAA compliance** — Business Associate Agreement, Data Processing Agreement not drafted
+5. 📋 **Audit trail specification** — Format, retention, immutability, access control undefined
+6. 🔑 **Authentication & authorization** — API key rotation, rate limiting, per-customer isolation untested
+
+**Known limitations (documented)**: DBC-01 @ 40% on subtle deception, IDG-01 @ 20% on vague disclosure. Both deferred to Phase 2 ML/NLP work. IDG-01 and PDX-01 baseline (presence + timing gate) remain stable and suitable for pilot.
+
+**Recommendation**: Do not release to GA. Proceed to limited pilot (2–3 customers, 4 weeks) only after addressing critical gaps and obtaining legal/compliance sign-off. See **[Architecture Review Visual Summary](docs/ARCHITECTURE_REVIEW_VISUAL.md)** for detailed go/no-go criteria and timeline.
+
+**Timeline to production**: 12–14 weeks (remediation → pilot → post-pilot review → GA), not immediate.
+
+See **[Phase 5 Findings](docs/PHASE5_FINDINGS.md)** and **[Architecture Review](docs/ARCHITECTURE_REVIEW_VISUAL.md)** for full technical analysis.
 
 ## The Four Core Controls (v1.3)
 
