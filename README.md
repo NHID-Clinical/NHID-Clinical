@@ -164,6 +164,62 @@ Phase 5 targeted-edge-case testing (15 healthcare scenarios) confirmed heuristic
 
 See **[Phase 5 Findings](docs/PHASE5_FINDINGS.md)** and **[Architecture Review](docs/ARCHITECTURE_REVIEW_VISUAL.md)** for full technical analysis.
 
+---
+
+## Phase 6: Evidence Hardening Sprint (Complete)
+
+**Date**: July 30, 2026 | **Status**: Evidence package complete (2–3 week sprint, ~57 hours)
+
+### Deliverables
+
+Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evidence for pilot evaluation and portfolio demonstration:
+
+| Item | Deliverable | Status | Purpose |
+|------|---|---|---|
+| **1** | **Governance Evaluation Corpus v1.0** | ✅ Complete | 25 healthcare scenarios (5 compliant + 10 single-rule + 10 multi-rule) with 99 turns; demonstrates rule-combination coverage |
+| **2** | **Detection Rate Report** | ✅ Complete | 83.9% aggregate detection (26/31 violations); 0% false-positive rate; per-rule accuracy breakdown |
+| **3** | **NHID Audit Event Spec v1.0** | ✅ Complete | Formal audit trail schema, immutability requirements (append-only + hash chain options), 7-year retention, compliance mappings (HIPAA §164.312b) |
+| **4** | **Metrics & Observability v1.0** | ✅ Complete | 6 metric categories, CloudWatch integration, pilot dashboard layout, alert thresholds, weekly reporting template |
+| **5** | **Architecture Overview (Pilot-Ready)** | ✅ Complete | 10-minute executive brief for security architects; governance statement for portfolio; pilot success criteria and go/no-go recommendation |
+
+### Evidence Summary
+
+**Engine Validation**:
+- ✅ **330 passing unit tests** (comprehensive rule coverage)
+- ✅ **25-scenario evaluation corpus** (83.9% detection, 0% false positives)
+- ✅ **Live endpoint tested** against noncompliant VAPI payload
+- ✅ **Deterministic** — same input always produces same output
+
+**Governance Readiness**:
+- ✅ **Strong rules**: DBC-01 (100%), EIT-01 (100%)
+- ✅ **Acceptable rules**: IDG-01 (71.4%), PDX-01 (66.7%) — edge cases documented
+- ✅ **Audit trail spec**: Format, retention, immutability, HIPAA compliance complete
+- ✅ **Monitoring spec**: Pilot dashboard, alert thresholds, weekly reporting
+
+**Portfolio Positioning**:
+- ✅ **Not an enterprise product**: Minimal surrounding infrastructure
+- ✅ **Production-validated engine**: Deterministic policy enforcement battle-tested
+- ✅ **Pilot-ready**: Suitable for 2–3 customer evaluation (4 weeks)
+- ✅ **Evidence-backed**: Test results, corpus, detection rates, governance statement
+
+### Artifacts
+
+- [`tests/evaluation_corpus_v1.json`](tests/evaluation_corpus_v1.json) — 25 scenarios, 99 turns
+- [`docs/EVALUATION_CORPUS_REPORT_v1.md`](docs/EVALUATION_CORPUS_REPORT_v1.md) — Detection rates, false-positive analysis
+- [`docs/NHID_AUDIT_EVENT_SPEC_v1.0.md`](docs/NHID_AUDIT_EVENT_SPEC_v1.0.md) — Formal spec (schema, retention, compliance)
+- [`docs/NHID_METRICS_AND_OBSERVABILITY_v1.md`](docs/NHID_METRICS_AND_OBSERVABILITY_v1.md) — Pilot monitoring & alerting
+- [`docs/ARCHITECTURE_OVERVIEW_PILOT_READY.md`](docs/ARCHITECTURE_OVERVIEW_PILOT_READY.md) — Executive brief + go/no-go criteria
+
+### Next Steps
+
+**v1.1 Engine**: ✅ **Frozen** — no further policy engine changes planned  
+**v1.2 Infrastructure** (Phase 2, if pilot opportunity appears):
+- Implement ATR-01 (audit trail enforcement)
+- Add NLP semantic scoring for IDG-01/DBC-01
+- Enterprise monitoring + SLA + HIPAA BAA signing
+
+**v2.0 Identity Layer**: NHID-Auth v2 (reference code in `src/agent_identity.py`, 60+ passing tests)
+
 ## The Four Core Controls (v1.3)
 
 | Control | Name | Requirement |
