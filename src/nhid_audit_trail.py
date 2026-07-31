@@ -23,6 +23,9 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 from datetime import datetime
+import os
+
+from src.audit_integrity import AuditIntegrity
 
 
 class DisclosureLevel(str, Enum):
@@ -153,10 +156,142 @@ class AuditTrail:
     agent_identity: AgentIdentity
     organization_identity: OrganizationIdentity
     events: list[AuditEvent] = field(default_factory=list)
+    _signer: AuditIntegrity | None = field(default=None, init=False)
 
-    def add_event(self, event: AuditEvent) -> None:
-        """Append immutable event to trail."""
-        self.events.append(event)
+    def __post_init__(self):
+        """Initialize signer with secret key from environment or generate new one."""
+        secret_key_b64 = os.getenv("AUDIT_SECRET_KEY_B64")
+        if secret_key_b64:
+            import base64
+            secret_key = base64.b64decode(secret_key_b64)
+        else:
+            secret_key = os.urandom(32)
+        object.__setattr__(self, "_signer", AuditIntegrity(secret_key))
+
+    def add_event(self, event: AuditEvent) -> AuditEvent:
+        """Append immutable event to trail, signing for integrity.
+
+        Args:
+            event: AuditEvent to add
+
+        Returns:
+            AuditEvent with evidence_hash set (signed)
+        """
+        # Get previous event for chain linking
+        previous_event_id = self.events[-1].event_id if self.events else None
+
+        # Build payload for signing
+        payload = {}
+        if event.disclosure_event:
+            payload["disclosure_event"] = {
+                "timestamp": event.disclosure_event.timestamp,
+                "level": event.disclosure_event.level.value,
+                "text": event.disclosure_event.disclosure_text,
+                "speaker": event.disclosure_event.speaker,
+            }
+        elif event.phi_access_record:
+            payload["phi_access_record"] = {
+                "phi_requested": event.phi_access_record.phi_fields_requested,
+                "phi_accessed": event.phi_access_record.phi_fields_accessed,
+                "outcome": event.phi_access_record.outcome.value,
+            }
+        elif event.policy_decision_record:
+            payload["policy_decision"] = {
+                "action": event.policy_decision_record.action,
+                "violations": event.policy_decision_record.violations_detected,
+            }
+        elif event.escalation_event:
+            payload["escalation"] = {
+                "trigger": event.escalation_event.escalation_trigger,
+                "outcome": event.escalation_event.escalation_outcome,
+            }
+
+        # Sign the event
+        evidence_hash = self._signer.sign_event(
+            event_id=event.event_id,
+            timestamp=event.timestamp,
+            event_type=event.event_type.value,
+            payload=payload,
+            previous_event_id=previous_event_id,
+        )
+
+        # Create signed copy of event
+        signed_event = AuditEvent(
+            event_id=event.event_id,
+            session_id=event.session_id,
+            event_type=event.event_type,
+            timestamp=event.timestamp,
+            agent_identity=event.agent_identity,
+            organization_identity=event.organization_identity,
+            disclosure_event=event.disclosure_event,
+            phi_access_record=event.phi_access_record,
+            policy_decision_record=event.policy_decision_record,
+            escalation_event=event.escalation_event,
+            state_before=event.state_before,
+            state_after=event.state_after,
+            previous_event_id=previous_event_id,
+            evidence_hash=evidence_hash,
+            request_id=event.request_id,
+            replay_mode=event.replay_mode,
+        )
+
+        self.events.append(signed_event)
+        return signed_event
+
+    def verify_chain(self) -> tuple[bool, str | None]:
+        """Verify integrity of entire audit trail.
+
+        Returns:
+            Tuple of (is_valid, error_message)
+            - (True, None) if entire chain is valid and tamper-free
+            - (False, error_msg) if tampering or signature verification fails
+        """
+        if not self._signer:
+            return False, "Signer not initialized"
+
+        if not self.events:
+            return True, None
+
+        # Build event representations for verification
+        events_for_verification = []
+        for event in self.events:
+            payload = {}
+            if event.disclosure_event:
+                payload["disclosure_event"] = {
+                    "timestamp": event.disclosure_event.timestamp,
+                    "level": event.disclosure_event.level.value,
+                    "text": event.disclosure_event.disclosure_text,
+                    "speaker": event.disclosure_event.speaker,
+                }
+            elif event.phi_access_record:
+                payload["phi_access_record"] = {
+                    "phi_requested": event.phi_access_record.phi_fields_requested,
+                    "phi_accessed": event.phi_access_record.phi_fields_accessed,
+                    "outcome": event.phi_access_record.outcome.value,
+                }
+            elif event.policy_decision_record:
+                payload["policy_decision"] = {
+                    "action": event.policy_decision_record.action,
+                    "violations": event.policy_decision_record.violations_detected,
+                }
+            elif event.escalation_event:
+                payload["escalation"] = {
+                    "trigger": event.escalation_event.escalation_trigger,
+                    "outcome": event.escalation_event.escalation_outcome,
+                }
+
+            events_for_verification.append(
+                {
+                    "event_id": event.event_id,
+                    "timestamp": event.timestamp,
+                    "event_type": event.event_type.value,
+                    "payload": payload,
+                    "evidence_hash": event.evidence_hash or "",
+                    "previous_event_id": event.previous_event_id,
+                }
+            )
+
+        return self._signer.verify_chain(events_for_verification)
 
     def get_disclosure_events(self) -> list[DisclosureEventRecord]:
         """Retrieve all disclosure events in order."""
