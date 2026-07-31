@@ -91,6 +91,15 @@ ESCALATION_HONOR_PATTERNS: tuple[str, ...] = (
     "being transferred", "is being transferred",
     "transferring your call", "your call is being transferred",
     "route you to a", "routing you to a",
+    # Missing modal variations (July 2026 FP reduction):
+    "going to transfer you", "gonna transfer you",
+    "going to connect you", "gonna connect you",
+    "get you connected", "getting you connected",
+    # Escalation handling (July 2026 corpus-mined):
+    "creating a priority", "creating a ticket",
+    "priority review ticket",
+    "escalate this for",
+    "escalating this to",
 )
 
 
