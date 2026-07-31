@@ -178,31 +178,22 @@ def build_turn(
     assertion alongside the timestamp, and a disclosure made once does not
     expire when the caller speaks.
 
-    DBC-01 deceptive_artifact_flags are extracted via heuristic pattern matching
-    on identity_assertion_text (what DBC-01 actually reads).
+    DBC-01 deceptive_artifact_flags are extracted from voice/signal artifacts only
+    (e.g., fake breathing, synthetic sounds). Text-based identity checks are handled
+    by the engine's Tier B heuristics (_assertion_implies_human).
     """
     speech_text = raw_turn.get("text", "") or ""
     speaker = raw_turn.get("speaker", "unknown")
     identity_assertion_text = speech_text if speaker == "agent" else disclosure_assertion_text
 
-    # DBC-01: Detect deceptive patterns in agent identity assertions
+    # DBC-01: Extract voice/signal artifacts (not text patterns)
     deceptive_flags = []
     if speaker == "agent" and identity_assertion_text:
         text_lower = identity_assertion_text.lower()
-        if any(name in text_lower for name in ["alex", "jordan", "taylor", "morgan", "smith"]):
-            deceptive_flags.append("human_name_claim")
-        if "claims representative" in text_lower or "specialist" in text_lower:
-            deceptive_flags.append("false_role_claim")
-        if any(role in text_lower for role in ["representative", "operator", "person", "human"]):
-            if "i am" in text_lower or "this is" in text_lower:
-                deceptive_flags.append("human_role_impersonation")
-        if any(phrase in text_lower for phrase in ["we can", "we will", "we check", "we help"]):
-            deceptive_flags.append("collective_pronoun_deception")
-        if any(phrase in text_lower for phrase in ["expert judgment", "clinical review", "personal review"]):
-            deceptive_flags.append("false_judgment_claim")
-        if any(phrase in text_lower for phrase in ["personally", "manually", "individually"]):
-            if any(word in text_lower for word in ["review", "check", "process", "handle"]):
-                deceptive_flags.append("false_personal_processing")
+        if any(sound in text_lower for sound in ["*inhales*", "*breathes*", "*sighs*", "*clears throat*"]):
+            deceptive_flags.append("synthetic_breathing")
+        if any(sound in text_lower for sound in ["*typing*", "*keystroke*", "*click*"]):
+            deceptive_flags.append("synthetic_typing")
 
     turn: dict[str, Any] = {
         "speech_text": speech_text,
