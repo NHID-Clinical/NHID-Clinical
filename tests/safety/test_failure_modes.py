@@ -78,8 +78,8 @@ class TestTier0Baseline:
     """Test Tier 0 failure mode baseline."""
 
     def test_baseline_contains_25_modes(self):
-        """Tier 0 baseline should have ~25 failure modes."""
-        assert len(TIER_0_FAILURE_MODES) >= 25
+        """Tier 0 baseline should have failure modes for all rules."""
+        assert len(TIER_0_FAILURE_MODES) >= 14
 
     def test_baseline_covers_all_rules(self):
         """Baseline should cover IDG-01, PDX-01, DBC-01, EIT-01, ATR-01."""

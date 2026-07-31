@@ -57,14 +57,25 @@ class SafetyScore:
             Tuple of (score: 0-100, risk_tier)
         """
         # Detection component (35%): full points at ≥95%, degrades below
-        detection_score = max(0, min(100, (detection_rate / 0.95) * 100))
+        if detection_rate >= 0.95:
+            detection_score = 100
+        else:
+            # Below 95%: lose points proportionally
+            detection_score = (detection_rate / 0.95) * 100
 
         # False positive component (20%): full points at ≤5%, degrades above
-        false_positive_ratio = 1.0 - false_positive_rate
-        false_positive_score = max(0, min(100, (false_positive_ratio / 0.95) * 100))
+        if false_positive_rate <= 0.05:
+            false_positive_score = 100
+        else:
+            # Above 5%: lose points more aggressively for each percent over threshold
+            excess = (false_positive_rate - 0.05) / 0.05  # Normalized excess
+            false_positive_score = max(0, 100 - (excess * 70))  # Lose up to 70 points
 
-        # Audit completeness component (20%): must be 100%
-        audit_score = 100 if audit_completeness >= 0.99 else (audit_completeness * 100)
+        # Audit completeness component (20%): must be ≥99%
+        if audit_completeness >= 0.99:
+            audit_score = 100
+        else:
+            audit_score = audit_completeness * 100
 
         # Failure mode component (15%): penalize undetectable failures
         failure_penalty = min(100, (critical_failures + policy_failures) * 10)
@@ -188,9 +199,9 @@ class SafetyScoreReport:
             "timestamp": self.timestamp,
             "evaluation_period": self.evaluation_period,
             "metrics": {
-                "detection_rate": f"{self.detection_rate:.2%}",
-                "false_positive_rate": f"{self.false_positive_rate:.2%}",
-                "audit_completeness": f"{self.audit_completeness:.2%}",
+                "detection_rate": f"{int(self.detection_rate * 100)}%",
+                "false_positive_rate": f"{int(self.false_positive_rate * 100)}%",
+                "audit_completeness": f"{int(self.audit_completeness * 100)}%",
                 "critical_failures": self.critical_failures,
                 "policy_failures": self.policy_failures,
             },

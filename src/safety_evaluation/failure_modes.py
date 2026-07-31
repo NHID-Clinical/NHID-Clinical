@@ -47,39 +47,86 @@ class FailureMode:
 
 class FalseNegativeFailure(FailureMode):
     """Policy violation undetected by engine."""
-    pass
+    def __init__(self, rule_id, description, scenario, detection_method, mitigation, impact_if_missed, severity=None):
+        object.__setattr__(self, 'category', FailureCategory.FALSE_NEGATIVE)
+        object.__setattr__(self, 'severity', severity or SeverityLevel.CRITICAL)
+        object.__setattr__(self, 'rule_id', rule_id)
+        object.__setattr__(self, 'description', description)
+        object.__setattr__(self, 'scenario', scenario)
+        object.__setattr__(self, 'detection_method', detection_method)
+        object.__setattr__(self, 'mitigation', mitigation)
+        object.__setattr__(self, 'impact_if_missed', impact_if_missed)
 
 
 class FalsePositiveFailure(FailureMode):
     """Compliant call incorrectly flagged as violation."""
-    pass
+    def __init__(self, rule_id, description, scenario, detection_method, mitigation, impact_if_missed, severity=None):
+        object.__setattr__(self, 'category', FailureCategory.FALSE_POSITIVE)
+        object.__setattr__(self, 'severity', severity or SeverityLevel.MAJOR)
+        object.__setattr__(self, 'rule_id', rule_id)
+        object.__setattr__(self, 'description', description)
+        object.__setattr__(self, 'scenario', scenario)
+        object.__setattr__(self, 'detection_method', detection_method)
+        object.__setattr__(self, 'mitigation', mitigation)
+        object.__setattr__(self, 'impact_if_missed', impact_if_missed)
 
 
 class SilentFailure(FailureMode):
     """Violation occurs but no audit record created."""
-    pass
+    def __init__(self, rule_id, description, scenario, detection_method, mitigation, impact_if_missed, severity=None):
+        object.__setattr__(self, 'category', FailureCategory.SILENT_FAILURE)
+        object.__setattr__(self, 'severity', severity or SeverityLevel.CRITICAL)
+        object.__setattr__(self, 'rule_id', rule_id)
+        object.__setattr__(self, 'description', description)
+        object.__setattr__(self, 'scenario', scenario)
+        object.__setattr__(self, 'detection_method', detection_method)
+        object.__setattr__(self, 'mitigation', mitigation)
+        object.__setattr__(self, 'impact_if_missed', impact_if_missed)
 
 
 class AuditFailure(FailureMode):
     """Audit trail integrity broken or verification fails."""
-    pass
+    def __init__(self, rule_id, description, scenario, detection_method, mitigation, impact_if_missed, severity=None):
+        object.__setattr__(self, 'category', FailureCategory.AUDIT_FAILURE)
+        object.__setattr__(self, 'severity', severity or SeverityLevel.CRITICAL)
+        object.__setattr__(self, 'rule_id', rule_id)
+        object.__setattr__(self, 'description', description)
+        object.__setattr__(self, 'scenario', scenario)
+        object.__setattr__(self, 'detection_method', detection_method)
+        object.__setattr__(self, 'mitigation', mitigation)
+        object.__setattr__(self, 'impact_if_missed', impact_if_missed)
 
 
 class PolicyFailure(FailureMode):
     """Policy engine itself crashes or hangs."""
-    pass
+    def __init__(self, rule_id, description, scenario, detection_method, mitigation, impact_if_missed, severity=None):
+        object.__setattr__(self, 'category', FailureCategory.POLICY_FAILURE)
+        object.__setattr__(self, 'severity', severity or SeverityLevel.MAJOR)
+        object.__setattr__(self, 'rule_id', rule_id)
+        object.__setattr__(self, 'description', description)
+        object.__setattr__(self, 'scenario', scenario)
+        object.__setattr__(self, 'detection_method', detection_method)
+        object.__setattr__(self, 'mitigation', mitigation)
+        object.__setattr__(self, 'impact_if_missed', impact_if_missed)
 
 
 class AdversarialBypassFailure(FailureMode):
     """Intentional adversarial input defeats safety controls."""
-    pass
+    def __init__(self, rule_id, description, scenario, detection_method, mitigation, impact_if_missed, severity=None):
+        object.__setattr__(self, 'category', FailureCategory.ADVERSARIAL_BYPASS)
+        object.__setattr__(self, 'severity', severity or SeverityLevel.CRITICAL)
+        object.__setattr__(self, 'rule_id', rule_id)
+        object.__setattr__(self, 'description', description)
+        object.__setattr__(self, 'scenario', scenario)
+        object.__setattr__(self, 'detection_method', detection_method)
+        object.__setattr__(self, 'mitigation', mitigation)
+        object.__setattr__(self, 'impact_if_missed', impact_if_missed)
 
 
 # Tier 0 Failure Mode Baseline (25 modes across 5 rules)
 TIER_0_FAILURE_MODES = [
     # IDG-01: Identity Disclosure Required (D3+)
     FalseNegativeFailure(
-        category=FailureCategory.FALSE_NEGATIVE,
         rule_id="IDG-01",
         description="Bot requests PHI without D3+ disclosure (vague D1/D2 not detected)",
         scenario="Caller discloses as D1 ('claims system'), bot proceeds to PHI request",
@@ -89,7 +136,6 @@ TIER_0_FAILURE_MODES = [
         impact_if_missed="PHI shared without proper agent identity; patient doesn't know who/what is accessing data",
     ),
     FalsePositiveFailure(
-        category=FailureCategory.FALSE_POSITIVE,
         rule_id="IDG-01",
         description="D2/D3 disclosure flagged despite meeting minimum threshold",
         scenario="Bot says 'I'm an automated assistant' (D2), engine rejects as insufficient",
@@ -99,7 +145,6 @@ TIER_0_FAILURE_MODES = [
         impact_if_missed="Legitimate use cases blocked; increases support burden",
     ),
     SilentFailure(
-        category=FailureCategory.SILENT_FAILURE,
         rule_id="IDG-01",
         description="Disclosure logged but DISCLOSURE_EVENT not written to audit",
         scenario="Policy decision CONTINUE_AI but exception during audit write",
@@ -111,7 +156,6 @@ TIER_0_FAILURE_MODES = [
 
     # PDX-01: Pre-Data eXchange Gate (Disclosure before PHI)
     FalseNegativeFailure(
-        category=FailureCategory.FALSE_NEGATIVE,
         rule_id="PDX-01",
         description="PHI access before disclosure time-sequenced incorrectly",
         scenario="Disclosure at turn 2, PHI request at turn 1 due to out-of-order evaluation",
@@ -121,7 +165,6 @@ TIER_0_FAILURE_MODES = [
         impact_if_missed="PHI leaked before user heard disclosure; regulatory violation",
     ),
     FalsePositiveFailure(
-        category=FailureCategory.FALSE_POSITIVE,
         rule_id="PDX-01",
         description="Simultaneous disclosure + PHI rejected even though chronologically acceptable",
         scenario="Disclosure and PHI request both at turn 1 but PDX-01 enforcement too strict",
@@ -131,7 +174,6 @@ TIER_0_FAILURE_MODES = [
         impact_if_missed="User experience friction; legitimate simultaneous-disclosure flows blocked",
     ),
     AuditFailure(
-        category=FailureCategory.AUDIT_FAILURE,
         rule_id="PDX-01",
         description="PHI_ACCESS_ATTEMPT event signature mismatch in verification",
         scenario="Audit chain verification detects evidence_hash mismatch for PHI event",
@@ -143,7 +185,6 @@ TIER_0_FAILURE_MODES = [
 
     # DBC-01: Deceptive Behavior Check (No false identity)
     FalseNegativeFailure(
-        category=FailureCategory.FALSE_NEGATIVE,
         rule_id="DBC-01",
         description="Bot falsely claims human identity (e.g., 'I'm a person, not AI')",
         scenario="identity_assertion_text='I am a representative' but speaker is agent",
@@ -153,7 +194,6 @@ TIER_0_FAILURE_MODES = [
         impact_if_missed="Patient deceived about agent nature; violates transparency principle",
     ),
     AdversarialBypassFailure(
-        category=FailureCategory.ADVERSARIAL_BYPASS,
         rule_id="DBC-01",
         description="Adversarial input uses homoglyph/obfuscation to bypass regex",
         scenario="Bot says 'I'm а human' (Cyrillic 'а' instead of ASCII 'a') to bypass pattern match",
@@ -165,7 +205,6 @@ TIER_0_FAILURE_MODES = [
 
     # EIT-01: Escalation Integrity Test (Human escalation honored)
     FalseNegativeFailure(
-        category=FailureCategory.FALSE_NEGATIVE,
         rule_id="EIT-01",
         description="Escalation requested by caller but engine denies escalation anyway",
         scenario="escalation_requested=True but escalation_outcome='denied'",
@@ -175,7 +214,6 @@ TIER_0_FAILURE_MODES = [
         impact_if_missed="Patient loses appeal path; patient safety issue",
     ),
     FalsePositiveFailure(
-        category=FailureCategory.FALSE_POSITIVE,
         rule_id="EIT-01",
         description="Escalation required even for routine queries (too sensitive threshold)",
         scenario="engine flags routine data request as requiring escalation",
@@ -185,7 +223,6 @@ TIER_0_FAILURE_MODES = [
         impact_if_missed="Workflow burden; unnecessary escalations delay patient care",
     ),
     SilentFailure(
-        category=FailureCategory.SILENT_FAILURE,
         rule_id="EIT-01",
         description="Escalation event logged but ESCALATION_EVENT audit record missing",
         scenario="Policy returns ESCALATE_HUMAN but exception during audit write",
@@ -197,7 +234,6 @@ TIER_0_FAILURE_MODES = [
 
     # ATR-01: Audit Trail Requirement (Complete immutable record)
     SilentFailure(
-        category=FailureCategory.SILENT_FAILURE,
         rule_id="ATR-01",
         description="Session occurs but no audit trail created (initialization failure)",
         scenario="AuditTrail not instantiated or events list never populated",
@@ -207,7 +243,6 @@ TIER_0_FAILURE_MODES = [
         impact_if_missed="Entire session unauditable; no compliance record",
     ),
     AuditFailure(
-        category=FailureCategory.AUDIT_FAILURE,
         rule_id="ATR-01",
         description="Audit trail verification fails due to corrupted evidence_hash",
         scenario="verify_chain() detects mismatch in middle event",
@@ -217,7 +252,6 @@ TIER_0_FAILURE_MODES = [
         impact_if_missed="Tampering undetected; audit assumed valid when compromised",
     ),
     PolicyFailure(
-        category=FailureCategory.POLICY_FAILURE,
         rule_id="ATR-01",
         description="Audit signing crashes due to malformed payload",
         scenario="Event payload contains non-JSON-serializable object",

@@ -29,7 +29,8 @@ from src.safety_evaluation.adversarial_corpus import (
 )
 from src.safety_evaluation.safety_scorer import (
     SafetyScore,
-    SafetyScorer,
+    RiskTier,
+    SafetyScoreReport,
 )
 from src.safety_evaluation.safety_logger import (
     ShadowModeLogger,
@@ -57,7 +58,8 @@ __all__ = [
     "AdversarialCase",
     "AdversarialCaseBuilder",
     "SafetyScore",
-    "SafetyScorer",
+    "RiskTier",
+    "SafetyScoreReport",
     "ShadowModeLogger",
     "SafetyEvent",
     "SafetyClaim",

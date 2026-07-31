@@ -80,7 +80,7 @@ class Tier0Thresholds:
 @dataclass
 class SafetyMetrics:
     """Collected safety metrics snapshot."""
-    timestamp: str  # ISO 8601
+    timestamp: str = field(default_factory=lambda: datetime.utcnow().isoformat() + "Z")  # ISO 8601
     period_hours: int = 1  # Metric collection period
 
     # Detection: Expected violations vs. detected

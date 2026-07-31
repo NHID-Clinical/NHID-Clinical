@@ -257,10 +257,11 @@ class TestRiskTierTransitions:
     def test_minimum_green_score(self):
         """Test minimum score to achieve GREEN."""
         score, tier = SafetyScore.calculate_score(
-            detection_rate=SafetyScore.TIER_GREEN_MIN * 0.95,  # Just below 90
+            detection_rate=0.65,  # Below 95%, produces score < 90
             false_positive_rate=0.01,
             audit_completeness=1.0,
             critical_failures=0,
             policy_failures=0,
         )
         assert tier != RiskTier.GREEN
+        assert score < SafetyScore.TIER_GREEN_MIN
