@@ -1,0 +1,70 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv
+venv/
+env/
+.eggs/
+*.egg-info/
+dist/
+build/
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Documentation
+docs/
+README.md
+*.md
+
+# Node (if any frontend)
+node_modules/
+package-lock.json
+yarn.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SAM/CloudFormation
+.aws-sam/
+samconfig.toml
+
+# Temporary files
+*.tmp
+*.log
+.env
+
+# AWS credentials (use secrets instead)
+.aws/
+
+# Coverage and test artifacts
+.coverage*
+coverage.xml
+
+# Development volumes (will be mounted)
+/data/audit_events.db

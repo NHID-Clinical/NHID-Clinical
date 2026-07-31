@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # NHID-Clinical compliance audit engine
+  nhid-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nhid-clinical-api
+    environment:
+      DEPLOYMENT_MODE: development
+      AUDIT_STORE_TYPE: sqlite
+      AUDIT_STORE_PATH: /data/audit_events.db
+      AUDIT_SECRET_KEY_B64: ${AUDIT_SECRET_KEY_B64:-dGhpcyBpcyBhIDMyLWJ5dGUgc2VjcmV0IGtleSBmb3IgdGVzdGluZw==}
+      LOG_LEVEL: INFO
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_REGION: us-east-1
+    ports:
+      - "8000:8000"
+    volumes:
+      - audit-data:/data
+      - .:/app
+    depends_on:
+      - localstack
+    networks:
+      - nhid-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # LocalStack: S3, Lambda, and AWS service emulation for local development
+  localstack:
+    image: localstack/localstack:latest
+    container_name: nhid-localstack
+    environment:
+      SERVICES: s3,lambda,logs,apigateway,dynamodb,secretsmanager
+      DEBUG: 0
+      DATA_DIR: /tmp/localstack/data
+      LAMBDA_EXECUTOR: docker-reuse
+      DOCKER_HOST: unix:///var/run/docker.sock
+    ports:
+      - "4566:4566"        # LocalStack gateway
+      - "4571:4571"        # Lambda
+    volumes:
+      - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./scripts/init-aws.sh:/docker-entrypoint-initaws.d/init-aws.sh"
+    networks:
+      - nhid-network
+
+volumes:
+  audit-data:
+    driver: local
+
+networks:
+  nhid-network:
+    driver: bridge
