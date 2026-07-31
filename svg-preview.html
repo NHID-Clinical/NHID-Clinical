@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHID-Clinical SVG Visual Updates Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0B1220 0%, #1a2a3a 100%);
+            color: #E2E8F0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #67E8F9, #14B8A6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .intro {
+            text-align: center;
+            color: #94A3B8;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .diagram-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            border: 1px solid rgba(103, 232, 249, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+        .diagram-card h2 {
+            font-size: 1.2rem;
+            color: #67E8F9;
+            margin-bottom: 0.5rem;
+        }
+        .diagram-card p {
+            font-size: 0.9rem;
+            color: #CBD5E1;
+            margin-bottom: 1rem;
+        }
+        .diagram-card a {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #67E8F9, #14B8A6);
+            color: #0B1220;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .diagram-card a:hover {
+            transform: translateY(-2px);
+        }
+        .svg-container {
+            width: 100%;
+            height: auto;
+            min-height: 500px;
+            background: #0B1220;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 1px solid rgba(103, 232, 249, 0.2);
+            padding: 1rem;
+        }
+        .details {
+            background: rgba(20, 184, 166, 0.1);
+            border-left: 3px solid #14B8A6;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+        }
+        .details ul {
+            list-style: none;
+            margin-left: 1rem;
+        }
+        .details li {
+            padding: 0.25rem 0;
+            color: #CBD5E1;
+        }
+        .details li:before {
+            content: "✓ ";
+            color: #10B981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            color: #67E8F9;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(103, 232, 249, 0.2);
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 NHID-Clinical SVG Visual Updates</h1>
+        <div class="intro">
+            <p><strong>Glossy 3D Holographic Aesthetic Conversion</strong></p>
+            <p>All SVG diagrams have been updated with isometric 3D perspective, glass overlay effects, metallic edge highlights, and vibrant gradients (cyan, teal, blue, purple, red, orange, green).</p>
+        </div>
+
+        <div class="section-title">🏗️ Core 3D-SVG Diagrams</div>
+        <div class="grid">
+            <div class="diagram-card">
+                <h2>Trust Stack</h2>
+                <p>Five-layer trust architecture in glossy 3D isometric style</p>
+                <a href="assets/images/3d-svg/trust-stack.svg" target="_blank">View Diagram</a>
+                <div class="details">
+                    <ul>
+                        <li>Isometric 3D layered cards</li>
+                        <li>Gradient-filled faces (top, left, right)</li>
+                        <li>Glass overlay effects</li>
+                        <li>Metallic edge highlights</li>
+                        <li>Drop shadows with color tinting</li>
+                        <li>Enhanced Layer 2 glow effect</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <h2>Latency Comparison</h2>
+                <p>Unverified vs verified pathway contrast in 3D</p>
+                <a href="assets/images/3d-svg/latency-split.svg" target="_blank">View Diagram</a>
+                <div class="details">
+                    <ul>
+                        <li>Dual isometric cards (red/green)</li>
+                        <li>Danger palette (left): red gradients</li>
+                        <li>Success palette (right): green gradients</li>
+                        <li>Glass overlays on both pathways</li>
+                        <li>Color-tinted shadows</li>
+                        <li>White edge highlights</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <h2>Hero Orbit</h2>
+                <p>Governance layer platforms with enhanced glossy effects</p>
+                <a href="assets/images/3d-svg/hero-orbit.svg" target="_blank">View Diagram</a>
+                <div class="details">
+                    <ul>
+                        <li>Enhanced isometric platforms</li>
+                        <li>Glass overlay gradients</li>
+                        <li>Stronger drop shadows</li>
+                        <li>Increased ambient glow</li>
+                        <li>Secondary glow layers</li>
+                        <li>Floating token cards</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">📊 Flow & Tier Diagrams</div>
+        <div class="grid">
+            <div class="diagram-card">
+                <h2>Compliant Call Flow</h2>
+                <p>Six-step compliant workflow in glossy style</p>
+                <a href="assets/diagrams/compliant-call-flow.svg" target="_blank">View Diagram</a>
+                <div class="details">
+                    <ul>
+                        <li>Glossy step boxes (green)</li>
+                        <li>Enhanced gradients</li>
+                        <li>Glass overlays</li>
+                        <li>Metallic edge highlights</li>
+                        <li>Dark navy background</li>
+                        <li>Vibrant arrow indicators</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <h2>CAS Scoring Tiers</h2>
+                <p>Call Authorization Score tier levels with gradient palette</p>
+                <a href="assets/diagrams/cas-scoring-tiers.svg" target="_blank">View Diagram</a>
+                <div class="details">
+                    <ul>
+                        <li>Five tier boxes (green→blue→orange→red)</li>
+                        <li>Glass overlay effects</li>
+                        <li>Enhanced shadows</li>
+                        <li>White edge highlights</li>
+                        <li>Semantic color coding</li>
+                        <li>Vibrant gradient definitions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <h2>Non-Compliant Flow</h2>
+                <p>Warning flow diagram with red/danger aesthetic</p>
+                <a href="assets/diagrams/non-compliant-call-flow.svg" target="_blank">View Diagram</a>
+                <div class="details">
+                    <ul>
+                        <li>Red/danger color palette</li>
+                        <li>Glossy step boxes</li>
+                        <li>Glass overlays</li>
+                        <li>Dashed warning arrows</li>
+                        <li>Metallic highlights</li>
+                        <li>Dark background</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <h2>Integration Ladder</h2>
+                <p>Staged tiers (0→1→2) for implementation progression</p>
+                <a href="assets/diagrams/integration-ladder.svg" target="_blank">View Diagram</a>
+                <div class="details">
+                    <ul>
+                        <li>Blue/cyan/purple tier boxes</li>
+                        <li>Gradient tier badges</li>
+                        <li>Glass overlay effects</li>
+                        <li>Refined shadows</li>
+                        <li>Enhanced contrast</li>
+                        <li>Connected ladder flow</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">✨ Visual Language Features</div>
+        <div class="details" style="border-left: 3px solid #67E8F9; background: rgba(103, 232, 249, 0.1); padding: 2rem; margin-bottom: 3rem;">
+            <h3 style="color: #67E8F9; margin-bottom: 1rem;">Applied Across All Diagrams:</h3>
+            <ul style="columns: 2; gap: 2rem;">
+                <li><strong>Isometric 3D Perspective</strong> - Layered gradient-filled faces</li>
+                <li><strong>Glass Overlays</strong> - RGBA white fading to black for reflectivity</li>
+                <li><strong>Drop Shadows</strong> - Color-tinted flood colors matching content</li>
+                <li><strong>Metallic Highlights</strong> - White strokes on top edges (0.25–0.5 opacity)</li>
+                <li><strong>Dark Backgrounds</strong> - Consistent #0B1220 navy theme</li>
+                <li><strong>Vibrant Gradients</strong> - Cyan, teal, blue, purple, red, orange, green</li>
+                <li><strong>Enhanced Glows</strong> - Gaussian blur effects for ambient lighting</li>
+                <li><strong>Semantic Colors</strong> - Red for danger, green for success, blue for info</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
