@@ -1,0 +1,53 @@
+<svg width="900" height="520" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="520" fill="#F8FAFC"/>
+  <text x="40" y="40" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#0F172A">Sequence of Interaction</text>
+  <text x="40" y="68" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#64748B">Disclosure gate in a standard eligibility / claims workflow</text>
+  
+  <!-- Actors -->
+  <rect x="80" y="100" width="160" height="40" rx="6" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="1.5"/>
+  <text x="160" y="126" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600" fill="#0F172A">AI Voice Agent</text>
+  
+  <rect x="370" y="100" width="180" height="40" rx="6" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="1.5"/>
+  <text x="460" y="126" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600" fill="#0F172A">Payer Representative</text>
+  
+  <rect x="660" y="100" width="160" height="40" rx="6" fill="#CCFBF1" stroke="#14B8A6" stroke-width="1.5"/>
+  <text x="740" y="126" text-anchor="middle" font-family="Inter" font-size="14" font-weight="600" fill="#0F172A">NHID Policy Engine</text>
+  
+  <!-- Lifelines -->
+  <line x1="160" y1="140" x2="160" y2="470" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="460" y1="140" x2="460" y2="470" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="740" y1="140" x2="740" y2="470" stroke="#14B8A6" stroke-width="1.5" stroke-dasharray="4 4"/>
+  
+  <!-- Message 1 -->
+  <line x1="160" y1="180" x2="450" y2="180" stroke="#0F172A" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="305" y="172" text-anchor="middle" font-family="Inter" font-size="12" fill="#334155">"Hello, I am an automated system calling from..."</text>
+  
+  <!-- Message 2 -->
+  <line x1="450" y1="220" x2="170" y2="220" stroke="#0F172A" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="310" y="212" text-anchor="middle" font-family="Inter" font-size="12" fill="#334155">"Understood. Please provide NPI."</text>
+  
+  <!-- Evaluate -->
+  <line x1="160" y1="270" x2="730" y2="270" stroke="#14B8A6" stroke-width="2" marker-end="url(#arrowTeal)"/>
+  <text x="445" y="262" text-anchor="middle" font-family="Inter" font-size="12" font-weight="600" fill="#0F766E">evaluate_idg01(session, event)</text>
+  
+  <!-- Response -->
+  <line x1="730" y1="320" x2="170" y2="320" stroke="#14B8A6" stroke-width="2" stroke-dasharray="6 3" marker-end="url(#arrowTeal)"/>
+  <text x="450" y="312" text-anchor="middle" font-family="Inter" font-size="12" font-weight="600" fill="#0F766E">CONTINUE_AI (Disclosure Confirmed)</text>
+  
+  <!-- Data -->
+  <line x1="160" y1="370" x2="450" y2="370" stroke="#0F172A" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="305" y="362" text-anchor="middle" font-family="Inter" font-size="12" fill="#334155">"NPI is 1234567890."</text>
+  
+  <!-- Proceed box -->
+  <rect x="180" y="400" width="540" height="36" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="450" y="424" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="#92400E">Operational data exchange proceeds (PDX-01 clear)</text>
+  
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#0F172A"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#14B8A6"/>
+    </marker>
+  </defs>
+</svg>

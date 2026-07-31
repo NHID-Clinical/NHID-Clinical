@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nhid-clinical.org/pilot-kit/minimal-event-schema.json",
+  "title": "NHID-Clinical Tier 0 pilot capture record (one call turn)",
+  "description": "Minimal per-turn record a Tier 0 shadow pilot extracts from existing call logs. This is a CAPTURE schema, not the engine's event schema: docs/pilot-kit/measure_pilot.py maps these records into the full NHID event contract (schema/nhid_trace_schema_v1.json), including the nested healthcare_governance block the policy engine reads.",
+  "type": "object",
+  "required": ["session_id", "turn_index", "timestamp", "speaker", "speech_text"],
+  "additionalProperties": true,
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "description": "Stable identifier for one call. All turns of a call share it."
+    },
+    "turn_index": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "0-based position of this turn within the call."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 time the turn started. Used for Impersonation Latency in seconds."
+    },
+    "speaker": {
+      "type": "string",
+      "enum": ["agent", "caller"],
+      "description": "Who spoke this turn. 'agent' = the (possibly AI) calling agent under evaluation."
+    },
+    "speech_text": {
+      "type": "string",
+      "description": "Transcript text of the turn. May be empty for silent/system turns."
+    },
+    "actor_id": {
+      "type": "string",
+      "description": "Optional stable identifier of the agent/vendor system."
+    },
+    "counterparty_type": {
+      "type": "string",
+      "enum": ["human_operator", "ai_agent"],
+      "description": "What the agent is talking to. Defaults to human_operator."
+    },
+    "disclosure_timestamp": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "When the agent first disclosed non-human identity, if it has by this turn. Null before disclosure. Carried forward automatically once set (sticky disclosure)."
+    },
+    "identity_assertion_text": {
+      "type": ["string", "null"],
+      "description": "The literal disclosure sentence (e.g. 'I am an automated system calling on behalf of ...'). If omitted, measure_pilot.py uses the agent turn's own speech_text and carries the disclosure sentence forward on caller turns."
+    },
+    "phi_accessed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "PHI field names requested or exchanged on this turn (member_id, npi, date_of_birth, claim_number, ...). Empty when none."
+    },
+    "escalation_requested": {
+      "type": "boolean",
+      "description": "True when the counterparty asked for a human on this turn."
+    },
+    "escalation_honored": {
+      "type": ["boolean", "null"],
+      "description": "True if the request was honored (handoff occurred), false if refused/obstructed, null if unknown or not applicable."
+    },
+    "deceptive_artifact_flags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Voice-forensics flags, when available (synthetic_breathing, hesitation_sounds, ...). Leave empty if your stack cannot detect these — DBC-01 text heuristics still run on speech_text."
+    }
+  }
+}

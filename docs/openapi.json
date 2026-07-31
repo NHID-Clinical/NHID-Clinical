@@ -1,0 +1,390 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NHID-Clinical Conformance API",
+    "version": "1.3.0",
+    "description": "Hosted reference implementation of the NHID-Clinical v1.3 conformance check. Evaluates a voice-AI call transcript/event against the four core behavioral controls (IDG-01, PDX-01, DBC-01, EIT-01) plus the supplemental ATR-01 audit-trail control, and returns a policy decision plus a Call Authorization Score (CAS).",
+    "contact": {
+      "email": "contact@nhid-clinical.org"
+    },
+    "license": {
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod",
+      "description": "Hosted reference deployment"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Liveness probe",
+        "description": "No authentication required.",
+        "responses": {
+          "200": {
+            "description": "Service status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {"type": "string"},
+                    "policy_engine_version": {"type": "string"},
+                    "nhid_spec_version": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/demo/check": {
+      "post": {
+        "summary": "Evaluate an NHID-Clinical event (no API key)",
+        "description": "Same evaluation as /v1/conformance/check, with no authentication, for evaluation and demos.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/ConformanceRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Policy decision",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ConformanceDecision"}
+              }
+            }
+          },
+          "400": {"description": "Malformed request"}
+        }
+      }
+    },
+    "/v1/conformance/check": {
+      "post": {
+        "summary": "Evaluate an NHID-Clinical event (API key required)",
+        "security": [{"ApiKeyAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/ConformanceRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Policy decision",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ConformanceDecision"}
+              }
+            }
+          },
+          "400": {"description": "Malformed request"},
+          "401": {"description": "Missing or invalid x-api-key"}
+        }
+      }
+    },
+    "/v1/adapters/vapi/check": {
+      "post": {
+        "summary": "Evaluate a native VAPI call payload",
+        "description": "No API key required. Translates the vendor's native webhook payload to an NHID event, then evaluates conformance.",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"type": "object"}}}
+        },
+        "responses": {
+          "200": {
+            "description": "Policy decision with vendor tag",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConformanceDecision"}}}
+          },
+          "400": {"description": "Adapter conversion failed or malformed payload"}
+        }
+      }
+    },
+    "/v1/adapters/twilio/check": {
+      "post": {
+        "summary": "Evaluate a native Twilio call payload",
+        "description": "No API key required.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}},
+        "responses": {
+          "200": {"description": "Policy decision with vendor tag", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConformanceDecision"}}}},
+          "400": {"description": "Adapter conversion failed or malformed payload"}
+        }
+      }
+    },
+    "/v1/adapters/vonage/check": {
+      "post": {
+        "summary": "Evaluate a native Vonage call payload",
+        "description": "No API key required.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}},
+        "responses": {
+          "200": {"description": "Policy decision with vendor tag", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConformanceDecision"}}}},
+          "400": {"description": "Adapter conversion failed or malformed payload"}
+        }
+      }
+    },
+    "/v1/adapters/retell/check": {
+      "post": {
+        "summary": "Evaluate a native Retell AI call payload",
+        "description": "No API key required.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}},
+        "responses": {
+          "200": {"description": "Policy decision with vendor tag", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConformanceDecision"}}}},
+          "400": {"description": "Adapter conversion failed or malformed payload"}
+        }
+      }
+    },
+    "/v1/adapters/connect/check": {
+      "post": {
+        "summary": "Evaluate an Amazon Connect Contact Lens payload",
+        "description": "No API key required.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object"}}}},
+        "responses": {
+          "200": {"description": "Policy decision with vendor tag", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConformanceDecision"}}}},
+          "400": {"description": "Adapter conversion failed or malformed payload"}
+        }
+      }
+    },
+    "/v1/webhooks/call-progress": {
+      "post": {
+        "summary": "Turn-by-turn, in-call conformance evaluation",
+        "description": "Stateless — the caller maintains session state and posts each turn as it happens. No API key required.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "session_id": {"type": "string"},
+                  "turn_index": {"type": "integer"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Policy decision for this turn",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConformanceDecision"}}}
+          },
+          "400": {"description": "Invalid call-progress payload"}
+        }
+      }
+    },
+    "/v1/public/vendor/{vendor_id}/badge": {
+      "get": {
+        "summary": "Public CAS badge (SVG)",
+        "description": "Read-only, score only. No API key required.",
+        "parameters": [
+          {"name": "vendor_id", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Badge image",
+            "content": {"image/svg+xml": {"schema": {"type": "string"}}}
+          }
+        }
+      }
+    },
+    "/v1/vendor/metrics/summary": {
+      "get": {
+        "summary": "Per-vendor conformance metrics",
+        "security": [{"ApiKeyAuth": []}],
+        "parameters": [
+          {"name": "vendor_id", "in": "query", "required": true, "schema": {"type": "string"}},
+          {"name": "days", "in": "query", "required": false, "schema": {"type": "integer", "default": 30, "minimum": 1, "maximum": 365}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Aggregated metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "vendor_id": {"type": "string"},
+                    "period_days": {"type": "integer"},
+                    "calls_total": {"type": "integer"},
+                    "pass_rate": {"type": "number"},
+                    "cas_avg": {"type": "number"},
+                    "cas_min": {"type": "number"},
+                    "cas_max": {"type": "number"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {"description": "Missing vendor_id"}
+        }
+      }
+    },
+    "/v1/pilot/enroll": {
+      "post": {
+        "summary": "Pilot enrollment",
+        "description": "No API key required. Validates the request and returns next steps.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["org_name", "contact_email"],
+                "properties": {
+                  "org_name": {"type": "string"},
+                  "contact_email": {"type": "string", "format": "email"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Enrollment confirmation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pilot_id": {"type": "string"},
+                    "org_name": {"type": "string"},
+                    "status": {"type": "string"},
+                    "next_steps_url": {"type": "string"},
+                    "next_steps": {"type": "array", "items": {"type": "string"}}
+                  }
+                }
+              }
+            }
+          },
+          "400": {"description": "Missing or invalid org_name/contact_email"}
+        }
+      }
+    },
+    "/v1/cts/evaluate": {
+      "post": {
+        "summary": "Run the NHID conformance test suite (CTS)",
+        "description": "No API key required. Runs the YAML-defined CTS conformance test cases, optionally a subset by test_id.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "test_ids": {"type": "array", "items": {"type": "string"}}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CTS results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "passed": {"type": "integer"},
+                    "failed": {"type": "integer"},
+                    "skipped": {"type": "integer"},
+                    "total": {"type": "integer"},
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "test_id": {"type": "string"},
+                          "nhid_test_ref": {"type": "string"},
+                          "status": {"type": "string", "enum": ["pass", "fail", "skip"]},
+                          "expected_action": {"type": "string"},
+                          "actual_action": {"type": "string"},
+                          "violations_matched": {"type": "boolean"},
+                          "detail": {"type": "string"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    },
+    "schemas": {
+      "ConformanceRequest": {
+        "type": "object",
+        "required": ["event"],
+        "properties": {
+          "session": {
+            "type": "object",
+            "description": "Session-level context (turn count, escalation availability, etc).",
+            "properties": {
+              "turn_count": {"type": "integer"},
+              "escalation_path_available": {"type": "boolean"}
+            }
+          },
+          "event": {
+            "type": "object",
+            "description": "A single NHID-Clinical v1.3 canonical event. See schema/nhid_trace_schema_v1.json for the full schema and tests/sample_request.json for a complete example.",
+            "required": ["event_id", "timestamp", "session_id", "event_type"]
+          }
+        }
+      },
+      "ConformanceDecision": {
+        "type": "object",
+        "properties": {
+          "conformant": {"type": "boolean"},
+          "action": {"type": "string"},
+          "reason_code": {"type": "string"},
+          "policy_version": {"type": "string"},
+          "violations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rule_id": {"type": "string"},
+                "description": {"type": "string"},
+                "severity": {"type": "string"}
+              }
+            }
+          },
+          "next_state": {"type": "string"},
+          "twiml_fallback": {"type": ["string", "null"]},
+          "gather_speech": {"type": ["string", "null"]},
+          "cas": {
+            "type": "object",
+            "properties": {
+              "score": {"type": "number"},
+              "tier": {"type": "string"},
+              "badge_eligible": {"type": "boolean"},
+              "F_IAF": {"type": "number"},
+              "F_NOCF": {"type": "number"},
+              "ECF": {"type": "number"}
+            }
+          },
+          "vendor": {"type": "string", "description": "Present on /v1/adapters/* responses."}
+        }
+      }
+    }
+  }
+}

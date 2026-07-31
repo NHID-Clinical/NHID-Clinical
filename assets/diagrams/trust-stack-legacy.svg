@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" font-family="Inter, system-ui, sans-serif" role="img" aria-label="Five-layer trust stack from the NPI gap to FHIR audit export">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0b6ebc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#085a9b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow2">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+    <marker id="arrowUp" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#5b6472" />
+    </marker>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="800" height="60" fill="url(#blueGrad)"/>
+  <text x="400" y="37" font-size="22" font-weight="bold" fill="white" text-anchor="middle">
+    The Five-Layer Trust Stack
+  </text>
+
+  <!-- Layer 4 (top) -->
+  <rect x="80" y="90" width="640" height="78" rx="8" fill="#047857" stroke="#065f46" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="100" y="116" font-size="14" font-weight="bold" fill="white">Layer 4 — FHIR / OpenTelemetry</text>
+  <text x="100" y="138" font-size="12.5" fill="#d1fae5">Healthcare-native audit trail: plain HL7 FHIR R4 AuditEvent (base spec v4.0.1) + SIEM export.</text>
+  <text x="100" y="154" font-size="11.5" fill="#a7f3d0" font-style="italic">No named Implementation Guide conformance is claimed.</text>
+
+  <line x1="400" y1="90" x2="400" y2="168" stroke="#5b6472" stroke-width="0" />
+
+  <!-- Layer 3 -->
+  <rect x="80" y="178" width="640" height="78" rx="8" fill="#188eaa" stroke="#0f6e83" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="100" y="204" font-size="14" font-weight="bold" fill="white">Layer 3 — NHID-Auth v2</text>
+  <text x="100" y="226" font-size="12.5" fill="#e0f7f2">Cryptographic agent identity: Ed25519 signatures, NPI-bound passports, scoped delegation.</text>
+  <text x="100" y="242" font-size="11.5" fill="#b8ece2" font-style="italic">Reference implementation — 26 dedicated tests, not yet a finalized spec.</text>
+
+  <!-- Layer 2 -->
+  <rect x="80" y="266" width="640" height="78" rx="8" fill="#0b6ebc" stroke="#085a9b" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="100" y="292" font-size="14" font-weight="bold" fill="white">Layer 2 — NHID-Clinical v1.3</text>
+  <text x="100" y="314" font-size="12.5" fill="#dceefb">Behavioral baseline: 4 controls (IDG-01, PDX-01, DBC-01, EIT-01), 5 CTS conformance tests.</text>
+  <text x="100" y="330" font-size="11.5" fill="#b3d8f2" font-style="italic">Works without any cryptographic identity layer — vendor- and platform-agnostic.</text>
+
+  <!-- Layer 1 -->
+  <rect x="80" y="354" width="640" height="68" rx="8" fill="#9e5a00" stroke="#7a4500" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="100" y="380" font-size="14" font-weight="bold" fill="white">Layer 1 — STIR/SHAKEN</text>
+  <text x="100" y="402" font-size="12.5" fill="#fde8c8">RFC 8224 — carrier-level number authentication (A/B/C attestation). Pre-existing telecom layer.</text>
+
+  <!-- Layer 0 (bottom / the problem) -->
+  <rect x="80" y="432" width="640" height="68" rx="8" fill="#8e2020" stroke="#5c1414" stroke-width="2" filter="url(#shadow2)"/>
+  <text x="100" y="458" font-size="14" font-weight="bold" fill="white">Layer 0 — The NPI Gap (the problem)</text>
+  <text x="100" y="480" font-size="12.5" fill="#fecaca">No cross-organization NPI-level authorization exists for AI voice agents today.</text>
+
+  <!-- Up arrow showing stacking direction -->
+  <line x1="40" y1="495" x2="40" y2="100" stroke="#5b6472" stroke-width="2" marker-end="url(#arrowUp)"/>
+
+  <text x="400" y="528" font-size="12.5" fill="#5b6472" text-anchor="middle">Each layer is independently adoptable — Layers 2–4 are NHID-Clinical's contribution; Layer 3 is optional.</text>
+  <text x="400" y="548" font-size="12.5" fill="#5b6472" text-anchor="middle">See: roadmap.html (v2 identity), specification.html (v1.3 controls), interoperability.html (FHIR export)</text>
+</svg>

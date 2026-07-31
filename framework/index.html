@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="The NHID-Clinical open framework: specification, control catalog, NHID-Auth, reference implementation, conformance test suite, technical stack, and regulatory alignment."/>
+  <title>Framework | NHID-Clinical</title>
+  <link rel="canonical" href="https://nhid-clinical.org/framework/"/>
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+
+<div class="status-strip">
+  <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
+</div>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/framework/">Framework overview</a>
+          <a href="/specification.html">Specification</a>
+          <a href="/framework/controls.html">Controls</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth</a>
+          <a href="/framework/reference-implementation.html">Reference Implementation</a>
+          <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
+          <a href="/technical-stack.html">Technical Stack</a>
+          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Platform <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/platform/">TrustLayer overview</a>
+          <a href="/platform/agent-registry.html">Agent Registry</a>
+          <a href="/platform/trust-gateway.html">Trust Gateway</a>
+          <a href="/platform/evidence-center.html">Evidence Center</a>
+          <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+          <a href="/platform/enterprise.html">Enterprise Workflow</a>
+        </div>
+      </div>
+      <a href="/simulator.html">Simulator</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Docs <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/developers.html">Developer guide</a>
+          <a href="/docs.html">Live API explorer</a>
+          <a href="/interoperability.html">Interoperability</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Resources <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/research-portfolio.html">Research Portfolio</a>
+          <a href="/roadmap.html">Roadmap</a>
+          <a href="/news.html">News</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+        </div>
+      </div>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/about.html">About</a>
+      <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/for-payers.html">Start a pilot</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <strong class="mobile-nav-group">Framework</strong>
+  <a href="/framework/">Framework overview</a>
+  <a href="/specification.html">Specification</a>
+  <a href="/framework/controls.html">Controls</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth</a>
+  <a href="/framework/reference-implementation.html">Reference Implementation</a>
+  <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <strong class="mobile-nav-group">Platform</strong>
+  <a href="/platform/">TrustLayer overview</a>
+  <a href="/platform/agent-registry.html">Agent Registry</a>
+  <a href="/platform/trust-gateway.html">Trust Gateway</a>
+  <a href="/platform/evidence-center.html">Evidence Center</a>
+  <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+  <a href="/platform/enterprise.html">Enterprise Workflow</a>
+  <strong class="mobile-nav-group">Simulator</strong>
+  <a href="/simulator.html">Open the simulator</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <strong class="mobile-nav-group">Docs</strong>
+  <a href="/developers.html">Developer guide</a>
+  <a href="/docs.html">Live API explorer</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
+  <strong class="mobile-nav-group">Resources</strong>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/research-portfolio.html">Research Portfolio</a>
+  <a href="/roadmap.html">Roadmap</a>
+  <a href="/news.html">News</a>
+  <a href="/faq.html">FAQ</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+  <strong class="mobile-nav-group">More</strong>
+  <a href="/pricing.html">Pricing</a>
+  <a href="/about.html">About</a>
+  <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+
+  <section class="inner-hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container inner-hero-grid" style="position:relative;z-index:1">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Framework</span></div>
+        <p class="eyebrow">Open Framework · v1.3 · CC BY 4.0</p>
+        <h1>The open framework</h1>
+        <p class="lede">Specification, control catalog, reference implementation, conformance tests, and regulatory mapping for AI agent identity, authorization, disclosure, and audit evidence in healthcare voice workflows.</p>
+        <div class="hero-actions-premium">
+          <a href="/specification.html" class="btn-premium">Read the v1.3 specification</a>
+          <a href="/framework/controls.html" class="btn-ghost">Browse the controls</a>
+        </div>
+      </div>
+      <aside class="hero-summary-card">
+        <div class="spec-badges">
+          <span class="spec-badge">CC BY 4.0</span>
+          <span class="spec-badge">v1.3</span>
+          <span class="spec-badge spec-badge-green">Open</span>
+        </div>
+        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem">The framework is the source of legitimacy for everything NHID-Clinical publishes. It stays open, free, and independently implementable — with or without any commercial product.</p>
+        <a class="primary-pill" href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer" style="width:100%;justify-content:center">View the repository &#x2197;</a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">What the framework contains</p>
+      <h2 style="margin-bottom:.35rem">Seven components, all open</h2>
+      <p style="color:var(--body);max-width:62ch;margin-bottom:1.75rem">Each is independently usable. You can adopt the controls without the reference implementation, run the conformance suite against your own engine, or read the regulatory mapping on its own.</p>
+      <div class="module-grid">
+        <a class="module-card" href="/specification.html">
+          <span class="module-num">01</span>
+          <h3>Specification</h3>
+          <p>The v1.3 normative document: the problem, the behaviors, the sequence of interaction, scope boundaries, and known gaps.</p>
+          <span class="arr">Read the specification &rarr;</span>
+        </a>
+        <a class="module-card" href="/framework/controls.html">
+          <span class="module-num">02</span>
+          <h3>Control catalog</h3>
+          <p>IDG-01, PDX-01, DBC-01, EIT-01, and ATR-01 — what each control checks, what a pass looks like, and where to try it.</p>
+          <span class="arr">Browse the controls &rarr;</span>
+        </a>
+        <a class="module-card" href="/framework/nhid-auth.html">
+          <span class="module-num">03</span>
+          <h3>NHID-Auth</h3>
+          <p>The v2 cryptographic authorization layer: Ed25519 agent passports, provider-signed delegation, and offline verification.</p>
+          <span class="arr">Read about NHID-Auth &rarr;</span>
+        </a>
+        <a class="module-card" href="/framework/reference-implementation.html">
+          <span class="module-num">04</span>
+          <h3>Reference implementation</h3>
+          <p>A pure-Python policy engine with no runtime dependencies, TypeScript middleware, voice-platform adapters, and a PowerShell module.</p>
+          <span class="arr">See the implementation &rarr;</span>
+        </a>
+        <a class="module-card" href="/framework/conformance-suite.html">
+          <span class="module-num">05</span>
+          <h3>Conformance test suite</h3>
+          <p>Machine-readable, deterministic pass/fail tests. Same inputs, same verdict — every time, for anyone who runs them.</p>
+          <span class="arr">Run the tests &rarr;</span>
+        </a>
+        <a class="module-card" href="/technical-stack.html">
+          <span class="module-num">06</span>
+          <h3>Technical stack</h3>
+          <p>The five-layer trust stack, from carrier authentication through behavioral disclosure to audit and observability.</p>
+          <span class="arr">See the stack &rarr;</span>
+        </a>
+        <a class="module-card" href="/regulatory-alignment.html">
+          <span class="module-num">07</span>
+          <h3>Regulatory alignment</h3>
+          <p>How the controls map to NIST AI RMF, the EU AI Act, ISO/IEC 42001, CMS-0057-F, HIPAA documentation, and state AI laws.</p>
+          <span class="arr">Read the mapping &rarr;</span>
+        </a>
+        <a class="module-card" href="/simulator.html">
+          <span class="module-num">+</span>
+          <h3>Simulator</h3>
+          <p>The open simulator demonstrates NHID-Clinical controls against realistic call scenarios — no setup, no account.</p>
+          <span class="arr">Open the simulator &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--mist)">
+    <div class="container" style="max-width:56rem">
+      <p class="section-kicker">How the framework relates to the platform</p>
+      <h2>The framework is the standard. TrustLayer is optional infrastructure.</h2>
+      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">The specification, control catalog, conformance tests, reference implementation, and simulator remain open under CC BY 4.0. You can implement all of it yourself and never talk to us.</p>
+      <p style="color:var(--body);line-height:1.8;margin-top:.85rem"><a href="/platform/" style="color:var(--teal-bright);font-weight:600">TrustLayer</a> runs the same deterministic controls as production infrastructure — monitoring, evidence generation, agent identity management, authorization, and reporting for organizations operating AI agents at scale. It operationalizes the framework. It does not replace it, and it never becomes a prerequisite for using it.</p>
+      <div class="status-note">
+        <span>&#9432;</span>
+        <span><b>The specification is never paid.</b> No tier, plan, or contract gates the specification, the control catalog, or the conformance test suite.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-cta">
+    <div class="container">
+      <h2>Start with the framework</h2>
+      <p>Read it, run it, and tell us where it breaks.</p>
+      <div class="page-cta-grid">
+        <a class="page-cta-card" href="/specification.html"><b>Read the specification <span class="arr">&rarr;</span></b><span>The v1.3 normative document.</span></a>
+        <a class="page-cta-card" href="/framework/conformance-suite.html"><b>Run the tests <span class="arr">&rarr;</span></b><span>Deterministic pass/fail conformance.</span></a>
+        <a class="page-cta-card" href="/simulator.html"><b>Open the simulator <span class="arr">&rarr;</span></b><span>See the controls fire on a call.</span></a>
+        <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical"><b>Contribute <span class="arr">&rarr;</span></b><span>Issues, discussions, pull requests.</span></a>
+      </div>
+      <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0.</p>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+    </div>
+  </div>
+  <p class="footer-copy" style="margin-top:.4rem">This is an open, actively maintained framework — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>

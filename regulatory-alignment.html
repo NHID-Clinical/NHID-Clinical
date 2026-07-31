@@ -1,21 +1,24 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="description" content="NHID-Clinical Regulatory Alignment — How the proposal maps to CMS-0057-F, MACPAC, DOJ FCA enforcement, and state AI laws."/>
   <title>Regulatory Alignment | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
-<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
-  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+<div class="status-strip">
+  <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
 </div>
 
 <header class="site-header">
@@ -24,19 +27,61 @@
       <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
-        <small>Building Trust in Healthcare Voice AI</small>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
       </span>
     </a>
     <div class="nav-links">
-      <a href="/">Home</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/framework/">Framework overview</a>
+          <a href="/specification.html">Specification</a>
+          <a href="/framework/controls.html">Controls</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth</a>
+          <a href="/framework/reference-implementation.html">Reference Implementation</a>
+          <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
+          <a href="/technical-stack.html">Technical Stack</a>
+          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Platform <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/platform/">TrustLayer overview</a>
+          <a href="/platform/agent-registry.html">Agent Registry</a>
+          <a href="/platform/trust-gateway.html">Trust Gateway</a>
+          <a href="/platform/evidence-center.html">Evidence Center</a>
+          <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+          <a href="/platform/enterprise.html">Enterprise Workflow</a>
+        </div>
+      </div>
+      <a href="/simulator.html">Simulator</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Docs <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/developers.html">Developer guide</a>
+          <a href="/docs.html">Live API explorer</a>
+          <a href="/interoperability.html">Interoperability</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Resources <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/research-portfolio.html">Research Portfolio</a>
+          <a href="/roadmap.html">Roadmap</a>
+          <a href="/news.html">News</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+        </div>
+      </div>
+      <a href="/pricing.html">Pricing</a>
       <a href="/about.html">About</a>
-      <a href="/governance-simulator.html">Governance Simulator</a>
-      <a href="/for-payers.html">For Payers</a>
-      <a href="/specification.html">Specification</a>
-      <a href="/developers.html">Developers</a>
-      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-      <a href="/technical-stack.html">Technical Stack</a>
-      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+      <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -46,29 +91,96 @@
         <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <a class="primary-pill" href="/for-payers.html">Start a pilot</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
     </div>
   </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
 </header>
 
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <strong class="mobile-nav-group">Framework</strong>
+  <a href="/framework/">Framework overview</a>
+  <a href="/specification.html">Specification</a>
+  <a href="/framework/controls.html">Controls</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth</a>
+  <a href="/framework/reference-implementation.html">Reference Implementation</a>
+  <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <strong class="mobile-nav-group">Platform</strong>
+  <a href="/platform/">TrustLayer overview</a>
+  <a href="/platform/agent-registry.html">Agent Registry</a>
+  <a href="/platform/trust-gateway.html">Trust Gateway</a>
+  <a href="/platform/evidence-center.html">Evidence Center</a>
+  <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+  <a href="/platform/enterprise.html">Enterprise Workflow</a>
+  <strong class="mobile-nav-group">Simulator</strong>
+  <a href="/simulator.html">Open the simulator</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <strong class="mobile-nav-group">Docs</strong>
+  <a href="/developers.html">Developer guide</a>
+  <a href="/docs.html">Live API explorer</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
+  <strong class="mobile-nav-group">Resources</strong>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/research-portfolio.html">Research Portfolio</a>
+  <a href="/roadmap.html">Roadmap</a>
+  <a href="/news.html">News</a>
+  <a href="/faq.html">FAQ</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+  <strong class="mobile-nav-group">More</strong>
+  <a href="/pricing.html">Pricing</a>
+  <a href="/about.html">About</a>
+  <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
 <main>
-  <section class="inner-hero">
-    <div class="container">
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container" style="position:relative;z-index:1">
       <div class="crumbs"><a href="/">Home</a><span>/</span><span>Regulatory Alignment</span></div>
       <p class="eyebrow">Alignment · June 2026</p>
-      <h1>Regulatory Alignment</h1>
-      <p class="lede">How NHID-Clinical maps to current healthcare AI governance requirements.</p>
+      <h1 class="reveal">Regulatory Alignment</h1>
+      <p class="lede reveal">How NHID-Clinical maps to current healthcare AI governance requirements.</p>
     </div>
   </section>
 
   <section class="page-section">
     <div class="container" style="max-width:52rem">
       <div class="callout" role="note" style="margin-bottom:2rem">
-        <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+        <strong>Note:</strong> NHID-Clinical is an open governance framework, developed independently from direct payer operations experience. It is not an accredited standard, certification, or regulatory requirement.
       </div>
 
       <h2>How NHID-Clinical Maps to Current Requirements</h2>
-      <p style="margin-bottom:1.5rem">This is not legal advice. NHID-Clinical is voluntary. The table below shows how the controls relate to key regulations and guidance as of June 2026.</p>
+      <p style="margin-bottom:1.5rem">This is not legal advice. NHID-Clinical is voluntary. The table below shows how the controls relate to key regulations and guidance as of June 2026. Fairness and clinical-safety governance are intentionally out of scope — see the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/scope-boundary-fairness-clinical.md">scope boundary note</a>.</p>
 
       <table style="width:100%;border-collapse:collapse;margin-bottom:2rem">
         <thead>
@@ -82,7 +194,7 @@
           <tr style="border-bottom:1px solid var(--border)">
             <td style="padding:.75rem">CMS-0057-F Prior Auth Final Rule</td>
             <td style="padding:.75rem">FHIR API, 72-hour turnaround, 5-year retention</td>
-            <td style="padding:.75rem">FHIR AuditEvent + session trace (ATR-01)</td>
+            <td style="padding:.75rem">HL7 FHIR R4 AuditEvent (validated) + session trace (ATR-01) — <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/fhir-auditevent-mapping.md">mapping spec</a></td>
           </tr>
           <tr style="border-bottom:1px solid var(--border)">
             <td style="padding:.75rem">MACPAC May 2026</td>
@@ -102,30 +214,85 @@
           <tr style="border-bottom:1px solid var(--border)">
             <td style="padding:.75rem">NIST AI RMF / CAISI</td>
             <td style="padding:.75rem">Cross-org agent identity + authorization</td>
-            <td style="padding:.75rem">NHID-Auth v2 + NIST-2025-0035-0026 comment</td>
+            <td style="padding:.75rem">NHID-Auth v2 + <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a> comment</td>
           </tr>
         </tbody>
       </table>
 
-      <div style="padding:1.5rem;background:var(--bg-alt);border-radius:8px;text-align:center">
-        <p style="margin-bottom:1rem;font-weight:600">Want to learn more?</p>
-        <a href="mailto:contact@nhid-clinical.org" class="primary-pill" style="display:inline-flex">Contact us for a 30-minute briefing →</a>
+      <h2 style="margin-top:2.5rem">FHIR R4 AuditEvent Emission</h2>
+      <p style="margin-bottom:1rem">Every NHID-Clinical conformance test suite (CTS) execution produces a HL7 FHIR R4 <code>Bundle</code> of <code>AuditEvent</code> resources — one per conformance milestone. These Bundles are validated against the FHIR R4 base specification (version 4.0.1) in CI before every merge.</p>
+
+      <div style="background:var(--bg-alt);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:.9rem;line-height:1.7">
+        <strong>What is emitted per call:</strong>
+        <ol style="margin:.5rem 0 0 1.25rem;padding:0">
+          <li><strong>nhid-session-start</strong> — call session initialised (DCM Application Activity)</li>
+          <li><strong>nhid-identity-disclosure</strong> — IDG-01 gate evaluated; outcome reflects pass/fail (DCM Security Alert)</li>
+          <li><strong>nhid-auth-verification</strong> — provider NPI authorization recorded, when present (DCM User Authentication)</li>
+          <li><strong>nhid-phi-gate</strong> — PDX-01 pre-data-exchange gate decision (DCM Security Alert)</li>
+          <li><strong>nhid-phi-exchange</strong> — PHI exchange begins, when gate cleared (DCM Patient Record)</li>
+          <li><strong>nhid-escalation</strong> — EIT-01 escalation event, when triggered (DCM Application Activity)</li>
+          <li><strong>nhid-call-end</strong> — session terminated; outcome reflects aggregate policy decision (DCM Application Activity)</li>
+        </ol>
+      </div>
+
+      <div style="background:var(--bg-alt);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:.9rem;line-height:1.7">
+        <strong>Conformance scope:</strong> Validated against HL7 FHIR R4 base specification only.
+        No conformance to any named HL7 Implementation Guide is claimed or implied.
+        DICOM audit event type codes (DCM 110100, 110110, 110113, 110114) are used for <code>AuditEvent.type</code>.
+        Three agent slices capture the AI voice agent (requestor), payer system (destination),
+        and provider organisation (on-behalf-of, when NPI is present).
+      </div>
+
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/fhir-auditevent-mapping.md"
+           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
+          AuditEvent Mapping Spec →
+        </a>
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/examples/fhir/nhid-compliant-call-bundle.json"
+           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
+          Example Bundle (JSON) →
+        </a>
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/examples/fhir/README.md"
+           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
+          Payer Ingestion Guide →
+        </a>
       </div>
     </div>
   </section>
 </main>
 
+
+<section class="page-section" style="padding-top:0">
+  <div class="container" style="max-width:60rem">
+    <div class="premium-callout">
+      <h3>NHID v1.3 in full multi-framework context</h3>
+      <p>See how the proposal sits alongside CCM, NIST, ISO, and the EU AI Act — including the gaps it aims to close.</p>
+      <a href="https://ai-governance-map.vercel.app/">Open the AI Governance Map →</a>&nbsp;&nbsp;
+    </div>
+  </div>
+</section>
+<section class="page-cta">
+  <div class="container">
+    <h2>Where to go next</h2>
+    <p>Four ways into NHID-Clinical, whatever you came to do.</p>
+    <div class="page-cta-grid">
+      <a class="page-cta-card" href="/specification.html"><b>Read the Specification <span class="arr">&rarr;</span></b><span>The v1.3 controls, in full.</span></a>
+      <a class="page-cta-card" href="/simulator.html"><b>Try the Simulator <span class="arr">&rarr;</span></b><span>Run the controls on call scenarios.</span></a>
+      <a class="page-cta-card" href="/evidence-pack.html"><b>Review the Evidence Pack <span class="arr">&rarr;</span></b><span>Guarantees, a failure trace, the audit model.</span></a>
+      <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer"><b>Join the Community <span class="arr">&#x2197;</span></b><span>Questions and feedback on GitHub.</span></a>
+    </div>
+  </div>
+</section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
     <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
-      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
   </div>
+  <p class="footer-copy" style="margin-top:.4rem">This is an open, actively maintained framework — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
 </footer>
 
 <script src="/site.js"></script>

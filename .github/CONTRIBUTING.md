@@ -1,6 +1,6 @@
 # Contributing
 1. Fork the repo
 2. Make changes
-3. Run tests: `python -m pytest tests/ -q` (173 expected)
+3. Run tests: `python -m pytest tests/ -q` (343 expected)
 4. Open a PR — big changes: open an Issue first
-Discord: https://discord.gg/eP8FxXkGU6
+Discussions: https://github.com/NHID-Clinical/NHID-Clinical/discussions

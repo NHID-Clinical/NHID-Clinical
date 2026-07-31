@@ -1,0 +1,120 @@
+{
+  "info": {
+    "name": "NHID-Clinical API",
+    "description": "Live conformance API for the NHID-Clinical healthcare voice AI governance standard.\n\nBase URL: https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod\n\nRoutes:\n  GET  /health                       — liveness probe (no auth)\n  POST /v1/conformance/check         — full conformance check (x-api-key required)\n  POST /v1/demo/check                — same as above, no key (rate limited)\n  POST /v1/adapters/vapi/check       — native VAPI call payload (no key)\n  POST /v1/adapters/twilio/check     — native Twilio call payload (no key)\n\nNHID-Clinical is a voluntary open proposal. CC BY 4.0.",
+    "version": "2.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
+    },
+    {
+      "key": "api_key",
+      "value": "YOUR_API_KEY_HERE"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health",
+        "header": [],
+        "description": "Liveness probe. No authentication required. Returns policy engine version."
+      }
+    },
+    {
+      "name": "Conformance Check (with API key)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/conformance/check",
+        "header": [
+          {"key": "x-api-key", "value": "{{api_key}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session\": {\n    \"turn_count\": 1,\n    \"escalation_path_available\": true\n  },\n  \"event\": {\n    \"event_id\": \"demo-001\",\n    \"timestamp\": \"2026-06-09T10:00:00Z\",\n    \"session_id\": \"session-001\",\n    \"request_id\": \"req-001\",\n    \"event_type\": \"POLICY\",\n    \"actor_id\": \"agent-001\",\n    \"state_before\": \"ACTIVE\",\n    \"state_after\": \"ACTIVE\",\n    \"replay_mode\": \"live\",\n    \"external_calls_cached\": false,\n    \"execution_context\": {\n      \"pipeline_version\": \"1.0.0\",\n      \"policy_engine_version\": \"1.0.0\",\n      \"nhid_schema_version\": \"1.0\"\n    },\n    \"counterparty_type\": \"human_operator\",\n    \"healthcare_governance\": {\n      \"disclosure_timestamp\": \"2026-06-09T09:59:55Z\",\n      \"identity_assertion_text\": \"I am an automated system\",\n      \"deceptive_artifact_flags\": [],\n      \"escalation_timestamp\": null,\n      \"escalation_outcome\": null,\n      \"phi_accessed\": []\n    },\n    \"input_payload\": {\n      \"speech_text\": \"What are my coverage options?\",\n      \"raw_form_fields\": null\n    },\n    \"output_payload\": null,\n    \"error\": null,\n    \"policy_decision\": null\n  }\n}"
+        },
+        "description": "Full conformance check against all NHID-Clinical v1.3 rules. Requires x-api-key header."
+      }
+    },
+    {
+      "name": "Demo Check (no key)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/demo/check",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session\": {\n    \"turn_count\": 1,\n    \"escalation_path_available\": true\n  },\n  \"event\": {\n    \"event_id\": \"demo-001\",\n    \"timestamp\": \"2026-06-09T10:00:00Z\",\n    \"session_id\": \"session-001\",\n    \"request_id\": \"req-001\",\n    \"event_type\": \"POLICY\",\n    \"actor_id\": \"agent-001\",\n    \"state_before\": \"ACTIVE\",\n    \"state_after\": \"ACTIVE\",\n    \"replay_mode\": \"live\",\n    \"external_calls_cached\": false,\n    \"execution_context\": {\n      \"pipeline_version\": \"1.0.0\",\n      \"policy_engine_version\": \"1.0.0\",\n      \"nhid_schema_version\": \"1.0\"\n    },\n    \"counterparty_type\": \"human_operator\",\n    \"healthcare_governance\": {\n      \"disclosure_timestamp\": null,\n      \"identity_assertion_text\": \"\",\n      \"deceptive_artifact_flags\": [],\n      \"escalation_timestamp\": null,\n      \"escalation_outcome\": null,\n      \"phi_accessed\": []\n    },\n    \"input_payload\": {\n      \"speech_text\": \"Can I get the member ID please?\",\n      \"raw_form_fields\": null\n    },\n    \"output_payload\": null,\n    \"error\": null,\n    \"policy_decision\": null\n  }\n}"
+        },
+        "description": "Same as /v1/conformance/check but no API key required. Rate-limited. This payload sends a PHI request before disclosure — expect IDG-01 and PDX-01 violations."
+      }
+    },
+    {
+      "name": "VAPI Adapter — Non-Compliant Call",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/adapters/vapi/check",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"call\": {\n    \"id\": \"call_vapi_noncompliant_001\",\n    \"startedAt\": \"2026-06-09T10:05:00Z\"\n  },\n  \"messages\": [\n    {\n      \"role\": \"bot\",\n      \"message\": \"Hi, can I get the member ID and NPI for this authorization request?\",\n      \"secondsFromStart\": 0.3\n    },\n    {\n      \"role\": \"user\",\n      \"message\": \"Sure — member ID is 789-XX-4421, NPI is 1234567890.\",\n      \"secondsFromStart\": 3.1\n    },\n    {\n      \"role\": \"bot\",\n      \"message\": \"Thank you. By the way, I am an automated system.\",\n      \"secondsFromStart\": 5.8\n    }\n  ]\n}"
+        },
+        "description": "POST a native VAPI call payload — no NHID schema knowledge required. Bot requests PHI before disclosing it is automated. Expected: conformant=false, IDG-01 violation."
+      }
+    },
+    {
+      "name": "VAPI Adapter — Compliant Call",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/adapters/vapi/check",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"call\": {\n    \"id\": \"call_vapi_compliant_001\",\n    \"startedAt\": \"2026-06-09T10:00:00Z\"\n  },\n  \"messages\": [\n    {\n      \"role\": \"bot\",\n      \"message\": \"Hello, I am an automated system calling on behalf of ABC Medical Group. I am not a human representative.\",\n      \"secondsFromStart\": 0.5\n    },\n    {\n      \"role\": \"user\",\n      \"message\": \"Okay, understood.\",\n      \"secondsFromStart\": 4.2\n    },\n    {\n      \"role\": \"bot\",\n      \"message\": \"Can I get the NPI number for the ordering provider please?\",\n      \"secondsFromStart\": 6.1\n    },\n    {\n      \"role\": \"user\",\n      \"message\": \"Sure, it's 1234567890.\",\n      \"secondsFromStart\": 9.3\n    }\n  ]\n}"
+        },
+        "description": "Bot discloses identity before requesting NPI. Expected: conformant=true, violations=[]."
+      }
+    },
+    {
+      "name": "Twilio Adapter — Non-Compliant Call",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/adapters/twilio/check",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"call_sid\": \"CA999888777\",\n  \"start_time\": \"2026-06-09T10:15:00Z\",\n  \"transcript\": [\n    {\n      \"text\": \"Hi, can I get the member ID and NPI?\",\n      \"timestamp\": 0.3,\n      \"speaker\": \"agent\"\n    },\n    {\n      \"text\": \"Sure — NPI is 1234567890.\",\n      \"timestamp\": 2.1,\n      \"speaker\": \"human\"\n    },\n    {\n      \"text\": \"Thank you. By the way, I'm an automated system.\",\n      \"timestamp\": 4.0,\n      \"speaker\": \"agent\"\n    }\n  ]\n}"
+        },
+        "description": "Native Twilio transcript with late disclosure. Expected: conformant=false, IDG-01 violation."
+      }
+    },
+    {
+      "name": "Twilio Adapter — Compliant Call",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/v1/adapters/twilio/check",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"call_sid\": \"CA123456789\",\n  \"start_time\": \"2026-06-09T10:10:00Z\",\n  \"transcript\": [\n    {\n      \"text\": \"Hello, this is an automated system calling on behalf of Dr. Smith's office.\",\n      \"timestamp\": 0.5,\n      \"speaker\": \"agent\"\n    },\n    {\n      \"text\": \"Can I get the NPI number please?\",\n      \"timestamp\": 3.2,\n      \"speaker\": \"agent\"\n    },\n    {\n      \"text\": \"Sure, it's 1234567890.\",\n      \"timestamp\": 5.8,\n      \"speaker\": \"human\"\n    }\n  ]\n}"
+        },
+        "description": "Agent discloses automated identity before requesting NPI. Expected: conformant=true, violations=[]."
+      }
+    }
+  ]
+}

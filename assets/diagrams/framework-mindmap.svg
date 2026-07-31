@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 600" font-family="Inter, Arial, sans-serif" role="img" aria-label="NHID-Clinical framework mind map">
+  <!-- NHID-Clinical framework mind map — brand palette (navy core, teal controls, cyan relationships) -->
+  <rect x="0" y="0" width="880" height="600" rx="16" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- title -->
+  <text x="40" y="44" font-size="17" font-weight="700" fill="#0B1726">NHID-Clinical — Framework Map</text>
+  <text x="40" y="64" font-size="11" fill="#64748B">Core model · five controls · trust-stack relationships</text>
+
+  <!-- connectors: core -> controls (cyan) -->
+  <g stroke="#67E8F9" stroke-width="2.5" fill="none" opacity="0.9">
+    <path d="M440 148 C 440 168, 105 158, 105 196"/>
+    <path d="M440 148 C 440 172, 272 168, 272 196"/>
+    <path d="M440 148 L 440 196"/>
+    <path d="M440 148 C 440 172, 608 168, 608 196"/>
+    <path d="M440 148 C 440 168, 775 158, 775 196"/>
+  </g>
+
+  <!-- core node -->
+  <rect x="330" y="92" width="220" height="56" rx="12" fill="#0B1726" stroke="#14B8A6" stroke-width="2"/>
+  <text x="440" y="118" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">NHID-Clinical</text>
+  <text x="440" y="136" text-anchor="middle" font-size="9.5" fill="#94A3B8">Behavioral baseline · v1.3</text>
+
+  <!-- control nodes -->
+  <rect x="35" y="196" width="140" height="66" rx="10" fill="#14B8A6"/>
+  <text x="105" y="224" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">IDG-01</text>
+  <text x="105" y="242" text-anchor="middle" font-size="8.5" fill="#e6fffb">Identity disclosure</text>
+
+  <rect x="202" y="196" width="140" height="66" rx="10" fill="#0E7E72"/>
+  <text x="272" y="224" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">PDX-01</text>
+  <text x="272" y="242" text-anchor="middle" font-size="8.5" fill="#e6fffb">Pre-data exchange gate</text>
+
+  <rect x="370" y="196" width="140" height="66" rx="10" fill="#475569"/>
+  <text x="440" y="224" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">DBC-01</text>
+  <text x="440" y="242" text-anchor="middle" font-size="8.5" fill="#e2e8f0">Deceptive-behavior check</text>
+
+  <rect x="538" y="196" width="140" height="66" rx="10" fill="#0E7490"/>
+  <text x="608" y="224" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">EIT-01</text>
+  <text x="608" y="242" text-anchor="middle" font-size="8.5" fill="#e0f7ff">Escalation to human</text>
+
+  <rect x="705" y="196" width="140" height="66" rx="10" fill="#059669"/>
+  <text x="775" y="224" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">ATR-01</text>
+  <text x="775" y="242" text-anchor="middle" font-size="8.5" fill="#e7fff5">Audit trail (suppl.)</text>
+
+  <!-- connector: controls -> trust stack (cyan) -->
+  <path d="M440 262 L 440 300" stroke="#67E8F9" stroke-width="2.5" fill="none"/>
+  <text x="462" y="292" font-size="10" fill="#0E7E72" font-weight="600">enforced &amp; recorded across</text>
+
+  <!-- trust stack -->
+  <rect x="240" y="312" width="400" height="34" rx="6" fill="#0E7490"/>
+  <text x="256" y="334" font-size="10.5" font-weight="700" fill="#ffffff">Layer 4 · FHIR / OpenTelemetry</text>
+  <text x="624" y="334" text-anchor="end" font-size="9" fill="#e0f7ff">audit + SIEM export</text>
+
+  <rect x="240" y="350" width="400" height="34" rx="6" fill="#14B8A6"/>
+  <text x="256" y="372" font-size="10.5" font-weight="700" fill="#ffffff">Layer 3 · NHID-Auth v2</text>
+  <text x="624" y="372" text-anchor="end" font-size="9" fill="#e6fffb">cryptographic agent identity</text>
+
+  <rect x="240" y="388" width="400" height="34" rx="6" fill="#0E7E72"/>
+  <text x="256" y="410" font-size="10.5" font-weight="700" fill="#ffffff">Layer 2 · NHID-Clinical v1.3</text>
+  <text x="624" y="410" text-anchor="end" font-size="9" fill="#e6fffb">behavioral baseline (this map)</text>
+
+  <rect x="240" y="426" width="400" height="34" rx="6" fill="#9e5a00"/>
+  <text x="256" y="448" font-size="10.5" font-weight="700" fill="#ffffff">Layer 1 · STIR/SHAKEN</text>
+  <text x="624" y="448" text-anchor="end" font-size="9" fill="#fdeddc">carrier number auth</text>
+
+  <rect x="240" y="464" width="400" height="34" rx="6" fill="#8e2020"/>
+  <text x="256" y="486" font-size="10.5" font-weight="700" fill="#ffffff">Layer 0 · NPI Gap</text>
+  <text x="624" y="486" text-anchor="end" font-size="9" fill="#fbe3e3">the problem</text>
+
+  <text x="440" y="528" text-anchor="middle" font-size="9" fill="#94A3B8">Illustrative conceptual map — not an accredited standard, certification, or regulatory requirement.</text>
+</svg>

@@ -1,21 +1,42 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="description" content="NHID-Clinical Evidence Pack — system behavior guarantees, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
   <title>Evidence Pack | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <style>
+    .guarantee-card {
+      padding: 1rem 1.25rem;
+      border-left: 3px solid var(--teal-bright);
+      background: var(--bg-alt);
+      border-radius: 0 6px 6px 0;
+    }
+    .guarantee-card strong { color: var(--ink); }
+    .guarantee-card p { color: var(--body); font-size: .92rem; line-height: 1.7; margin: .3rem 0 0; }
+    .arch-card {
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--paper);
+    }
+    .arch-card strong { color: var(--ink); font-size: .92rem; }
+    .arch-card p { color: var(--body); font-size: .88rem; line-height: 1.7; margin: .3rem 0 0; }
+  </style>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
-<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
-  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+<div class="status-strip">
+  <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
 </div>
 
 <header class="site-header">
@@ -24,19 +45,61 @@
       <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
-        <small>Building Trust in Healthcare Voice AI</small>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
       </span>
     </a>
     <div class="nav-links">
-      <a href="/">Home</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/framework/">Framework overview</a>
+          <a href="/specification.html">Specification</a>
+          <a href="/framework/controls.html">Controls</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth</a>
+          <a href="/framework/reference-implementation.html">Reference Implementation</a>
+          <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
+          <a href="/technical-stack.html">Technical Stack</a>
+          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Platform <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/platform/">TrustLayer overview</a>
+          <a href="/platform/agent-registry.html">Agent Registry</a>
+          <a href="/platform/trust-gateway.html">Trust Gateway</a>
+          <a href="/platform/evidence-center.html">Evidence Center</a>
+          <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+          <a href="/platform/enterprise.html">Enterprise Workflow</a>
+        </div>
+      </div>
+      <a href="/simulator.html">Simulator</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Docs <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/developers.html">Developer guide</a>
+          <a href="/docs.html">Live API explorer</a>
+          <a href="/interoperability.html">Interoperability</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Resources <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/research-portfolio.html">Research Portfolio</a>
+          <a href="/roadmap.html">Roadmap</a>
+          <a href="/news.html">News</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+        </div>
+      </div>
+      <a href="/pricing.html">Pricing</a>
       <a href="/about.html">About</a>
-      <a href="/governance-simulator.html">Governance Simulator</a>
-      <a href="/for-payers.html">For Payers</a>
-      <a href="/specification.html">Specification</a>
-      <a href="/developers.html">Developers</a>
-      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-      <a href="/technical-stack.html">Technical Stack</a>
-      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+      <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -46,7 +109,7 @@
         <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <a class="primary-pill" href="/for-payers.html">Start a pilot</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -68,14 +131,44 @@
 
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
-  <a href="/about.html">About</a>
-  <a href="/governance-simulator.html">Governance Simulator</a>
-  <a href="/for-payers.html">For Payers</a>
+  <strong class="mobile-nav-group">Framework</strong>
+  <a href="/framework/">Framework overview</a>
   <a href="/specification.html">Specification</a>
-  <a href="/developers.html">Developers</a>
-  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <a href="/framework/controls.html">Controls</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth</a>
+  <a href="/framework/reference-implementation.html">Reference Implementation</a>
+  <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
   <a href="/technical-stack.html">Technical Stack</a>
-  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <strong class="mobile-nav-group">Platform</strong>
+  <a href="/platform/">TrustLayer overview</a>
+  <a href="/platform/agent-registry.html">Agent Registry</a>
+  <a href="/platform/trust-gateway.html">Trust Gateway</a>
+  <a href="/platform/evidence-center.html">Evidence Center</a>
+  <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+  <a href="/platform/enterprise.html">Enterprise Workflow</a>
+  <strong class="mobile-nav-group">Simulator</strong>
+  <a href="/simulator.html">Open the simulator</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <strong class="mobile-nav-group">Docs</strong>
+  <a href="/developers.html">Developer guide</a>
+  <a href="/docs.html">Live API explorer</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
+  <strong class="mobile-nav-group">Resources</strong>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/research-portfolio.html">Research Portfolio</a>
+  <a href="/roadmap.html">Roadmap</a>
+  <a href="/news.html">News</a>
+  <a href="/faq.html">FAQ</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+  <strong class="mobile-nav-group">More</strong>
+  <a href="/pricing.html">Pricing</a>
+  <a href="/about.html">About</a>
+  <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -84,15 +177,35 @@
     </button>
   </div>
 </nav>
+
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero">
-    <div class="container">
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container inner-hero-grid" style="position:relative;z-index:1">
+      <div>
       <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/developers.html">Developers</a><span>/</span><span>Evidence Pack</span></div>
-      <p class="eyebrow">For Enterprise &amp; Procurement Teams · v1.3 · June 2026</p>
-      <h1>Evidence Pack</h1>
-      <p class="lede">A summary of the system behavior guarantees, a worked failure trace example, and the audit readiness model for the NHID-Clinical reference implementation — for teams evaluating adoption.</p>
+      <p class="eyebrow">For Enterprise &amp; Procurement Teams · v1.3</p>
+      <h1 class="reveal">Evidence Pack</h1>
+      <p class="lede reveal">System behavior guarantees, a worked failure trace, and the audit readiness model — <strong>for teams evaluating adoption.</strong> Self-attested, open for community review.</p>
+      <div class="payer-hero-visual" style="margin-top:1.25rem">
+        <picture class="premium-3d">
+          <img src="/assets/images/3d-svg/trust-stack.svg" alt="Diagram of the five-layer NHID-Clinical trust stack: STIR/SHAKEN, NHID-Clinical v1.3, NHID-Auth v2, FHIR AuditEvent R4, and OpenTelemetry, over the Layer 0 NPI gap."/>
+        </picture>
+        <p class="visual-caption">Five testable layers that turn trust claims into evidence</p>
+      </div>
+      <div style="margin-top:1.25rem">
+        <a class="secondary-button" href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download style="display:inline-flex;align-items:center;gap:.5rem">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF — Core Specification
+        </a>
+        <a class="secondary-button" href="/specs/NHID-Clinical-Operational-Blueprint-v1.3.pdf" download style="display:inline-flex;align-items:center;gap:.5rem;margin-left:.75rem">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF — Operational Blueprint
+        </a>
+      </div>
+      </div>
     </div>
   </section>
 
@@ -106,27 +219,69 @@
       <!-- ── 1. System Behavior Guarantees ──────────────────────────────── -->
       <h2 style="margin-top:0">1. System Behavior Guarantees</h2>
 
-      <div style="display:grid;gap:.75rem;margin-top:1rem">
-        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
-          <strong style="color:var(--ink)">Deterministic output</strong>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">Identical input event + identical policy version → identical trace output. The policy engine is a pure function with no side effects. Output does not depend on wall-clock time, process state, or external calls.</p>
+      <div class="payer-phase-grid" style="margin-top:1rem">
+        <div class="guarantee-card">
+          <strong>Deterministic output</strong>
+          <p>Identical input event + identical policy version → identical trace output. The policy engine is a pure function with no side effects.</p>
         </div>
-        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
-          <strong style="color:var(--ink)">Replay guarantee</strong>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">Any stored trace can be replayed. The policy version is embedded in each event header. Replay with a different policy version is detected and flagged as a mismatch.</p>
+        <div class="guarantee-card">
+          <strong>Replay guarantee</strong>
+          <p>Any stored trace can be replayed. Policy version is embedded in each event header; version mismatches are flagged.</p>
         </div>
-        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
-          <strong style="color:var(--ink)">Failure invariants</strong>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">The engine never raises an unhandled exception. Invalid or malformed input returns a deterministic error trace (action: LOG_ONLY, recoverable: true). The caller always gets a response.</p>
+        <div class="guarantee-card">
+          <strong>Failure invariants</strong>
+          <p>The engine never raises an unhandled exception. Malformed input returns a deterministic error trace; the caller always gets a response.</p>
         </div>
-        <div style="padding:1rem 1.25rem;border-left:3px solid var(--blue);background:var(--bg-alt);border-radius:0 4px 4px 0">
-          <strong style="color:var(--ink)">Idempotency</strong>
-          <p style="color:var(--body);font-size:.92rem;line-height:1.7;margin:.3rem 0 0">Submitting the same request_id twice produces the same policy decision. The event store deduplicates on request_id at the PERSIST stage.</p>
+        <div class="guarantee-card">
+          <strong>Idempotency</strong>
+          <p>Submitting the same request_id twice produces the same policy decision. The event store deduplicates at PERSIST.</p>
         </div>
       </div>
 
-      <!-- ── 2. Anonymized Failure Trace Example ─────────────────────────── -->
-      <h2 style="margin-top:2.5rem">2. Anonymized Failure Trace Example</h2>
+      <!-- ── 2. Real-Corpus Detection Rates ───────────────────────────────── -->
+      <h2 style="margin-top:2.5rem">2. Real-Corpus Detection Rates</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The CTS YAML suite validates the policy engine against synthetic, hand-authored cases. To check behavior against real conversational phrasing, the engine was also run against the Fabricate Battle-Test Corpus — 550 real-world voice AI conversations (4,839 turns). Detection rate is the share of corpus turns where a control correctly fired.</p>
+
+      <table class="premium-metrics" style="margin-top:1rem">
+        <thead>
+          <tr>
+            <th>Control</th>
+            <th>Detection Rate</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IDG-01 (Identity Disclosure)</td>
+            <td>100%</td>
+            <td>Holds against real phrasing</td>
+          </tr>
+          <tr>
+            <td>EIT-01 (Escalation Trigger)</td>
+            <td>94.7%</td>
+            <td>Holds against real phrasing</td>
+          </tr>
+          <tr>
+            <td>PDX-01 (PHI Data Exchange)</td>
+            <td>58.6%</td>
+            <td>Partial — real-world phrasing diverges from synthetic cases</td>
+          </tr>
+          <tr>
+            <td>DBC-01 (Deceptive Behavior Claim)</td>
+            <td>2.5%</td>
+            <td>Weak — heuristic phrase list does not yet cover most real-world phrasing</td>
+          </tr>
+          <tr>
+            <td>ATR-01 (supplemental)</td>
+            <td>0.0%</td>
+            <td>Corpus/adapter structural limitation — not a representative test</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.75rem;font-style:italic">This is self-reported and not independently audited. IDG-01 and EIT-01 generalize well beyond the synthetic test suite; DBC-01 and ATR-01 are known weak points against real conversational data and are active areas of work, not resolved claims.</p>
+
+      <!-- ── 3. Anonymized Failure Trace Example ─────────────────────────── -->
+      <h2 style="margin-top:2.5rem">3. Anonymized Failure Trace Example</h2>
       <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The example below is synthetic — constructed from observed behavior patterns, with all identifying information removed. It shows what an IDG-01 (late disclosure) violation looks like in the NHID-Clinical audit trace, and what a payer auditor would see when reviewing it.</p>
 
       <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.8rem;line-height:1.8;overflow-x:auto;color:var(--body);margin-top:1rem">Anonymized Failure Trace — IDG-01 Violation
@@ -183,62 +338,32 @@ A payer auditing this session would see:
 ────────────────────────────────────────────────────────────────────</pre>
 
       <!-- ── 3. Failure & Attack Simulation Coverage ──────────────────────── -->
-      <h2 style="margin-top:2.5rem">3. Failure &amp; Attack Simulation Coverage</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The <a href="/developers.html" style="color:var(--blue)">failure injection harness</a> covers the following scenarios:</p>
+      <h2 style="margin-top:2.5rem">4. Failure &amp; Attack Simulation Coverage</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The <a href="/developers.html" style="color:var(--teal-bright)">failure injection harness</a> covers the following scenarios:</p>
 
-      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.88rem;color:var(--body)">
+      <table class="premium-metrics" style="margin-top:1rem">
         <thead>
-          <tr style="background:var(--bg-alt);text-align:left">
-            <th style="padding:.6rem .9rem;border-bottom:2px solid var(--border)">Scenario</th>
-            <th style="padding:.6rem .9rem;border-bottom:2px solid var(--border)">Expected behavior</th>
+          <tr>
+            <th>Scenario</th>
+            <th>Expected behavior</th>
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.6rem .9rem">Empty SpeechResult</td>
-            <td style="padding:.6rem .9rem">Policy evaluated, event written, no 500</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
-            <td style="padding:.6rem .9rem">Null bytes in input</td>
-            <td style="padding:.6rem .9rem">Sanitized before engine, sanitized text stored</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.6rem .9rem">Missing CallSid (session binding failure)</td>
-            <td style="padding:.6rem .9rem">400 returned, no event written, structured error body</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
-            <td style="padding:.6rem .9rem">Late disclosure (IDG-01 + PDX-01)</td>
-            <td style="padding:.6rem .9rem">DENY_DATA action, 2 critical violations logged</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.6rem .9rem">Escalation path unavailable (EIT-01)</td>
-            <td style="padding:.6rem .9rem">ESCALATE_HUMAN with TwiML fallback, violation logged</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
-            <td style="padding:.6rem .9rem">Deceptive artifact (DBC-01)</td>
-            <td style="padding:.6rem .9rem">LOG_ONLY, partial_failure=true, session continues</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.6rem .9rem">Missing audit fields (ATR-01)</td>
-            <td style="padding:.6rem .9rem">Violation logged, pipeline continues, gap recorded</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
-            <td style="padding:.6rem .9rem">Bot-to-bot, undisclosed agent</td>
-            <td style="padding:.6rem .9rem">DENY_DATA, stricter gate applied for ai_agent counterparty</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.6rem .9rem">Replay with external_calls_cached=false</td>
-            <td style="padding:.6rem .9rem">Divergence detected, ATR-01 violation, replay flagged FAIL</td>
-          </tr>
-          <tr>
-            <td style="padding:.6rem .9rem">Duplicate request_id (idempotency)</td>
-            <td style="padding:.6rem .9rem">Identical trace returned, no duplicate event written</td>
-          </tr>
+          <tr><td>Empty SpeechResult</td><td>Policy evaluated, event written, no 500</td></tr>
+          <tr><td>Null bytes in input</td><td>Sanitized before engine, sanitized text stored</td></tr>
+          <tr><td>Missing CallSid (session binding failure)</td><td>400 returned, no event written, structured error body</td></tr>
+          <tr><td>Late disclosure (IDG-01 + PDX-01)</td><td>DENY_DATA action, 2 critical violations logged</td></tr>
+          <tr><td>Escalation path unavailable (EIT-01)</td><td>ESCALATE_HUMAN with TwiML fallback, violation logged</td></tr>
+          <tr><td>Deceptive artifact (DBC-01)</td><td>LOG_ONLY, partial_failure=true, session continues</td></tr>
+          <tr><td>Missing audit fields (ATR-01)</td><td>Violation logged, pipeline continues, gap recorded</td></tr>
+          <tr><td>Bot-to-bot, undisclosed agent</td><td>DENY_DATA, stricter gate for ai_agent counterparty</td></tr>
+          <tr><td>Replay with external_calls_cached=false</td><td>Divergence detected, ATR-01 violation, replay flagged FAIL</td></tr>
+          <tr><td>Duplicate request_id (idempotency)</td><td>Identical trace returned, no duplicate event written</td></tr>
         </tbody>
       </table>
 
       <!-- ── 4. Audit Readiness Model ────────────────────────────────────── -->
-      <h2 style="margin-top:2.5rem">4. Audit Readiness Model</h2>
+      <h2 style="margin-top:2.5rem">5. Audit Readiness Model</h2>
       <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">An external auditor reconstructing a session from the event store can determine:</p>
       <ul style="color:var(--body);font-size:.93rem;line-height:2;padding-left:1.4rem;margin-top:.5rem">
         <li>When the call started and when the first disclosure statement was made</li>
@@ -259,59 +384,44 @@ t=00:00.145  EXEC       TwiML disclosure message rendered
 t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
 
       <!-- ── 5. Architecture & Scale Notes ──────────────────────────────── -->
-      <h2 style="margin-top:2.5rem">5. Architecture &amp; Scale Notes</h2>
+      <h2 style="margin-top:2.5rem">6. Architecture &amp; Scale Notes</h2>
 
-      <div style="display:grid;gap:.75rem;margin-top:1rem">
-        <div style="padding:1rem 1.25rem;border:1px solid var(--border);border-radius:6px;background:var(--paper)">
-          <strong style="color:var(--ink);font-size:.92rem">Current reference implementation</strong>
-          <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin:.3rem 0 0">FastAPI + SQLite event store. Stateless policy engine. Suitable for development and self-validation. Not load-tested for production at scale.</p>
+      <div class="payer-phase-grid" style="margin-top:1rem">
+        <div class="arch-card">
+          <strong>Current reference implementation</strong>
+          <p>FastAPI + SQLite event store. Stateless policy engine. Suitable for development and self-validation. Not load-tested for production at scale.</p>
         </div>
-        <div style="padding:1rem 1.25rem;border:1px solid var(--border);border-radius:6px;background:var(--paper)">
-          <strong style="color:var(--ink);font-size:.92rem">Path to distributed event store</strong>
-          <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin:.3rem 0 0">Replace SQLite with Kafka or S3-backed event log. Policy engine is stateless and horizontally scalable — no changes required to the core engine.</p>
+        <div class="arch-card">
+          <strong>Path to distributed event store</strong>
+          <p>Replace SQLite with Kafka or S3-backed event log. Policy engine is stateless and horizontally scalable.</p>
         </div>
-        <div style="padding:1rem 1.25rem;border:1px solid var(--border);border-radius:6px;background:var(--paper)">
-          <strong style="color:var(--ink);font-size:.92rem">Replay preservation</strong>
-          <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin:.3rem 0 0">Store input payload + policy version with each event. Any node can replay from the event store. Policy version change detection prevents silent audit corruption.</p>
+        <div class="arch-card">
+          <strong>Replay preservation</strong>
+          <p>Store input payload + policy version with each event. Policy version change detection prevents silent audit corruption.</p>
         </div>
       </div>
 
       <!-- ── 6. Risk Register ────────────────────────────────────────────── -->
-      <h2 style="margin-top:2.5rem">6. Risk Register</h2>
+      <h2 style="margin-top:2.5rem">7. Risk Register</h2>
 
-      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.88rem;color:var(--body)">
+      <table class="premium-metrics" style="margin-top:1rem">
         <thead>
-          <tr style="background:var(--bg-alt);text-align:left">
-            <th style="padding:.6rem .9rem;border-bottom:2px solid var(--border)">Risk</th>
-            <th style="padding:.6rem .9rem;border-bottom:2px solid var(--border)">Mitigation</th>
+          <tr>
+            <th>Risk</th>
+            <th>Mitigation</th>
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.6rem .9rem">Timestamps break exact replay</td>
-            <td style="padding:.6rem .9rem">Hash computed over non-timestamp fields only; deterministic_hash excludes wall-clock values</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
-            <td style="padding:.6rem .9rem">Policy engine version change between runs</td>
-            <td style="padding:.6rem .9rem">Policy version embedded in every event; replay rejects version mismatches</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:.6rem .9rem">JSON key ordering variance</td>
-            <td style="padding:.6rem .9rem">Canonical JSON (sorted keys) enforced before hashing</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);background:var(--bg-alt)">
-            <td style="padding:.6rem .9rem">LLM re-invocation during replay</td>
-            <td style="padding:.6rem .9rem">JSON Schema if/then enforces external_calls_cached=true when replay_mode=cached</td>
-          </tr>
-          <tr>
-            <td style="padding:.6rem .9rem">partial_failure accumulation undetected</td>
-            <td style="padding:.6rem .9rem">boundary_violations[] written per event; partial_failure rate trackable across sessions</td>
-          </tr>
+          <tr><td>Timestamps break exact replay</td><td>Hash computed over non-timestamp fields only</td></tr>
+          <tr><td>Policy engine version change between runs</td><td>Policy version embedded in every event; replay rejects mismatches</td></tr>
+          <tr><td>JSON key ordering variance</td><td>Canonical JSON (sorted keys) enforced before hashing</td></tr>
+          <tr><td>LLM re-invocation during replay</td><td>JSON Schema enforces external_calls_cached=true when replay_mode=cached</td></tr>
+          <tr><td>partial_failure accumulation undetected</td><td>boundary_violations[] written per event; rate trackable across sessions</td></tr>
         </tbody>
       </table>
 
       <!-- ── 7. One-Page Architecture Summary ───────────────────────────── -->
-      <h2 style="margin-top:2.5rem">7. One-Page Architecture Summary</h2>
+      <h2 style="margin-top:2.5rem">8. One-Page Architecture Summary</h2>
       <div style="padding:1.25rem 1.5rem;background:var(--bg-alt);border-radius:8px;margin-top:1rem">
         <p style="color:var(--body);font-size:.93rem;line-height:1.8;margin:0"><strong>What it is:</strong> A lightweight, stateless service that logs AI voice agent disclosure behavior. Input: call events from Twilio or equivalent. Output: tamper-evident, deterministically reproducible trace with policy decision and boundary violations.<br><br>
         <strong>What it is not:</strong> A caller identity verifier, a certification body, or a compliance guarantor. Adoption does not confer HIPAA or TCPA compliance.<br><br>
@@ -323,12 +433,24 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
                                           [Auditor / Payer System]</pre>
       </div>
 
-      <div style="margin-top:2rem;display:flex;flex-wrap:wrap;gap:1rem">
-        <a href="/developers.html" style="color:var(--blue);font-weight:600;font-size:.9rem">← Full technical reference</a>
-        <a href="/shadow-evaluation-guide.html" style="color:var(--blue);font-weight:600;font-size:.9rem">Shadow Evaluation Guide →</a>
-        <a href="mailto:contact@nhid-clinical.org" style="color:var(--blue);font-weight:600;font-size:.9rem">Contact →</a>
-      </div>
+      <h2 style="margin-top:2.5rem">Related Resources</h2>
+      <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
+        <li><a href="/developers.html" style="font-weight:600;color:var(--teal-bright)">Developers reference &rarr;</a> <span style="color:var(--body)">— API, traces, test suite</span></li>
+        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">Shadow Evaluation Guide &rarr;</a> <span style="color:var(--body)">— 90-day payer observation process</span></li>
+        <li><a href="/governance-simulator.html" style="font-weight:600;color:var(--teal-bright)">Governance Simulator &rarr;</a> <span style="color:var(--body)">— deterministic control walkthrough</span></li>
+      </ul>
 
+    </div>
+  </section>
+
+  <section class="page-section" style="padding-top:0">
+    <div class="container" style="max-width:60rem">
+      <div class="premium-callout">
+        <h3>Procurement checklist</h3>
+        <p>Run the open-source test suite, review a sample failure trace, confirm audit fields in vendor JSON logs, then decide whether to require conformance in the next RFP cycle.</p>
+        <a href="/for-payers.html">For Payers guide &rarr;</a>&nbsp;&nbsp;
+        <a href="/specs/NHID-Clinical-Operational-Blueprint-v1.3.pdf">Operational Blueprint (PDF) &rarr;</a>
+      </div>
     </div>
   </section>
 
@@ -339,20 +461,30 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
         <h2>Questions about implementation or adoption?</h2>
         <p>Reach out directly or join the community discussion.</p>
       </div>
-      <a class="closing-button" href="/community.html">Community →</a>
+      <a class="closing-button" href="/for-payers.html">Start a pilot →</a>
     </div>
   </section>
 </main>
 
+<section class="page-cta">
+  <div class="container">
+    <h2>Where to go next</h2>
+    <p>Four ways into NHID-Clinical, whatever you came to do.</p>
+    <div class="page-cta-grid">
+      <a class="page-cta-card" href="/specification.html"><b>Read the Specification <span class="arr">&rarr;</span></b><span>The v1.3 controls, in full.</span></a>
+      <a class="page-cta-card" href="/simulator.html"><b>Try the Simulator <span class="arr">&rarr;</span></b><span>Run the controls on call scenarios.</span></a>
+      <a class="page-cta-card" href="/evidence-pack.html"><b>Review the Evidence Pack <span class="arr">&rarr;</span></b><span>Guarantees, a failure trace, the audit model.</span></a>
+      <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer"><b>Join the Community <span class="arr">&#x2197;</span></b><span>Questions and feedback on GitHub.</span></a>
+    </div>
+  </div>
+</section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
-      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>

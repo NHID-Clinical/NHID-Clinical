@@ -1,21 +1,24 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical v2 Roadmap — Cryptographic agent identity, delegation chains, and revocation. Target August 2026."/>
+  <meta name="description" content="NHID-Auth v2 — Cryptographic agent identity for healthcare voice AI. Public reference implementation."/>
   <title>v2 Roadmap | NHID-Clinical</title>
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
-<div style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px 20px;font-size:.88rem;line-height:1.6">
-  <strong>Note:</strong> NHID-Clinical is an early-stage open proposal by Brianna Baynard. It is not an accredited standard or regulatory requirement.
+<div class="status-strip">
+  <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
 </div>
 
 <header class="site-header">
@@ -24,19 +27,61 @@
       <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
-        <small>Building Trust in Healthcare Voice AI</small>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
       </span>
     </a>
     <div class="nav-links">
-      <a href="/">Home</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/framework/">Framework overview</a>
+          <a href="/specification.html">Specification</a>
+          <a href="/framework/controls.html">Controls</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth</a>
+          <a href="/framework/reference-implementation.html">Reference Implementation</a>
+          <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
+          <a href="/technical-stack.html">Technical Stack</a>
+          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Platform <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/platform/">TrustLayer overview</a>
+          <a href="/platform/agent-registry.html">Agent Registry</a>
+          <a href="/platform/trust-gateway.html">Trust Gateway</a>
+          <a href="/platform/evidence-center.html">Evidence Center</a>
+          <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+          <a href="/platform/enterprise.html">Enterprise Workflow</a>
+        </div>
+      </div>
+      <a href="/simulator.html">Simulator</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Docs <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/developers.html">Developer guide</a>
+          <a href="/docs.html">Live API explorer</a>
+          <a href="/interoperability.html">Interoperability</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Resources <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/research-portfolio.html">Research Portfolio</a>
+          <a href="/roadmap.html">Roadmap</a>
+          <a href="/news.html">News</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+        </div>
+      </div>
+      <a href="/pricing.html">Pricing</a>
       <a href="/about.html">About</a>
-      <a href="/governance-simulator.html">Governance Simulator</a>
-      <a href="/for-payers.html">For Payers</a>
-      <a href="/specification.html">Specification</a>
-      <a href="/developers.html">Developers</a>
-      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-      <a href="/technical-stack.html">Technical Stack</a>
-      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+      <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -46,7 +91,7 @@
         <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <a class="primary-pill" href="/for-payers.html">Start a pilot</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -68,14 +113,44 @@
 
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
-  <a href="/about.html">About</a>
-  <a href="/governance-simulator.html">Governance Simulator</a>
-  <a href="/for-payers.html">For Payers</a>
+  <strong class="mobile-nav-group">Framework</strong>
+  <a href="/framework/">Framework overview</a>
   <a href="/specification.html">Specification</a>
-  <a href="/developers.html">Developers</a>
-  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <a href="/framework/controls.html">Controls</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth</a>
+  <a href="/framework/reference-implementation.html">Reference Implementation</a>
+  <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
   <a href="/technical-stack.html">Technical Stack</a>
-  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <strong class="mobile-nav-group">Platform</strong>
+  <a href="/platform/">TrustLayer overview</a>
+  <a href="/platform/agent-registry.html">Agent Registry</a>
+  <a href="/platform/trust-gateway.html">Trust Gateway</a>
+  <a href="/platform/evidence-center.html">Evidence Center</a>
+  <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+  <a href="/platform/enterprise.html">Enterprise Workflow</a>
+  <strong class="mobile-nav-group">Simulator</strong>
+  <a href="/simulator.html">Open the simulator</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <strong class="mobile-nav-group">Docs</strong>
+  <a href="/developers.html">Developer guide</a>
+  <a href="/docs.html">Live API explorer</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
+  <strong class="mobile-nav-group">Resources</strong>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/research-portfolio.html">Research Portfolio</a>
+  <a href="/roadmap.html">Roadmap</a>
+  <a href="/news.html">News</a>
+  <a href="/faq.html">FAQ</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+  <strong class="mobile-nav-group">More</strong>
+  <a href="/pricing.html">Pricing</a>
+  <a href="/about.html">About</a>
+  <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -84,16 +159,18 @@
     </button>
   </div>
 </nav>
+
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main>
-  <section class="inner-hero">
-    <div class="container inner-hero-grid">
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>Roadmap</span></div>
-        <p class="eyebrow">In Development · Target August 2026</p>
-        <h1>NHID-Clinical v2: Cryptographic Agent Identity</h1>
-        <p class="lede">v1.3 establishes disclosure and audit. v2 adds the missing piece: a way to cryptographically verify that an AI agent is actually authorized by the provider it claims to represent.</p>
+        <p class="eyebrow">Public Reference Implementation</p>
+        <h1 class="reveal">NHID-Auth v2: Cryptographic Agent Identity</h1>
+        <p class="lede reveal">v1.3 establishes behavioral disclosure. v2 addresses what v1.3 cannot: verifying that an AI agent is actually authorized by the provider it claims to represent. NPIs are public via NPPES — any caller can present a real one. v2 makes that insufficient.</p>
       </div>
     </div>
   </section>
@@ -102,7 +179,7 @@
     <div class="container" style="max-width:52rem">
 
       <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> Reference implementation complete. Spec and test suite in development. No production deployments yet. Target release: August 2026.
+        <strong>Status:</strong> Released June 2026 under CC BY 4.0. Reference implementation in <code>src/agent_identity.py</code> (26 dedicated tests). Open for production use under the open license. As of v1.3 final, this is also wired into the hosted conformance API — not just a standalone library — via <code>POST /v1/identity/verify-passport</code> and <code>POST /v1/identity/revoke-passport</code>, with durable revocation that survives across stateless invocations.
       </div>
 
       <!-- Version comparison -->
@@ -112,7 +189,7 @@
           <tr>
             <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Capability</th>
             <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v1.3 (current)</th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v2 (planned)</th>
+            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v2 (reference implementation)</th>
           </tr>
         </thead>
         <tbody>
@@ -124,99 +201,84 @@
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Provider authorization</td>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">❌ Not verifiable</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Ed25519 delegation chain</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Cryptographically verifiable</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Revocation</td>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">❌ Not supported</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ HTTP revocation list</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Real-time access controls</td>
           </tr>
           <tr>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Audit trail</td>
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Structured event logs</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ + Passport ID in every log</td>
+            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ + Credential ID in every log</td>
           </tr>
           <tr>
-            <td style="padding:.7rem .9rem;color:var(--body)">Suitable for</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">Shadow pilots</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">Production deployments</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">Maturity</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">Shadow-pilot ready</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">Early testing only</td>
           </tr>
         </tbody>
       </table>
 
-      <!-- What's coming -->
-      <h2 style="margin-top:2.5rem">What's Coming in v2</h2>
+      <!-- Trust stack diagram -->
+      <h2 style="margin-top:2.5rem">Where v2 Sits in the Trust Stack</h2>
+      <p class="lede" style="font-size:.93rem;margin-top:.5rem">v2 is one layer in a stack that starts at a real gap (no cross-org NPI authorization exists today) and ends at a healthcare-native audit trail. Layers 2–4 are NHID-Clinical's contribution; Layer 3 (this page) is optional.</p>
+      <img src="/assets/diagrams/trust-stack-3d.jpg" alt="Five-layer trust stack: STIR/SHAKEN carrier certification at top, NHID-Clinical disclosure layer, NHID-Auth with Ed25519 signatures and NPI Passports, FHIR R4 Audit logging, and OpenTelemetry metrics and traces at the base" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-top:1rem" loading="lazy"/>
+
+      <!-- What the reference implementation contains -->
+      <h2 style="margin-top:2.5rem">What the Reference Implementation Contains</h2>
       <div style="display:grid;gap:.85rem;margin-top:1.25rem">
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Agent Passport System (APS)</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Ed25519-based cryptographic identity for AI agents. Each agent has a key pair. Providers sign a delegation granting the agent specific scopes (e.g., <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">eligibility</code>, <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">claim_status</code>). Based on IETF draft standards.</p>
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
+          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Provider-Issued Agent Credentials</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">An agent's identity is signed by the provider organization it acts for, with the provider's 10-digit NPI bound into the credential. A valid credential requires the provider's private key — something public NPI data cannot produce.</p>
         </div>
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Delegation Chains with Scope Attenuation</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">A provider authorizes an agent with limited permissions. The agent cannot exceed its granted scope. Delegations have explicit TTLs — a 24-hour delegation cannot be replayed the next day.</p>
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
+          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Scoped, Time-Limited Authorization</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Agents carry only the operations their provider granted (eligibility, claim status, prior authorization). Credentials expire on a short TTL. Delegation can be narrowed, never expanded — scope escalation is rejected at verification.</p>
         </div>
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Revocation Lists</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Compromised agents can be revoked immediately. Payers check a simple HTTP endpoint before accepting a passport. No central registry required in v2 — each provider hosts their own revocation list.</p>
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
+          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Immediate Withdrawal</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">A provider can revoke a compromised or decommissioned agent; the next verification fails. Revocation works per-agent or per-delegation. No central authority required.</p>
         </div>
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--blue);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Call Integration</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Passport tokens delivered via DTMF or SIP headers — no change to the voice interaction itself. The payer's system validates the token out-of-band before the call proceeds to data exchange.</p>
+        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
+          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Call Binding and Out-of-Band Verification</p>
+          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Credentials can be bound to a specific call session, preventing replay across calls. All checks happen via API, not in the voice channel — no latency added to the call. v1.3 behavioral controls run unchanged alongside the v2 layer.</p>
         </div>
 
       </div>
 
-      <!-- Reference implementation note -->
-      <h2 style="margin-top:2.5rem">Reference Implementation</h2>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The core identity module is already written and tested. Four passing tests covering key generation, delegation + verification, expiry, and revocation:</p>
+      <!-- Credential flow diagram -->
+      <h2 style="margin-top:2.5rem">How the Credential Flow Works</h2>
+      <img src="/assets/diagrams/v2-identity-flow.svg" alt="NHID-Auth v2 credential flow: a provider organization issues an Ed25519-signed agent passport with NPI binding, scopes, and expiry; optional scoped delegation narrows scope across at most 3 hops; the passport is presented out of band with a call-bound nonce; the payer runs six ordered checks (signature, NPI, expiry, revocation, scope narrowing, nonce) and returns ALLOW or a typed DENY error code" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-top:1rem" loading="lazy"/>
+
+      <!-- Run it -->
+      <h2 style="margin-top:2.5rem">Run It</h2>
       <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-python -m pytest tests/ -v
+python -m pytest tests/test_identity.py -v   # v2 identity layer (26 tests)
+python examples/issue_and_verify.py          # end-to-end credential walkthrough</pre>
 
-# Expected output:
-# 173 passed, 18 skipped in ~1.4s</pre>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.85rem">Source: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/src/agent_identity.py" style="color:var(--blue)">src/agent_identity.py</a></p>
-
-      <!-- Timeline -->
-      <h2 style="margin-top:2.5rem">Timeline</h2>
-      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.93rem">
-        <thead>
-          <tr>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Month</th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Milestone</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">May 2026</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Reference implementation complete — <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/agent_identity.py</code>, 173 passing tests</td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">July 2026</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Full v2 spec + expanded conformance test suite</td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body);white-space:nowrap">August 2026</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Demo + first payer pilot integration</td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;color:var(--body);white-space:nowrap">Q1 2027</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">v2 release — production-ready with cryptographic identity</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- What is not done -->
+      <h2 style="margin-top:2.5rem">Open Design Questions</h2>
+      <ul style="color:var(--body);font-size:.93rem;line-height:1.9;margin-top:.75rem;padding-left:1.25rem">
+        <li>No registry or discovery mechanism for provider keys — open design question</li>
+        <li>Credential delivery during live calls is not yet standardized</li>
+        <li>Shadow pilot data will inform the formal v2 specification document</li>
+      </ul>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:1rem">The reference implementation is live. If you want to test it against your own threat model or contribute to the formal specification, <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright)">contact us</a>.</p>
 
       <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
-        <a href="/for-payers.html" style="color:var(--blue)">← Pilot Guide</a>
+        <a href="/for-payers.html" style="color:var(--teal-bright)">← Pilot Guide</a>
         &nbsp;·&nbsp;
-        <a href="/specification.html" style="color:var(--blue)">v1.3 Spec</a>
+        <a href="/specification.html" style="color:var(--teal-bright)">v1.3 Spec</a>
         &nbsp;·&nbsp;
-        <a href="/technical-stack.html" style="color:var(--blue)">Five-layer trust architecture →</a>
+        <a href="/technical-stack.html" style="color:var(--teal-bright)">Five-layer trust architecture →</a>
       </p>
 
     </div>
@@ -226,26 +288,47 @@ python -m pytest tests/ -v
     <div class="closing-panel">
       <div>
         <p class="section-kicker">Get involved</p>
-        <h2>Read the proposal and share your reaction.</h2>
+        <h2>Read the specification and share your reaction.</h2>
         <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
       </div>
-      <a class="closing-button" href="/community.html">Join the Discussion →</a>
+      <a class="closing-button" href="/for-payers.html">Start a pilot →</a>
     </div>
   </section>
 </main>
 
+
+<section class="page-section" style="padding-top:0">
+  <div class="container" style="max-width:60rem">
+    <div class="premium-callout">
+      <h3>Where this is heading</h3>
+      <p>Milestones are commitments to the open proposal, not product promises. Pilot results directly shape v2.</p>
+      <a href="/for-payers.html">Become a shadow-evaluation partner →</a>&nbsp;&nbsp;
+    </div>
+  </div>
+</section>
+<section class="page-cta">
+  <div class="container">
+    <h2>Where to go next</h2>
+    <p>Four ways into NHID-Clinical, whatever you came to do.</p>
+    <div class="page-cta-grid">
+      <a class="page-cta-card" href="/specification.html"><b>Read the Specification <span class="arr">&rarr;</span></b><span>The v1.3 controls, in full.</span></a>
+      <a class="page-cta-card" href="/simulator.html"><b>Try the Simulator <span class="arr">&rarr;</span></b><span>Run the controls on call scenarios.</span></a>
+      <a class="page-cta-card" href="/evidence-pack.html"><b>Review the Evidence Pack <span class="arr">&rarr;</span></b><span>Guarantees, a failure trace, the audit model.</span></a>
+      <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer"><b>Join the Community <span class="arr">&#x2197;</span></b><span>Questions and feedback on GitHub.</span></a>
+    </div>
+  </div>
+</section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
     <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
-      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>
+  <p class="footer-copy" style="margin-top:.4rem">This is an open, actively maintained framework — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
 </footer>
 
 <script src="/site.js"></script>

@@ -1,0 +1,16 @@
+# CodeRabbit configuration — reviews disabled.
+# Automatic PR reviews, summaries, and status comments are turned off.
+# To remove CodeRabbit entirely, uninstall the CodeRabbit GitHub App from
+# the repository/organization settings (this file only silences it).
+# Schema: https://coderabbit.ai/integrations/schema.v2.json
+reviews:
+  request_changes_workflow: false
+  high_level_summary: false
+  poem: false
+  review_status: false
+  collapse_walkthrough: true
+  auto_review:
+    enabled: false
+    drafts: false
+chat:
+  auto_reply: false

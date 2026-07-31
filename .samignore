@@ -1,0 +1,11 @@
+traces/
+conformance/
+.git/
+.github/
+__pycache__/
+*.pyc
+*.pyo
+*.db
+*.md
+.env
+.pytest_cache/

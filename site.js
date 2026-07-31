@@ -21,8 +21,8 @@
     syncThemeImages(theme);
   }
 
-  /* Set correct images on initial load */
-  syncThemeImages(document.documentElement.getAttribute('data-theme') || 'light');
+  /* Apply stored theme on load (syncs images + mobile label) */
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
 
   document.querySelectorAll('.theme-toggle').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -81,6 +81,12 @@
       excerpt: 'NHID-Clinical defines a minimum behavioral baseline for AI voice agents in B2B healthcare administrative workflows.'
     },
     {
+      title: 'Research Portfolio',
+      url: '/research-portfolio.html',
+      keywords: 'research portfolio publications evidence standards regulatory engagement interactive demonstrations professional profile nist ai rmf public comment ai governance map specification simulator github brianna baynard certifications operational ai governance framework non-human actor accountability delegated authority',
+      excerpt: 'AI governance research, standards work, and technical artifacts: standards engagement, interactive demonstrations, evidence and publications, and professional profile.'
+    },
+    {
       title: 'Governance Simulator',
       url: '/governance-simulator.html',
       keywords: 'governance simulator policy engine playground idg-01 dbc-01 eit-01 atr-01 test scenario synthetic call evaluation interactive',
@@ -135,16 +141,88 @@
       excerpt: 'Deterministic pass/fail tests for NHID-Clinical v1.3 conformance.'
     },
     {
-      title: 'Community',
-      url: '/community.html',
-      keywords: 'community discord reddit contribution feedback technical compliance payer provider help contact get involved',
-      excerpt: 'Join the NHID-Clinical community to give feedback and help shape the next version of the proposal.'
-    },
-    {
       title: 'FAQ',
       url: '/faq.html',
       keywords: 'faq frequently asked questions who what why how cost hipaa tcpa nist mandatory volunteer impersonation latency background',
       excerpt: 'Frequently asked questions about NHID-Clinical, the scope, HIPAA, NIST, and how to get involved.'
+    },
+    {
+      title: 'Implementation Registry',
+      url: '/registry.html',
+      keywords: 'registry implementations vendors self-attestation cas badge nhid-cas listed conformance certified',
+      excerpt: 'Self-attested NHID-Clinical implementations, with live NHID-CAS conformance badges.'
+    },
+    {
+      title: 'Framework',
+      url: '/framework/',
+      keywords: 'framework open core specification controls nhid-auth reference implementation conformance test suite technical stack regulatory alignment cc by 4.0 open source free',
+      excerpt: 'The open framework: specification, control catalog, NHID-Auth, reference implementation, conformance tests, technical stack, and regulatory alignment.'
+    },
+    {
+      title: 'Controls',
+      url: '/framework/controls.html',
+      keywords: 'controls catalog idg-01 identity disclosure gate pdx-01 pre-data exchange gate dbc-01 deceptive behavior check eit-01 escalation implementation test atr-01 audit trail requirements cas call authorization score',
+      excerpt: 'The control catalog — IDG-01, PDX-01, DBC-01, EIT-01, and ATR-01 — with what each control checks and what conformance looks like.'
+    },
+    {
+      title: 'NHID-Auth',
+      url: '/framework/nhid-auth.html',
+      keywords: 'nhid-auth v2 cryptographic authorization ed25519 agent passport signed delegation npi binding offline verification revocation scope expiration',
+      excerpt: 'The v2 cryptographic authorization layer: Ed25519 agent passports, provider-signed delegation, and offline verification with no registry or gatekeeper.'
+    },
+    {
+      title: 'Reference Implementation',
+      url: '/framework/reference-implementation.html',
+      keywords: 'reference implementation policy engine python typescript middleware vapi twilio adapters powershell module openapi postman trace schema deterministic open source',
+      excerpt: 'A dependency-free Python policy engine, TypeScript middleware, voice-platform adapters, trace schema, and tooling — all open under CC BY 4.0.'
+    },
+    {
+      title: 'Conformance Test Suite',
+      url: '/framework/conformance-suite.html',
+      keywords: 'conformance test suite cts yaml deterministic pass fail machine readable runner verify implementation self attestation procurement evidence',
+      excerpt: 'Machine-readable, deterministic pass/fail conformance tests anyone can run against any implementation.'
+    },
+    {
+      title: 'TrustLayer Platform',
+      url: '/platform/',
+      keywords: 'trustlayer platform operational trust infrastructure healthcare ai agents saas monitoring evidence identity authorization reporting modules enterprise open core comparison',
+      excerpt: 'TrustLayer by NHID-Clinical — operational trust infrastructure that runs the same deterministic controls as the open framework.'
+    },
+    {
+      title: 'Agent Registry',
+      url: '/platform/agent-registry.html',
+      keywords: 'agent registry identity source of truth agent id organization vendor owner purpose permissions expiration status inventory agent sprawl lifecycle',
+      excerpt: 'A source of truth for AI agent identity — agent ID, organization, vendor, owner, purpose, permissions, expiration, and status.'
+    },
+    {
+      title: 'Trust Gateway',
+      url: '/platform/trust-gateway.html',
+      keywords: 'trust gateway runtime enforcement identity verification authorization disclosure check scope enforcement audit event proxy block allow escalate fail closed',
+      excerpt: 'Runtime enforcement: identity verification, authorization, disclosure check, scope enforcement, and audit event before the healthcare system is reached.'
+    },
+    {
+      title: 'Evidence Center',
+      url: '/platform/evidence-center.html',
+      keywords: 'evidence center compliance reports evidence packages event history governance exports nist ai rmf iso 42001 hipaa security documentation fhir auditevent audit ready',
+      excerpt: 'Audit-ready evidence generation — compliance reports, evidence packages, event history, and governance exports.'
+    },
+    {
+      title: 'Continuous Conformance Monitoring',
+      url: '/platform/continuous-conformance.html',
+      keywords: 'continuous conformance monitoring operational regression agent update detected human review required version change scheduled re-run drift',
+      excerpt: 'Turn static conformance tests into operational monitoring that re-runs whenever an agent changes.'
+    },
+    {
+      title: 'Enterprise Workflow',
+      url: '/platform/enterprise.html',
+      keywords: 'enterprise workflow sso single sign on rbac role based access control approvals integrations siem export revocation separation of duties posture',
+      excerpt: 'SSO, RBAC, approval workflows, integrations, and SIEM export for organizations operating AI agents at scale.'
+    },
+    {
+      title: 'Pricing',
+      url: '/pricing.html',
+      keywords: 'pricing plans community developer enterprise free open cc by 4.0 specification never paid hosted sandbox api access conformance reports trust gateway evidence center sso support',
+      excerpt: 'The open framework is free under CC BY 4.0. TrustLayer plans for developers and enterprises operating agents at scale.'
     }
   ];
 
@@ -218,6 +296,32 @@
     }
   });
 
+  /* ── Dropdown nav ──────────────────────────────────────────────────────── */
+  document.querySelectorAll('.nav-dropdown-trigger').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var dropdown = btn.closest('.nav-dropdown');
+      var isOpen = dropdown.classList.contains('is-open');
+      document.querySelectorAll('.nav-dropdown.is-open').forEach(function (d) {
+        d.classList.remove('is-open');
+        var t = d.querySelector('.nav-dropdown-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        dropdown.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  document.addEventListener('click', function () {
+    document.querySelectorAll('.nav-dropdown.is-open').forEach(function (d) {
+      d.classList.remove('is-open');
+      var t = d.querySelector('.nav-dropdown-trigger');
+      if (t) t.setAttribute('aria-expanded', 'false');
+    });
+  });
+
   /* ── Active nav link ───────────────────────────────────────────────────── */
   var path  = window.location.pathname.replace(/\/$/, '') || '/';
   var links = document.querySelectorAll('.nav-links a, .mobile-nav a');
@@ -227,4 +331,136 @@
       a.classList.add('is-active');
     }
   });
+  document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
+    if (dropdown.querySelector('a.is-active')) {
+      var trigger = dropdown.querySelector('.nav-dropdown-trigger');
+      if (trigger) trigger.classList.add('is-active');
+    }
+  });
+})();
+
+
+
+
+/* ── Demo line live status (website demo feature, not the framework) ───────
+   Renders a session_id's accumulated status from GET /v1/demo/call-status
+   into a container element. Shared between the Twilio scripted inbound demo
+   (demo.html) and, later, the Beacon outbound demo. */
+window.NHIDDemoStatus = (function () {
+  var GATE_RULE_IDS = ['IDG-01', 'PDX-01', 'DBC-01', 'EIT-01'];
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function render(containerEl, statusJson) {
+    if (!containerEl) return;
+    var turns = (statusJson && statusJson.turns) || [];
+
+    var criticalHit = {};
+    GATE_RULE_IDS.forEach(function (id) { criticalHit[id] = false; });
+    turns.forEach(function (t) {
+      var violations = (t.decision && t.decision.violations) || [];
+      violations.forEach(function (v) {
+        if (v.severity === 'critical' && criticalHit.hasOwnProperty(v.rule_id)) {
+          criticalHit[v.rule_id] = true;
+        }
+      });
+    });
+
+    var badgesHtml = GATE_RULE_IDS.map(function (id) {
+      var failed = criticalHit[id];
+      var cls = failed ? 'badge nhid-demo-badge-fail' : 'badge badge-green';
+      return '<span class="' + cls + '">' + id + (failed ? ' ✗' : ' ✓') + '</span>';
+    }).join(' ');
+
+    var logHtml = turns.map(function (t) {
+      var d = t.decision || {};
+      if (d.type === 'summary') {
+        return '<div class="nhid-demo-turn"><strong>Call ended</strong> — ' +
+          (d.critical_violation_count || 0) + ' critical control violation(s) detected.</div>';
+      }
+      var ruleIds = (d.violations || []).map(function (v) { return v.rule_id; }).join(', ') || 'none';
+      return '<div class="nhid-demo-turn">Turn ' + escapeHtml(t.turn_index) + ': <code>' +
+        escapeHtml(d.action || '') + '</code> — violations: ' + escapeHtml(ruleIds) + '</div>';
+    }).join('');
+
+    var scriptLabel = statusJson && statusJson.script_label;
+    var statusLine = scriptLabel
+      ? '<p class="sub">Scenario: ' + escapeHtml(scriptLabel) +
+        (statusJson.completed ? ' (completed)' : ' (in progress)') + '</p>'
+      : '<p class="sub">Waiting for a call…</p>';
+
+    containerEl.innerHTML =
+      '<div class="card nhid-demo-status-card">' +
+      statusLine +
+      '<div class="nhid-demo-badges">' + badgesHtml + '</div>' +
+      '<div class="nhid-demo-log">' + (logHtml || '<p class="sub">No turns yet.</p>') + '</div>' +
+      '</div>';
+  }
+
+  function poll(containerEl, statusUrl, intervalMs) {
+    intervalMs = intervalMs || 2000;
+    function tick() {
+      fetch(statusUrl)
+        .then(function (resp) { return resp.ok ? resp.json() : {}; })
+        .then(function (json) { render(containerEl, json); })
+        .catch(function () {});
+    }
+    tick();
+    return setInterval(tick, intervalMs);
+  }
+
+  return { render: render, poll: poll };
+})();
+
+/* ── Compass / ElevenLabs widget — permanently removed ───────────────────────
+   Strips stale embeds if a cached script or third-party injection re-adds them. */
+(function () {
+  'use strict';
+  function purgeWidget() {
+    document.querySelectorAll('elevenlabs-convai').forEach(function (el) {
+      el.remove();
+    });
+    document.querySelectorAll('[class*="convai"], [id*="convai"]').forEach(function (el) {
+      if (el.tagName && el.tagName.toLowerCase() === 'elevenlabs-convai') return;
+      var cn = (el.className && String(el.className)) || '';
+      if (/elevenlabs|convai/i.test(cn) || /elevenlabs|convai/i.test(el.id || '')) {
+        el.remove();
+      }
+    });
+    document.querySelectorAll('script[src*="elevenlabs"]').forEach(function (s) {
+      if (/convai|widget/i.test(s.src)) s.remove();
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', purgeWidget);
+  } else {
+    purgeWidget();
+  }
+  if (typeof MutationObserver !== 'undefined') {
+    new MutationObserver(purgeWidget).observe(document.documentElement, {
+      childList: true,
+      subtree: true
+    });
+  }
+})();
+
+/* Scroll-entrance reveal (fade + rise); no-op if reduced motion or no .reveal nodes */
+(function () {
+  if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function run() {
+    var els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    if (reduce) { els.forEach(function (el) { el.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    els.forEach(function (el, i) { el.style.transitionDelay = Math.min(i % 4, 3) * 70 + 'ms'; io.observe(el); });
+  }
+  if (document.readyState !== 'loading') run();
+  else document.addEventListener('DOMContentLoaded', run);
 })();

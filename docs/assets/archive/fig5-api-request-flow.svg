@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="580" viewBox="0 0 480 580">
+<rect width="480" height="580" fill="#0F172A"/>
+<text x="240" y="28" text-anchor="middle" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#F8FAFC" letter-spacing="1">API REQUEST FLOW</text>
+<defs><marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#14B8A6"/></marker></defs>
+<rect x="60" y="89" width="360" height="58" rx="8" fill="#334155"/>
+<rect x="60" y="89" width="6" height="58" rx="3" fill="#67E8F9"/>
+<text x="82" y="113" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#67E8F9">Vendor Platform</text>
+<text x="82" y="131" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#94A3B8">POST /v1/adapters/{platform}/check</text>
+<line x1="240" y1="147" x2="240" y2="169" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="60" y="175" width="360" height="58" rx="8" fill="#334155"/>
+<rect x="60" y="175" width="6" height="58" rx="3" fill="#14B8A6"/>
+<text x="82" y="199" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#14B8A6">Vendor Adapter</text>
+<text x="82" y="217" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#94A3B8">to_nhid_event(payload)</text>
+<line x1="240" y1="233" x2="240" y2="255" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="60" y="261" width="360" height="58" rx="8" fill="#334155"/>
+<rect x="60" y="261" width="6" height="58" rx="3" fill="#14B8A6"/>
+<text x="82" y="285" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#14B8A6">Policy Engine</text>
+<text x="82" y="303" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#94A3B8">evaluate_all(session, event)</text>
+<line x1="240" y1="319" x2="240" y2="341" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="60" y="347" width="360" height="58" rx="8" fill="#334155"/>
+<rect x="60" y="347" width="6" height="58" rx="3" fill="#14B8A6"/>
+<text x="82" y="371" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#14B8A6">CAS Engine</text>
+<text x="82" y="389" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#94A3B8">_policy_cas(decision, event)</text>
+<line x1="240" y1="405" x2="240" y2="427" stroke="#14B8A6" stroke-width="1.5" marker-end="url(#a2)"/>
+<rect x="60" y="433" width="360" height="58" rx="8" fill="#334155"/>
+<rect x="60" y="433" width="6" height="58" rx="3" fill="#4ADE80"/>
+<text x="82" y="457" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="700" fill="#4ADE80">JSON Response</text>
+<text x="82" y="475" font-family="Raleway, Inter, 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#94A3B8">{ conformant, action, violations[], cas }</text>
+</svg>

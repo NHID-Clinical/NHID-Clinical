@@ -1,0 +1,276 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="Opt in to receive the NHID-Clinical starter pack — a one-time text message with a link to our shadow-evaluation guide."/>
+  <title>Get the Starter Pack by Text | NHID-Clinical</title>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+
+<div class="status-strip">
+  <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
+</div>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/framework/">Framework overview</a>
+          <a href="/specification.html">Specification</a>
+          <a href="/framework/controls.html">Controls</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth</a>
+          <a href="/framework/reference-implementation.html">Reference Implementation</a>
+          <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
+          <a href="/technical-stack.html">Technical Stack</a>
+          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Platform <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/platform/">TrustLayer overview</a>
+          <a href="/platform/agent-registry.html">Agent Registry</a>
+          <a href="/platform/trust-gateway.html">Trust Gateway</a>
+          <a href="/platform/evidence-center.html">Evidence Center</a>
+          <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+          <a href="/platform/enterprise.html">Enterprise Workflow</a>
+        </div>
+      </div>
+      <a href="/simulator.html">Simulator</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Docs <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/developers.html">Developer guide</a>
+          <a href="/docs.html">Live API explorer</a>
+          <a href="/interoperability.html">Interoperability</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Resources <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/research-portfolio.html">Research Portfolio</a>
+          <a href="/roadmap.html">Roadmap</a>
+          <a href="/news.html">News</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+        </div>
+      </div>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/about.html">About</a>
+      <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a class="primary-pill" href="/for-payers.html">Start a pilot</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <strong class="mobile-nav-group">Framework</strong>
+  <a href="/framework/">Framework overview</a>
+  <a href="/specification.html">Specification</a>
+  <a href="/framework/controls.html">Controls</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth</a>
+  <a href="/framework/reference-implementation.html">Reference Implementation</a>
+  <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
+  <a href="/technical-stack.html">Technical Stack</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <strong class="mobile-nav-group">Platform</strong>
+  <a href="/platform/">TrustLayer overview</a>
+  <a href="/platform/agent-registry.html">Agent Registry</a>
+  <a href="/platform/trust-gateway.html">Trust Gateway</a>
+  <a href="/platform/evidence-center.html">Evidence Center</a>
+  <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+  <a href="/platform/enterprise.html">Enterprise Workflow</a>
+  <strong class="mobile-nav-group">Simulator</strong>
+  <a href="/simulator.html">Open the simulator</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <strong class="mobile-nav-group">Docs</strong>
+  <a href="/developers.html">Developer guide</a>
+  <a href="/docs.html">Live API explorer</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
+  <strong class="mobile-nav-group">Resources</strong>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/research-portfolio.html">Research Portfolio</a>
+  <a href="/roadmap.html">Roadmap</a>
+  <a href="/news.html">News</a>
+  <a href="/faq.html">FAQ</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+  <strong class="mobile-nav-group">More</strong>
+  <a href="/pricing.html">Pricing</a>
+  <a href="/about.html">About</a>
+  <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main>
+  <section class="inner-hero" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container" style="position:relative;z-index:1">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Starter Pack by Text</span></div>
+      <h1 class="reveal">Get the starter pack by text</h1>
+      <p class="lede reveal">Enter your mobile number and we'll send you a one-time text with a link to the NHID-Clinical shadow-evaluation guide — the no-cost way to start assessing AI voice-agent transparency.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:640px">
+      <div class="card">
+        <h3>Text me the starter pack</h3>
+        <div style="display:flex;flex-direction:column;gap:.75rem;margin:1rem 0">
+          <input type="tel" id="sms-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your mobile phone number" style="width:100%"/>
+          <label style="display:flex;gap:.6rem;align-items:flex-start;font-size:.9rem;line-height:1.5">
+            <input type="checkbox" id="sms-consent" style="margin-top:.25rem;flex-shrink:0"/>
+            <span id="sms-consent-text">
+              By checking this box, I agree to receive a one-time text message from NHID-Clinical
+              with my starter-pack link at the number provided. Msg &amp; data rates may apply.
+              Message frequency: one message per request. Reply STOP to opt out, HELP for help.
+              See our <a href="/privacy.html">Privacy Policy</a>.
+            </span>
+          </label>
+        </div>
+        <!-- Cloudflare Turnstile site key (public). Secret is server-side only, verified in handler._verify_turnstile(). -->
+        <div class="cf-turnstile" id="sms-turnstile" data-sitekey="0x4AAAAAADoOpjQr1DAbFwwY" data-callback="nhidOnTurnstileSuccess"></div>
+        <button class="cta-button" id="sms-submit-btn" type="button" style="margin-top:1rem">Text me the link</button>
+        <p id="sms-status" hidden aria-live="polite" style="margin-top:.75rem"></p>
+      </div>
+      <p class="sub" style="margin-top:1rem;font-size:.85rem">
+        We only use your number to send the message you requested. We do not share or sell your
+        mobile opt-in information or consent to third parties. You can opt out any time by replying STOP.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+<script>
+  // SMS starter-pack web opt-in. Turnstile's data-callback fills
+  // window.nhidTurnstileToken before submit is allowed. The explicit consent
+  // checkbox + server-side gate (handler._handle_demo_sms_optin) are the
+  // documented A2P 10DLC opt-in for this campaign.
+  window.nhidTurnstileToken = "";
+  window.nhidOnTurnstileSuccess = function (token) { window.nhidTurnstileToken = token; };
+
+  (function () {
+    var API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod";
+    var btn = document.getElementById("sms-submit-btn");
+    var input = document.getElementById("sms-phone");
+    var consent = document.getElementById("sms-consent");
+    var status = document.getElementById("sms-status");
+    if (!btn || !input || !consent || !status) return;
+
+    function setStatus(msg, ok) {
+      status.textContent = msg;
+      status.hidden = false;
+      status.style.color = ok === false ? "var(--red, #c0392b)" : "var(--teal)";
+    }
+
+    btn.addEventListener("click", function () {
+      if (!consent.checked) {
+        setStatus("Please check the consent box to receive a text.", false);
+        return;
+      }
+      if (!window.nhidTurnstileToken) {
+        setStatus("Please complete the CAPTCHA first.", false);
+        return;
+      }
+      var digits = input.value.replace(/\D/g, "");
+      if (!digits.startsWith("1")) digits = "1" + digits;
+      if (digits.length !== 11) {
+        setStatus("Please enter a valid US mobile number.", false);
+        return;
+      }
+      var e164 = "+" + digits;
+      btn.disabled = true;
+      setStatus("Sending…");
+      fetch(API_BASE + "/v1/demo/sms-opt-in", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: e164, consent: true, turnstile_token: window.nhidTurnstileToken }),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.status === "sent") {
+            setStatus("Sent! Check your texts for the starter-pack link.");
+          } else {
+            setStatus("Could not send: " + (d.error || "unknown error"), false);
+          }
+        })
+        .catch(function () { setStatus("Network error — please try again.", false); })
+        .finally(function () { btn.disabled = false; });
+    });
+  })();
+</script>
+</body>
+</html>

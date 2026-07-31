@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img" aria-labelledby="ls-t ls-d">
+  <title id="ls-t">Impersonation latency: without a standard vs a verified trust pathway</title>
+  <desc id="ls-d">A flat contrast. Left: an unverified AI call reaches PHI with no verification pathway — disclosure only after data has moved, no audit trail. Right: the NHID-Clinical verified pathway — early disclosure gate, pre-data-exchange checkpoint, human escalation, sealed audit.</desc>
+  <style>
+    .card { fill:#ffffff; stroke:#e3ebf2; stroke-width:1.5; }
+    .h { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:23px; font-weight:700; }
+    .s { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:14.5px; fill:#5d6b7a; }
+    .cap { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:13px; font-weight:600; fill:#ffffff; }
+    .tick { font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif; font-size:12.5px; fill:#4a5666; }
+  </style>
+
+  <rect x="6" y="6" width="988" height="508" rx="18" class="card"/>
+
+  <!-- divider -->
+  <line x1="500" y1="48" x2="500" y2="470" stroke="#dfe5ec" stroke-width="2" stroke-dasharray="6 7"/>
+
+  <!-- LEFT: without a standard -->
+  <text x="48" y="60" class="h" fill="#b64a3c">Without a standard</text>
+  <line x1="68" y1="128" x2="448" y2="128" stroke="#e3b8b0" stroke-width="6" stroke-linecap="round"/>
+  <line x1="68" y1="128" x2="428" y2="128" stroke="#c0533f" stroke-width="6" stroke-linecap="round"/>
+  <g>
+    <circle cx="128" cy="128" r="15" fill="#c0533f"/><text x="128" y="133" text-anchor="middle" class="cap">PHI</text>
+    <text x="128" y="168" text-anchor="middle" class="tick">member ID, DOB</text>
+    <text x="128" y="185" text-anchor="middle" class="tick">requested</text>
+  </g>
+  <g>
+    <circle cx="308" cy="128" r="15" fill="#c0533f"/><text x="308" y="133" text-anchor="middle" class="cap">!</text>
+    <text x="308" y="168" text-anchor="middle" class="tick">data exchanged,</text>
+    <text x="308" y="185" text-anchor="middle" class="tick">still unverified</text>
+  </g>
+  <g>
+    <circle cx="418" cy="128" r="15" fill="#1e4368"/>
+    <text x="418" y="168" text-anchor="middle" class="tick">disclosure</text>
+    <text x="418" y="185" text-anchor="middle" class="tick">(too late)</text>
+  </g>
+  <rect x="68" y="236" width="380" height="70" rx="14" fill="#fbeeeb" stroke="#e3b8b0" stroke-width="1.5"/>
+  <text x="88" y="266" class="s" fill="#b64a3c" font-weight="700">Impersonation latency ≈ unbounded</text>
+  <text x="88" y="290" class="s">No disclosure gate · no audit trail · PHI at risk.</text>
+
+  <!-- RIGHT: with NHID-Clinical -->
+  <text x="548" y="60" class="h" fill="#0e7568">With NHID-Clinical v1.3</text>
+  <line x1="568" y1="128" x2="948" y2="128" stroke="#b6e6dc" stroke-width="6" stroke-linecap="round"/>
+  <line x1="568" y1="128" x2="648" y2="128" stroke="#178a7a" stroke-width="6" stroke-linecap="round"/>
+  <g>
+    <circle cx="608" cy="128" r="15" fill="#178a7a"/><text x="608" y="133" text-anchor="middle" class="cap">ID</text>
+    <text x="608" y="168" text-anchor="middle" class="tick">disclosure</text>
+    <text x="608" y="185" text-anchor="middle" class="tick">(IDG-01)</text>
+  </g>
+  <g>
+    <circle cx="728" cy="128" r="15" fill="#1e4368"/><text x="728" y="133" text-anchor="middle" class="cap">✓</text>
+    <text x="728" y="168" text-anchor="middle" class="tick">gate cleared</text>
+    <text x="728" y="185" text-anchor="middle" class="tick">(PDX-01)</text>
+  </g>
+  <g>
+    <circle cx="828" cy="128" r="15" fill="#1e4368"/><text x="828" y="133" text-anchor="middle" class="cap">PHI</text>
+    <text x="828" y="168" text-anchor="middle" class="tick">exchange</text>
+    <text x="828" y="185" text-anchor="middle" class="tick">after verify</text>
+  </g>
+  <g>
+    <circle cx="928" cy="128" r="15" fill="#178a7a"/><text x="928" y="133" text-anchor="middle" class="cap">⇲</text>
+    <text x="928" y="168" text-anchor="middle" class="tick">escalation +</text>
+    <text x="928" y="185" text-anchor="middle" class="tick">audit (EIT/ATR)</text>
+  </g>
+  <rect x="568" y="236" width="380" height="70" rx="14" fill="#e8f8f4" stroke="#b6e6dc" stroke-width="1.5"/>
+  <text x="588" y="266" class="s" fill="#0e7568" font-weight="700">Impersonation latency measured &amp; bounded</text>
+  <text x="588" y="290" class="s">Early disclosure · checkpoint · escalation · sealed audit.</text>
+</svg>

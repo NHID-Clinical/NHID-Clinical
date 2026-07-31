@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
@@ -8,9 +8,10 @@
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -20,19 +21,61 @@
       <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
-        <small>Building Trust in Healthcare Voice AI</small>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
       </span>
     </a>
     <div class="nav-links">
-      <a href="/">Home</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/framework/">Framework overview</a>
+          <a href="/specification.html">Specification</a>
+          <a href="/framework/controls.html">Controls</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth</a>
+          <a href="/framework/reference-implementation.html">Reference Implementation</a>
+          <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
+          <a href="/technical-stack.html">Technical Stack</a>
+          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Platform <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/platform/">TrustLayer overview</a>
+          <a href="/platform/agent-registry.html">Agent Registry</a>
+          <a href="/platform/trust-gateway.html">Trust Gateway</a>
+          <a href="/platform/evidence-center.html">Evidence Center</a>
+          <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+          <a href="/platform/enterprise.html">Enterprise Workflow</a>
+        </div>
+      </div>
+      <a href="/simulator.html">Simulator</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Docs <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/developers.html">Developer guide</a>
+          <a href="/docs.html">Live API explorer</a>
+          <a href="/interoperability.html">Interoperability</a>
+          <a href="/registry.html">Implementation Registry</a>
+          <a href="/icon-system.html">Icon System</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Resources <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/evidence-pack.html">Evidence Pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+          <a href="/for-payers.html">For Payers</a>
+          <a href="/research-portfolio.html">Research Portfolio</a>
+          <a href="/roadmap.html">Roadmap</a>
+          <a href="/news.html">News</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+        </div>
+      </div>
+      <a href="/pricing.html">Pricing</a>
       <a href="/about.html">About</a>
-      <a href="/governance-simulator.html">Governance Simulator</a>
-      <a href="/for-payers.html">For Payers</a>
-      <a href="/specification.html">Specification</a>
-      <a href="/developers.html">Developers</a>
-      <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-      <a href="/technical-stack.html">Technical Stack</a>
-      <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+      <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
@@ -42,7 +85,7 @@
         <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="primary-pill" href="/community.html">Get Involved</a>
+      <a class="primary-pill" href="/for-payers.html">Start a pilot</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
@@ -64,14 +107,44 @@
 
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
-  <a href="/about.html">About</a>
-  <a href="/governance-simulator.html">Governance Simulator</a>
-  <a href="/for-payers.html">For Payers</a>
+  <strong class="mobile-nav-group">Framework</strong>
+  <a href="/framework/">Framework overview</a>
   <a href="/specification.html">Specification</a>
-  <a href="/developers.html">Developers</a>
-  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <a href="/framework/controls.html">Controls</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth</a>
+  <a href="/framework/reference-implementation.html">Reference Implementation</a>
+  <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
   <a href="/technical-stack.html">Technical Stack</a>
-  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map ↗</a>
+  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+  <strong class="mobile-nav-group">Platform</strong>
+  <a href="/platform/">TrustLayer overview</a>
+  <a href="/platform/agent-registry.html">Agent Registry</a>
+  <a href="/platform/trust-gateway.html">Trust Gateway</a>
+  <a href="/platform/evidence-center.html">Evidence Center</a>
+  <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
+  <a href="/platform/enterprise.html">Enterprise Workflow</a>
+  <strong class="mobile-nav-group">Simulator</strong>
+  <a href="/simulator.html">Open the simulator</a>
+  <a href="/governance-simulator.html">Governance Simulator</a>
+  <strong class="mobile-nav-group">Docs</strong>
+  <a href="/developers.html">Developer guide</a>
+  <a href="/docs.html">Live API explorer</a>
+  <a href="/interoperability.html">Interoperability</a>
+  <a href="/registry.html">Implementation Registry</a>
+  <a href="/icon-system.html">Icon System</a>
+  <strong class="mobile-nav-group">Resources</strong>
+  <a href="/evidence-pack.html">Evidence Pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
+  <a href="/for-payers.html">For Payers</a>
+  <a href="/research-portfolio.html">Research Portfolio</a>
+  <a href="/roadmap.html">Roadmap</a>
+  <a href="/news.html">News</a>
+  <a href="/faq.html">FAQ</a>
+  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+  <strong class="mobile-nav-group">More</strong>
+  <a href="/pricing.html">Pricing</a>
+  <a href="/about.html">About</a>
+  <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -103,7 +176,49 @@
           <h3>NHID-Clinical v1.3 — Full Proposal</h3>
           <p>The complete open proposal document: the impersonation latency problem, four suggested behaviors for AI voice agents in healthcare payer–provider workflows, scope and rationale, and background context.</p>
           <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" class="download-link" download>Download PDF <span>→</span></a>
-          <span class="license-badge">CC BY 4.0 · May 2026</span>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>v1.3 Core Specification</h3>
+          <p>The normative reference: the four core behavioral controls (IDG-01, PDX-01, DBC-01, EIT-01) plus the supplemental ATR-01 audit-trail control, the 18-case CTS conformance suite, and the scoring rubric used to evaluate an agent's behavioral trace.</p>
+          <a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>Evidence Pack</h3>
+          <p>A procurement- and security-facing summary of the deterministic guarantees, real-corpus detection evidence, an anonymized failure trace, and the audit-readiness model behind the reference implementation. Everything is self-attested and open for community review.</p>
+          <a href="/specs/NHID-Clinical-Evidence-Pack.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>Operational Blueprint</h3>
+          <p>A deployment-oriented walkthrough for engineering and compliance teams: integration tiers, adapter coverage, the CAS scoring model, and the FHIR AuditEvent export.</p>
+          <a href="/specs/NHID-Clinical-Operational-Blueprint-v1.3.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>Shadow Evaluation Guide</h3>
+          <p>A practical guide for running NHID-Clinical's conformance checks alongside an existing voice AI deployment without changing production behavior — observe first, enforce later.</p>
+          <a href="/specs/NHID-Clinical-Shadow-Evaluation-Guide.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>v2 Technical Playbook</h3>
+          <p>The reference implementation guide for NHID-Auth v2: Ed25519 agent passports, NPI binding, scoped delegation, and how it composes with the v1.3 behavioral baseline.</p>
+          <a href="/specs/NHID-Clinical-v2-Technical-Playbook.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
+        </article>
+
+        <article class="download-card">
+          <h3>Knowledge Archive</h3>
+          <p>A public-safe distillation of the project's full knowledge base: executive vision, governance, identity and trust, technical architecture, and regulatory alignment in one document.</p>
+          <a href="/specs/NHID-Clinical-Knowledge-Archive.pdf" class="download-link" download>Download PDF <span>→</span></a>
+          <span class="license-badge">CC BY 4.0</span>
         </article>
       </div>
 
@@ -118,20 +233,18 @@
         <h2>Feedback welcome.</h2>
         <p>Read the proposal and share what you think — including if you think it is wrong or missing something important.</p>
       </div>
-      <a class="closing-button" href="/community.html">Join the Discussion →</a>
+      <a class="closing-button" href="/for-payers.html">Start a pilot →</a>
     </div>
   </section>
 </main>
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
-    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0<br/><span class="footer-demo-line"><strong>Live Demo Line (Beacon)</strong> — <a href="tel:+17176706772">+1 (717) 670-6772</a> <span class="footer-demo-note">(website demo, not personal contact)</span></span></p>
     <div>
+      <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
-      <a href="https://twitter.com/NHIDClinical">@NHIDClinical</a>
-      <a href="https://discord.gg/eP8FxXkGU6">Discord</a>
-      <a href="https://reddit.com/r/NonHumanAuth">Reddit</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>

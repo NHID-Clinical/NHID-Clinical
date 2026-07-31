@@ -1,0 +1,33 @@
+{
+  "name": "@nhid-clinical/middleware",
+  "version": "1.3.0",
+  "description": "NHID-Clinical v1.3 compliance middleware — Turing Boundary enforcement for WebRTC/SIP media pipelines",
+  "main": "dist/NHIDMiddleware.js",
+  "types": "dist/NHIDMiddleware.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --runInBand",
+    "test:coverage": "jest --coverage --runInBand",
+    "lint": "eslint src tests --ext .ts"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.0",
+    "@types/uuid": "^9.0.8",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.4",
+    "typescript": "^5.4.5"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": ["**/tests/**/*.test.ts"],
+    "collectCoverageFrom": ["src/**/*.ts"],
+    "moduleNameMapper": {
+      "^(.*)\\.js$": "$1"
+    }
+  }
+}

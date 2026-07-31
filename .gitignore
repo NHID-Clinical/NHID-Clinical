@@ -5,9 +5,36 @@ __pycache__/
 
 # Local output files — not for the repo
 *.pdf
-docs/
+docs/*
+!docs/*.md
+!docs/pilot-kit/
+!docs/pilot-kit/*.md
+!docs/pilot-kit/*.py
+!docs/pilot-kit/*.json
+!docs/assets/
+!docs/assets/archive/
+!docs/assets/archive/*.svg
+!docs/assets/archive/*.png
+!docs/assets/archive/*.py
+!docs/assets/archive/NHID-Clinical-Master-Knowledge-Archive.pdf
 scripts/generate_voiceadmin_onepager.py
 
 .python_history
 *.patch
 go.py - Copy.py
+
+# Local SQLite event store
+nhid_events.db
+nhid_events.db-*
+
+# Unused large media — kept locally only; not deployed to Pages
+assets/media/impersonation-latency-trap.mp4
+
+# Pages build output
+_site/
+
+# Local virtualenv
+.venv/
+
+# Internal, development-only material (kept locally, out of the public repo)
+_internal/

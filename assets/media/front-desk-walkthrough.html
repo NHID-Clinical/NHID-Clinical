@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NHID-Clinical — Front Desk Walkthrough (Clean)</title>
+<style>
+  :root {
+    --navy: #0F172A;
+    --teal: #14B8A6;
+    --cyan: #67E8F9;
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --pass: #10B981;
+    --fail: #EF4444;
+    --warn: #F59E0B;
+    --escal: #8B5CF6;
+    --slate: #64748B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    background: #F1F5F9;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+  header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+  header .sub { color: var(--slate); font-size: 0.95rem; max-width: 720px; }
+  .explainer {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 18px 0 20px;
+    font-size: 0.95rem;
+    color: #334155;
+  }
+  .explainer b { color: var(--teal); }
+  .panel {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 4px 20px -8px rgba(15,23,42,0.12);
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .scenarios { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+  button.scn {
+    border: 1px solid #CBD5E1;
+    background: #F8FAFC;
+    color: var(--ink);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 9px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  button.scn:hover { background: #E0F2FE; border-color: var(--teal); }
+  button.scn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  button.reset {
+    border: 1px solid #CBD5E1;
+    background: #fff;
+    color: #475569;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 9px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .speed { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--slate); }
+  .speed input { width: 90px; }
+
+  .stage-row { display: flex; gap: 18px; flex-wrap: wrap; }
+  .scene-box { flex: 2 1 560px; min-width: 320px; }
+  .log-box { flex: 1 1 280px; min-width: 260px; display: flex; flex-direction: column; }
+
+  .scene {
+    height: 340px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #E0F2FE 0%, #F0F9FF 100%);
+    border: 1px solid #BAE6FD;
+    position: relative;
+    overflow: hidden;
+  }
+  .floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #CBD5E1;
+    border-top: 2px solid #94A3B8;
+  }
+  .desk-label {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #0369A1;
+    background: #E0F2FE;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .booth {
+    position: absolute;
+    bottom: 48px;
+    width: 110px;
+    height: 120px;
+    background: #fff;
+    border: 2px solid #94A3B8;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 10px;
+    transition: all 0.25s;
+    cursor: help;
+  }
+  .booth.pass { border-color: var(--pass); background: #ECFDF5; }
+  .booth.fail { border-color: var(--fail); background: #FEF2F2; }
+  .booth.warn { border-color: var(--warn); background: #FFFBEB; }
+  .booth.escal { border-color: var(--escal); background: #F5F3FF; }
+  .booth-icon { font-size: 28px; margin-bottom: 4px; }
+  .booth-name { font-size: 0.7rem; font-weight: 700; color: var(--navy); text-align: center; }
+  .booth-code { font-size: 0.65rem; color: var(--slate); margin-top: 2px; }
+  .stamp {
+    position: absolute;
+    top: -18px;
+    font-size: 22px;
+    opacity: 0;
+    transform: scale(0.4);
+    transition: 0.3s;
+  }
+  .stamp.show { opacity: 1; transform: scale(1); }
+
+  .agent {
+    position: absolute;
+    bottom: 52px;
+    left: 30px;
+    width: 40px;
+    height: 70px;
+    transition: left 0.8s ease;
+    z-index: 10;
+  }
+  .agent .head {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #0EA5E9;
+    border: 2px solid var(--navy);
+    margin: 0 auto;
+    position: relative;
+  }
+  .agent .body {
+    width: 4px;
+    height: 28px;
+    background: var(--navy);
+    margin: 0 auto;
+  }
+  .agent .arms {
+    position: absolute;
+    top: 26px;
+    left: 4px;
+    width: 32px;
+    height: 4px;
+    background: var(--navy);
+  }
+  .agent .legs {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+  .agent .leg {
+    width: 4px;
+    height: 18px;
+    background: var(--navy);
+  }
+  .agent .badge {
+    position: absolute;
+    top: -8px;
+    right: -6px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    border: 2px solid var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+  }
+
+  .cabinet {
+    position: absolute;
+    bottom: 48px;
+    width: 70px;
+    height: 80px;
+    background: #1E2937;
+    border-radius: 6px;
+    border: 2px solid #475569;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #94A3B8;
+    font-size: 0.6rem;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .cabinet.unlocked {
+    background: #064E3B;
+    border-color: var(--pass);
+    color: #A7F3D0;
+  }
+  .cabinet .lock { font-size: 20px; margin-bottom: 4px; }
+
+  .legend {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .legend .item {
+    flex: 1;
+    min-width: 140px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.72rem;
+    color: #475569;
+  }
+  .legend .item b { display: block; font-size: 0.78rem; color: var(--navy); margin-bottom: 2px; }
+
+  .log-box h3 { margin: 0 0 8px; font-size: 0.95rem; }
+  .log {
+    flex: 1;
+    background: var(--navy);
+    color: #E2E8F0;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.65;
+    min-height: 280px;
+    max-height: 340px;
+    overflow-y: auto;
+  }
+  .log .row { margin-bottom: 6px; opacity: 0; animation: fadeIn 0.3s forwards; }
+  @keyframes fadeIn { to { opacity: 1; } }
+  .log .row.pass { color: #6EE7B7; }
+  .log .row.fail { color: #FCA5A5; }
+  .log .row.warn { color: #FCD34D; }
+  .log .row.escal { color: #C4B5FD; }
+  .log .row.info { color: #93C5FD; }
+
+  .outcome-banner {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: none;
+  }
+  .outcome-banner.pass { display: block; background: #D1FAE5; color: #065F46; }
+  .outcome-banner.fail { display: block; background: #FEE2E2; color: #991B1B; }
+  .outcome-banner.warn { display: block; background: #FEF3C7; color: #92400E; }
+  .outcome-banner.escal { display: block; background: #EDE9FE; color: #5B21B6; }
+
+  footer.note {
+    margin-top: 22px;
+    font-size: 0.78rem;
+    color: var(--slate);
+    line-height: 1.5;
+  }
+  footer.note code {
+    background: #E2E8F0;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .tooltip {
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    width: 220px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 50;
+    transition: 0.2s;
+    background: rgba(15,23,42,0.92);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 10.5px;
+    line-height: 1.55;
+    text-align: left;
+  }
+  .booth:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+  .tooltip .k { color: #7DD3FC; }
+  .tooltip .v { color: #FCD34D; word-break: break-word; }
+  .tooltip .ttl { color: #5EEAD4; font-weight: 700; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>NHID-Clinical as a Front Desk</h1>
+    <div class="sub">A clean walkthrough of the four behavioral controls (v1.3). Watch the AI agent move through each gate. Hover any booth for the live rule-engine config.</div>
+  </header>
+
+  <div class="explainer">
+    An AI voice agent calling a payer is exactly like walking up to a clinic front desk.
+    Before any chart is opened, four things must happen <b>in order</b>: disclose identity → clear the privacy gate → stay honest → keep a human reachable.
+    That is IDG-01 → PDX-01 → DBC-01 → EIT-01. The floating badge is NHID-Auth v2 (provider-signed, NPI-bound credential).
+  </div>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="scenarios">
+        <button class="scn active" data-s="clean">▶ Conformant call</button>
+        <button class="scn" data-s="deny">▶ PHI before disclosure</button>
+        <button class="scn" data-s="log">▶ “I’m a real person”</button>
+        <button class="scn" data-s="escalate">▶ Ask for a human</button>
+      </div>
+      <div class="speed">Speed <input id="speed" type="range" min="0.5" max="2" step="0.25" value="1"></div>
+      <button class="reset" id="resetBtn">↺ Reset</button>
+    </div>
+
+    <div class="stage-row">
+      <div class="scene-box">
+        <div class="scene" id="scene">
+          <div class="desk-label">Clinic Front Desk · Payer Side</div>
+          <div class="floor"></div>
+
+          <div class="agent" id="agent">
+            <div class="badge">✓</div>
+            <div class="head"></div>
+            <div class="arms"></div>
+            <div class="body"></div>
+            <div class="legs"><div class="leg"></div><div class="leg"></div></div>
+          </div>
+
+          <div class="booth" id="boothIDG" style="left: 90px;">
+            <div class="stamp" id="stampIDG">✅</div>
+            <div class="booth-icon">🪪</div>
+            <div class="booth-name">Front Desk</div>
+            <div class="booth-code">IDG-01</div>
+            <div class="tooltip">
+              <div class="ttl">rule_engine.config</div>
+              <div><span class="k">control_id:</span> <span class="v">"IDG-01"</span></div>
+              <div><span class="k">required:</span> <span class="v">identity_disclosed=true</span></div>
+              <div><span class="k">priority:</span> <span class="v">3 (DISCLOSE_IDENTITY)</span></div>
+            </div>
+          </div>
+
+          <div class="booth" id="boothPDX" style="left: 230px;">
+            <div class="stamp" id="stampPDX">✅</div>
+            <div class="booth-icon">📋</div>
+            <div class="booth-name">Records Window</div>
+            <div class="booth-code">PDX-01</div>
+            <div class="tooltip">
+              <div class="ttl">rule_engine.config</div>
+              <div><span class="k">control_id:</span> <span class="v">"PDX-01"</span></div>
+              <div><span class="k">required:</span> <span class="v">disclosure_confirmed=true</span></div>
+              <div><span class="k">blocked:</span> <span class="v">member_id, npi, dob, claim…</span></div>
+              <div><span class="k">priority:</span> <span class="v">5 (DENY_DATA)</span></div>
+            </div>
+          </div>
+
+          <div class="cabinet" id="cabinet" style="left: 360px;">
+            <div class="lock" id="lockIcon">🔒</div>
+            member_id<br>claim · npi · dob
+          </div>
+
+          <div class="booth" id="boothDBC" style="left: 460px;">
+            <div class="stamp" id="stampDBC">✅</div>
+            <div class="booth-icon">🎙️</div>
+            <div class="booth-name">Monitor</div>
+            <div class="booth-code">DBC-01</div>
+            <div class="tooltip">
+              <div class="ttl">rule_engine.config</div>
+              <div><span class="k">control_id:</span> <span class="v">"DBC-01"</span></div>
+              <div><span class="k">required:</span> <span class="v">no human claims / no synth artifacts</span></div>
+              <div><span class="k">priority:</span> <span class="v">2 (LOG_ONLY Tier B)</span></div>
+            </div>
+          </div>
+
+          <div class="booth" id="boothEIT" style="left: 600px;">
+            <div class="stamp" id="stampEIT">✅</div>
+            <div class="booth-icon">🙋</div>
+            <div class="booth-name">Ask for Human</div>
+            <div class="booth-code">EIT-01</div>
+            <div class="tooltip">
+              <div class="ttl">rule_engine.config</div>
+              <div><span class="k">control_id:</span> <span class="v">"EIT-01"</span></div>
+              <div><span class="k">required:</span> <span class="v">escalation_path_available=true</span></div>
+              <div><span class="k">priority:</span> <span class="v">4 (ESCALATE_HUMAN)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="item"><b>IDG-01</b>Must say “I am automated” before anything else.</div>
+          <div class="item"><b>PDX-01</b>No chart field moves until disclosure is confirmed.</div>
+          <div class="item"><b>DBC-01</b>No faking human voice or claiming to be human.</div>
+          <div class="item"><b>EIT-01</b>A real person must always be reachable on request.</div>
+        </div>
+      </div>
+
+      <div class="log-box">
+        <h3>What’s happening</h3>
+        <div class="log" id="log"></div>
+        <div class="outcome-banner" id="outcomeBanner"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="note">
+    Control names, field names, priority codes, and outcome values are taken directly from
+    <code>docs/nhid-clinical-technical-specification.md</code> and <code>src/nhid_cas.py</code>.
+    Dialogue and artwork are illustrative. PHI values shown are placeholders.
+  </footer>
+</div>
+
+<script>
+const agent = document.getElementById('agent');
+const logEl = document.getElementById('log');
+const outcomeBanner = document.getElementById('outcomeBanner');
+const cabinet = document.getElementById('cabinet');
+const lockIcon = document.getElementById('lockIcon');
+const booths = ['boothIDG','boothPDX','boothDBC','boothEIT'];
+let speed = 1;
+let currentCtrl = null;
+
+document.getElementById('speed').addEventListener('input', e => speed = parseFloat(e.target.value));
+
+function addLog(html, cls) {
+  const row = document.createElement('div');
+  row.className = 'row ' + (cls || 'info');
+  row.innerHTML = html;
+  logEl.appendChild(row);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+function clearLog() { logEl.innerHTML = ''; }
+function wait(ms) { return new Promise(r => setTimeout(r, ms / speed)); }
+function showStamp(id, symbol) {
+  const s = document.getElementById(id);
+  s.textContent = symbol;
+  s.classList.add('show');
+  setTimeout(() => s.classList.remove('show'), 1400);
+}
+function setBooth(id, state) {
+  const el = document.getElementById(id);
+  el.classList.remove('pass','fail','warn','escal');
+  if (state) el.classList.add(state);
+}
+function moveAgent(x) {
+  return new Promise(res => {
+    agent.style.left = x + 'px';
+    setTimeout(res, 850 / speed);
+  });
+}
+function resetScene() {
+  agent.style.left = '30px';
+  cabinet.classList.remove('unlocked');
+  lockIcon.textContent = '🔒';
+  booths.forEach(id => setBooth(id, null));
+  outcomeBanner.className = 'outcome-banner';
+  outcomeBanner.textContent = '';
+  clearLog();
+}
+
+async function runSteps(steps, ctrl) {
+  for (const step of steps) {
+    if (ctrl.cancelled) return;
+    switch (step.type) {
+      case 'log': addLog(step.html, step.cls); break;
+      case 'move': await moveAgent(step.x); break;
+      case 'gate':
+        setBooth(step.booth, step.state);
+        if (step.stamp) showStamp('stamp' + step.booth.replace('booth',''), step.stamp);
+        break;
+      case 'cabinet':
+        if (step.state === 'unlocked') {
+          cabinet.classList.add('unlocked');
+          lockIcon.textContent = '🔓';
+        } else if (step.state === 'blocked') {
+          lockIcon.textContent = '⛔';
+        } else {
+          cabinet.classList.remove('unlocked');
+          lockIcon.textContent = '🔒';
+        }
+        break;
+      case 'outcome':
+        outcomeBanner.className = 'outcome-banner ' + step.cls;
+        outcomeBanner.textContent = step.banner;
+        break;
+      case 'dwell': await wait(step.ms); break;
+    }
+    if (ctrl.cancelled) return;
+  }
+}
+
+const CLEAN = [
+  { type:'log', cls:'info', html:'🤖 Engine: no disclosure yet → DISCLOSE_IDENTITY issued.' },
+  { type:'dwell', ms:400 },
+  { type:'log', cls:'info', html:'🗣️ Agent: “Hi, this is an automated assistant calling on behalf of Dr. Patel’s office.”' },
+  { type:'move', x:100 },
+  { type:'gate', booth:'boothIDG', state:'pass', stamp:'✅' },
+  { type:'log', cls:'pass', html:'✅ <b>IDG-01 PASS</b> — disclosed before anything else.' },
+  { type:'dwell', ms:400 },
+  { type:'log', cls:'info', html:'🗣️ Payer: “Go ahead.” Agent requests member_id + claim_number.' },
+  { type:'move', x:240 },
+  { type:'gate', booth:'boothPDX', state:'pass', stamp:'✅' },
+  { type:'cabinet', state:'unlocked' },
+  { type:'log', cls:'pass', html:'✅ <b>PDX-01 PASS</b> — chart unlocked after disclosure.' },
+  { type:'dwell', ms:400 },
+  { type:'log', cls:'info', html:'🎙️ Voice scanned for synthetic artifacts…' },
+  { type:'move', x:470 },
+  { type:'gate', booth:'boothDBC', state:'pass', stamp:'✅' },
+  { type:'log', cls:'pass', html:'✅ <b>DBC-01 PASS</b> — no artifacts, no false human claims.' },
+  { type:'dwell', ms:400 },
+  { type:'log', cls:'info', html:'🔔 Escalation path announced: “You can ask for a representative at any time.”' },
+  { type:'move', x:610 },
+  { type:'gate', booth:'boothEIT', state:'pass', stamp:'✅' },
+  { type:'log', cls:'pass', html:'✅ <b>EIT-01 PASS</b> — path available.' },
+  { type:'dwell', ms:400 },
+  { type:'move', x:720 },
+  { type:'outcome', cls:'pass', banner:'CONTINUE_AI (priority 1) — clean call, nothing blocked.' },
+  { type:'log', cls:'pass', html:'🏁 <b>Outcome: CONTINUE_AI</b> — every control passed.' }
+];
+
+const DENY = [
+  { type:'log', cls:'warn', html:'🤖 Engine: no disclosure yet. Agent ignores it and reaches for the chart.' },
+  { type:'dwell', ms:400 },
+  { type:'log', cls:'warn', html:'🗣️ Agent: “Can you pull member ID 4471 and the latest claim?” — asked first.' },
+  { type:'move', x:240 },
+  { type:'gate', booth:'boothPDX', state:'fail', stamp:'❌' },
+  { type:'cabinet', state:'blocked' },
+  { type:'log', cls:'fail', html:'❌ <b>PDX-01 FAIL</b> — PHI requested before IDG-01 disclosure.' },
+  { type:'dwell', ms:400 },
+  { type:'outcome', cls:'fail', banner:'DENY_DATA (priority 5) — blocked. No chart field is exchanged.' },
+  { type:'log', cls:'fail', html:'🏁 <b>Outcome: DENY_DATA</b> — highest priority, overrides everything.' }
+];
+
+const LOG = [
+  { type:'log', cls:'info', html:'🗣️ Agent: “Hi, this is an automated assistant calling for Dr. Patel’s office.”' },
+  { type:'move', x:100 },
+  { type:'gate', booth:'boothIDG', state:'pass', stamp:'✅' },
+  { type:'log', cls:'pass', html:'✅ <b>IDG-01 PASS</b>' },
+  { type:'dwell', ms:300 },
+  { type:'move', x:240 },
+  { type:'gate', booth:'boothPDX', state:'pass', stamp:'✅' },
+  { type:'cabinet', state:'unlocked' },
+  { type:'log', cls:'pass', html:'✅ <b>PDX-01 PASS</b>' },
+  { type:'dwell', ms:300 },
+  { type:'log', cls:'warn', html:'🗣️ Payer: “Am I talking to a real person?” Agent: “No, I’m a real person.”' },
+  { type:'move', x:470 },
+  { type:'gate', booth:'boothDBC', state:'warn', stamp:'⚠️' },
+  { type:'log', cls:'warn', html:'⚠️ <b>DBC-01 Tier B caught</b> — human-status claim. Logged, non-blocking.' },
+  { type:'dwell', ms:400 },
+  { type:'move', x:610 },
+  { type:'gate', booth:'boothEIT', state:'pass', stamp:'✅' },
+  { type:'log', cls:'pass', html:'✅ <b>EIT-01 PASS</b>' },
+  { type:'dwell', ms:300 },
+  { type:'move', x:720 },
+  { type:'outcome', cls:'warn', banner:'LOG_ONLY (priority 2) — recorded, not stopped.' },
+  { type:'log', cls:'warn', html:'🏁 <b>Outcome: LOG_ONLY</b> — flagged in audit trail.' }
+];
+
+const ESCALATE = [
+  { type:'log', cls:'info', html:'🗣️ Agent: “Hi, this is an automated assistant calling for Dr. Patel’s office.”' },
+  { type:'move', x:100 },
+  { type:'gate', booth:'boothIDG', state:'pass', stamp:'✅' },
+  { type:'log', cls:'pass', html:'✅ <b>IDG-01 PASS</b>' },
+  { type:'dwell', ms:300 },
+  { type:'move', x:240 },
+  { type:'gate', booth:'boothPDX', state:'pass', stamp:'✅' },
+  { type:'cabinet', state:'unlocked' },
+  { type:'log', cls:'pass', html:'✅ <b>PDX-01 PASS</b>' },
+  { type:'dwell', ms:300 },
+  { type:'move', x:470 },
+  { type:'gate', booth:'boothDBC', state:'pass', stamp:'✅' },
+  { type:'log', cls:'pass', html:'✅ <b>DBC-01 PASS</b>' },
+  { type:'dwell', ms:300 },
+  { type:'log', cls:'escal', html:'🗣️ Payer: “I need to speak with a person about this one.”' },
+  { type:'move', x:610 },
+  { type:'gate', booth:'boothEIT', state:'escal', stamp:'🙋' },
+  { type:'log', cls:'escal', html:'🙋 <b>EIT-01 escalation requested</b> — path must be honored.' },
+  { type:'dwell', ms:400 },
+  { type:'move', x:720 },
+  { type:'outcome', cls:'escal', banner:'ESCALATE_HUMAN (priority 4) — handed to a human.' },
+  { type:'log', cls:'escal', html:'🏁 <b>Outcome: ESCALATE_HUMAN</b> — call handed off.' }
+];
+
+const SCENARIOS = { clean: CLEAN, deny: DENY, log: LOG, escalate: ESCALATE };
+
+async function play(key) {
+  if (currentCtrl) currentCtrl.cancelled = true;
+  const ctrl = { cancelled: false };
+  currentCtrl = ctrl;
+  resetScene();
+  await wait(50);
+  if (ctrl.cancelled) return;
+  await runSteps(SCENARIOS[key], ctrl);
+}
+
+document.querySelectorAll('.scn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.scn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    play(btn.dataset.s);
+  });
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (currentCtrl) currentCtrl.cancelled = true;
+  resetScene();
+});
+
+resetScene();
+setTimeout(() => play('clean'), 500);
+</script>
+</body>
+</html>
