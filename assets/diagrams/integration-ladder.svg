@@ -1,58 +1,86 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 640" font-family="Inter, system-ui, sans-serif" role="img" aria-label="Staged integration ladder from Tier 0 to Tier 2">
   <defs>
-    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#0b6ebc;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#085a9b;stop-opacity:1" />
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0891B2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#A78BFA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="glassOverlay3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.25" />
+      <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0.08" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0.1" />
     </linearGradient>
     <filter id="shadow2">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
     </filter>
     <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#0b6ebc" />
+      <path d="M0,0 L0,6 L9,3 z" fill="#3B82F6" />
     </marker>
   </defs>
 
+  <!-- Background -->
+  <rect width="800" height="640" fill="#0B1220"/>
+
   <!-- Header Banner -->
-  <rect x="0" y="0" width="800" height="60" fill="url(#blueGrad)"/>
+  <rect x="0" y="0" width="800" height="60" fill="url(#blueGrad)" filter="url(#shadow2)"/>
   <text x="400" y="37" font-size="22" font-weight="bold" fill="white" text-anchor="middle">
     Staged Integration Ladder — Stop at Any Rung
   </text>
 
   <!-- Tier 0 -->
-  <rect x="50" y="90" width="700" height="130" rx="8" fill="#eaf5fb" stroke="#0b6ebc" stroke-width="2" filter="url(#shadow2)"/>
-  <rect x="50" y="90" width="56" height="130" rx="8" fill="#0b6ebc"/>
+  <g filter="url(#shadow2)">
+    <rect x="50" y="90" width="700" height="130" rx="8" fill="#D1E7FF" stroke="#3B82F6" stroke-width="2"/>
+    <rect x="50" y="90" width="700" height="130" rx="8" fill="url(#glassOverlay3)"/>
+    <path d="M55 97 L745 97" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </g>
+  <rect x="50" y="90" width="56" height="130" rx="8" fill="url(#blueGrad)"/>
   <text x="78" y="160" font-size="20" font-weight="bold" fill="white" text-anchor="middle">0</text>
-  <text x="124" y="116" font-size="14" font-weight="bold" fill="#085a9b">Tier 0 — Paste a Payload  (~15 minutes)</text>
-  <text x="124" y="138" font-size="12.5" fill="#0c4a78">No keys, no code changes. POST any call transcript to the hosted /v1/demo/check endpoint,</text>
-  <text x="124" y="156" font-size="12.5" fill="#0c4a78">or a native VAPI / Twilio / Vonage / Retell / Amazon Connect payload to /v1/adapters/*/check.</text>
-  <text x="124" y="178" font-size="12.5" fill="#0c4a78">Get back: conformance verdict + CAS score per call.</text>
-  <text x="124" y="200" font-size="12" fill="#3b6f96" font-style="italic">Needs: a transcript and curl.  Stop here if you just want to audit how your agent behaves.</text>
+  <text x="124" y="116" font-size="14" font-weight="bold" fill="#1E40AF">Tier 0 — Paste a Payload  (~15 minutes)</text>
+  <text x="124" y="138" font-size="12.5" fill="#1E3A8A">No keys, no code changes. POST any call transcript to the hosted /v1/demo/check endpoint,</text>
+  <text x="124" y="156" font-size="12.5" fill="#1E3A8A">or a native VAPI / Twilio / Vonage / Retell / Amazon Connect payload to /v1/adapters/*/check.</text>
+  <text x="124" y="178" font-size="12.5" fill="#1E3A8A">Get back: conformance verdict + CAS score per call.</text>
+  <text x="124" y="200" font-size="12" fill="#3B82F6" font-style="italic">Needs: a transcript and curl.  Stop here if you just want to audit how your agent behaves.</text>
 
-  <line x1="78" y1="220" x2="78" y2="250" stroke="#0b6ebc" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <line x1="78" y1="220" x2="78" y2="250" stroke="#3B82F6" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
 
   <!-- Tier 1 -->
-  <rect x="50" y="250" width="700" height="130" rx="8" fill="#e8f8f4" stroke="#188eaa" stroke-width="2" filter="url(#shadow2)"/>
-  <rect x="50" y="250" width="56" height="130" rx="8" fill="#188eaa"/>
+  <g filter="url(#shadow2)">
+    <rect x="50" y="250" width="700" height="130" rx="8" fill="#CFFAFE" stroke="url(#cyanGrad)" stroke-width="2"/>
+    <rect x="50" y="250" width="700" height="130" rx="8" fill="url(#glassOverlay3)"/>
+    <path d="M55 257 L745 257" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </g>
+  <rect x="50" y="250" width="56" height="130" rx="8" fill="url(#cyanGrad)"/>
   <text x="78" y="320" font-size="20" font-weight="bold" fill="white" text-anchor="middle">1</text>
-  <text x="124" y="276" font-size="14" font-weight="bold" fill="#0f6e83">Tier 1 — Wire Into Your Call Pipeline  (~2 hours)</text>
-  <text x="124" y="298" font-size="12.5" fill="#0c4a4a">Add one HTTP call to your existing end-of-call handler. Forward the vendor webhook payload</text>
-  <text x="124" y="316" font-size="12.5" fill="#0c4a4a">to the matching adapter route; store the returned CAS score and alert on non-conformance.</text>
-  <text x="124" y="338" font-size="12.5" fill="#0c4a4a">Optionally add /v1/webhooks/call-progress for turn-by-turn, in-call checks.</text>
-  <text x="124" y="360" font-size="12" fill="#15707f" font-style="italic">Needs: an end-of-call webhook.  Stop here for continuous monitoring without key management.</text>
+  <text x="124" y="276" font-size="14" font-weight="bold" fill="#0E7490">Tier 1 — Wire Into Your Call Pipeline  (~2 hours)</text>
+  <text x="124" y="298" font-size="12.5" fill="#164E63">Add one HTTP call to your existing end-of-call handler. Forward the vendor webhook payload</text>
+  <text x="124" y="316" font-size="12.5" fill="#164E63">to the matching adapter route; store the returned CAS score and alert on non-conformance.</text>
+  <text x="124" y="338" font-size="12.5" fill="#164E63">Optionally add /v1/webhooks/call-progress for turn-by-turn, in-call checks.</text>
+  <text x="124" y="360" font-size="12" fill="#06B6D4" font-style="italic">Needs: an end-of-call webhook.  Stop here for continuous monitoring without key management.</text>
 
-  <line x1="78" y1="380" x2="78" y2="410" stroke="#0b6ebc" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <line x1="78" y1="380" x2="78" y2="410" stroke="#3B82F6" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
 
   <!-- Tier 2 -->
-  <rect x="50" y="410" width="700" height="130" rx="8" fill="#f3eaf8" stroke="#7c3aed" stroke-width="2" filter="url(#shadow2)"/>
-  <rect x="50" y="410" width="56" height="130" rx="8" fill="#7c3aed"/>
+  <g filter="url(#shadow2)">
+    <rect x="50" y="410" width="700" height="130" rx="8" fill="#F3E8FF" stroke="url(#purpleGrad)" stroke-width="2"/>
+    <rect x="50" y="410" width="700" height="130" rx="8" fill="url(#glassOverlay3)"/>
+    <path d="M55 417 L745 417" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </g>
+  <rect x="50" y="410" width="56" height="130" rx="8" fill="url(#purpleGrad)"/>
   <text x="78" y="480" font-size="20" font-weight="bold" fill="white" text-anchor="middle">2</text>
-  <text x="124" y="436" font-size="14" font-weight="bold" fill="#5b21b6">Tier 2 — Cryptographic Agent Identity  (~1 day)</text>
-  <text x="124" y="458" font-size="12.5" fill="#3b0764">Adds authorization on top of conformance: provider-signed agent credentials with NPI binding,</text>
-  <text x="124" y="476" font-size="12.5" fill="#3b0764">scoped delegation (max 3 hops), per-agent revocation, and call-SID nonce binding — via</text>
-  <text x="124" y="494" font-size="12.5" fill="#3b0764">src/agent_identity.py (NHID-Auth v2).</text>
-  <text x="124" y="516" font-size="12" fill="#6d28d9" font-style="italic">Needs: pip install cryptography.  Reference implementation — not a finalized spec.</text>
+  <text x="124" y="436" font-size="14" font-weight="bold" fill="#6B21A8">Tier 2 — Cryptographic Agent Identity  (~1 day)</text>
+  <text x="124" y="458" font-size="12.5" fill="#581C87">Adds authorization on top of conformance: provider-signed agent credentials with NPI binding,</text>
+  <text x="124" y="476" font-size="12.5" fill="#581C87">scoped delegation (max 3 hops), per-agent revocation, and call-SID nonce binding — via</text>
+  <text x="124" y="494" font-size="12.5" fill="#581C87">src/agent_identity.py (NHID-Auth v2).</text>
+  <text x="124" y="516" font-size="12" fill="#A78BFA" font-style="italic">Needs: pip install cryptography.  Reference implementation — not a finalized spec.</text>
 
   <!-- Footer note -->
-  <text x="400" y="580" font-size="12.5" fill="#5b6472" text-anchor="middle">Each tier is independently useful — you do not need v2 identity to benefit from Tier 0/1.</text>
-  <text x="400" y="600" font-size="12.5" fill="#5b6472" text-anchor="middle">Full walkthrough: docs/v2-integration-guide.md</text>
+  <text x="400" y="580" font-size="12.5" fill="#94A3B8" text-anchor="middle">Each tier is independently useful — you do not need v2 identity to benefit from Tier 0/1.</text>
+  <text x="400" y="600" font-size="12.5" fill="#94A3B8" text-anchor="middle">Full walkthrough: docs/v2-integration-guide.md</text>
 </svg>
