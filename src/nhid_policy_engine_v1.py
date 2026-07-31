@@ -17,9 +17,24 @@ See nhid-clinical.org. Not an accredited standard.
 from __future__ import annotations
 
 import traceback
+import uuid
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
 from typing import Any
+
+from src.nhid_audit_trail import (
+    AuditEvent,
+    AuditEventType,
+    AuditTrail,
+    AgentIdentity,
+    OrganizationIdentity,
+    DisclosureEventRecord,
+    DisclosureLevel,
+    PHIAccessRecord,
+    PHIAccessOutcome,
+    PolicyDecisionRecord,
+)
 
 # ── NHID-Clinical spec version this engine implements ─────────────────────
 NHID_SPEC_VERSION = "1.3"
@@ -72,6 +87,7 @@ class PolicyDecision:
     next_state:           str = ""
     twiml_fallback:       str | None = None
     gather_speech:        bool = True
+    audit_trail:          AuditTrail | None = None
 
     def has_critical_violations(self) -> bool:
         return any(v.severity == ViolationSeverity.CRITICAL for v in self.violations)
@@ -606,19 +622,21 @@ _REQUIRED_EXECUTION_CONTEXT_FIELDS: tuple[str, ...] = (
 def evaluate_atr01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecision:
     """
     ATR-01: The system MUST maintain a complete, tamper-evident audit trail
-    for every interaction session. Required fields must be present and non-null.
+    for every interaction session. Validates required fields and creates audit events.
 
-    Pass condition: all required audit fields are present and non-empty.
-    Fail condition: one or more required fields are absent or null.
+    Pass condition: all required audit fields present and non-empty, audit trail created.
+    Fail condition: missing fields or null values.
     """
     try:
         missing_fields: list[str] = []
 
+        # Validate required event fields
         for f in _REQUIRED_AUDIT_FIELDS:
             value = event.get(f)
             if value is None or value == "":
                 missing_fields.append(f)
 
+        # Validate required execution context fields
         exec_ctx = event.get("execution_context") or {}
         for f in _REQUIRED_EXECUTION_CONTEXT_FIELDS:
             value = exec_ctx.get(f)
@@ -642,12 +660,68 @@ def evaluate_atr01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
                 gather_speech=True,
             )
 
+        # Build audit trail from event
+        session_id = event.get("session_id", "unknown")
+        timestamp = event.get("timestamp", datetime.utcnow().isoformat() + "Z")
+        actor_id = event.get("actor_id", "unknown")
+
+        # Create agent and organization identities from event context
+        agent_id = actor_id.split("-")[0] if "-" in actor_id else actor_id
+        agent_identity = AgentIdentity(
+            agent_id=agent_id,
+            agent_name=_safe_get(event, "actor_name"),
+            model=_safe_get(event, "execution_context", "pipeline_version"),
+            version=_safe_get(event, "execution_context", "policy_engine_version"),
+        )
+
+        org_identity = OrganizationIdentity(
+            organization_id="default-org",
+            organization_name=_safe_get(event, "organization_name"),
+            authority_scope=_safe_get(event, "healthcare_governance", "authority_scope"),
+        )
+
+        # Create audit trail
+        audit_trail = AuditTrail(
+            session_id=session_id,
+            agent_identity=agent_identity,
+            organization_identity=org_identity,
+        )
+
+        # Create policy decision event for this evaluation
+        hg = _safe_get(event, "healthcare_governance") or {}
+        policy_decision_event = PolicyDecisionRecord(
+            timestamp=timestamp,
+            turn_index=session.get("turn_count", 0),
+            decision_id=event.get("event_id", str(uuid.uuid4())),
+            policy_version=POLICY_ENGINE_VERSION,
+            action="ATR01_AUDIT_TRAIL_CREATED",
+            reason_code="ATR01_AUDIT_COMPLETE",
+            violations_detected=[],
+        )
+
+        # Create audit event
+        audit_event = AuditEvent(
+            event_id=event.get("event_id", str(uuid.uuid4())),
+            session_id=session_id,
+            event_type=AuditEventType.POLICY_DECISION,
+            timestamp=timestamp,
+            agent_identity=agent_identity,
+            organization_identity=org_identity,
+            policy_decision_record=policy_decision_event,
+            state_before=_safe_get(event, "state_before", default=""),
+            state_after=_safe_get(event, "state_after", default=""),
+            replay_mode=_safe_get(event, "replay_mode", default="live"),
+        )
+
+        audit_trail.add_event(audit_event)
+
         return PolicyDecision(
             action=PolicyAction.CONTINUE_AI,
             reason_code="ATR01_AUDIT_COMPLETE",
             violations=[],
             next_state=_safe_get(event, "state_before", default="UNKNOWN"),
             gather_speech=True,
+            audit_trail=audit_trail,
         )
 
     except Exception:
@@ -731,6 +805,7 @@ def evaluate_all(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecisi
     Otherwise CONTINUE_AI or LOG_ONLY.
 
     Violations from all rules are merged into a single list.
+    Audit trails from all rules are merged into a composite trail.
     """
     try:
         decisions = [
@@ -743,8 +818,16 @@ def evaluate_all(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecisi
         ]
 
         all_violations: list[BoundaryViolation] = []
+        composite_audit_trail: AuditTrail | None = None
+
         for d in decisions:
             all_violations.extend(d.violations)
+            # Merge audit trails: use the first one as base and add events from others
+            if composite_audit_trail is None and d.audit_trail is not None:
+                composite_audit_trail = d.audit_trail
+            elif d.audit_trail is not None and composite_audit_trail is not None:
+                for event_record in d.audit_trail.events:
+                    composite_audit_trail.add_event(event_record)
 
         _priority: dict[PolicyAction, int] = {
             PolicyAction.DENY_DATA:         5,
@@ -764,6 +847,7 @@ def evaluate_all(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecisi
             next_state=dominant.next_state,
             twiml_fallback=dominant.twiml_fallback,
             gather_speech=dominant.gather_speech,
+            audit_trail=composite_audit_trail,
         )
 
     except Exception:
