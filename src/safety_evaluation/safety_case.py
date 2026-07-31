@@ -47,7 +47,7 @@ class Evidence:
         return asdict(self)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Argument:
     """Logical argument linking evidence to claim."""
     argument_id: str  # UUID
@@ -59,7 +59,7 @@ class Argument:
     mitigation: str = ""  # How we address weaknesses
 
 
-@dataclass
+@dataclass(frozen=True)
 class SafetyClaim:
     """Single safety claim with supporting evidence and argument."""
     claim_id: str  # UUID
