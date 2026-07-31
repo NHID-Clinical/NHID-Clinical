@@ -3285,8 +3285,9 @@ h2 { font-weight: 700; }
 .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16.5rem, 1fr)); gap: 1.1rem; }
 .feature-card { padding: 1.5rem 1.5rem; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease; }
 .feature-card:hover { transform: translateY(-4px); box-shadow: 0 18px 42px -24px rgba(15,23,42,.30); border-color: rgba(20,184,166,.45); }
-.feature-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--teal-soft); color: var(--teal-bright); margin-bottom: .95rem; }
-.feature-ico svg { width: 23px; height: 23px; }
+.feature-ico { width: auto; max-width: 140px; height: auto; border-radius: 12px; display: grid; place-items: center; margin-bottom: .95rem; }
+.feature-ico svg { width: 23px; height: 23px; color: var(--teal-bright); }
+.feature-ico img { width: 100%; height: auto; display: block; border-radius: 8px; }
 .feature-card .code { font-family: "IBM Plex Mono", monospace; font-size: .72rem; font-weight: 600; color: var(--teal-bright); letter-spacing: .04em; }
 .feature-card h3 { font-size: 1.05rem; margin: .1rem 0 .4rem; color: var(--ink); }
 .feature-card p { font-size: .9rem; color: var(--body); line-height: 1.6; margin: 0; }
