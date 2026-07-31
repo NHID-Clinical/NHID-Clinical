@@ -538,6 +538,10 @@ def evaluate_eit01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
                 gather_speech=False,
             )
 
+        # Only proceed with escalation enforcement if escalation was actually requested
+        if not escalation_requested:
+            return PolicyDecision(action=PolicyAction.CONTINUE_AI, reason_code="EIT01_NO_ESCALATION_REQUESTED", violations=[])
+
         if not escalation_available:
             violations = [
                 BoundaryViolation(
