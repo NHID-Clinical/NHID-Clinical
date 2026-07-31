@@ -2,6 +2,7 @@
 
 Phase 1 (Complete): Failure modes, metrics, scoring, logging, safety case
 Phase 2 (Complete): Adversarial corpus, attack generators, red team runner, robustness metrics
+Phase 3 (Complete): Synthetic healthcare workflows, conversation simulator, workflow-level evaluation
 
 Components:
 - Failure mode taxonomy (6 categories)
@@ -10,6 +11,8 @@ Components:
 - Attack generator framework for scenario mutations
 - Red team execution runner with evidence capture
 - Robustness metrics (ASR, control score, coverage)
+- Synthetic workflow scenarios (20+ healthcare interaction patterns)
+- Workflow simulator for multi-turn conversation evaluation
 - Shadow mode logging (non-blocking, observation-only)
 - Evidence-based safety case for deployment assurance
 """
@@ -67,6 +70,20 @@ from src.safety_evaluation.safety_case import (
     Argument,
     SafetyCase,
 )
+from src.safety_evaluation.synthetic_scenarios import (
+    SyntheticWorkflow,
+    SyntheticScenarioBuilder,
+    SyntheticScenarioGenerator,
+    WorkflowType,
+    ParticipantRole,
+    ConversationTurn,
+)
+from src.safety_evaluation.workflow_simulator import (
+    WorkflowSimulator,
+    WorkflowOutcome,
+    ConversationTurnResult,
+    WorkflowExecutionResult,
+)
 
 __all__ = [
     # Phase 1: Failure Modes
@@ -113,4 +130,16 @@ __all__ = [
     "MetricsCalculator",
     "AdversarialMetrics",
     "SeverityLevel",
+    # Phase 3: Synthetic Workflows
+    "SyntheticWorkflow",
+    "SyntheticScenarioBuilder",
+    "SyntheticScenarioGenerator",
+    "WorkflowType",
+    "ParticipantRole",
+    "ConversationTurn",
+    # Phase 3: Workflow Simulator
+    "WorkflowSimulator",
+    "WorkflowOutcome",
+    "ConversationTurnResult",
+    "WorkflowExecutionResult",
 ]
