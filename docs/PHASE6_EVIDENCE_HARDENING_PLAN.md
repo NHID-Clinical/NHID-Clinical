@@ -434,7 +434,7 @@ See: [AUDIT_TRAIL_SPECIFICATION.md](AUDIT_TRAIL_SPECIFICATION.md)
 
 ## Validation
 
-**Test suite**: 343 passing unit tests covering all five controls and 18-case conformance suite.
+**Test suite**: 446 passing unit tests covering all five controls, 18-case conformance suite, and Phase 6A pilot-ready infrastructure (cryptographic signing, persistent audit storage, Docker deployment, configuration management, security monitoring).
 
 **Live validation**: Production endpoint tested against known-bad scenario; correctly rejected with IDG-01 + PDX-01 violations.
 

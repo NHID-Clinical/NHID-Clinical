@@ -25,7 +25,7 @@ It intercepts healthcare conversations (phone, chat, web) and enforces five gove
 ### What This Means
 
 **Production-Validated** = Engine works correctly:
-- ✓ 330 passing unit tests (comprehensive rule coverage)
+- ✓ 446 passing unit tests (comprehensive rule coverage including Phase 6A infrastructure)
 - ✓ 25-scenario evaluation corpus (81.2% detection rate across all rule combinations)
 - ✓ 5 compliant scenarios with 0% false positives
 - ✓ Live endpoint tested against real VAPI adapter

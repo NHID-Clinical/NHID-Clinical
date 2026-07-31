@@ -11,7 +11,7 @@
 The evaluation corpus validates NHID-Clinical v1.1 governance enforcement across five deterministic rules. Results confirm:
 - **Strong rules** (DBC-01, EIT-01): 100% detection across all scenario types
 - **Acceptable rules** (IDG-01, PDX-01): 66–71% detection; misses concentrated in edge cases
-- **Unimplemented** (ATR-01): 0% as expected; planned for Phase 2
+- **Implemented in Phase 6A** (ATR-01): Originally unimplemented at v1.0 report date; now complete with HMAC-SHA256 signing, persistent storage, and Docker deployment (see [docs/PHASE-6A-COMPLETION.md](PHASE-6A-COMPLETION.md))
 - **False-positive rate**: 0% across all 25 scenarios (no spurious violations)
 - **Overall governance rate**: 83.9% (26/31 expected violations detected)
 
@@ -25,7 +25,7 @@ The evaluation corpus validates NHID-Clinical v1.1 governance enforcement across
 | **EIT-01** | 8 | 8 | 8 | **100%** | ✓ STRONG | Escalation deflection/denial/redirect all detected consistently |
 | **IDG-01** | 8 | 8 | 5 | **62.5%** | ⚠ LIMITED | Vague disclosure ("claims system", "automated assistant") misses; needs semantic NLP |
 | **PDX-01** | 6 | 6 | 4 | **66.7%** | ⚠ LIMITED | Sub-100ms timing misses caught; simultaneous disclosure+PHI edge case |
-| **ATR-01** | 1 | 1 | 0 | **0%** | — | Not implemented; Phase 2 candidate |
+| **ATR-01** | 1 | 1 | 0 | **0%** | — | Now implemented in Phase 6A (cryptographic audit trail; see PHASE-6A-COMPLETION.md) |
 | **TOTAL** | 25 | 32 | 26 | **81.2%** | ✓ ACCEPTABLE | Overall governance enforcement ready for pilot |
 
 ---
@@ -124,7 +124,7 @@ Clear, explicit AI disclosures ("I'm an AI", "I'm automated", "I'm an AI assista
 
 **Test Coverage**: 1 scenario (missing audit trail)
 
-**Result**: Not detected (0/1) — as expected; ATR-01 audit trail enforcement is planned for Phase 2.
+**Result**: Not detected in v1.0 corpus (0/1) — at time of report, ATR-01 was planned. **Status update (2026-07-31)**: ATR-01 has been fully implemented in Phase 6A with cryptographic signing (HMAC-SHA256), persistent storage (SQLite with TTL), and comprehensive health monitoring. See [docs/PHASE-6A-COMPLETION.md](PHASE-6A-COMPLETION.md) for implementation details and 91 new tests covering cryptographic integrity and audit infrastructure.
 
 **Assessment**: Engine currently does not validate audit trail presence or immutability. Scenario correctly flags as "not implemented." Should remain Phase 2 work pending decision on audit backend (append-only log, blockchain, database constraint).
 

@@ -490,8 +490,8 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 ### 2.5.1 v1.1 Eval Repair (July 2026) — supersedes the per-rule rates in §2.5
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
-(v1.1 is a patch-set label, not a release). Suite: **330 passed / 18 skipped / 0 failed**;
-`UNIT_EXPECTED = 330` holds (3 tests rewritten in place, net count 0).
+(v1.1 is a patch-set label, not a release). Suite: **446 passed / 18 skipped / 0 failed**;
+`UNIT_EXPECTED = 446` holds (Phase 6A added 91 new tests, net count +91).
 
 The detection rates reported in §2.5 (DBC-01 0.5→2.5%, EIT-01 94.7%, PDX-01 58.6%) were
 re-measured after a full replay of `src/nhid_policy_engine_v1.py` via
@@ -1163,10 +1163,11 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Enforcement Profile invariants (spec-maturity release; no behavior change) | **343** | `test_enforcement_profile.py` (+13) |
 | + Phase 4 engine fixes (EIT-01 escalation_outcome, DBC-01 implied humanity) | 343 | No new tests; behavior change verified in v1.1 eval repair (§2.5.1) |
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
+| + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current invariant:** `UNIT_EXPECTED = 355` in `scripts/validate_ci.py`
+**Current invariant:** `UNIT_EXPECTED = 446` in `scripts/validate_ci.py`
 
-**Total suite:** 409 passing (343 Python + 66 TypeScript middleware)
+**Total suite:** 512 passing (446 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1237,7 +1238,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 343 passed (18 skipped when no server running = integration tests)
+# Expected: 446 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1257,11 +1258,11 @@ PyJWT>=2.8.0
 
 ### 8.3 CI Invariant
 
-The CI pipeline enforces exactly `UNIT_EXPECTED = 355` passing tests with 0 failures:
+The CI pipeline enforces exactly `UNIT_EXPECTED = 446` passing tests with 0 failures:
 
 ```python
 # scripts/validate_ci.py
-UNIT_EXPECTED = 355
+UNIT_EXPECTED = 446
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -1395,7 +1396,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 343`) must hold after
+1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 446`) must hold after
    every change. Run `python scripts/validate_ci.py` before committing.
 
 2. **"Impersonation Latency" is the permanent canonical term.** It must never be renamed,
@@ -1461,8 +1462,8 @@ When Claude Code or any LLM is working on this repository:
 When resuming a Claude Code session after context limit:
 
 > "Continue from where you left off. The plan file is at
-> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 343.
-> All 343 tests pass. The most recent completed task was [X]. The next task is [Y]."
+> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 446.
+> All 446 tests pass. The most recent completed task was Phase 6A infrastructure. The next task is Phase 6B production hardening."
 
 ---
 
@@ -2362,7 +2363,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_EXPECTED = 343  # scripts/validate_ci.py
+UNIT_EXPECTED = 446  # scripts/validate_ci.py (Phase 6A: +91 tests)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2407,7 +2408,7 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
-| **Total** | **355 passed, 18 skipped** | All Python unit tests (343→355: Phase 5 ATR-01 +12) |
+| **Total** | **446 passed, 18 skipped** | All Python unit tests (355→446: Phase 6A infrastructure +91) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2535,8 +2536,8 @@ assert len(decision.violations) == 0
 **Changes to this document:**
 - Version 1.2 → 1.3; Date 2026-06-27 → 2026-07-31
 - §7.1a "Phase 4 & Phase 5 Completion" added (new subsection) with status table and evaluation corpus metrics
-- §7.2 "Test Count Progression" — rows added for Phase 4 and Phase 5; UNIT_EXPECTED 343 → 355 (ATR-01 +12 tests)
-- §8.3 "CI Invariant" — updated to UNIT_EXPECTED = 355
+- §7.2 "Test Count Progression" — rows added for Phase 4, Phase 5, and Phase 6A; UNIT_EXPECTED 343 → 355 → 446 (ATR-01 +12 tests, Phase 6A infrastructure +91 tests)
+- §8.3 "CI Invariant" — updated to UNIT_EXPECTED = 446
 - §23.1 "Primary Source Files" — added `src/nhid_audit_trail.py` (257 lines) and updated `src/nhid_policy_engine_v1.py` description
 - §23.1 — added three governance artifacts: ATR-01-IMPLEMENTATION.md, ATR-01-EVIDENCE-VALIDATION-REPORT.html, ATR-01-TRACEABILITY-MATRIX.html
 - §23.3 "Test File Index" — added `test_atr01_audit_trail.py` (12 tests); total changed to "355 passed"
