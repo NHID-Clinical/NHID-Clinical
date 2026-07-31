@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrustLayer Verification Sequence</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0B1220 0%, #1a2a3a 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: #E2E8F0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #67E8F9, #14B8A6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .intro-text {
+      text-align: center;
+      color: #94A3B8;
+      margin-bottom: 2rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    .sequence-wrapper {
+      perspective: 1000px;
+      margin-bottom: 3rem;
+    }
+
+    .sequence-flow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+
+    .flow-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .flow-node {
+      width: 100px;
+      height: 100px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, rgba(103, 232, 249, 0.1), rgba(20, 184, 166, 0.1));
+      border: 2px solid;
+      border-image: linear-gradient(135deg, #67E8F9, #14B8A6) 1;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px rgba(103, 232, 249, 0.2);
+    }
+
+    .flow-node::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(103, 232, 249, 0.2), rgba(20, 184, 166, 0.1));
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .flow-node:hover::before {
+      opacity: 1;
+    }
+
+    .flow-node.active {
+      background: linear-gradient(135deg, rgba(103, 232, 249, 0.3), rgba(20, 184, 166, 0.2));
+      box-shadow: 0 0 30px rgba(103, 232, 249, 0.4), inset 0 0 20px rgba(103, 232, 249, 0.1);
+      transform: scale(1.1);
+    }
+
+    .flow-node.blocked {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+      border-image: linear-gradient(135deg, #EF4444, #DC2626) 1;
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+    }
+
+    .flow-label {
+      font-size: 0.75rem;
+      text-align: center;
+      max-width: 80px;
+      color: #CBD5E1;
+      font-weight: 500;
+    }
+
+    .flow-arrow {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, #67E8F9, transparent);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .flow-arrow::after {
+      content: '';
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 8px solid #67E8F9;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+    }
+
+    .flow-arrow.blocked {
+      background: linear-gradient(90deg, #EF4444, transparent);
+    }
+
+    .flow-arrow.blocked::after {
+      border-left-color: #EF4444;
+    }
+
+    .details-panel {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+      border: 1px solid;
+      border-image: linear-gradient(135deg, #67E8F9, #14B8A6) 1;
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      min-height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .details-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(103, 232, 249, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    .details-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .step-number {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #67E8F9, #14B8A6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0B1220;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #F1F5F9;
+    }
+
+    .step-description {
+      color: #CBD5E1;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .outcome-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+
+    .outcome-badge.pass {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6EE7B7;
+      border: 1px solid rgba(16, 185, 129, 0.5);
+    }
+
+    .outcome-badge.fail {
+      background: rgba(239, 68, 68, 0.2);
+      color: #FCA5A5;
+      border: 1px solid rgba(239, 68, 68, 0.5);
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #67E8F9, #14B8A6);
+      color: #0B1220;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(103, 232, 249, 0.3);
+    }
+
+    button.secondary {
+      background: linear-gradient(135deg, rgba(103, 232, 249, 0.2), rgba(20, 184, 166, 0.1));
+      color: #67E8F9;
+      border: 1px solid #67E8F9;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #64748B;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+      line-height: 1.6;
+    }
+
+    .footer-note strong {
+      color: #67E8F9;
+    }
+
+    @media (max-width: 768px) {
+      .sequence-flow {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .flow-arrow {
+        width: 2px;
+        height: 40px;
+        transform: rotate(90deg);
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .details-panel {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>TrustLayer Verification Sequence</h1>
+
+    <div class="intro-text">
+      <p><strong>Every step is a precondition for the next.</strong> A failure at any stage stops the call from reaching the healthcare system — and produces an audit event either way.</p>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: #64748B;">TrustLayer runs the same deterministic controls as the open framework — this module adds operations around them, not different rules.</p>
+    </div>
+
+    <div class="sequence-wrapper">
+      <div class="sequence-flow" id="sequenceFlow"></div>
+
+      <div class="details-panel">
+        <div class="details-content" id="detailsContent">
+          <div class="step-header">
+            <div class="step-number">●</div>
+            <div class="step-title">AI Agent</div>
+          </div>
+          <div class="step-description">
+            An automated caller initiates contact on behalf of a claimed organization.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button onclick="runSequence('success')">Run Success Path</button>
+      <button class="secondary" onclick="runSequence('failure')">Run Failure Path</button>
+      <button class="secondary" onclick="reset()">Reset</button>
+    </div>
+
+    <div class="footer-note">
+      Only requests that cleared <strong>every preceding step</strong> reach the payer or provider system.<br>
+      All outcomes — pass or fail — produce a <strong>complete audit event (ATR-01).</strong>
+    </div>
+  </div>
+
+  <script>
+    const steps = [
+      {
+        id: 'agent',
+        number: '●',
+        title: 'AI Agent',
+        description: 'An automated caller initiates contact on behalf of a claimed organization.'
+      },
+      {
+        id: 'identity',
+        number: '1',
+        title: 'Identity Verification',
+        description: 'Is this agent registered, and does its presented credential verify? An unregistered or unverifiable agent goes no further.'
+      },
+      {
+        id: 'authorization',
+        number: '2',
+        title: 'Authorization',
+        description: 'Was this agent delegated authority by the organization it names — and is that delegation still valid, not expired or revoked?'
+      },
+      {
+        id: 'disclosure',
+        number: '3',
+        title: 'Disclosure Check',
+        description: 'IDG-01 and DBC-01: did the agent disclose itself as automated before any operational exchange, without deceptive human-presence cues?'
+      },
+      {
+        id: 'scope',
+        number: '4',
+        title: 'Scope Enforcement',
+        description: 'PDX-01: is this specific request inside the agent\'s delegated scope? An eligibility agent does not get to pursue a claims appeal.'
+      },
+      {
+        id: 'audit',
+        number: '5',
+        title: 'Audit Event',
+        description: 'ATR-01: a complete, replayable envelope is written for the decision — including decisions to block.'
+      },
+      {
+        id: 'healthcare',
+        number: '●',
+        title: 'Healthcare System',
+        description: 'Only requests that cleared every preceding step reach the payer or provider system.'
+      }
+    ];
+
+    let currentStep = 0;
+
+    function initSequence() {
+      const flow = document.getElementById('sequenceFlow');
+      flow.innerHTML = '';
+
+      steps.forEach((step, index) => {
+        if (index > 0) {
+          const arrow = document.createElement('div');
+          arrow.className = 'flow-arrow';
+          flow.appendChild(arrow);
+        }
+
+        const item = document.createElement('div');
+        item.className = 'flow-item';
+        item.innerHTML = `
+          <div class="flow-node" data-step="${index}" onclick="selectStep(${index})">
+            ${step.number}
+          </div>
+          <div class="flow-label">${step.title}</div>
+        `;
+        flow.appendChild(item);
+      });
+
+      selectStep(0);
+    }
+
+    function selectStep(index) {
+      currentStep = index;
+      updateDetails();
+      updateFlowUI();
+    }
+
+    function updateDetails() {
+      const step = steps[currentStep];
+      const content = document.getElementById('detailsContent');
+      content.innerHTML = `
+        <div class="step-header">
+          <div class="step-number">${step.number}</div>
+          <div class="step-title">${step.title}</div>
+        </div>
+        <div class="step-description">${step.description}</div>
+      `;
+    }
+
+    function updateFlowUI() {
+      document.querySelectorAll('.flow-node').forEach((node, index) => {
+        node.classList.remove('active', 'blocked');
+        if (index === currentStep) {
+          node.classList.add('active');
+        }
+      });
+    }
+
+    async function runSequence(outcome) {
+      const nodes = document.querySelectorAll('.flow-node');
+      const arrows = document.querySelectorAll('.flow-arrow');
+
+      // Reset
+      nodes.forEach(node => node.classList.remove('active', 'blocked'));
+      arrows.forEach(arrow => arrow.classList.remove('blocked'));
+
+      // Animate through steps
+      const failureStep = outcome === 'failure' ? Math.floor(Math.random() * (steps.length - 2)) + 1 : steps.length;
+
+      for (let i = 0; i < steps.length; i++) {
+        if (i >= failureStep) break;
+
+        nodes[i].classList.add('active');
+        selectStep(i);
+
+        if (i > 0) {
+          arrows[i - 1].classList.toggle('blocked', i === failureStep);
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        if (i < failureStep - 1) {
+          nodes[i].classList.remove('active');
+        }
+      }
+
+      if (outcome === 'failure') {
+        nodes[failureStep].classList.add('blocked');
+        if (failureStep > 0) {
+          arrows[failureStep - 1].classList.add('blocked');
+        }
+        selectStep(failureStep);
+
+        const content = document.getElementById('detailsContent');
+        content.innerHTML += `
+          <div class="outcome-badge fail">
+            ✕ Verification blocked — call rejected
+          </div>
+          <div class="step-description" style="margin-top: 1rem; color: #FCA5A5;">
+            Audit event generated regardless of failure point.
+          </div>
+        `;
+      } else {
+        nodes.forEach(node => node.classList.remove('active'));
+        nodes[steps.length - 1].classList.add('active');
+        selectStep(steps.length - 1);
+
+        const content = document.getElementById('detailsContent');
+        content.innerHTML += `
+          <div class="outcome-badge pass">
+            ✓ All verifications passed — call routed to healthcare system
+          </div>
+        `;
+      }
+    }
+
+    function reset() {
+      initSequence();
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', initSequence);
+  </script>
+</body>
+</html>

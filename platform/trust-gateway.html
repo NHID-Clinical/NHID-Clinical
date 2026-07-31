@@ -80,7 +80,6 @@
           <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
         </div>
       </div>
-      <a href="/pricing.html">Pricing</a>
       <a href="/about.html">About</a>
       <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
@@ -149,7 +148,6 @@
   <a href="/faq.html">FAQ</a>
   <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
   <strong class="mobile-nav-group">More</strong>
-  <a href="/pricing.html">Pricing</a>
   <a href="/about.html">About</a>
   <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
@@ -180,15 +178,7 @@
       <h2>The verification sequence</h2>
       <p style="color:var(--body);line-height:1.85;margin-top:.75rem">Every step is a precondition for the next. A failure at any stage stops the call from reaching the healthcare system — and produces an audit event either way.</p>
       <p style="color:var(--body);line-height:1.8;margin-top:.85rem">TrustLayer runs the same deterministic controls as the <a href="/framework/" style="color:var(--teal-bright);font-weight:600">open framework</a> — this module adds operations around them, not different rules.</p>
-      <ol class="gateway-flow">
-        <li class="gateway-step is-endpoint"><span class="gw-num">&#9679;</span><strong>AI Agent</strong><span>An automated caller initiates contact on behalf of a claimed organization.</span></li>
-        <li class="gateway-step"><span class="gw-num">1</span><strong>Identity verification</strong><span>Is this agent registered, and does its presented credential verify? An unregistered or unverifiable agent goes no further.</span></li>
-        <li class="gateway-step"><span class="gw-num">2</span><strong>Authorization</strong><span>Was this agent delegated authority by the organization it names — and is that delegation still valid, not expired or revoked?</span></li>
-        <li class="gateway-step"><span class="gw-num">3</span><strong>Disclosure check</strong><span>IDG-01 and DBC-01: did the agent disclose itself as automated before any operational exchange, without deceptive human-presence cues?</span></li>
-        <li class="gateway-step"><span class="gw-num">4</span><strong>Scope enforcement</strong><span>PDX-01: is this specific request inside the agent&rsquo;s delegated scope? An eligibility agent does not get to pursue a claims appeal.</span></li>
-        <li class="gateway-step"><span class="gw-num">5</span><strong>Audit event</strong><span>ATR-01: a complete, replayable envelope is written for the decision — including decisions to block.</span></li>
-        <li class="gateway-step is-endpoint"><span class="gw-num">&#9679;</span><strong>Healthcare system</strong><span>Only requests that cleared every preceding step reach the payer or provider system.</span></li>
-      </ol>
+      <iframe src="/assets/verification-sequence.html" style="width:100%;height:1200px;border:none;border-radius:16px;background:transparent;margin-top:2rem" title="Interactive Verification Sequence"></iframe>
 
       <h2 style="margin-top:2.5rem">Design commitments</h2>
       <div class="content-cards" style="grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin-top:1.25rem">
