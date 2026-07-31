@@ -1,57 +1,101 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 620" font-family="Inter, system-ui, sans-serif" role="img" aria-label="Call Authorization Score tiers and outcomes">
   <defs>
-    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#0b6ebc;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#085a9b;stop-opacity:1" />
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D97706;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B45309;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#DC2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#991B1B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="glassOverlay2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.25" />
+      <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0.08" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0.1" />
     </linearGradient>
     <filter id="shadow2">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
     </filter>
   </defs>
 
+  <!-- Background -->
+  <rect width="800" height="620" fill="#0B1220"/>
+
   <!-- Header Banner -->
-  <rect x="0" y="0" width="800" height="60" fill="url(#blueGrad)"/>
+  <rect x="0" y="0" width="800" height="60" fill="url(#blueGrad)" filter="url(#shadow2)"/>
   <text x="400" y="37" font-size="22" font-weight="bold" fill="white" text-anchor="middle">
     Call Authorization Score (CAS) — Tier Thresholds
   </text>
 
-  <text x="400" y="84" font-size="13" fill="#5d6b7a" text-anchor="middle">CAS is a 0.0–1.0 composite score; the band it falls in determines the call's outcome.</text>
+  <text x="400" y="84" font-size="13" fill="#94A3B8" text-anchor="middle">CAS is a 0.0–1.0 composite score; the band it falls in determines the call's outcome.</text>
 
   <!-- Tier 1: Verified Trust -->
-  <rect x="50" y="104" width="700" height="68" rx="8" fill="#047857" stroke="#065f46" stroke-width="2" filter="url(#shadow2)"/>
+  <g filter="url(#shadow2)">
+    <rect x="50" y="104" width="700" height="68" rx="8" fill="url(#greenGrad)"/>
+    <rect x="50" y="104" width="700" height="68" rx="8" fill="url(#glassOverlay2)"/>
+    <path d="M55 111 L745 111" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </g>
   <text x="70" y="130" font-size="15" font-weight="bold" fill="white">CAS &#8805; 0.90 — Verified Trust  (L2)</text>
-  <text x="70" y="152" font-size="12.5" fill="#d1fae5">Full access at the agent's granted scope. Highest-confidence band — typically a cryptographically</text>
-  <text x="70" y="166" font-size="12.5" fill="#d1fae5">verified NHID-Auth v2 passport plus a clean v1.3 behavioral trace.</text>
+  <text x="70" y="152" font-size="12.5" fill="#D1FAE5">Full access at the agent's granted scope. Highest-confidence band — typically a cryptographically</text>
+  <text x="70" y="166" font-size="12.5" fill="#D1FAE5">verified NHID-Auth v2 passport plus a clean v1.3 behavioral trace.</text>
 
   <!-- Tier 2: Conditional Trust -->
-  <rect x="50" y="184" width="700" height="68" rx="8" fill="#0b6ebc" stroke="#085a9b" stroke-width="2" filter="url(#shadow2)"/>
+  <g filter="url(#shadow2)">
+    <rect x="50" y="184" width="700" height="68" rx="8" fill="url(#blueGrad)"/>
+    <rect x="50" y="184" width="700" height="68" rx="8" fill="url(#glassOverlay2)"/>
+    <path d="M55 191 L745 191" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </g>
   <text x="70" y="210" font-size="15" font-weight="bold" fill="white">CAS &#8805; 0.75 — Conditional Trust  (L1)</text>
-  <text x="70" y="232" font-size="12.5" fill="#dceefb">Access granted with reduced scope or added monitoring. Strong but not perfect signal —</text>
-  <text x="70" y="246" font-size="12.5" fill="#dceefb">e.g. valid identity with a minor behavioral flag, or vice versa.</text>
+  <text x="70" y="232" font-size="12.5" fill="#DCEEFB">Access granted with reduced scope or added monitoring. Strong but not perfect signal —</text>
+  <text x="70" y="246" font-size="12.5" fill="#DCEEFB">e.g. valid identity with a minor behavioral flag, or vice versa.</text>
 
   <!-- Tier 3: Review Required -->
-  <rect x="50" y="264" width="700" height="68" rx="8" fill="#9e5a00" stroke="#7a4500" stroke-width="2" filter="url(#shadow2)"/>
+  <g filter="url(#shadow2)">
+    <rect x="50" y="264" width="700" height="68" rx="8" fill="url(#orangeGrad)"/>
+    <rect x="50" y="264" width="700" height="68" rx="8" fill="url(#glassOverlay2)"/>
+    <path d="M55 271 L745 271" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.28"/>
+  </g>
   <text x="70" y="290" font-size="15" font-weight="bold" fill="white">CAS &#8805; 0.50 — Review Required</text>
-  <text x="70" y="312" font-size="12.5" fill="#fde8c8">No automatic grant or denial. Routed to human review or a step-up challenge before the</text>
-  <text x="70" y="326" font-size="12.5" fill="#fde8c8">requested action proceeds.</text>
+  <text x="70" y="312" font-size="12.5" fill="#FDE8C8">No automatic grant or denial. Routed to human review or a step-up challenge before the</text>
+  <text x="70" y="326" font-size="12.5" fill="#FDE8C8">requested action proceeds.</text>
 
   <!-- Tier 4: Denied / Degraded -->
-  <rect x="50" y="344" width="700" height="68" rx="8" fill="#b45309" stroke="#92400e" stroke-width="2" filter="url(#shadow2)"/>
+  <g filter="url(#shadow2)">
+    <rect x="50" y="344" width="700" height="68" rx="8" fill="#DC2626" opacity="0.85"/>
+    <rect x="50" y="344" width="700" height="68" rx="8" fill="url(#glassOverlay2)"/>
+    <path d="M55 351 L745 351" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.25"/>
+  </g>
   <text x="70" y="370" font-size="15" font-weight="bold" fill="white">CAS &#8805; 0.20 — Denied / Degraded</text>
-  <text x="70" y="392" font-size="12.5" fill="#fde8c8">Default-deny for the requested scope; a narrower, lower-risk fallback action may still be offered.</text>
-  <text x="70" y="406" font-size="12.5" fill="#fde8c8">Logged as a near-miss for trend monitoring.</text>
+  <text x="70" y="392" font-size="12.5" fill="#FCA5A5">Default-deny for the requested scope; a narrower, lower-risk fallback action may still be offered.</text>
+  <text x="70" y="406" font-size="12.5" fill="#FCA5A5">Logged as a near-miss for trend monitoring.</text>
 
   <!-- Tier 5: Hard Denial -->
-  <rect x="50" y="424" width="700" height="68" rx="8" fill="#b91c1c" stroke="#7f1d1d" stroke-width="2" filter="url(#shadow2)"/>
+  <g filter="url(#shadow2)">
+    <rect x="50" y="424" width="700" height="68" rx="8" fill="url(#redGrad)"/>
+    <rect x="50" y="424" width="700" height="68" rx="8" fill="url(#glassOverlay2)"/>
+    <path d="M55 431 L745 431" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.25"/>
+  </g>
   <text x="70" y="450" font-size="15" font-weight="bold" fill="white">CAS &lt; 0.20 — Hard Denial</text>
-  <text x="70" y="472" font-size="12.5" fill="#fecaca">Call rejected outright with a typed error code. Written to the FHIR AuditEvent trail regardless</text>
-  <text x="70" y="486" font-size="12.5" fill="#fecaca">of outcome — denials are audited exactly as thoroughly as approvals.</text>
+  <text x="70" y="472" font-size="12.5" fill="#FECACA">Call rejected outright with a typed error code. Written to the FHIR AuditEvent trail regardless</text>
+  <text x="70" y="486" font-size="12.5" fill="#FECACA">of outcome — denials are audited exactly as thoroughly as approvals.</text>
 
   <!-- Footer note -->
-  <rect x="50" y="508" width="700" height="62" rx="6" fill="#f8fbfd" stroke="#0b6ebc" stroke-width="1.5"/>
-  <text x="70" y="530" font-size="12.5" fill="#082a5b" font-weight="bold">Inputs to the score (src/nhid_cas.py)</text>
-  <text x="70" y="550" font-size="12" fill="#5d6b7a">v1.3 behavioral conformance (IDG-01/PDX-01/DBC-01/EIT-01) blended with, where present,</text>
-  <text x="70" y="564" font-size="12" fill="#5d6b7a">v2 cryptographic identity verification (passport validity, NPI binding, scope, nonce match).</text>
+  <g filter="url(#shadow2)">
+    <rect x="50" y="508" width="700" height="62" rx="6" fill="#1E293B" opacity="0.6" stroke="#3B82F6" stroke-width="1.5"/>
+    <rect x="50" y="508" width="700" height="62" rx="6" fill="url(#glassOverlay2)"/>
+    <path d="M55 513 L745 513" stroke="#FFFFFF" stroke-width="1" fill="none" opacity="0.25"/>
+  </g>
+  <text x="70" y="530" font-size="12.5" fill="#E0F2F1" font-weight="bold">Inputs to the score (src/nhid_cas.py)</text>
+  <text x="70" y="550" font-size="12" fill="#CBD5E1">v1.3 behavioral conformance (IDG-01/PDX-01/DBC-01/EIT-01) blended with, where present,</text>
+  <text x="70" y="564" font-size="12" fill="#CBD5E1">v2 cryptographic identity verification (passport validity, NPI binding, scope, nonce match).</text>
 
-  <text x="400" y="600" font-size="12.5" fill="#5b6472" text-anchor="middle">Reference implementation: src/nhid_cas.py · 38 dedicated tests · thresholds tunable per deployment</text>
+  <text x="400" y="600" font-size="12.5" fill="#94A3B8" text-anchor="middle">Reference implementation: src/nhid_cas.py · 38 dedicated tests · thresholds tunable per deployment</text>
 </svg>
