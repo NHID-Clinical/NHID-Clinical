@@ -84,6 +84,19 @@ from src.safety_evaluation.workflow_simulator import (
     ConversationTurnResult,
     WorkflowExecutionResult,
 )
+from src.safety_evaluation.deceptive_behavior_scenarios import (
+    DeceptiveBehaviorDetector,
+    SemanticDeceptionScenarios,
+)
+from src.safety_evaluation.escalation_integrity_tests import (
+    EscalationIntegrityValidator,
+    EscalationIntegrityScenarios,
+    EscalationOutcome,
+)
+from src.safety_evaluation.audit_trail_verification import (
+    AuditTrailValidator,
+    AuditTrailScenarios,
+)
 
 __all__ = [
     # Phase 1: Failure Modes
@@ -142,4 +155,11 @@ __all__ = [
     "WorkflowOutcome",
     "ConversationTurnResult",
     "WorkflowExecutionResult",
+    # Phase 4: Safety Assurance Hardening
+    "DeceptiveBehaviorDetector",
+    "SemanticDeceptionScenarios",
+    "EscalationIntegrityValidator",
+    "EscalationIntegrityScenarios",
+    "AuditTrailValidator",
+    "AuditTrailScenarios",
 ]
