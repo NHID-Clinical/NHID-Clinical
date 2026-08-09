@@ -37,14 +37,52 @@ copy_tree "$ROOT/assets" "$OUT/assets" \
   --exclude='fonts/' \
   --exclude='badges-dark.jpg' \
   --exclude='badges-light.jpg' \
-  --exclude='media/impersonation-latency-trap.mp4'
+  --exclude='media/impersonation-latency-trap.mp4' \
+  --exclude='*.pdf' \
+  --exclude='*.zip' \
+  --exclude='*.tar.gz' \
+  --exclude='__pycache__' \
+  --exclude='*.pyc' \
+  --exclude='node_modules' \
+  --exclude='.DS_Store'
 
-copy_tree "$ROOT/alignment" "$OUT/alignment"
-copy_tree "$ROOT/conformance" "$OUT/conformance"
-copy_tree "$ROOT/framework" "$OUT/framework"
-copy_tree "$ROOT/platform" "$OUT/platform"
-copy_tree "$ROOT/simulator" "$OUT/simulator"
-copy_tree "$ROOT/specs" "$OUT/specs"
+copy_tree "$ROOT/alignment" "$OUT/alignment" \
+  --exclude='*.pdf' \
+  --exclude='*.zip' \
+  --exclude='__pycache__' \
+  --exclude='.DS_Store'
+
+copy_tree "$ROOT/conformance" "$OUT/conformance" \
+  --exclude='*.pdf' \
+  --exclude='*.zip' \
+  --exclude='__pycache__' \
+  --exclude='.DS_Store'
+
+copy_tree "$ROOT/framework" "$OUT/framework" \
+  --exclude='*.pdf' \
+  --exclude='*.zip' \
+  --exclude='__pycache__' \
+  --exclude='.DS_Store'
+
+copy_tree "$ROOT/platform" "$OUT/platform" \
+  --exclude='*.pdf' \
+  --exclude='*.zip' \
+  --exclude='__pycache__' \
+  --exclude='node_modules' \
+  --exclude='.DS_Store'
+
+copy_tree "$ROOT/simulator" "$OUT/simulator" \
+  --exclude='*.pdf' \
+  --exclude='*.zip' \
+  --exclude='__pycache__' \
+  --exclude='node_modules' \
+  --exclude='.DS_Store'
+
+copy_tree "$ROOT/specs" "$OUT/specs" \
+  --exclude='*.pdf' \
+  --exclude='*.zip' \
+  --exclude='__pycache__' \
+  --exclude='.DS_Store'
 
 # Ensure Jekyll does not run on Pages
 touch "$OUT/.nojekyll"
