@@ -154,13 +154,9 @@ def test_composite_action_is_one_of_the_vocabulary():
 
 def test_evaluate_all_does_not_consume_cas():
     """Structural proof: the decision authority cannot read CAS, so CAS can
-    never influence the emitted PolicyAction.
-
-    Note: audit_store parameter is optional and used for persistence only,
-    not for policy decision logic.
-    """
+    never influence the emitted PolicyAction."""
     params = set(inspect.signature(evaluate_all).parameters)
-    assert params == {"session", "event", "audit_store"}
+    assert params == {"session", "event"}
 
 
 def test_cas_result_is_score_only_and_carries_no_action():
