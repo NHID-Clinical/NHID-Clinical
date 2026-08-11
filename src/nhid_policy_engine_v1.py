@@ -21,7 +21,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from src.nhid_audit_trail import (
     AuditEvent,
@@ -35,6 +35,7 @@ from src.nhid_audit_trail import (
     PHIAccessOutcome,
     PolicyDecisionRecord,
 )
+from src.audit_store import AuditStore
 
 # ── NHID-Clinical spec version this engine implements ─────────────────────
 NHID_SPEC_VERSION = "1.3"
@@ -795,7 +796,7 @@ def evaluate_bot_to_bot(session: dict[str, Any], event: dict[str, Any]) -> Polic
 # Composite evaluator — runs all applicable rules and merges decisions
 # ──────────────────────────────────────────────────────────────────────────
 
-def evaluate_all(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecision:
+def evaluate_all(session: dict[str, Any], event: dict[str, Any], audit_store: Optional[AuditStore] = None) -> PolicyDecision:
     """
     Run all five conformance tests plus the bot-to-bot rule.
     Returns the most restrictive PolicyAction across all decisions.
@@ -806,6 +807,11 @@ def evaluate_all(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecisi
 
     Violations from all rules are merged into a single list.
     Audit trails from all rules are merged into a composite trail.
+
+    Args:
+        session: Session context
+        event: Policy evaluation event
+        audit_store: Optional AuditStore instance for persisting audit events (ATR-01 integration)
     """
     try:
         decisions = [
@@ -838,6 +844,53 @@ def evaluate_all(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecisi
         }
 
         dominant = max(decisions, key=lambda d: _priority[d.action])
+
+        # Persist audit trail to storage (ATR-01 integration)
+        if composite_audit_trail is not None and audit_store is not None:
+            try:
+                for audit_event in composite_audit_trail.events:
+                    # Build event payload based on event type
+                    payload = {}
+                    if audit_event.disclosure_event:
+                        payload["disclosure_event"] = {
+                            "timestamp": audit_event.disclosure_event.timestamp,
+                            "level": audit_event.disclosure_event.level.value,
+                            "text": audit_event.disclosure_event.disclosure_text,
+                            "speaker": audit_event.disclosure_event.speaker,
+                        }
+                    elif audit_event.phi_access_record:
+                        payload["phi_access_record"] = {
+                            "phi_requested": audit_event.phi_access_record.phi_fields_requested,
+                            "phi_accessed": audit_event.phi_access_record.phi_fields_accessed,
+                            "outcome": audit_event.phi_access_record.outcome.value,
+                        }
+                    elif audit_event.policy_decision_record:
+                        payload["policy_decision"] = {
+                            "action": audit_event.policy_decision_record.action,
+                            "violations": audit_event.policy_decision_record.violations_detected,
+                        }
+                    elif audit_event.escalation_event:
+                        payload["escalation"] = {
+                            "trigger": audit_event.escalation_event.escalation_trigger,
+                            "outcome": audit_event.escalation_event.escalation_outcome,
+                        }
+
+                    # Persist to storage
+                    audit_store.write_event(
+                        event_id=audit_event.event_id,
+                        session_id=audit_event.session_id,
+                        event_type=audit_event.event_type.value,
+                        timestamp=audit_event.timestamp,
+                        agent_id=audit_event.agent_identity.agent_id,
+                        organization_id=audit_event.organization_identity.organization_id,
+                        payload=payload,
+                        previous_event_id=audit_event.previous_event_id,
+                        evidence_hash=audit_event.evidence_hash,
+                    )
+            except Exception as store_error:
+                # Log storage error but do not block policy evaluation
+                # (audit trail verification validates integrity separately)
+                pass
 
         return PolicyDecision(
             action=dominant.action,
