@@ -18,7 +18,7 @@
 
 ## 1. Why a separate normalization layer
 
-NHID's policy engine emits internal events shaped for **deterministic policy evaluation** (the `session`/`event` dicts described in the Master Knowledge Archive §5.2) — fast, flat, Python-native. FHIR `AuditEvent` is shaped for **healthcare-native interoperability** — verbose, coded, designed to be ingested by systems NHID-Clinical doesn't control. Forcing the policy engine to *produce* FHIR-shaped events directly would couple a fast internal hot path to a slow, externally-governed schema. Instead, `src/fhir_audit_emitter.py` is a one-way translation layer: internal event → FHIR `AuditEvent`, run after the policy decision is already made.
+NHID's policy engine emits internal events shaped for **deterministic policy evaluation** (`session`/`event` dicts in `src/nhid_policy_engine_v1.py`) — fast, flat, Python-native. FHIR `AuditEvent` is shaped for **healthcare-native interoperability** — verbose, coded, designed to be ingested by systems NHID-Clinical doesn't control. Forcing the policy engine to *produce* FHIR-shaped events directly would couple a fast internal hot path to a slow, externally-governed schema. Instead, `src/fhir_audit_emitter.py` is a one-way translation layer: internal event → FHIR `AuditEvent`, run after the policy decision is already made.
 
 This also means the FHIR layer can evolve (new milestones, new extensions) without touching the policy engine's evaluation logic, and the policy engine's internal schema can evolve without breaking previously-emitted FHIR bundles, as long as the emitter's mapping is versioned (§6).
 
@@ -40,7 +40,7 @@ This ordering is the call's **lifecycle skeleton**. A fully conformant call emit
 
 ## 3. Normalized event schema
 
-The schema below is the **pre-FHIR canonical form** — what `fhir_audit_emitter.py` consumes before producing the AuditEvent resources. It is the same shape as the ATR-01-required event fields (Master Knowledge Archive §2.2/§5.2), organized here for downstream consumers who want to validate or process events *before* they're translated to FHIR (e.g., for the per-turn webhook use case in §4).
+The schema below is the **pre-FHIR canonical form** — what `fhir_audit_emitter.py` consumes before producing the AuditEvent resources. It is the same shape as the ATR-01-required event fields defined in `src/nhid_policy_engine_v1.py`, organized here for downstream consumers who want to validate or process events *before* they're translated to FHIR (e.g., for the per-turn webhook use case in §4).
 
 ```json
 {
@@ -127,7 +127,7 @@ Three independent version numbers already exist in `execution_context` (`pipelin
 - **`nhid_schema_version`** bumps on any change to the *shape* of the normalized event (§3) — adding/removing/renaming a field, changing a field's required-ness. Consumers parsing the normalized event (not the FHIR Bundle) key their parsing logic off this.
 - **`policy_engine_version`** bumps on any change to *evaluation behavior* (new control, changed pass/fail condition, changed CAS formula) — this is what lets a payer explain "why did the same transcript score differently before and after this date."
 - A new, **fourth** version field is recommended for the FHIR layer specifically: `nhid_fhir_profile_version`, carried as a `Meta.profile` canonical URL with a version suffix (e.g., `https://nhid-clinical.org/fhir/StructureDefinition/nhid-call-bundle|1.0`) on the emitted `Bundle`. This decouples "the policy engine changed" from "the FHIR mapping changed" — today a single `fhir_audit_emitter.py` change to, say, an outcome-coding table would have no dedicated version signal in the output Bundle itself. Not yet implemented; recommended for the next emitter revision.
-- **Backward compatibility rule:** within a major `nhid_schema_version`, only add optional fields — never repurpose or remove a field a downstream consumer may already depend on. Breaking changes require a major version bump and a migration note in the changelog (same discipline the Master Knowledge Archive already applies to itself).
+- **Backward compatibility rule:** within a major `nhid_schema_version`, only add optional fields — never repurpose or remove a field a downstream consumer may already depend on. Breaking changes require a major version bump and a migration note in the changelog.
 
 ## 7. Separating transport/security evidence from clinical/workflow evidence
 
@@ -142,7 +142,7 @@ Mixing these (e.g., embedding a raw OAuth bearer token or a full Ed25519 signatu
 
 ## 8. Preserving deterministic replayability
 
-The policy engine guarantees identical output for identical input (Master Knowledge Archive §2.3: "no randomness, no LLM calls, no external I/O in the policy engine"). The FHIR emission layer must preserve this property to remain trustworthy as evidence:
+The policy engine guarantees identical output for identical input (deterministic, no external I/O). The FHIR emission layer must preserve this property to remain trustworthy as evidence:
 
 - `fhir_audit_emitter.py` must be a **pure function** of the normalized event + the `PolicyDecision` — no wall-clock reads other than what's already in `event.timestamp`, no non-deterministic ID generation in a way that would change milestone *content* (random UUIDs for `AuditEvent.id` are fine; they're identifiers, not evaluated content).
 - `replay_mode: "replay"` (one of the three allowed values alongside `"live"`/`"test"`) exists precisely so a stored event can be re-run through the emitter later — for audits, for regression testing the emitter itself after a code change, or for regenerating a Bundle under a new `nhid_fhir_profile_version` (§6) without re-running the original call.
@@ -153,9 +153,9 @@ The policy engine guarantees identical output for identical input (Master Knowle
 The same normalized schema (§3) is designed to serve three different consumption patterns without three different schemas:
 
 - **Machine validation:** the example Bundle (`examples/fhir/nhid-compliant-call-bundle.json`) is validated in CI against the official HL7 FHIR R4 validator (`.github/workflows/nhid-gates.yml`, `fhir_validation` job) — see the mapping doc's "Validation" section. Any schema change must keep this example passing.
-- **Per-turn webhook evaluation:** `POST /v1/webhooks/call-progress` (Master Knowledge Archive §5.4) evaluates one normalized event per turn, statelessly, with the caller maintaining `session_state` across turns. FHIR emission for a still-in-progress call is necessarily partial — only the milestones reached so far exist — and downstream consumers polling for live status should treat an absent later milestone as "not yet reached," not as a failure.
+- **Per-turn webhook evaluation:** `POST /v1/webhooks/call-progress` evaluates one normalized event per turn, statelessly, with the caller maintaining `session_state` across turns. FHIR emission for a still-in-progress call is necessarily partial — only the milestones reached so far exist — and downstream consumers polling for live status should treat an absent later milestone as "not yet reached," not as a failure.
 - **Final call-bundle emission and long-term retention / SIEM ingestion:** once `nhid-call-end` fires, the Bundle is complete and becomes the durable artifact. This is the form intended for ingestion into a payer's SIEM or long-term compliance archive (see [`examples/fhir/README.md`](../examples/fhir/README.md) for the ingestion walkthrough) — at that point the Bundle should be treated as immutable; corrections require a new, linked Bundle (e.g., via `AuditEvent.entity` referencing the original `session_id`), not in-place edits to already-retained records.
 
 ---
 
-*NHID-Clinical is a voluntary open proposal (CC BY 4.0). Not an accredited standard. Not a regulatory requirement. Validated against HL7 FHIR R4 base spec v4.0.1 only — no named Implementation Guide conformance is claimed. See [the Master Knowledge Archive](MASTER-KNOWLEDGE-ARCHIVE.md) for the authoritative source of all technical claims in this document.*
+*NHID-Clinical is a voluntary open proposal (CC BY 4.0). Not an accredited standard. Not a regulatory requirement. Validated against HL7 FHIR R4 base spec v4.0.1 only — no named Implementation Guide conformance is claimed. See the source code repository for the authoritative implementation of all features described in this document.*

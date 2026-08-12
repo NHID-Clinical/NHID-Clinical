@@ -2,7 +2,7 @@
 
 **Version:** 1.0 (draft) · **Spec baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-06-21
 **Author:** Brianna Nicole Baynard-Malone · **License:** CC BY 4.0
-**Source of truth:** [`docs/MASTER-KNOWLEDGE-ARCHIVE.md`](MASTER-KNOWLEDGE-ARCHIVE.md) and the codebase. Where this document and the archive disagree, the archive/code wins; report the discrepancy.
+**Source of truth:** The codebase (`src/nhid_policy_engine_v1.py`, `src/agent_identity.py`) and the conformance test suite. Where this document and the code disagree, the code wins; report discrepancies via GitHub Issues.
 
 > NHID-Clinical is a voluntary, open behavioral baseline for AI voice agents in B2B healthcare
 > payer–provider calls, with an open cryptographic authorization layer (NHID-Auth v2) as a
@@ -61,7 +61,7 @@ claim that this specification by itself satisfies a named regulatory framework o
 Implementation Guide. NHID-Clinical validates FHIR output against the **HL7 FHIR R4 base
 specification (v4.0.1) only** — it does not claim conformance to a named IG such as IHE BALP.
 
-**Positioning relative to the five-layer trust stack** (Master Knowledge Archive §3.1):
+**Positioning relative to the five-layer trust stack**:
 
 1. Carrier authentication (STIR/SHAKEN) — outside this spec's scope, assumed pre-existing.
 2. **Behavioral disclosure (NHID-Clinical v1.3)** — §2 of this document.
@@ -73,7 +73,7 @@ specification (v4.0.1) only** — it does not claim conformance to a named IG su
 
 NHID-Clinical v1.3 defines four deterministic behavioral controls plus one supplemental
 structural requirement (ATR-01, §3). Full pass/fail conditions, detection keyword lists, and
-bot-to-bot variants are documented in the Master Knowledge Archive §2.1 — summarized here:
+bot-to-bot variants are implemented in `src/nhid_policy_engine_v1.py` — summarized here:
 
 | ID | Name | Requirement | Severity on failure |
 | :-- | :-- | :-- | :-- |
@@ -84,11 +84,11 @@ bot-to-bot variants are documented in the Master Knowledge Archive §2.1 — sum
 
 Note the canonical control names: **PDX-01 is "Pre-Data Exchange Gate,"** not "PHI Data Exchange
 Gate" — and **EIT-01 is "Escalation Implementation Test,"** not "Escalation & Intervention." Both
-corrections are recorded in the Master Knowledge Archive changelog (v1.1) with their source-code
+corrections are recorded in the codebase with their source
 citations; older PDF artifacts predating that fix may still show the old names — see the
 [PDF consistency review](pdf-consistency-and-grammar-review.md).
 
-**Impersonation Latency, formally** (Master Knowledge Archive §2.4.1):
+**Impersonation Latency, formally**:
 
 ```
 IL = t(disclosure) − t(connect)               (time form)
@@ -127,7 +127,7 @@ layer, 2 HTTP-infrastructure edge cases skipped in unit context — mapping to t
 test suite passes **284 tests (18 skipped — integration tests requiring a live server)**; combined
 with the TypeScript middleware suite (66 tests), the project's total passing count is **350**.
 Older PDF artifacts referencing 191 or 95 passing tests, or only 2 adapters, predate the adapter
-expansion (Vonage, Retell AI, Amazon Connect added) documented in the Master Knowledge Archive
+expansion (Vonage, Retell AI, Amazon Connect added) implemented in the adapter layer
 changelog and §7 (Implementation Roadmap) — see the
 [PDF consistency review](pdf-consistency-and-grammar-review.md) for the specific stale references found.
 
@@ -141,7 +141,7 @@ judgment (rather than a structural gate) are weaker integration candidates for t
 ## 5. CAS summary
 
 The Call Authorization Score (CAS) — not "Compliance/Conformance Assurance Score," a name fixed
-in the Master Knowledge Archive changelog — is a continuous 0.0–1.0 compliance signal per call:
+in the policy engine — is a continuous 0.0–1.0 compliance signal per call:
 
 ```
 CAS = F_IAF × F_NOCF × ECF
@@ -348,7 +348,7 @@ must address before relying on this as live infrastructure rather than a demonst
 | FHIR extension profile | Conceptual only — no extensions shipped | `nhid-participant-kind`, `nhid-execution-context`, `nhid-cas-score`, `nhid-delegation-chain-depth` (FHIR standardization doc §5) |
 | FHIR Bundle versioning | Only internal `execution_context` versions exist | Add `nhid_fhir_profile_version` via `Meta.profile` (FHIR standardization doc §6) |
 | Enterprise observability layer | Not implemented | OpenTelemetry integration (five-layer trust stack, layer 5) |
-| STIR/SHAKEN integration | Not implemented | Planned v2.1 (Master Knowledge Archive §3.2) |
+| STIR/SHAKEN integration | Not implemented | Future version candidate |
 | Attestation registry | Not implemented | Planned v2.1; depends on a registry operator existing (PKI guide §1.14) |
 | Real pilot data | None — "no organizations have adopted or piloted it yet" | 90-day shadow pilot program (`roadmap.html`, `pilot.html`) |
 
@@ -362,5 +362,5 @@ for the tier ladder this maps to.
 
 *NHID-Clinical is a voluntary open proposal (CC BY 4.0). Not an accredited standard. Not a
 regulatory requirement. Submitted as NIST public comment NIST-2025-0035-0026. See
-[the Master Knowledge Archive](MASTER-KNOWLEDGE-ARCHIVE.md) for the authoritative source of all
+the source code repository for the authoritative implementation of all
 technical claims in this document.*

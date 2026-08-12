@@ -32,7 +32,7 @@ Two distinct key materials exist in every NHID-Auth flow, and they answer differ
 | **Provider root key** | "Is this delegation authorized by the provider organization whose NPI is named in it?" | The provider organization (or a custodian acting for them — see §1.4) |
 | **Agent key** | "Is the entity presenting this passport on the call actually the agent the delegation names?" | The AI voice vendor's runtime, one keypair per agent instance (minimum: per provider-tenant) |
 
-The provider key is the trust anchor. Everything downstream — vendor platforms, sub-vendors, individual agent instances — derives its authority from a signature chain rooted at a provider key tied to a real NPI. This is why NPI anchoring is a hard requirement in the delegation chain rules (§4.4 of the Master Knowledge Archive) rather than a convenience field.
+The provider key is the trust anchor. Everything downstream — vendor platforms, sub-vendors, individual agent instances — derives its authority from a signature chain rooted at a provider key tied to a real NPI. This is why NPI anchoring is a hard requirement in the delegation chain rules (implemented in `src/agent_identity.py`) rather than a convenience field.
 
 ### 1.3 Who issues keys: the provider, or the vendor?
 
@@ -250,11 +250,11 @@ This is precisely the gap NHID-Auth's call-SID nonce binding closes. An OAuth be
 The vendor's backend authenticates to the NHID-aware API/webhook via OAuth2 client credentials. No agent keypairs, no delegations. Call transcripts/events are POSTed and evaluated against the behavioral controls (IDG-01/PDX-01/DBC-01/EIT-01/ATR-01) for a conformance verdict and CAS score. This is the integration tier most vendors should start at — see the [staged integration guide](v2-integration-guide.md), Tiers 0–1.
 
 **Tier 2 — Full cryptographic integration: OAuth2 for transport, NHID-Auth for call-bound delegation.**
-Same OAuth2 transport layer as Tier 1, plus: the provider has issued a signed `Delegation` to the vendor's agent keypair; every call event POST includes (or references) the corresponding `AgentPassport`; the receiving side runs `verify_passport` against the provider's known public key (via static exchange or JWKS, §1.8) before trusting the `provider_npi` the request claims to represent. See the [staged integration guide](v2-integration-guide.md), Tier 2, and §4.6 of the Master Knowledge Archive for the full code example.
+Same OAuth2 transport layer as Tier 1, plus: the provider has issued a signed `Delegation` to the vendor's agent keypair; every call event POST includes (or references) the corresponding `AgentPassport`; the receiving side runs `verify_passport` against the provider's known public key (via static exchange or JWKS, §1.8) before trusting the `provider_npi` the request claims to represent. See the [staged integration guide](v2-integration-guide.md), Tier 2, and `examples/issue_and_verify.py` for the full code example.
 
 **Future — OIDC-metadata or registry-based discovery (not yet implemented).**
 An optional future model where a provider publishes an OIDC-style discovery document (or an entry in a shared NHID trust registry) that resolves NPI → current signing key/JWKS URL automatically, removing the need for bilateral static key exchange entirely. This depends on a registry operator existing (§1.8/§1.14) and is explicitly forward-looking — there is no reference implementation of this pattern in the current codebase.
 
 ---
 
-*NHID-Clinical is a voluntary open proposal (CC BY 4.0). Not an accredited standard. Not a regulatory requirement. See [the Master Knowledge Archive](MASTER-KNOWLEDGE-ARCHIVE.md) for the authoritative source of all technical claims in this document.*
+*NHID-Clinical is a voluntary open proposal (CC BY 4.0). Not an accredited standard. Not a regulatory requirement. See the source code repository for the authoritative implementation of all features described in this document.*

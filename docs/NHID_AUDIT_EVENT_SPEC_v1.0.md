@@ -492,7 +492,7 @@ Generate compliance report or incident timeline
 - ✓ Audit event generation in policy engine (synchronous)
 - ✓ Log to CloudWatch Logs (append-only)
 - ✓ Document retention policy (7 years)
-- ✓ ATR-01 engine rule (implemented in Phase 6A with HMAC-SHA256 signing and persistent storage; see [docs/PHASE-6A-COMPLETION.md](PHASE-6A-COMPLETION.md))
+- ✓ ATR-01 engine rule (implemented with HMAC-SHA256 signing and persistent storage)
 
 ### v1.2 (Phase 2)
 - ✓ Implement ATR-01 rule (audit trail enforcement)
