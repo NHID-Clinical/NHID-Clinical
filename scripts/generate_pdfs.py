@@ -749,11 +749,11 @@ class ExecutiveSummary(Flowable):
 
 
 def _key_metrics(width=6.5 * inch):
-    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 343 Tests · 6 Adapters."""
+    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 656 Tests · 6 Adapters."""
     return _stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("343", "Tests"),
+        ("656", "Tests"),
         ("6", "Adapters"),
     ])
 
@@ -925,7 +925,7 @@ def make_shadow_guide():
          "claim status, and prior authorization calls."),
         ("Month 2 — Gap Analysis",
          "Evaluate identified AI calls against the v1.3 controls (IDG-01, PDX-01, DBC-01, "
-         "EIT-01, plus the supplemental ATR-01 audit-trail control). Quantify what passes, "
+         "EIT-01, ATR-01), plus the supplemental bot-to-bot rule. Quantify what passes, "
          "what fails, what is ambiguous."),
         ("Month 3 — Written Assessment",
          "Compile findings into a short written assessment. Share anonymized results "
@@ -935,14 +935,16 @@ def make_shadow_guide():
         story.append(Paragraph(title, H2))
         story.append(Paragraph(body_txt, BODY))
 
-    # The Four Controls
+    # The Five Controls
     story.append(Spacer(1, 0.1*inch))
-    story.append(Paragraph("The Four Controls You Are Observing", H1))
+    story.append(Paragraph("The Five Controls You Are Observing", H1))
     story.append(Spacer(1, 0.08*inch))
 
     controls = [
         ("IDG-01", "Identity Disclosure Gate",
          "AI agent must disclose it is automated before any PHI or data exchange.", C_IDG),
+        ("PDX-01", "Pre-Data Exchange Gate",
+         "No PHI may be exchanged until IDG-01 disclosure is confirmed.", C_PDX),
         ("DBC-01", "Deceptive Behavior Check",
          "No synthetic voice artifacts designed to impersonate a human. No fake breathing.", C_DBC),
         ("EIT-01", "Escalation Implementation Test",
@@ -1029,12 +1031,12 @@ def make_core_spec():
     story.append(_stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("343", "Unit Tests"),
+        ("656", "Unit Tests"),
         ("6", "Adapters"),
     ]))
     story.append(Spacer(1, 0.12 * inch))
 
-    _section(story, "The Four Controls", H1)
+    _section(story, "The Five Controls", H1)
     story.append(Paragraph(
         "Each control maps to RFC 2119 keywords in the full specification. "
         "Illustrated cards below summarize the v1.3 behavioral gates.",
@@ -1067,7 +1069,7 @@ def make_core_spec():
         story.append(Spacer(1, 0.08 * inch))
 
     story.append(ColorBlock(
-        "ATR-01  ·  Audit Trail (supplemental)",
+        "ATR-01  ·  Audit Trail (fifth canonical control)",
         "Machine-readable JSON event trace for every call: disclosure timestamps, state transitions, "
         "escalation events, and execution context. Maps to HL7 FHIR R4 AuditEvent (base v4.0.1) — "
         "no named Implementation Guide conformance (e.g. IHE BALP) is claimed.",
@@ -1206,7 +1208,7 @@ def make_operational_blueprint():
     phases = [
         ("Phase 1  ·  Weeks 1–2", BLUE, "Add RFP Language",
          "Insert the standard NHID-Clinical conformance clause into your next voice AI vendor "
-         "RFP or BAA amendment. One clause covers all four controls."),
+         "RFP or BAA amendment. One clause covers all five controls."),
         ("Phase 2  ·  Weeks 3–6", TEAL, "Vendor Sandbox Testing",
          "Ask your vendor to run: git clone + pip install -r requirements.txt + "
          "python -m pytest tests/ -v. Results in under 5 minutes. Request full terminal output."),
@@ -1518,7 +1520,7 @@ def make_knowledge_archive():
     story.append(Spacer(1, 0.15*inch))
 
     # Core Framework
-    story.append(Paragraph("Core Framework — The Four Controls + ATR-01", H1))
+    story.append(Paragraph("Core Framework — The Five Controls", H1))
     controls = [
         ("IDG-01", "Identity Disclosure Gate",
          "AI agent must disclose it is automated before any PHI request or exchange.", C_IDG),
@@ -1734,7 +1736,7 @@ def make_v13_overview():
         ("EIT-01 — Human escalation",
          "A human escalation path is communicated and honored immediately when the receiving "
          "party requests a person."),
-        ("ATR-01 — Audit trace (supplemental)",
+        ("ATR-01 — Audit trace",
          "Every call produces a machine-readable JSON event trace with disclosure timestamps, "
          "state transitions, and execution context — deterministic under identical input conditions."),
     ]
@@ -1815,7 +1817,7 @@ def make_v13_overview():
         "A deterministic policy engine that produces stable trace output under identical input "
         "conditions (modulo timestamps and non-deterministic IDs).",
         "An 18-case conformance test suite (CTS) in machine-readable YAML plus a pytest failure "
-        "injection harness (343 passing unit tests in the reference implementation).",
+        "injection harness (656 passing unit tests in the reference implementation).",
         "10 canonical trace files in traces/ demonstrating real-world scenarios (eligibility, "
         "prior auth, claims status, bot-to-bot, audit gaps, and more).",
         "Six vendor adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress) "
@@ -1990,7 +1992,7 @@ def make_evidence_pack():
         ["EIT-01 (Escalation Trigger)", "94.7%", "Holds against real phrasing"],
         ["PDX-01 (PHI Data Exchange)", "58.6%", "Partial — real-world phrasing diverges from synthetic cases"],
         ["DBC-01 (Deceptive Behavior Claim)", "2.5%", "Weak — heuristic phrase list does not yet cover most real phrasing"],
-        ["ATR-01 (supplemental)", "0.0%", "Corpus/adapter structural limitation — not a representative test"],
+        ["ATR-01 (Audit trace)", "0.0%", "Corpus/adapter structural limitation — not a representative test"],
     ], [2.1 * inch, 1.2 * inch, 3.2 * inch]))
     story.append(Spacer(1, 0.12 * inch))
 

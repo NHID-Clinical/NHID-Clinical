@@ -8,7 +8,7 @@ script derives the canonical values from their source-of-truth files and fails
 if any watched public surface claims a different number.
 
 Sources of truth:
-  - scripts/validate_ci.py      → UNIT_EXPECTED (test count)
+  - scripts/validate_ci.py      → UNIT_PUBLISHED (published unit-test count)
   - scripts/check_baseline.py   → EXPECTED (per-control detection/FP baseline)
 
 Watched surfaces (drift-prone list from the docs-and-positioning protocol):
@@ -60,7 +60,7 @@ def _module_constant(path: str, name: str):
 
 
 def main() -> int:
-    unit_expected = _module_constant("scripts/validate_ci.py", "UNIT_EXPECTED")
+    unit_expected = _module_constant("scripts/validate_ci.py", "UNIT_PUBLISHED")
     baseline = _module_constant("scripts/check_baseline.py", "EXPECTED")
     detected, expected, _fp = baseline["DBC-01"]
     dbc_rate = f"{100.0 * detected / expected:.1f}"
@@ -98,9 +98,10 @@ def main() -> int:
         for f in failures:
             print("DRIFT FAIL:", f)
         print(
-            "\nReconcile using the atomic propagation checklist "
-            "(docs/MASTER-KNOWLEDGE-ARCHIVE.md §9.1: validate_ci.py, ci.yml "
-            "job name, CONTRIBUTING, README, archive LIVE rows only)."
+            "\nReconcile every published surface in the same commit: "
+            "UNIT_PUBLISHED in scripts/validate_ci.py, the ci.yml job name, "
+            ".github/CONTRIBUTING.md, the README badge and body, the website "
+            "stats strip, and scripts/generate_pdfs.py."
         )
         return 1
 

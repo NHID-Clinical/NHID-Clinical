@@ -38,6 +38,7 @@ copy_tree "$ROOT/assets" "$OUT/assets" \
   --exclude='badges-dark.jpg' \
   --exclude='badges-light.jpg' \
   --exclude='media/impersonation-latency-trap.mp4' \
+  --exclude='media/video.mp4' \
   --exclude='*.pdf' \
   --exclude='*.zip' \
   --exclude='*.tar.gz' \

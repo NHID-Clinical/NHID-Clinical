@@ -17,8 +17,8 @@
 | **Fail Condition** | `disclosure_timestamp == None` OR `disclosure_status != "DISCLOSED"` OR `disclosure_timestamp >= first_phi_turn` |
 | **Decision/Evidence** | Stored in `healthcare_governance.disclosure_timestamp` (turn index of valid disclosure) |
 | **Limitation** | Relies on corpus `disclosure_status` field; does not validate quality of disclosure (e.g., did user understand?) |
-| **Test Coverage** | 60 unit tests (disclosure timing, AMBIGUOUS status, repeated disclosure) |
-| **Corpus Status** | 100% false positive rate (investigating in Phase 5) |
+| **Test Coverage** | No dedicated per-control file; asserted across the vendor-adapter and API suites |
+| **Corpus Status** | 100% false positive rate against the Tonic corpus — open adapter/semantics issue |
 
 ---
 
@@ -34,7 +34,7 @@
 | **Fail Condition** | `disclosure_timestamp >= current_turn_index` AND `contains_phi == True` |
 | **Decision/Evidence** | Comparison of `healthcare_governance.disclosure_timestamp` vs. current turn; matched against corpus `contains_phi` field |
 | **Limitation** | Binary PHI flag; does not distinguish PHI types or sensitivity levels |
-| **Test Coverage** | 80 unit tests (premature PHI, repeated PHI, mixed event types) |
+| **Test Coverage** | No dedicated per-control file; asserted across the vendor-adapter and API suites |
 | **Corpus Status** | 100% accuracy (64/64 violations correctly detected) |
 
 ---
@@ -51,7 +51,7 @@
 | **Fail Condition** | Any of: EXPLICIT_CONCEAL_REQUEST, EXPLICIT_IMPERSONATION, EXPLICIT_MISREPRESENTATION, IMPLICIT_EVASIVE, AMBIGUOUS_IDENTITY_LANGUAGE, HUMAN_PASSING_ATTEMPT |
 | **Decision/Evidence** | Stored in `healthcare_governance.deceptive_artifact_flags` (list of artifact types); mapped from corpus `deception_pattern` enum |
 | **Limitation** | Depends on corpus pattern classification; implicit/ambiguous patterns may not be 100% accurate in real data |
-| **Test Coverage** | 40 unit tests (explicit conceal, impersonation, evasion, subtle language) |
+| **Test Coverage** | `tests/test_dbc01_heuristics.py` (11 tests), plus review-routing and review-queue suites |
 | **Corpus Status** | 100% accuracy (23/23 violations correctly detected) |
 
 ---
@@ -68,8 +68,8 @@
 | **Fail Condition** | `escalation_outcome == "DEFLECTED"` OR `escalation_outcome == "IGNORED"` OR escalation requested but no outcome within 5 turns |
 | **Decision/Evidence** | Tracked in session state: `escalation_request_turn` (turn N) + `escalation_outcome` (turn N+X); evidence in corpus metadata |
 | **Limitation** | Does not validate quality of escalation (e.g., was it a real human?); limited to 5-turn window (may be too short/long for real calls) |
-| **Test Coverage** | 40 unit tests (8 multi-turn regression tests for escalation tracking across conversation gaps) |
-| **Corpus Status** | 0% detection rate (2/2 violations missed; Phase 5 investigation needed) |
+| **Test Coverage** | `tests/test_eit01_multiturn.py` (8 multi-turn escalation-tracking tests) |
+| **Corpus Status** | 0% detection rate (2/2 violations missed) — open adapter state-tracking issue |
 
 ---
 
@@ -83,9 +83,9 @@
 | **What it Checks** | Are audit events being logged for identity disclosure, PHI access, deception detection, escalation, policy violations? |
 | **Pass Condition** | `audit_trail` populated with ≥5 events per turn; events include: event_type, turn_index, timestamp, control, status |
 | **Fail Condition** | `audit_trail` missing events OR events not persisted to AuditStore (handled by external AuditPersistenceManager) |
-| **Decision/Evidence** | Stored in `PolicyDecision.audit_trail` (list of timestamped AuditEvent objects); persisted via hash-chained append-only log |
+| **Decision/Evidence** | Stored in `PolicyDecision.audit_trail` (an `AuditTrail` object holding `events: list[AuditEvent]`); persisted via hash-chained append-only log |
 | **Limitation** | Persistence is outside engine (external responsibility); engine cannot enforce persistence failure detection |
-| **Test Coverage** | 40 unit tests (5 integration tests for external audit persistence with SQLite/DynamoDB) |
+| **Test Coverage** | `tests/test_atr01_audit_trail.py` (12 tests) + `tests/test_atr01_persistence.py` (5 tests) |
 | **Corpus Status** | 100% operational (5 events/turn logged for all 150 sessions; persistence tested separately) |
 
 ---
@@ -147,18 +147,22 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 
 ## Test Coverage Summary
 
-| Control | Unit Tests | Integration Tests | Multi-turn | Corpus Sessions | Status |
-|---------|------------|-------------------|-----------|-----------------|--------|
-| IDG-01 | 60 | 2 | 3 | 64 expected | ✓ Tests pass, 100% FP in corpus |
-| PDX-01 | 80 | 3 | 2 | 64 expected | ✓ Tests pass, 100% accuracy in corpus |
-| DBC-01 | 40 | 2 | 0 | 23 expected | ✓ Tests pass, 100% accuracy in corpus |
-| EIT-01 | 40 | 8 | 8 | 2 expected | ✓ Tests pass, 0% detection in corpus |
-| ATR-01 | 40 | 5 | 0 | 150 sessions | ✓ Tests pass, operational in corpus |
-| **Total** | **260** | **20** | **13** | **150** | **656 passing** (674 total) |
+| Control | Dedicated test file(s) | Corpus expectation | Corpus result |
+|---------|------------------------|--------------------|---------------|
+| IDG-01 | *(covered across adapter + endpoint suites)* | 64 violations | 148 detected — 100% FP rate, 43.2% accuracy |
+| PDX-01 | *(covered across adapter + endpoint suites)* | 64 violations | 64 detected — 0% FP rate, 100% accuracy |
+| DBC-01 | `test_dbc01_heuristics.py` (11) | 23 violations | 23 detected — 0% FP rate, 100% accuracy |
+| EIT-01 | `test_eit01_multiturn.py` (8) | 2 violations | 0 detected — 0% detection, 95.0% accuracy |
+| ATR-01 | `test_atr01_audit_trail.py` (12), `test_atr01_persistence.py` (5) | 150 sessions | Audit trail operational across all sessions |
+
+Suite totals: **656 passing, 18 skipped, 674 total** across 37 test files. Corpus figures are
+read from `corpus_evaluation_output/corpus_metrics.json` (150 sessions, 1,227 turns).
+IDG-01 and PDX-01 have no single dedicated per-control file; their behaviour is asserted
+through the vendor-adapter and API suites.
 
 ---
 
-## Next Steps (Phase 5)
+## Open Work
 
 1. **IDG-01 Accuracy**: Root cause 100% false positive rate
    - Audit: Compare adapter inferences for CLEAN sessions (should all PASS)

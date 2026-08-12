@@ -44,41 +44,50 @@ PolicyDecision = evaluate_all(
 ```python
 @dataclass
 class PolicyDecision:
-    action: PolicyAction                 # DISCLOSE_IDENTITY | DENY_DATA | ESCALATE_HUMAN | LOG_ONLY | CONTINUE_AI
-    reason_code: str                     # Machine-readable decision code
-    violations: List[BoundaryViolation]  # Control violations (rule_id, description, severity)
-    audit_trail: Optional[AuditTrail]    # Audit events for persistence
-    next_state: str                      # Workflow state label
+    action:         PolicyAction            # DISCLOSE_IDENTITY | ESCALATE_HUMAN | CONTINUE_AI | DENY_DATA | LOG_ONLY
+    reason_code:    str                     # Machine-readable decision code
+    policy_version: str                     # POLICY_ENGINE_VERSION
+    violations:     list[BoundaryViolation] # rule_id, description, severity
+    next_state:     str                     # Workflow state label
+    twiml_fallback: str | None              # Optional telephony fallback markup
+    gather_speech:  bool                    # Whether the caller should be re-prompted
+    audit_trail:    AuditTrail | None       # Populated when execution_context is supplied
 ```
 
-**Example:**
+`evaluate_all()` returns the **most restrictive** action across the five controls plus the
+bot-to-bot rule: `DENY_DATA` > `ESCALATE_HUMAN` > `DISCLOSE_IDENTITY` > `LOG_ONLY` / `CONTINUE_AI`.
+
+**Example** — PHI requested at turn 2 with no prior disclosure (actual engine output):
 ```json
 {
   "action": "DENY_DATA",
   "reason_code": "PDX01_PHI_GATE_TRIGGERED",
+  "policy_version": "1.0.0",
+  "next_state": "GATE_BLOCKED",
   "violations": [
     {
+      "rule_id": "IDG-01",
+      "description": "AI agent has not disclosed non-human identity. Turn count: 2",
+      "severity": "critical"
+    },
+    {
       "rule_id": "PDX-01",
-      "description": "PHI access attempted before identity disclosure",
+      "description": "PHI exchange attempted before identity disclosure",
       "severity": "critical"
     }
   ],
-  "audit_trail": [
-    {
-      "event_type": "PHI_ACCESS_ATTEMPT",
-      "turn_index": 2,
-      "timestamp": "2026-08-11T14:30:02Z"
-    }
-  ],
-  "reasoning": {
-    "IDG-01": "No disclosure detected before turn 2",
-    "PDX-01": "FAIL – PHI accessed without prior disclosure",
-    "DBC-01": "N/A",
-    "EIT-01": "N/A",
-    "ATR-01": "Audit trail recorded"
+  "audit_trail": {
+    "session_id": "s1",
+    "agent_identity": { "…": "…" },
+    "organization_identity": { "…": "…" },
+    "events": [ { "event_id": "…", "timestamp": "2026-08-11T14:30:02Z" } ]
   }
 }
 ```
+
+`audit_trail` is an `AuditTrail` object (`src/nhid_audit_trail.py`), not a bare list, and is
+`None` unless the event carries a complete `execution_context` block. ATR-01 violations are
+raised for any missing required audit field.
 
 ### 1.3 The Five Policy Controls
 
@@ -132,8 +141,11 @@ CONVERSATION (back to main flow)
 
 CONVERSATION (any turn)
   ↓ (if critical violation detected: IDG-01 or PDX-01)
-BLOCKED (no further turns processed)
+GATE_BLOCKED (recorded; in shadow mode the call is not actually stopped)
 ```
+
+`next_state` values emitted by the engine include `AWAITING_DISCLOSURE`, `ACTIVE`,
+`GATE_BLOCKED`, `DECEPTION_FLAGGED`, `ESCALATING`, and `ESCALATION_FAILED`.
 
 The session state is **passed by caller** (external to engine):
 
@@ -211,14 +223,14 @@ The engine outputs audit_trail; an external AuditPersistenceManager persists it:
 
 ```
 PolicyDecision
-  ├─ audit_trail: List[AuditEvent]
-  │   ├─ event_id: str (unique, hash-chained)
-  │   ├─ timestamp: ISO8601
+  ├─ audit_trail: AuditTrail
   │   ├─ session_id: str
-  │   ├─ turn_index: int
-  │   ├─ event_type: "IDENTITY_DISCLOSURE" | "PHI_ACCESS" | ...
-  │   ├─ control: "ATR-01"
-  │   └─ status: "LOGGED" | "PERSISTED"
+  │   ├─ agent_identity: AgentIdentity
+  │   ├─ organization_identity: OrganizationIdentity
+  │   └─ events: list[AuditEvent]
+  │       ├─ event_id: str (unique, hash-chained)
+  │       ├─ timestamp: ISO8601
+  │       └─ evidence_hash: str (signed on append)
   │
   └─ [AuditPersistenceManager.persist(audit_trail)]
       ↓
@@ -240,19 +252,19 @@ Voice Call Handler
   ├─ Reconstruct: healthcare_governance context
   ├─ Call: PolicyDecision = evaluate_all(session, event)
   │
-  ├─ [Decision: BLOCK with violations]
-  │   ├─ Log: "violation detected: IDG-01-EARLY-PHI-ACCESS"
+  ├─ [Decision: DENY_DATA with critical violations]
+  │   ├─ Log: "violation detected: PDX-01 (PDX01_PHI_GATE_TRIGGERED)"
   │   ├─ Audit: persist to AuditStore
   │   ├─ Alert: send notification to human reviewer
-  │   └─ Allow: conversation continues (NOT BLOCKED)
+  │   └─ Observe only: conversation continues (NOT BLOCKED)
   │
   └─ Return: Continue to user
 ```
 
-**Contrast with Enforcement Mode** (future):
+**Contrast with Enforcement Mode** (future — not implemented):
 ```
-[Decision: BLOCK]
-  └─ Action: Terminate call, transfer to human agent, or prompt identity re-disclosure
+[Decision: DENY_DATA]
+  └─ Receiver action: Terminate call, transfer to human agent, or prompt identity re-disclosure
 ```
 
 ---
@@ -264,35 +276,38 @@ Voice Call Handler
 **Scenario**: Agent discloses identity, user shares PHI after disclosure, no deception, no escalation needed.
 
 ```
-Turn 0: SMALL_TALK (greeting)
+Turn 0: SMALL_TALK (greeting, no disclosure yet)
   Event: {utterance: "hello", event_type: "SMALL_TALK", contains_phi: false}
-  Session: {disclosure_timestamp: None, state: "CONVERSATION"}
+  Session: {turn_count: 0, disclosure_timestamp: None}
   Engine: evaluate_all(session, event)
-    → Violations: [] (no PHI, no deception)
-    → Action: ALLOW
-    → Audit: [TURN_START, CONVERSATION_OPEN]
+    → IDG-01: VIOLATION (disclosure not yet made)
+    → action:      DISCLOSE_IDENTITY
+    → reason_code: IDG01_DISCLOSURE_MISSING
+    → next_state:  AWAITING_DISCLOSURE
 
 Turn 3: IDENTITY_DISCLOSURE (agent discloses)
-  Event: {utterance: "I'm Claude, an AI", event_type: "IDENTITY_DISCLOSURE", disclosure_status: "DISCLOSED"}
-  Adapter: disclosure_timestamp ← 3 (current turn)
+  Event: {utterance: "I am an automated system", disclosure_status: "DISCLOSED"}
+  Adapter: disclosure_timestamp ← turn 3 timestamp
   Engine: evaluate_all(session, event)
-    → IDG-01: PASS (disclosure occurred at turn 3)
-    → Action: ALLOW
-    → Audit: [IDENTITY_DISCLOSED, VALID_DISCLOSURE]
+    → IDG-01: PASS (disclosure recorded)
+    → action:      CONTINUE_AI
+    → reason_code: ATR01_AUDIT_COMPLETE
+    → next_state:  ACTIVE
 
 Turn 4: PHI_REQUEST (user shares data)
-  Event: {utterance: "my member ID is 12345", contains_phi: true, phi_accessed: ["member_id"]}
-  Adapter: disclosure_timestamp=3 (from prior turn), current_turn=4
+  Event: {utterance: "my member ID is 12345", phi_accessed: ["member_id"]}
+  Adapter: disclosure_timestamp carried forward from turn 3
   Engine: evaluate_all(session, event)
-    → IDG-01: PASS (disclosure at turn 3 < PHI at turn 4)
-    → PDX-01: PASS (PHI after disclosure)
-    → DBC-01: PASS (no deception)
-    → Action: ALLOW
-    → Audit: [PHI_ACCESS, MEMBER_ID_PROVIDED, POLICY_CHECK_PASSED]
+    → IDG-01: PASS · PDX-01: PASS (PHI after disclosure) · DBC-01: PASS
+    → action:      CONTINUE_AI
+    → reason_code: ATR01_AUDIT_COMPLETE
+    → next_state:  ACTIVE
 
-Final Decision: ALLOW (no violations, all controls pass)
-Audit Trail: 5 events per turn × 5 turns = 25 audit events persisted
+Final decision: CONTINUE_AI (no violations, all controls pass)
 ```
+
+Note that the engine emits `DISCLOSE_IDENTITY` on turn 0 — disclosure is required up front, so
+"no violations yet" is not the same as "nothing to do."
 
 ### 3.2 Bad Path A: Premature PHI Access (PDX-01 Violation)
 
@@ -302,27 +317,22 @@ Audit Trail: 5 events per turn × 5 turns = 25 audit events persisted
 Turn 0-2: SMALL_TALK (no disclosure yet)
   Adapter: disclosure_timestamp ← None
 
-Turn 2: PHI_RESPONSE (user gives data before agent disclosures)
-  Event: {utterance: "my DOB is 1990-01-01", contains_phi: true, phi_accessed: ["date_of_birth"]}
+Turn 2: PHI_RESPONSE (user gives data before agent discloses)
+  Event: {utterance: "my DOB is 1990-01-01", phi_accessed: ["date_of_birth"]}
   Adapter: disclosure_timestamp ← None (no disclosure yet)
   Engine: evaluate_all(session, event)
-    → IDG-01: PASS (disclosure not required yet, no sensitive action)
-    → PDX-01: VIOLATION (PHI at turn 2, disclosure_timestamp=None)
-      Rule: "PHI exchanged before valid disclosure"
-    → Action: REVIEW (critical violation, but not final block)
-    → Audit: [PHI_ACCESS, EARLY_PHI_WARNING, PDX_01_VIOLATION]
+    → IDG-01: VIOLATION (critical — no disclosure by turn 2)
+    → PDX-01: VIOLATION (critical — PHI with disclosure_timestamp=None)
+    → action:      DENY_DATA
+    → reason_code: PDX01_PHI_GATE_TRIGGERED
+    → next_state:  GATE_BLOCKED
 
-Turn 3: IDENTITY_DISCLOSURE (too late)
-  Adapter: disclosure_timestamp ← 3
-  Engine: evaluate_all(session, event)
-    → IDG-01: FAIL (disclosure at turn 3, but PHI already at turn 2)
-    → PDX-01: FAIL (violation already recorded)
-    → Action: BLOCK (critical violations, final decision)
-    → Audit: [IDENTITY_DISCLOSED_LATE, POLICY_CHECK_FAILED]
-
-Final Decision: BLOCK
-Reason: "PHI exchanged before agent disclosed identity (turn 2 < turn 3)"
+Final decision: DENY_DATA
+Reason: "PHI exchange attempted before identity disclosure"
 ```
+
+`DENY_DATA` is the most restrictive action and wins the composite regardless of what later
+turns report. In shadow mode it is recorded, not applied.
 
 ### 3.3 Bad Path B: Deceptive Concealment (DBC-01 Violation)
 
@@ -339,42 +349,47 @@ Turn 1: DECEPTION_ATTEMPT
   Adapter: deceptive_artifact_flags ← ["explicit_conceal_ai"]
   Engine: evaluate_all(session, event)
     → DBC-01: VIOLATION (explicit concealment request)
-      Rule: "agent explicitly requested user conceal AI identity"
-    → Action: BLOCK (critical violation)
-    → Audit: [DECEPTION_DETECTED, EXPLICIT_CONCEAL_REQUEST, DBC_01_VIOLATION]
+    → action:      LOG_ONLY
+    → reason_code: DBC01_ARTIFACT_DETECTED
+    → next_state:  DECEPTION_FLAGGED
 
-Final Decision: BLOCK
-Reason: "Agent attempted to conceal AI identity"
+Final decision: LOG_ONLY
+Reason: "Deceptive artifact detected — flagged for review, session continues"
 ```
+
+DBC-01 deliberately resolves to `LOG_ONLY` rather than a hard denial: deception heuristics are
+the least precise of the five controls, so a detection routes to human review instead of
+terminating the exchange.
 
 ### 3.4 Bad Path C: Escalation Not Honored (EIT-01 Violation)
 
 **Scenario**: User requests escalation, but request is deflected/ignored.
 
 ```
-Turn 2: ESCALATION_REQUEST (user requests human agent)
-  Event: {escalation_requested: True, utterance: "I want to speak to a human"}
-  Session state: escalation_request_turn ← 2
+Turn 2: ESCALATION_REQUEST (user requests human agent, path available)
+  Event: {utterance: "I want to speak to a human"}
+  Session: {escalation_path_available: True}
   Engine: evaluate_all(session, event)
-    → EIT-01: PASS (escalation requested, within window)
-    → Action: ALLOW (but escalation required)
-    → Audit: [ESCALATION_REQUESTED]
+    → EIT-01: PASS (escalation recognised and routable)
+    → action:      ESCALATE_HUMAN
+    → reason_code: EIT01_ESCALATION_TRIGGERED
+    → next_state:  ESCALATING
 
-Turn 3-7: No escalation outcome, call continues
-  (Turns 3-7 process normally, but escalation_outcome stays empty)
-
-Turn 7: Call ending
-  Event: {event_type: "CLOSING", escalation_outcome: "DEFLECTED"}
-  Adapter: escalation_request_turn=2, escalation_outcome="DEFLECTED", elapsed=5 turns
+Turn 7: Same request, but no escalation path is available
+  Event: {utterance: "I want to speak to a human", escalation_outcome: "DEFLECTED"}
+  Session: {escalation_path_available: False}
   Engine: evaluate_all(session, event)
-    → EIT-01: VIOLATION (escalation requested but deflected)
-      Rule: "escalation requested at turn 2, but not honored (outcome=DEFLECTED)"
-    → Action: REVIEW (violation, but call already ending)
-    → Audit: [ESCALATION_DEFLECTED, EIT_01_VIOLATION]
+    → EIT-01: VIOLATION (escalation requested, not honored)
+    → action:      ESCALATE_HUMAN
+    → reason_code: EIT01_ESCALATION_NOT_HONORED
+    → next_state:  ESCALATION_FAILED
 
-Final Decision: REVIEW (violation detected, follow-up recommended)
-Reason: "Escalation requested at turn 2 but was deflected"
+Final decision: ESCALATE_HUMAN
+Reason: "Escalation requested but no escalation path was available"
 ```
+
+Both branches return `ESCALATE_HUMAN` — the action states what should happen, and the
+`reason_code` / `next_state` pair distinguishes a healthy handoff from a failed one.
 
 ---
 
@@ -417,7 +432,7 @@ Tonic Corpus (150 sessions, 1,227 turns)
 - PDX-01: Adapter correctly infers PHI fields from utterance; engine correctly checks pre-disclosure PHI access
 - DBC-01: Adapter correctly maps deception patterns; engine correctly detects explicit deception
 
-**Problematic Controls** (Phase 5 investigation):
+**Problematic Controls** (open, under investigation):
 - IDG-01: Every session detecting violations (148/148) when only 64 expected
   - Root cause: Adapter disclosure_timestamp inference OR engine IDG-01 semantics mismatch
   - Investigation: Compare adapter inferences vs. corpus labels for CLEAN sessions (should all PASS)
@@ -454,9 +469,14 @@ Tonic Corpus (150 sessions, 1,227 turns)
 
 When violations are to be enforced:
 
-1. If action=BLOCK: Terminate call, transfer to human, or re-prompt identity
-2. If action=REVIEW: Flag for human review, offer guidance
-3. If action=ALLOW: Proceed normally
+1. If action=DENY_DATA: Withhold PHI, terminate, or re-prompt for identity
+2. If action=DISCLOSE_IDENTITY: Require disclosure before continuing
+3. If action=ESCALATE_HUMAN: Transfer to a human agent
+4. If action=LOG_ONLY: Flag for human review, continue the call
+5. If action=CONTINUE_AI: Proceed normally
+
+Receiver obligations for each action are specified normatively in
+[`enforcement-profile.md`](enforcement-profile.md).
 
 ---
 
@@ -465,7 +485,7 @@ When violations are to be enforced:
 1. **Pure Computation**: Engine is deterministic, testable, no side effects
 2. **External Integration**: Schema adaptation, state machine, audit persistence all outside engine
 3. **Audit-First**: Every decision is logged with full reasoning for compliance
-4. **Incremental Validation**: Corpus evaluation proves control detection; Phase 5 improves accuracy
+4. **Incremental Validation**: Corpus evaluation measures control detection; adapter accuracy work is open
 5. **Shadow Mode First**: Observe-only deployment reduces pilot risk
 6. **Determinism**: Same input always produces same output (enables regression testing)
 
@@ -486,27 +506,49 @@ NHID-Clinical/
 │   ├─ tonic_schema_adapter.py (schema transformation)
 │   └─ evaluate_tonic_corpus.py (corpus evaluation harness)
 │
-├─ tests/
-│   ├─ test_idg_01.py (60 tests)
-│   ├─ test_pdx_01.py (80 tests)
-│   ├─ test_dbc_01.py (40 tests)
-│   ├─ test_eit_01.py (40 tests, including 8 multi-turn)
-│   └─ test_atr_01.py (40 tests, including 5 persistence)
+├─ tests/                     (37 files, 674 tests: 656 passing, 18 skipped)
+│   ├─ test_atr01_audit_trail.py   (12 tests)
+│   ├─ test_atr01_persistence.py   (5 tests)
+│   ├─ test_dbc01_heuristics.py    (11 tests)
+│   ├─ test_eit01_multiturn.py     (8 tests)
+│   ├─ test_enforcement_profile.py (13 tests)
+│   ├─ test_identity.py            (26 tests — NHID-Auth v2)
+│   └─ … adapter, API, audit-store, and CAS suites
 │
 ├─ docs/
 │   ├─ SYSTEM_ARCHITECTURE.md (this file)
 │   ├─ CORPUS_EVALUATION_SUMMARY.md (data quality validation)
-│   ├─ PILOT_READINESS.md (Tier 0 deployment guidance)
+│   ├─ CONTROL_DECISION_TABLE.md (per-control decision matrix)
+│   ├─ enforcement-profile.md (normative receiver actions)
 │   └─ claim-boundaries.md (policy on external claims)
 │
 └─ corpus_evaluation_output/
     ├─ corpus_metrics.json (per-control metrics)
-    ├─ corpus_detailed_results.json (first 50 sessions)
-    └─ corpus_failures.json (any exceptions)
+    └─ corpus_detailed_results.json (first 50 sessions)
 ```
+
+IDG-01 and PDX-01 are exercised across the adapter and endpoint suites rather than in
+dedicated per-control files.
 
 ---
 
 ## Conclusion
 
-NHID-Clinical v1.3 is a **pure, testable, deterministic policy engine** ready for shadow pilot deployment. The corpus evaluation framework validates control implementations against 150 reference scenarios. Two controls (PDX-01, DBC-01) show perfect accuracy; two (IDG-01, EIT-01) have known limitations documented in Phase 5 findings but acceptable for pilot. The engine itself is production-ready: 656 passing tests (674 total), zero failures, full audit trail support.
+NHID-Clinical v1.3 is a **pure, testable, deterministic policy engine** suitable for Tier 0
+shadow (observe-only) evaluation. The corpus evaluation framework exercises the control
+implementations against 150 reference scenarios; the results in
+`corpus_evaluation_output/corpus_metrics.json` are mixed and are reported as measured:
+
+| Control | Detection rate | False-positive rate | Accuracy |
+| :-- | --: | --: | --: |
+| IDG-01 | 100.0% | 100.0% | 43.2% |
+| PDX-01 | 100.0% | 0.0% | 100.0% |
+| DBC-01 | 100.0% | 0.0% | 100.0% |
+| EIT-01 | 0.0% | 0.0% | 95.0% |
+
+PDX-01 and DBC-01 are accurate against this corpus. IDG-01 detects every seeded violation but
+also flags every in-scope clean session, so its precision against this corpus is unusable
+without adapter work. EIT-01 detected neither of the two seeded escalation failures. Both are
+open limitations, not resolved ones — which is precisely why Tier 0 is observe-only and no
+decision from this engine is enforced. The unit suite itself is green: 656 passing, 18 skipped,
+674 total.

@@ -15,6 +15,13 @@ import re, subprocess, sys
 # Expected skipped count: integration tests that require external resources
 INTEGRATION_EXPECTED = 18
 
+# The unit-test count currently published on public surfaces (README badge,
+# website stats, PDFs). This is NOT a CI gate — the suite is allowed to grow
+# without failing the build. It exists so scripts/check_number_drift.py has a
+# canonical number to compare published claims against. Update it in the same
+# commit as any change to the published count.
+UNIT_PUBLISHED = 656
+
 def run_pytest():
     result = subprocess.run([sys.executable,"-m","pytest","tests/","-q","--tb=short","--no-header"],capture_output=True,text=True)
     return result.stdout+result.stderr, result.returncode
