@@ -79,7 +79,6 @@ copy_tree "$ROOT/simulator" "$OUT/simulator" \
   --exclude='.DS_Store'
 
 copy_tree "$ROOT/specs" "$OUT/specs" \
-  --exclude='*.pdf' \
   --exclude='*.zip' \
   --exclude='__pycache__' \
   --exclude='.DS_Store'
