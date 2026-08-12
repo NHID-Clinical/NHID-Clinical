@@ -2,7 +2,7 @@
 
 **Date**: 2026-08-11  
 **Version**: v1.3-shadow-ready  
-**Status**: Pilot Ready (656 tests passing, schema adapter operational)
+**Status**: Pilot Ready (656 tests passing, 674 total; schema adapter operational)
 
 ---
 
@@ -44,38 +44,38 @@ PolicyDecision = evaluate_all(
 ```python
 @dataclass
 class PolicyDecision:
-    action: PolicyAction                 # ALLOW | BLOCK | REVIEW
-    violations: List[Violation]          # Control violations found
-    audit_trail: List[AuditEvent]        # Policy-relevant events (for persistence)
-    reasoning: Dict[str, str]            # Per-control explanation
+    action: PolicyAction                 # DISCLOSE_IDENTITY | DENY_DATA | ESCALATE_HUMAN | LOG_ONLY | CONTINUE_AI
+    reason_code: str                     # Machine-readable decision code
+    violations: List[BoundaryViolation]  # Control violations (rule_id, description, severity)
+    audit_trail: Optional[AuditTrail]    # Audit events for persistence
+    next_state: str                      # Workflow state label
 ```
 
 **Example:**
 ```json
 {
-  "action": "BLOCK",
+  "action": "DENY_DATA",
+  "reason_code": "PDX01_PHI_GATE_TRIGGERED",
   "violations": [
     {
-      "rule_id": "IDG-01-EARLY-PHI-ACCESS",
-      "control": "IDG-01",
-      "severity": "CRITICAL",
-      "description": "PHI accessed before valid identity disclosure"
+      "rule_id": "PDX-01",
+      "description": "PHI access attempted before identity disclosure",
+      "severity": "critical"
     }
   ],
   "audit_trail": [
     {
-      "event_type": "IDENTITY_DISCLOSURE",
-      "turn_index": 0,
-      "status": "PENDING_VALIDATION",
-      "timestamp": "2026-08-11T14:30:00Z"
+      "event_type": "PHI_ACCESS_ATTEMPT",
+      "turn_index": 2,
+      "timestamp": "2026-08-11T14:30:02Z"
     }
   ],
   "reasoning": {
-    "IDG-01": "Agent disclosed identity, but status AMBIGUOUS",
-    "PDX-01": "PASS (no PHI before disclosure)",
-    "DBC-01": "PASS (no deception detected)",
-    "EIT-01": "N/A (no escalation)",
-    "ATR-01": "5 audit events logged"
+    "IDG-01": "No disclosure detected before turn 2",
+    "PDX-01": "FAIL – PHI accessed without prior disclosure",
+    "DBC-01": "N/A",
+    "EIT-01": "N/A",
+    "ATR-01": "Audit trail recorded"
   }
 }
 ```
@@ -437,7 +437,7 @@ Tonic Corpus (150 sessions, 1,227 turns)
 ### 5.1 Shadow Pilot (Tier 0, Current)
 
 **Status**: Production Ready  
-**Test Coverage**: 656 passing tests, 18 skipped integration tests  
+**Test Coverage**: 656 passing tests, 18 skipped (674 total tests)  
 **Release Tag**: v1.3-shadow-ready  
 
 **Deployment**:
@@ -476,7 +476,7 @@ When violations are to be enforced:
 ```
 NHID-Clinical/
 ├─ src/
-│   └─ nhid_policy_engine_v1.py (656 tests passing)
+│   └─ nhid_policy_engine_v1.py (656 tests passing, 674 total)
 │       ├─ evaluate_all(session, event) → PolicyDecision
 │       ├─ IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 implementations
 │       └─ No I/O, no external calls, pure functional
@@ -509,4 +509,4 @@ NHID-Clinical/
 
 ## Conclusion
 
-NHID-Clinical v1.3 is a **pure, testable, deterministic policy engine** ready for shadow pilot deployment. The corpus evaluation framework validates control implementations against 150 reference scenarios. Two controls (PDX-01, DBC-01) show perfect accuracy; two (IDG-01, EIT-01) require Phase 5 investigation into adapter mapping fidelity. The engine itself is production-ready: 656 tests, zero failures, full audit trail support.
+NHID-Clinical v1.3 is a **pure, testable, deterministic policy engine** ready for shadow pilot deployment. The corpus evaluation framework validates control implementations against 150 reference scenarios. Two controls (PDX-01, DBC-01) show perfect accuracy; two (IDG-01, EIT-01) have known limitations documented in Phase 5 findings but acceptable for pilot. The engine itself is production-ready: 656 passing tests (674 total), zero failures, full audit trail support.

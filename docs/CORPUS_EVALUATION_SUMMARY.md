@@ -2,7 +2,7 @@
 
 **Date**: 2026-08-11  
 **Evaluated Corpus**: Tonic Fabricate Synthetic Evaluation (150 sessions, 1,227 turns)  
-**Engine Status**: Tier 0 Pilot Ready (621 tests passing, 100% pass rate)  
+**Engine Status**: Tier 0 Pilot Ready (656 tests passing, 18 skipped; 674 total)  
 **Corpus Integration Status**: Schema mapping required
 
 ---
@@ -11,7 +11,7 @@
 
 The Tonic synthetic evaluation corpus is well-designed, comprehensive, and ready for use as a reference dataset. However, direct evaluation against the current NHID-Clinical policy engine requires a schema adapter—the corpus uses a simplified turn-level event format while the engine expects healthcare system governance context fields.
 
-**Recommendation**: Defer full corpus evaluation to Phase 5+ (post-pilot) when schema adapter development is prioritized. The engine is ready for shadow pilots based on 621 passing tests and verified control implementations.
+**Recommendation**: The schema adapter development is now prioritized. The engine is ready for shadow pilots based on 656 passing tests and verified control implementations.
 
 ---
 

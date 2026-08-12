@@ -1,6 +1,7 @@
 # NHID-Clinical Control Decision Table (Tier 0)
 
-**Quick Reference**: Decision logic for each of the 5 policy controls.
+**Quick Reference**: Decision logic for each of the 5 policy controls.  
+**Note**: PolicyAction values (CONTINUE_AI, DENY_DATA, DISCLOSE_IDENTITY, LOG_ONLY, ESCALATE_HUMAN) are defined in [`docs/enforcement-profile.md`](enforcement-profile.md) — the normative specification.
 
 ---
 
@@ -94,7 +95,7 @@
 ### When All Controls PASS
 
 ```
-Action: ALLOW
+Action: CONTINUE_AI
 Meaning: Conversation can proceed. Agent disclosed identity, no premature PHI, no deception, escalations handled.
 Audit: 25+ events recorded per session.
 ```
@@ -103,28 +104,28 @@ Audit: 25+ events recorded per session.
 
 ```
 Critical violations (IDG-01 or PDX-01):
-  Action: BLOCK
-  Meaning: Terminate call / transfer to human / re-prompt disclosure.
+  Action: DENY_DATA (or DISCLOSE_IDENTITY if IDG-01 failure)
+  Meaning: Terminate PHI exchange / transfer to human / re-prompt disclosure.
   
 Other violations (DBC-01, EIT-01):
-  Action: REVIEW
-  Meaning: Flag for human review; offer guidance; may proceed depending on risk tolerance.
+  Action: LOG_ONLY
+  Meaning: Flag for human review; offer guidance; conversation may proceed depending on risk tolerance.
   
 Audit violations (ATR-01):
-  Action: ALLOW (but flag for audit team)
-  Meaning: Conversation proceeds, but missing audit events trigger escalation outside engine.
+  Action: LOG_ONLY
+  Meaning: Conversation proceeds, but missing audit events are flagged and escalated to audit team.
 ```
 
 ### Decision Matrix
 
 | IDG-01 | PDX-01 | DBC-01 | EIT-01 | ATR-01 | Final Action |
-|--------|--------|--------|--------|--------|--------------|
-| PASS   | PASS   | PASS   | PASS   | ✓      | **ALLOW**    |
-| PASS   | PASS   | PASS   | FAIL   | ✓      | **REVIEW**   |
-| PASS   | PASS   | FAIL   | PASS   | ✓      | **REVIEW**   |
-| PASS   | FAIL   | —      | —      | ✓      | **BLOCK**    |
-| FAIL   | —      | —      | —      | ✓      | **BLOCK**    |
-| PASS   | PASS   | PASS   | PASS   | ✗      | **ALLOW** + audit escalation |
+|--------|--------|--------|--------|--------|---------------------|
+| PASS   | PASS   | PASS   | PASS   | ✓      | **CONTINUE_AI**     |
+| PASS   | PASS   | PASS   | FAIL   | ✓      | **ESCALATE_HUMAN**  |
+| PASS   | PASS   | FAIL   | PASS   | ✓      | **LOG_ONLY**        |
+| PASS   | FAIL   | —      | —      | ✓      | **DENY_DATA**       |
+| FAIL   | —      | —      | —      | ✓      | **DISCLOSE_IDENTITY** |
+| PASS   | PASS   | PASS   | PASS   | ✗      | **LOG_ONLY** (audit gap) |
 
 ---
 
@@ -134,9 +135,11 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 
 | Engine Decision | Shadow Mode Behavior |
 |-----------------|----------------------|
-| ALLOW | Conversation proceeds normally; audit logged |
-| REVIEW | Conversation proceeds; violation flagged for human review; alert sent |
-| BLOCK | Conversation proceeds; critical violation logged; human reviewer notified; call may be monitored |
+| CONTINUE_AI | Conversation proceeds normally; audit logged |
+| LOG_ONLY | Conversation proceeds; violation flagged for human review; alert sent |
+| DENY_DATA | Conversation proceeds; critical violation logged; human reviewer notified; call may be monitored |
+| DISCLOSE_IDENTITY | Conversation proceeds; identity disclosure requirement logged; human reviewer notified |
+| ESCALATE_HUMAN | Conversation proceeds; escalation request flagged; human reviewer notified |
 
 **Enforcement Mode** (future) will actually terminate/transfer based on decision.
 
@@ -151,7 +154,7 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 | DBC-01 | 40 | 2 | 0 | 23 expected | ✓ Tests pass, 100% accuracy in corpus |
 | EIT-01 | 40 | 8 | 8 | 2 expected | ✓ Tests pass, 0% detection in corpus |
 | ATR-01 | 40 | 5 | 0 | 150 sessions | ✓ Tests pass, operational in corpus |
-| **Total** | **260** | **20** | **13** | **150** | **656 passing** |
+| **Total** | **260** | **20** | **13** | **150** | **656 passing** (674 total) |
 
 ---
 
@@ -179,4 +182,4 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 
 ---
 
-**Status**: Tier 0 Ready (656 tests, 100% pass rate, audit trail operational)
+**Status**: Tier 0 Ready (656 passing, 18 skipped; 674 total; audit trail operational)
