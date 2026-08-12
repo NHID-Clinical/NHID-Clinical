@@ -170,34 +170,52 @@ turn = {
 3. **Compliance evidence**: Demonstrates testing breadth (150 sessions across control buckets)
 4. **Manual review**: QA/compliance staff can hand-verify sample transcripts
 
-### 🔄 Phase 5+ (Post-Pilot, Enhancement)
-1. **Automated evaluation framework**: Build schema adapter + evaluation harness
-2. **Detection rate benchmarking**: Measure engine accuracy against 150 reference cases
-3. **Regression testing**: Automated nightly runs to catch accuracy drift
-4. **Control coverage matrix**: Verify all subtype scenarios remain passing
+### 🔄 Open
+1. **Adapter accuracy**: Resolve the IDG-01 false-positive and EIT-01 non-detection results below
+2. **Regression testing**: Automated nightly runs to catch accuracy drift
+3. **Control coverage matrix**: Verify all subtype scenarios remain passing
 
 ---
 
-## Integration Roadmap
+## Measured Results
 
-### Phase 0-1 (Current, Tier 0, Pilot-Ready)
-- ✅ 621 passing unit tests
+The schema adapter (`scripts/tonic_schema_adapter.py`) and evaluation harness
+(`scripts/evaluate_tonic_corpus.py`) are implemented, and the corpus has been evaluated.
+The figures below are read directly from `corpus_evaluation_output/corpus_metrics.json`
+(run 2026-08-11), not estimated:
+
+| Control | In scope | Expected | Detected | Detection rate | FP rate | Accuracy |
+| :-- | --: | --: | --: | --: | --: | --: |
+| IDG-01 | 148 | 64 | 148 | 100.0% | 100.0% | 43.2% |
+| PDX-01 | 135 | 64 | 64 | 100.0% | 0.0% | 100.0% |
+| DBC-01 | 40 | 23 | 23 | 100.0% | 0.0% | 100.0% |
+| EIT-01 | 40 | 2 | 0 | 0.0% | 0.0% | 95.0% |
+
+**Read these honestly.** PDX-01 and DBC-01 are accurate against this corpus. IDG-01 flags every
+in-scope session — it catches all 64 seeded violations but also all 84 clean ones, so its
+precision here is unusable pending adapter or semantics work. EIT-01 missed both seeded
+escalation failures. These are open defects in the corpus-evaluation path, not in the unit
+suite, and they are a direct reason Tier 0 remains observe-only.
+
+---
+
+## Integration Status
+
+### Complete
+- ✅ 656 passing unit tests (18 skipped; 674 total)
 - ✅ 8 EIT-01 multi-turn regression tests
 - ✅ 5 ATR-01 persistence integration tests
 - ✅ External audit persistence layer
-- ✅ Pilot readiness documentation
 - ✅ Corpus inventory and data quality validation
-- 🔄 Push to remote branch (done 2026-08-11 13:47 UTC)
+- ✅ Schema adapter (turn event → engine event)
+- ✅ Corpus evaluation harness and per-control detection rates
 
-### Phase 5 (Post-Pilot Enhancement, est. 12–40 hours)
-- [ ] Build schema adapter (turn event → engine event)
-- [ ] Implement corpus evaluation harness
-- [ ] Calculate per-control detection rates
-- [ ] Document accuracy benchmarks
-- [ ] Add nightly regression testing
-- [ ] File Phase 5 completion report
+### Open
+- [ ] Root-cause IDG-01's 100% false-positive rate against this corpus
+- [ ] Root-cause EIT-01's 0% detection rate against this corpus
+- [ ] Add nightly corpus regression run
 
-### Phase 6+ (Production Hardening)
+### Future candidates (not scheduled)
 - [ ] ML-based implicit deception detection
 - [ ] NLP disclosure quality scoring
 - [ ] Millisecond-precision PHI timing gates
@@ -210,15 +228,16 @@ turn = {
 
 ### ✅ What Works Now
 1. **Corpus quality**: Well-structured, comprehensive, ground-truth validated
-2. **Engine reliability**: 100% test pass rate, deterministic, pure design preserved
+2. **Engine reliability**: 656 passing / 18 skipped, deterministic, pure design preserved
 3. **Control coverage**: All 5 controls represented across 150 scenarios
 4. **Audit trail**: ATR-01 external persistence operational
-5. **Multi-turn detection**: EIT-01 escalation tracking verified across 5-turn gaps
+5. **Multi-turn detection**: EIT-01 escalation tracking verified in the unit suite across 5-turn gaps
+6. **Evaluation path**: Schema adapter and corpus harness implemented and runnable
 
 ### ⚠️ What Needs Work
-1. **Schema adapter**: Bridge turn-level events ↔ governance context (12-20 hour task)
-2. **Direct evaluation**: Cannot run corpus through engine without transformation
-3. **Phase 5 scope**: Automation, benchmarking, regression suite
+1. **IDG-01 precision**: 100% false-positive rate against this corpus — unresolved
+2. **EIT-01 corpus detection**: 0/2 seeded escalation failures detected — unresolved
+3. **Regression automation**: No nightly corpus run wired into CI yet
 
 ### ℹ️ Reference Notes
 - Tonic Fabricate corpus aligns well with NHID-Clinical v1.3 spec
@@ -230,14 +249,17 @@ turn = {
 
 ## Conclusion
 
-**Tier 0 Shadow Pilot**: ✅ **APPROVED FOR DEPLOYMENT**
-- Engine is production-ready based on test coverage and determinism verification
+**Tier 0 Shadow Pilot**: ✅ **Suitable for observe-only evaluation**
+- Unit suite green: 656 passing, 18 skipped, 674 total
 - External audit persistence operational and tested
-- Pure design constraints maintained
+- Pure design constraints maintained — `evaluate_all()` still performs no I/O
+- Tier 0 is shadow mode: decisions are recorded, never enforced
 
-**Corpus Evaluation**: 🔄 **DEFER TO PHASE 5**
-- Requires schema adapter development (not high-priority for pilot)
-- Corpus is valuable reference material for future accuracy benchmarking
-- Recommend archiving for Phase 5+ team
+**Corpus Evaluation**: ⚠️ **Implemented, results mixed**
+- Adapter and harness are built and have been run against all 150 sessions
+- PDX-01 and DBC-01 are accurate; IDG-01 and EIT-01 are not, and remain open
+- The corpus is a reference dataset, not a conformance claim
 
-**Next Action**: Push to production pilot with 621-test baseline. Post-pilot, assign Phase 5 work to build automated corpus evaluation framework.
+**Next Action**: Run the Tier 0 shadow pilot against the 674-test baseline while the IDG-01
+and EIT-01 corpus-path defects are investigated. Neither defect blocks observe-only use,
+because nothing is enforced in shadow mode — but neither should be described as resolved.

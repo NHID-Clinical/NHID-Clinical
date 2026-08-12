@@ -37,10 +37,11 @@ NHID-Clinical v1.1 will emit lightweight observability metrics to enable:
 import time
 import cloudwatch
 
-def evaluate_all(session, event):
+# Instrumentation wrapper — evaluate_all() itself performs no I/O.
+def record_latency(session, event):
     start = time.perf_counter()
     try:
-        decision = policy_engine(session, event)
+        decision = evaluate_all(session, event)
         elapsed_ms = (time.perf_counter() - start) * 1000
         
         # Emit metrics
@@ -69,15 +70,17 @@ def evaluate_all(session, event):
 
 | Metric | Definition | Threshold (Alert) | Purpose |
 |--------|-----------|---|---|
-| `nhid.decisions.allow_data` | ALLOW_DATA actions (count) | N/A | Baseline authorization rate |
+| `nhid.decisions.continue_ai` | CONTINUE_AI actions (count) | N/A | Baseline authorization rate |
 | `nhid.decisions.deny_data` | DENY_DATA actions (count) | > 20% of total | Possible false-positive spike |
-| `nhid.decisions.escalate` | ESCALATE actions (count) | N/A | Escalation path utilization |
+| `nhid.decisions.escalate_human` | ESCALATE_HUMAN actions (count) | N/A | Escalation path utilization |
 | `nhid.decisions.conformant_rate` | Percentage of conformant (pass all rules) | < 70% | Possible rule drift |
 
 **Implementation**:
 ```python
-def evaluate_all(session, event):
-    decision = policy_engine(session, event)
+# Instrumentation wrapper — the policy engine itself stays pure.
+# evaluate_all() performs no I/O; metrics are emitted by the caller.
+def evaluate_and_record(session, event):
+    decision = evaluate_all(session, event)
     
     action_name = decision.action.value.lower()
     cloudwatch.put_metric_data(
@@ -86,7 +89,7 @@ def evaluate_all(session, event):
         Unit="Count"
     )
     
-    if decision.is_conformant():
+    if not decision.has_critical_violations():
         cloudwatch.put_metric_data(
             MetricName="nhid.decisions.conformant",
             Value=1,
@@ -114,8 +117,9 @@ def evaluate_all(session, event):
 
 **Implementation**:
 ```python
-def evaluate_all(session, event):
-    decision = policy_engine(session, event)
+# Instrumentation wrapper — evaluate_all() itself performs no I/O.
+def record_violations(session, event):
+    decision = evaluate_all(session, event)
     
     for violation in decision.violations:
         rule_id = violation.rule_id.lower()
@@ -139,8 +143,9 @@ def evaluate_all(session, event):
 
 **Implementation**:
 ```python
-def evaluate_all(session, event):
-    decision = policy_engine(session, event)
+# Instrumentation wrapper — evaluate_all() itself performs no I/O.
+def record_phi_access(session, event):
+    decision = evaluate_all(session, event)
     
     # Count PHI requested
     phi_requested = event.get("healthcare_governance", {}).get("phi_requested", [])
@@ -152,7 +157,7 @@ def evaluate_all(session, event):
         )
     
     # Count PHI granted or blocked
-    if decision.action == PolicyAction.ALLOW_DATA:
+    if decision.action == PolicyAction.CONTINUE_AI:
         phi_accessed = event.get("healthcare_governance", {}).get("phi_accessed", [])
         cloudwatch.put_metric_data(
             MetricName="nhid.phi.access_granted",
@@ -181,8 +186,9 @@ def evaluate_all(session, event):
 
 **Implementation**:
 ```python
-def evaluate_all(session, event):
-    decision = policy_engine(session, event)
+# Instrumentation wrapper — evaluate_all() itself performs no I/O.
+def record_escalations(session, event):
+    decision = evaluate_all(session, event)
     
     escalation_log = event.get("healthcare_governance", {}).get("escalation_log", {})
     if escalation_log.get("escalation_requested"):
@@ -213,8 +219,8 @@ def evaluate_all(session, event):
 
 | Metric | Definition | Pilot Target | Purpose |
 |--------|-----------|---|---|
-| `nhid.pilot.false_positive_rate` | % DENY_DATA when should be ALLOW | < 0.1% | Minimize customer friction |
-| `nhid.pilot.false_negative_rate` | % ALLOW_DATA when should be DENY | < 5% | Minimize compliance risk |
+| `nhid.pilot.false_positive_rate` | % DENY_DATA when should be CONTINUE_AI | < 0.1% | Minimize customer friction |
+| `nhid.pilot.false_negative_rate` | % CONTINUE_AI when should be DENY_DATA | < 5% | Minimize compliance risk |
 | `nhid.pilot.rule_accuracy` | Violations correctly detected | > 85% | Governance effectiveness |
 | `nhid.pilot.conformant_pass_rate` | Compliant calls pass all rules | = 100% | Rule correctness |
 
@@ -225,8 +231,8 @@ def calculate_pilot_metrics(evaluation_corpus, live_decisions):
     Compare evaluation corpus expected results vs. live engine decisions.
     Run daily during pilot to track metrics.
     """
-    false_positives = 0  # Expected ALLOW, got DENY
-    false_negatives = 0  # Expected DENY, got ALLOW
+    false_positives = 0  # Expected CONTINUE_AI, got DENY_DATA
+    false_negatives = 0  # Expected DENY_DATA, got CONTINUE_AI
     correct = 0
     total = 0
     
@@ -274,7 +280,8 @@ def calculate_pilot_metrics(evaluation_corpus, live_decisions):
 **Row 2: Decision Distribution**
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│ ALLOW (68%)  │ DENY (22%)  │ ESCALATE (10%)  │ Conformant %   │
+│ CONTINUE_AI  │ DENY_DATA   │ ESCALATE_HUMAN  │ Conformant %   │
+│ (68%)        │ (22%)       │ (10%)           │                │
 │ 850 calls    │ 275 calls   │ 125 calls       │ 68%            │
 └────────────────────────────────────────────────────────────────┘
 ```
