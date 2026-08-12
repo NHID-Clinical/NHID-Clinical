@@ -15,7 +15,7 @@ implementation.
 
 - Source questionnaire: AI-CAIQ v1.1.0 (320 question rows across 18 AICM domains), filled
   programmatically row-by-row against NHID-Clinical's actual documented controls and code
-  (`docs/MASTER-KNOWLEDGE-ARCHIVE.md`, `docs/nhid-clinical-technical-specification.md`,
+  (`docs/nhid-clinical-technical-specification.md`,
   `docs/nhid-auth-pki-and-oauth2-integration.md`, `docs/vendor-trust-questionnaire.md`,
   `src/`, `tests/`, `scripts/validate_ci.py`, `README.md`).
 - **SSRM framing is load-bearing here.** NHID-Clinical is a specification + reference
