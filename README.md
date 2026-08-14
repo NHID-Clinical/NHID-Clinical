@@ -28,7 +28,7 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-656%20passing-brightgreen?style=flat-square">
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-669%20passing-brightgreen?style=flat-square">
   <img alt="Middleware Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
   <img alt="License" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?style=flat-square">
@@ -53,7 +53,7 @@ Pick your path — each is runnable today:
 
 **🔍 Reviewers & security teams** — read the boundaries, then run the tests.
 1. Skim [what it is / is not](#what-nhid-clinical-is--is-not) and the [claim boundaries](docs/claim-boundaries.md)
-2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **656 passing** (+ 18 skipped)
+2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **669 passing** (+ 18 skipped)
 3. Inspect the five controls in [`src/nhid_policy_engine_v1.py`](src/nhid_policy_engine_v1.py) and the [Enforcement Profile](docs/enforcement-profile.md)
 4. Read the [Conformance Test Suite](conformance/nhid_conformance_test_suite_v1.yaml) — each case asserts an expected policy action
 
@@ -108,7 +108,7 @@ For a one-page overview aimed at hospital, payer, compliance, and procurement le
 An honest maturity snapshot. NHID-Clinical is a working reference implementation, not a production-scale product.
 
 **Available today**
-- Deterministic policy engine with 674 tests (656 passing) across all phases
+- Deterministic policy engine with 687 tests (669 passing) across all phases
 - Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
 - Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
 - Conformance Test Suite and a per-call Call Authorization Score (CAS)
@@ -185,7 +185,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 ### Evidence Summary
 
 **Engine Validation**:
-- ✅ **656 passing tests** (674 total; comprehensive rule coverage across all phases)
+- ✅ **669 passing tests** (687 total; comprehensive rule coverage across all phases)
 - ✅ **25-scenario evaluation corpus** (81.2% detection, 0% false positives)
 - ✅ **Live endpoint tested** against noncompliant VAPI payload
 - ✅ **Deterministic** — same input always produces same output
@@ -229,7 +229,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 | **EIT-01** | Escalation Implementation Test | Clear human handoff path, honored on request |
 
 Plus **ATR-01** (audit trail) — every call must produce a machine-readable trace.  
-Comprehensive test suite · same inputs → identical output · **656 passing** + 18 skipped (674 total tests)
+Comprehensive test suite · same inputs → identical output · **669 passing** + 18 skipped (687 total tests)
 
 [**Try the Governance Simulator →**](https://nhid-clinical.org/simulator.html)
 
@@ -365,7 +365,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected: **656 passing** in ~3.0s (~18 skipped integration tests; 674 total). Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
+Expected: **669 passing** in ~3.0s (~18 skipped integration tests; 687 total). Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
 
 <details>
 <summary><b>Repository structure</b></summary>
@@ -421,7 +421,7 @@ python examples/issue_and_verify.py
 | `src/` | Packaged Python modules used by the engine and tests (e.g. agent identity). |
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio). |
 | `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (656 passing, 674 total; all phases: foundations, adversarial, synthetic, hardening). |
+| `tests/` | The Python conformance and invariant tests (669 passing, 687 total; all phases: foundations, adversarial, synthetic, hardening). |
 | `scripts/` | CI guards — `validate_ci.py`, `check_baseline.py`, `check_number_drift.py` — and tooling. |
 | `schema/` | Event and audit-trace schemas. |
 | `docs/` | Specification docs, the [Executive Brief](docs/executive-brief.md), the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md), and the knowledge archive. |

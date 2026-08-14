@@ -2,8 +2,8 @@
 
 **Date**: 2026-08-11  
 **Evaluated Corpus**: Tonic Fabricate Synthetic Evaluation (150 sessions, 1,227 turns)  
-**Engine Status**: Tier 0 Pilot Ready (656 tests passing, 18 skipped; 674 total)  
-**Corpus Integration Status**: Schema mapping required
+**Engine Status**: Tier 0 Pilot Ready (669 tests passing, 18 skipped; 687 total)  
+**Corpus Integration Status**: Schema adapter implemented; all four behavioural controls evaluated
 
 ---
 
@@ -11,7 +11,7 @@
 
 The Tonic synthetic evaluation corpus is well-designed, comprehensive, and ready for use as a reference dataset. However, direct evaluation against the current NHID-Clinical policy engine requires a schema adapter—the corpus uses a simplified turn-level event format while the engine expects healthcare system governance context fields.
 
-**Recommendation**: The schema adapter development is now prioritized. The engine is ready for shadow pilots based on 656 passing tests and verified control implementations.
+**Recommendation**: The schema adapter development is now prioritized. The engine is ready for shadow pilots based on 669 passing tests and verified control implementations.
 
 ---
 
@@ -171,7 +171,7 @@ turn = {
 4. **Manual review**: QA/compliance staff can hand-verify sample transcripts
 
 ### 🔄 Open
-1. **Adapter accuracy**: Resolve the IDG-01 false-positive and EIT-01 non-detection results below
+1. **Adapter accuracy**: Resolved — see Measured Results below
 2. **Regression testing**: Automated nightly runs to catch accuracy drift
 3. **Control coverage matrix**: Verify all subtype scenarios remain passing
 
@@ -186,24 +186,38 @@ The figures below are read directly from `corpus_evaluation_output/corpus_metric
 
 | Control | In scope | Expected | Detected | Detection rate | FP rate | Accuracy |
 | :-- | --: | --: | --: | --: | --: | --: |
-| IDG-01 | 148 | 64 | 148 | 100.0% | 100.0% | 43.2% |
+| IDG-01 | 148 | 64 | 64 | 100.0% | 0.0% | 100.0% |
 | PDX-01 | 135 | 64 | 64 | 100.0% | 0.0% | 100.0% |
 | DBC-01 | 40 | 23 | 23 | 100.0% | 0.0% | 100.0% |
-| EIT-01 | 40 | 2 | 0 | 0.0% | 0.0% | 95.0% |
+| EIT-01 | 40 | 2 | 2 | 100.0% | 0.0% | 100.0% |
 
-**Read these honestly.** PDX-01 and DBC-01 are accurate against this corpus. IDG-01 flags every
-in-scope session — it catches all 64 seeded violations but also all 84 clean ones, so its
-precision here is unusable pending adapter or semantics work. EIT-01 missed both seeded
-escalation failures. These are open defects in the corpus-evaluation path, not in the unit
-suite, and they are a direct reason Tier 0 remains observe-only.
+**Read these honestly.** All four behavioural controls now detect every seeded violation with
+no false positives against this corpus. That was not true of the first evaluation run, which
+reported IDG-01 at a 100% false-positive rate and EIT-01 at 0% detection. Those numbers were
+real, but they measured four defects in the corpus-evaluation path — not the policy engine,
+which was unchanged throughout:
+
+1. `identity_assertion_text` was emitted only on the disclosure turn, while IDG-01 requires it
+   alongside `disclosure_timestamp` on every subsequent turn.
+2. IDG-01 was scored per turn and OR-ed across the session, so the engine's correct
+   "disclosure has not happened yet" signal on opening turns marked every session as violating.
+3. Escalation fields were routed into a `_source` metadata block the engine never reads, and the
+   evaluator passed an empty session dict, so `escalation_path_available` never arrived.
+4. The adapter emitted no `execution_context`, an invalid `replay_mode`, and no `event_type`,
+   raising five ATR-01 violations on every turn.
+
+A corpus result of 100% across the board is a statement about a 150-session synthetic corpus
+with 2 seeded escalation failures — it is not evidence of field accuracy, and it does not change
+the fact that Tier 0 is observe-only.
 
 ---
 
 ## Integration Status
 
 ### Complete
-- ✅ 656 passing unit tests (18 skipped; 674 total)
+- ✅ 669 passing unit tests (18 skipped; 687 total)
 - ✅ 8 EIT-01 multi-turn regression tests
+- ✅ 13 Tonic adapter regression tests (`tests/test_tonic_schema_adapter.py`)
 - ✅ 5 ATR-01 persistence integration tests
 - ✅ External audit persistence layer
 - ✅ Corpus inventory and data quality validation
@@ -211,9 +225,8 @@ suite, and they are a direct reason Tier 0 remains observe-only.
 - ✅ Corpus evaluation harness and per-control detection rates
 
 ### Open
-- [ ] Root-cause IDG-01's 100% false-positive rate against this corpus
-- [ ] Root-cause EIT-01's 0% detection rate against this corpus
 - [ ] Add nightly corpus regression run
+- [ ] Evaluate against a non-synthetic corpus; 2 seeded EIT-01 cases is a thin basis
 
 ### Future candidates (not scheduled)
 - [ ] ML-based implicit deception detection
@@ -228,15 +241,15 @@ suite, and they are a direct reason Tier 0 remains observe-only.
 
 ### ✅ What Works Now
 1. **Corpus quality**: Well-structured, comprehensive, ground-truth validated
-2. **Engine reliability**: 656 passing / 18 skipped, deterministic, pure design preserved
+2. **Engine reliability**: 669 passing / 18 skipped, deterministic, pure design preserved
 3. **Control coverage**: All 5 controls represented across 150 scenarios
 4. **Audit trail**: ATR-01 external persistence operational
 5. **Multi-turn detection**: EIT-01 escalation tracking verified in the unit suite across 5-turn gaps
 6. **Evaluation path**: Schema adapter and corpus harness implemented and runnable
 
 ### ⚠️ What Needs Work
-1. **IDG-01 precision**: 100% false-positive rate against this corpus — unresolved
-2. **EIT-01 corpus detection**: 0/2 seeded escalation failures detected — unresolved
+1. **Corpus thinness**: EIT-01 rests on 2 seeded failures; DBC-01 on 23
+2. **Synthetic only**: no evaluation against real call data
 3. **Regression automation**: No nightly corpus run wired into CI yet
 
 ### ℹ️ Reference Notes
@@ -250,16 +263,14 @@ suite, and they are a direct reason Tier 0 remains observe-only.
 ## Conclusion
 
 **Tier 0 Shadow Pilot**: ✅ **Suitable for observe-only evaluation**
-- Unit suite green: 656 passing, 18 skipped, 674 total
+- Unit suite green: 669 passing, 18 skipped, 687 total
 - External audit persistence operational and tested
 - Pure design constraints maintained — `evaluate_all()` still performs no I/O
 - Tier 0 is shadow mode: decisions are recorded, never enforced
 
-**Corpus Evaluation**: ⚠️ **Implemented, results mixed**
+**Corpus Evaluation**: ✅ **Implemented, all four controls accurate on this corpus**
 - Adapter and harness are built and have been run against all 150 sessions
-- PDX-01 and DBC-01 are accurate; IDG-01 and EIT-01 are not, and remain open
-- The corpus is a reference dataset, not a conformance claim
+- 100% detection, 0% false positives across IDG-01, PDX-01, DBC-01 and EIT-01
+- The corpus is a synthetic reference dataset, not a conformance claim
 
-**Next Action**: Run the Tier 0 shadow pilot against the 674-test baseline while the IDG-01
-and EIT-01 corpus-path defects are investigated. Neither defect blocks observe-only use,
-because nothing is enforced in shadow mode — but neither should be described as resolved.
+**Next Action**: Run the Tier 0 shadow pilot against the 687-test baseline. The corpus path is now clean, but a 150-session synthetic corpus is a floor, not a validation — real call data remains the meaningful test.
