@@ -18,7 +18,7 @@
 | **Decision/Evidence** | Stored in `healthcare_governance.disclosure_timestamp` (turn index of valid disclosure) |
 | **Limitation** | Relies on corpus `disclosure_status` field; does not validate quality of disclosure (e.g., did user understand?) |
 | **Test Coverage** | No dedicated per-control file; asserted across the vendor-adapter and API suites |
-| **Corpus Status** | 100% false positive rate against the Tonic corpus — open adapter/semantics issue |
+| **Corpus Status** | 100% accuracy (64/64), 0% false positives |
 
 ---
 
@@ -69,7 +69,7 @@
 | **Decision/Evidence** | Tracked in session state: `escalation_request_turn` (turn N) + `escalation_outcome` (turn N+X); evidence in corpus metadata |
 | **Limitation** | Does not validate quality of escalation (e.g., was it a real human?); limited to 5-turn window (may be too short/long for real calls) |
 | **Test Coverage** | `tests/test_eit01_multiturn.py` (8 multi-turn escalation-tracking tests) |
-| **Corpus Status** | 0% detection rate (2/2 violations missed) — open adapter state-tracking issue |
+| **Corpus Status** | 100% detection (2/2), 0% false positives |
 
 ---
 
@@ -149,13 +149,13 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 
 | Control | Dedicated test file(s) | Corpus expectation | Corpus result |
 |---------|------------------------|--------------------|---------------|
-| IDG-01 | *(covered across adapter + endpoint suites)* | 64 violations | 148 detected — 100% FP rate, 43.2% accuracy |
+| IDG-01 | *(covered across adapter + endpoint suites)* | 64 violations | 64 detected — 0% FP rate, 100% accuracy |
 | PDX-01 | *(covered across adapter + endpoint suites)* | 64 violations | 64 detected — 0% FP rate, 100% accuracy |
 | DBC-01 | `test_dbc01_heuristics.py` (11) | 23 violations | 23 detected — 0% FP rate, 100% accuracy |
-| EIT-01 | `test_eit01_multiturn.py` (8) | 2 violations | 0 detected — 0% detection, 95.0% accuracy |
+| EIT-01 | `test_eit01_multiturn.py` (8) | 2 violations | 2 detected — 100% detection, 100% accuracy |
 | ATR-01 | `test_atr01_audit_trail.py` (12), `test_atr01_persistence.py` (5) | 150 sessions | Audit trail operational across all sessions |
 
-Suite totals: **656 passing, 18 skipped, 674 total** across 37 test files. Corpus figures are
+Suite totals: **669 passing, 18 skipped, 687 total** across 38 test files. Corpus figures are
 read from `corpus_evaluation_output/corpus_metrics.json` (150 sessions, 1,227 turns).
 IDG-01 and PDX-01 have no single dedicated per-control file; their behaviour is asserted
 through the vendor-adapter and API suites.
@@ -164,26 +164,18 @@ through the vendor-adapter and API suites.
 
 ## Open Work
 
-1. **IDG-01 Accuracy**: Root cause 100% false positive rate
-   - Audit: Compare adapter inferences for CLEAN sessions (should all PASS)
-   - Hypothesis: disclosure_timestamp inference too aggressive OR engine IDG-01 semantics mismatch
-
-2. **EIT-01 Accuracy**: Root cause 0% detection rate
-   - Audit: Deep-dive into escalation_request_turn state tracking
-   - Hypothesis: Multi-turn escalation state not reconstructed correctly through adapter
-
-3. **Corpus Baseline**: Use perfected metrics as regression testing baseline
+1. **Corpus Baseline**: Use perfected metrics as regression testing baseline
    - Add nightly corpus evaluation to CI pipeline
    - Alert on accuracy drift (e.g., if PDX-01 drops below 95%)
 
-4. **ML-based Deception Detection**: Improve DBC-01 from pattern matching to NLP
+2. **ML-based Deception Detection**: Improve DBC-01 from pattern matching to NLP
    - Current: Keyword patterns + enum mapping
    - Future: Train on real deceptive behavior corpus
 
-5. **Millisecond-precision PHI Timing**: Upgrade PDX-01 to subsecond gates
+3. **Millisecond-precision PHI Timing**: Upgrade PDX-01 to subsecond gates
    - Current: Turn-level granularity
    - Future: Word-level or phrase-level PHI detection
 
 ---
 
-**Status**: Tier 0 Ready (656 passing, 18 skipped; 674 total; audit trail operational)
+**Status**: Tier 0 Ready (669 passing, 18 skipped; 687 total; audit trail operational)

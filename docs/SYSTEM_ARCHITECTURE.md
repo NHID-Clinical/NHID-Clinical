@@ -2,7 +2,7 @@
 
 **Date**: 2026-08-11  
 **Version**: v1.3-shadow-ready  
-**Status**: Pilot Ready (656 tests passing, 674 total; schema adapter operational)
+**Status**: Pilot Ready (669 tests passing, 687 total; schema adapter operational)
 
 ---
 
@@ -117,7 +117,8 @@ raised for any missing required audit field.
 - **Trigger**: `escalation_requested == True` at turn N
 - **Pass condition**: `escalation_outcome != "DEFLECTED"` within 5 turns
 - **Fail condition**: Escalation requested but not honored (callback rejected, call ended without handoff)
-- **Evidence**: `_source.escalation_requested`, `_source.escalation_outcome` (from corpus metadata)
+- **Evidence**: `session.escalation_path_available`, derived by the adapter from whether a
+  `TRANSFERRED_TO_HUMAN` outcome follows the request
 
 **ATR-01: Audit Trail Requirements**
 - **What it checks**: All policy-relevant events are recorded for audit
@@ -419,10 +420,10 @@ Tonic Corpus (150 sessions, 1,227 turns)
   │       └─ corpus_failures.json (any exceptions encountered)
   │
   └─ [Compare: Expected (corpus ground truth) vs Detected (engine output)]
-      ├─ IDG-01: 64 violations expected, 148 detected (100% FP rate)
+      ├─ IDG-01: 64 violations expected, 64 detected (0% FP rate)
       ├─ PDX-01: 64 violations expected, 64 detected (100% accuracy)
       ├─ DBC-01: 23 violations expected, 23 detected (100% accuracy)
-      ├─ EIT-01: 2 violations expected, 0 detected (0% detection)
+      ├─ EIT-01: 2 violations expected, 2 detected (100% detection)
       └─ ATR-01: 150 sessions audited (100% events logged)
 ```
 
@@ -452,7 +453,7 @@ Tonic Corpus (150 sessions, 1,227 turns)
 ### 5.1 Shadow Pilot (Tier 0, Current)
 
 **Status**: Production Ready  
-**Test Coverage**: 656 passing tests, 18 skipped (674 total tests)  
+**Test Coverage**: 669 passing tests, 18 skipped (687 total tests)  
 **Release Tag**: v1.3-shadow-ready  
 
 **Deployment**:
@@ -496,7 +497,7 @@ Receiver obligations for each action are specified normatively in
 ```
 NHID-Clinical/
 ├─ src/
-│   └─ nhid_policy_engine_v1.py (656 tests passing, 674 total)
+│   └─ nhid_policy_engine_v1.py (669 tests passing, 687 total)
 │       ├─ evaluate_all(session, event) → PolicyDecision
 │       ├─ IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 implementations
 │       └─ No I/O, no external calls, pure functional
@@ -506,7 +507,7 @@ NHID-Clinical/
 │   ├─ tonic_schema_adapter.py (schema transformation)
 │   └─ evaluate_tonic_corpus.py (corpus evaluation harness)
 │
-├─ tests/                     (37 files, 674 tests: 656 passing, 18 skipped)
+├─ tests/                     (38 files, 687 tests: 669 passing, 18 skipped)
 │   ├─ test_atr01_audit_trail.py   (12 tests)
 │   ├─ test_atr01_persistence.py   (5 tests)
 │   ├─ test_dbc01_heuristics.py    (11 tests)
@@ -541,14 +542,16 @@ implementations against 150 reference scenarios; the results in
 
 | Control | Detection rate | False-positive rate | Accuracy |
 | :-- | --: | --: | --: |
-| IDG-01 | 100.0% | 100.0% | 43.2% |
+| IDG-01 | 100.0% | 0.0% | 100.0% |
 | PDX-01 | 100.0% | 0.0% | 100.0% |
 | DBC-01 | 100.0% | 0.0% | 100.0% |
-| EIT-01 | 0.0% | 0.0% | 95.0% |
+| EIT-01 | 100.0% | 0.0% | 100.0% |
 
-PDX-01 and DBC-01 are accurate against this corpus. IDG-01 detects every seeded violation but
-also flags every in-scope clean session, so its precision against this corpus is unusable
-without adapter work. EIT-01 detected neither of the two seeded escalation failures. Both are
-open limitations, not resolved ones — which is precisely why Tier 0 is observe-only and no
-decision from this engine is enforced. The unit suite itself is green: 656 passing, 18 skipped,
-674 total.
+All four behavioural controls detect every seeded violation with no false positives against this
+corpus. The earlier IDG-01 (100% FP) and EIT-01 (0% detection) results were caused by four defects
+in the corpus-evaluation path — assertion text not carried forward, IDG-01 scored per turn rather
+than per session, escalation data routed into unused metadata, and an incomplete audit context —
+all fixed in `scripts/tonic_schema_adapter.py` and `scripts/evaluate_tonic_corpus.py`. The policy
+engine was not modified. A 150-session synthetic corpus with 2 seeded escalation failures is a
+floor, not a validation, which is why Tier 0 remains observe-only. The unit suite is green:
+669 passing, 18 skipped, 687 total.

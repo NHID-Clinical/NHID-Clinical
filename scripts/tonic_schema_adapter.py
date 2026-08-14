@@ -15,6 +15,8 @@ from datetime import datetime
 from typing import Optional, Dict, Any, List
 import json
 
+from src.nhid_policy_engine_v1 import POLICY_ENGINE_VERSION
+
 
 class TonicschemAdapter:
     """Transforms Tonic corpus turns into engine-compatible events."""
@@ -193,7 +195,51 @@ class TonicschemAdapter:
             "disclosure_timestamp": disclosure_timestamp,
             "phi_accessed": phi_fields,
             "deceptive_artifact_flags": deceptive_artifacts,
-            "identity_assertion_text": current_turn["utterance"] if current_turn["event_type"] == "IDENTITY_DISCLOSURE" else "",
+            # IDG-01 pass condition is "disclosure_timestamp is set AND
+            # identity_assertion_text is non-empty", so the assertion text has to
+            # persist for as long as the timestamp does. Emitting it only on the
+            # disclosure turn made IDG-01 re-fire on every later turn.
+            "identity_assertion_text": (
+                turns[disclosure_timestamp]["utterance"]
+                if disclosure_timestamp is not None
+                else ""
+            ),
+        }
+
+    def infer_escalation_path_available(self, turns: List[Dict]) -> bool:
+        """
+        Determine whether the session's escalation requests were honored.
+
+        The corpus encodes an EIT-01 violation as an *absence*: a turn with
+        escalation_requested=1 and no later turn carrying
+        escalation_outcome="TRANSFERRED_TO_HUMAN". There is no "DEFLECTED"
+        value anywhere in the data, so the signal has to be derived.
+
+        Returns True when there is nothing to honor, or when a request was
+        followed by a transfer. Returns False when a request was never honored.
+        """
+        for i, turn in enumerate(turns):
+            if not turn.get("escalation_requested"):
+                continue
+            honored = any(
+                t.get("escalation_outcome") == "TRANSFERRED_TO_HUMAN"
+                for t in turns[i:]
+            )
+            if not honored:
+                return False
+        return True
+
+    def build_session(self, turns: List[Dict], turn_idx: int) -> Dict[str, Any]:
+        """
+        Build the session dict that accompanies an event into evaluate_all().
+
+        Previously the evaluator passed {}, so the engine never received
+        escalation_path_available and EIT-01 could not fire.
+        """
+        return {
+            "turn_count": turn_idx,
+            "escalation_path_available": self.infer_escalation_path_available(turns),
+            "counterparty_type": "human_operator",
         }
 
     def build_audit_context(self, session_id: str, turn_idx: int) -> Dict[str, Any]:
@@ -208,10 +254,22 @@ class TonicschemAdapter:
             "session_id": session_id,
             "request_id": f"req-{session_id}-{turn_idx}",
             "actor_id": "voice_agent",  # Constant in voice workflow
+            # ATR-01 requires event_type; its absence was the last per-turn
+            # audit violation left after execution_context was supplied.
+            "event_type": "POLICY",
             "state_before": "CONVERSATION",
             "state_after": "CONVERSATION",
-            "replay_mode": False,
+            # ATR-01 requires one of "live" | "replay" | "test"; False is not a
+            # valid value and was counted as a missing-field violation.
+            "replay_mode": "replay",
             "external_calls_cached": False,
+            # ATR-01 requires execution_context and its three version fields.
+            # Omitting the block raised 4 violations on every single turn.
+            "execution_context": {
+                "pipeline_version": "1.0.0",
+                "policy_engine_version": POLICY_ENGINE_VERSION,
+                "nhid_schema_version": "1.0",
+            },
         }
 
     def adapt_turn(

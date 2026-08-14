@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-11T23:23:21.158907",
+  "timestamp": "2026-08-14T03:29:54.966028",
   "corpus_size": 150,
   "evaluated_sessions": 150,
   "per_control_metrics": {
@@ -7,14 +7,14 @@
       "in_scope_sessions": 148,
       "n_a_sessions": 2,
       "violations_expected": 64,
-      "violations_detected": 148,
+      "violations_detected": 64,
       "true_positives": 64,
       "false_negatives": 0,
-      "false_positives": 84,
-      "true_negatives": 0,
+      "false_positives": 0,
+      "true_negatives": 84,
       "detection_rate": "100.0%",
-      "false_positive_rate": "100.0%",
-      "accuracy": "43.2%"
+      "false_positive_rate": "0.0%",
+      "accuracy": "100.0%"
     },
     "PDX-01": {
       "in_scope_sessions": 135,
@@ -46,14 +46,14 @@
       "in_scope_sessions": 40,
       "n_a_sessions": 110,
       "violations_expected": 2,
-      "violations_detected": 0,
-      "true_positives": 0,
-      "false_negatives": 2,
+      "violations_detected": 2,
+      "true_positives": 2,
+      "false_negatives": 0,
       "false_positives": 0,
       "true_negatives": 38,
-      "detection_rate": "0.0%",
+      "detection_rate": "100.0%",
       "false_positive_rate": "0.0%",
-      "accuracy": "95.0%"
+      "accuracy": "100.0%"
     }
   },
   "languages": {

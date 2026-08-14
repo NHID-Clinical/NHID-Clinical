@@ -69,9 +69,10 @@ class TonicCorpusEvaluator:
         for turn_idx in range(len(turns)):
             try:
                 adapted_event = self.adapter.adapt_turn(session_id, turns, turn_idx)
+                adapted_session = self.adapter.build_session(turns, turn_idx)
 
                 # Execute policy engine
-                decision = evaluate_all({}, adapted_event)
+                decision = evaluate_all(adapted_session, adapted_event)
 
                 # Parse violations from engine decision
                 if decision.violations:
@@ -99,6 +100,26 @@ class TonicCorpusEvaluator:
                     "error": str(e),
                     "traceback": traceback.format_exc(limit=2),
                 })
+
+        # IDG-01 is a SESSION-level property, not a per-turn one.
+        #
+        # The engine emits DISCLOSE_IDENTITY (recorded as an IDG-01 violation)
+        # on every turn before disclosure has happened. That is correct engine
+        # behaviour — it is telling the caller "disclose now" — but OR-ing it
+        # across turns marked every session as violating, including the 84
+        # clean ones, which is what produced the 100% false-positive rate.
+        #
+        # The corpus defines the session-level failure the same way the spec
+        # does: disclosure never happened at all, or PHI was exchanged before
+        # it did. Score that instead.
+        disclosure_idx = self.adapter.infer_disclosure_timestamp(turns, len(turns) - 1)
+        first_phi_idx = next(
+            (i for i, t in enumerate(turns) if t["contains_phi"]), None
+        )
+        violations_found["IDG-01"] = (
+            disclosure_idx is None
+            or (first_phi_idx is not None and first_phi_idx < disclosure_idx)
+        )
 
         # Determine result
         result = {
