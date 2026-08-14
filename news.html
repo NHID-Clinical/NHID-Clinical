@@ -71,6 +71,7 @@
           <a href="/evidence-pack.html">Evidence Pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
           <a href="/for-payers.html">For Payers</a>
+          <a href="/community.html">Community</a>
           <a href="/roadmap.html">Roadmap</a>
           <a href="/news.html">News</a>
           <a href="/faq.html">FAQ</a>
@@ -137,6 +138,7 @@
   <a href="/evidence-pack.html">Evidence Pack</a>
   <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
   <a href="/for-payers.html">For Payers</a>
+  <a href="/community.html">Community</a>
   <a href="/roadmap.html">Roadmap</a>
   <a href="/news.html">News</a>
   <a href="/faq.html">FAQ</a>
@@ -168,6 +170,25 @@
   <section class="page-section">
     <div class="container" style="max-width:800px">
       <div class="news-list">
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-badge badge-release">Release</span>
+            <time class="news-date">August 2026</time>
+          </div>
+          <h2>Corpus Evaluation Path Corrected — IDG-01 and EIT-01</h2>
+          <p>The first run of the 150-session synthetic corpus evaluation reported IDG-01 at a 100% false-positive rate and EIT-01 at 0% detection. Those numbers were real, but they measured defects in the corpus-evaluation path rather than in the policy engine, which was not modified.</p>
+          <ul style="margin:.5rem 0 .75rem;padding-left:1.25rem;color:var(--body);font-size:.93rem;line-height:1.8">
+            <li>Disclosure assertion text was emitted only on the disclosure turn, so IDG-01 re-fired on every turn after it</li>
+            <li>IDG-01 was scored per turn and OR-ed across the session, marking compliant sessions as violating</li>
+            <li>Escalation state never reached the engine, leaving EIT-01 with nothing to evaluate</li>
+            <li>An incomplete audit context raised ATR-01 violations on every turn</li>
+            <li>All four controls now report 100% detection with 0% false positives against this corpus; 13 regression tests were added to pin the fixes</li>
+          </ul>
+          <p style="font-size:.93rem;color:var(--body)">A corpus result of 100% describes a 150-session synthetic dataset with two seeded escalation failures. It is a floor, not a validation, and Tier 0 remains observe-only.</p>
+          <div class="news-actions">
+            <a class="news-link" href="/evidence-pack.html">Review the Evidence Pack &rarr;</a>
+          </div>
+        </article>
         <article class="news-card">
           <div class="news-meta">
             <span class="news-badge badge-comm">Commentary</span>
