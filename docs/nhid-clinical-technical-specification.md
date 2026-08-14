@@ -99,6 +99,15 @@ Both anchors are required ATR-01 event fields, so IL is computable from any conf
 trail with no human judgment involved — this determinism is what makes IL usable as a
 machine-scored metric rather than a subjective call-quality impression.
 
+**The time form is a measurement, not a gate.** No control in this specification imposes a
+seconds-based disclosure deadline, and the policy engine performs no elapsed-time arithmetic:
+IDG-01 is satisfied by the presence of a disclosure with assertion text, and PDX-01 by disclosure
+preceding PHI. The normative target is the turn form, `IL(turns) = 0`. Pilot reporting buckets the
+seconds form into timeliness bands (pass / delayed / late / critical — see the
+[Shadow Pilot Kit](pilot-kit/README.md)) so that a slow-but-present disclosure can be
+distinguished from no disclosure at all. Those bands are a scoring convention for reports; they
+do not relax, extend, or override the control.
+
 ## 3. ATR-01 audit structure
 
 ATR-01 (Audit Trail Requirements) is enforced structurally rather than behaviorally: every NHID
