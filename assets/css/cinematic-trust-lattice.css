@@ -1,0 +1,582 @@
+/* ==========================================================================
+   Cinematic Trust Lattice — NHID-Clinical visual system
+   --------------------------------------------------------------------------
+   Loaded AFTER /nhid-clinical-ui.css and /assets/css/premium.css.
+
+   Additive by design: every public class is namespaced `ctl-*` and no legacy
+   selector is overridden, so unmigrated routes keep rendering from the
+   existing stylesheet while routes migrate one at a time.
+
+   Token values are taken verbatim from
+   docs/cinematic-trust-lattice-handoff/design-system.md §3.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Surfaces and ink */
+  --ctl-ink-950: #07111f;
+  --ctl-ink-900: #0b1d35;
+  --ctl-ink-800: #102b48;
+  --ctl-text-strong: #10233d;
+  --ctl-text: #40536a;
+  --ctl-text-muted: #68788d;
+  --ctl-paper: #ffffff;
+  --ctl-canvas: #f4f8fb;
+  --ctl-mist: #eaf3fa;
+  --ctl-line: #c8d7e5;
+
+  /* Semantic roles */
+  --ctl-cobalt: #1e63db;
+  --ctl-cobalt-hover: #164da8;
+  --ctl-cobalt-soft: #e8f0ff;
+  --ctl-teal: #0b8276;
+  --ctl-teal-bright: #55d9cb;
+  --ctl-teal-soft: #e4f7f3;
+  --ctl-amber: #986600;
+  --ctl-amber-soft: #fff5d7;
+  --ctl-red: #b42318;
+  --ctl-red-soft: #fff0ef;
+  --ctl-focus: #0b57d0;
+
+  /* Shape and elevation */
+  --ctl-radius-sm: 6px;
+  --ctl-radius-md: 10px;
+  --ctl-radius-lg: 14px;
+  --ctl-shadow-1: 0 2px 8px rgba(16, 35, 61, 0.08);
+  --ctl-shadow-2: 0 5px 16px rgba(16, 35, 61, 0.12);
+  --ctl-grid-line: rgba(80, 167, 218, 0.10);
+
+  /* Typography and measure */
+  --ctl-font-ui: "Inter", system-ui, sans-serif;
+  --ctl-font-data: "IBM Plex Mono", ui-monospace, monospace;
+  --ctl-prose: 68ch;
+  --ctl-container: 1320px;
+
+  /* Motion — §8: 160–220ms deliberate transitions */
+  --ctl-motion-fast: 160ms;
+  --ctl-motion: 200ms;
+  --ctl-ease: cubic-bezier(0.2, 0.6, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --ctl-text-strong: #f2f7fc;
+  --ctl-text: #c2d0df;
+  --ctl-text-muted: #96abc0;
+  --ctl-paper: #102038;
+  --ctl-canvas: #07111f;
+  --ctl-mist: #0d1c30;
+  --ctl-line: #29445e;
+  --ctl-cobalt: #79b7ff;
+  --ctl-cobalt-hover: #afd3ff;
+  --ctl-cobalt-soft: #142e51;
+  --ctl-teal: #55d9cb;
+  --ctl-teal-bright: #75ece0;
+  --ctl-teal-soft: #103c3b;
+  --ctl-amber: #ffd26c;
+  --ctl-amber-soft: #3a2c10;
+  --ctl-red: #ffaaa4;
+  --ctl-red-soft: #411f25;
+  --ctl-focus: #a3caff;
+  --ctl-shadow-1: 0 2px 10px rgba(0, 0, 0, 0.24);
+  --ctl-shadow-2: 0 6px 20px rgba(0, 0, 0, 0.34);
+  --ctl-grid-line: rgba(144, 211, 255, 0.09);
+}
+
+/* --------------------------------------------------------------------------
+   2. Typography scale (§4)
+   -------------------------------------------------------------------------- */
+
+.ctl-display {
+  font-family: var(--ctl-font-ui);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 5.25vw, 4.9rem);
+  line-height: 1.03;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+  color: var(--ctl-text-strong);
+  margin: 0;
+}
+
+.ctl-page-title {
+  font-family: var(--ctl-font-ui);
+  font-weight: 700;
+  font-size: clamp(2rem, 3.2vw, 3.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+  color: var(--ctl-text-strong);
+  margin: 0;
+}
+
+.ctl-section-title {
+  font-family: var(--ctl-font-ui);
+  font-weight: 700;
+  font-size: clamp(1.35rem, 1.9vw, 1.75rem);
+  line-height: 1.18;
+  letter-spacing: -0.012em;
+  color: var(--ctl-text-strong);
+  margin: 0;
+}
+
+.ctl-body {
+  font-family: var(--ctl-font-ui);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.72;
+  color: var(--ctl-text);
+}
+
+.ctl-lede {
+  font-family: var(--ctl-font-ui);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+  line-height: 1.65;
+  color: var(--ctl-text);
+  max-width: 58ch;
+}
+
+.ctl-meta {
+  font-family: var(--ctl-font-ui);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ctl-text-muted);
+}
+
+.ctl-data,
+.ctl-data code,
+code.ctl-data {
+  font-family: var(--ctl-font-data);
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.ctl-prose {
+  max-width: var(--ctl-prose);
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout primitives (§5)
+   -------------------------------------------------------------------------- */
+
+.ctl-container {
+  width: 100%;
+  max-width: var(--ctl-container);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+}
+
+/* Quiet 42px technical grid — hero and lattice surfaces only, never global */
+.ctl-grid-surface {
+  background-color: var(--ctl-ink-950);
+  background-image:
+    linear-gradient(to right, var(--ctl-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ctl-grid-line) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.ctl-surface-canvas { background-color: var(--ctl-canvas); }
+.ctl-surface-mist   { background-color: var(--ctl-mist); }
+.ctl-surface-paper  { background-color: var(--ctl-paper); }
+
+/* On dark surfaces the ink tokens do not apply — set explicit reading colors */
+.ctl-on-dark { color: #dce8f5; }
+.ctl-on-dark .ctl-display,
+.ctl-on-dark .ctl-page-title,
+.ctl-on-dark .ctl-section-title { color: #f7fbff; }
+.ctl-on-dark .ctl-lede,
+.ctl-on-dark .ctl-body { color: #c2d4e6; }
+.ctl-on-dark .ctl-meta { color: var(--ctl-teal-bright); }
+
+/* --------------------------------------------------------------------------
+   4. Hero (§5, §6 CtlHero)
+   -------------------------------------------------------------------------- */
+
+.ctl-hero {
+  position: relative;
+  overflow: clip;
+  padding-block: clamp(3.5rem, 8vw, 7rem);
+}
+
+.ctl-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.ctl-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+/* Boundary note — the non-certification line. Text, never a badge. */
+.ctl-boundary-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-top: 1.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--ctl-text-muted);
+}
+.ctl-on-dark .ctl-boundary-note { color: #9fb4c9; }
+
+@media (max-width: 900px) {
+  .ctl-hero-inner { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   5. Controls — 6px small, 10px panels, 14px major viz (§2 geometry)
+   No pills.
+   -------------------------------------------------------------------------- */
+
+.ctl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;                 /* §7 touch target */
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--ctl-radius-sm);
+  border: 1px solid transparent;
+  font-family: var(--ctl-font-ui);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--ctl-motion) var(--ctl-ease),
+              border-color var(--ctl-motion) var(--ctl-ease),
+              transform var(--ctl-motion-fast) var(--ctl-ease);
+}
+
+.ctl-btn-primary {
+  background: var(--ctl-cobalt);
+  color: #ffffff;
+}
+[data-theme="dark"] .ctl-btn-primary { color: #06152b; }
+.ctl-btn-primary:hover { background: var(--ctl-cobalt-hover); transform: translateY(-1px); }
+
+.ctl-btn-secondary {
+  background: transparent;
+  color: var(--ctl-cobalt);
+  border-color: var(--ctl-cobalt);
+}
+.ctl-btn-secondary:hover { background: var(--ctl-cobalt-soft); transform: translateY(-1px); }
+
+.ctl-on-dark .ctl-btn-secondary { color: #a8ccff; border-color: #4f7fc4; }
+.ctl-on-dark .ctl-btn-secondary:hover { background: rgba(30, 99, 219, 0.18); }
+
+/* --------------------------------------------------------------------------
+   6. Focus — §7: minimum 3px solid, visible offset, never glow-only
+   -------------------------------------------------------------------------- */
+
+.ctl-scope a:focus-visible,
+.ctl-scope button:focus-visible,
+.ctl-scope input:focus-visible,
+.ctl-scope select:focus-visible,
+.ctl-scope textarea:focus-visible,
+.ctl-scope summary:focus-visible,
+.ctl-scope [tabindex]:focus-visible,
+a.ctl-btn:focus-visible,
+button.ctl-btn:focus-visible,
+.ctl-skip-link:focus-visible {
+  outline: 3px solid var(--ctl-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Skip link — visible on focus, not permanently hidden from keyboard users */
+.ctl-skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -100%;
+  z-index: 999;
+  padding: 0.75rem 1.25rem;
+  background: var(--ctl-paper);
+  color: var(--ctl-text-strong);
+  border: 1px solid var(--ctl-line);
+  border-radius: var(--ctl-radius-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top var(--ctl-motion-fast) var(--ctl-ease);
+}
+.ctl-skip-link:focus { top: 0.75rem; }
+
+/* --------------------------------------------------------------------------
+   7. Metric rail (§6 CtlMetricRail)
+   Values must come from repository sources — see the drift guard.
+   -------------------------------------------------------------------------- */
+
+.ctl-metric-rail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1px;
+  background: var(--ctl-line);
+  border-block: 1px solid var(--ctl-line);
+}
+
+.ctl-metric {
+  background: var(--ctl-canvas);
+  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 2vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ctl-metric-value {
+  font-family: var(--ctl-font-ui);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ctl-cobalt);
+  font-variant-numeric: tabular-nums;
+}
+
+.ctl-metric-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ctl-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   8. Status — §7: never hue alone. Text + icon/pattern + color.
+   -------------------------------------------------------------------------- */
+
+.ctl-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--ctl-radius-sm);
+  border: 1px solid currentColor;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.ctl-status::before { font-family: var(--ctl-font-data); font-weight: 700; }
+
+.ctl-status-verified { color: var(--ctl-teal);   background: var(--ctl-teal-soft); }
+.ctl-status-verified::before { content: "\2713"; }          /* ✓ */
+
+.ctl-status-review   { color: var(--ctl-amber);  background: var(--ctl-amber-soft); }
+.ctl-status-review::before { content: "\26A0"; }            /* ⚠ */
+
+.ctl-status-blocked  { color: var(--ctl-red);    background: var(--ctl-red-soft); }
+.ctl-status-blocked::before { content: "\2717"; }           /* ✗ */
+
+.ctl-status-info     { color: var(--ctl-cobalt); background: var(--ctl-cobalt-soft); }
+.ctl-status-info::before { content: "\2022"; }              /* • */
+
+/* --------------------------------------------------------------------------
+   9. Panels, control cards, evidence frames (§6)
+   -------------------------------------------------------------------------- */
+
+.ctl-panel {
+  background: var(--ctl-paper);
+  border: 1px solid var(--ctl-line);
+  border-radius: var(--ctl-radius-md);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  box-shadow: var(--ctl-shadow-1);
+}
+
+.ctl-panel-viz { border-radius: var(--ctl-radius-lg); }
+
+.ctl-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.25rem;
+}
+
+.ctl-control-card { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.ctl-control-id {
+  font-family: var(--ctl-font-data);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ctl-teal);
+}
+
+/* Evidence frame: claim / evidence / limitation / source */
+.ctl-evidence-frame {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  border-left: 3px solid var(--ctl-cobalt);
+  padding-left: 1.1rem;
+}
+.ctl-evidence-limitation {
+  font-size: 0.9375rem;
+  color: var(--ctl-text-muted);
+  border-top: 1px solid var(--ctl-line);
+  padding-top: 0.75rem;
+}
+
+/* Trace panel — raw text stays selectable and scrollable */
+.ctl-trace-panel {
+  background: var(--ctl-ink-900);
+  border: 1px solid var(--ctl-line);
+  border-radius: var(--ctl-radius-md);
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  color: #d6e6f6;
+}
+.ctl-trace-panel pre,
+.ctl-trace-panel code {
+  font-family: var(--ctl-font-data);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  user-select: text;
+  white-space: pre;
+}
+
+/* --------------------------------------------------------------------------
+   10. Document shell (§5, template 3)
+   -------------------------------------------------------------------------- */
+
+.ctl-doc-shell {
+  display: grid;
+  grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.ctl-doc-toc {
+  position: sticky;
+  top: 1.5rem;
+  align-self: start;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+.ctl-doc-toc ol, .ctl-doc-toc ul { list-style: none; margin: 0; padding: 0; }
+.ctl-doc-toc a { color: var(--ctl-text); text-decoration: none; display: block; padding: 0.2rem 0; }
+.ctl-doc-toc a:hover { color: var(--ctl-cobalt); text-decoration: underline; }
+.ctl-doc-toc [aria-current="true"] { color: var(--ctl-cobalt); font-weight: 600; }
+
+.ctl-doc-body { max-width: var(--ctl-prose); }
+
+/* Normative callout — for MUST/SHOULD spec text */
+.ctl-norm-block {
+  background: var(--ctl-cobalt-soft);
+  border-left: 3px solid var(--ctl-cobalt);
+  border-radius: 0 var(--ctl-radius-sm) var(--ctl-radius-sm) 0;
+  padding: 1rem 1.25rem;
+  margin-block: 1.25rem;
+}
+
+/* Wide content never scrolls the page body sideways */
+.ctl-scroll-x { overflow-x: auto; max-width: 100%; }
+
+.ctl-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.ctl-table th, .ctl-table td {
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--ctl-line);
+  vertical-align: top;
+}
+.ctl-table th { font-weight: 700; color: var(--ctl-text-strong); }
+.ctl-table td { color: var(--ctl-text); }
+
+@media (max-width: 900px) {
+  .ctl-doc-shell { grid-template-columns: minmax(0, 1fr); }
+  .ctl-doc-toc { position: static; max-height: none; }
+}
+
+/* --------------------------------------------------------------------------
+   11. Trust Lattice (§6 TrustLattice, §8 motion)
+   -------------------------------------------------------------------------- */
+
+.ctl-lattice { width: 100%; height: auto; display: block; }
+
+/* One token travels the five layers once, 2.4–3.2s, on entry only */
+.ctl-lattice-token {
+  animation: ctl-lattice-travel 2.8s var(--ctl-ease) 1 both;
+}
+
+@keyframes ctl-lattice-travel {
+  from { opacity: 0; transform: translateY(-58px); }
+  12%  { opacity: 1; }
+  to   { opacity: 1; transform: translateY(96px); }
+}
+
+/* Text/list equivalent for the diagram — §7 diagrams requirement */
+.ctl-lattice-alt {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+.ctl-lattice-alt li {
+  border: 1px solid var(--ctl-line);
+  border-radius: var(--ctl-radius-sm);
+  padding: 0.3rem 0.6rem;
+  color: var(--ctl-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   12. Loading / empty / error states (app-wide-system.md)
+   -------------------------------------------------------------------------- */
+
+.ctl-state {
+  border: 1px dashed var(--ctl-line);
+  border-radius: var(--ctl-radius-md);
+  padding: 1.5rem;
+  color: var(--ctl-text-muted);
+  text-align: left;
+}
+.ctl-state-title { font-weight: 700; color: var(--ctl-text-strong); margin: 0 0 0.35rem; }
+
+.ctl-skeleton {
+  background: linear-gradient(90deg, var(--ctl-mist), var(--ctl-canvas), var(--ctl-mist));
+  border-radius: var(--ctl-radius-sm);
+  height: 0.9rem;
+  margin-block: 0.4rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. Responsive + motion fallback (§7, §8)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .ctl-hero { padding-block: clamp(2.5rem, 9vw, 4rem); }
+  .ctl-hero-actions .ctl-btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctl-scope *,
+  .ctl-scope *::before,
+  .ctl-scope *::after,
+  .ctl-lattice-token {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+  .ctl-lattice-token { transform: none; opacity: 1; }
+  .ctl-btn:hover { transform: none; }
+}
+
+@media (forced-colors: active) {
+  .ctl-btn,
+  .ctl-panel,
+  .ctl-status { border: 1px solid CanvasText; }
+}

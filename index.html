@@ -12,10 +12,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
+  <link rel="stylesheet" href="/assets/css/cinematic-trust-lattice.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
+
+<a class="ctl-skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
   <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
@@ -154,24 +157,33 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main>
+<main id="main">
 
-  <!-- ── Section 1: Hero (centered) ────────────────────────────────────────── -->
-  <section class="hero-section hero-centered">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="container hero-centered-inner">
-      <span class="hero-kicker reveal">Open framework · v1.3 · CC BY 4.0</span>
-      <h1 class="reveal">NHID-Clinical</h1>
-      <p class="hero-lead reveal">An open framework for healthcare AI agent identity, authorization, disclosure, and audit evidence.</p>
-      <div class="hero-actions-premium reveal">
-        <a href="/framework/" class="btn-premium">Explore the Open Framework</a>
-        <a href="/platform/" class="btn-ghost">Try TrustLayer Platform</a>
+  <!-- ── Section 1: Cinematic Trust Lattice hero ───────────────────────────── -->
+  <section class="ctl-scope ctl-hero ctl-grid-surface ctl-on-dark">
+    <div class="ctl-container ctl-hero-inner">
+      <div>
+        <p class="ctl-meta reveal">The trust layer for healthcare AI</p>
+        <h1 class="ctl-display reveal">Verify identity before data moves.</h1>
+        <p class="ctl-lede reveal" style="margin-top:1.15rem">Open controls for disclosure, authorization, and replayable audit evidence in healthcare voice workflows.</p>
+        <div class="ctl-hero-actions reveal">
+          <a class="ctl-btn ctl-btn-primary" href="/framework/">Explore the framework</a>
+          <a class="ctl-btn ctl-btn-secondary" href="/simulator.html">Run the simulator</a>
+        </div>
+        <p class="ctl-boundary-note reveal">
+          <span aria-hidden="true">&#9679;</span>
+          <span>Open specification &middot; testable controls &middot; not a certification. No production pilots yet; seeking the first shadow-evaluation partners.</span>
+        </p>
       </div>
-      <p class="reveal" style="max-width:60ch;margin:1.4rem auto 0;color:var(--body);font-size:.98rem;line-height:1.7">The specification, tests, and reference implementation remain open. TrustLayer provides optional production infrastructure for organizations running AI agents at scale.</p>
-      <div class="hero-illo reveal">
-        <img src="/assets/images/3d-svg/hero-orbit.svg" alt="Soft isometric illustration: floating governance platforms connected by verified identity nodes, with disclosure, verification, and audit tokens." loading="eager"/>
+      <div class="reveal">
+        <img src="/assets/diagrams/trust-lattice.svg" class="ctl-lattice"
+             alt="Conceptual diagram: five stacked trust layers labelled Disclose, Authorize, Scope, Audit and Observe, with a single request descending through them in order."
+             width="520" height="420" loading="eager"/>
+        <ul class="ctl-lattice-alt">
+          <li>1 · Disclose</li><li>2 · Authorize</li><li>3 · Scope</li><li>4 · Audit</li><li>5 · Observe</li>
+        </ul>
+        <p class="ctl-boundary-note" style="margin-top:.75rem;font-size:.875rem">A conceptual trust pathway, not a deployed system architecture.</p>
       </div>
-      <p class="disclaimer-small" style="margin-top:1.5rem">Voluntary and testable — not an accredited standard, certification, or regulatory requirement. No production pilots yet; seeking the first shadow-evaluation partners.</p>
     </div>
   </section>
 
@@ -217,11 +229,27 @@
 
   <!-- ── By the numbers (stats strip) ──────────────────────────────────────── -->
   <section class="page-section" style="padding-block:1rem 2.5rem">
-    <div class="container stats-strip reveal">
-      <div class="stat"><b>669</b><span>passing tests in the open repo (18 skipped · 687 total)</span></div>
-      <div class="stat"><b>5</b><span>controls (IDG · PDX · DBC · EIT · ATR) plus the bot-to-bot rule</span></div>
-      <div class="stat"><b>Live</b><span>conformance API — no key for demo routes</span></div>
-      <div class="stat"><b>CC BY 4.0</b><span>open · NIST comment on record</span></div>
+    <div class="ctl-scope ctl-metric-rail reveal">
+      <div class="ctl-metric">
+        <span class="ctl-metric-value">669</span>
+        <span class="ctl-metric-label">Passing tests</span>
+        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">18 skipped · 687 total, in the open repo</span>
+      </div>
+      <div class="ctl-metric">
+        <span class="ctl-metric-value">5</span>
+        <span class="ctl-metric-label">Controls</span>
+        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">IDG-01 · PDX-01 · DBC-01 · EIT-01 · ATR-01, plus the bot-to-bot rule</span>
+      </div>
+      <div class="ctl-metric">
+        <span class="ctl-metric-value">FHIR</span>
+        <span class="ctl-metric-label">AuditEvent</span>
+        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">R4 base spec v4.0.1 — no named IG conformance claimed</span>
+      </div>
+      <div class="ctl-metric">
+        <span class="ctl-metric-value">Open</span>
+        <span class="ctl-metric-label">CC BY 4.0</span>
+        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">NIST comment on public record</span>
+      </div>
     </div>
   </section>
 
