@@ -14,6 +14,13 @@ Claude Code must read the files in this order before changing implementation fil
 6. [`reference/preview-coverage-map.md`](reference/preview-coverage-map.md) — how the supplied URLs map to previews.
 7. [`reference/previews/`](reference/previews/) — visual evidence and composition reference.
 
+>**Before implementing any preview, read
+[`reference/KNOWN-INACCURACIES.md`](reference/KNOWN-INACCURACIES.md).** Several previews contain
+control IDs, counts, statuses and badges that do not exist in the repository and would be factually
+false if shipped. `04-evidence-center.png` in particular shows an `IDG-03` control that does not
+exist and a "VERIFIED / integrity check passed" badge implying verification the system does not
+perform.
+
 The older [`reference/prior-design-recommendation.md`](reference/prior-design-recommendation.md) is **historical context only**. If it conflicts with this package, this package takes precedence.
 
 ## Design decision

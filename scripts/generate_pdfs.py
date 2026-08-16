@@ -758,6 +758,51 @@ def _key_metrics(width=6.5 * inch):
     ])
 
 
+
+def _corpus_detection_rates():
+    """Per-control detection/FP over the committed Fabricate corpus.
+
+    Computed at build time from scripts/confusion_matrix.py so the PDF and the
+    website consume one measurement path instead of transcribing numbers. Raises
+    if the corpus is missing rather than falling back to stale constants.
+    """
+    import sys as _sys
+    _root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    if _root not in _sys.path:
+        _sys.path.insert(0, _root)
+    from scripts.confusion_matrix import compute, load, ALL_CONTROLS
+
+    # load() takes full argv, including argv[0]
+    convs = load([
+        "confusion_matrix",
+        os.path.join(_root, "fixtures", "fabricate", "conversations.csv"),
+        os.path.join(_root, "fixtures", "fabricate", "turns.csv"),
+    ])
+    res = compute(convs)
+    by = {c["control"]: c for c in res["controls"]}
+    names = {
+        "IDG-01": "IDG-01 (Identity Disclosure Gate)",
+        "PDX-01": "PDX-01 (Pre-Data Exchange Gate)",
+        "DBC-01": "DBC-01 (Deceptive Behavior Check)",
+        "EIT-01": "EIT-01 (Escalation Implementation Test)",
+    }
+    rows = []
+    for ctrl in ALL_CONTROLS:
+        c = by[ctrl]
+        rate = (c["detected"] / c["expected"]) if c["expected"] else None
+        fpr = (c["fp"] / c["clean"]) if c["clean"] else None
+        rows.append([
+            names[ctrl],
+            f"{c['detected']}/{c['expected']}",
+            "n/a" if rate is None else f"{rate:.1%}",
+            f"{c['fp']}/{c['clean']}",
+            "n/a" if fpr is None else f"{fpr:.1%}",
+        ])
+    return {"rows": rows,
+            "n_conversations": res["n_conversations"],
+            "n_compliant": res["n_compliant"]}
+
+
 def _cover(story, title, subtitle, version, audience, logo_path=None):
     """Append a full cover page + page break — the shared suite masthead."""
     story.append(CoverPage(title, subtitle, version, audience, logo_path=logo_path))
@@ -2000,23 +2045,35 @@ def make_evidence_pack():
         story.append(Spacer(1, 0.08 * inch))
 
     _section(story, "2 · Real-Corpus Detection Rates", H1)
+    _cm = _corpus_detection_rates()
     story.append(Paragraph(
         "The CTS YAML suite validates the policy engine against synthetic, hand-authored cases. "
-        "To check behavior against real conversational phrasing, the engine was also run against "
-        "the Fabricate Battle-Test Corpus — 550 real-world voice AI conversations (4,839 turns). "
-        "Detection rate is the share of corpus turns where a control correctly fired. These are "
-        "reported honestly, including where coverage is weak.",
+        "To check behavior against real conversational phrasing, the engine is also replayed "
+        f"against the Fabricate Battle-Test Corpus \u2014 {_cm['n_conversations']} conversations, of "
+        f"which {_cm['n_compliant']} are labelled scenario_type=compliant. Detection and false "
+        "positives are measured on disjoint populations, per conversation \u2014 not per turn. "
+        "Detection is the share of conversations declaring a violation in which that control "
+        "fired; the false-positive rate is the share of the compliant conversations in which it "
+        "fired anyway. Figures are computed at build time by scripts/confusion_matrix.py, not "
+        "transcribed.",
         SMALL
     ))
     story.append(Spacer(1, 0.06 * inch))
-    story.append(_premium_table([
-        ["Control", "Detection Rate", "Notes"],
-        ["IDG-01 (Identity Disclosure)", "100%", "Holds against real phrasing"],
-        ["EIT-01 (Escalation Trigger)", "94.7%", "Holds against real phrasing"],
-        ["PDX-01 (PHI Data Exchange)", "58.6%", "Partial — real-world phrasing diverges from synthetic cases"],
-        ["DBC-01 (Deceptive Behavior Claim)", "2.5%", "Weak — heuristic phrase list does not yet cover most real phrasing"],
-        ["ATR-01 (Audit trace)", "0.0%", "Corpus/adapter structural limitation — not a representative test"],
-    ], [2.1 * inch, 1.2 * inch, 3.2 * inch]))
+    story.append(_premium_table(
+        [["Control", "Detected", "Detection", "FP / clean", "FP rate"]] + _cm["rows"],
+        [2.0 * inch, 1.0 * inch, 1.05 * inch, 1.05 * inch, 0.9 * inch]
+    ))
+    story.append(Spacer(1, 0.08 * inch))
+    story.append(Paragraph(
+        "ATR-01 is not listed because this corpus cannot measure it: the replay harness drops all "
+        "ATR-01 expectations as untestable, since audit-field completeness is a property of the "
+        "live event envelope rather than a replayed transcript. That is a limitation of the "
+        "measurement, not a score of zero. ATR-01 remains one of the five canonical controls; the "
+        "supplemental rule is bot-to-bot. The harness also drops PDX-01 expectations where "
+        "disclosure occurs at turn 0, because the probe is then post-disclosure. Self-reported, "
+        "not independently audited, and not a conformance claim.",
+        SMALL
+    ))
     story.append(Spacer(1, 0.12 * inch))
 
     _section(story, "3 · Anonymized Failure Trace Example", H1)
