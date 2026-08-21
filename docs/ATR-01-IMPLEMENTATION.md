@@ -331,7 +331,7 @@ event.state_after        # State after event
 ✅ **No breaking changes**:
 - `evaluate_all()` maintains existing signature
 - `PolicyDecision` added optional `audit_trail` field (default None)
-- Full suite passing: 743 tests, 18 skipped (761 total)
+- Full suite passing: 759 tests, 18 skipped (777 total)
 - No modifications to IDG-01, PDX-01, DBC-01, EIT-01 behavior
 
 ## Deployment Notes

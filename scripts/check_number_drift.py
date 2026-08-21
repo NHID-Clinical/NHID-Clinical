@@ -46,6 +46,7 @@ WATCHED = [
     "docs/SYSTEM_ARCHITECTURE.md",
     "docs/executive-brief.md",
     "docs/ops/inbound-knowledge-base.md",
+    "conformance/nhid_conformance_test_suite_v1.yaml",
     *sorted(glob.glob("webplatform/templates/*.html")),
 ]
 

@@ -102,6 +102,16 @@ def _git_is_dirty() -> bool | None:
 
 # ── Artifact collectors ───────────────────────────────────────────────────
 
+def _executed_suite_path() -> str:
+    """The suite file run_cts() actually reads, reported rather than assumed."""
+    try:
+        from src.cts_runner import _YAML_PATH
+
+        return str(Path(_YAML_PATH).relative_to(Path(__file__).resolve().parent.parent))
+    except Exception:
+        return "unknown"
+
+
 def collect_conformance() -> Artifact:
     """Run the conformance test suite and record the per-case outcome."""
     try:
@@ -117,7 +127,13 @@ def collect_conformance() -> Artifact:
     return Artifact.available(
         "conformance_results",
         results,
-        suite="conformance/nhid_conformance_test_suite_v1.yaml",
+        suite=_executed_suite_path(),
+        suite_note=(
+            "The repository carries two copies of the suite: the published "
+            "conformance/ copy and the tests/ copy the runner executes. They "
+            "are held semantically identical by a regression test. The path "
+            "above is the one this run actually read."
+        ),
         reproduce=REPRODUCTION_COMMANDS["conformance"],
     )
 
