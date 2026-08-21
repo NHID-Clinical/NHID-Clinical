@@ -20,10 +20,32 @@
 - **Sequencing** of protected-data exchange behind disclosure (PDX-01).
 - **Delegated authority**: verifiable, NPI-anchored, scoped, expiring,
   revocable authorization to represent a provider organization (NHID-Auth
-  v2).
+  v2), evaluated in the policy path by **DLG-01** when a deployment opts in.
 - **Scope enforcement** via monotonic narrowing across delegation hops,
   checked by the verifier at evaluation time (application-layer enforcement,
-  not a cryptographic guarantee on its own).
+  not a cryptographic guarantee on its own). A verified scope additionally
+  constrains PDX-01: a delegation for eligibility does not authorize
+  requesting a claim number.
+
+**What DLG-01 does and does not establish.** State all four of these together
+or none of them:
+
+1. It is **opt-in**. Without a `DelegationContext` the control is not
+   evaluated and the engine behaves exactly as it did before. Do not describe
+   delegated authority as verified "by default", "always", or "on every call".
+2. It verifies a delegation against a **trust anchor the deploying
+   organization configured itself**. There is no directory, registry, or
+   discovery service. NHID-Clinical does not vouch for any provider key; it
+   checks signatures against keys the deployer already chose to trust.
+   An NPI with no configured anchor is refused, not accepted.
+3. The NPI is **format-validated and cryptographically bound** to the
+   delegation. It is **not verified against NPPES** or any external source.
+   A well-formed NPI in a delegation signed by a trusted key means that key's
+   holder asserted it — nothing more.
+4. Enforcement covers **what the agent asked for on the interaction**, drawn
+   from speech patterns and declared `phi_accessed` fields. It is not a
+   database-layer or API-layer authorization control, and it does not prevent
+   an agent from obtaining data by some path the interaction does not reveal.
 - **Escalation** to a human (EIT-01).
 - **Accountability and audit evidence** (ATR-01, FHIR AuditEvent).
 - **Conformance testing** of the above (deterministic engine + CTS).

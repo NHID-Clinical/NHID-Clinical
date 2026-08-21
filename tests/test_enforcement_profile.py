@@ -154,9 +154,20 @@ def test_composite_action_is_one_of_the_vocabulary():
 
 def test_evaluate_all_does_not_consume_cas():
     """Structural proof: the decision authority cannot read CAS, so CAS can
-    never influence the emitted PolicyAction."""
+    never influence the emitted PolicyAction.
+
+    The allowlist is exact, so any future widening of the signature has to be
+    made deliberately here. `delegation` (DLG-01, opt-in) was added knowingly;
+    it carries a trust-anchor resolver and never a score.
+    """
     params = set(inspect.signature(evaluate_all).parameters)
-    assert params == {"session", "event"}
+    assert params == {"session", "event", "delegation"}
+    assert not any("cas" in p.lower() for p in params)
+
+
+def test_evaluate_all_delegation_parameter_defaults_to_disabled():
+    """DLG-01 must be opt-in: callers that pass nothing get the prior behavior."""
+    assert inspect.signature(evaluate_all).parameters["delegation"].default is None
 
 
 def test_cas_result_is_score_only_and_carries_no_action():

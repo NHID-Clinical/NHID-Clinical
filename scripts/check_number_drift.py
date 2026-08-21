@@ -12,8 +12,14 @@ Sources of truth:
   - scripts/check_baseline.py   → EXPECTED (per-control detection/FP baseline)
 
 Watched surfaces (drift-prone list from the docs-and-positioning protocol):
-  README.md, evidence-pack.html, simulator.html, .github/CONTRIBUTING.md,
-  .github/workflows/ci.yml (job name), webplatform/templates/*.html
+  README.md, evidence-pack.html, simulator.html, faq.html, index.html,
+  .github/CONTRIBUTING.md, .github/workflows/ci.yml (job name),
+  webplatform/templates/*.html, and the docs/ pages that quote suite totals.
+
+The docs/ and index.html/faq.html entries were added after the DLG-01 work
+found six files still claiming a superseded count while this guard reported
+PASS — the guard was narrower than the actual claim surface, which is the exact
+failure it exists to prevent.
 
 Usage:
   python scripts/check_number_drift.py
@@ -31,9 +37,28 @@ WATCHED = [
     "README.md",
     "evidence-pack.html",
     "simulator.html",
+    "index.html",
+    "faq.html",
     ".github/CONTRIBUTING.md",
+    "docs/ATR-01-IMPLEMENTATION.md",
+    "docs/CONTROL_DECISION_TABLE.md",
+    "docs/CORPUS_EVALUATION_SUMMARY.md",
+    "docs/SYSTEM_ARCHITECTURE.md",
+    "docs/executive-brief.md",
+    "docs/ops/inbound-knowledge-base.md",
     *sorted(glob.glob("webplatform/templates/*.html")),
 ]
+
+# Two corpora are measured in this repo and they report different DBC-01 rates:
+# the 550-conversation Fabricate corpus (the baseline this guard derives from,
+# 91.5%) and the 150-session Tonic corpus (100% against its seeded violations).
+# These files document the Tonic evaluation, so their DBC-01 figures are a
+# different measurement rather than a stale copy of this one. They stay under
+# the unit-count check; only the rate check is exempt.
+DBC_RATE_EXEMPT = frozenset({
+    "docs/CORPUS_EVALUATION_SUMMARY.md",
+    "docs/SYSTEM_ARCHITECTURE.md",
+})
 
 # Patterns whose captured number is a claim about the unit-test count.
 COUNT_CLAIMS = [
@@ -79,6 +104,8 @@ def main() -> int:
                             f"{path}:{lineno}: claims '{m.group(0)}' but the "
                             f"suite invariant is {unit_expected} passed"
                         )
+            if path in DBC_RATE_EXEMPT:
+                continue
             for m in DBC_RATE_CLAIM.finditer(line):
                 if m.group(1) != dbc_rate:
                     failures.append(
