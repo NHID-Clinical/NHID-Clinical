@@ -264,9 +264,10 @@
 
   <section class="page-section" style="background:var(--mist)">
     <div class="container" style="max-width:60rem">
-      <p class="section-kicker">Beyond pass/fail</p>
-      <h2>Call Authorization Score</h2>
-      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">CAS condenses identity assurance, operational confidence, and audit-envelope completeness into a single 0&ndash;1 score with plain trust tiers. Below the conditional-trust threshold, a human reviews the call. CAS is a measurement, not a certification — it describes one call, not an organization.</p>
+      <p class="section-kicker">Optional, opt-in</p>
+      <h2>Delegated Authority (DLG-01)</h2>
+      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">An agent asserting it acts for a provider organization can present a cryptographically signed delegation naming that organization&rsquo;s NPI, the scope it grants, and when it expires. When a deployment opts in, the engine verifies the signatures, expiry, revocation and call binding, and refuses any delegation whose scope widens across a sub-delegation. The verified scope then constrains the data boundary: a delegation for eligibility does not authorize requesting a claim number.</p>
+      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">The limits travel with it. Verification is against a trust anchor the deploying organization configured itself &mdash; there is no directory or discovery service, and an NPI with no configured anchor is refused rather than accepted. The NPI is cryptographically bound to the delegation but is <strong>not</strong> checked against NPPES. Delegation is off unless a deployment turns it on.</p>
       <div style="margin-top:1.25rem">
         <a class="cta-button" href="/specification.html">Read the normative definitions <span aria-hidden="true">&rarr;</span></a>
       </div>

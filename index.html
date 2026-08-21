@@ -298,7 +298,7 @@
         </div>
         <div>
           <div role="tablist" aria-label="Trust stack layers" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem">
-            <button class="btn-ghost stack-layer" role="tab" data-layer="l5" aria-selected="false">Layer 5 · Observability & CAS</button>
+            <button class="btn-ghost stack-layer" role="tab" data-layer="l5" aria-selected="false">Layer 5 · Delegated Authority</button>
             <button class="btn-ghost stack-layer" role="tab" data-layer="l4" aria-selected="false">Layer 4 · Audit Ledger (ATR-01)</button>
             <button class="btn-ghost stack-layer" role="tab" data-layer="l3" aria-selected="false">Layer 3 · Cryptographic Authorization (NHID-Auth v2)</button>
             <button class="btn-ghost stack-layer active" role="tab" data-layer="l2" aria-selected="true">Layer 2 · Behavioral Disclosure Controls</button>
@@ -326,9 +326,9 @@
       l4: { tag: "Layer 4", title: "Audit Ledger (ATR-01)",
         body: "Every event carries a complete, replayable audit envelope — actor, timestamps, state transitions, execution context. Missing fields are CRITICAL findings. Evidence, not vibes.",
         links: [["Evidence pack","/evidence-pack.html"],["Audit requirements","/specification.html"]] },
-      l5: { tag: "Layer 5", title: "Observability & Call Authorization Score",
-        body: "CAS condenses identity assurance, operational confidence, and envelope completeness into one 0–1 score with plain trust tiers. Below the conditional-trust threshold, a human reviews. Scores are measurements, not certifications.",
-        links: [["Governance Simulator","/simulator.html"],["For payers","/for-payers.html"]] }
+      l5: { tag: "Layer 5", title: "Delegated Authority (DLG-01)",
+        body: "An agent can present a signed, scoped, expiring delegation from the provider organization it claims to act for. When a deployment opts in, the engine verifies it against a trust anchor that deployment configured, and the verified scope constrains what protected data the agent may request — a delegation for eligibility does not authorize asking for a claim number. Opt-in; there is no directory and no NPPES verification.",
+        links: [["Delegated authority","/roadmap.html"],["Controls","/framework/controls.html"]] }
     };
     var detail = document.getElementById("stack-detail");
     var tabs = document.querySelectorAll(".stack-layer");
@@ -415,10 +415,10 @@
           <p>Every call produces a machine-readable trace.</p>
         </div>
         <div class="feature-card reveal">
-          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-15.jpg" alt="Call Authorization Score" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
-          <span class="code">CAS</span>
-          <h3>Call Authorization Score</h3>
-          <p>One per-call score summarizing conformance across the controls.</p>
+          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-15.jpg" alt="Delegated Authority Gate" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
+          <span class="code">DLG-01</span>
+          <h3>Delegated Authority</h3>
+          <p>Opt-in: a signed, scoped delegation, and a data boundary that honors its scope.</p>
         </div>
       </div>
     </div>

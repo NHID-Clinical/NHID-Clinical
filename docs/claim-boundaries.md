@@ -26,6 +26,9 @@
   not a cryptographic guarantee on its own). A verified scope additionally
   constrains PDX-01: a delegation for eligibility does not authorize
   requesting a claim number.
+- **Escalation** to a human (EIT-01).
+- **Accountability and audit evidence** (ATR-01, FHIR AuditEvent).
+- **Conformance testing** of the above (deterministic engine + CTS).
 
 **What DLG-01 does and does not establish.** State all four of these together
 or none of them:
@@ -46,9 +49,6 @@ or none of them:
    from speech patterns and declared `phi_accessed` fields. It is not a
    database-layer or API-layer authorization control, and it does not prevent
    an agent from obtaining data by some path the interaction does not reveal.
-- **Escalation** to a human (EIT-01).
-- **Accountability and audit evidence** (ATR-01, FHIR AuditEvent).
-- **Conformance testing** of the above (deterministic engine + CTS).
 
 **Out of scope — what NHID-Clinical does not govern.**
 
@@ -93,7 +93,7 @@ this writing; adopt by version from current materials.
 | Element | Standing |
 | :-- | :-- |
 | Governance-layer controls (IDG/PDX/DBC/EIT/ATR-01) + CTS | Reference implementation; deterministic engine with a passing test suite. Checkable today from recorded interactions. |
-| Call Authorization Score | Reference implementation; a triage instrument, not a certification. |
+| Call Authorization Score | **Research component, not a product capability.** Nothing in the repository produces its inputs, so no real call can be scored. Not to be surfaced publicly. |
 | NHID-Auth v2 (delegation, scope, passports, per-call binding) | Working reference *primitive*, not deployed *infrastructure*. |
 | Revocation | In-memory in the reference implementation — explicitly not production-grade. |
 | Key custody / rotation / per-tenant isolation | Documented production path; not built. |
@@ -150,20 +150,37 @@ allowed row below (or a close paraphrase). If a claim matches a prohibited row,
 or matches nothing here, **cut it or rewrite it to the nearest allowed form.**
 When unsure, default to the weaker claim.
 
+### Not allowed — CAS is a research component
+
+`src/nhid_cas.py` computes a 0–1 score with tiers named "Verified Trust" and
+"Conditional Trust" plus a `badge_eligible` L1/L2 value. Nothing in this
+repository produces its inputs (`hallucination_risk`, `deepfake_risk_score`,
+`sip_attestation`, `oig_exclusion_match`, `entity_match_rate`), so no real call
+can be scored, and its tier names read as a trust rating this project does not
+issue.
+
+Do not present CAS, a CAS tier, or a conformance badge as a product capability,
+on any public page, in any published artifact, or in procurement material. The
+module and its 38 tests are retained for research; the score never influences a
+policy decision and `evaluate_all()` structurally cannot read it.
+
 ### Allowed — with verifiable basis
 
 | Claim | Verifiable basis |
 | :-- | :-- |
-| "An open **reference implementation** and proposed **control model** for receiver-side governance of inbound healthcare AI agents." *(anchor claim)* | `src/nhid_policy_engine_v1.py` + CTS + adapters + simulator + pilot kit |
-| "**Implements receiver-side enforcement behavior.**" | `PolicyAction` + `evaluate_all()` emit the receiver action; CTS asserts `expected_policy_action` |
+| "An open **policy-and-evidence layer** for healthcare administrative AI voice interactions." *(anchor claim)* | `src/nhid_policy_engine_v1.py` + CTS + adapters + `src/fhir_audit_emitter.py` + `scripts/export_evidence_pack.py` |
+| "**Implements enforcement behavior at the interaction boundary.**" | `PolicyAction` + `evaluate_all()` emit the action; CTS asserts `expected_policy_action` |
+| "Runs **receiver-side** on inbound calls **or sender-side** in a vendor's own call path." | The engine evaluates observable conduct and is orientation-neutral: `evaluate_all(session, event)` takes no party argument. Say "supported by the engine, adapters and evidence export"; do **not** say a packaged sender-side product exists, and do not imply any vendor has deployed it. |
 | "**Separates identity disclosure, authorization evaluation, enforcement decision, and evidence capture into distinct control stages.**" | `PolicyDecision` flow (IDG/PDX → decision → Enforcement Profile → ATR-01 / FHIR); `docs/enforcement-profile.md`. This staged separation is a core strength — it is not "a disclosure banner." |
 | "A **deterministic, testable conformance model** (same inputs → identical output)." | `conformance/nhid_conformance_test_suite_v1.yaml` + `src/cts_runner.py`; passing unit suite |
 | "Five controls (IDG/PDX/DBC/EIT/ATR-01) plus a documented **Enforcement Profile — not a sixth control.**" | `docs/enforcement-profile.md`; `evaluate_all` ladder |
 | "Emits **FHIR AuditEvent** evidence for the interaction." | `src/fhir_audit_emitter.py`, `nhid_audit_export.py` |
 | "**Mapped to** NIST AI RMF and ISO/IEC 42001; **designed to support** EU AI Act Art. 50 transparency obligations." | `regulatory-alignment.html` — mapping only |
-| "Addresses an **underserved receiver-side operational gap** for inbound healthcare AI voice agents." | Narrow scope; conservative, hedged |
+| "Addresses an **underserved operational gap** in cross-organizational healthcare AI voice workflows." | Narrow scope; conservative, hedged |
 | "A **voluntary open proposal with standards-oriented artifacts**; submitted a **public comment** to NIST (NIST-2025-0035-0026)." | Public comment ≠ endorsement or an opened standards process |
 | "Revocation is **checked at verification and in-memory** in the reference implementation." | `src/agent_identity.py` — not live / not cross-org |
+| "**Delegated authority is verified in the policy path (DLG-01) when a deployment opts in**, and the verified scope constrains the data boundary." | `evaluate_dlg01` + `evaluate_pdx01` in `src/nhid_policy_engine_v1.py`; `tests/test_dlg01_delegated_authority.py`. Always pair with the four limits stated in the in-scope section above. |
+| "The **evidence pack is reproducible** and marks anything it could not generate as unavailable." | `scripts/export_evidence_pack.py` + `tests/test_export_evidence_pack.py`. It is not an attestation, audit opinion, or assurance engagement. |
 | "A **bot-to-bot disclosure gate** exists for agent-to-agent contexts." | `evaluate_bot_to_bot()` — disclosure only, not mutual authorization |
 
 ### Prohibited — and why

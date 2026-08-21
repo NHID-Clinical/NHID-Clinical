@@ -9,8 +9,21 @@
 </p>
 
 <p align="center">
-  <b>NHID-Clinical is an open reference implementation and proposed control model for receiver-side governance of inbound healthcare AI agents.</b><br>
-  It governs the identity disclosure, authorization, and auditability of AI-operated interactions across organizational boundaries — not the AI model itself.
+  <b>NHID-Clinical is an open policy-and-evidence layer for healthcare administrative AI voice interactions.</b><br>
+  It records which agent acted, under whose delegated authority, within what scope, whether it disclosed
+  itself before requesting protected data, whether escalation was honored, and what auditable evidence
+  remains — deterministically, and in a form the receiving organization can verify without trusting the
+  caller. It governs conduct at the interaction boundary, not the AI model itself.
+</p>
+
+<p align="center">
+  <sub>
+    The engine evaluates observable conduct and does not care who runs it. A payer or provider can run it
+    <b>receiver-side</b> on inbound calls; a voice-AI vendor can run it <b>sender-side</b> in their own call
+    path to produce evidence for their customers. Both use the same controls and the same artifacts.
+    Sender-side operation is supported by the engine, the adapters and the evidence export today; it is
+    not a packaged product, and no vendor has deployed it.
+  </sub>
 </p>
 
 <p align="center">
@@ -43,7 +56,7 @@
 
 **Designed to support the transparency obligations described in EU AI Act Article 50; mapped to NIST AI RMF 1.0.**
 
-NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, a per-call Call Authorization Score (CAS), and an optional cryptographic layer (NHID-Auth v2) for proving delegated authority. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
+NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, an optional delegated-authority gate (DLG-01) that verifies a cryptographically signed, scoped delegation and constrains what protected data an agent may request, and machine-readable audit evidence for what happened. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
 
 ## Start here
 
@@ -111,7 +124,7 @@ An honest maturity snapshot. NHID-Clinical is a working reference implementation
 - Deterministic policy engine with 777 tests (759 passing) across all phases
 - Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
 - Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
-- Conformance Test Suite and a per-call Call Authorization Score (CAS)
+- Conformance Test Suite, plus an evidence pack export a vendor can hand to a reviewer
 - Documented **[Enforcement Profile](docs/enforcement-profile.md)** — how each control's `PolicyDecision` maps to a receiver action (a documented layer over the five controls, **not a sixth control**)
 - NHID-Auth v2 cryptographic authorization layer, published as public reference code
 
@@ -252,7 +265,7 @@ flowchart LR
     class A,HR acc
 ```
 
-<sub>Precedence: `DENY_DATA > ESCALATE_HUMAN > DISCLOSE_IDENTITY > LOG_ONLY > CONTINUE_AI`. CAS may route a call to human review, but it never overrides the `PolicyDecision`.</sub>
+<sub>Precedence: `DENY_DATA > ESCALATE_HUMAN > DISCLOSE_IDENTITY > LOG_ONLY > CONTINUE_AI`. CAS is a **research component**, not part of the product surface: nothing in this repository produces its inputs, and it never overrides the `PolicyDecision` — `evaluate_all()` structurally cannot read it. See `src/nhid_cas.py`.</sub>
 
 ## Five-Layer Trust Stack
 
@@ -348,7 +361,7 @@ curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/a
 | `POST /v1/adapters/retell/check` | none | Native Retell AI payload → result |
 | `POST /v1/adapters/connect/check` | none | Amazon Connect → result |
 | `POST /v1/webhooks/call-progress` | none | Turn-by-turn in-call evaluation |
-| `GET /v1/public/vendor/{id}/badge` | none | Public CAS badge SVG |
+| `GET /v1/public/vendor/{id}/badge` | none | Legacy CAS badge SVG. Retained for existing callers; CAS is a research component and is not part of the product surface — see `src/nhid_cas.py`. |
 | `POST /v1/cts/evaluate` | none | Run CTS YAML suite |
 | `POST /v1/conformance/check` | `x-api-key` | Production conformance check |
 
@@ -395,7 +408,7 @@ NHID-Clinical/
 | NIST CAISI RFI | Cross-org agent identity | NHID-Auth v2 |
 | EU AI Act Art. 50 | Transparency for AI interacting with humans | IDG-01 + DBC-01 |
 | ISO/IEC 42001 | AI management system transparency controls | Full control set + ATR-01 |
-| NIST AI RMF 1.0 | Map & Measure functions for identity risk | Full framework + CAS |
+| NIST AI RMF 1.0 | Map & Measure functions for identity risk | Full framework |
 
 [Full matrix →](https://nhid-clinical.org/regulatory-alignment.html)
 
@@ -429,7 +442,7 @@ python examples/issue_and_verify.py
 
 ## Contributing & Pilot Partners
 
-We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required. Start small: the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) produces usable impersonation-latency and CAS data from your own call logs in 2–4 weeks.
+We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required. Start small: the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) produces usable impersonation-latency data from your own call logs in 2–4 weeks.
 
 [**For Payers →**](https://nhid-clinical.org/for-payers.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 

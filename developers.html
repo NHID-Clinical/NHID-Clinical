@@ -317,12 +317,19 @@ python tests/trace_generator.py --offline</pre>
         <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:.85rem 0 0">Returns: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">{"conformant": true/false, "action": "...", "violations": [...], "next_state": "...", "cas": {"score": ..., "tier": ...}}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json" style="color:var(--teal-bright)">sample_request.json</a> for a complete example.</p>
       </div>
 
-      <!-- ── CAS Tiers ──────────────────────────────────────────────────────── -->
+      <!-- ── Delegated authority (DLG-01) ───────────────────────────────────── -->
 
       <div style="margin-top:2.5rem">
-        <h2 style="margin-bottom:1rem;font-size:1.15rem">Call Authorization Score (CAS) — Tier Thresholds</h2>
-        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Every conformance and adapter response includes a <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">cas</code> block. The score is a 0.0–1.0 composite; the band it falls in determines the suggested action.</p>
-        <img src="/assets/diagrams/cas-scoring-tiers.svg" alt="CAS tier thresholds: 0.90 and above is Verified Trust L2 with full access; 0.75 and above is Conditional Trust L1 with reduced scope; 0.50 and above requires human review; 0.20 and above is denied or degraded with a lower-risk fallback; below 0.20 is a hard denial with a typed error code, logged to the FHIR AuditEvent trail regardless of outcome" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border)" loading="lazy"/>
+        <h2 style="margin-bottom:1rem;font-size:1.15rem">Delegated Authority (DLG-01) — opt-in</h2>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Pass a <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">DelegationContext</code> to <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">evaluate_all()</code> and put the agent&rsquo;s passport on the session. The engine verifies the provider and agent signatures, expiry, revocation, call binding, and — for a delegation chain — that scope narrows monotonically at every hop. The verified scope then constrains PDX-01: a delegation for <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">eligibility</code> causes a request for a claim number to be denied.</p>
+        <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Pass nothing and the control is not evaluated at all, so existing integrations are unaffected. Verification resolves the provider key through a trust anchor <em>you</em> configure; there is no directory, no discovery service, and no NPPES check. An NPI you have not configured is refused, not accepted.</p>
+        <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto"><code>from src.nhid_policy_engine_v1 import DelegationContext, evaluate_all
+from src.trust_anchor import StaticTrustAnchorResolver
+
+resolver = StaticTrustAnchorResolver({"1234567890": provider_public_key_b64})
+session["agent_passport"] = passport          # or a list, for a chain
+decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
+# decision.reason_code == "PDX01_SCOPE_NOT_AUTHORIZED" when out of scope</code></pre>
       </div>
 
       <!-- ── Vendor Quick-Start ─────────────────────────────────────────────── -->

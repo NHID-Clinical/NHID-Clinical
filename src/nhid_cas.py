@@ -1,5 +1,31 @@
 """NHID-CAS: Non-Human Identity Call Authorization Score
-Formal scoring engine for B2B healthcare administrative voice sessions.
+
+RESEARCH COMPONENT — NOT PART OF THE PRODUCT SURFACE.
+
+A proposed scoring formula for B2B healthcare administrative voice sessions,
+retained for research and for the design discussion it supports. It is
+deliberately not surfaced as a product capability, for two reasons that must
+travel with any use of it:
+
+1. **Nothing in this repository produces its inputs.** `hallucination_risk`,
+   `deepfake_risk_score`, `sip_attestation`, `oig_exclusion_match` and
+   `entity_match_rate` are consumed by the formula and measured by no
+   component here. A CAS score can therefore be computed for a hypothetical
+   trace, never for a real call this system observed.
+
+2. **Its tier names read as a trust rating.** "Verified Trust" and
+   "Conditional Trust", and the `badge_eligible` L1/L2 values, describe a
+   grading scheme. NHID-Clinical is not a certification authority and issues
+   no trust ratings, so those outputs must not appear on any public surface,
+   in any published artifact, or in any procurement material.
+
+The score never influences a policy decision. `evaluate_all()` cannot read it
+— see `tests/test_enforcement_profile.py::test_evaluate_all_does_not_consume_cas`,
+which asserts that structurally rather than by convention.
+
+The formula and its 38 tests are unchanged. This notice records what it is,
+not a change to what it computes.
+
 Author: Brianna Nicole Baynard-Malone | NIST-2025-0035-0026 | CC BY 4.0
 """
 from dataclasses import dataclass

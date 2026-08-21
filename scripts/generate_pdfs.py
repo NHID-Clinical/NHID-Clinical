@@ -1380,8 +1380,8 @@ def make_technical_playbook():
         "Provide an open, testable reference: every claim is backed by runnable, deterministic code.",
         "Layer in cryptographic agent identity (NHID-Auth v2) as authorization matures beyond "
         "behavior alone — NPI-bound passports, scoped delegation, per-agent revocation.",
-        "Make Call Authorization Score (CAS) a procurement-grade compliance signal payers and "
-        "vendors can both verify independently.",
+        "Produce reproducible evidence a vendor can hand to a payer or provider security "
+        "reviewer, and that the reviewer can re-derive independently rather than take on trust.",
     ]:
         story.append(Paragraph(f"•  {n}", BODY))
     story.append(Spacer(1, 0.1*inch))
@@ -1397,7 +1397,7 @@ def make_technical_playbook():
         ["Layer", "Component", "Purpose"],
         ["Policy engine",  "src/nhid_policy_engine_v1.py",   "Deterministic rule evaluation (670+ lines)"],
         ["Identity (v2)",  "src/agent_identity.py",          "Ed25519 delegation & agent passports"],
-        ["Scoring",        "src/nhid_cas.py",                "Call Authorization Score engine"],
+        ["Scoring",        "src/nhid_cas.py",                "CAS — research component, not part of the product surface"],
         ["Audit",          "src/fhir_audit_emitter.py",      "FHIR R4 AuditEvent generation"],
         ["Conformance",    "tests/nhid_conformance_test_suite_v1.yaml", "18 deterministic CTS cases"],
         ["Adapters",       "adapters/*.py",                  "VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress"],
@@ -1428,7 +1428,7 @@ def make_technical_playbook():
     ))
     tier_data = [
         ["Tier", "Time", "What You Get", "What You Need"],
-        ["0", "15 min", "Conformance verdict + CAS score per call", "A transcript and curl"],
+        ["0", "15 min", "Conformance verdict per call", "A transcript and curl"],
         ["1", "~2 hr",  "Automated per-call checks in your pipeline", "An end-of-call webhook"],
         ["2", "~1 day", "Cryptographic agent identity (NPI-bound)",   "pip install cryptography"],
     ]
@@ -1449,23 +1449,34 @@ def make_technical_playbook():
 
     story.append(PageBreak())
 
-    # Governance Framework — CAS
-    story.append(Paragraph("Governance Framework — Call Authorization Score (CAS)", H1))
+    # Governance Framework — delegated authority
+    story.append(Paragraph("Governance Framework — Delegated Authority (DLG-01)", H1))
     story.append(Paragraph(
-        "CAS provides a continuous compliance signal between 0.0 and 1.0 per call session: "
-        "<b>CAS = F_IAF × F_NOCF × ECF</b> — Identity Assurance, Operational Conformance, and "
-        "Evidence Completeness factors.",
+        "An agent asserting it acts for a provider organization may present a signed delegation "
+        "naming that organization's NPI, the scope it grants, and its expiry. When a deployment "
+        "opts in, the engine verifies provider and agent signatures, expiry, revocation and call "
+        "binding, refuses any sub-delegation that widens scope, and lets the verified scope "
+        "constrain the data boundary: a delegation for eligibility does not authorize requesting "
+        "a claim number. Absent an opt-in the control is not evaluated at all.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "Limits, which travel with the capability: verification is against a trust anchor the "
+        "deploying organization configures itself — there is no directory or discovery service, "
+        "and an unconfigured NPI is refused rather than accepted. The NPI is cryptographically "
+        "bound to the delegation but is not checked against NPPES.",
         BODY
     ))
     cas_data = [
-        ["CAS Score", "Tier", "Badge"],
-        ["≥ 0.90", "Verified Trust", "L2"],
-        ["≥ 0.75", "Conditional Trust", "L1"],
-        ["≥ 0.50", "Review Required", "—"],
-        ["≥ 0.20", "Denied / Degraded", "—"],
-        ["< 0.20", "Hard Denial", "—"],
+        ["Check", "Enforced by", "On failure"],
+        ["Provider + agent signature", "Ed25519 over the delegation", "DENY_DATA"],
+        ["Expiry / TTL", "delegation.expires_at", "DENY_DATA"],
+        ["Call binding", "call_sid nonce", "DENY_DATA"],
+        ["Revocation", "agent + delegation lists", "DENY_DATA"],
+        ["Scope narrowing", "subset check per hop", "DENY_DATA"],
+        ["Requested data in scope", "PDX-01", "DENY_DATA"],
     ]
-    t8 = Table(cas_data, colWidths=[1.5*inch, 2.5*inch, 1.0*inch])
+    t8 = Table(cas_data, colWidths=[1.9*inch, 2.2*inch, 1.1*inch])
     t8.setStyle(TableStyle([
         ("BACKGROUND",    (0,0), (-1,0), DARK),
         ("TEXTCOLOR",     (0,0), (-1,0), WHITE),
