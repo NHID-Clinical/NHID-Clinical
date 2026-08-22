@@ -1,12 +1,23 @@
 # NHID-CLINICAL MASTER KNOWLEDGE ARCHIVE
 
-**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-07-31
+**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-08-22
 **Author:** Brianna Baynard · **License:** CC BY 4.0
 
 > This document is the single authoritative reference for all NHID-Clinical knowledge: technical
 > specification, governance architecture, implementation guide, regulatory alignment, marketing
 > positioning, and future roadmap. Treat it as a living playbook, whitepaper source, training
 > corpus, and stakeholder briefing simultaneously.
+>
+> **Internal document.** Not published by `scripts/build_pages_site.sh` and not part of the public
+> surface. It may discuss positioning and strategy candidly; nothing here is a claim the project
+> makes externally. Public claims are governed by `docs/claim-boundaries.md`.
+
+> **Update 2026-08-22 — DLG-01 released (commit `65923b4`, PR #369).** Delegated authority is now
+> evaluated inside the policy path; a verified scope constrains PDX-01. CAS has been demoted to a
+> research component and removed from every public surface. Test count moved 669 → 759. The
+> constant `UNIT_EXPECTED` no longer exists — it is `UNIT_PUBLISHED`, and it is **not** a CI gate.
+> Sections 6, 7, 8, 19 and 20 are current as of this commit; sections written before it may still
+> describe the pre-DLG-01 engine.
 
 ---
 
@@ -139,10 +150,20 @@ shadow pilots rather than broad policy changes.
 
 ## 2. NHID-Clinical Core Framework
 
-### 2.1 The Four Controls
+### 2.1 The Five Canonical Controls
 
-NHID-Clinical v1.3 defines four deterministic behavioral controls, each named with a permanent
-identifier:
+NHID-Clinical v1.3 defines **five** canonical deterministic behavioral controls — IDG-01, PDX-01,
+DBC-01, EIT-01 and **ATR-01** — each named with a permanent identifier. The **supplemental** rule
+is **bot-to-bot**, not ATR-01.
+
+> **Corrected 2026-08-22.** This section previously read "The Four Controls" and §2.2 labelled
+> ATR-01 "supplemental". That was the same mislabel corrected across the public site in commit
+> `28c8102`; the archive was missed at the time. ATR-01 is canonical. The four controls named
+> together in historical corpus tables are a *measurement* scope — ATR-01 is untestable in replay —
+> and not a statement about the control set.
+
+The first four are described below; ATR-01 follows in §2.2 and DLG-01 (opt-in, added 2026-08-22)
+in §2.3a.
 
 #### IDG-01 — Identity Disclosure Gate
 
@@ -229,12 +250,12 @@ _ESCALATION_TRIGGERS = (
 
 **Fail condition (CRITICAL):** Escalation requested AND `escalation_path_available == False`.
 
-### 2.2 Supplemental Control: ATR-01
+### 2.2 ATR-01 — Audit Trail Requirements (fifth canonical control)
 
 **ATR-01 — Audit Trail Requirements**
 
-Not in the original four controls, but enforced as a structural requirement. Every NHID event
-must contain:
+Added after the original four and **canonical**, not supplemental. Enforced as a structural
+requirement: every NHID event must contain:
 
 **Top-level required fields:**
 `event_id`, `timestamp`, `session_id`, `request_id`, `event_type`, `actor_id`,
@@ -264,6 +285,87 @@ calls, no external I/O in the policy engine.
 
 See §2.5 for the synthetic-conversation evaluation loop that exercises these same controls
 outside the YAML-based CTS fixtures.
+
+
+### 2.3a DLG-01 — Delegated Authority Gate (opt-in, added 2026-08-22)
+
+The sixth evaluator, and the only opt-in one. It closes the second link in the chain
+*identity → **delegated authority** → disclosure → data boundary → decision → escalation →
+evidence*, which the engine did not evaluate before this release.
+
+**It adds no cryptography.** All verification is performed by `src/agent_identity.py`, which is
+unchanged — DLG-01 connects existing machinery to the policy path.
+
+**Signature**
+
+```python
+evaluate_all(session, event, delegation: DelegationContext | None = None)
+
+DelegationContext(resolver, require_delegation=False, enforce_scope=True)
+DelegationResult(evaluated, verified, reason, scope, provider_npi, agent_id)
+```
+
+**Opt-in by construction.** Without a `DelegationContext` the control returns
+`DLG01_NOT_EVALUATED` and contributes nothing to the composite decision. Every pre-existing caller
+and every corpus figure is unchanged — `check_baseline.py` output is byte-identical before and
+after.
+
+**Where the passport travels.** In `session["agent_passport"]`, **not** the event.
+`schema/nhid_trace_schema_v1.json` is published and sets `additionalProperties: false`, so an event
+cannot carry a passport without a v1 schema break. A delegation is per-call state anyway — it is
+`call_sid`-bound — and every adapter already maps `event["session_id"]` to the call sid, so the
+existing replay binding works untouched. Accepts a single passport or a chain, as objects or plain
+dicts.
+
+**What it checks** (all delegated to `agent_identity.py`):
+
+| Check | Failure reason code |
+| :--- | :--- |
+| Provider + agent Ed25519 signature | `DLG01_VERIFICATION_FAILED` |
+| Expiry / TTL | `DLG01_VERIFICATION_FAILED` |
+| `call_sid` nonce binding (replay) | `DLG01_VERIFICATION_FAILED` |
+| Agent or delegation revocation | `DLG01_VERIFICATION_FAILED` |
+| Monotonic scope narrowing across hops | `DLG01_VERIFICATION_FAILED` |
+| NPI resolvable to a configured trust anchor | `DLG01_TRUST_ANCHOR_UNRESOLVED` |
+| Passport parseable | `DLG01_MALFORMED_PASSPORT` |
+| Passport present when `require_delegation` | `DLG01_NO_DELEGATION_PRESENTED` |
+
+Every failure is an explicit `DENY_DATA` `PolicyDecision` — never an exception that bypasses the
+engine.
+
+**Scope constrains PDX-01.** This is the product behaviour, not a record-keeping addition. Scope
+vocabulary reuses `eligibility`, `claim_status`, `prior_auth` from `examples/issue_and_verify.py`;
+no general authorization ontology was invented. An **unrecognized scope authorizes nothing** — an
+unknown grant must never widen authority.
+
+| Delegation scope | Agent asks for | Result |
+| :--- | :--- | :--- |
+| `["eligibility"]` | member id, date of birth | `CONTINUE_AI` |
+| `["eligibility"]` | **claim number** | `DENY_DATA` / `PDX01_SCOPE_NOT_AUTHORIZED` |
+| `["claim_status"]` | claim number | `CONTINUE_AI` |
+| `["eligibility","claim_status"]` → narrowed to `["eligibility"]` | claim number | `DENY_DATA` — enforcement follows the narrowest link, not the root grant |
+
+The violation text is written to be auditable without replay:
+
+> Protected-data request outside delegated authority. Delegated scope: [eligibility]. Requested:
+> [claim_number]. Not authorized by any delegated scope: [claim_number]. Delegation
+> 1234567890/voice-agent-001.
+
+**Disclosure outranks scope.** An undisclosed agent asking out of scope is reported as
+`PDX01_PHI_GATE_TRIGGERED`, the more fundamental breach — not as a scope failure.
+
+**Four limits that must always travel with any DLG-01 claim** (verbatim from
+`docs/claim-boundaries.md`):
+
+1. It is **opt-in**. Never describe delegated authority as verified "by default" or "on every call".
+2. It verifies against a **trust anchor the deploying organization configured itself**. No
+   directory, registry or discovery service exists. An unconfigured NPI is **refused**, not accepted.
+3. The NPI is format-validated and cryptographically bound, and is **not verified against NPPES**.
+4. Enforcement covers **what the agent asked for on the interaction**. It is not a database- or
+   API-layer authorization control.
+
+Tests: `tests/test_dlg01_delegated_authority.py` (31), `tests/test_trust_anchor.py` (17).
+
 
 ### 2.4 Impersonation Latency — The Core Failure Mode
 
@@ -490,8 +592,11 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 ### 2.5.1 v1.1 Eval Repair (July 2026) — supersedes the per-rule rates in §2.5
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
-(v1.1 is a patch-set label, not a release). Suite: **446 passed / 18 skipped / 0 failed**;
-`UNIT_EXPECTED = 446` holds (Phase 6A added 91 new tests, net count +91).
+(v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
+failed**. **Superseded 2026-08-22:** the suite is now **759 passed / 18 skipped / 777 total**, and
+`UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
+`scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
+without failing the build; `scripts/validate_ci.py` warns when the two diverge.
 
 The detection rates reported in §2.5 (DBC-01 0.5→2.5%, EIT-01 94.7%, PDX-01 58.6%) were
 re-measured after a full replay of `src/nhid_policy_engine_v1.py` via
@@ -585,8 +690,8 @@ this repair.
 | Version | Description | Status |
 | :--- | :--- | :--- |
 | **v1.0** | Original 4 controls (IDG-01, PDX-01, DBC-01, EIT-01) | Superseded |
-| **v1.3** | Current: ATR-01 added, CTS expanded to 18 tests, CAS scoring | **Current** |
-| **v2.0** | NHID-Auth cryptographic layer (Ed25519, delegation chains) | Reference implementation live |
+| **v1.3** | Current: ATR-01 added, CTS expanded to 18 tests. (CAS shipped in this line but was demoted to a research component 2026-08-22 — §19.6.) | **Current** |
+| **v2.0** | NHID-Auth cryptographic layer (Ed25519, delegation chains) | Reference implementation live. **2026-08-22: wired into the policy path as DLG-01** — see §2.6. Previously the primitive existed but `evaluate_all()` never called it. |
 | **v2.1** | Planned: STIR/SHAKEN integration, attestation registry | Future |
 
 ### 3.3 Call Authorization Score (CAS)
@@ -925,14 +1030,18 @@ turn POST. The engine evaluates each turn independently and returns an action.
 NHID-Clinical/
 ├── schema/
 │   └── nhid_trace_schema_v1.json     # JSON Schema Draft 2020-12
+├── pyproject.toml                     # Packaging (added 2026-08-22; see §6.6)
 ├── src/
-│   ├── nhid_policy_engine_v1.py       # Policy engine (670+ lines)
-│   ├── agent_identity.py              # Ed25519 delegation & passports
-│   ├── nhid_cas.py                    # CAS scoring engine
+│   ├── nhid_policy_engine_v1.py       # Policy engine — 5 controls + bot-to-bot + DLG-01
+│   ├── agent_identity.py              # Ed25519 delegation & passports (unchanged by DLG-01)
+│   ├── trust_anchor.py                # NPI → provider signing key (static resolver only)
+│   ├── cli.py                         # `nhid conformance` / `nhid export-evidence`
+│   ├── nhid_cas.py                    # CAS — RESEARCH COMPONENT, not product surface (§19.6)
 │   ├── fhir_audit_emitter.py          # FHIR R4 AuditEvent generator
-│   ├── cts_runner.py                  # CTS YAML test runner
-│   ├── nhid_badge_generator.py        # SVG badge generator
-│   └── npi_registry_validator.py      # NPI format + NPPES validation
+│   ├── cts_runner.py                  # CTS YAML test runner (reads tests/, not conformance/)
+│   ├── audit_store.py                 # SQLite audit store + hash-chain verification
+│   ├── nhid_badge_generator.py        # SVG badge generator — retained, not surfaced publicly
+│   └── npi_registry_validator.py      # NPI format validation (NPPES lookup NOT implemented)
 ├── adapters/
 │   ├── vapi_adapter.py
 │   ├── twilio_adapter.py
@@ -941,16 +1050,20 @@ NHID-Clinical/
 │   ├── amazon_connect_adapter.py
 │   ├── call_progress_adapter.py       # Turn-by-turn webhook
 │   └── fabricate_adapter.py           # Fabricate CSV corpus → batch eval (§2.5)
+├── scripts/
+│   ├── export_evidence_pack.py        # Reproducible evidence bundle (§6.7)
+│   ├── check_number_drift.py          # Published-number guard (watch list, §8)
+│   └── validate_ci.py                 # Suite health + UNIT_PUBLISHED drift warning
 ├── functions/
-│   └── handler.py                     # Lambda entry point (362 lines)
+│   └── handler.py                     # Lambda entry point (732 lines)
 ├── tests/
-│   ├── nhid_conformance_test_suite_v1.yaml   # 18 CTS test cases
+│   ├── nhid_conformance_test_suite_v1.yaml   # 18 CTS cases — THIS is the copy run_cts() executes
 │   ├── demo_scenarios/
 │   │   ├── vapi_noncompliant.json
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 343 passing unit tests
+│   └── test_*.py                      # 759 passing unit tests across 42 files
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -983,19 +1096,32 @@ NHID-Clinical/
 
 | Method | Path | Auth | Purpose |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/v1/demo/check` | none | Raw NHID event → conformance result + CAS |
+| `POST` | `/v1/demo/check` | none | Raw NHID event → conformance result (response still carries a `cas` block; read `action`/`violations`, ignore `cas`) |
 | `POST` | `/v1/adapters/vapi/check` | none | VAPI payload → conformance result |
 | `POST` | `/v1/adapters/twilio/check` | none | Twilio payload → conformance result |
 | `POST` | `/v1/adapters/vonage/check` | none | Vonage payload → conformance result |
 | `POST` | `/v1/adapters/retell/check` | none | Retell AI payload → conformance result |
 | `POST` | `/v1/adapters/connect/check` | none | Amazon Connect Contact Lens → result |
 | `POST` | `/v1/webhooks/call-progress` | none | Turn-by-turn in-call evaluation |
-| `GET`  | `/v1/public/vendor/{id}/badge` | none | CAS badge SVG (embeddable) |
-| `GET`  | `/v1/vendor/metrics/summary` | `x-api-key` | Per-vendor CAS trend + pass rate |
+| `GET`  | `/v1/public/vendor/{id}/badge` | none | Legacy CAS badge SVG. Endpoint retained for existing callers; **removed from every public surface** 2026-08-22 — do not link, embed, or advertise it |
+| `GET`  | `/v1/vendor/metrics/summary` | `x-api-key` | Per-vendor conformance trend + pass rate (CAS fields present but not a product claim) |
 | `POST` | `/v1/pilot/enroll` | none | Shadow pilot enrollment |
 | `POST` | `/v1/cts/evaluate` | none | Run CTS YAML suite against policy engine |
 | `POST` | `/v1/conformance/check` | `x-api-key` | Production conformance check |
+| `POST` | `/v1/identity/verify-passport` | none | Verify an NHID-Auth v2 agent passport |
+| `POST` | `/v1/identity/revoke-passport` | `x-api-key` | Durably revoke a `delegation_id` |
 | `GET`  | `/health` | none | Lambda liveness probe |
+
+**CLI surface (added 2026-08-22).** `pyproject.toml` declares one console script, `nhid`:
+
+| Command | Delegates to |
+| :--- | :--- |
+| `nhid conformance [--ci] [--json]` | `src.cts_runner.run_cts` — `--ci` exits non-zero on any failing case |
+| `nhid export-evidence --out DIR` | `scripts/export_evidence_pack.py` |
+
+Core install dependencies are **`cryptography` and `pyyaml` only** — the policy engine itself is
+standard library, so a vendor embedding it in a call path does not inherit a web stack. FastAPI,
+uvicorn and httpx are an `api` extra; test tooling is a `dev` extra.
 
 ### 6.4 Response Format
 
@@ -1165,9 +1291,11 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
 | + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current invariant:** `UNIT_EXPECTED = 446` in `scripts/validate_ci.py`
+**Current:** `UNIT_PUBLISHED = 759` in `scripts/validate_ci.py`. This is not an invariant and not
+a gate — it is the number published on README badges, the website and the PDFs, which
+`scripts/check_number_drift.py` compares those surfaces against.
 
-**Total suite:** 512 passing (446 Python + 66 TypeScript middleware)
+**Total suite:** 825 passing (759 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1238,7 +1366,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 446 passed (18 skipped when no server running = integration tests)
+# Expected: 759 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1258,18 +1386,24 @@ PyJWT>=2.8.0
 
 ### 8.3 CI Invariant
 
-The CI pipeline enforces exactly `UNIT_EXPECTED = 446` passing tests with 0 failures:
+The CI pipeline fails on test failures and collection errors. It does **not** enforce an exact
+count — that was the old `UNIT_EXPECTED` behavior and it was removed because a growing suite is
+legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked for drift:
 
 ```python
 # scripts/validate_ci.py
-UNIT_EXPECTED = 446
+UNIT_PUBLISHED = 759
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
 **When adding tests:**
-1. Update `UNIT_EXPECTED` in `scripts/validate_ci.py`
+1. Update `UNIT_PUBLISHED` in `scripts/validate_ci.py`
 2. Update job name in `.github/workflows/ci.yml`
-3. Update test count in `README.md` badges and `.github/CONTRIBUTING.md`
+3. Update every surface `scripts/check_number_drift.py` watches — `README.md` badges and body,
+   `.github/CONTRIBUTING.md`, `index.html`, `faq.html`, `evidence-pack.html`,
+   `conformance/nhid_conformance_test_suite_v1.yaml` (`suite_metadata`), the `docs/` pages that
+   quote suite totals, and `scripts/generate_pdfs.py`
+4. Run `python scripts/check_number_drift.py` — it fails if any watched surface disagrees
 4. Update CTS count text in `README.md` if CTS tests are added
 
 ### 8.4 Running Specific Test Suites
@@ -1396,7 +1530,8 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 446`) must hold after
+1. **All existing tests must pass.** The full suite (currently **759 passed / 18 skipped**) must
+   stay green after
    every change. Run `python scripts/validate_ci.py` before committing.
 
 2. **"Impersonation Latency" is the permanent canonical term.** It must never be renamed,
@@ -1407,9 +1542,12 @@ When Claude Code or any LLM is working on this repository:
 
 4. **Never use `git add -A` or `git add .`.** Always stage files by explicit name.
 
-5. **UNIT_EXPECTED must be updated atomically with new tests.** When adding test files,
-   update `scripts/validate_ci.py`, `.github/workflows/ci.yml` job name, `README.md` badges,
-   and `.github/CONTRIBUTING.md` in the same commit.
+5. **`UNIT_PUBLISHED` must be updated atomically with new tests.** Update
+   `scripts/validate_ci.py`, the `.github/workflows/ci.yml` job name, and every surface the drift
+   guard watches, in the same commit. Then run `scripts/check_number_drift.py`. This matters more
+   than it looks: the guard only checks that published surfaces agree with the constant, so if the
+   constant is stale they can all be *consistently wrong* — which is exactly how a superseded count
+   once survived repository-wide.
 
 6. **ATR-01 required fields.** Every event dict passed to `evaluate_all()` must include
    `actor_id`, `replay_mode`, and `external_calls_cached`. Missing these causes test failures.
@@ -1422,9 +1560,9 @@ When Claude Code or any LLM is working on this repository:
 ```
 1. Write test file tests/test_<feature>.py
 2. Run pytest and verify count
-3. Update UNIT_EXPECTED = <new count> in scripts/validate_ci.py
+3. Update UNIT_PUBLISHED = <new count> in scripts/validate_ci.py
 4. Update CI job name in .github/workflows/ci.yml:
-   name: "Unit invariant: <new count> passed, 0 skipped"
+   name: "Unit invariant: <total> total (<new count> passed + 18 skipped)"
 5. Update README.md badge: [![Tests](https://img.shields.io/badge/tests-<N>%20passing-brightgreen)]
 6. Update README.md description: "372 passing across the Python test suite (306) and TypeScript..."
    → adjust both numbers
@@ -1462,8 +1600,8 @@ When Claude Code or any LLM is working on this repository:
 When resuming a Claude Code session after context limit:
 
 > "Continue from where you left off. The plan file is at
-> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 446.
-> All 446 tests pass. The most recent completed task was Phase 6A infrastructure. The next task is Phase 6B production hardening."
+> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_PUBLISHED is 759.
+> All 759 tests pass. The most recent completed task was Phase 6A infrastructure. The next task is Phase 6B production hardening."
 
 ---
 
@@ -1532,7 +1670,7 @@ Expected response:
 **Structure:**
 1. Abstract — The impersonation latency problem
 2. Scope and voluntary nature
-3. The four controls (IDG-01, PDX-01, DBC-01, EIT-01) with formal definitions
+3. The five canonical controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) with formal definitions, plus the supplemental bot-to-bot rule
 4. ATR-01 audit trail requirements
 5. Conformance Test Suite (CTS) — 5 core tests, 18 YAML scenarios
 6. Call Authorization Score (CAS) — formula and tier definitions
@@ -1941,7 +2079,7 @@ Badge tiers: L2 (Verified Trust, CAS ≥ 0.90), L1 (Conditional Trust, CAS ≥ 0
 
 #### GitHub README
 - Lead with live curl demo → instant result
-- Show all four controls as a table
+- Show all five canonical controls as a table
 - Five-layer stack as a table
 - Link to simulator, spec, GitHub Discussions
 
@@ -1988,15 +2126,20 @@ NHID-Clinical is not positioned against any existing product. It fills a gap:
 | **Lambda runtime** | Python 3.13 | Latest stable; matches dev environment |
 | **API framework** | AWS API Gateway + SAM | Serverless; pay-per-use; easy deployment |
 | **CTS format** | YAML | Human-readable; version-controllable; multi-doc support |
-| **CAS formula** | IAF × NOCF × ECF | Multiplicative: any critical failure collapses score |
+| **CAS formula** | IAF × NOCF × ECF | Multiplicative: any critical failure collapses score. Formula unchanged; status demoted — see §19.6 |
+| **DLG-01 opt-in** | `evaluate_all(session, event, delegation=None)` | Delegation must never be required implicitly. Absent a `DelegationContext` the control returns `DLG01_NOT_EVALUATED` and contributes nothing, so pre-existing integrations and every corpus figure are unchanged |
+| **Passport location** | `session`, not `event` | `schema/nhid_trace_schema_v1.json` is published and sets `additionalProperties: false`; a passport in the event would be a v1 schema break. A delegation is per-call state anyway (`call_sid`-bound), and every adapter already maps `event["session_id"]` to the call sid |
+| **Trust anchor** | Injected resolver, static map only | The engine performs no I/O. An unresolvable NPI is **refused**, never accepted. Interface shaped so a JWKS-backed resolver could be added later; none exists and none is claimed |
+| **Scope vocabulary** | `eligibility`, `claim_status`, `prior_auth` | Reuses the vocabulary already in `examples/issue_and_verify.py`. No general authorization ontology invented. An unrecognized scope authorizes **nothing** — an unknown grant must never widen authority |
 
 ### 19.2 Naming Decisions
 
 | Name | Rationale | Permanence |
 | :--- | :--- | :--- |
 | **Impersonation Latency** | Specific, vivid, accurate to the failure mode | **Permanent — never rename** |
-| **IDG-01, PDX-01, DBC-01, EIT-01** | ISO-style rule IDs; stable across versions | Permanent |
-| **NHID-CAS** | Call Authorization Score; code: `nhid_cas.py` line 1 docstring | Permanent |
+| **IDG-01, PDX-01, DBC-01, EIT-01, ATR-01** | ISO-style rule IDs; stable across versions. ATR-01 is the fifth **canonical** control — bot-to-bot is the supplemental rule | Permanent |
+| **DLG-01** | Delegated Authority Gate, added 2026-08-22. Deliberately **not** `IDG-02`, which exists only as a v2 NHID-Auth CTS control | Permanent |
+| **NHID-CAS** | Call Authorization Score; code: `nhid_cas.py`. **Demoted 2026-08-22 to a research component** — retained in code and tests, removed from all public surfaces (§19.6) | Name permanent; status changed |
 | **IDG-01** | Identity Disclosure Gate; code: `nhid_policy_engine_v1.py` line 129 | Permanent |
 | **PDX-01** | Pre-Data Exchange Gate; code: `nhid_policy_engine_v1.py` line 205 | Permanent |
 | **DBC-01** | Deceptive Behavior Check; code: `nhid_policy_engine_v1.py` line 296 | Permanent |
@@ -2013,9 +2156,9 @@ NHID-Clinical is not positioned against any existing product. It fills a gap:
 | :--- | :--- |
 | **FHIR IG claims** | Never claim conformance to named IG; "plain R4 AuditEvent validation" only |
 | **"Standard" claims** | Never call NHID-Clinical a standard; it is a voluntary baseline |
-| **"Certification" claims** | Never claim to issue certifications; CAS is a compliance score |
+| **"Certification" claims** | Never claim to issue certifications. **CAS is not a compliance score and is not a product capability** — see §19.6; it is a research component whose inputs nothing in the repository produces |
 | **Regulatory claims** | Never claim NHID-Clinical satisfies specific regulatory requirements; it "aligns with" them |
-| **Test count** | CI enforces exactly UNIT_EXPECTED; no more, no fewer |
+| **Test count** | CI fails on failures and collection errors, **not** on an exact count — the suite may grow. `UNIT_PUBLISHED` is the published number; `check_number_drift.py` holds public surfaces to it |
 
 ### 19.4 Adapter Design Decisions
 
@@ -2045,16 +2188,71 @@ After extensive debugging, two key precision rules were established:
 
 ---
 
+
+### 19.6 CAS demotion — 2026-08-22
+
+**Decision:** CAS is reclassified as a research component. The module
+(`src/nhid_cas.py`), the badge generator (`src/nhid_badge_generator.py`) and all 38 CAS tests are
+**retained and unmodified**. The formula is not rewritten. What changed is where it may appear.
+
+**Why.** Two things were true at once:
+
+1. **Nothing in the repository produces its inputs.** `hallucination_risk`,
+   `deepfake_risk_score`, `sip_attestation`, `oig_exclusion_match` and `entity_match_rate` are
+   consumed by the formula and measured by no component here. A CAS score can be computed for a
+   hypothetical trace and never for a real call this system observed.
+2. **Its outputs read as a trust rating.** "Verified Trust", "Conditional Trust" and
+   `badge_eligible` L1/L2 describe a grading scheme. NHID-Clinical is not a certification
+   authority, so those outputs cannot appear on a public surface without contradicting
+   `docs/claim-boundaries.md`.
+
+**Removed from the public surface:** `registry.html`'s "live NHID-CAS conformance badges" headline,
+badge column and endpoint call (the registry has zero entries, so the badges advertised a feature
+with no subjects); the homepage Trust Stack layer, feature card and demo blurb; the
+`framework/controls.html` and `developers.html` sections; the CAS scoring-tier diagram entry in
+`svg-preview.html`; and in `scripts/generate_pdfs.py` the objective of making CAS "a
+procurement-grade compliance signal" plus the score/tier/badge table. All 7 PDFs regenerated and
+scanned clean.
+
+**Retained deliberately:** the hosted endpoints still return a `cas` block, so
+`docs/5-minute-quickstart.md` shows the real response rather than a falsified one, annotated with
+which fields to read instead.
+
+**Structural guarantee.** CAS never influences a policy decision and `evaluate_all()` cannot read
+it — asserted by `tests/test_enforcement_profile.py::test_evaluate_all_does_not_consume_cas`, which
+pins the signature as an exact allowlist rather than relying on convention.
+
+### 19.7 Defects found during the DLG-01 work — 2026-08-22
+
+Recorded because each is a live constraint or a recurrence risk, not a closed ticket.
+
+| Finding | Status |
+| :--- | :--- |
+| **`AuditStore.verify_chain` cannot support third-party verification.** The HMAC secret is generated per-instance (`secret_key or os.urandom(32)`) and never persisted, so a verifier without the writer's key gets `signature verification failed` — **indistinguishable from genuine tampering**. | **Open constraint.** The evidence exporter now reports *unavailable* rather than `chain_valid: false` when no key is supplied, because publishing "invalid" for an intact record would be a false claim. Independent verification of the chain is therefore not currently possible. |
+| `AuditStore.__init__` creates its database file, so a collector that opened the store changed what a later collector observed. | Fixed in `export_evidence_pack.py` by resolving existence once up front. The underlying constructor behavior is unchanged. |
+| `write_event` accepts `evidence_hash=None`, silently producing a chain that can never verify. | **Open.** Not fixed; a writer must sign explicitly. |
+| **Two copies of the conformance suite exist.** `run_cts()` reads `tests/nhid_conformance_test_suite_v1.yaml`; the copy published to reviewers is `conformance/…`. Semantically identical, with nothing enforcing it. | Pinned by `tests/test_cli_and_packaging.py::test_published_and_executed_suites_are_semantically_identical`. |
+| The published suite's `suite_metadata` claimed **"173 passed"** long after the suite outgrew it, invisible because that file was not watched. | Fixed and added to the drift guard's watch list, plus a test comparing it to `UNIT_PUBLISHED`. |
+| **The drift guard was narrower than the claim surface.** It reported PASS while six files carried a superseded count, and nothing compared `UNIT_PUBLISHED` to reality — so every surface could be *consistently wrong*. | Guard widened by 7 files; `validate_ci.py` now warns on divergence (a warning, not a gate, preserving the documented decision that the suite may grow). |
+| `docs/csa-ai-caiq-summary.md` claimed a "CI-enforced 284-test baseline". | Fixed. |
+| `pilot_evidence_bundle/EXECUTIVE_SUMMARY.md` says "evidence-based assurance" and is signed "NHID-Clinical Safety Assurance Team". | **Open — maintainer's call.** Assurance language the project should not use. A dated historical artifact, not published by the site build, so flagged rather than silently rewritten. |
+| Packaging installs top-level `src`, `adapters`, `scripts`. | **Open — pre-publication blocker**, recorded in `pyproject.toml`. Fine for an editable install; unacceptable on a public index. The rename to a single `nhid_clinical` package touches every import. |
+
+
 ## 20. Future Work
 
 ### 20.1 High Priority
 
 | Item | Notes |
 | :--- | :--- |
-| **Live NPPES NPI validation** | Replace format-only check with NPPES API call; cache results |
+| **Live NPPES NPI validation** | Replace format-only check with NPPES API call; cache results. **Still open as of 2026-08-22** — DLG-01 binds the NPI cryptographically to the delegation but does **not** verify it against NPPES. `docs/claim-boundaries.md` states this limit explicitly; do not let it drift. |
 | **Persistent revocation store** | ~~RDS or DynamoDB for production AgentIdentityManager~~ — delivered in v1.3 final as a SQLite `revoked_delegations` table (`nhid_event_store.py`), wired into `POST /v1/identity/verify-passport` / `POST /v1/identity/revoke-passport` (`functions/handler.py`, 2026-06-25). A managed datastore swap remains open if call volume outgrows SQLite, but the durability gap itself (in-memory revocation dying every stateless Lambda invocation) is closed. |
 | **WebSocket streaming evaluation** | True per-utterance evaluation (not turn-by-turn POST) |
-| **STIR/SHAKEN Layer 1 correlation** | Correlate A/B/C attestation level with CAS score |
+| **STIR/SHAKEN Layer 1 correlation** | Correlate A/B/C attestation level with the policy decision. (Previously written as "with CAS score" — CAS is no longer a product surface, §19.6.) |
+| **Distributable revocation** | Revocation is per-deployment SQLite. There is no cross-organizational propagation, so a delegation revoked by one party is not known to another. Named as a P1 gap. |
+| **Trust-anchor discovery** | `src/trust_anchor.py` ships a static resolver only. The interface admits a JWKS-backed implementation (`docs/nhid-auth-pki-and-oauth2-integration.md` §1.8) — **not built, and not to be claimed as built.** |
+| **`src` → `nhid_clinical` package rename** | Pre-publication blocker for any public index release; recorded in `pyproject.toml`. Touches every `from src...` import. |
+| **Independent audit-chain verification** | Blocked by the per-instance HMAC key described in §19.7. A reviewer cannot currently verify the chain without the writer's key. |
 
 ### 20.2 Medium Priority
 
@@ -2094,9 +2292,10 @@ After extensive debugging, two key precision rules were established:
 □ Write implementation code
 □ Write tests (minimum 5 for new features, 6 for new adapters)
 □ Run pytest and verify all pass
-□ Update UNIT_EXPECTED in scripts/validate_ci.py
+□ Update UNIT_PUBLISHED in scripts/validate_ci.py
 □ Update CI job name in .github/workflows/ci.yml
 □ Update README.md test badge count
+□ Run scripts/check_number_drift.py and reconcile every surface it flags
 □ Update .github/CONTRIBUTING.md expected count
 □ Stage all files explicitly (never git add -A)
 □ Commit with descriptive message
@@ -2363,7 +2562,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_EXPECTED = 446  # scripts/validate_ci.py (Phase 6A: +91 tests)
+UNIT_PUBLISHED = 759  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2408,7 +2607,7 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
-| **Total** | **446 passed, 18 skipped** | All Python unit tests (355→446: Phase 6A infrastructure +91) |
+| **Total** | **759 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→759 with DLG-01, trust anchor, evidence export, CLI/packaging) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2537,7 +2736,7 @@ assert len(decision.violations) == 0
 - Version 1.2 → 1.3; Date 2026-06-27 → 2026-07-31
 - §7.1a "Phase 4 & Phase 5 Completion" added (new subsection) with status table and evaluation corpus metrics
 - §7.2 "Test Count Progression" — rows added for Phase 4, Phase 5, and Phase 6A; UNIT_EXPECTED 343 → 355 → 446 (ATR-01 +12 tests, Phase 6A infrastructure +91 tests)
-- §8.3 "CI Invariant" — updated to UNIT_EXPECTED = 446
+- §8.3 "CI Invariant" — updated to UNIT_PUBLISHED = 759
 - §23.1 "Primary Source Files" — added `src/nhid_audit_trail.py` (257 lines) and updated `src/nhid_policy_engine_v1.py` description
 - §23.1 — added three governance artifacts: ATR-01-IMPLEMENTATION.md, ATR-01-EVIDENCE-VALIDATION-REPORT.html, ATR-01-TRACEABILITY-MATRIX.html
 - §23.3 "Test File Index" — added `test_atr01_audit_trail.py` (12 tests); total changed to "355 passed"
