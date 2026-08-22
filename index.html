@@ -298,7 +298,7 @@
         </div>
         <div>
           <div role="tablist" aria-label="Trust stack layers" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem">
-            <button class="btn-ghost stack-layer" role="tab" data-layer="l5" aria-selected="false">Layer 5 · Delegated Authority</button>
+            <button class="btn-ghost stack-layer" role="tab" data-layer="l5" aria-selected="false">Layer 5 · Observability</button>
             <button class="btn-ghost stack-layer" role="tab" data-layer="l4" aria-selected="false">Layer 4 · Audit Ledger (ATR-01)</button>
             <button class="btn-ghost stack-layer" role="tab" data-layer="l3" aria-selected="false">Layer 3 · Cryptographic Authorization (NHID-Auth v2)</button>
             <button class="btn-ghost stack-layer active" role="tab" data-layer="l2" aria-selected="true">Layer 2 · Behavioral Disclosure Controls</button>
@@ -320,15 +320,15 @@
       l2: { tag: "Layer 2", title: "Behavioral Disclosure Controls (IDG-01 · PDX-01 · DBC-01 · EIT-01)",
         body: "The heart of v1.3: disclose non-human identity before anything else (IDG-01), verify before any PHI moves (PDX-01), never imply a human is speaking (DBC-01), and honor a request for a human (EIT-01). Each is deterministic and testable.",
         links: [["Try in Simulator","/simulator.html?scenario=spoofed-identity"],["Read the controls","/specification.html"]] },
-      l3: { tag: "Layer 3", title: "Cryptographic Authorization (NHID-Auth v2)",
-        body: "Ed25519 agent passports: a provider signs a delegation binding an agent key to an NPI and scope; the receiving side verifies offline. Reference code is public in the repository — no registry, no gatekeeper.",
-        links: [["Developer guide","/developers.html"],["v2 integration","/technical-stack.html"]] },
+      l3: { tag: "Layer 3", title: "Cryptographic Authorization (NHID-Auth v2 · DLG-01)",
+        body: "Ed25519 agent passports: a provider signs a delegation binding an agent key to an NPI and scope; the receiving side verifies offline. When a deployment opts in, DLG-01 evaluates that delegation in the policy path — signatures, expiry, revocation, call binding, and scope narrowing across sub-delegations — and the verified scope then constrains the data boundary, so a delegation for eligibility does not authorize asking for a claim number. Verification uses a trust anchor the deployment configures itself: no registry, no gatekeeper, and no NPPES check.",
+        links: [["Developer guide","/developers.html"],["Controls","/framework/controls.html"]] },
       l4: { tag: "Layer 4", title: "Audit Ledger (ATR-01)",
         body: "Every event carries a complete, replayable audit envelope — actor, timestamps, state transitions, execution context. Missing fields are CRITICAL findings. Evidence, not vibes.",
         links: [["Evidence pack","/evidence-pack.html"],["Audit requirements","/specification.html"]] },
-      l5: { tag: "Layer 5", title: "Delegated Authority (DLG-01)",
-        body: "An agent can present a signed, scoped, expiring delegation from the provider organization it claims to act for. When a deployment opts in, the engine verifies it against a trust anchor that deployment configured, and the verified scope constrains what protected data the agent may request — a delegation for eligibility does not authorize asking for a claim number. Opt-in; there is no directory and no NPPES verification.",
-        links: [["Delegated authority","/roadmap.html"],["Controls","/framework/controls.html"]] }
+      l5: { tag: "Layer 5", title: "Observability (OpenTelemetry)",
+        body: "Traces and spans over the interaction, so a deployment can see disclosure timing and decision outcomes across its own traffic using tooling it already runs. NHID-Clinical defines the trace content, not the collector — this layer is where an adopter's existing observability stack plugs in.",
+        links: [["Technical stack","/technical-stack.html"],["Metrics & observability","/developers.html"]] }
     };
     var detail = document.getElementById("stack-detail");
     var tabs = document.querySelectorAll(".stack-layer");
@@ -381,8 +381,8 @@
   <section class="page-section">
     <div class="container">
       <p class="section-kicker reveal">The control layer</p>
-      <h2 class="reveal" style="max-width:22ch">Six checks on every AI-agent call.</h2>
-      <p class="reveal" style="color:var(--body);max-width:62ch;margin-bottom:2rem">Each is observable on a real call and checkable against a machine-readable trace. Mapped, not certified.</p>
+      <h2 class="reveal" style="max-width:26ch">Five checks on every AI-agent call, and a sixth when you opt in.</h2>
+      <p class="reveal" style="color:var(--body);max-width:62ch;margin-bottom:2rem">Each is observable on a real call and checkable against a machine-readable trace. Mapped, not certified. The five canonical controls always run; DLG-01 is evaluated only when a deployment configures delegated authority.</p>
       <div class="feature-grid">
         <div class="feature-card reveal">
           <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-04.jpg" alt="Identity Disclosure Gate" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
@@ -416,9 +416,9 @@
         </div>
         <div class="feature-card reveal">
           <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-15.jpg" alt="Delegated Authority Gate" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
-          <span class="code">DLG-01</span>
+          <span class="code">DLG-01 · opt-in</span>
           <h3>Delegated Authority</h3>
-          <p>Opt-in: a signed, scoped delegation, and a data boundary that honors its scope.</p>
+          <p>A signed, scoped delegation from the provider organization, and a data boundary that honors its scope. Off unless a deployment turns it on.</p>
         </div>
       </div>
     </div>
@@ -477,7 +477,7 @@
       <div class="reveal">
         <p class="section-kicker">Live conformance API</p>
         <h2>One call in, a verdict out.</h2>
-        <p style="color:var(--body);max-width:52ch;line-height:1.7">Send a native VAPI or Twilio call payload and get a deterministic pass/fail across the controls, plus a per-call Call Authorization Score. No key required for demo routes.</p>
+        <p style="color:var(--body);max-width:52ch;line-height:1.7">Send a native VAPI or Twilio call payload and get a deterministic pass/fail across the controls, with the reason code and any boundary violations. No key required for demo routes.</p>
         <div style="margin-top:1.4rem">
           <a class="cta-button" href="/docs.html">Try the live API <span aria-hidden="true">→</span></a>
         </div>
