@@ -694,19 +694,34 @@ this repair.
 | **v2.0** | NHID-Auth cryptographic layer (Ed25519, delegation chains) | Reference implementation live. **2026-08-22: wired into the policy path as DLG-01** — see §2.6. Previously the primitive existed but `evaluate_all()` never called it. |
 | **v2.1** | Planned: STIR/SHAKEN integration, attestation registry | Future |
 
-### 3.3 Call Authorization Score (CAS)
+### 3.3 Call Authorization Score (CAS) — research component, not governance architecture
 
-CAS provides a continuous compliance signal between 0.0 and 1.0 per call session.
+> **Status: demoted 2026-08-22 (§19.6).** CAS is **not** part of the trust stack, not a control,
+> and not a product capability. It is retained as a research scoring model. This section documents
+> the formula because the code still exists and the design discussion is worth preserving — not
+> because CAS governs anything.
+>
+> **Two facts govern every use of what follows:**
+>
+> 1. **Nothing in this repository produces its inputs.** `entity_match_rate`, `intent_accuracy`,
+>    `domain_hit_rate`, `hallucination_risk`, `pii_leakage_risk`, `identity_ambiguity_risk`,
+>    `deepfake_risk_score`, `sip_attestation` and `oig_exclusion_match` are consumed by the formula
+>    and measured by no component here. A CAS score can be computed for a hypothetical trace and
+>    **never for a real call this system observed.**
+> 2. **The tier names are a trust rating this project does not issue.** "Verified Trust",
+>    "Conditional Trust" and `badge_eligible` L1/L2 must not appear on any public surface, in any
+>    published artifact, or in procurement material.
+>
+> CAS never influences a policy decision. `evaluate_all()` structurally cannot read it — asserted by
+> `tests/test_enforcement_profile.py::test_evaluate_all_does_not_consume_cas`.
 
-**Formula:** `CAS = F_IAF × F_NOCF × ECF`
+**Formula (as implemented in `src/nhid_cas.py`, unchanged):** `CAS = F_IAF × F_NOCF × ECF`
 
-**Components:**
-
-| Factor | Definition | Range |
-| :--- | :--- | :--- |
-| **F_IAF** | Identity Assurance Factor: 1.0 if no IDG-01 or PDX-01 critical violations; else 0.0 | {0.0, 1.0} |
-| **F_NOCF** | Operational Conformance Factor: derived from violation severity pattern | 0.0–1.0 |
-| **ECF** | Evidence Completeness Factor: fraction of required audit fields present | 0.0–1.0 |
+| Factor | Definition | Range | Inputs available? |
+| :--- | :--- | :--- | :--- |
+| **F_IAF** | Identity Assurance Factor: 1.0 if no IDG-01 or PDX-01 critical violations; else 0.0 | {0.0, 1.0} | **Yes** — derived from the policy decision |
+| **F_NOCF** | Operational Conformance Factor | 0.0–1.0 | **No** — see the NOCF inputs below |
+| **ECF** | Evidence Completeness Factor: fraction of `REQUIRED_FIELDS_V1` present in the trace | 0.0–1.0 | **Mechanically, yes — meaningfully, no.** It counts non-`None` fields, but 7 of the 12 (`ani`, `sip_attestation`, `t_n_result`, `e_r_count`, `disambiguation_method`, `confirmed_npi`, `denial_gate`) are populated by nothing in this repository, so a real trace scores low completeness for reasons that have nothing to do with the call |
 
 **Full NOCF formula** (from `src/nhid_cas.py`):
 ```
@@ -720,15 +735,29 @@ A_nocf         = C × E × S × L_hat × (1 − R)
 Weights (w_H=0.40, w_P=0.35, w_I=0.25) apply only to the risk factor R.
 l_max_ms default=2500 ms; floor=1500 ms; ceiling=5000 ms.
 
-**CAS Tier Ladder:**
+**Every term in C and R is a measurement this repository does not take**, and 7 of ECF's 12
+required fields are never populated either. That is the reason for the demotion, stated concretely:
+F_IAF is the only factor that reflects something the system actually observes, and CAS is the
+*product* of all three — so a real call yields a number driven mostly by absent inputs. It cannot
+describe the call, and it must not be presented as though it does.
 
-| CAS Score | Tier | Badge |
-| :--- | :--- | :--- |
-| ≥ 0.90 | Verified Trust | L2 |
-| ≥ 0.75 | Conditional Trust | L1 |
-| ≥ 0.50 | Review Required | (none) |
-| ≥ 0.20 | Denied / Degraded | (none) |
-| < 0.20 | Hard Denial | (none) |
+**Tier thresholds** — recorded for completeness because the constants exist in code
+(`CAS_VERIFIED_TRUST = 0.90`, `CAS_CONDITIONAL_TRUST = 0.75`, `CAS_REVIEW_REQUIRED = 0.50`,
+`CAS_DENIED_DEGRADED = 0.20`). **Do not reproduce this ladder outside this document.** It reads as a
+grading scheme, and the project issues no grades.
+
+| Threshold constant | Value | Tier string returned | `badge_eligible` |
+| :--- | :--- | :--- | :--- |
+| `CAS_VERIFIED_TRUST` | 0.90 | Verified Trust | `"L2"` |
+| `CAS_CONDITIONAL_TRUST` | 0.75 | Conditional Trust | `"L1"` |
+| `CAS_REVIEW_REQUIRED` | 0.50 | Review Required | `None` |
+| `CAS_DENIED_DEGRADED` | 0.20 | Denied / Degraded | `None` |
+| — | < 0.20 | Hard Denial | `None` |
+
+**Where the governance actually sits.** The trust stack's authorization layer is **Layer 3 —
+NHID-Auth v2, evaluated as DLG-01** (§2.3a). That is the control that verifies delegated authority
+and constrains the data boundary. CAS was never that, and this section previously implied it was by
+sitting inside "Governance Architecture" without qualification.
 
 ### 3.4 Policy Engine Action Priority
 
@@ -1731,6 +1760,12 @@ for comment-volume and discoverability context.
 
 ## 12. Diagrams & Visual Concepts
 
+> **All figures referenced in this section are missing.** `assets/archive/` does not exist in the
+> repository, so `fig1`–`fig7` are broken image links throughout §2.4, §3.1, §6.1 and §12. Found
+> 2026-08-22 while editing §12.3; pre-existing and not introduced by that change. The written
+> descriptions below stand on their own — treat them as diagram *specifications* to be produced
+> from, not as captions for artwork that exists.
+
 ### 12.1 Five-Layer Trust Stack
 
 ![Five-Layer Trust Stack](assets/archive/fig1-trust-stack.svg)
@@ -1739,9 +1774,19 @@ for comment-volume and discoverability context.
 
 ![Impersonation Latency — turn-by-turn anatomy](assets/archive/fig2-impersonation-latency.svg)
 
-### 12.3 CAS Tier Ladder
+### 12.3 CAS Tier Ladder — withdrawn
 
-![CAS Tier Ladder — 0.0 to 1.0 with tier bands and badge eligibility](assets/archive/fig3-cas-tier-ladder.svg)
+**Do not produce, commission, or reuse this diagram.** It rendered the CAS score band as a ladder
+with badge eligibility, which is precisely the trust-rating presentation the 2026-08-22 demotion
+removed from every surface (§19.6). The equivalent diagram was deleted from `svg-preview.html` and
+from `scripts/generate_pdfs.py` in the same change.
+
+The figure this section previously referenced (`assets/archive/fig3-cas-tier-ladder.svg`) does not
+exist in the repository — see the note at the head of §12. Its absence is convenient rather than
+unfortunate: nothing needs to be withdrawn from circulation.
+
+If a diagram is wanted for the authorization layer, the subject is **DLG-01** (§2.3a) — delegation
+verification and scope-constrained data boundary — not a score ladder.
 
 ### 12.4 API Request Flow
 
