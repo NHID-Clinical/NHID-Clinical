@@ -11,10 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/cinematic-trust-lattice.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
+
+<a class="ctl-skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
   <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
@@ -156,15 +159,15 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main>
-  <section class="inner-hero" style="position:relative;overflow:clip">
+<main id="main" class="ctl-scope">
+  <section class="inner-hero ctl-hero ctl-grid-surface ctl-on-dark" style="position:relative;overflow:clip">
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/developers.html">Developers</a><span>/</span><span>Interoperability</span></div>
-        <p class="eyebrow">Simulation · Twilio → NHID-Clinical</p>
-        <h1 class="reveal">Interoperability Demo</h1>
-        <p class="lede reveal">This page shows how a real vendor's call transcript format can be mapped to an NHID-Clinical v1.3 event trace and evaluated for conformance. The adapter is open source — replace the sample input with real logs to test your own vendor.</p>
+        <p class="eyebrow ctl-meta">Simulation · Twilio → NHID-Clinical</p>
+        <h1 class="reveal ctl-page-title">Interoperability Demo</h1>
+        <p class="lede reveal ctl-lede">This page shows how a real vendor's call transcript format can be mapped to an NHID-Clinical v1.3 event trace and evaluated for conformance. The adapter is open source — replace the sample input with real logs to test your own vendor.</p>
       </div>
     </div>
   </section>
@@ -299,6 +302,7 @@ python -m pytest tests/ -v</pre>
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://www.linkedin.com/in/brianna-baynard" target="_blank" rel="noopener noreferrer">Maintainer on LinkedIn</a>
     </div>
 
   </div>

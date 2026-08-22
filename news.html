@@ -11,10 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/cinematic-trust-lattice.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
+
+<a class="ctl-skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
   <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
@@ -157,14 +160,14 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main>
-  <section class="inner-hero" style="position:relative;overflow:clip">
+<main id="main" class="ctl-scope">
+  <section class="inner-hero ctl-hero ctl-grid-surface ctl-on-dark" style="position:relative;overflow:clip">
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container" style="position:relative;z-index:1">
       <div class="crumbs"><a href="/">Home</a><span>/</span><span>News</span></div>
-      <p class="eyebrow">Updates</p>
-      <h1 class="reveal">News &amp; Announcements</h1>
-      <p class="lede reveal">Release notes, updates, and community milestones.</p>
+      <p class="eyebrow ctl-meta">Updates</p>
+      <h1 class="reveal ctl-page-title">News &amp; Announcements</h1>
+      <p class="lede reveal ctl-lede">Release notes, updates, and community milestones.</p>
     </div>
   </section>
   <section class="page-section">
@@ -211,8 +214,9 @@
             <li>DBC-01 real-corpus detection: 0.5% → 2.5%</li>
             <li>3 new heuristic phrases added, additive only — no existing phrases removed or renamed</li>
             <li>3 new regression tests added; full suite at 306 passing</li>
-            <li>IDG-01 (100%) and EIT-01 (94.7%) continue to hold up well against real phrasing; PDX-01 (58.6%), DBC-01, and ATR-01 (0%) remain known weak points and active work — see the <a class="news-link" href="/evidence-pack.html" style="display:inline">Evidence Pack</a> for the full breakdown</li>
+            <li>IDG-01 (100%) and EIT-01 (94.7%) continue to hold up well against real phrasing; PDX-01 (58.6%), DBC-01, and ATR-01 (0%) remain known weak points and active work</li>
           </ul>
+          <p style="font-size:.9rem;color:var(--body);line-height:1.7;border-left:3px solid var(--border);padding-left:.9rem;margin-top:.75rem"><strong>Superseded.</strong> These figures were accurate when published. The corpus baseline was revised on 2026&#8209;07&#8209;31 after the Phase&nbsp;4 fixes (artifact isolation, escalation honor patterns), and detection is now measured per conversation rather than per turn. Current figures are on the <a class="news-link" href="/evidence-pack.html" style="display:inline">Evidence Pack</a>, computed by <code>scripts/confusion_matrix.py</code>. This entry is left unedited as a historical record.</p>
         </article>
         <article class="news-card">
           <div class="news-meta">
@@ -346,6 +350,7 @@
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://www.linkedin.com/in/brianna-baynard" target="_blank" rel="noopener noreferrer">Maintainer on LinkedIn</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>

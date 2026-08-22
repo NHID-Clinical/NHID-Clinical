@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Implementation Registry — self-attested vendor implementations with live NHID-CAS badges."/>
+  <meta name="description" content="NHID-Clinical Implementation Registry — a self-attestation list of vendor implementations. Not a certification."/>
   <title>Implementation Registry | NHID-Clinical</title>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
@@ -11,10 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/cinematic-trust-lattice.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
+
+<a class="ctl-skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
   <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
@@ -156,14 +159,14 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main>
-  <section class="inner-hero" style="position:relative;overflow:clip">
+<main id="main" class="ctl-scope">
+  <section class="inner-hero ctl-hero ctl-grid-surface ctl-on-dark" style="position:relative;overflow:clip">
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container" style="position:relative;z-index:1">
       <div class="crumbs"><a href="/">Home</a><span>/</span><span>Implementation Registry</span></div>
-      <p class="eyebrow">Registry · June 2026</p>
-      <h1 class="reveal">Implementation Registry</h1>
-      <p class="lede reveal">Self-attested NHID-Clinical implementations, with live NHID-CAS conformance badges.</p>
+      <p class="eyebrow ctl-meta">Registry · June 2026</p>
+      <h1 class="reveal ctl-page-title">Implementation Registry</h1>
+      <p class="lede reveal ctl-lede">A self-attestation list of NHID-Clinical implementations. NHID-Clinical does not score, rate, certify, or verify the entries.</p>
     </div>
   </section>
 
@@ -173,8 +176,10 @@
         <strong>This is a self-attestation list, not a certification.</strong> NHID-Clinical does not
         certify, audit, or warrant any vendor's implementation. A listing means the vendor ran the
         public conformance test suite (CTS) against their own integration and chose to publish the
-        result. Badge scores update from each vendor's own live <code>/v1/public/vendor/{id}/badge</code>
-        endpoint call — verify independently before relying on them for procurement decisions.
+        result. NHID-Clinical assigns no score, grade, tier, or badge to any listed entry, and
+        publishing an entry involves no review by this project. Verify a vendor's claims
+        independently — by running the conformance suite against their integration yourself —
+        before relying on any listing for a procurement decision.
       </div>
 
       <h2>Listed Implementations</h2>
@@ -188,9 +193,8 @@
         <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md">vendor trust questionnaire</a>
         and open a pull request adding your entry to
         <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/content/registry_entries.json">content/registry_entries.json</a>.
-        Each entry needs a <code>vendor_id</code> matching the one used when recording conformance results
-        (see <code>record_conformance_result()</code> in <code>nhid_event_store.py</code>), so your badge
-        renders live CAS data instead of the unknown/grey default.
+        Each entry needs a <code>vendor_id</code>. Listing publishes what you attest to; it does not
+        add any assessment by this project.
       </p>
       <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
         <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md"
@@ -224,6 +228,7 @@
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://www.linkedin.com/in/brianna-baynard" target="_blank" rel="noopener noreferrer">Maintainer on LinkedIn</a>
     </div>
   </div>
 </footer>
@@ -232,7 +237,6 @@
 <script>
 (function () {
   var listEl = document.getElementById('registry-list');
-  var BADGE_BASE = 'https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/public/vendor/';
 
   function escapeHtml(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -245,12 +249,10 @@
       return;
     }
     var rows = entries.map(function (e) {
-      var badgeUrl = BADGE_BASE + encodeURIComponent(e.vendor_id) + '/badge';
       return '<tr style="border-bottom:1px solid var(--border)">' +
         '<td style="padding:.75rem">' + escapeHtml(e.name || e.vendor_id) + '</td>' +
         '<td style="padding:.75rem">' + (e.website ? '<a href="' + escapeHtml(e.website) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(e.website) + '</a>' : '—') + '</td>' +
         '<td style="padding:.75rem">' + escapeHtml(e.integration_type || '—') + '</td>' +
-        '<td style="padding:.75rem"><img src="' + badgeUrl + '" alt="NHID-CAS badge for ' + escapeHtml(e.vendor_id) + '" /></td>' +
         '</tr>';
     }).join('');
     listEl.innerHTML = '<table style="width:100%;border-collapse:collapse">' +
@@ -258,7 +260,6 @@
       '<th style="padding:.75rem">Implementation</th>' +
       '<th style="padding:.75rem">Website</th>' +
       '<th style="padding:.75rem">Integration</th>' +
-      '<th style="padding:.75rem">NHID-CAS</th>' +
       '</tr></thead><tbody>' + rows + '</tbody></table>';
   }
 

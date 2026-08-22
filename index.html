@@ -12,10 +12,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
+  <link rel="stylesheet" href="/assets/css/cinematic-trust-lattice.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
+
+<a class="ctl-skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
   <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
@@ -154,24 +157,33 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main>
+<main id="main" class="ctl-scope">
 
-  <!-- ── Section 1: Hero (centered) ────────────────────────────────────────── -->
-  <section class="hero-section hero-centered">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="container hero-centered-inner">
-      <span class="hero-kicker reveal">Open framework · v1.3 · CC BY 4.0</span>
-      <h1 class="reveal">NHID-Clinical</h1>
-      <p class="hero-lead reveal">An open framework for healthcare AI agent identity, authorization, disclosure, and audit evidence.</p>
-      <div class="hero-actions-premium reveal">
-        <a href="/framework/" class="btn-premium">Explore the Open Framework</a>
-        <a href="/platform/" class="btn-ghost">Try TrustLayer Platform</a>
+  <!-- ── Section 1: Cinematic Trust Lattice hero ───────────────────────────── -->
+  <section class="ctl-scope ctl-hero ctl-grid-surface ctl-on-dark">
+    <div class="ctl-container ctl-hero-inner">
+      <div>
+        <p class="ctl-meta reveal">The trust layer for healthcare AI</p>
+        <h1 class="ctl-display reveal">Verify identity before data moves.</h1>
+        <p class="ctl-lede reveal" style="margin-top:1.15rem">Open controls for disclosure, authorization, and replayable audit evidence in healthcare voice workflows.</p>
+        <div class="ctl-hero-actions reveal">
+          <a class="ctl-btn ctl-btn-primary" href="/framework/">Explore the framework</a>
+          <a class="ctl-btn ctl-btn-secondary" href="/simulator.html">Run the simulator</a>
+        </div>
+        <p class="ctl-boundary-note reveal">
+          <span aria-hidden="true">&#9679;</span>
+          <span>Open specification &middot; testable controls &middot; not a certification. No production pilots yet; seeking the first shadow-evaluation partners.</span>
+        </p>
       </div>
-      <p class="reveal" style="max-width:60ch;margin:1.4rem auto 0;color:var(--body);font-size:.98rem;line-height:1.7">The specification, tests, and reference implementation remain open. TrustLayer provides optional production infrastructure for organizations running AI agents at scale.</p>
-      <div class="hero-illo reveal">
-        <img src="/assets/images/3d-svg/hero-orbit.svg" alt="Soft isometric illustration: floating governance platforms connected by verified identity nodes, with disclosure, verification, and audit tokens." loading="eager"/>
+      <div class="reveal">
+        <img src="/assets/diagrams/trust-lattice.svg" class="ctl-lattice"
+             alt="Conceptual diagram: five stacked trust layers labelled Disclose, Authorize, Scope, Audit and Observe, with a single request descending through them in order."
+             width="520" height="420" loading="eager"/>
+        <ul class="ctl-lattice-alt">
+          <li>1 · Disclose</li><li>2 · Authorize</li><li>3 · Scope</li><li>4 · Audit</li><li>5 · Observe</li>
+        </ul>
+        <p class="ctl-boundary-note" style="margin-top:.75rem;font-size:.875rem">A conceptual trust pathway, not a deployed system architecture.</p>
       </div>
-      <p class="disclaimer-small" style="margin-top:1.5rem">Voluntary and testable — not an accredited standard, certification, or regulatory requirement. No production pilots yet; seeking the first shadow-evaluation partners.</p>
     </div>
   </section>
 
@@ -217,11 +229,27 @@
 
   <!-- ── By the numbers (stats strip) ──────────────────────────────────────── -->
   <section class="page-section" style="padding-block:1rem 2.5rem">
-    <div class="container stats-strip reveal">
-      <div class="stat"><b>669</b><span>passing tests in the open repo (18 skipped · 687 total)</span></div>
-      <div class="stat"><b>5</b><span>controls (IDG · PDX · DBC · EIT · ATR) plus the bot-to-bot rule</span></div>
-      <div class="stat"><b>Live</b><span>conformance API — no key for demo routes</span></div>
-      <div class="stat"><b>CC BY 4.0</b><span>open · NIST comment on record</span></div>
+    <div class="ctl-scope ctl-metric-rail reveal">
+      <div class="ctl-metric">
+        <span class="ctl-metric-value">759</span>
+        <span class="ctl-metric-label">Passing tests</span>
+        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">18 skipped · 777 total, in the open repo</span>
+      </div>
+      <div class="ctl-metric">
+        <span class="ctl-metric-value">5</span>
+        <span class="ctl-metric-label">Controls</span>
+        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">IDG-01 · PDX-01 · DBC-01 · EIT-01 · ATR-01, plus the bot-to-bot rule</span>
+      </div>
+      <div class="ctl-metric">
+        <span class="ctl-metric-value">FHIR</span>
+        <span class="ctl-metric-label">AuditEvent</span>
+        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">R4 base spec v4.0.1 — no named IG conformance claimed</span>
+      </div>
+      <div class="ctl-metric">
+        <span class="ctl-metric-value">Open</span>
+        <span class="ctl-metric-label">CC BY 4.0</span>
+        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">NIST comment on public record</span>
+      </div>
     </div>
   </section>
 
@@ -270,7 +298,7 @@
         </div>
         <div>
           <div role="tablist" aria-label="Trust stack layers" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem">
-            <button class="btn-ghost stack-layer" role="tab" data-layer="l5" aria-selected="false">Layer 5 · Observability & CAS</button>
+            <button class="btn-ghost stack-layer" role="tab" data-layer="l5" aria-selected="false">Layer 5 · Observability</button>
             <button class="btn-ghost stack-layer" role="tab" data-layer="l4" aria-selected="false">Layer 4 · Audit Ledger (ATR-01)</button>
             <button class="btn-ghost stack-layer" role="tab" data-layer="l3" aria-selected="false">Layer 3 · Cryptographic Authorization (NHID-Auth v2)</button>
             <button class="btn-ghost stack-layer active" role="tab" data-layer="l2" aria-selected="true">Layer 2 · Behavioral Disclosure Controls</button>
@@ -292,15 +320,15 @@
       l2: { tag: "Layer 2", title: "Behavioral Disclosure Controls (IDG-01 · PDX-01 · DBC-01 · EIT-01)",
         body: "The heart of v1.3: disclose non-human identity before anything else (IDG-01), verify before any PHI moves (PDX-01), never imply a human is speaking (DBC-01), and honor a request for a human (EIT-01). Each is deterministic and testable.",
         links: [["Try in Simulator","/simulator.html?scenario=spoofed-identity"],["Read the controls","/specification.html"]] },
-      l3: { tag: "Layer 3", title: "Cryptographic Authorization (NHID-Auth v2)",
-        body: "Ed25519 agent passports: a provider signs a delegation binding an agent key to an NPI and scope; the receiving side verifies offline. Reference code is public in the repository — no registry, no gatekeeper.",
-        links: [["Developer guide","/developers.html"],["v2 integration","/technical-stack.html"]] },
+      l3: { tag: "Layer 3", title: "Cryptographic Authorization (NHID-Auth v2 · DLG-01)",
+        body: "Ed25519 agent passports: a provider signs a delegation binding an agent key to an NPI and scope; the receiving side verifies offline. When a deployment opts in, DLG-01 evaluates that delegation in the policy path — signatures, expiry, revocation, call binding, and scope narrowing across sub-delegations — and the verified scope then constrains the data boundary, so a delegation for eligibility does not authorize asking for a claim number. Verification uses a trust anchor the deployment configures itself: no registry, no gatekeeper, and no NPPES check.",
+        links: [["Developer guide","/developers.html"],["Controls","/framework/controls.html"]] },
       l4: { tag: "Layer 4", title: "Audit Ledger (ATR-01)",
         body: "Every event carries a complete, replayable audit envelope — actor, timestamps, state transitions, execution context. Missing fields are CRITICAL findings. Evidence, not vibes.",
         links: [["Evidence pack","/evidence-pack.html"],["Audit requirements","/specification.html"]] },
-      l5: { tag: "Layer 5", title: "Observability & Call Authorization Score",
-        body: "CAS condenses identity assurance, operational confidence, and envelope completeness into one 0–1 score with plain trust tiers. Below the conditional-trust threshold, a human reviews. Scores are measurements, not certifications.",
-        links: [["Governance Simulator","/simulator.html"],["For payers","/for-payers.html"]] }
+      l5: { tag: "Layer 5", title: "Observability (OpenTelemetry)",
+        body: "Traces and spans over the interaction, so a deployment can see disclosure timing and decision outcomes across its own traffic using tooling it already runs. NHID-Clinical defines the trace content, not the collector — this layer is where an adopter's existing observability stack plugs in.",
+        links: [["Technical stack","/technical-stack.html"],["Metrics & observability","/developers.html"]] }
     };
     var detail = document.getElementById("stack-detail");
     var tabs = document.querySelectorAll(".stack-layer");
@@ -353,8 +381,8 @@
   <section class="page-section">
     <div class="container">
       <p class="section-kicker reveal">The control layer</p>
-      <h2 class="reveal" style="max-width:22ch">Six checks on every AI-agent call.</h2>
-      <p class="reveal" style="color:var(--body);max-width:62ch;margin-bottom:2rem">Each is observable on a real call and checkable against a machine-readable trace. Mapped, not certified.</p>
+      <h2 class="reveal" style="max-width:26ch">Five checks on every AI-agent call, and a sixth when you opt in.</h2>
+      <p class="reveal" style="color:var(--body);max-width:62ch;margin-bottom:2rem">Each is observable on a real call and checkable against a machine-readable trace. Mapped, not certified. The five canonical controls always run; DLG-01 is evaluated only when a deployment configures delegated authority.</p>
       <div class="feature-grid">
         <div class="feature-card reveal">
           <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-04.jpg" alt="Identity Disclosure Gate" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
@@ -387,10 +415,10 @@
           <p>Every call produces a machine-readable trace.</p>
         </div>
         <div class="feature-card reveal">
-          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-15.jpg" alt="Call Authorization Score" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
-          <span class="code">CAS</span>
-          <h3>Call Authorization Score</h3>
-          <p>One per-call score summarizing conformance across the controls.</p>
+          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-15.jpg" alt="Delegated Authority Gate" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
+          <span class="code">DLG-01 · opt-in</span>
+          <h3>Delegated Authority</h3>
+          <p>A signed, scoped delegation from the provider organization, and a data boundary that honors its scope. Off unless a deployment turns it on.</p>
         </div>
       </div>
     </div>
@@ -449,7 +477,7 @@
       <div class="reveal">
         <p class="section-kicker">Live conformance API</p>
         <h2>One call in, a verdict out.</h2>
-        <p style="color:var(--body);max-width:52ch;line-height:1.7">Send a native VAPI or Twilio call payload and get a deterministic pass/fail across the controls, plus a per-call Call Authorization Score. No key required for demo routes.</p>
+        <p style="color:var(--body);max-width:52ch;line-height:1.7">Send a native VAPI or Twilio call payload and get a deterministic pass/fail across the controls, with the reason code and any boundary violations. No key required for demo routes.</p>
         <div style="margin-top:1.4rem">
           <a class="cta-button" href="/docs.html">Try the live API <span aria-hidden="true">→</span></a>
         </div>
@@ -658,6 +686,7 @@
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://www.linkedin.com/in/brianna-baynard" target="_blank" rel="noopener noreferrer">Maintainer on LinkedIn</a>
     </div>
     <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
   </div>

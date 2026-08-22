@@ -20,7 +20,7 @@ INTEGRATION_EXPECTED = 18
 # without failing the build. It exists so scripts/check_number_drift.py has a
 # canonical number to compare published claims against. Update it in the same
 # commit as any change to the published count.
-UNIT_PUBLISHED = 669
+UNIT_PUBLISHED = 759
 
 def run_pytest():
     result = subprocess.run([sys.executable,"-m","pytest","tests/","-q","--tb=short","--no-header"],capture_output=True,text=True)
@@ -46,6 +46,19 @@ def validate(counts):
     # Warn (but don't fail) on unexpected skip counts
     if counts["skipped"] != INTEGRATION_EXPECTED:
         print(f"WARNING: expected {INTEGRATION_EXPECTED} skipped tests, got {counts['skipped']}")
+    # Warn (but don't fail) when the published count no longer matches reality.
+    # check_number_drift.py only enforces that published surfaces agree with
+    # UNIT_PUBLISHED — they can all be consistently wrong, which is how a
+    # superseded count survived across the whole repository once already.
+    # Deliberately a warning, not a gate: the suite is allowed to grow without
+    # breaking the build, but the staleness must not be silent.
+    if counts["passed"] != UNIT_PUBLISHED:
+        print(
+            f"WARNING: suite now reports {counts['passed']} passing but "
+            f"UNIT_PUBLISHED is {UNIT_PUBLISHED}. Published surfaces are stale — "
+            f"update UNIT_PUBLISHED and every surface in the same commit, then "
+            f"re-run scripts/check_number_drift.py."
+        )
     # Pass condition: tests executed, no failures, no errors
     return v
 

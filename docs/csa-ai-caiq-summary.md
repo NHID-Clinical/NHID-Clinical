@@ -55,7 +55,7 @@ model, and doesn't employ a workforce.
 
 | Domain | Posture | Detail |
 | :-- | :-- | :-- |
-| **Audit & Assurance** | Weak-to-moderate | 5 Partial, 2 No. ATR-01's structural audit-trail requirement and the CI-enforced 284-test baseline give real, narrow evidence; there is no independent third-party audit and no formal audit-management program. |
+| **Audit & Assurance** | Weak-to-moderate | 5 Partial, 2 No. ATR-01's structural audit-trail requirement and the CI-enforced 759-test baseline give real, narrow evidence; there is no independent third-party audit and no formal audit-management program. |
 | **Application & Interface Security** | Moderate, genuine strength in a few rows | 12 Partial, 3 No, 2 Yes, 1 N/A. The five canonical behavioral controls (IDG-01/PDX-01/DBC-01/EIT-01) and CI-gated testing are real, specific, code-backed answers. Sandboxing, general adversarial-input defense for an underlying LLM, and static analysis are not implemented. |
 | **Business Continuity Management and Operational Resilience** | Weak | 9 No, 3 N/A, 3 Partial, 1 Yes. No formal BC/DR plan exists; the closest analogue is Git/GitHub's inherent redundancy and the CI regression gate. Honestly weak — this is a real gap if NHID-Clinical's public demo API is depended on. |
 | **Change Control and Configuration Management** | Moderate | 7 Partial, 2 No, 1 N/A, 1 Yes. Git/GitHub PR review plus the CI exact-test-count baseline (`scripts/validate_ci.py`) function as real, if lightweight, change control. |

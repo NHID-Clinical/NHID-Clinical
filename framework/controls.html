@@ -13,10 +13,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
+  <link rel="stylesheet" href="/assets/css/cinematic-trust-lattice.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
+
+<a class="ctl-skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
   <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
@@ -158,15 +161,15 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main>
+<main id="main" class="ctl-scope">
 
-  <section class="inner-hero">
+  <section class="inner-hero ctl-hero ctl-grid-surface ctl-on-dark">
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container" style="position:relative;z-index:1;max-width:60rem">
       <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/framework/">Framework</a><span>/</span><span>Controls</span></div>
-      <p class="eyebrow">Control catalog · v1.3</p>
-      <h1>Five deterministic controls</h1>
-      <p class="lede">Each control is observable on a real call, checkable against a machine-readable trace, and produces the same verdict for the same inputs every time.</p>
+      <p class="eyebrow ctl-meta">Control catalog · v1.3</p>
+      <h1 class="ctl-page-title">Five deterministic controls</h1>
+      <p class="lede ctl-lede">Each control is observable on a real call, checkable against a machine-readable trace, and produces the same verdict for the same inputs every time.</p>
     </div>
   </section>
 
@@ -261,9 +264,10 @@
 
   <section class="page-section" style="background:var(--mist)">
     <div class="container" style="max-width:60rem">
-      <p class="section-kicker">Beyond pass/fail</p>
-      <h2>Call Authorization Score</h2>
-      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">CAS condenses identity assurance, operational confidence, and audit-envelope completeness into a single 0&ndash;1 score with plain trust tiers. Below the conditional-trust threshold, a human reviews the call. CAS is a measurement, not a certification — it describes one call, not an organization.</p>
+      <p class="section-kicker">Optional, opt-in</p>
+      <h2>Delegated Authority (DLG-01)</h2>
+      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">An agent asserting it acts for a provider organization can present a cryptographically signed delegation naming that organization&rsquo;s NPI, the scope it grants, and when it expires. When a deployment opts in, the engine verifies the signatures, expiry, revocation and call binding, and refuses any delegation whose scope widens across a sub-delegation. The verified scope then constrains the data boundary: a delegation for eligibility does not authorize requesting a claim number.</p>
+      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">The limits travel with it. Verification is against a trust anchor the deploying organization configured itself &mdash; there is no directory or discovery service, and an NPI with no configured anchor is refused rather than accepted. The NPI is cryptographically bound to the delegation but is <strong>not</strong> checked against NPPES. Delegation is off unless a deployment turns it on.</p>
       <div style="margin-top:1.25rem">
         <a class="cta-button" href="/specification.html">Read the normative definitions <span aria-hidden="true">&rarr;</span></a>
       </div>
@@ -292,6 +296,7 @@
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://www.linkedin.com/in/brianna-baynard" target="_blank" rel="noopener noreferrer">Maintainer on LinkedIn</a>
     </div>
   </div>
   <p class="footer-copy" style="margin-top:.4rem">This is an open, actively maintained framework — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>

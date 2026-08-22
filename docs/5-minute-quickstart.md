@@ -12,7 +12,7 @@ curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/a
   -d @tests/demo_scenarios/vapi_noncompliant.json | python3 -m json.tool
 ```
 
-You get back the conformance verdict, the violated controls, and a CAS score:
+You get back the conformance verdict and the violated controls:
 
 ```json
 {
@@ -25,6 +25,12 @@ You get back the conformance verdict, the violated controls, and a CAS score:
   "cas": { "score": 0.0, "tier": "Denied / Degraded", "badge_eligible": null }
 }
 ```
+
+The `cas` block is a **research component**, not part of the product surface.
+The hosted endpoint still returns it, so it is shown here as-is rather than
+edited out — but nothing in the repository produces the inputs a meaningful
+score would need, and its tier names are not a trust rating NHID-Clinical
+issues. Read `action` and `violations`; ignore `cas`. See `src/nhid_cas.py`.
 
 ## Step 2 — Send your own call (2 minutes)
 

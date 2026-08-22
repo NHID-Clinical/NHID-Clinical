@@ -93,6 +93,54 @@ class PolicyDecision:
         return any(v.severity == ViolationSeverity.CRITICAL for v in self.violations)
 
 
+@dataclass(frozen=True)
+class DelegationContext:
+    """Opt-in configuration for DLG-01. Absent this, delegation is not evaluated.
+
+    The policy engine performs no I/O, so the trust anchor is injected rather
+    than looked up. Passing a context is the deployment's explicit statement
+    that it verifies delegated authority; existing integrations that pass
+    nothing keep their current behavior exactly.
+
+    Attributes:
+        resolver: a `src.trust_anchor.TrustAnchorResolver` mapping provider NPI
+            to that provider's delegation-signing public key.
+        require_delegation: when True, a call presenting no passport is a
+            DLG-01 violation. Defaults to False so an organization can verify
+            passports that are presented while still accepting traffic from
+            agents that have not yet been issued one.
+        enforce_scope: when True, verified delegation scope constrains which
+            protected-data categories PDX-01 will permit. Defaults to True,
+            since scope that does not constrain anything is only a record.
+    """
+
+    resolver: Any
+    require_delegation: bool = False
+    enforce_scope: bool = True
+
+
+@dataclass(frozen=True)
+class DelegationResult:
+    """Outcome of DLG-01 verification, carried into PDX-01 within one evaluation."""
+
+    evaluated:  bool
+    verified:   bool
+    reason:     str
+    scope:      frozenset[str] = frozenset()
+    provider_npi: str | None = None
+    agent_id:     str | None = None
+
+    @property
+    def constrains_scope(self) -> bool:
+        """True when a verified scope exists that PDX-01 should enforce against."""
+        return self.evaluated and self.verified and bool(self.scope)
+
+
+_DELEGATION_NOT_EVALUATED = DelegationResult(
+    evaluated=False, verified=False, reason="DLG01_NOT_EVALUATED"
+)
+
+
 # ──────────────────────────────────────────────────────────────────────────
 # Internal helpers
 # ──────────────────────────────────────────────────────────────────────────
@@ -227,13 +275,49 @@ _PHI_REQUEST_TRIGGERS: frozenset[str] = frozenset({
     "prior_auth_number", "diagnosis_code", "procedure_code", "provider_tin",
 })
 
-# Phrase patterns that signal a PHI data request in speech text
-_PHI_SPEECH_PATTERNS: tuple[str, ...] = (
-    "member id", "member number", "date of birth", "dob",
-    "claim number", "authorization number", "prior auth",
-    "npi number", "tax id", "tin ",
-    "diagnosis", "procedure code", "icd",
-)
+# Phrase patterns that signal a PHI data request in speech text, each mapped to
+# the field in _PHI_REQUEST_TRIGGERS it indicates. The mapping exists so DLG-01
+# scope can be checked against what was actually asked for; _PHI_SPEECH_PATTERNS
+# is derived from it so there is one source of truth and PDX-01's existing
+# detection behavior is unchanged.
+_PHI_SPEECH_FIELD_MAP: dict[str, str] = {
+    "member id":            "member_id",
+    "member number":        "member_id",
+    "date of birth":        "date_of_birth",
+    "dob":                  "date_of_birth",
+    "claim number":         "claim_number",
+    "authorization number": "prior_auth_number",
+    "prior auth":           "prior_auth_number",
+    "npi number":           "npi",
+    "tax id":               "provider_tin",
+    "tin ":                 "provider_tin",
+    "diagnosis":            "diagnosis_code",
+    "procedure code":       "procedure_code",
+    "icd":                  "diagnosis_code",
+}
+
+_PHI_SPEECH_PATTERNS: tuple[str, ...] = tuple(_PHI_SPEECH_FIELD_MAP)
+
+# Which protected-data fields each delegation scope authorizes a request for.
+#
+# The scope vocabulary is not invented here — it is the vocabulary already used
+# by NHID-Auth v2 delegations (see examples/issue_and_verify.py): the three
+# administrative workflows this project has always addressed. It is deliberately
+# NOT a general authorization ontology; it covers the payer-provider
+# administrative calls in scope and nothing else.
+#
+# Every scope permits the identity fields needed to open any such call. The
+# distinguishing fields are the workflow-specific record identifiers: a
+# delegation for eligibility does not authorize asking for a claim number.
+_SCOPE_COMMON_FIELDS: frozenset[str] = frozenset({
+    "member_id", "date_of_birth", "npi", "provider_tin",
+})
+
+_SCOPE_PERMITTED_FIELDS: dict[str, frozenset[str]] = {
+    "eligibility":  _SCOPE_COMMON_FIELDS,
+    "claim_status": _SCOPE_COMMON_FIELDS | {"claim_number", "diagnosis_code", "procedure_code"},
+    "prior_auth":   _SCOPE_COMMON_FIELDS | {"prior_auth_number", "diagnosis_code", "procedure_code"},
+}
 
 
 def _speech_contains_phi_request(text: str) -> bool:
@@ -243,13 +327,57 @@ def _speech_contains_phi_request(text: str) -> bool:
     return any(pattern in normalized for pattern in _PHI_SPEECH_PATTERNS)
 
 
-def evaluate_pdx01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecision:
+def _phi_fields_requested(speech_text: str, phi_accessed: Any) -> frozenset[str]:
+    """The protected-data fields this turn asked for, from speech and from fields.
+
+    Used only by the DLG-01 scope check. PDX-01's disclosure-ordering gate keeps
+    using the boolean helpers above, so its behavior is untouched.
+    """
+    found: set[str] = set()
+    normalized = (speech_text or "").lower()
+    for pattern, field_name in _PHI_SPEECH_FIELD_MAP.items():
+        if pattern in normalized:
+            found.add(field_name)
+    if isinstance(phi_accessed, (list, tuple, set, frozenset)):
+        found.update(f for f in phi_accessed if f in _PHI_REQUEST_TRIGGERS)
+    return frozenset(found)
+
+
+def _fields_outside_scope(
+    requested: frozenset[str], authorized_scope: frozenset[str]
+) -> frozenset[str]:
+    """Requested fields that no scope in `authorized_scope` permits.
+
+    An unrecognized scope string permits nothing rather than everything — an
+    unknown grant must never widen authority.
+    """
+    permitted: set[str] = set()
+    for scope_name in authorized_scope:
+        permitted |= _SCOPE_PERMITTED_FIELDS.get(scope_name, frozenset())
+    return frozenset(requested - permitted)
+
+
+def evaluate_pdx01(
+    session: dict[str, Any],
+    event: dict[str, Any],
+    delegation: DelegationResult | None = None,
+) -> PolicyDecision:
     """
     PDX-01: The AI agent MUST NOT request or accept PHI before identity
     disclosure is confirmed (the pre-data-exchange gate).
 
     Pass condition: disclosure_timestamp is set before any PHI is requested.
     Fail condition: speech or phi_accessed fields indicate PHI exchange before disclosure.
+
+    When `delegation` carries a verified DLG-01 scope, the gate additionally
+    refuses protected-data requests that fall outside that scope: a delegation
+    for eligibility does not authorize asking for a claim number. The
+    disclosure-ordering check runs first and unchanged — an out-of-scope request
+    made before disclosure is still reported as a disclosure failure, because
+    that is the more fundamental one.
+
+    Omitting `delegation` (the default, and what every pre-existing caller does)
+    preserves the original two-outcome behavior exactly.
     """
     try:
         governance      = _safe_get(event, "healthcare_governance", default={})
@@ -288,6 +416,33 @@ def evaluate_pdx01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
             )
 
         if disclosure_ts is not None and phi_exchange_attempted:
+            if delegation is not None and delegation.constrains_scope:
+                requested = _phi_fields_requested(speech_text, phi_accessed)
+                out_of_scope = _fields_outside_scope(requested, delegation.scope)
+                if out_of_scope:
+                    granted = ", ".join(sorted(delegation.scope))
+                    refused = ", ".join(sorted(out_of_scope))
+                    return PolicyDecision(
+                        action=PolicyAction.DENY_DATA,
+                        reason_code="PDX01_SCOPE_NOT_AUTHORIZED",
+                        violations=[
+                            BoundaryViolation(
+                                rule_id="PDX-01",
+                                description=(
+                                    "Protected-data request outside delegated authority. "
+                                    f"Delegated scope: [{granted}]. "
+                                    f"Requested: [{', '.join(sorted(requested))}]. "
+                                    f"Not authorized by any delegated scope: [{refused}]. "
+                                    f"Delegation {delegation.provider_npi or 'unknown NPI'}"
+                                    f"/{delegation.agent_id or 'unknown agent'}."
+                                ),
+                                severity=ViolationSeverity.CRITICAL,
+                            )
+                        ],
+                        next_state="GATE_BLOCKED",
+                        gather_speech=True,
+                    )
+
             return PolicyDecision(
                 action=PolicyAction.CONTINUE_AI,
                 reason_code="PDX01_GATE_CLEARED",
@@ -792,13 +947,251 @@ def evaluate_bot_to_bot(session: dict[str, Any], event: dict[str, Any]) -> Polic
 
 
 # ──────────────────────────────────────────────────────────────────────────
+# DLG-01: Delegated Authority Gate  (opt-in — see DelegationContext)
+# ──────────────────────────────────────────────────────────────────────────
+#
+# Verifies that the agent holds a cryptographically valid, unexpired,
+# unrevoked, NPI-bound delegation from the provider organization it claims to
+# act for, and reports the scope that delegation grants so PDX-01 can enforce
+# it. All verification is performed by src/agent_identity.py — this control
+# adds no cryptography of its own, it connects existing machinery to the
+# policy path.
+#
+# Opt-in by construction: without a DelegationContext the control returns
+# "not evaluated" and contributes nothing, so every pre-existing integration
+# behaves exactly as before.
+
+
+def _passport_from_session(session: dict[str, Any]) -> Any:
+    """Read the passport(s) a call presented, if any.
+
+    Delegation credentials travel in `session`, not `event`. The published
+    canonical event schema (schema/nhid_trace_schema_v1.json) sets
+    additionalProperties:false, so an event cannot carry a passport without a
+    v1 schema break — and a delegation is per-call state anyway (it is
+    call_sid-bound), which is what `session` already represents.
+
+    Accepts a single passport or a delegation chain, as a dict/list of dicts
+    or as already-constructed AgentPassport objects.
+    """
+    return _safe_get(session, "agent_passport", default=None)
+
+
+def _coerce_passports(raw: Any) -> list[Any]:
+    """Normalize the presented credential into a list of AgentPassport objects."""
+    from src.agent_identity import AgentPassport, Delegation
+
+    def one(item: Any) -> Any:
+        if isinstance(item, AgentPassport):
+            return item
+        if isinstance(item, dict):
+            delegation = item["delegation"]
+            if isinstance(delegation, dict):
+                delegation = Delegation(**delegation)
+            return AgentPassport(
+                delegation=delegation,
+                signature_b64=item["signature_b64"],
+                agent_signature_b64=item["agent_signature_b64"],
+            )
+        raise TypeError(f"unsupported passport representation: {type(item).__name__}")
+
+    items = raw if isinstance(raw, (list, tuple)) else [raw]
+    return [one(i) for i in items]
+
+
+def _dlg01_denial(reason_code: str, description: str) -> PolicyDecision:
+    """A DLG-01 failure is an explicit DENY_DATA decision, never an exception."""
+    return PolicyDecision(
+        action=PolicyAction.DENY_DATA,
+        reason_code=reason_code,
+        violations=[
+            BoundaryViolation(
+                rule_id="DLG-01",
+                description=description,
+                severity=ViolationSeverity.CRITICAL,
+            )
+        ],
+        next_state="GATE_BLOCKED",
+        gather_speech=True,
+    )
+
+
+def evaluate_dlg01(
+    session: dict[str, Any],
+    event: dict[str, Any],
+    context: DelegationContext | None = None,
+) -> tuple[PolicyDecision, DelegationResult]:
+    """
+    DLG-01: An AI agent asserting it acts for a provider organization MUST
+    present a verifiable, scoped, unexpired, unrevoked delegation from that
+    organization, anchored to a provider key the verifier already trusts.
+
+    Returns both the policy decision and the verification result, because
+    PDX-01 needs the verified scope within the same evaluation.
+
+    Pass condition: passport verifies against the resolved trust anchor, with
+    valid provider and agent signatures, live TTL, matching call_sid binding,
+    a resolvable NPI, no revocation, and — for multi-hop chains — scope that
+    narrows monotonically.
+    Fail condition: any of the above fails, or `require_delegation` is set and
+    no passport was presented.
+    """
+    if context is None or context.resolver is None:
+        return (
+            PolicyDecision(
+                action=PolicyAction.CONTINUE_AI,
+                reason_code="DLG01_NOT_EVALUATED",
+                violations=[],
+            ),
+            _DELEGATION_NOT_EVALUATED,
+        )
+
+    try:
+        raw = _passport_from_session(session)
+
+        if raw is None:
+            if context.require_delegation:
+                return (
+                    _dlg01_denial(
+                        "DLG01_NO_DELEGATION_PRESENTED",
+                        "No agent passport presented and delegation is required "
+                        "for this deployment.",
+                    ),
+                    DelegationResult(
+                        evaluated=True,
+                        verified=False,
+                        reason="DLG01_NO_DELEGATION_PRESENTED",
+                    ),
+                )
+            return (
+                PolicyDecision(
+                    action=PolicyAction.CONTINUE_AI,
+                    reason_code="DLG01_NO_DELEGATION_PRESENTED",
+                    violations=[],
+                ),
+                DelegationResult(
+                    evaluated=True,
+                    verified=False,
+                    reason="DLG01_NO_DELEGATION_PRESENTED",
+                ),
+            )
+
+        try:
+            passports = _coerce_passports(raw)
+        except Exception as exc:
+            return (
+                _dlg01_denial(
+                    "DLG01_MALFORMED_PASSPORT",
+                    f"Agent passport could not be parsed: {exc}",
+                ),
+                DelegationResult(
+                    evaluated=True, verified=False, reason="DLG01_MALFORMED_PASSPORT"
+                ),
+            )
+
+        if not passports:
+            return (
+                _dlg01_denial(
+                    "DLG01_MALFORMED_PASSPORT", "Empty delegation chain presented."
+                ),
+                DelegationResult(
+                    evaluated=True, verified=False, reason="DLG01_MALFORMED_PASSPORT"
+                ),
+            )
+
+        # The root delegation names the provider whose key must be resolved.
+        claimed_npi = passports[0].delegation.provider_npi
+        provider_pub = context.resolver.resolve(claimed_npi)
+        if provider_pub is None:
+            return (
+                _dlg01_denial(
+                    "DLG01_TRUST_ANCHOR_UNRESOLVED",
+                    f"No trust anchor for provider NPI '{claimed_npi}'. The "
+                    "delegation may be well-formed, but this deployment has no "
+                    "basis to trust the organization that issued it.",
+                ),
+                DelegationResult(
+                    evaluated=True,
+                    verified=False,
+                    reason="DLG01_TRUST_ANCHOR_UNRESOLVED",
+                    provider_npi=claimed_npi,
+                ),
+            )
+
+        from src.agent_identity import AgentIdentityManager
+
+        manager = _safe_get(session, "identity_manager", default=None)
+        if manager is None:
+            manager = AgentIdentityManager()
+
+        call_sid = _safe_get(event, "session_id", default="") or ""
+
+        if len(passports) == 1:
+            result = manager.verify_passport(
+                passports[0], provider_pub, call_sid=call_sid
+            )
+        else:
+            result = manager.validate_chain(passports, provider_pub)
+
+        if not result.valid:
+            return (
+                _dlg01_denial(
+                    "DLG01_VERIFICATION_FAILED",
+                    f"Delegation verification failed: {result.reason}. "
+                    f"Provider NPI: {claimed_npi}.",
+                ),
+                DelegationResult(
+                    evaluated=True,
+                    verified=False,
+                    reason=f"DLG01_VERIFICATION_FAILED: {result.reason}",
+                    provider_npi=claimed_npi,
+                ),
+            )
+
+        return (
+            PolicyDecision(
+                action=PolicyAction.CONTINUE_AI,
+                reason_code="DLG01_DELEGATION_VERIFIED",
+                violations=[],
+                next_state="DELEGATION_VERIFIED",
+            ),
+            DelegationResult(
+                evaluated=True,
+                verified=True,
+                reason="DLG01_DELEGATION_VERIFIED",
+                scope=frozenset(result.scope or ()),
+                provider_npi=result.provider_npi,
+                agent_id=result.agent_id,
+            ),
+        )
+
+    except Exception:
+        return (
+            _internal_error_decision(f"DLG-01: {traceback.format_exc(limit=1)}"),
+            DelegationResult(
+                evaluated=True, verified=False, reason="DLG01_INTERNAL_ERROR"
+            ),
+        )
+
+
+# ──────────────────────────────────────────────────────────────────────────
 # Composite evaluator — runs all applicable rules and merges decisions
 # ──────────────────────────────────────────────────────────────────────────
 
-def evaluate_all(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecision:
+def evaluate_all(
+    session: dict[str, Any],
+    event: dict[str, Any],
+    delegation: DelegationContext | None = None,
+) -> PolicyDecision:
     """
-    Run all five conformance tests plus the bot-to-bot rule.
+    Run all five conformance tests plus the bot-to-bot rule, and — when a
+    DelegationContext is supplied — the DLG-01 delegated-authority gate.
     Returns the most restrictive PolicyAction across all decisions.
+
+    `delegation` is optional and defaults to None, in which case DLG-01 is not
+    evaluated and behavior is identical to every prior release. Supplying a
+    context is the deployment's explicit opt-in to verifying delegated
+    authority; it must never be inferred.
     If any rule returns DENY_DATA, the composite decision is DENY_DATA.
     If any rule returns ESCALATE_HUMAN, the composite decision is ESCALATE_HUMAN.
     If any rule returns DISCLOSE_IDENTITY, the composite decision is DISCLOSE_IDENTITY.
@@ -808,13 +1201,25 @@ def evaluate_all(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecisi
     Audit trails from all rules are merged into a composite trail.
     """
     try:
+        # DLG-01 runs first: PDX-01 needs its verified scope within this same
+        # evaluation. Without a DelegationContext it is inert and contributes a
+        # CONTINUE_AI/DLG01_NOT_EVALUATED decision that cannot alter the result.
+        dlg_decision, dlg_result = evaluate_dlg01(session, event, delegation)
+
+        pdx_delegation = (
+            dlg_result
+            if (delegation is not None and delegation.enforce_scope)
+            else None
+        )
+
         decisions = [
             evaluate_atr01(session, event),
             evaluate_idg01(session, event),
-            evaluate_pdx01(session, event),
+            evaluate_pdx01(session, event, pdx_delegation),
             evaluate_dbc01(session, event),
             evaluate_eit01(session, event),
             evaluate_bot_to_bot(session, event),
+            dlg_decision,
         ]
 
         all_violations: list[BoundaryViolation] = []

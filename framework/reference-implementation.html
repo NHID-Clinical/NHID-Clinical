@@ -13,10 +13,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
+  <link rel="stylesheet" href="/assets/css/cinematic-trust-lattice.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
+
+<a class="ctl-skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
   <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
@@ -158,15 +161,15 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main>
+<main id="main" class="ctl-scope">
 
-  <section class="inner-hero">
+  <section class="inner-hero ctl-hero ctl-grid-surface ctl-on-dark">
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container" style="position:relative;z-index:1;max-width:60rem">
       <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/framework/">Framework</a><span>/</span><span>Reference Implementation</span></div>
-      <p class="eyebrow">Open source · CC BY 4.0</p>
-      <h1>Reference implementation</h1>
-      <p class="lede">A working implementation of every control in the specification — so &ldquo;conformant&rdquo; means something you can run, not something you can claim.</p>
+      <p class="eyebrow ctl-meta">Open source · CC BY 4.0</p>
+      <h1 class="ctl-page-title">Reference implementation</h1>
+      <p class="lede ctl-lede">A working implementation of every control in the specification — so &ldquo;conformant&rdquo; means something you can run, not something you can claim.</p>
       <div class="hero-actions-premium">
         <a href="https://github.com/NHID-Clinical/NHID-Clinical" class="btn-premium" target="_blank" rel="noopener noreferrer">View the repository &#x2197;</a>
         <a href="/developers.html" class="btn-ghost">Developer guide</a>
@@ -260,6 +263,7 @@
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>
       <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://www.linkedin.com/in/brianna-baynard" target="_blank" rel="noopener noreferrer">Maintainer on LinkedIn</a>
     </div>
   </div>
   <p class="footer-copy" style="margin-top:.4rem">This is an open, actively maintained framework — feedback and contributions welcome. <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a> · NIST-2025-0035-0026 · CC BY 4.0</p>
