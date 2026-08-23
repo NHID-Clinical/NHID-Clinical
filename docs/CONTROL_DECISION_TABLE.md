@@ -155,7 +155,7 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 | EIT-01 | `test_eit01_multiturn.py` (8) | 2 violations | 2 detected — 100% detection, 100% accuracy |
 | ATR-01 | `test_atr01_audit_trail.py` (12), `test_atr01_persistence.py` (5) | 150 sessions | Audit trail operational across all sessions |
 
-Suite totals: **759 passing, 18 skipped, 777 total** across 42 test files. Corpus figures are
+Suite totals: **779 passing, 18 skipped, 797 total** across 43 test files. Corpus figures are
 read from `corpus_evaluation_output/corpus_metrics.json` (150 sessions, 1,227 turns).
 IDG-01 and PDX-01 have no single dedicated per-control file; their behaviour is asserted
 through the vendor-adapter and API suites.
@@ -178,4 +178,4 @@ through the vendor-adapter and API suites.
 
 ---
 
-**Status**: Tier 0 Ready (759 passing, 18 skipped; 777 total; audit trail operational)
+**Status**: Tier 0 Ready (779 passing, 18 skipped; 797 total; audit trail operational)

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>NHID-Clinical</title>
+  <subtitle>Release notes and updates from NHID-Clinical — an open policy-and-evidence layer for healthcare administrative AI voice interactions.</subtitle>
+  <link href="https://nhid-clinical.org/feed.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+  <id>tag:nhid-clinical.org,2026:news</id>
+  <updated>2026-08-01T00:00:00Z</updated>
+  <author><name>NHID-Clinical</name><uri>https://nhid-clinical.org</uri></author>
+  <rights>CC BY 4.0</rights>
+  <generator uri="https://nhid-clinical.org">scripts/generate_feed.py</generator>
+  <entry>
+    <title>Corpus Evaluation Path Corrected — IDG-01 and EIT-01</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-08:corpus-evaluation-path-corrected-idg-01-and-eit-01</id>
+    <updated>2026-08-01T00:00:00Z</updated>
+    <published>2026-08-01T00:00:00Z</published>
+    <category term="Release"/>
+    <summary>The first run of the 150-session synthetic corpus evaluation reported IDG-01 at a 100% false-positive rate and EIT-01 at 0% detection. Those numbers were real, but they measured defects in the corpus-evaluation path rather than in the policy engine, which was not modified.</summary>
+  </entry>
+  <entry>
+    <title>Why Identity Is the Missing Layer of Responsible AI</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-07:why-identity-is-the-missing-layer-of-responsible-ai</id>
+    <updated>2026-07-01T00:00:00Z</updated>
+    <published>2026-07-01T00:00:00Z</published>
+    <category term="Commentary"/>
+    <summary>Independent commentary on Impersonation Latency and the five NHID-Clinical controls, mapped to NIST AI RMF, ISO/IEC 42001, and HIPAA.</summary>
+  </entry>
+  <entry>
+    <title>DBC-01 Coverage Expanded from Real-Corpus Mining</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-06:dbc-01-coverage-expanded-from-real-corpus-mining</id>
+    <updated>2026-06-01T00:00:00Z</updated>
+    <published>2026-06-01T00:00:00Z</published>
+    <category term="Release"/>
+    <summary>Detection of DBC-01 (Deceptive Behavior Claim) against real conversational phrasing — measured on the Fabricate Battle-Test Corpus (550 real-world voice AI conversations) — was 0.5% prior to this update. Mining the corpus for missed phrasing patterns and additively expanding the heuristic phrase list raised that to 2.5%.</summary>
+  </entry>
+  <entry>
+    <title>Community Channels Consolidated to GitHub</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-06:community-channels-consolidated-to-github</id>
+    <updated>2026-06-01T00:00:00Z</updated>
+    <published>2026-06-01T00:00:00Z</published>
+    <category term="Community"/>
+    <summary>Discord and Reddit are no longer used for NHID-Clinical community discussion. All community activity — questions, implementation experiences, and proposal feedback — now happens in GitHub Discussions on the main repository.</summary>
+  </entry>
+  <entry>
+    <title>v1.3 Final — Milestone Closeout</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-06:v1-3-final-milestone-closeout</id>
+    <updated>2026-06-01T00:00:00Z</updated>
+    <published>2026-06-01T00:00:00Z</published>
+    <category term="Release"/>
+    <summary>Six previously-open items are closed out under the existing v1.3 spec version — no version bump, no v1.4 branding. Shipped this cycle:</summary>
+  </entry>
+  <entry>
+    <title>v1.3 Reference Implementation Live</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-06:v1-3-reference-implementation-live</id>
+    <updated>2026-06-01T00:00:00Z</updated>
+    <published>2026-06-01T00:00:00Z</published>
+    <category term="Release"/>
+    <summary>The reference implementation is now fully operational. Key deliverables shipped this cycle:</summary>
+  </entry>
+  <entry>
+    <title>NHID-Clinical v1.3 Published</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-05:nhid-clinical-v1-3-published</id>
+    <updated>2026-05-01T00:00:00Z</updated>
+    <published>2026-05-01T00:00:00Z</published>
+    <category term="Release"/>
+    <summary>v1.3 is the first public release of this open proposal. It suggests four behavioral expectations for AI voice agents in healthcare payer–provider administrative calls, focused on early disclosure of automated status.</summary>
+  </entry>
+  <entry>
+    <title>Pilot Partners Sought</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-05:pilot-partners-sought</id>
+    <updated>2026-05-01T00:00:00Z</updated>
+    <published>2026-05-01T00:00:00Z</published>
+    <category term="Open Proposal"/>
+    <summary>We are actively seeking payer and provider organizations to run a 90-day shadow evaluation — no vendor changes, no production risk. Observe incoming AI voice calls against the v1.3 behavioral baseline and help shape the standard before v2 ships.</summary>
+  </entry>
+  <entry>
+    <title>Submitted to NIST</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-01:submitted-to-nist</id>
+    <updated>2026-01-01T00:00:00Z</updated>
+    <published>2026-01-01T00:00:00Z</published>
+    <category term="Open Proposal"/>
+    <summary>NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security). Comment ID: NIST-2025-0035-0026. This is a public comment — not a regulatory filing or endorsement. The RFI drew 932 public comments in total before the period closed in March 2026.</summary>
+  </entry>
+  <entry>
+    <title>Community Channels Open</title>
+    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <id>tag:nhid-clinical.org,2026:news:2026-05:community-channels-open</id>
+    <updated>2026-05-01T00:00:00Z</updated>
+    <published>2026-05-01T00:00:00Z</published>
+    <category term="Community"/>
+    <summary>NHID-Clinical community discussion channels are now open. Join to ask questions about this proposal, share implementation experiences, and contribute to future versions. (Update, June 2026: community discussion has since moved to GitHub Discussions — see the June 2026 announcement above.)</summary>
+  </entry>
+</feed>
