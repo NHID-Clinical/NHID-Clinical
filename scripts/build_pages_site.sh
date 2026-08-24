@@ -26,7 +26,7 @@ for f in "$ROOT"/*.html; do
 done
 shopt -u nullglob
 
-for f in site.js nhid-clinical-ui.css CNAME .nojekyll robots.txt sitemap.xml; do
+for f in site.js nhid-clinical-ui.css CNAME .nojekyll robots.txt sitemap.xml feed.xml; do
   if [[ -f "$ROOT/$f" ]]; then
     cp "$ROOT/$f" "$OUT/"
   fi
