@@ -56,11 +56,20 @@ def _detected(scenario_id, turns):
 
 # ── The load-bearing invariant ─────────────────────────────────────────────
 
-def test_carrying_disclosure_forward_does_not_change_detection(scenarios):
+def test_carrying_disclosure_forward_never_loses_a_detection(scenarios):
     """
-    The fix may only remove false positives. If it also removes a detection it
-    is hiding a real violation, and the corpus figures would silently improve
-    for the wrong reason.
+    Carrying disclosure forward may remove false positives and may enable the
+    sequencing checks that need to know which turn disclosed. What it must
+    never do is *lose* an expected detection — that would mean the fix is
+    hiding a real violation, and the corpus figures would improve for the wrong
+    reason.
+
+    Stated as a subset rather than equality because the sequencing signal
+    legitimately gains detections: PDX-01 on nhid_ec_pdx01_002 and
+    nhid_ec_combo_006 (protected-data request bundled into the disclosing
+    utterance) and IDG-01 on nhid_ec_combo_002 (a disclosure that introduces a
+    human persona). Those are asserted by name below so the gain cannot quietly
+    become a loss somewhere else.
     """
     for s in scenarios:
         expected = set(s.get("expected_violations") or [])
@@ -69,38 +78,50 @@ def test_carrying_disclosure_forward_does_not_change_detection(scenarios):
         sid = s["scenario_id"]
         before = _detected(sid, s["turns"]) & expected
         after = _detected(sid, carry_disclosure_forward(s["turns"])) & expected
-        assert before == after, (
-            f"{sid}: carrying disclosure forward changed which expected "
-            f"violations were detected ({sorted(before)} -> {sorted(after)})"
+        assert before <= after, (
+            f"{sid}: carrying disclosure forward LOST detections "
+            f"{sorted(before - after)} — the fix is masking a real violation"
         )
+
+
+def test_the_sequencing_signal_gains_exactly_the_expected_detections(scenarios):
+    gained = {}
+    for s in scenarios:
+        expected = set(s.get("expected_violations") or [])
+        if not expected:
+            continue
+        sid = s["scenario_id"]
+        before = _detected(sid, s["turns"]) & expected
+        after = _detected(sid, carry_disclosure_forward(s["turns"])) & expected
+        if after - before:
+            gained[sid] = sorted(after - before)
+    assert gained == {
+        "nhid_ec_combo_002": ["IDG-01"],
+        "nhid_ec_combo_006": ["PDX-01"],
+        "nhid_ec_pdx01_002": ["PDX-01"],
+    }, f"unexpected change in what the sequencing signal detects: {gained}"
 
 
 # ── False positives on compliant scenarios ─────────────────────────────────
 
-def test_compliant_scenarios_are_clean_apart_from_the_known_eit01_case(corpus):
+def test_every_compliant_scenario_is_clean(corpus):
     """
     Compliant scenarios declare no expected violations, so anything they emit
-    is a false positive.
+    is a false positive. The corpus false-positive rate is 0%, and this is what
+    holds it there.
 
-    `nhid_ec_comp_005` is a known, documented exception rather than a passing
-    case: its final turn sets `escalation_path_available: false` on the turn
-    where the escalation was honored, and EIT-01 keyword-matches the agent's
-    own line ("connecting you to a supervisor") as an escalation request. The
-    rule reaches EIT01_NO_ESCALATION_PATH without consulting the
-    `escalation_outcome: honored` that sits on the same turn. Pinning it here
-    means the residual false positive stays visible instead of being rounded
-    away, and this assertion must be revisited — not deleted — if EIT-01 is
-    ever changed to consult the outcome.
+    `nhid_ec_comp_005` was the last exception: its final turn sets
+    `escalation_path_available: false` on the turn where the escalation was
+    honored, and EIT-01 keyword-matched the agent's own line ("connecting you
+    to a supervisor") as a request, reaching EIT01_NO_ESCALATION_PATH without
+    consulting the `escalation_outcome: honored` beside it. EIT-01 now settles
+    recorded fulfilment before consulting availability, so it is clean.
     """
-    expected_dirty = {"nhid_ec_comp_005": ["EIT-01"]}
-
     for s in corpus["compliant_scenarios"]:
         sid = s["scenario_id"]
         assert not s.get("expected_violations"), f"{sid} is not a compliant scenario"
         fired = sorted(_detected(sid, carry_disclosure_forward(s["turns"])))
-        assert fired == expected_dirty.get(sid, []), (
-            f"{sid} emitted {fired}; expected {expected_dirty.get(sid, [])}"
-        )
+        assert fired == [], f"{sid} emitted {fired} — that is a false positive"
 
 
 def test_without_the_fix_every_compliant_scenario_would_report_a_violation(corpus):
@@ -126,9 +147,15 @@ def test_disclosure_is_carried_to_later_turns():
     assert carried[1]["identity_assertion_text"] == "I am an automated system"
 
 
-def test_a_conversation_that_never_discloses_is_unchanged():
+def test_a_conversation_that_never_discloses_gains_no_disclosure():
     turns = [{"speech_text": "What is your member ID?"}, {"speech_text": "And your date of birth?"}]
-    assert carry_disclosure_forward(turns) == turns
+    carried = carry_disclosure_forward(turns)
+    for original, result in zip(turns, carried):
+        assert result.get("disclosure_timestamp") is None
+        assert result.get("identity_assertion_text") is None
+        assert result["speech_text"] == original["speech_text"]
+        # No turn can claim disclosure was established when none ever happened.
+        assert result["disclosure_established_prior"] is False
 
 
 def test_turns_before_the_disclosure_are_untouched():

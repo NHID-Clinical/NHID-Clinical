@@ -24,15 +24,14 @@ scenario surfaces it.
 | ATR-01 | 1 | 0 | 0.0% |
 | DBC-01 | 9 | 9 | 100.0% |
 | EIT-01 | 8 | 8 | 100.0% |
-| IDG-01 | 8 | 5 | 62.5% |
-| PDX-01 | 6 | 4 | 66.7% |
-| **OVERALL** | **32** | **26** | **81.2%** |
+| IDG-01 | 8 | 6 | 75.0% |
+| PDX-01 | 6 | 6 | 100.0% |
+| **OVERALL** | **32** | **29** | **90.6%** |
 
 ### Not detected
 
 - **ATR-01** — `nhid_ec_atr01_001`
-- **IDG-01** — `nhid_ec_combo_002`, `nhid_ec_idg01_002`, `nhid_ec_idg01_003`
-- **PDX-01** — `nhid_ec_combo_006`, `nhid_ec_pdx01_002`
+- **IDG-01** — `nhid_ec_idg01_002`, `nhid_ec_idg01_003`
 
 ## False positives
 
@@ -40,15 +39,7 @@ Measured over the disjoint population of compliant scenarios — those
 declaring no expected violations. Anything they emit is a false positive.
 
 - Compliant scenarios: **5**
-- Emitting at least one violation: **1** (**20.0%**)
-
-| Rule | Scenarios | FP rate |
-| :--- | ---: | ---: |
-| EIT-01 | 1 | 20.0% |
-
-Affected scenarios:
-
-- `nhid_ec_comp_005` — EIT-01
+- Emitting at least one violation: **0** (**0.0%**)
 
 ## Method and limits
 

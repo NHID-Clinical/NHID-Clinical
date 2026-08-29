@@ -86,6 +86,11 @@ def build_session(turn: dict[str, Any]) -> dict[str, Any]:
         # through, which is exactly the wiring a naive loop tends to drop.
         "escalation_path_available": turn.get("escalation_path_available", True),
         "counterparty_type": turn.get("counterparty_type", "human_operator"),
+        # Sequencing signal, threaded only when a harness supplies it.
+        # Defaults True — the permissive reading — so callers that do not track
+        # conversation state (the Fabricate replay path among them) keep the
+        # behaviour they had.
+        "disclosure_established_prior": turn.get("disclosure_established_prior", True),
     }
 
 
@@ -168,6 +173,12 @@ def carry_disclosure_forward(turns: list[dict[str, Any]]) -> list[dict[str, Any]
 
     for turn in turns:
         turn = dict(turn)
+        # Records whether disclosure was already established BEFORE this turn.
+        # IDG-01 uses it to apply its disclosure-content checks only to the
+        # utterance that is the disclosure, and PDX-01 uses it to tell a
+        # protected-data request that follows disclosure from one bundled into
+        # the same breath as it.
+        turn["disclosure_established_prior"] = disclosure_ts is not None
         if turn.get("disclosure_timestamp"):
             # This turn discloses: it becomes the reference for later turns.
             disclosure_ts = turn["disclosure_timestamp"]
