@@ -24,3 +24,8 @@ jobs:
 
       - name: Validate test invariants
         run: python scripts/validate_ci.py
+
+      # Runs on every PR, not only nightly: the published corpus figures went
+      # stale for a month while nightly-only checks reported green.
+      - name: Published-number drift guard
+        run: python scripts/check_number_drift.py
