@@ -2747,7 +2747,15 @@ assert len(decision.violations) == 0
 changes below are to the reference implementation's strictness and to the project's published
 figures.*
 
-Merged as PR #373 (7 commits, +2578/−98 across 32 files, merge commit `69f2697`).
+Merged as PR #373 (7 commits, +2578/−98 across 32 files, squash-merged as `69f2697`,
+2026-08-29 01:20 UTC) and PR #374 (this archive entry plus the control-doc resync,
++206/−24 across 2 files, squash-merged as `4fe1ce7`, 01:54 UTC).
+
+**Deployed.** `Deploy GitHub Pages` concluded `success` for both merge commits — `69f2697`
+at 01:20 UTC and `4fe1ce7` at 01:54 UTC — so the corrected figures are live on
+nhid-clinical.org. The rendered page was **not** fetched to confirm: outbound to that host
+is blocked by the working environment's proxy (403 on CONNECT), so deployment is confirmed
+from the workflow conclusion only.
 
 **Why.** A forensic audit was requested of every published project metric, with an
 explicit instruction not to rely on prior documentation. Three figures published
