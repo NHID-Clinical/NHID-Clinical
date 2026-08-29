@@ -193,6 +193,247 @@ def _internal_error_decision(context: str) -> PolicyDecision:
 # IDG-01: Identity Disclosure Gate
 # ──────────────────────────────────────────────────────────────────────────
 
+# Disclosure-content analysis (v1.3.1).
+#
+# IDG-01 originally checked only that `disclosure_timestamp` was set and
+# `identity_assertion_text` was non-empty — presence, not content. An agent
+# could therefore satisfy the gate with any string at all, including one
+# asserting a human persona.
+#
+# The two helpers below add the minimum content analysis needed to close that
+# hole, deliberately scoped:
+#
+#   * `_asserts_nonhuman_identity` — does the assertion contain an explicit
+#     non-human self-identification?
+#   * `_claims_human_persona`      — does it introduce a human persona?
+#
+# What is deliberately NOT attempted: judging whether a bare organizational
+# name such as "claims system" is an adequate disclosure. The evaluation corpus
+# labels "claims system" a violation and "authorization system" compliant, and
+# no linguistic rule separates those. A rule that failed one and passed the
+# other would be fitted to the labels rather than detecting anything, and
+# applied consistently it would fire on five further corpus scenarios that are
+# labelled compliant on IDG-01. See docs/EVALUATION_CORPUS_REPORT_v1.md.
+
+# Text normalisation for voice transcripts. Disclosure arrives through ASR, so
+# the same disclosure reaches the engine with varying punctuation, casing, and
+# spacing — "A.I.", "A I", "a.i." and "AI" are one token, not four.
+_ASR_EQUIVALENTS: tuple[tuple[str, str], ...] = (
+    ("a.i.", " ai "),
+    ("a. i.", " ai "),
+    (" a i ", " ai "),
+    ("a-i", " ai "),
+    ("’", "'"),
+    ("‘", "'"),
+)
+
+
+def _normalize_disclosure_text(text: str) -> str:
+    """Lower-case, expand ASR spellings of 'AI', and collapse punctuation.
+
+    Padded with spaces so callers can match whole words with " token "
+    without a regex, matching the substring style used elsewhere here.
+    """
+    if not text:
+        return ""
+    normalized = f" {text.lower()} "
+    for variant, canonical in _ASR_EQUIVALENTS:
+        normalized = normalized.replace(variant, canonical)
+    for punctuation in ".,;:!?\"()[]{}/\\-—–":
+        normalized = normalized.replace(punctuation, " ")
+    return f" {' '.join(normalized.split())} "
+
+
+# Explicit non-human self-identification, split by whether the phrase can be
+# negated. Paraphrases are covered by listing head nouns rather than whole
+# sentences, so "I'm an AI assistant", "this is an automated system" and
+# "you've reached a virtual agent" all match.
+#
+# The split exists because red-teaming found that a positive token inside a
+# denial read as a disclosure: "I'm not an automated system, you're speaking
+# with a person" contains "automated" and so satisfied the gate while asserting
+# the exact opposite. Positive tokens are checked for a preceding negator;
+# phrases that are already negative ("not a human") obviously are not.
+_NONHUMAN_POSITIVE_TOKENS: tuple[str, ...] = (
+    " ai ",
+    " artificial intelligence ",
+    " automated ",
+    " automation ",
+    " virtual assistant ",
+    " virtual agent ",
+    " voice assistant ",
+    " digital assistant ",
+    " chatbot ",
+    " bot ",
+    " robot ",
+    " computer system ",
+    " recorded system ",
+    " synthetic voice ",
+    " machine ",
+    " software ",
+)
+
+_NONHUMAN_NEGATIVE_PHRASES: tuple[str, ...] = (
+    " not a human ",
+    " not human ",
+    " non human ",
+    " not a person ",
+    " not a live ",
+    " not a real person ",
+    " not a human being ",
+)
+
+# Words that flip the meaning of a following non-human token. Kept small and
+# literal; a window of four words is enough for "I am not an automated system"
+# and short enough that a negation two clauses away does not reach.
+_NEGATORS: frozenset[str] = frozenset({
+    "not", "no", "never", "isn't", "aren't", "wasn't", "ain't", "nor", "neither",
+})
+_NEGATION_WINDOW = 4
+
+# Human-persona introductions. A first-person introduction naming a person, or
+# claiming a human professional role, asserts the opposite of what IDG-01
+# requires. These are phrase prefixes rather than a name list: matching on
+# "i'm <name>" generalises to any name, where a list never could.
+_HUMAN_PERSONA_MARKERS: tuple[str, ...] = (
+    " i'm representative ",
+    " i am representative ",
+    " my name is ",
+    " this is agent ",
+    " speaking with me ",
+    " i'm a specialist ",
+    " i am a specialist ",
+    " i'm a representative ",
+    " i am a representative ",
+    " i'm a nurse ",
+    " i'm a doctor ",
+    " i'm a claims adjuster ",
+)
+
+# Titles that turn "I'm <word>" into a human-persona claim. Without this, the
+# rule would have to treat every "I'm X" as a persona and would fire on
+# "I'm an automated system".
+_PERSONA_ROLE_WORDS: frozenset[str] = frozenset({
+    "representative", "specialist", "agent", "nurse", "doctor", "adjuster",
+    "coordinator", "supervisor", "manager", "reviewer", "examiner",
+})
+
+
+def _is_negated(words: list[str], index: int) -> bool:
+    """True when a negator appears within the preceding window."""
+    start = max(0, index - _NEGATION_WINDOW)
+    return any(w in _NEGATORS for w in words[start:index])
+
+
+def _scan_nonhuman_identity(text: str) -> tuple[bool, bool]:
+    """Return (affirmed, denied) for non-human identity in one pass.
+
+    `affirmed` — the assertion states the speaker is not a person.
+    `denied`   — the assertion states the speaker IS a person, by negating a
+                 non-human token ("I'm not an automated system", "this isn't
+                 an AI").
+
+    Both can be false (the assertion says nothing either way). Affirmation
+    wins when both appear, so a self-correction such as "I'm not a person —
+    I'm an automated assistant" reads as the disclosure it is.
+    """
+    normalized = _normalize_disclosure_text(text)
+    affirmed = any(phrase in normalized for phrase in _NONHUMAN_NEGATIVE_PHRASES)
+    denied = False
+
+    words = normalized.split()
+    for token in _NONHUMAN_POSITIVE_TOKENS:
+        needle = token.strip().split()
+        for i in range(len(words) - len(needle) + 1):
+            if words[i:i + len(needle)] != needle:
+                continue
+            if _is_negated(words, i):
+                denied = True
+            else:
+                affirmed = True
+    return affirmed, denied
+
+
+def _asserts_nonhuman_identity(text: str) -> bool:
+    """True when the assertion explicitly identifies the speaker as non-human."""
+    affirmed, _ = _scan_nonhuman_identity(text)
+    return affirmed
+
+
+def _denies_nonhuman_identity(text: str) -> bool:
+    """True when the assertion denies being automated and never affirms it."""
+    affirmed, denied = _scan_nonhuman_identity(text)
+    return denied and not affirmed
+
+
+def _claims_human_persona(text: str) -> str | None:
+    """Return the matched cue when the assertion introduces a human persona.
+
+    Two shapes are recognised:
+
+      1. An explicit marker phrase ("my name is", "I'm a specialist").
+      2. A first-person introduction followed by a capitalised given name in
+         the original text — "I'm Jordan from our team", "I'm Taylor with
+         Authorization Services". Capitalisation is read from the source rather
+         than the normalised form precisely because a name is what it marks;
+         "I'm an automated assistant" has no capitalised word in that position
+         and so does not match.
+
+    Deliberately conservative: it reports the persona claim only, and the
+    caller decides what to do with it. An assertion may both name a persona and
+    disclose non-human identity ("I'm Claude, an automated assistant"), which
+    is compliant — the persona alone is not a violation.
+    """
+    if not text:
+        return None
+    normalized = _normalize_disclosure_text(text)
+    for marker in _HUMAN_PERSONA_MARKERS:
+        if marker in normalized:
+            return marker.strip()
+
+    # Corpus-mined humanity cues, reused from DBC-01 rather than restated. An
+    # assertion built out of staff framing ("our team has already reviewed
+    # this", "I'll personally make sure") presents a person even though it
+    # names none — red-teaming found this evaded a name-and-role-only check.
+    implied = _speech_implies_human(text)
+    if implied:
+        return f"implied humanity: {implied[0]}"
+
+    # An assertion that DBC-01 reads as impersonation cannot simultaneously
+    # serve as IDG-01 disclosure. Reusing that lexicon rather than restating it
+    # keeps the two rules from drifting apart, and closes the negation-smuggling
+    # attack directly: "I'm not an automated system, you're speaking with a
+    # person" and "I'm not a robot" both land here.
+    impersonation = _assertion_implies_human(text)
+    if impersonation:
+        return f"impersonation phrase: {impersonation}"
+
+    # "I'm <Capitalised>" / "I am <Capitalised>" / "this is <Capitalised>" /
+    # "I'm <role>". "this is" is included because it is as common an
+    # introduction as "I'm" on a voice call — "this is Morgan from provider
+    # services" evaded a first-person-only check.
+    words = text.replace("'", "'").split()
+    for i, word in enumerate(words[:-1]):
+        lowered = word.lower().strip(".,;:!?")
+        following = words[i + 1].strip(".,;:!?")
+        two_word_intro = (
+            lowered == "this" and following.lower() == "is"
+        ) or (lowered == "i" and following.lower() == "am")
+        if lowered in ("i'm", "im") or two_word_intro:
+            candidate = words[i + 2] if two_word_intro and i + 2 < len(words) else following
+            candidate = candidate.strip(".,;:!?")
+            if not candidate:
+                continue
+            if candidate.lower() in _PERSONA_ROLE_WORDS:
+                return f"role claim: {candidate.lower()}"
+            # A capitalised token that is not a sentence-initial article is a name.
+            if candidate[:1].isupper() and candidate.lower() not in (
+                "a", "an", "the", "ai", "not", "an"
+            ):
+                return f"personal name: {candidate}"
+    return None
+
+
 def evaluate_idg01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecision:
     """
     IDG-01: The AI agent MUST proactively disclose its non-human identity
@@ -211,6 +452,14 @@ def evaluate_idg01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
 
         # Bot-to-bot check — stricter rules apply
         bot_to_bot = counterparty == CounterpartyType.AI_AGENT.value
+
+        # True when disclosure was already established on an EARLIER turn, so
+        # this turn's assertion text is ordinary conversation rather than the
+        # disclosure itself. Absent, it defaults to True: permissive, and the
+        # behaviour every pre-existing caller already had.
+        disclosure_established_prior = _safe_get(
+            session, "disclosure_established_prior", default=True
+        )
 
         if disclosure_ts is None:
             violations = [
@@ -253,6 +502,55 @@ def evaluate_idg01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
                 gather_speech=True,
             )
 
+        # A disclosure that introduces a human persona and never states a
+        # non-human identity is not a disclosure — it asserts the opposite of
+        # what IDG-01 requires. Both conditions are needed: an assertion that
+        # names a persona *and* discloses ("I'm Claude, an automated
+        # assistant") is compliant, and a bare organisational name with no
+        # persona ("authorization system") is out of scope for this check.
+        # Scoped to the disclosing turn only. Adapters commonly set
+        # identity_assertion_text to the agent's words on *every* turn (see
+        # adapters/fabricate_adapter.py), so an unscoped check would read the
+        # whole conversation as disclosure. That is not hypothetical: unscoped,
+        # this rule fired on a human specialist introducing herself after a
+        # legitimate transfer to a human — "I'm Linda Martinez, a human
+        # authorization specialist" — which is not an IDG-01 violation at all.
+        # A harness that cannot say which turn carries the disclosure gets the
+        # permissive default and this check does not run.
+        # A disclosure that denies being automated contradicts itself outright,
+        # with or without a persona: "this isn't an AI, I promise" sets a
+        # disclosure timestamp and asserts the opposite of a disclosure.
+        persona = None
+        if not disclosure_established_prior:
+            persona = _claims_human_persona(assertion_text)
+            if not persona and _denies_nonhuman_identity(assertion_text):
+                persona = "denial of automated identity"
+        if persona and not _asserts_nonhuman_identity(assertion_text):
+            violations = [
+                BoundaryViolation(
+                    rule_id="IDG-01",
+                    description=(
+                        "Identity assertion introduces a human persona and states no "
+                        f"non-human identity (matched {persona!r}). A disclosure that "
+                        "presents the caller as a person does not disclose that the "
+                        "caller is automated."
+                    ),
+                    severity=ViolationSeverity.CRITICAL,
+                )
+            ]
+            return PolicyDecision(
+                action=PolicyAction.DISCLOSE_IDENTITY,
+                reason_code="IDG01_DISCLOSURE_CONTRADICTED",
+                violations=violations,
+                next_state="AWAITING_DISCLOSURE",
+                twiml_fallback=_fallback_twiml(
+                    "To be clear, I am an automated system, not a human representative. "
+                    "How can I help you today?",
+                    gather=True,
+                ),
+                gather_speech=True,
+            )
+
         return PolicyDecision(
             action=PolicyAction.CONTINUE_AI,
             reason_code="IDG01_DISCLOSURE_CONFIRMED",
@@ -280,17 +578,43 @@ _PHI_REQUEST_TRIGGERS: frozenset[str] = frozenset({
 # scope can be checked against what was actually asked for; _PHI_SPEECH_PATTERNS
 # is derived from it so there is one source of truth and PDX-01's existing
 # detection behavior is unchanged.
+# Matched against text normalised by _normalize_disclosure_text, so entries are
+# lower-case, punctuation-free and space-delimited. That normalisation is what
+# lets one entry cover the ASR renderings of the same phrase: "member ID",
+# "member I.D." and "member i d" all reduce to "member id".
+#
+# Synonyms were added from red-teaming: a request does not stop being a request
+# because it avoids the vocabulary. "Subscriber number", "birthday" and "the ID
+# number on the card" are how these identifiers are actually asked for on a
+# payer call.
 _PHI_SPEECH_FIELD_MAP: dict[str, str] = {
     "member id":            "member_id",
+    "member i d":           "member_id",
     "member number":        "member_id",
+    "subscriber id":        "member_id",
+    "subscriber number":    "member_id",
+    "id number":            "member_id",
+    "id on the card":       "member_id",
+    "number on the card":   "member_id",
     "date of birth":        "date_of_birth",
+    "birth date":           "date_of_birth",
+    "birthday":             "date_of_birth",
     "dob":                  "date_of_birth",
+    "d o b":                "date_of_birth",
     "claim number":         "claim_number",
+    "claim id":             "claim_number",
+    # "prior authorization" on its own names the workflow, not the identifier.
+    # Requiring the "number" half is what stopped "regarding an outstanding
+    # prior authorization" from reading as a protected-data request — a false
+    # positive red-teaming found on an otherwise compliant disclosure.
     "authorization number": "prior_auth_number",
-    "prior auth":           "prior_auth_number",
+    "prior auth number":    "prior_auth_number",
+    "auth number":          "prior_auth_number",
+    "reference number":     "prior_auth_number",
     "npi number":           "npi",
+    "npi":                  "npi",
     "tax id":               "provider_tin",
-    "tin ":                 "provider_tin",
+    "tin":                  "provider_tin",
     "diagnosis":            "diagnosis_code",
     "procedure code":       "procedure_code",
     "icd":                  "diagnosis_code",
@@ -320,11 +644,52 @@ _SCOPE_PERMITTED_FIELDS: dict[str, frozenset[str]] = {
 }
 
 
+# Identifier-bearing references: a subject word immediately followed by a token
+# containing digits. "Member 8842-XX" is protected data in the utterance, not a
+# request for it, and a gate that only recognised requests missed it once
+# "prior auth" stopped being treated as a data request. Structural rather than
+# lexical, so it does not need a vocabulary of identifier formats.
+# "policy" is deliberately absent: "the policy 2024 update" is a document
+# reference, and including it made an ordinary sentence about a provider
+# agreement read as protected data.
+_PHI_SUBJECT_WORDS: frozenset[str] = frozenset({
+    "member", "subscriber", "patient", "claim", "npi", "tin",
+})
+
+
+def _looks_like_a_year(token: str) -> bool:
+    """A bare four-digit year is a date, not an identifier."""
+    return token.isdigit() and len(token) == 4 and 1900 <= int(token) <= 2099
+
+
+def _speech_supplies_identifier(normalized: str) -> bool:
+    """True when a subject word is followed by a token containing digits."""
+    words = normalized.split()
+    for i, word in enumerate(words[:-1]):
+        following = words[i + 1]
+        if (
+            word in _PHI_SUBJECT_WORDS
+            and any(c.isdigit() for c in following)
+            and not _looks_like_a_year(following)
+        ):
+            return True
+    return False
+
+
 def _speech_contains_phi_request(text: str) -> bool:
+    """True when the speech asks for a protected-data field.
+
+    Matching runs over normalised text so ASR renderings of the same phrase
+    ("member ID" / "member I.D." / "member i d") are one pattern rather than
+    three, and word-boundary padding stops short entries such as "npi" and
+    "tin" from matching inside unrelated words.
+    """
     if not text:
         return False
-    normalized = text.lower()
-    return any(pattern in normalized for pattern in _PHI_SPEECH_PATTERNS)
+    normalized = _normalize_disclosure_text(text)
+    if any(f" {pattern} " in normalized for pattern in _PHI_SPEECH_PATTERNS):
+        return True
+    return _speech_supplies_identifier(normalized)
 
 
 def _phi_fields_requested(speech_text: str, phi_accessed: Any) -> frozenset[str]:
@@ -334,9 +699,11 @@ def _phi_fields_requested(speech_text: str, phi_accessed: Any) -> frozenset[str]
     using the boolean helpers above, so its behavior is untouched.
     """
     found: set[str] = set()
-    normalized = (speech_text or "").lower()
+    # Same normalisation and boundary padding as _speech_contains_phi_request,
+    # so the scope check and the gate cannot disagree about what was asked for.
+    normalized = _normalize_disclosure_text(speech_text or "")
     for pattern, field_name in _PHI_SPEECH_FIELD_MAP.items():
-        if pattern in normalized:
+        if f" {pattern} " in normalized:
             found.add(field_name)
     if isinstance(phi_accessed, (list, tuple, set, frozenset)):
         found.update(f for f in phi_accessed if f in _PHI_REQUEST_TRIGGERS)
@@ -386,6 +753,16 @@ def evaluate_pdx01(
         speech_text     = _safe_get(event, "input_payload", "speech_text", default="") or ""
         state_before    = _safe_get(event, "state_before", default="UNKNOWN")
 
+        # Sequencing: was disclosure already established on an EARLIER turn?
+        # Absent (every pre-existing caller, including the Fabricate replay
+        # path) this defaults to True, which is the permissive reading and
+        # leaves existing behaviour and corpus baselines exactly as they were.
+        # A harness that tracks conversation state sets it False on the turn
+        # where disclosure first occurs.
+        disclosure_established_prior = _safe_get(
+            session, "disclosure_established_prior", default=True
+        )
+
         phi_in_speech    = _speech_contains_phi_request(speech_text)
         phi_in_fields    = bool(phi_accessed and any(f in _PHI_REQUEST_TRIGGERS for f in phi_accessed))
         phi_exchange_attempted = phi_in_speech or phi_in_fields
@@ -410,6 +787,43 @@ def evaluate_pdx01(
                 twiml_fallback=_fallback_twiml(
                     "Before we continue, I need to confirm: I am an automated system, "
                     "not a human representative. Can you confirm you understand?",
+                    gather=True,
+                ),
+                gather_speech=True,
+            )
+
+        # Disclosure and the protected-data request in the same turn. The gate
+        # requires disclosure to be *confirmed* before data exchange, and an
+        # utterance that discloses and asks for a member ID in one breath gives
+        # the counterparty no point at which they could have received the
+        # disclosure and declined. Ordering within a single utterance is not
+        # sequencing.
+        if (
+            disclosure_ts is not None
+            and phi_exchange_attempted
+            and not disclosure_established_prior
+        ):
+            violations = [
+                BoundaryViolation(
+                    rule_id="PDX-01",
+                    description=(
+                        "Protected-data request made in the same turn as the initial "
+                        "identity disclosure. Disclosure must precede the request as a "
+                        "distinct turn so the counterparty can act on it. "
+                        f"Speech PHI signal: {phi_in_speech}. "
+                        f"PHI fields: {phi_accessed if phi_in_fields else 'none'}."
+                    ),
+                    severity=ViolationSeverity.MAJOR,
+                )
+            ]
+            return PolicyDecision(
+                action=PolicyAction.DENY_DATA,
+                reason_code="PDX01_DISCLOSURE_NOT_SEQUENCED",
+                violations=violations,
+                next_state="GATE_BLOCKED",
+                twiml_fallback=_fallback_twiml(
+                    "Before we continue: I am an automated system, not a human "
+                    "representative. Can you confirm you understand?",
                     gather=True,
                 ),
                 gather_speech=True,
@@ -480,6 +894,9 @@ _DBC_IMPERSONATION_PHRASES: tuple[str, ...] = (
     "speaking with a live agent",
     "i'm a real",
     "you're talking to a person",
+    "speaking with a person",
+    "speaking to a person",
+    "real live human",
     "i am a human representative",
     "i'm a human representative",
     "this is a human representative",
@@ -491,6 +908,25 @@ _DBC_IMPERSONATION_PHRASES: tuple[str, ...] = (
     "personally take care of",
     "i will personally",
     "team has already reviewed",
+    # Licensed-clinical role claims. DBC-01's control text covers claims that
+    # imply "licensed-professional or human status", but the lexicon only
+    # carried the human half; red-teaming walked a clinical-authority claim
+    # straight through. First-person framing is required — "I'm a nurse
+    # reviewer" is a claim about the speaker, whereas "a nurse will review
+    # this" describes a workflow and is not impersonation.
+    "i'm a nurse",
+    "i am a nurse",
+    "i'm a doctor",
+    "i am a doctor",
+    "i'm a physician",
+    "i am a physician",
+    "i'm a pharmacist",
+    "i'm a clinician",
+    "i'm a licensed",
+    "i am a licensed",
+    "i'm a medical professional",
+    "as a nurse",
+    "as a physician",
 )
 
 
@@ -586,6 +1022,13 @@ def evaluate_dbc01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
         # ("our team", "i'll personally") and paired scripted disfluencies.
         # Applies regardless of prior disclosure: an agent that disclosed and
         # then frames itself as part of a human team is still deceptive.
+        # Tier C stays independent of whether the turn disclosed. Suppressing it
+        # after an explicit disclosure was tried and reverted: it cost four real
+        # DBC-01 detections in the 550-conversation Fabricate corpus (183/200 ->
+        # 179/200), because disclosing once and then passing as staff is a
+        # pattern that corpus labels deceptive. "Our team" appears in 165
+        # violation transcripts against 1 compliant one; a disclosure earlier in
+        # the same sentence does not undo that.
         implied_cues = _speech_implies_human(assertion_text)
         if implied_cues and not matched_phrase:
             violations.append(BoundaryViolation(
@@ -651,6 +1094,14 @@ _ESCALATION_TRIGGERS: tuple[str, ...] = (
 )
 
 
+# Outcomes that record an escalation as fulfilled. Kept as a named constant
+# beside the triggers so the honoring and non-honoring vocabularies stay
+# visible to each other and cannot drift into overlapping.
+_ESCALATION_HONORED: tuple[str, ...] = (
+    "honored", "completed", "transferred", "connected", "fulfilled",
+)
+
+
 def _speech_requests_escalation(text: str) -> bool:
     if not text:
         return False
@@ -707,6 +1158,27 @@ def evaluate_eit01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
                     gather=False,
                 ),
                 gather_speech=False,
+            )
+
+        # An escalation that was honored is not an escalation failure, even
+        # when the same turn reports no path remaining. The agent's own
+        # confirmation line ("connecting you to a supervisor now") keyword-
+        # matches as an escalation request, and a harness that marks the path
+        # unavailable once it has been used then drove this rule to
+        # EIT01_NO_ESCALATION_PATH on a correctly handled escalation. Recorded
+        # fulfilment — a timestamp plus an honoring outcome — settles the
+        # question before availability is consulted.
+        if (
+            escalation_ts is not None
+            and escalation_outcome is not None
+            and str(escalation_outcome).lower() in _ESCALATION_HONORED
+        ):
+            return PolicyDecision(
+                action=PolicyAction.CONTINUE_AI,
+                reason_code="EIT01_ESCALATION_HONORED",
+                violations=[],
+                next_state=state_before,
+                gather_speech=True,
             )
 
         # Only proceed with escalation enforcement if escalation was actually requested
