@@ -129,6 +129,63 @@ def build_event(conversation_id: str, turn_index: int, turn: dict[str, Any]) -> 
 
 
 # ──────────────────────────────────────────────────────────────────────────
+# Session carry-forward
+# ──────────────────────────────────────────────────────────────────────────
+
+def carry_disclosure_forward(turns: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """
+    Make identity disclosure sticky across a conversation's turns.
+
+    `build_session` and `build_event` are deliberately per-turn: each turn is
+    rendered independently, and nothing from turn N reaches turn N+1. For the
+    fields they were written to thread (escalation_path_available,
+    deceptive_artifact_flags) that is correct — those genuinely describe one
+    turn. Disclosure does not. A caller is told once, at the top of the call,
+    that they are speaking to an automated system; that fact holds for the rest
+    of the conversation.
+
+    Evaluating turn-by-turn without carrying it forward makes every turn after
+    the disclosing one look undisclosed, so IDG-01 reports "disclose now" and
+    PDX-01 reports a pre-disclosure PHI exchange on turns that are, in the
+    conversation's own terms, fully compliant. That is a wiring gap in the
+    harness, not engine behaviour — the identical defect diagnosed and fixed for
+    the Tonic corpus (see the session-level note in
+    scripts/evaluate_tonic_corpus.py).
+
+    This returns shallow copies and leaves the input untouched. It is opt-in:
+    `build_session` / `build_event` and every existing caller are unchanged, so
+    the CI-gated Fabricate baseline (scripts/confusion_matrix.py, via
+    evaluate_conversation) is not moved by this function existing.
+
+    Only turns *after* a disclosure are affected. A conversation that never
+    discloses is returned unchanged, and a conversation that discloses late
+    still reports everything before that point — so this cannot mask a real
+    IDG-01 or PDX-01 violation.
+    """
+    carried: list[dict[str, Any]] = []
+    disclosure_ts: Any = None
+    assertion_text: Any = None
+
+    for turn in turns:
+        turn = dict(turn)
+        if turn.get("disclosure_timestamp"):
+            # This turn discloses: it becomes the reference for later turns.
+            disclosure_ts = turn["disclosure_timestamp"]
+            assertion_text = turn.get("identity_assertion_text") or assertion_text
+        else:
+            if disclosure_ts is not None:
+                turn["disclosure_timestamp"] = disclosure_ts
+            # Only fill assertion text the turn does not state for itself;
+            # a turn carrying its own wording keeps it, so IDG-01 still sees
+            # the weak-disclosure text those scenarios are testing.
+            if assertion_text and not turn.get("identity_assertion_text"):
+                turn["identity_assertion_text"] = assertion_text
+        carried.append(turn)
+
+    return carried
+
+
+# ──────────────────────────────────────────────────────────────────────────
 # Evaluation loop
 # ──────────────────────────────────────────────────────────────────────────
 
