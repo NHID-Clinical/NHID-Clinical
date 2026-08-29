@@ -167,3 +167,30 @@ def test_the_input_turns_are_not_mutated():
 
 def test_empty_conversation_is_handled():
     assert carry_disclosure_forward([]) == []
+
+
+# ── The generated report cannot go stale ───────────────────────────────────
+
+def test_report_is_committed_and_current():
+    """
+    The previous report was hand-written prose. When a scenario was added its
+    per-rule IDG-01 line went stale, and the file was later deleted — taking the
+    only correct copy of the number with it. This one is generated, and this
+    test is the guard that catches an edited corpus with a forgotten regenerate.
+    """
+    from scripts.eval_corpus import REPORT, main as eval_main
+
+    assert REPORT.exists(), "the corpus report must be committed, not generated on demand"
+    assert eval_main(["--check"]) == 0, (
+        "docs/EVALUATION_CORPUS_REPORT_v1.md is stale — run "
+        "`python scripts/eval_corpus.py --write-report` and commit it"
+    )
+
+
+def test_report_carries_the_research_boundary():
+    from scripts.eval_corpus import REPORT
+
+    text = REPORT.read_text(encoding="utf-8")
+    assert "not a conformance claim" in text
+    for forbidden in ("certified", "assured", "independently validated"):
+        assert forbidden not in text.lower(), f"report claims {forbidden!r}"
