@@ -595,3 +595,30 @@ button.ctl-btn:focus-visible,
   .ctl-panel,
   .ctl-status { border: 1px solid CanvasText; }
 }
+
+/* ── Hero regulatory reference row ─────────────────────────────────────────
+   Deliberately subordinate to the technical proof: small, quiet, and set as a
+   list of reference points rather than a claim. Each entry links to the
+   authoritative source so a reader can check the scope themselves, because the
+   three instruments differ and the page must not imply one uniform rule. */
+.ctl-reg-row{
+  list-style:none; margin:1.1rem 0 0; padding:0;
+  display:flex; flex-wrap:wrap; gap:.5rem .75rem;
+  font-size:.8125rem; line-height:1.4;
+}
+.ctl-reg-row li{
+  display:flex; align-items:baseline; gap:.4rem;
+  padding:.35rem .6rem; border:1px solid var(--ctl-hairline,rgba(255,255,255,.22));
+  border-radius:4px;
+}
+.ctl-reg-place{ opacity:.7; text-transform:uppercase; letter-spacing:.04em; font-size:.6875rem; }
+.ctl-reg-when{ opacity:.6; font-variant-numeric:tabular-nums; }
+.ctl-reg-row a{ color:inherit; text-underline-offset:3px; }
+@media (max-width:36rem){ .ctl-reg-row li{ width:100%; } }
+
+/* Compact hero proof line — the technical evidence, kept visually dominant
+   over the regulatory reference row above it. */
+.ctl-proof-line{
+  margin:1.15rem 0 0; font-size:.9375rem; font-weight:600;
+  letter-spacing:.01em; font-variant-numeric:tabular-nums;
+}
