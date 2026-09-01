@@ -42,6 +42,14 @@ import re
 import sys
 from pathlib import Path
 
+# Run as `python scripts/check_number_drift.py` — which is how CI invokes it —
+# sys.path[0] is scripts/, not the repository root, so `from scripts.eval_corpus
+# import ...` below fails with ModuleNotFoundError. Both corpus checks then
+# degrade to warnings while the guard still exits PASS, which is precisely the
+# silent-drift failure this script exists to prevent. It went unnoticed because
+# the container it was written in happened to make the package importable.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 WATCHED = [
     "README.md",
     "evidence-pack.html",

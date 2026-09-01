@@ -1,6 +1,6 @@
 # NHID-CLINICAL MASTER KNOWLEDGE ARCHIVE
 
-**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-08-29
+**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-09-01
 **Author:** Brianna Baynard · **License:** CC BY 4.0
 
 > This document is the single authoritative reference for all NHID-Clinical knowledge: technical
@@ -593,7 +593,7 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
 (v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
-failed**. **Superseded 2026-08-29:** the suite is now **847 passed / 18 skipped / 865 total**, and
+failed**. **Superseded 2026-08-29:** the suite is now **848 passed / 18 skipped / 866 total**, and
 `UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
 `scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
 without failing the build; `scripts/validate_ci.py` warns when the two diverge.
@@ -1092,7 +1092,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 847 passing unit tests across 61 files
+│   └── test_*.py                      # 848 passing unit tests across 61 files
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -1331,11 +1331,11 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
 | + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current:** `UNIT_PUBLISHED = 847` in `scripts/validate_ci.py`. This is not an invariant and not
+**Current:** `UNIT_PUBLISHED = 848` in `scripts/validate_ci.py`. This is not an invariant and not
 a gate — it is the number published on README badges, the website and the PDFs, which
 `scripts/check_number_drift.py` compares those surfaces against.
 
-**Total suite:** 913 passing (847 Python + 66 TypeScript middleware)
+**Total suite:** 913 passing (848 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1406,7 +1406,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 847 passed (18 skipped when no server running = integration tests)
+# Expected: 848 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1432,7 +1432,7 @@ legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked fo
 
 ```python
 # scripts/validate_ci.py
-UNIT_PUBLISHED = 847
+UNIT_PUBLISHED = 848
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -1570,7 +1570,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The full suite (currently **847 passed / 18 skipped**) must
+1. **All existing tests must pass.** The full suite (currently **848 passed / 18 skipped**) must
    stay green after
    every change. Run `python scripts/validate_ci.py` before committing.
 
@@ -2618,7 +2618,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_PUBLISHED = 847  # scripts/validate_ci.py (published count, not a CI gate)
+UNIT_PUBLISHED = 848  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2663,7 +2663,7 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
-| **Total** | **847 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→847 with the IDG-01/PDX-01/EIT-01 hardening) |
+| **Total** | **848 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→848 with the IDG-01/PDX-01/EIT-01 hardening) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2740,6 +2740,62 @@ assert len(decision.violations) == 0
 ---
 
 ## Changelog
+
+### 2026-09-01 · Drift guard's corpus checks were never running
+
+**Bug.** The corpus checks added to `scripts/check_number_drift.py` on 2026-08-29
+(§ previous entry, F) did not run. The guard imports `scripts.eval_corpus` to derive
+the corpus figures, but run as `python scripts/check_number_drift.py` — which is exactly
+how `.github/workflows/ci.yml` invokes it — `sys.path[0]` is `scripts/`, not the
+repository root, so the import raised `ModuleNotFoundError: No module named 'scripts'`.
+
+Both corpus checks then degraded to warnings and **the guard still exited 0**:
+
+```
+DRIFT WARN: could not measure the evaluation corpus; its published figures were not checked this run
+DRIFT WARN: could not verify the corpus report (No module named 'scripts')
+DRIFT PASS: watched surfaces consistent with 848 passed and DBC-01 91.5%
+```
+
+That is precisely the silent-drift failure the guard exists to prevent: the corpus
+figures could have gone stale again with CI reporting green, which is how IDG-01's
+71.4% survived for a month in the first place.
+
+**Why it hid.** It was written and verified in a container where the repository
+happened to be importable as a package, so the checks genuinely did run — the probes
+against deliberately introduced drift recorded in the previous entry were real, not
+imagined. The container was later recycled; on a clean environment the import fails.
+CI installs only `requirements.txt` and never makes the repository importable, so the
+checks are unlikely to have run there at any point.
+
+**Fix.** `scripts/check_number_drift.py` now inserts the repository root on `sys.path`
+before the import, mirroring the pattern `scripts/eval_corpus.py` already used. The
+asymmetry between the two scripts is what allowed the bug: one was path-safe, the other
+assumed it.
+
+**Regression test.** `test_drift_guard_measures_the_corpus_when_invoked_as_ci_invokes_it`
+in `tests/test_eval_corpus_metrics.py` runs the guard as a subprocess exactly as CI does
+and fails if either warning appears or if the PASS line omits the corpus figures.
+Verified by reverting the fix: the test fails; restored, it passes.
+
+**Files affected:** `scripts/check_number_drift.py`, `tests/test_eval_corpus_metrics.py`.
+
+**Metrics:** unchanged — no engine or corpus behaviour was touched. Suite 847 → 848
+(866 collected). Fabricate baseline byte-identical. CTS 16/2/0. Governance Evaluation
+Corpus 90.6% detection (29/32), 0% false positives. Adversarial corpus 23/23 attacks
+withstood, 0 bypasses, 0/17 false positives.
+
+**Also recorded:** the working container was recycled between 2026-08-29 and 2026-09-01
+and lost `pytest`, `httpx`, `cffi` and a working `cryptography`; 7 test modules failed to
+collect until they were reinstalled. An environment fault, not a repository fault, noted
+because the first verification run after the gap looked like a regression and was not.
+
+**Issue remaining:** the guard still assumes it is run from the repository root — its
+watched paths and `_module_constant("scripts/validate_ci.py")` are cwd-relative, so
+running it from elsewhere raises `FileNotFoundError`. Left as-is deliberately: that
+failure is loud, unlike the one fixed here, and CI always runs from the root.
+
+---
 
 ### 2026-08-29 · Corpus metrics audit, engine hardening, adversarial red team
 
@@ -2868,7 +2924,7 @@ Governance Evaluation Corpus (25 scenarios, 55 turns), `scripts/eval_corpus.py`:
 Newly detected: `nhid_ec_combo_002` (IDG-01), `nhid_ec_pdx01_002` and
 `nhid_ec_combo_006` (PDX-01).
 
-Conformance suite: **779 → 847 passing**, 18 skipped, 0 failed (865 collected), 61 test
+Conformance suite: **779 → 848 passing**, 18 skipped, 0 failed (866 collected), 61 test
 files. CTS unchanged at 16 pass / 2 skip / 0 fail (18 cases).
 
 Fabricate (CI-gated regression floor): **byte-identical throughout** — IDG-01 70/70
@@ -2900,7 +2956,7 @@ Fabricate (CI-gated regression floor): **byte-identical throughout** — IDG-01 
 - `docs/CONTROL_DECISION_TABLE.md` — IDG-01, PDX-01, DBC-01 and EIT-01 pass/fail
   conditions, limitations, test coverage and per-corpus status rewritten against the new
   engine behaviour; a corpus-disambiguation table added.
-- Test counts propagated 779 → 847 across every watched surface; test-file count corrected
+- Test counts propagated 779 → 848 across every watched surface; test-file count corrected
   from 42/43 to 61. 7/7 PDFs regenerated.
 
 #### H. Issues remaining
@@ -2970,7 +3026,7 @@ Fabricate (CI-gated regression floor): **byte-identical throughout** — IDG-01 
 - Version 1.2 → 1.3; Date 2026-06-27 → 2026-07-31
 - §7.1a "Phase 4 & Phase 5 Completion" added (new subsection) with status table and evaluation corpus metrics
 - §7.2 "Test Count Progression" — rows added for Phase 4, Phase 5, and Phase 6A; UNIT_EXPECTED 343 → 355 → 446 (ATR-01 +12 tests, Phase 6A infrastructure +91 tests)
-- §8.3 "CI Invariant" — updated to UNIT_PUBLISHED = 847
+- §8.3 "CI Invariant" — updated to UNIT_PUBLISHED = 848
 - §23.1 "Primary Source Files" — added `src/nhid_audit_trail.py` (257 lines) and updated `src/nhid_policy_engine_v1.py` description
 - §23.1 — added three governance artifacts: ATR-01-IMPLEMENTATION.md, ATR-01-EVIDENCE-VALIDATION-REPORT.html, ATR-01-TRACEABILITY-MATRIX.html
 - §23.3 "Test File Index" — added `test_atr01_audit_trail.py` (12 tests); total changed to "355 passed"
@@ -2981,6 +3037,6 @@ note in §7.1a; these figures do not reconcile and no artifact reproduces them)*
 
 ---
 
-*End of NHID-Clinical Master Knowledge Archive · v1.3 · 2026-08-29*
+*End of NHID-Clinical Master Knowledge Archive · v1.3 · 2026-09-01*
 
 *CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026 · nhid-clinical.org · Phase 5 Complete*
