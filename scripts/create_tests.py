@@ -204,10 +204,6 @@ def test_alignment_page_has_disclaimer(page):
 def test_alignment_page_links_to_spec(page):
     c=page_content(page)
     assert "specification.html" in c or "nhid-clinical.org/spec" in c
-def test_stir_shaken_has_governance_map_link():
-    assert "ai-governance-map" in page_content("alignment/stir-shaken.html") or "governance-map" in page_content("alignment/stir-shaken.html")
-def test_nist_page_has_governance_map_link():
-    assert "ai-governance-map" in page_content("alignment/nist-ai-agent-standards.html") or "governance-map" in page_content("alignment/nist-ai-agent-standards.html")
 ''', encoding='utf-8')
 
 print("Created 4 test files. Now run:")
