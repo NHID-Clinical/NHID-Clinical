@@ -15,7 +15,10 @@
   --paper: #fdfcfa;          /* warm off-white — paper */
   --mist: #f6f4f0;           /* warm paper, one step down */
   --shadow: 0 1px 2px rgba(20, 30, 45, 0.05), 0 8px 24px rgba(20, 30, 45, 0.06);  /* restrained */
-  --display: "Inter", system-ui, sans-serif;
+  /* NOTE: --display is redefined in the second :root block near the end of
+     this file (Raleway). Custom properties resolve at use time, so that
+     later definition wins everywhere and this one was dead. Removed to stop
+     the file appearing to set two different display faces. */
   --sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   /* aliases for inner page compatibility */
