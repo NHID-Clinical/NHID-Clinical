@@ -571,7 +571,7 @@ button.ctl-btn:focus-visible,
    13. Responsive + motion fallback (§7, §8)
    -------------------------------------------------------------------------- */
 
-@media (max-width: 640px) {
+@media (max-width: 720px) {
   .ctl-hero { padding-block: clamp(2.5rem, 9vw, 4rem); }
   .ctl-hero-actions .ctl-btn { width: 100%; }
 }
@@ -621,7 +621,7 @@ button.ctl-btn:focus-visible,
   overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
 }
 /* Small screens: the table becomes labelled blocks rather than a scroll. */
-@media (max-width:46rem){
+@media (max-width: 900px) {
   .ctl-reg-index thead{ display:none; }
   .ctl-reg-index tr{ display:block; border-top:1px solid var(--border,rgba(0,0,0,.14)); padding:.9rem 0; }
   .ctl-reg-index th, .ctl-reg-index td{ display:block; border:0; padding:.15rem 0; width:auto; }
@@ -669,7 +669,7 @@ button.ctl-btn:focus-visible,
 .ctl-ctrl-act{ font-weight:600; }
 .ctl-ctrl-code{ opacity:.78; }
 
-@media (max-width:52rem){
+@media (max-width: 900px) {
   .ctl-control-table thead{ display:none; }
   .ctl-control-table tr{
     display:block; border-top:1px solid var(--border,rgba(0,0,0,.14)); padding:.9rem 0;
@@ -781,7 +781,7 @@ button.ctl-btn:focus-visible,
    The two tables that already reflow into labelled blocks at this width are
    excluded — they need no scroll area, and giving them one would reintroduce
    the horizontal scroll this rule exists to remove. */
-@media (max-width:52rem){
+@media (max-width: 900px) {
   main table:not(.ctl-control-table):not(.ctl-reg-index),
   .premium-metrics{
     display:block;

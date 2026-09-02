@@ -103,14 +103,14 @@ img.premium-3d, svg.premium-3d, picture.premium-3d img {
 .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-top: 2.2rem; }
 .two-column h3 { margin-top: 0; font-size: 1rem; }
 .two-column ul { margin: .6rem 0 0; padding-left: 1.1rem; line-height: 1.85; font-size: .93rem; }
-@media (max-width: 700px) { .two-column { grid-template-columns: 1fr; gap: 1.4rem; } }
+@media (max-width: 720px) { .two-column { grid-template-columns: 1fr; gap: 1.4rem; } }
 
 .disclaimer-small {
   font-size: .85rem; margin-top: 2.2rem; padding-top: 1rem; line-height: 1.7;
 }
 
 .stack-wrap { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 2.5rem; align-items: start; margin-top: 2rem; }
-@media (max-width: 860px) { .stack-wrap { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .stack-wrap { grid-template-columns: 1fr; } }
 .stack-layer { cursor: pointer; transition: filter .18s ease, transform .18s ease; }
 .stack-detail { border-radius: 12px; padding: 1.4rem 1.6rem; min-height: 15rem; }
 .stack-detail h3 { margin: 0 0 .4rem; font-size: 1.02rem; }

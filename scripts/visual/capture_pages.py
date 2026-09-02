@@ -8,7 +8,7 @@ silently fail to load — producing an unstyled page that looks like a layout bu
 External requests (webfonts, analytics) are aborted since this environment has
 no egress, so faces fall back; layout, spacing, colour and overflow are exercised.
 """
-import sys, pathlib
+import os, sys, pathlib
 from playwright.sync_api import sync_playwright
 
 OUT = pathlib.Path(sys.argv[1]); OUT.mkdir(parents=True, exist_ok=True)
@@ -16,6 +16,13 @@ BASE = 'http://localhost:8899'
 PAGES = ['index.html', 'framework/controls.html', 'specification.html',
          'evidence-pack.html', 'for-payers.html', 'about.html']
 VIEWPORTS = [('mobile', 390, 844), ('tablet', 834, 1112), ('desktop', 1440, 900)]
+# Optional sweep: `NHID_VIEWPORTS="719x900,721x900"` replaces the three defaults.
+# Used to bracket each breakpoint (one pixel either side) after a breakpoint
+# change, where a mis-rounded query shows up as overflow in a narrow band that
+# the three representative widths step straight over.
+if os.environ.get('NHID_VIEWPORTS'):
+    VIEWPORTS = [(spec, int(spec.split('x')[0]), int(spec.split('x')[1]))
+                 for spec in os.environ['NHID_VIEWPORTS'].split(',')]
 CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'
 
 def route(r):

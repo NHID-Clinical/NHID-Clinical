@@ -2741,6 +2741,120 @@ assert len(decision.violations) == 0
 
 ## Changelog
 
+### 2026-09-02 · Website redesign — CSS consolidation stages 1 and 2
+
+Recorded mid-cycle, not at the end. The website redesign (commits `3fd64a3`..`98f90ac`,
+2026-09-01/02) rebuilt the homepage against `docs/NHID-WEBSITE-DESIGN-SPEC.json`, shifted
+the palette from the dark navy wash to warm paper, replaced a hand-drawn API mockup with
+real engine output, and removed the AI Governance Map from NHID-Clinical's navigation.
+This entry covers the CSS consolidation that followed it, and one defect that
+consolidation surfaced.
+
+**Three stylesheets, not one.** The site loads `/nhid-clinical-ui.css` (37 pages),
+`/assets/css/premium.css` (20 pages) and `/assets/css/cinematic-trust-lattice.css`
+(38 pages), in that order. A measurement before stage 1 corrected an assumption recorded
+in conversation: **the three sheets do not broadly overlap.** Their only shared selectors
+are `:root` and `[data-theme="dark"]` — token declarations, not competing component
+rules. Stage 1 therefore de-duplicated tokens (11 `--ctl-*` tokens aliased to their
+canonical equivalents rather than restating values) and removed decorative rules that
+contradicted the new palette; it did not merge component CSS, because there was no
+component duplication to merge.
+
+**Stage 2 — breakpoints.** Fourteen distinct viewport widths were declared across the
+three sheets, in mixed `px` and `rem`. Five of them were *the same layout transition* —
+a two-column grid collapsing to one — declared at five widths purely by accumulation:
+
+| Was | Selector | Now |
+|---|---|---|
+| `700px` | `.two-column` | `720px` |
+| `800px` | `.impact-card` | `900px` |
+| `820px` | `.split-visual` | `900px` |
+| `860px` | `.stack-wrap` | `900px` |
+| `900px` | `.ctl-hero-inner` | `900px` (unchanged) |
+
+Three more were the same table-restacking transition at three widths (`46rem`/736px,
+`52rem`/832px twice), and `640px` was a second narrow-phone tier alongside `720px`.
+
+Canonical set, documented in a header comment at the top of `nhid-clinical-ui.css`:
+**720 / 900 / 1060 / 1240**, plus the paired `(max-width:1380px) and (min-width:1241px)`
+band that tightens nav spacing immediately above the 1240 collapse. Every retired width
+was rounded **up** to the next canonical width, never down — collapsing a layout earlier
+than it strictly needs to cannot introduce overflow; collapsing it later can. Fourteen
+distinct numeric widths → seven (four canonical, three paired edges).
+
+Two transitions were folded rather than kept: table restacking now happens at 900 with
+the rest of the narrow-tablet tier instead of at 832/736, and hero buttons go full width
+at 720 instead of 640. Both are the same tier reached slightly earlier, not unrelated
+layouts forced together.
+
+One rule pair was deleted as dead rather than reassigned: `.nav-links{display:none}` and
+`.menu-button{display:inline-flex}` appeared inside **both** the `1060px` and the
+`1240px` block in `nhid-clinical-ui.css`. The `1240px` block is later in the file and
+matches a superset of widths, so the `1060px` copies could never take effect. Removing
+them is a verified no-op — nav collapse still occurs at exactly 1240px.
+
+**Verification (run before and after each stage).**
+
+| Check | Result |
+|---|---|
+| `pytest tests/` | 851 passed, 18 skipped — unchanged |
+| `scripts/check_number_drift.py` | DRIFT PASS + CORPUS REPORT PASS |
+| `scripts/build_pages_site.sh` | 33.72 MB, 162 files |
+| Internal links (`scripts/visual/check_internal_links.py`) | 2,264 references, 0 broken |
+| CSS parse (braces, empty declarations, blockless `@media`) | all three sheets clean |
+| Visual capture, 6 pages × 3 viewports | 0 overflowing combinations, stylesheet confirmed loaded on every page |
+| Breakpoint boundary sweep, 6 pages × 14 widths (±1px of each of 720/900/1060/1240/1380) | 0 overflowing combinations |
+| Computed-style assertions on the changed transitions | 12/12 behave as documented |
+
+**Two tools added,** because both had previously been ad-hoc and were lost when the
+container was recycled: `scripts/visual/check_internal_links.py` (resolves every
+`href`/`src` in `_site/`, ignoring `<script>` bodies, which is why its count is 2,264 and
+not the 2,301 an earlier script reported — the difference is references built at runtime
+inside JavaScript, which are not statically resolvable) and an `NHID_VIEWPORTS`
+environment override on `scripts/visual/capture_pages.py` for bracketing a breakpoint one
+pixel either side.
+
+**Issue discovered — the site has no working navigation below 1241px.** Found while
+verifying the nav breakpoint; it is pre-existing and unrelated to the consolidation, but
+it is severe enough to record immediately. Measured on `faq.html`:
+
+| Viewport | Visible header links | Hamburger | Clicking it |
+|---|---|---|---|
+| 1440px | 24 | shown | opens |
+| 1241px | 24 | shown | opens |
+| 1239px | **2** | shown | **nothing happens** |
+| 1100px | **2** | shown | **nothing happens** |
+| 834px | **2** | shown | **nothing happens** |
+| 390px | **1** | **hidden** | — |
+
+Below 1241px `.nav-links` is hidden and the only header links left are the logo and the
+"Run a shadow evaluation" pill. The markup renders a hamburger, `#menu-toggle`, that has
+**no CSS rule and no JavaScript handler anywhere in the repository** — it is inert. At
+≤720px `.icon-button:not(.menu-button)` hides that button too, so a phone visitor sees
+one link. The `.menu-button` class those rules were written against appears in no page in
+the built site; the working markup uses `.menu-toggle`. This defeats the design spec's
+"how I can evaluate it" directly, on every phone and on any laptop narrower than 1241px.
+Not fixed in this entry — tracked as the next change.
+
+**Issue remaining.** `.exec-summary` (whose `min-width` query was folded from 620px to
+721px) appears in no built page. It is one of roughly 200 classes that the visual harness
+can now confirm are unreferenced; removing them is a later stage. `--ctl-grid-surface`
+reads as unused by the same measure but is deliberately retained for dark evidence
+panels.
+
+**Metrics:** engine, corpora and test counts untouched by design — this is presentation
+only. Suite 851 passed / 18 skipped. Fabricate baseline byte-identical. Governance
+Evaluation Corpus 90.6% detection (29/32), 0% false positives. Adversarial corpus 23/23
+attacks withstood, 0 bypasses, 0/17 false positives. These are the same figures as the
+2026-09-01 entry and are repeated here only to record that the website work did not move
+them.
+
+**Files affected:** `nhid-clinical-ui.css`, `assets/css/premium.css`,
+`assets/css/cinematic-trust-lattice.css`, `scripts/visual/capture_pages.py`,
+`scripts/visual/check_internal_links.py` (new), this document.
+
+---
+
 ### 2026-09-01 · Drift guard's corpus checks were never running
 
 **Bug.** The corpus checks added to `scripts/check_number_drift.py` on 2026-08-29
