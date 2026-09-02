@@ -2745,6 +2745,42 @@ assert len(decision.violations) == 0
 
 ### 2026-09-02 · Dead CSS removed — and a bug in the tool that removed it
 
+**Merged and deployed.** The whole cycle — the drift-guard fix, the website redesign, and
+all four CSS consolidation stages — went to `main` as PR #376, squash-merged as
+**`b828228`** on 2026-09-02 at 23:09 UTC: 16 commits, +3,681/−4,147 across 72 files. The
+squash means the branch's individual commits are not ancestors of `main`; `b828228` is the
+single commit carrying them.
+
+All four workflows concluded `success` on that commit: `CI`, `Deploy GitHub Pages`,
+`pages build and deployment`, and `NHID Clinical - Production Readiness Gates`, all by
+23:10 UTC. Deployment is confirmed **from the workflow conclusions only** — the rendered
+page was not fetched, because outbound to nhid-clinical.org is blocked by this
+environment's proxy.
+
+Re-verified against `origin/main` after the merge rather than assuming the squash carried
+everything:
+
+| Check on `b828228` | Result |
+|---|---|
+| `pytest tests/` | 924 passed, 18 skipped |
+| `scripts/validate_ci.py` | `CI PASS: 924 tests passed (+ 18 skipped)` |
+| `scripts/check_baseline.py` | Fabricate byte-identical — IDG-01 70/70, PDX-01 41/41, DBC-01 183/200, EIT-01 169/171 |
+| `scripts/check_number_drift.py` | `DRIFT PASS` with the corpus line present |
+| `build_pages_site.sh` | 33.68 MB, 162 files |
+| Internal links | 2,264 references, 0 broken |
+| `assets/css/components.css` present, `cinematic-trust-lattice.css` gone | yes / yes |
+| Live `ctl-` references in HTML or CSS | 0 (one prose mention survives in the components.css header, which documents the rename) |
+| Distinct viewport breakpoints | 720 / 900 / 1060 / 1240, plus the paired 1241–1380 band |
+| Pages rendering the restored drawer toggle | 33 |
+| `nhid-clinical-ui.css` | 63.4 KB, down from 103.5 KB |
+
+**Still outstanding, carried forward.** The three statute URLs on the homepage
+(`leginfo.legislature.ca.gov`, `docs.fcc.gov`, `eur-lex.europa.eu`) remain unverified —
+they are the canonical official locations, but outbound is blocked here and they have now
+shipped to production unopened. Roughly 200 classes in `assets/css/components.css` are
+unreferenced and deliberately retained as staged vocabulary.
+
+
 **41% of `nhid-clinical-ui.css` was rules that could never match anything the
 site builds.** 350 selectors there and 24 in `premium.css`, 41.8 KB in total.
 They are the residue of page sections deleted over time — hero variants, plan
