@@ -22,7 +22,6 @@
   content: "";
   position: absolute; inset: 0;
   background-size: 44px 44px;
-  mask-image: radial-gradient(80% 70% at 50% 30%, #000 40%, transparent 100%);
   pointer-events: none;
 }
 .section-premium > .container { position: relative; }
@@ -130,7 +129,6 @@ img.premium-3d, svg.premium-3d, picture.premium-3d img {
 /* ── Light mode (default) ──────────────────────────────────────────────────── */
 .section-premium {
   background:
-    radial-gradient(900px 400px at 75% -5%, rgba(20,184,166,0.08), transparent 55%),
     linear-gradient(180deg, var(--paper) 0%, var(--mist) 100%);
   color: var(--ink-soft);
 }
@@ -200,7 +198,6 @@ img.premium-3d, svg.premium-3d, picture.premium-3d img {
 /* ── Dark mode ───────────────────────────────────────────────────────────── */
 [data-theme="dark"] .section-premium {
   background:
-    radial-gradient(1200px 500px at 70% -10%, rgba(20,184,166,0.10), transparent 60%),
     linear-gradient(180deg, var(--navy-deep) 0%, var(--navy-deeper) 100%);
   color: #e2e8f0;
 }

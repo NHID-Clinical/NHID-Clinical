@@ -20,9 +20,9 @@
   --ctl-ink-950: #07111f;
   --ctl-ink-900: #0b1d35;
   --ctl-ink-800: #102b48;
-  --ctl-text-strong: #10233d;
-  --ctl-text: #40536a;
-  --ctl-text-muted: #68788d;
+  --ctl-text-strong: #0d2846;   /* deep navy — structural */
+  --ctl-text: #3a424b;          /* charcoal — body */
+  --ctl-text-muted: #5b636c;    /* muted charcoal */
   --ctl-paper: #ffffff;
   --ctl-canvas: #f4f8fb;
   --ctl-mist: #eaf3fa;
@@ -47,7 +47,7 @@
   --ctl-radius-lg: 14px;
   --ctl-shadow-1: 0 2px 8px rgba(16, 35, 61, 0.08);
   --ctl-shadow-2: 0 5px 16px rgba(16, 35, 61, 0.12);
-  --ctl-grid-line: rgba(80, 167, 218, 0.10);
+  --ctl-grid-line: rgba(28, 32, 38, 0.07);   /* neutral, not blue */
 
   /* Typography and measure */
   --ctl-font-ui: "Inter", system-ui, sans-serif;
@@ -91,8 +91,8 @@
 
 .ctl-display {
   font-family: var(--ctl-font-ui);
-  font-weight: 800;
-  font-size: clamp(2.5rem, 5.25vw, 4.9rem);
+  font-weight: 700;
+  font-size: clamp(2.1rem, 3.6vw, 3.4rem);
   line-height: 1.03;
   letter-spacing: -0.022em;
   text-wrap: balance;
