@@ -51,7 +51,7 @@ Start with the [Tier 0 Shadow Pilot Kit](pilot-kit/README.md).
 
 ## Current maturity (honest)
 
-- **Available today:** deterministic policy engine with 848 passing tests (866 total),
+- **Available today:** deterministic policy engine with 851 passing tests (869 total),
   pilot-ready infrastructure (cryptographic audit signing, persistent storage, Docker
   deployment, security monitoring), a live v1.3 conformance API, the Tier 0 Shadow Pilot Kit,
   and the NHID-Auth v2 cryptographic authorization layer as public reference code.

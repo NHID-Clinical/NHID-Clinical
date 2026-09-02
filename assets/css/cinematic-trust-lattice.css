@@ -744,3 +744,29 @@ button.ctl-btn:focus-visible,
   margin:.3rem 0 .5rem;
 }
 .ctl-phase p{ margin:0; color:var(--body); font-size:.9375rem; line-height:1.7; }
+
+/* ── Evidence surfaces ─────────────────────────────────────────────────────
+   Quiet, neutral panes holding literal input and literal engine output.
+   Monospace throughout because these are exact strings; a reader should be
+   able to match them against the repository character for character. Code
+   scrolls horizontally on small screens rather than wrapping, which would
+   change the alignment that makes the output readable. */
+.ctl-evidence{
+  display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));
+  align-items:start;
+}
+.ctl-evidence-pane{ border:1px solid var(--border,rgba(0,0,0,.14)); }
+.ctl-evidence-label{
+  margin:0; padding:.6rem .85rem; font-size:.6875rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:.07em; opacity:.7;
+  border-bottom:1px solid var(--border,rgba(0,0,0,.14));
+}
+.ctl-evidence-label code{ text-transform:none; letter-spacing:0; opacity:.9; }
+.ctl-evidence-code{
+  margin:0; padding:.85rem; overflow-x:auto;
+  font-size:.8125rem; line-height:1.65; tab-size:2;
+}
+.ctl-evidence-code code{ white-space:pre; }
+.ctl-evidence-repro{
+  margin-top:1rem; font-size:.9rem; color:var(--ink-soft); line-height:1.7; max-width:70ch;
+}
