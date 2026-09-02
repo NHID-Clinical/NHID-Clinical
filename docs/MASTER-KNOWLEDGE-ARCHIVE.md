@@ -593,7 +593,8 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
 (v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
-failed**. **Superseded 2026-08-29:** the suite is now **851 passed / 18 skipped / 869 total**, and
+failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **920 passed /
+18 skipped / 938 total**, and
 `UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
 `scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
 without failing the build; `scripts/validate_ci.py` warns when the two diverge.
@@ -1092,7 +1093,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 851 passing unit tests across 61 files
+│   └── test_*.py                      # 920 passing unit tests across 54 files
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -1331,11 +1332,11 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
 | + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current:** `UNIT_PUBLISHED = 851` in `scripts/validate_ci.py`. This is not an invariant and not
+**Current:** `UNIT_PUBLISHED = 920` in `scripts/validate_ci.py`. This is not an invariant and not
 a gate — it is the number published on README badges, the website and the PDFs, which
 `scripts/check_number_drift.py` compares those surfaces against.
 
-**Total suite:** 913 passing (851 Python + 66 TypeScript middleware)
+**Total suite:** 986 passing (920 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1406,7 +1407,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 851 passed (18 skipped when no server running = integration tests)
+# Expected: 920 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1432,7 +1433,7 @@ legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked fo
 
 ```python
 # scripts/validate_ci.py
-UNIT_PUBLISHED = 851
+UNIT_PUBLISHED = 920
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -1570,7 +1571,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The full suite (currently **851 passed / 18 skipped**) must
+1. **All existing tests must pass.** The full suite (currently **920 passed / 18 skipped**) must
    stay green after
    every change. Run `python scripts/validate_ci.py` before committing.
 
@@ -2618,7 +2619,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_PUBLISHED = 851  # scripts/validate_ci.py (published count, not a CI gate)
+UNIT_PUBLISHED = 920  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2663,7 +2664,8 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
-| **Total** | **851 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening) |
+| `test_site_navigation.py` | 69 | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
+| **Total** | **920 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2828,13 +2830,50 @@ it is severe enough to record immediately. Measured on `faq.html`:
 | 390px | **1** | **hidden** | — |
 
 Below 1241px `.nav-links` is hidden and the only header links left are the logo and the
-"Run a shadow evaluation" pill. The markup renders a hamburger, `#menu-toggle`, that has
-**no CSS rule and no JavaScript handler anywhere in the repository** — it is inert. At
-≤720px `.icon-button:not(.menu-button)` hides that button too, so a phone visitor sees
-one link. The `.menu-button` class those rules were written against appears in no page in
-the built site; the working markup uses `.menu-toggle`. This defeats the design spec's
-"how I can evaluate it" directly, on every phone and on any laptop narrower than 1241px.
-Not fixed in this entry — tracked as the next change.
+"Run a shadow evaluation" pill. The markup renders a hamburger, `#menu-toggle`, that is
+inert: clicking it does nothing. At ≤720px `.icon-button:not(.menu-button)` hides that
+button too, so a phone visitor sees one link. This defeats the design spec's "how I can
+evaluate it" directly, on every phone and on any laptop narrower than 1241px.
+
+> **Correction, recorded rather than overwritten.** This paragraph first read that the
+> hamburger "has no CSS rule and no JavaScript handler anywhere in the repository" and
+> that the defect was "pre-existing and unrelated to the consolidation." **Both claims
+> were wrong, and the second was wrong in my favour.** The handler exists and always
+> did — `site.js` lines 35–67 implement `openDrawer`/`closeDrawer` against
+> `#mobile-nav`, `#nav-backdrop` and `document.querySelector('.menu-button')`, and
+> `nhid-clinical-ui.css` styles `.menu-button`. The drawer markup is intact on all 33
+> pages. What broke the binding was a one-line markup change in **commit `3fd64a3`
+> (2026-09-01, "Make the site about NHID-Clinical: remove the AI Governance Map, cut the
+> nav, rewrite the hero")** — mine, part of this redesign — which replaced
+> `class="icon-button menu-button" … aria-controls="mobile-nav"` with
+> `class="icon-button menu-toggle" id="menu-toggle"`. Nothing binds to that name. The
+> regression therefore shipped in this cycle and was **introduced by the redesign, not
+> inherited by it**. `git diff c795c3e 3fd64a3 -- faq.html` shows the single line.
+
+**Fixed in the following change.** The repair is to restore the class and ARIA attributes
+the existing CSS and JavaScript already expect on all 33 pages, not to write a second
+drawer — nothing else was missing.
+
+| Viewport | Before | After |
+|---|---|---|
+| 390px | 1 header link, hamburger hidden | drawer opens, 27–29 links |
+| 834px / 1100px / 1239px | 2 header links, hamburger inert | drawer opens, 27–29 links |
+| 1241px / 1440px | 24 links (unaffected) | 24 links (unaffected) |
+
+Verified in the browser across 5 pages × 6 viewports: 30/30 combinations reachable, the
+drawer opening on every narrow one and closing by both routes `site.js` provides
+(backdrop click and `Escape`). A first verification run reported the close paths broken;
+that was a fault in the probe, not the site — the drawer slides out by `transform`, so a
+visibility check still calls it visible. The probe now reads the `open` class the
+JavaScript actually toggles and confirms the panel is off-viewport.
+
+**Regression guard:** `tests/test_site_navigation.py`, 69 tests. It reads the toggle's
+class *out of `site.js`* with a regex rather than restating it, so the guard fails if
+either side of the binding drifts, and asserts per page that the button exists, names the
+drawer via `aria-controls`, and carries `aria-expanded`; plus that the stylesheet reveals
+it inside the 1240px block and that the phone tier still spares it. Confirmed by
+reintroducing the exact regression on one page: 2 tests fail, naming that page. Suite
+851 → 920.
 
 **Issue remaining.** `.exec-summary` (whose `min-width` query was folded from 620px to
 721px) appears in no built page. It is one of roughly 200 classes that the visual harness
@@ -2842,8 +2881,23 @@ can now confirm are unreferenced; removing them is a later stage. `--ctl-grid-su
 reads as unused by the same measure but is deliberately retained for dark evidence
 panels.
 
-**Metrics:** engine, corpora and test counts untouched by design — this is presentation
-only. Suite 851 passed / 18 skipped. Fabricate baseline byte-identical. Governance
+**Published-count propagation.** Adding 69 tests made every published surface stale at
+once. `scripts/validate_ci.py` warned (it is deliberately not a gate), and
+`check_number_drift.py` then named each surface until all agreed. Reconciled in the same
+commit: **851 → 920 passed, 869 → 938 collected**, across `UNIT_PUBLISHED`, the `ci.yml`
+job name, `.github/CONTRIBUTING.md`, the README badge and five body references,
+`index.html` (proof line, evidence list, metric strip), `faq.html`,
+`scripts/generate_pdfs.py` (4), `conformance/nhid_conformance_test_suite_v1.yaml` (4),
+and six `docs/` pages. Two stale figures were corrected while passing through rather than
+carried forward: the test-file count published as **61** measures **54** (files under
+`tests/` that pytest collects from), and the combined figure **913 (851 Python + 66
+TypeScript)** becomes **986**. Historical changelog entries were left exactly as written —
+they record what was true when written, and the earlier §2.5.1 supersession note is marked
+with the date its count was refreshed rather than silently restated.
+
+**Metrics:** engine and corpora untouched by design — this is presentation only. Suite
+851 → 920 passed / 18 skipped (+69, all of them the navigation guard; no existing test
+was changed). Fabricate baseline byte-identical. Governance
 Evaluation Corpus 90.6% detection (29/32), 0% false positives. Adversarial corpus 23/23
 attacks withstood, 0 bypasses, 0/17 false positives. These are the same figures as the
 2026-09-01 entry and are repeated here only to record that the website work did not move
@@ -2851,7 +2905,8 @@ them.
 
 **Files affected:** `nhid-clinical-ui.css`, `assets/css/premium.css`,
 `assets/css/cinematic-trust-lattice.css`, `scripts/visual/capture_pages.py`,
-`scripts/visual/check_internal_links.py` (new), this document.
+`scripts/visual/check_internal_links.py` (new), `tests/test_site_navigation.py` (new),
+33 published `.html` pages (drawer toggle only), this document.
 
 ---
 

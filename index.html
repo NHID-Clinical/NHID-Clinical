@@ -87,7 +87,7 @@
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
       <a class="primary-pill" href="/for-payers.html">Run a shadow evaluation</a>
-      <button class="icon-button menu-toggle" type="button" aria-label="Menu" id="menu-toggle" aria-expanded="false">
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
     </div>
@@ -164,7 +164,7 @@
           <a class="ctl-btn ctl-btn-primary" href="/for-payers.html">Run an observe-only shadow evaluation</a>
           <a class="ctl-btn ctl-btn-secondary" href="/framework/">Explore the framework</a>
         </div>
-        <p class="ctl-proof-line reveal">5 controls &middot; 851 passing tests &middot; machine-readable traces &middot; open implementation</p>
+        <p class="ctl-proof-line reveal">5 controls &middot; 920 passing tests &middot; machine-readable traces &middot; open implementation</p>
         <p class="ctl-lede reveal" style="margin-top:1rem;font-size:1rem;opacity:.9">A shadow evaluation runs against call traces you already hold. Observe-only and non-intercepting: it does not sit in the call path and requires no vendor changes. It is time-bounded, and it produces a baseline showing where identity was disclosed, where protected data moved, where calls escalated to a human, and what audit evidence exists today. Handling those traces still carries your existing privacy, security and contractual obligations.</p>
         <p class="ctl-boundary-note reveal">
           <span aria-hidden="true">&#9679;</span>
@@ -350,7 +350,7 @@
     <div class="container">
       <h2 id="built-open" class="section-kicker reveal" style="margin-bottom:.9rem">Built in the open &mdash; every claim below is checkable</h2>
       <ul class="reveal" style="list-style:none;padding:0;margin:0;display:grid;gap:.75rem 2rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));font-size:.95rem;line-height:1.55">
-        <li><strong>851 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
+        <li><strong>920 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
         <li><strong>Versioned specification</strong><br><span style="color:var(--ink-soft)">v1.3, five named controls &mdash; <a href="/specification.html">read it</a></span></li>
         <li><strong>Deterministic engine</strong><br><span style="color:var(--ink-soft)">Same inputs produce the same decision, every time &mdash; <a href="/framework/reference-implementation.html">how it works</a></span></li>
         <li><strong>FHIR R4 AuditEvent</strong><br><span style="color:var(--ink-soft)">Audit records in a standard healthcare schema &mdash; <a href="/evidence-pack.html">see an example</a></span></li>
@@ -363,9 +363,9 @@
   <section class="page-section" style="padding-block:1rem 2.5rem">
     <div class="ctl-scope ctl-metric-rail reveal">
       <div class="ctl-metric">
-        <span class="ctl-metric-value">851</span>
+        <span class="ctl-metric-value">920</span>
         <span class="ctl-metric-label">Passing tests</span>
-        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">18 skipped · 869 total, in the open repo</span>
+        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">18 skipped · 938 total, in the open repo</span>
       </div>
       <div class="ctl-metric">
         <span class="ctl-metric-value">5</span>
