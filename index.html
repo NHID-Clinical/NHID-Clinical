@@ -202,17 +202,37 @@
     </div>
   </section>
 
-  <!-- ── Why NHID exists ───────────────────────────────────────────────────── -->
-  <section class="page-section" id="why-nhid">
-    <div class="container" style="max-width:58rem">
-      <p class="section-kicker reveal">Why NHID exists</p>
-      <h2 class="reveal" style="margin-bottom:.75rem">Impersonation latency</h2>
-      <p class="reveal" style="color:var(--ink-soft);font-size:1.08rem;line-height:1.8;border-left:3px solid var(--teal);padding-left:1.25rem">The measurable trust delay between an AI agent initiating a call and the receiving system verifying that the caller is authorized to represent the claimed organization.</p>
-      <p class="reveal" style="color:var(--body);line-height:1.85;margin-top:1.25rem">In most healthcare voice workflows today that delay is effectively infinite, because no standard verification pathway exists. Telephony authenticates the number. Identity systems authenticate the account. Neither establishes that <em>this</em> caller may act for <em>that</em> provider — so operational data changes hands during the gap.</p>
-      <p class="reveal" style="color:var(--body);line-height:1.85;margin-top:.85rem">NHID-Clinical exists to make that delay measurable, then to close it: disclose before data moves, verify delegated authority, enforce scope, and leave a replayable record.</p>
-      <div style="margin-top:1.5rem">
-        <a class="cta-button" href="/framework/controls.html">See how the controls close it <span aria-hidden="true">→</span></a>
+  <!-- ── The Impersonation Latency Crisis ────────────────────────────────── -->
+  <section class="section-premium" id="latency-problem" style="padding-top:3.5rem">
+    <div class="container">
+      <h2>The impersonation latency problem</h2>
+      <p class="lead" style="max-width:65ch">The window where an AI agent is already talking and exchanging data — member IDs, NPIs, dates of birth, claims — before anyone can confirm it is automated and authorized. Telephony and IAM verify the number or account, not that <em>this</em> caller may act for <em>that</em> provider.</p>
+
+      <img src="/assets/images/3d-svg/latency-split.svg" class="premium-3d"
+           alt="Diagram contrasting the impersonation latency problem (left: an unverified caller reaching PHI with no checks) with the verified trust pathway enabled by NHID-Clinical (right: disclosure gate, verification checkpoint, sealed PHI, human escalation)."/>
+
+      <div class="two-column">
+        <div class="col-bad">
+          <h3>Without a baseline</h3>
+          <ul>
+            <li>No proactive identity disclosure</li>
+            <li>PHI potentially exchanged before verification</li>
+            <li>No consistent escalation or audit trail</li>
+            <li>Infinite trust delay for the receiving system</li>
+          </ul>
+        </div>
+        <div class="col-good">
+          <h3>With NHID-Clinical v1.3</h3>
+          <ul>
+            <li>Mandatory early disclosure gate (IDG-01)</li>
+            <li>Pre-data exchange verification checkpoint (PDX-01)</li>
+            <li>Defined human handoff + full audit requirements (EIT-01 · ATR-01)</li>
+            <li>Measurable, testable trust pathway</li>
+          </ul>
+        </div>
       </div>
+
+      <p class="disclaimer-small">This is an open voluntary reference implementation, not a product or certification. It is contributed to improve ecosystem trust and has been submitted as public comment to NIST (NIST-2025-0035-0026).</p>
     </div>
   </section>
 
@@ -358,41 +378,7 @@
   })();
   </script>
 
-  <!-- ── The Impersonation Latency Crisis ────────────────────────────────── -->
-  <section class="section-premium" id="latency-problem" style="padding-top:3.5rem">
-    <div class="container">
-      <h2>The impersonation latency problem</h2>
-      <p class="lead" style="max-width:65ch">The window where an AI agent is already talking and exchanging data — member IDs, NPIs, dates of birth, claims — before anyone can confirm it is automated and authorized. Telephony and IAM verify the number or account, not that <em>this</em> caller may act for <em>that</em> provider.</p>
-
-      <img src="/assets/images/3d-svg/latency-split.svg" class="premium-3d"
-           alt="Diagram contrasting the impersonation latency problem (left: an unverified caller reaching PHI with no checks) with the verified trust pathway enabled by NHID-Clinical (right: disclosure gate, verification checkpoint, sealed PHI, human escalation)."/>
-
-      <div class="two-column">
-        <div class="col-bad">
-          <h3>Without a baseline</h3>
-          <ul>
-            <li>No proactive identity disclosure</li>
-            <li>PHI potentially exchanged before verification</li>
-            <li>No consistent escalation or audit trail</li>
-            <li>Infinite trust delay for the receiving system</li>
-          </ul>
-        </div>
-        <div class="col-good">
-          <h3>With NHID-Clinical v1.3</h3>
-          <ul>
-            <li>Mandatory early disclosure gate (IDG-01)</li>
-            <li>Pre-data exchange verification checkpoint (PDX-01)</li>
-            <li>Defined human handoff + full audit requirements (EIT-01 · ATR-01)</li>
-            <li>Measurable, testable trust pathway</li>
-          </ul>
-        </div>
-      </div>
-
-      <p class="disclaimer-small">This is an open voluntary reference implementation, not a product or certification. It is contributed to improve ecosystem trust and has been submitted as public comment to NIST (NIST-2025-0035-0026).</p>
-    </div>
-  </section>
-
-  <!-- ── The control layer (capability grid) ───────────────────────────────── -->
+    <!-- ── The control layer (capability grid) ───────────────────────────────── -->
   <section class="page-section">
     <div class="container">
       <p class="section-kicker reveal">The control layer</p>
@@ -439,54 +425,7 @@
     </div>
   </section>
 
-  <!-- ── Open core vs platform ─────────────────────────────────────────────── -->
-  <section class="page-section" id="open-core-vs-platform">
-    <div class="container">
-      <p class="section-kicker reveal">Open core vs platform</p>
-      <h2 class="reveal" style="margin-bottom:.35rem">What is open, and what is operated</h2>
-      <p class="reveal" style="color:var(--body);max-width:64ch">The left column is free forever under CC BY 4.0 and needs nothing from us. The right column is what TrustLayer runs on your behalf when you would otherwise build and operate it yourself.</p>
-      <div class="compare-matrix-wrap reveal">
-        <table class="compare-matrix">
-          <thead>
-            <tr><th scope="col">Capability</th><th scope="col">Open framework</th><th scope="col">TrustLayer</th></tr>
-          </thead>
-          <tbody>
-            <tr><th scope="row">Specification</th><td><span class="yes">✓</span> CC BY 4.0, always free</td><td><span class="yes">✓</span> Same specification</td></tr>
-            <tr><th scope="row">Conformance tests</th><td><span class="yes">✓</span> Run them yourself</td><td><span class="yes">✓</span> Hosted and scheduled</td></tr>
-            <tr><th scope="row">Simulator</th><td><span class="yes">✓</span> Open, no account</td><td><span class="yes">✓</span> Plus evaluation of your own agents</td></tr>
-            <tr><th scope="row">Documentation</th><td><span class="yes">✓</span> Public</td><td><span class="yes">✓</span> Public</td></tr>
-            <tr><th scope="row">Reference implementation</th><td><span class="yes">✓</span> Fork it, vendor it, replace it</td><td><span class="yes">✓</span> Managed and operated</td></tr>
-            <tr><th scope="row">Community</th><td><span class="yes">✓</span> Issues, discussions, pull requests</td><td><span class="yes">✓</span> Same community</td></tr>
-            <tr><th scope="row">Hosted monitoring</th><td><span class="no">—</span> Run it yourself</td><td><span class="yes">✓</span> Continuous, on every agent change</td></tr>
-            <tr><th scope="row">Dashboards</th><td><span class="no">—</span></td><td><span class="yes">✓</span> Fleet-wide operational view</td></tr>
-            <tr><th scope="row">Agent registry</th><td><span class="no">—</span> Passport format only</td><td><span class="yes">✓</span> Managed identity lifecycle</td></tr>
-            <tr><th scope="row">Evidence center</th><td><span class="no">—</span> Evidence pack template</td><td><span class="yes">✓</span> Generated audit-ready packages</td></tr>
-            <tr><th scope="row">Enterprise integrations</th><td><span class="no">—</span></td><td><span class="yes">✓</span> SSO, RBAC, SIEM, approvals</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="status-note reveal">
-        <span>&#9432;</span>
-        <span><b>The specification is never paid.</b> No tier, plan, or contract gates the specification, the control catalog, or the conformance test suite. If TrustLayer disappeared tomorrow, every open component would keep working.</span>
-      </div>
-      <div class="dual-path reveal" style="margin-top:1.75rem">
-        <div class="dual-path-card">
-          <span class="path-tag">Open framework</span>
-          <h3>Adopt it yourself</h3>
-          <p>Everything you need to implement, test, and evidence the controls without talking to anyone.</p>
-          <a class="card-link" href="/framework/">Explore the framework →</a>
-        </div>
-        <div class="dual-path-card is-platform">
-          <span class="path-tag">TrustLayer</span>
-          <h3>Operational trust infrastructure</h3>
-          <p>Monitoring, evidence, identity management, authorization, and reporting for AI agents in production.</p>
-          <a class="card-link" href="/platform/">See the platform →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Live conformance API (floating UI mockup) ─────────────────────────── -->
+    <!-- ── Live conformance API (floating UI mockup) ─────────────────────────── -->
   <section class="page-section" style="background:var(--mist)">
     <div class="container split-visual">
       <div class="reveal">
