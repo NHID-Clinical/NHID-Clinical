@@ -1,0 +1,792 @@
+/* ==========================================================================
+   NHID-Clinical component styles
+   --------------------------------------------------------------------------
+   Loaded AFTER /nhid-clinical-ui.css and /assets/css/premium.css.
+
+   Classes are named for what they are on the page. They used to carry a `ctl-`
+   prefix, for a visual language that is no longer the site's identity; the
+   prefix outlived it and is gone. No legacy selector is overridden, so
+   unmigrated routes keep rendering from the existing stylesheet.
+
+   Token values are taken verbatim from
+   docs/cinematic-trust-lattice-handoff/design-system.md §3.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Surfaces and ink */
+  --panel-ink-950: #07111f;
+  --panel-ink-900: #0b1d35;
+  --panel-ink-800: #102b48;
+  --panel-text-strong: var(--ink);        /* alias -> canonical */
+  --panel-text: var(--body);              /* alias -> canonical */
+  --panel-text-muted: #5b636c;            /* muted charcoal; no canonical equivalent */
+  --panel-paper: var(--paper);            /* alias -> canonical warm paper */
+  --panel-canvas: var(--mist);            /* alias -> canonical */
+  --panel-mist: var(--mist);              /* alias -> canonical */
+  --panel-line: var(--line);              /* alias -> canonical grey border */
+
+  /* Semantic roles */
+  --panel-cobalt: #1e63db;
+  --panel-cobalt-hover: #164da8;
+  --panel-cobalt-soft: #e8f0ff;
+  --panel-teal: var(--teal);              /* alias -> canonical accent */
+  --panel-teal-bright: #55d9cb;
+  --panel-teal-soft: var(--teal-soft);    /* alias -> canonical */
+  --panel-amber: #986600;
+  --panel-amber-soft: #fff5d7;
+  --panel-red: #b42318;
+  --panel-red-soft: #fff0ef;
+  --panel-focus: #0b57d0;
+
+  /* Shape and elevation */
+  --panel-radius-md: 10px;
+  --panel-radius-lg: 14px;
+  --panel-shadow-1: 0 2px 8px rgba(16, 35, 61, 0.08);
+  --panel-shadow-2: 0 5px 16px rgba(16, 35, 61, 0.12);
+  --panel-grid-line: rgba(28, 32, 38, 0.07);   /* neutral, not blue */
+
+  /* Typography and measure */
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --prose-measure: 68ch;
+  --wide-container-max: 1320px;
+
+  /* Motion — §8: 160–220ms deliberate transitions */
+  --motion-duration-fast: 160ms;
+  --motion-duration: 200ms;
+  --motion-ease: cubic-bezier(0.2, 0.6, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --panel-text-strong: #f2f7fc;
+  --panel-text: #c2d0df;
+  --panel-text-muted: #96abc0;
+  --panel-paper: #102038;
+  --panel-canvas: #07111f;
+  --panel-mist: #0d1c30;
+  --panel-line: #29445e;
+  --panel-cobalt: #79b7ff;
+  --panel-cobalt-hover: #afd3ff;
+  --panel-cobalt-soft: #142e51;
+  --panel-teal: #55d9cb;
+  --panel-teal-bright: #75ece0;
+  --panel-teal-soft: #103c3b;
+  --panel-amber: #ffd26c;
+  --panel-amber-soft: #3a2c10;
+  --panel-red: #ffaaa4;
+  --panel-red-soft: #411f25;
+  --panel-focus: #a3caff;
+  --panel-shadow-1: 0 2px 10px rgba(0, 0, 0, 0.24);
+  --panel-shadow-2: 0 6px 20px rgba(0, 0, 0, 0.34);
+  --panel-grid-line: rgba(144, 211, 255, 0.09);
+}
+
+/* --------------------------------------------------------------------------
+   2. Typography scale (§4)
+   -------------------------------------------------------------------------- */
+
+.display-title {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: clamp(2.1rem, 3.6vw, 3.4rem);
+  line-height: 1.03;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+  color: var(--panel-text-strong);
+  margin: 0;
+}
+
+.page-heading {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: clamp(2rem, 3.2vw, 3.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+  color: var(--panel-text-strong);
+  margin: 0;
+}
+
+.section-title {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: clamp(1.35rem, 1.9vw, 1.75rem);
+  line-height: 1.18;
+  letter-spacing: -0.012em;
+  color: var(--panel-text-strong);
+  margin: 0;
+}
+
+.body-text {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.72;
+  color: var(--panel-text);
+}
+
+.lede-text {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+  line-height: 1.65;
+  color: var(--panel-text);
+  max-width: 58ch;
+}
+
+.meta-label {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--panel-text-muted);
+}
+
+.data-text,
+.data-text code,
+code.data-text {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.prose-measure {
+  max-width: var(--prose-measure);
+}
+
+/* Screen-reader-only. Used for table captions that would be redundant visually
+   but are required for non-visual navigation. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout primitives (§5)
+   -------------------------------------------------------------------------- */
+
+.wide-container {
+  width: 100%;
+  max-width: var(--wide-container-max);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+}
+
+/* Quiet 42px technical grid — hero and lattice surfaces only, never global */
+.surface-technical-grid {
+  background-color: var(--panel-ink-950);
+  background-image:
+    linear-gradient(to right, var(--panel-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--panel-grid-line) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.surface-canvas { background-color: var(--panel-canvas); }
+.surface-mist   { background-color: var(--panel-mist); }
+.surface-paper  { background-color: var(--panel-paper); }
+
+/* On dark surfaces the ink tokens do not apply — set explicit reading colors */
+.on-dark { color: #dce8f5; }
+.on-dark .display-title,
+.on-dark .page-heading,
+.on-dark .section-title { color: #f7fbff; }
+.on-dark .lede-text,
+.on-dark .body-text { color: #c2d4e6; }
+.on-dark .meta-label { color: var(--panel-teal-bright); }
+
+/* --------------------------------------------------------------------------
+   4. Hero (§5, §6 CtlHero)
+   -------------------------------------------------------------------------- */
+
+.hero-band {
+  position: relative;
+  overflow: clip;
+  padding-block: clamp(3.5rem, 8vw, 7rem);
+}
+
+.hero-band-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.hero-band-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+/* Boundary note — the non-certification line. Text, never a badge. */
+.boundary-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-top: 1.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--panel-text-muted);
+}
+.on-dark .boundary-note { color: #9fb4c9; }
+
+@media (max-width: 900px) {
+  .hero-band-inner { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   5. Controls — 6px small, 10px panels, 14px major viz (§2 geometry)
+   No pills.
+   -------------------------------------------------------------------------- */
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;                 /* §7 touch target */
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--motion-duration) var(--motion-ease),
+              border-color var(--motion-duration) var(--motion-ease),
+              transform var(--motion-duration-fast) var(--motion-ease);
+}
+
+.action-button-primary {
+  background: var(--panel-cobalt);
+  color: #ffffff;
+}
+[data-theme="dark"] .action-button-primary { color: #06152b; }
+.action-button-primary:hover { background: var(--panel-cobalt-hover); transform: translateY(-1px); }
+
+.action-button-secondary {
+  background: transparent;
+  color: var(--panel-cobalt);
+  border-color: var(--panel-cobalt);
+}
+.action-button-secondary:hover { background: var(--panel-cobalt-soft); transform: translateY(-1px); }
+
+.on-dark .action-button-secondary { color: #a8ccff; border-color: #4f7fc4; }
+.on-dark .action-button-secondary:hover { background: rgba(30, 99, 219, 0.18); }
+
+/* --------------------------------------------------------------------------
+   6. Focus — §7: minimum 3px solid, visible offset, never glow-only
+   -------------------------------------------------------------------------- */
+
+.scope-note a:focus-visible,
+.scope-note button:focus-visible,
+.scope-note input:focus-visible,
+.scope-note select:focus-visible,
+.scope-note textarea:focus-visible,
+.scope-note summary:focus-visible,
+.scope-note [tabindex]:focus-visible,
+a.action-button:focus-visible,
+button.action-button:focus-visible,
+.skip-link:focus-visible {
+  outline: 3px solid var(--panel-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Skip link — visible on focus, not permanently hidden from keyboard users */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -100%;
+  z-index: 999;
+  padding: 0.75rem 1.25rem;
+  background: var(--panel-paper);
+  color: var(--panel-text-strong);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top var(--motion-duration-fast) var(--motion-ease);
+}
+.skip-link:focus { top: 0.75rem; }
+
+/* --------------------------------------------------------------------------
+   7. Metric rail (§6 CtlMetricRail)
+   Values must come from repository sources — see the drift guard.
+   -------------------------------------------------------------------------- */
+
+.metric-rail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1px;
+  background: var(--panel-line);
+  border-block: 1px solid var(--panel-line);
+}
+
+.metric {
+  background: var(--panel-canvas);
+  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 2vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.metric-value {
+  font-family: var(--sans);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--panel-cobalt);
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--panel-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   8. Status — §7: never hue alone. Text + icon/pattern + color.
+   -------------------------------------------------------------------------- */
+
+.evidence-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius);
+  border: 1px solid currentColor;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.evidence-status::before { font-family: var(--mono); font-weight: 700; }
+
+.evidence-status-verified { color: var(--panel-teal);   background: var(--panel-teal-soft); }
+.evidence-status-verified::before { content: "\2713"; }          /* ✓ */
+
+.evidence-status-review   { color: var(--panel-amber);  background: var(--panel-amber-soft); }
+.evidence-status-review::before { content: "\26A0"; }            /* ⚠ */
+
+.evidence-status-blocked  { color: var(--panel-red);    background: var(--panel-red-soft); }
+.evidence-status-blocked::before { content: "\2717"; }           /* ✗ */
+
+.evidence-status-info     { color: var(--panel-cobalt); background: var(--panel-cobalt-soft); }
+.evidence-status-info::before { content: "\2022"; }              /* • */
+
+/* --------------------------------------------------------------------------
+   9. Panels, control cards, evidence frames (§6)
+   -------------------------------------------------------------------------- */
+
+.panel {
+  background: var(--panel-paper);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--panel-radius-md);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  box-shadow: var(--panel-shadow-1);
+}
+
+.panel-viz { border-radius: var(--panel-radius-lg); }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.25rem;
+}
+
+.control-card { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.control-card-id {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--panel-teal);
+}
+
+/* Evidence frame: claim / evidence / limitation / source */
+.evidence-frame {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  border-left: 3px solid var(--panel-cobalt);
+  padding-left: 1.1rem;
+}
+.evidence-limitation {
+  font-size: 0.9375rem;
+  color: var(--panel-text-muted);
+  border-top: 1px solid var(--panel-line);
+  padding-top: 0.75rem;
+}
+
+/* Trace panel — raw text stays selectable and scrollable */
+.evidence-trace-panel {
+  background: var(--panel-ink-900);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--panel-radius-md);
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  color: #d6e6f6;
+}
+.evidence-trace-panel pre,
+.evidence-trace-panel code {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  user-select: text;
+  white-space: pre;
+}
+
+/* --------------------------------------------------------------------------
+   10. Document shell (§5, template 3)
+   -------------------------------------------------------------------------- */
+
+.doc-shell {
+  display: grid;
+  grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.doc-toc {
+  position: sticky;
+  top: 1.5rem;
+  align-self: start;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+.doc-toc ol, .doc-toc ul { list-style: none; margin: 0; padding: 0; }
+.doc-toc a { color: var(--panel-text); text-decoration: none; display: block; padding: 0.2rem 0; }
+.doc-toc a:hover { color: var(--panel-cobalt); text-decoration: underline; }
+.doc-toc [aria-current="true"] { color: var(--panel-cobalt); font-weight: 600; }
+
+.doc-body { max-width: var(--prose-measure); }
+
+/* Normative callout — for MUST/SHOULD spec text */
+.normative-block {
+  background: var(--panel-cobalt-soft);
+  border-left: 3px solid var(--panel-cobalt);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1rem 1.25rem;
+  margin-block: 1.25rem;
+}
+
+/* Wide content never scrolls the page body sideways */
+.scroll-x { overflow-x: auto; max-width: 100%; }
+
+.content-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.content-table th, .content-table td {
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--panel-line);
+  vertical-align: top;
+}
+.content-table th { font-weight: 700; color: var(--panel-text-strong); }
+.content-table td { color: var(--panel-text); }
+
+@media (max-width: 900px) {
+  .doc-shell { grid-template-columns: minmax(0, 1fr); }
+  .doc-toc { position: static; max-height: none; }
+}
+
+/* --------------------------------------------------------------------------
+   11. Trust Lattice (§6 TrustLattice, §8 motion)
+   -------------------------------------------------------------------------- */
+
+.diagram-layers { width: 100%; height: auto; display: block; }
+
+/* One token travels the five layers once, 2.4–3.2s, on entry only */
+.diagram-token {
+  animation: diagram-token-travel 2.8s var(--motion-ease) 1 both;
+}
+
+@keyframes diagram-token-travel {
+  from { opacity: 0; transform: translateY(-58px); }
+  12%  { opacity: 1; }
+  to   { opacity: 1; transform: translateY(96px); }
+}
+
+/* Text/list equivalent for the diagram — §7 diagrams requirement */
+.diagram-layers-alt {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+.diagram-layers-alt li {
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+  padding: 0.3rem 0.6rem;
+  color: var(--panel-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   12. Loading / empty / error states (app-wide-system.md)
+   -------------------------------------------------------------------------- */
+
+.phase-state {
+  border: 1px dashed var(--panel-line);
+  border-radius: var(--panel-radius-md);
+  padding: 1.5rem;
+  color: var(--panel-text-muted);
+  text-align: left;
+}
+.phase-state-title { font-weight: 700; color: var(--panel-text-strong); margin: 0 0 0.35rem; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--panel-mist), var(--panel-canvas), var(--panel-mist));
+  border-radius: var(--radius);
+  height: 0.9rem;
+  margin-block: 0.4rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. Responsive + motion fallback (§7, §8)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .hero-band { padding-block: clamp(2.5rem, 9vw, 4rem); }
+  .hero-band-actions .action-button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scope-note *,
+  .scope-note *::before,
+  .scope-note *::after,
+  .diagram-token {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+  .diagram-token { transform: none; opacity: 1; }
+  .action-button:hover { transform: none; }
+}
+
+@media (forced-colors: active) {
+  .action-button,
+  .panel,
+  .evidence-status { border: 1px solid CanvasText; }
+}
+
+/* ── Regulatory evidence index ─────────────────────────────────────────────
+   A reference table, not a badge wall: each row states what the instrument
+   establishes AND what it does not, so the page cannot be read as claiming the
+   three add up to one rule. Thin rules and neutral surfaces per the evidence
+   surface treatment; no colour carries meaning on its own. */
+.regulatory-index{
+  width:100%; border-collapse:collapse; margin-top:1.5rem;
+  font-size:.9375rem; line-height:1.6;
+}
+.regulatory-index th, .regulatory-index td{
+  text-align:left; vertical-align:top; padding:.85rem .9rem;
+  border-top:1px solid var(--border,rgba(0,0,0,.14));
+}
+.regulatory-index thead th{
+  font-size:.6875rem; text-transform:uppercase; letter-spacing:.07em;
+  font-weight:600; opacity:.65; border-top:0; padding-bottom:.5rem;
+}
+.regulatory-index tbody th{ font-weight:600; width:11rem; }
+.regulatory-index td:nth-child(2){ white-space:nowrap; font-variant-numeric:tabular-nums; opacity:.75; }
+.regulatory-subnote{ display:block; font-weight:400; font-size:.8125rem; opacity:.6; margin-top:.15rem; }
+.sr-only-text{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+/* Small screens: the table becomes labelled blocks rather than a scroll. */
+@media (max-width: 900px) {
+  .regulatory-index thead{ display:none; }
+  .regulatory-index tr{ display:block; border-top:1px solid var(--border,rgba(0,0,0,.14)); padding:.9rem 0; }
+  .regulatory-index th, .regulatory-index td{ display:block; border:0; padding:.15rem 0; width:auto; }
+  .regulatory-index td:nth-child(3)::before{ content:"Establishes: "; font-weight:600; }
+  .regulatory-index td:nth-child(4)::before{ content:"Does not: "; font-weight:600; }
+}
+
+/* Compact hero proof line — the technical evidence, kept visually dominant
+   over the regulatory reference row above it. */
+.proof-line{
+  margin:1.15rem 0 0; font-size:.9375rem; font-weight:600;
+  letter-spacing:.01em; font-variant-numeric:tabular-nums;
+}
+
+/* ── Control-system table ──────────────────────────────────────────────────
+   The controls are a control system, not a feature list, so they are set as a
+   table with one row per control: what triggers it, what it decides, what it
+   records. Monospace on the identifiers and reason codes per the evidence
+   treatment — those are literal strings from the engine, and reading them as
+   prose would be wrong. */
+.control-table{
+  width:100%; border-collapse:collapse; margin-top:.5rem;
+  font-size:.9375rem; line-height:1.6;
+}
+.control-table th, .control-table td{
+  text-align:left; vertical-align:top; padding:.9rem .9rem;
+  border-top:1px solid var(--border,rgba(0,0,0,.14));
+}
+.control-table thead th{
+  font-size:.6875rem; text-transform:uppercase; letter-spacing:.07em;
+  font-weight:600; opacity:.65; border-top:0; padding-bottom:.5rem;
+}
+.control-table tbody th{ width:13rem; font-weight:400; }
+.control-table-id{
+  display:inline-block; font-weight:600; font-size:.875rem;
+  letter-spacing:.02em;
+}
+.control-table-name{ display:block; font-size:.8125rem; opacity:.7; margin-top:.2rem; }
+.control-table-optional{
+  font-size:.6875rem; text-transform:uppercase; letter-spacing:.06em;
+  border:1px solid currentColor; border-radius:2px; padding:0 .3em;
+  margin-left:.4em; opacity:.7;
+}
+.control-table-action, .control-table-code{ font-size:.8125rem; overflow-wrap:anywhere; }
+.control-table-action{ font-weight:600; }
+.control-table-code{ opacity:.78; }
+
+@media (max-width: 900px) {
+  .control-table thead{ display:none; }
+  .control-table tr{
+    display:block; border-top:1px solid var(--border,rgba(0,0,0,.14)); padding:.9rem 0;
+  }
+  .control-table th, .control-table td{ display:block; border:0; padding:.2rem 0; width:auto; }
+  .control-table td:nth-child(2)::before{ content:"Trigger: "; font-weight:600; }
+  .control-table td:nth-child(3)::before{ content:"Decision: "; font-weight:600; }
+  .control-table td:nth-child(4)::before{ content:"Evidence: "; font-weight:600; }
+}
+
+/* ── Before/after control sequences ────────────────────────────────────────
+   The problem is shown as two numbered sequences side by side so the control
+   boundary is visible without reading a paragraph. Built in HTML rather than
+   as an image so it stays accurate, selectable, translatable and readable by
+   assistive technology, and so it reflows to one column on narrow screens
+   instead of scrolling. The risk step is marked by a rule and a label, never
+   by colour alone. */
+.sequence-pair{
+  display:grid; gap:1.5rem; grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));
+  align-items:start;
+}
+.sequence{ border:1px solid var(--border,rgba(0,0,0,.14)); padding:1.1rem 1.2rem 1.3rem; }
+.sequence-heading{
+  font-size:.6875rem; text-transform:uppercase; letter-spacing:.08em;
+  font-weight:600; opacity:.7; margin:0 0 .9rem;
+}
+.sequence-step-list{ list-style:none; margin:0; padding:0; counter-reset:none; }
+.sequence-step{
+  display:flex; align-items:baseline; gap:.7rem;
+  padding:.5rem 0; border-top:1px solid var(--border,rgba(0,0,0,.09));
+  font-size:.875rem; line-height:1.45;
+}
+.sequence-step:first-child{ border-top:0; }
+.sequence-step-number{
+  flex:0 0 auto; min-width:1.35rem; font-size:.6875rem; font-weight:600;
+  opacity:.55; font-variant-numeric:tabular-nums;
+}
+.sequence-step-title{ letter-spacing:.02em; }
+.sequence-step-copy{
+  display:inline-block; margin-left:.5rem; font-size:.6875rem;
+  border:1px solid currentColor; border-radius:2px; padding:0 .3em; opacity:.65;
+}
+/* The exposure step: marked structurally (heavier rule + weight), not by hue. */
+.sequence-step-risk{ border-top-width:2px; font-weight:600; }
+.sequence-step-risk .sequence-step-title::after{
+  content:" — exposure point"; font-weight:400; opacity:.6; letter-spacing:0;
+}
+
+.evidence-latency-note{
+  margin-top:1.5rem; padding:1.1rem 1.2rem;
+  border-left:3px solid var(--teal,currentColor);
+  background:var(--bg-alt,transparent);
+}
+.evidence-latency-heading{ font-size:1rem; margin:0 0 .5rem; }
+.evidence-latency-note p{ margin:0; color:var(--body); line-height:1.75; max-width:70ch; }
+.evidence-latency-caveat{ margin-top:.6rem !important; font-size:.85rem; opacity:.75; }
+
+/* ── Shadow evaluation phases ──────────────────────────────────────────────
+   Three phases as an ordered list: the sequence is the meaning, so it is real
+   list markup rather than styled divs. */
+.phase-row{
+  list-style:none; margin:0; padding:0;
+  display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));
+}
+.phase{ border-top:2px solid var(--teal,currentColor); padding-top:.9rem; }
+.phase-number{
+  display:block; font-size:.6875rem; font-weight:600; letter-spacing:.08em;
+  opacity:.55; font-variant-numeric:tabular-nums;
+}
+.phase-heading{
+  font-size:.9375rem; letter-spacing:.09em; text-transform:uppercase;
+  margin:.3rem 0 .5rem;
+}
+.phase p{ margin:0; color:var(--body); font-size:.9375rem; line-height:1.7; }
+
+/* ── Evidence surfaces ─────────────────────────────────────────────────────
+   Quiet, neutral panes holding literal input and literal engine output.
+   Monospace throughout because these are exact strings; a reader should be
+   able to match them against the repository character for character. Code
+   scrolls horizontally on small screens rather than wrapping, which would
+   change the alignment that makes the output readable. */
+.evidence{
+  display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));
+  align-items:start;
+}
+.evidence-pane{ border:1px solid var(--border,rgba(0,0,0,.14)); }
+.evidence-label{
+  margin:0; padding:.6rem .85rem; font-size:.6875rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:.07em; opacity:.7;
+  border-bottom:1px solid var(--border,rgba(0,0,0,.14));
+}
+.evidence-label code{ text-transform:none; letter-spacing:0; opacity:.9; }
+.evidence-code{
+  margin:0; padding:.85rem; overflow-x:auto;
+  font-size:.8125rem; line-height:1.65; tab-size:2;
+}
+.evidence-code code{ white-space:pre; }
+.evidence-repro{
+  margin-top:1rem; font-size:.9rem; color:var(--ink-soft); line-height:1.7; max-width:70ch;
+}
+
+/* ── Narrow-viewport table containment ─────────────────────────────────────
+   Data tables on specification.html and evidence-pack.html pushed the page
+   wider than the viewport on mobile (up to 543px of content in a 390px
+   window), so the whole page scrolled sideways. A table that is genuinely
+   wider than a phone should scroll inside its own box, not drag the document
+   with it.
+
+   The two tables that already reflow into labelled blocks at this width are
+   excluded — they need no scroll area, and giving them one would reintroduce
+   the horizontal scroll this rule exists to remove. */
+@media (max-width: 900px) {
+  main table:not(.control-table):not(.regulatory-index),
+  .premium-metrics{
+    display:block;
+    width:100%;
+    max-width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+}

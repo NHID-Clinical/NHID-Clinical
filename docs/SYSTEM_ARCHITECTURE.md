@@ -2,7 +2,7 @@
 
 **Date**: 2026-08-11  
 **Version**: v1.3-shadow-ready  
-**Status**: Pilot Ready (847 tests passing, 865 total; schema adapter operational)
+**Status**: Pilot Ready (924 tests passing, 942 total; schema adapter operational)
 
 ---
 
@@ -453,7 +453,7 @@ Tonic Corpus (150 sessions, 1,227 turns)
 ### 5.1 Shadow Pilot (Tier 0, Current)
 
 **Status**: Production Ready  
-**Test Coverage**: 847 passing tests, 18 skipped (865 total tests)  
+**Test Coverage**: 924 passing tests, 18 skipped (942 total tests)  
 **Release Tag**: v1.3-shadow-ready  
 
 **Deployment**:
@@ -497,7 +497,7 @@ Receiver obligations for each action are specified normatively in
 ```
 NHID-Clinical/
 ├─ src/
-│   └─ nhid_policy_engine_v1.py (847 tests passing, 865 total)
+│   └─ nhid_policy_engine_v1.py (924 tests passing, 942 total)
 │       ├─ evaluate_all(session, event) → PolicyDecision
 │       ├─ IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 implementations
 │       └─ No I/O, no external calls, pure functional
@@ -507,7 +507,7 @@ NHID-Clinical/
 │   ├─ tonic_schema_adapter.py (schema transformation)
 │   └─ evaluate_tonic_corpus.py (corpus evaluation harness)
 │
-├─ tests/                     (61 files, 865 tests: 847 passing, 18 skipped)
+├─ tests/                     (54 files, 942 tests: 924 passing, 18 skipped)
 │   ├─ test_atr01_audit_trail.py   (12 tests)
 │   ├─ test_atr01_persistence.py   (5 tests)
 │   ├─ test_dbc01_heuristics.py    (11 tests)
@@ -554,4 +554,4 @@ than per session, escalation data routed into unused metadata, and an incomplete
 all fixed in `scripts/tonic_schema_adapter.py` and `scripts/evaluate_tonic_corpus.py`. The policy
 engine was not modified. A 150-session synthetic corpus with 2 seeded escalation failures is a
 floor, not a validation, which is why Tier 0 remains observe-only. The unit suite is green:
-847 passing, 18 skipped, 865 total.
+924 passing, 18 skipped, 942 total.

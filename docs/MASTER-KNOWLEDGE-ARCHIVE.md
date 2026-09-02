@@ -1,6 +1,6 @@
 # NHID-CLINICAL MASTER KNOWLEDGE ARCHIVE
 
-**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-08-29
+**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-09-01
 **Author:** Brianna Baynard · **License:** CC BY 4.0
 
 > This document is the single authoritative reference for all NHID-Clinical knowledge: technical
@@ -593,7 +593,8 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
 (v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
-failed**. **Superseded 2026-08-29:** the suite is now **847 passed / 18 skipped / 865 total**, and
+failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **924 passed /
+18 skipped / 942 total**, and
 `UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
 `scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
 without failing the build; `scripts/validate_ci.py` warns when the two diverge.
@@ -1092,7 +1093,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 847 passing unit tests across 61 files
+│   └── test_*.py                      # 924 passing unit tests across 54 files
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -1331,11 +1332,11 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
 | + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current:** `UNIT_PUBLISHED = 847` in `scripts/validate_ci.py`. This is not an invariant and not
+**Current:** `UNIT_PUBLISHED = 924` in `scripts/validate_ci.py`. This is not an invariant and not
 a gate — it is the number published on README badges, the website and the PDFs, which
 `scripts/check_number_drift.py` compares those surfaces against.
 
-**Total suite:** 913 passing (847 Python + 66 TypeScript middleware)
+**Total suite:** 990 passing (924 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1406,7 +1407,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 847 passed (18 skipped when no server running = integration tests)
+# Expected: 924 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1432,7 +1433,7 @@ legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked fo
 
 ```python
 # scripts/validate_ci.py
-UNIT_PUBLISHED = 847
+UNIT_PUBLISHED = 924
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -1570,7 +1571,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The full suite (currently **847 passed / 18 skipped**) must
+1. **All existing tests must pass.** The full suite (currently **924 passed / 18 skipped**) must
    stay green after
    every change. Run `python scripts/validate_ci.py` before committing.
 
@@ -2618,7 +2619,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_PUBLISHED = 847  # scripts/validate_ci.py (published count, not a CI gate)
+UNIT_PUBLISHED = 924  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2663,7 +2664,8 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
-| **Total** | **847 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→847 with the IDG-01/PDX-01/EIT-01 hardening) |
+| `test_site_navigation.py` | 73 | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
+| **Total** | **924 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2740,6 +2742,435 @@ assert len(decision.violations) == 0
 ---
 
 ## Changelog
+
+### 2026-09-02 · Dead CSS removed — and a bug in the tool that removed it
+
+**41% of `nhid-clinical-ui.css` was rules that could never match anything the
+site builds.** 350 selectors there and 24 in `premium.css`, 41.8 KB in total.
+They are the residue of page sections deleted over time — hero variants, plan
+and pricing cards, an impact-metrics band, a mock UI, spec-collapsible blocks —
+whose CSS was never removed with them.
+
+| Sheet | Before | After | Selectors removed |
+|---|---|---|---|
+| `nhid-clinical-ui.css` | 103.5 KB | 61.9 KB | 350 |
+| `assets/css/premium.css` | 10.2 KB | 8.6 KB | 24 |
+| `assets/css/components.css` | unchanged | unchanged | 0 — see below |
+
+`scripts/visual/prune_unused_css.py` does the analysis and is committed, so the
+next pass is a re-run rather than a fresh judgement call. A class counts as used
+if it appears in a class attribute **anywhere** in `_site/` — including the
+eleven pages that do not load these sheets, since one of them could start
+tomorrow — or as an identifier in any script those sheets can reach. A selector
+is removed only when **every** class it names is unused; `:not()` contents are
+ignored, because `:not(.x)` matches precisely when `.x` is absent.
+
+Two scoping decisions the tool enforces rather than assumes:
+
+- **`components.css` is excluded.** Thirty of its classes are unreferenced, but
+  it is the vocabulary this redesign is being built with, and the
+  `evidence-status-*` set, `doc-shell` and the `surface-*` family are staged for
+  pages not yet migrated. Unused there means "not yet", not "left over".
+- **Scripts are read only from pages that link these sheets.** Two places would
+  otherwise break the analysis: the vendored React bundle under
+  `_site/simulator/`, and `assets/media/front-desk-walkthrough.html`, a
+  self-contained page with its own styles. Both build class names by
+  concatenation, which a static scan cannot follow. Neither loads these sheets,
+  so neither can apply a class from them. The tool refuses to run at all if
+  dynamic class construction appears **inside** its scope — that check fired
+  twice during development, correctly, before the scope was right.
+
+**The tool's first version corrupted the stylesheet, and the existing checks did
+not catch it.** Splitting a rule's prelude used `prelude.rfind("*/") + 1`, one
+byte inside a two-byte terminator. When the rule after a comment was dropped,
+the comment's closing `/` went with it:
+
+```
+-/* nav layer separator */
++/* nav layer separator *
+```
+
+That unterminated comment disabled every rule until the next `*/`. It rendered
+as a 39-pixel header shift on every page — and **the brace-balance check passed
+anyway**, because the comment stripper's `/\*.*?\*/` matched across to a later
+terminator and the braces balanced either side of it. The stylesheet looked
+fine, loaded fine, and reported no error.
+
+What caught it was the computed-style snapshot built for the `ctl-` rename:
+**19,278 differences across 66 of 74 page/theme pairs.** Diagnosis started from
+the wrong end — a check of which *used* classes had lost selector occurrences
+came back with exactly one, `.section-kicker`, and that one was legitimate
+(inside a `:not()` on a rule whose other classes were dead). Only a direct diff
+of the two stylesheets showed the truncated comment. After the fix: **0
+differences across all 74 pairs**, and 0 again on the 54-pair deep pass at three
+viewports.
+
+**Regression guard.** `test_stylesheet_is_structurally_intact` asserts balanced
+comment delimiters as well as braces, empty declarations and dangling commas, on
+all three sheets. Verified by reintroducing the exact truncation: it fails and
+names the sheet. Comment balance is the assertion that matters — the other three
+were already effectively true when the bug shipped.
+
+**Also added:** `scripts/bump_published_test_count.py`. Adding tests has now
+made every published surface stale three times in two days, each time costing a
+round trip per file as the drift guard named them one at a time. This rewrites
+the whole set in one pass; the drift guard remains the check that it worked, and
+historical changelog entries are untouched.
+
+**Verification:** 924 passed / 18 skipped, `DRIFT PASS`, `BASELINE PASS`
+(Fabricate byte-identical), 2,264 internal references / 0 broken, 0 overflowing
+page/viewport combinations, navigation 30/30, all three stylesheets parsing
+clean, and 0 computed-style differences on both the 74-pair all-pages sweep and
+the 54-pair deep sweep.
+
+**Metrics:** 921 → 924 passed / 942 collected (+3, the structural guard),
+propagated across all published surfaces. Engine and corpora untouched.
+
+**Files affected:** `nhid-clinical-ui.css`, `assets/css/premium.css`,
+`scripts/visual/prune_unused_css.py` (new),
+`scripts/bump_published_test_count.py` (new), `tests/test_site_navigation.py`,
+`scripts/visual/computed_style_snapshot.py` (`NHID_VIEWPORTS` override), and the
+published-count surfaces.
+
+---
+
+### 2026-09-02 · CSS consolidation stage 3 — the `ctl-` prefix is gone
+
+`ctl` stood for "Cinematic Trust Lattice", a visual language retired as the
+site's identity while its component CSS was kept. The prefix outlived the thing
+it named, so every class, every token and the stylesheet filename now say what
+they are instead. **No rule was rewritten and no value changed** — this is a
+rename, verified as one.
+
+| | Before | After |
+|---|---|---|
+| Classes | 83 `ctl-*` | 83 semantic names, e.g. `ctl-lattice` → `diagram-layers`, `ctl-trace-panel` → `evidence-trace-panel`, `ctl-step-n` → `sequence-step-number` |
+| Tokens | 34 `--ctl-*` | 32 renamed (26 to `--panel-*`, 6 to type/measure/motion names), **2 removed** |
+| Stylesheet | `assets/css/cinematic-trust-lattice.css` | `assets/css/components.css` (38 pages relinked) |
+| Keyframes | `ctl-lattice-travel` | `diagram-token-travel` |
+
+Every proposed name was checked against the 347 classes and all custom
+properties the other two sheets define before anything was applied. Four
+collided and were renamed rather than merged: `ctl-section-title`,
+`ctl-hero`, `ctl-hero-inner` and `ctl-hero-actions` would have landed on
+`.section-heading` and `.page-hero`, which already exist in
+`nhid-clinical-ui.css` and mean different things there. Reusing those names
+would have silently merged two components.
+
+**A stage-1 claim needs qualifying.** Stage 1 aliased 11 `--ctl-*` tokens to
+canonical ones (`--ctl-text-strong: var(--ink)`) and that was recorded as
+unifying the token systems. It unified **the light theme only.** Each of those
+tokens is also redefined under `[data-theme="dark"]` with its own value, and
+those values do not match the canonical token's dark value:
+
+| Token | light | dark (component) | dark (canonical) |
+|---|---|---|---|
+| `--ctl-text-strong` | `var(--ink)` | `#f2f7fc` | `--ink` is `#cfe2f7` |
+| `--ctl-text` | `var(--body)` | `#c2d0df` | `--body` is `#728a9e` |
+| `--ctl-paper` | `var(--paper)` | `#102038` | `--paper` is `#0d1d2f` |
+| `--ctl-line` | `var(--line)` | `#29445e` | `--line` is `rgba(30,65,100,.65)` |
+
+Eight of the ten diverge this way, so collapsing them would change dark
+rendering. They were renamed instead. Two genuinely were exact aliases in both
+themes — neither `--radius` nor `--sans` is redefined for dark — so
+`--ctl-radius-sm` and `--ctl-font-ui` were **deleted** and their use sites now
+reference the canonical tokens directly. The remaining `--panel-*` set is named
+for what it is: the darker, higher-contrast palette the evidence panels,
+diagrams and code blocks are built on, genuinely distinct from the base paper
+palette rather than a second opinion about it. Two token systems remain, and
+that is now an accurate description rather than an unnoticed one.
+
+**How the rename was verified.** Diffing renamed CSS by eye cannot show that
+nothing broke — a missed selector, a class left behind on one page, or two
+components landing on the same new name all read fine in the source. So
+`scripts/visual/computed_style_snapshot.py` walks the real DOM of 9 pages × 3
+viewports × both themes and records 34 computed properties plus the layout box
+for every element, keyed by a structural path that excludes class names so the
+snapshots are comparable across a rename.
+`scripts/visual/diff_style_snapshots.py` compares two runs.
+
+Result: **0 computed-style differences across 16,902 elements and 54
+page/viewport/theme pairs.** The dark pass is a real check, not a duplicate —
+light and dark differ on 1,206 property values on the homepage alone.
+
+Making that tool trustworthy took three corrections, each a fault in the probe
+rather than the site, and each worth recording because the first version would
+have reported the rename as broken:
+
+1. The `.reveal` entry transition was sampled mid-flight, so every run differed
+   from the last. Fixed by running under `prefers-reduced-motion`, which the
+   site already honours by pinning `.reveal` to its final state — using the
+   site's own code path rather than injecting foreign CSS.
+2. The sticky header's `margin-inline: auto` intermittently read `0px` while the
+   same element's width still read `1320` inside a `1440` viewport — a pair that
+   cannot both be true. Requiring two consecutive agreeing reads did not
+   stabilise it, and it moved to a different page on each run of an unchanged
+   tree. Those two properties were dropped, documented: a real horizontal margin
+   change moves the element, and the recorded box already carries `x` and
+   `width`.
+3. Before both fixes the tool reported 143 differences for this rename. After
+   them, on an unchanged tree, three consecutive runs agree exactly — which is
+   what makes the 0 above mean something.
+
+**Regression guard.** `test_no_ctl_prefix_survives_in_published_css_or_markup`
+fails on any reappearance of `ctl-`, `--ctl-` or the old stylesheet filename in
+published HTML, CSS or JS. A stray prefix from a copied snippet would reference
+a selector that no longer exists, and CSS has no error for an unmatched class.
+
+**Historical records were left alone.** The mechanical pass also rewrote
+`docs/cinematic-trust-lattice-handoff/design-system.md`,
+`implementation-spec.md` and the stage-2 entry above. All three were reverted:
+they record what those names were when written, and a search-and-replace through
+them would make the archive describe a past that did not happen. The handoff
+directory keeps its name for the same reason.
+
+**Published-count propagation.** The new guard added one test, so the published
+count moved again: **920 → 921 passed, 938 → 939 collected**, across the same
+surfaces reconciled in the entry below, until `check_number_drift.py` stopped
+naming any.
+
+**Verification:** 921 passed / 18 skipped, `DRIFT PASS`, `BASELINE PASS`
+(Fabricate byte-identical), build 33.72 MB / 162 files, 2,264 internal
+references / 0 broken, all three stylesheets parsing clean, 0 overflowing
+page/viewport combinations, navigation 30/30, and all three stylesheets
+confirmed loading in the browser under their new names with none loading under
+the old one.
+
+**Files affected:** `assets/css/components.css` (renamed from
+`cinematic-trust-lattice.css`), `nhid-clinical-ui.css` (comment reference), 38
+published `.html` pages, `tests/test_site_navigation.py`,
+`scripts/visual/computed_style_snapshot.py` (new),
+`scripts/visual/diff_style_snapshots.py` (new), this document.
+
+**Issue remaining.** Roughly 200 classes are unreferenced by any built page and
+can be removed; `surface-technical-grid` (formerly `ctl-grid-surface`) reads as
+unused by that measure but is deliberately retained for dark evidence panels.
+The two token systems described above remain two.
+
+---
+
+### 2026-09-02 · Website redesign — CSS consolidation stages 1 and 2
+
+Recorded mid-cycle, not at the end. The website redesign (commits `3fd64a3`..`98f90ac`,
+2026-09-01/02) rebuilt the homepage against `docs/NHID-WEBSITE-DESIGN-SPEC.json`, shifted
+the palette from the dark navy wash to warm paper, replaced a hand-drawn API mockup with
+real engine output, and removed the AI Governance Map from NHID-Clinical's navigation.
+This entry covers the CSS consolidation that followed it, and one defect that
+consolidation surfaced.
+
+**Three stylesheets, not one.** The site loads `/nhid-clinical-ui.css` (37 pages),
+`/assets/css/premium.css` (20 pages) and `/assets/css/cinematic-trust-lattice.css`
+(38 pages), in that order. A measurement before stage 1 corrected an assumption recorded
+in conversation: **the three sheets do not broadly overlap.** Their only shared selectors
+are `:root` and `[data-theme="dark"]` — token declarations, not competing component
+rules. Stage 1 therefore de-duplicated tokens (11 `--ctl-*` tokens aliased to their
+canonical equivalents rather than restating values) and removed decorative rules that
+contradicted the new palette; it did not merge component CSS, because there was no
+component duplication to merge.
+
+**Stage 2 — breakpoints.** Fourteen distinct viewport widths were declared across the
+three sheets, in mixed `px` and `rem`. Five of them were *the same layout transition* —
+a two-column grid collapsing to one — declared at five widths purely by accumulation:
+
+| Was | Selector | Now |
+|---|---|---|
+| `700px` | `.two-column` | `720px` |
+| `800px` | `.impact-card` | `900px` |
+| `820px` | `.split-visual` | `900px` |
+| `860px` | `.stack-wrap` | `900px` |
+| `900px` | `.ctl-hero-inner` | `900px` (unchanged) |
+
+Three more were the same table-restacking transition at three widths (`46rem`/736px,
+`52rem`/832px twice), and `640px` was a second narrow-phone tier alongside `720px`.
+
+Canonical set, documented in a header comment at the top of `nhid-clinical-ui.css`:
+**720 / 900 / 1060 / 1240**, plus the paired `(max-width:1380px) and (min-width:1241px)`
+band that tightens nav spacing immediately above the 1240 collapse. Every retired width
+was rounded **up** to the next canonical width, never down — collapsing a layout earlier
+than it strictly needs to cannot introduce overflow; collapsing it later can. Fourteen
+distinct numeric widths → seven (four canonical, three paired edges).
+
+Two transitions were folded rather than kept: table restacking now happens at 900 with
+the rest of the narrow-tablet tier instead of at 832/736, and hero buttons go full width
+at 720 instead of 640. Both are the same tier reached slightly earlier, not unrelated
+layouts forced together.
+
+One rule pair was deleted as dead rather than reassigned: `.nav-links{display:none}` and
+`.menu-button{display:inline-flex}` appeared inside **both** the `1060px` and the
+`1240px` block in `nhid-clinical-ui.css`. The `1240px` block is later in the file and
+matches a superset of widths, so the `1060px` copies could never take effect. Removing
+them is a verified no-op — nav collapse still occurs at exactly 1240px.
+
+**Verification (run before and after each stage).**
+
+| Check | Result |
+|---|---|
+| `pytest tests/` | 851 passed, 18 skipped — unchanged |
+| `scripts/check_number_drift.py` | DRIFT PASS + CORPUS REPORT PASS |
+| `scripts/build_pages_site.sh` | 33.72 MB, 162 files |
+| Internal links (`scripts/visual/check_internal_links.py`) | 2,264 references, 0 broken |
+| CSS parse (braces, empty declarations, blockless `@media`) | all three sheets clean |
+| Visual capture, 6 pages × 3 viewports | 0 overflowing combinations, stylesheet confirmed loaded on every page |
+| Breakpoint boundary sweep, 6 pages × 14 widths (±1px of each of 720/900/1060/1240/1380) | 0 overflowing combinations |
+| Computed-style assertions on the changed transitions | 12/12 behave as documented |
+
+**Two tools added,** because both had previously been ad-hoc and were lost when the
+container was recycled: `scripts/visual/check_internal_links.py` (resolves every
+`href`/`src` in `_site/`, ignoring `<script>` bodies, which is why its count is 2,264 and
+not the 2,301 an earlier script reported — the difference is references built at runtime
+inside JavaScript, which are not statically resolvable) and an `NHID_VIEWPORTS`
+environment override on `scripts/visual/capture_pages.py` for bracketing a breakpoint one
+pixel either side.
+
+**Issue discovered — the site has no working navigation below 1241px.** Found while
+verifying the nav breakpoint; it is pre-existing and unrelated to the consolidation, but
+it is severe enough to record immediately. Measured on `faq.html`:
+
+| Viewport | Visible header links | Hamburger | Clicking it |
+|---|---|---|---|
+| 1440px | 24 | shown | opens |
+| 1241px | 24 | shown | opens |
+| 1239px | **2** | shown | **nothing happens** |
+| 1100px | **2** | shown | **nothing happens** |
+| 834px | **2** | shown | **nothing happens** |
+| 390px | **1** | **hidden** | — |
+
+Below 1241px `.nav-links` is hidden and the only header links left are the logo and the
+"Run a shadow evaluation" pill. The markup renders a hamburger, `#menu-toggle`, that is
+inert: clicking it does nothing. At ≤720px `.icon-button:not(.menu-button)` hides that
+button too, so a phone visitor sees one link. This defeats the design spec's "how I can
+evaluate it" directly, on every phone and on any laptop narrower than 1241px.
+
+> **Correction, recorded rather than overwritten.** This paragraph first read that the
+> hamburger "has no CSS rule and no JavaScript handler anywhere in the repository" and
+> that the defect was "pre-existing and unrelated to the consolidation." **Both claims
+> were wrong, and the second was wrong in my favour.** The handler exists and always
+> did — `site.js` lines 35–67 implement `openDrawer`/`closeDrawer` against
+> `#mobile-nav`, `#nav-backdrop` and `document.querySelector('.menu-button')`, and
+> `nhid-clinical-ui.css` styles `.menu-button`. The drawer markup is intact on all 33
+> pages. What broke the binding was a one-line markup change in **commit `3fd64a3`
+> (2026-09-01, "Make the site about NHID-Clinical: remove the AI Governance Map, cut the
+> nav, rewrite the hero")** — mine, part of this redesign — which replaced
+> `class="icon-button menu-button" … aria-controls="mobile-nav"` with
+> `class="icon-button menu-toggle" id="menu-toggle"`. Nothing binds to that name. The
+> regression therefore shipped in this cycle and was **introduced by the redesign, not
+> inherited by it**. `git diff c795c3e 3fd64a3 -- faq.html` shows the single line.
+
+**Fixed in the following change.** The repair is to restore the class and ARIA attributes
+the existing CSS and JavaScript already expect on all 33 pages, not to write a second
+drawer — nothing else was missing.
+
+| Viewport | Before | After |
+|---|---|---|
+| 390px | 1 header link, hamburger hidden | drawer opens, 27–29 links |
+| 834px / 1100px / 1239px | 2 header links, hamburger inert | drawer opens, 27–29 links |
+| 1241px / 1440px | 24 links (unaffected) | 24 links (unaffected) |
+
+Verified in the browser across 5 pages × 6 viewports: 30/30 combinations reachable, the
+drawer opening on every narrow one and closing by both routes `site.js` provides
+(backdrop click and `Escape`). A first verification run reported the close paths broken;
+that was a fault in the probe, not the site — the drawer slides out by `transform`, so a
+visibility check still calls it visible. The probe now reads the `open` class the
+JavaScript actually toggles and confirms the panel is off-viewport.
+
+**Regression guard:** `tests/test_site_navigation.py`, 69 tests. It reads the toggle's
+class *out of `site.js`* with a regex rather than restating it, so the guard fails if
+either side of the binding drifts, and asserts per page that the button exists, names the
+drawer via `aria-controls`, and carries `aria-expanded`; plus that the stylesheet reveals
+it inside the 1240px block and that the phone tier still spares it. Confirmed by
+reintroducing the exact regression on one page: 2 tests fail, naming that page. Suite
+851 → 920.
+
+**Issue remaining.** `.exec-summary` (whose `min-width` query was folded from 620px to
+721px) appears in no built page. It is one of roughly 200 classes that the visual harness
+can now confirm are unreferenced; removing them is a later stage. `--ctl-grid-surface`
+reads as unused by the same measure but is deliberately retained for dark evidence
+panels.
+
+**Published-count propagation.** Adding 69 tests made every published surface stale at
+once. `scripts/validate_ci.py` warned (it is deliberately not a gate), and
+`check_number_drift.py` then named each surface until all agreed. Reconciled in the same
+commit: **851 → 920 passed, 869 → 938 collected**, across `UNIT_PUBLISHED`, the `ci.yml`
+job name, `.github/CONTRIBUTING.md`, the README badge and five body references,
+`index.html` (proof line, evidence list, metric strip), `faq.html`,
+`scripts/generate_pdfs.py` (4), `conformance/nhid_conformance_test_suite_v1.yaml` (4),
+and six `docs/` pages. Two stale figures were corrected while passing through rather than
+carried forward: the test-file count published as **61** measures **54** (files under
+`tests/` that pytest collects from), and the combined figure **913 (851 Python + 66
+TypeScript)** becomes **986**. Historical changelog entries were left exactly as written —
+they record what was true when written, and the earlier §2.5.1 supersession note is marked
+with the date its count was refreshed rather than silently restated.
+
+**Metrics:** engine and corpora untouched by design — this is presentation only. Suite
+851 → 920 passed / 18 skipped (+69, all of them the navigation guard; no existing test
+was changed). Fabricate baseline byte-identical. Governance
+Evaluation Corpus 90.6% detection (29/32), 0% false positives. Adversarial corpus 23/23
+attacks withstood, 0 bypasses, 0/17 false positives. These are the same figures as the
+2026-09-01 entry and are repeated here only to record that the website work did not move
+them.
+
+**Files affected:** `nhid-clinical-ui.css`, `assets/css/premium.css`,
+`assets/css/cinematic-trust-lattice.css`, `scripts/visual/capture_pages.py`,
+`scripts/visual/check_internal_links.py` (new), `tests/test_site_navigation.py` (new),
+33 published `.html` pages (drawer toggle only), this document.
+
+---
+
+### 2026-09-01 · Drift guard's corpus checks were never running
+
+**Bug.** The corpus checks added to `scripts/check_number_drift.py` on 2026-08-29
+(§ previous entry, F) did not run. The guard imports `scripts.eval_corpus` to derive
+the corpus figures, but run as `python scripts/check_number_drift.py` — which is exactly
+how `.github/workflows/ci.yml` invokes it — `sys.path[0]` is `scripts/`, not the
+repository root, so the import raised `ModuleNotFoundError: No module named 'scripts'`.
+
+Both corpus checks then degraded to warnings and **the guard still exited 0**:
+
+```
+DRIFT WARN: could not measure the evaluation corpus; its published figures were not checked this run
+DRIFT WARN: could not verify the corpus report (No module named 'scripts')
+DRIFT PASS: watched surfaces consistent with 851 passed and DBC-01 91.5%
+```
+
+That is precisely the silent-drift failure the guard exists to prevent: the corpus
+figures could have gone stale again with CI reporting green, which is how IDG-01's
+71.4% survived for a month in the first place.
+
+**Why it hid.** It was written and verified in a container where the repository
+happened to be importable as a package, so the checks genuinely did run — the probes
+against deliberately introduced drift recorded in the previous entry were real, not
+imagined. The container was later recycled; on a clean environment the import fails.
+CI installs only `requirements.txt` and never makes the repository importable, so the
+checks are unlikely to have run there at any point.
+
+**Fix.** `scripts/check_number_drift.py` now inserts the repository root on `sys.path`
+before the import, mirroring the pattern `scripts/eval_corpus.py` already used. The
+asymmetry between the two scripts is what allowed the bug: one was path-safe, the other
+assumed it.
+
+**Regression test.** `test_drift_guard_measures_the_corpus_when_invoked_as_ci_invokes_it`
+in `tests/test_eval_corpus_metrics.py` runs the guard as a subprocess exactly as CI does
+and fails if either warning appears or if the PASS line omits the corpus figures.
+Verified by reverting the fix: the test fails; restored, it passes.
+
+**Files affected:** `scripts/check_number_drift.py`, `tests/test_eval_corpus_metrics.py`.
+
+**Metrics:** unchanged — no engine or corpus behaviour was touched. Suite 847 → 851
+(869 collected). Fabricate baseline byte-identical. CTS 16/2/0. Governance Evaluation
+Corpus 90.6% detection (29/32), 0% false positives. Adversarial corpus 23/23 attacks
+withstood, 0 bypasses, 0/17 false positives.
+
+**Also recorded:** the working container was recycled between 2026-08-29 and 2026-09-01
+and lost `pytest`, `httpx`, `cffi` and a working `cryptography`; 7 test modules failed to
+collect until they were reinstalled. An environment fault, not a repository fault, noted
+because the first verification run after the gap looked like a regression and was not.
+
+**Issue remaining:** the guard still assumes it is run from the repository root — its
+watched paths and `_module_constant("scripts/validate_ci.py")` are cwd-relative, so
+running it from elsewhere raises `FileNotFoundError`. Left as-is deliberately: that
+failure is loud, unlike the one fixed here, and CI always runs from the root.
+
+---
 
 ### 2026-08-29 · Corpus metrics audit, engine hardening, adversarial red team
 
@@ -2868,7 +3299,7 @@ Governance Evaluation Corpus (25 scenarios, 55 turns), `scripts/eval_corpus.py`:
 Newly detected: `nhid_ec_combo_002` (IDG-01), `nhid_ec_pdx01_002` and
 `nhid_ec_combo_006` (PDX-01).
 
-Conformance suite: **779 → 847 passing**, 18 skipped, 0 failed (865 collected), 61 test
+Conformance suite: **779 → 851 passing**, 18 skipped, 0 failed (869 collected), 61 test
 files. CTS unchanged at 16 pass / 2 skip / 0 fail (18 cases).
 
 Fabricate (CI-gated regression floor): **byte-identical throughout** — IDG-01 70/70
@@ -2900,7 +3331,7 @@ Fabricate (CI-gated regression floor): **byte-identical throughout** — IDG-01 
 - `docs/CONTROL_DECISION_TABLE.md` — IDG-01, PDX-01, DBC-01 and EIT-01 pass/fail
   conditions, limitations, test coverage and per-corpus status rewritten against the new
   engine behaviour; a corpus-disambiguation table added.
-- Test counts propagated 779 → 847 across every watched surface; test-file count corrected
+- Test counts propagated 779 → 851 across every watched surface; test-file count corrected
   from 42/43 to 61. 7/7 PDFs regenerated.
 
 #### H. Issues remaining
@@ -2970,7 +3401,7 @@ Fabricate (CI-gated regression floor): **byte-identical throughout** — IDG-01 
 - Version 1.2 → 1.3; Date 2026-06-27 → 2026-07-31
 - §7.1a "Phase 4 & Phase 5 Completion" added (new subsection) with status table and evaluation corpus metrics
 - §7.2 "Test Count Progression" — rows added for Phase 4, Phase 5, and Phase 6A; UNIT_EXPECTED 343 → 355 → 446 (ATR-01 +12 tests, Phase 6A infrastructure +91 tests)
-- §8.3 "CI Invariant" — updated to UNIT_PUBLISHED = 847
+- §8.3 "CI Invariant" — updated to UNIT_PUBLISHED = 851
 - §23.1 "Primary Source Files" — added `src/nhid_audit_trail.py` (257 lines) and updated `src/nhid_policy_engine_v1.py` description
 - §23.1 — added three governance artifacts: ATR-01-IMPLEMENTATION.md, ATR-01-EVIDENCE-VALIDATION-REPORT.html, ATR-01-TRACEABILITY-MATRIX.html
 - §23.3 "Test File Index" — added `test_atr01_audit_trail.py` (12 tests); total changed to "355 passed"
@@ -2981,6 +3412,6 @@ note in §7.1a; these figures do not reconcile and no artifact reproduces them)*
 
 ---
 
-*End of NHID-Clinical Master Knowledge Archive · v1.3 · 2026-08-29*
+*End of NHID-Clinical Master Knowledge Archive · v1.3 · 2026-09-01*
 
 *CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026 · nhid-clinical.org · Phase 5 Complete*

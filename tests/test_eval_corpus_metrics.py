@@ -221,3 +221,37 @@ def test_report_carries_the_research_boundary():
     assert "not a conformance claim" in text
     for forbidden in ("certified", "assured", "independently validated"):
         assert forbidden not in text.lower(), f"report claims {forbidden!r}"
+
+
+# ── The drift guard must actually run its corpus checks ────────────────────
+
+def test_drift_guard_measures_the_corpus_when_invoked_as_ci_invokes_it():
+    """
+    The guard imports `scripts.eval_corpus` to derive the corpus figures. Run as
+    `python scripts/check_number_drift.py` — which is how .github/workflows/ci.yml
+    invokes it — sys.path[0] is scripts/, not the repository root, so that import
+    raised ModuleNotFoundError. Both corpus checks then degraded to warnings
+    while the guard still exited 0.
+
+    That is the silent-drift failure the guard exists to prevent, and it hid for
+    a full development cycle because the container it was written in happened to
+    make the package importable. This test runs the guard the way CI does and
+    fails if the corpus figures are not in its output.
+    """
+    import subprocess
+    import sys
+
+    result = subprocess.run(
+        [sys.executable, "scripts/check_number_drift.py"],
+        cwd=REPO_ROOT, capture_output=True, text=True,
+    )
+    assert result.returncode == 0, f"guard failed:\n{result.stdout}\n{result.stderr}"
+    assert "could not measure the evaluation corpus" not in result.stdout, (
+        "the guard could not import the corpus and silently skipped its checks:\n"
+        + result.stdout
+    )
+    assert "could not verify the corpus report" not in result.stdout, result.stdout
+    assert "corpus 25 scenarios" in result.stdout, (
+        "the guard's PASS line does not report the corpus figures, so the corpus "
+        f"checks did not run:\n{result.stdout}"
+    )

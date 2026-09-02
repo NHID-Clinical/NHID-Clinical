@@ -11,14 +11,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
-  <link rel="stylesheet" href="/assets/css/cinematic-trust-lattice.css"/>
+  <link rel="stylesheet" href="/assets/css/components.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
 </head>
 <body>
 
-<a class="ctl-skip-link" href="#main">Skip to main content</a>
+<a class="skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
   <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
@@ -38,63 +38,55 @@
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
           <a href="/framework/">Framework overview</a>
-          <a href="/specification.html">Specification</a>
-          <a href="/framework/controls.html">Controls</a>
-          <a href="/framework/nhid-auth.html">NHID-Auth</a>
-          <a href="/framework/reference-implementation.html">Reference Implementation</a>
-          <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
-          <a href="/technical-stack.html">Technical Stack</a>
-          <a href="/regulatory-alignment.html">Regulatory Alignment</a>
+          <a href="/specification.html">Specification (v1.3)</a>
+          <a href="/framework/controls.html">The five controls</a>
+          <a href="/framework/conformance-suite.html">Conformance test suite</a>
+          <a href="/regulatory-alignment.html">Regulatory alignment</a>
         </div>
       </div>
       <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Platform <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Evidence <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
-          <a href="/platform/">TrustLayer overview</a>
-          <a href="/platform/agent-registry.html">Agent Registry</a>
-          <a href="/platform/trust-gateway.html">Trust Gateway</a>
-          <a href="/platform/evidence-center.html">Evidence Center</a>
-          <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
-          <a href="/platform/enterprise.html">Enterprise Workflow</a>
+          <a href="/evidence-pack.html">Evidence pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow evaluation guide</a>
+          <a href="/simulator.html">Governance simulator</a>
+          <a href="/registry.html">Implementation registry</a>
         </div>
       </div>
-      <a href="/simulator.html">Simulator</a>
       <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Docs <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Developers <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
           <a href="/developers.html">Developer guide</a>
           <a href="/docs.html">Live API explorer</a>
+          <a href="/framework/reference-implementation.html">Reference implementation</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
           <a href="/interoperability.html">Interoperability</a>
-          <a href="/registry.html">Implementation Registry</a>
+          <a href="/technical-stack.html">Technical stack</a>
         </div>
       </div>
       <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Resources <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">About <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
-          <a href="/evidence-pack.html">Evidence Pack</a>
-          <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
-          <a href="/for-payers.html">For Payers</a>
-          <a href="/community.html">Community</a>
+          <a href="/about.html">About the project</a>
           <a href="/roadmap.html">Roadmap</a>
           <a href="/news.html">News</a>
           <a href="/faq.html">FAQ</a>
-          <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
+          <a href="/community.html">Community</a>
+          <a href="/platform/">TrustLayer (in development)</a>
         </div>
       </div>
-      <a href="/about.html">About</a>
       <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
     <div class="nav-actions">
       <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       </button>
-      <button class="icon-button theme-toggle" type="button" aria-label="Toggle dark mode" id="theme-toggle">
-        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
-      <a class="primary-pill" href="/for-payers.html">Start a pilot</a>
+      <a class="primary-pill" href="/for-payers.html">Run a shadow evaluation</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
     </div>
   </nav>
@@ -145,7 +137,6 @@
   <a href="/roadmap.html">Roadmap</a>
   <a href="/news.html">News</a>
   <a href="/faq.html">FAQ</a>
-  <a href="https://ai-governance-map.vercel.app/" target="_blank" rel="noopener noreferrer">AI Governance Map &#x2197;</a>
   <strong class="mobile-nav-group">More</strong>
   <a href="/about.html">About</a>
   <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
@@ -160,15 +151,15 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main id="main" class="ctl-scope">
-  <section class="inner-hero ctl-hero ctl-grid-surface ctl-on-dark" style="position:relative;overflow:clip">
+<main id="main" class="scope-note">
+  <section class="inner-hero hero-band" style="position:relative;overflow:clip">
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/developers.html">Developers</a><span>/</span><span>Interoperability</span></div>
-        <p class="eyebrow ctl-meta">Simulation · Twilio → NHID-Clinical</p>
-        <h1 class="reveal ctl-page-title">Interoperability Demo</h1>
-        <p class="lede reveal ctl-lede">This page shows how a real vendor's call transcript format can be mapped to an NHID-Clinical v1.3 event trace and evaluated for conformance. The adapter is open source — replace the sample input with real logs to test your own vendor.</p>
+        <p class="eyebrow meta-label">Simulation · Twilio → NHID-Clinical</p>
+        <h1 class="reveal page-heading">Interoperability Demo</h1>
+        <p class="lede reveal lede-text">This page shows how a real vendor's call transcript format can be mapped to an NHID-Clinical v1.3 event trace and evaluated for conformance. The adapter is open source — replace the sample input with real logs to test your own vendor.</p>
       </div>
     </div>
   </section>
