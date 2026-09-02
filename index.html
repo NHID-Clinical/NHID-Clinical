@@ -157,23 +157,18 @@
   <section class="ctl-scope ctl-hero ctl-grid-surface ctl-on-dark">
     <div class="ctl-container ctl-hero-inner">
       <div>
-        <p class="ctl-meta reveal">Regulatory pressure</p>
-        <h1 class="ctl-display reveal">AI voice disclosure is becoming an operational requirement.</h1>
-        <ul class="reveal ctl-reg-row" aria-label="Regulatory reference points">
-          <li><span class="ctl-reg-place">California</span> <a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240AB2905" target="_blank" rel="noopener noreferrer">AB&nbsp;2905</a> <span class="ctl-reg-when">from 1&nbsp;Jan&nbsp;2025</span></li>
-          <li><span class="ctl-reg-place">United States</span> <a href="https://docs.fcc.gov/public/attachments/FCC-24-17A1.pdf" target="_blank" rel="noopener noreferrer">FCC&nbsp;24&#8209;17 (TCPA)</a> <span class="ctl-reg-when">from 8&nbsp;Feb&nbsp;2024</span></li>
-          <li><span class="ctl-reg-place">European Union</span> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener noreferrer">AI&nbsp;Act Art.&nbsp;50</a> <span class="ctl-reg-when">from 2&nbsp;Aug&nbsp;2026</span></li>
-        </ul>
-        <p class="ctl-lede reveal" style="margin-top:1.15rem">These are three different instruments with different scopes and triggers &mdash; not one uniform rule. What they share is a direction: when a person is talking to an automated system, they are increasingly entitled to know. <strong>NHID-Clinical turns that into testable controls for healthcare voice interactions</strong> &mdash; identity disclosure, a pre-data exchange gate, deception checks, a human escalation path, and a replayable audit trail.</p>
+        <p class="ctl-meta reveal">Healthcare AI voice &middot; provider&ndash;payer calls</p>
+        <h1 class="ctl-display reveal">Know who your AI voice agents are before they exchange healthcare operations data.</h1>
+        <p class="ctl-lede reveal" style="margin-top:1.15rem">NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.</p>
         <div class="ctl-hero-actions reveal">
-          <a class="ctl-btn ctl-btn-primary" href="/for-payers.html">Run a shadow evaluation</a>
+          <a class="ctl-btn ctl-btn-primary" href="/for-payers.html">Run an observe-only shadow evaluation</a>
           <a class="ctl-btn ctl-btn-secondary" href="/framework/">Explore the framework</a>
         </div>
         <p class="ctl-proof-line reveal">5 controls &middot; 848 passing tests &middot; machine-readable traces &middot; open implementation</p>
-        <p class="ctl-lede reveal" style="margin-top:1rem;font-size:1rem;opacity:.9">A shadow evaluation runs against your existing call recordings or logs. Observe-only: no vendor changes, no production risk. You get a baseline showing where identity was disclosed, where protected data moved, where calls escalated to a human, and what audit evidence exists today.</p>
+        <p class="ctl-lede reveal" style="margin-top:1rem;font-size:1rem;opacity:.9">A shadow evaluation runs against call traces you already hold. Observe-only and non-intercepting: it does not sit in the call path and requires no vendor changes. It is time-bounded, and it produces a baseline showing where identity was disclosed, where protected data moved, where calls escalated to a human, and what audit evidence exists today. Handling those traces still carries your existing privacy, security and contractual obligations.</p>
         <p class="ctl-boundary-note reveal">
           <span aria-hidden="true">&#9679;</span>
-          <span>Open specification &middot; testable controls &middot; not a certification. The references above are context for why this problem is live; NHID-Clinical does not make any system legally compliant and nothing here is legal advice. No production pilots yet; seeking the first shadow-evaluation partners.</span>
+          <span>Open specification &middot; testable controls &middot; not a certification, not an accredited standard, and not a regulatory endorsement. Working reference implementation; no production-scale deployment. Seeking the first shadow-evaluation partners.</span>
         </p>
       </div>
       <div class="reveal">
@@ -185,6 +180,46 @@
         </ul>
         <p class="ctl-boundary-note" style="margin-top:.75rem;font-size:.875rem">A conceptual trust pathway, not a deployed system architecture.</p>
       </div>
+    </div>
+  </section>
+
+
+  <!-- ── Regulatory pressure: an evidence index, not a badge wall ──────────── -->
+  <section class="page-section" id="regulatory-pressure" aria-labelledby="reg-h">
+    <div class="container" style="max-width:62rem">
+      <p class="section-kicker reveal">Regulatory pressure</p>
+      <h2 id="reg-h" class="reveal" style="margin-bottom:.6rem">Different jurisdictions are approaching synthetic voice from different directions</h2>
+      <p class="reveal" style="color:var(--body);line-height:1.8;max-width:64ch">These are separate instruments with separate scopes, triggers and legal mechanisms. They do not add up to one healthcare AI voice rule, and none of them requires NHID-Clinical. What they share is a direction of travel: when a person is dealing with an automated system, they are increasingly entitled to know.</p>
+      <table class="ctl-reg-index reveal">
+        <caption class="ctl-sr-only">Regulatory reference points, what each establishes, and what it does not</caption>
+        <thead>
+          <tr><th scope="col">Instrument</th><th scope="col">In force</th><th scope="col">What it establishes</th><th scope="col">What it does not</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240AB2905" target="_blank" rel="noopener noreferrer">California AB&nbsp;2905</a><br><span class="ctl-reg-sub">Cal. Pub. Util. Code &sect;2874</span></th>
+            <td>1 Jan 2025</td>
+            <td>Covered automatic dialing-announcing devices must tell the called person when a prerecorded message uses an artificial voice.</td>
+            <td>Does not govern every conversational AI call, and is not healthcare-specific.</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://docs.fcc.gov/public/attachments/FCC-24-17A1.pdf" target="_blank" rel="noopener noreferrer">FCC&nbsp;24&#8209;17</a><br><span class="ctl-reg-sub">TCPA declaratory ruling</span></th>
+            <td>8 Feb 2024</td>
+            <td>AI-generated voices fall within the TCPA's existing restrictions on artificial or prerecorded voice calls.</td>
+            <td>Does not create a disclosure standard for provider&ndash;payer administrative calls.</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener noreferrer">EU AI Act Art.&nbsp;50</a><br><span class="ctl-reg-sub">Transparency obligations</span></th>
+            <td>2 Aug 2026</td>
+            <td>People must be informed when they are interacting directly with an AI system, subject to the Article's scope and exceptions.</td>
+            <td>Does not specify how disclosure is verified, scoped, or evidenced on a call.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="reveal ctl-boundary-note" style="margin-top:1.1rem">
+        <span aria-hidden="true">&#9679;</span>
+        <span>NHID-Clinical addresses the operational control point these instruments leave open: establishing identity, disclosure, authorization and evidence before sensitive workflow actions occur. It does not make any system legally compliant, and nothing here is legal advice.</span>
+      </p>
     </div>
   </section>
 
@@ -293,7 +328,7 @@
     <div class="container">
       <p class="section-kicker">Easy to adopt</p>
       <h2 style="margin-bottom:.35rem">Start in three steps</h2>
-      <p style="color:var(--body);max-width:60ch;margin-bottom:1.75rem">Observe-only, on your own call logs. No vendor changes, no production risk.</p>
+      <p style="color:var(--body);max-width:60ch;margin-bottom:1.75rem">Observe-only and non-intercepting, against call traces you already hold. No vendor changes. Your existing privacy, security and contractual obligations still apply.</p>
       <div class="content-cards" style="grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))">
         <div class="content-card">
           <span class="step-num">1</span>

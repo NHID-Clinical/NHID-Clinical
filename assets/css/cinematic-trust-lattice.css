@@ -596,25 +596,38 @@ button.ctl-btn:focus-visible,
   .ctl-status { border: 1px solid CanvasText; }
 }
 
-/* ── Hero regulatory reference row ─────────────────────────────────────────
-   Deliberately subordinate to the technical proof: small, quiet, and set as a
-   list of reference points rather than a claim. Each entry links to the
-   authoritative source so a reader can check the scope themselves, because the
-   three instruments differ and the page must not imply one uniform rule. */
-.ctl-reg-row{
-  list-style:none; margin:1.1rem 0 0; padding:0;
-  display:flex; flex-wrap:wrap; gap:.5rem .75rem;
-  font-size:.8125rem; line-height:1.4;
+/* ── Regulatory evidence index ─────────────────────────────────────────────
+   A reference table, not a badge wall: each row states what the instrument
+   establishes AND what it does not, so the page cannot be read as claiming the
+   three add up to one rule. Thin rules and neutral surfaces per the evidence
+   surface treatment; no colour carries meaning on its own. */
+.ctl-reg-index{
+  width:100%; border-collapse:collapse; margin-top:1.5rem;
+  font-size:.9375rem; line-height:1.6;
 }
-.ctl-reg-row li{
-  display:flex; align-items:baseline; gap:.4rem;
-  padding:.35rem .6rem; border:1px solid var(--ctl-hairline,rgba(255,255,255,.22));
-  border-radius:4px;
+.ctl-reg-index th, .ctl-reg-index td{
+  text-align:left; vertical-align:top; padding:.85rem .9rem;
+  border-top:1px solid var(--border,rgba(0,0,0,.14));
 }
-.ctl-reg-place{ opacity:.7; text-transform:uppercase; letter-spacing:.04em; font-size:.6875rem; }
-.ctl-reg-when{ opacity:.6; font-variant-numeric:tabular-nums; }
-.ctl-reg-row a{ color:inherit; text-underline-offset:3px; }
-@media (max-width:36rem){ .ctl-reg-row li{ width:100%; } }
+.ctl-reg-index thead th{
+  font-size:.6875rem; text-transform:uppercase; letter-spacing:.07em;
+  font-weight:600; opacity:.65; border-top:0; padding-bottom:.5rem;
+}
+.ctl-reg-index tbody th{ font-weight:600; width:11rem; }
+.ctl-reg-index td:nth-child(2){ white-space:nowrap; font-variant-numeric:tabular-nums; opacity:.75; }
+.ctl-reg-sub{ display:block; font-weight:400; font-size:.8125rem; opacity:.6; margin-top:.15rem; }
+.ctl-sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+/* Small screens: the table becomes labelled blocks rather than a scroll. */
+@media (max-width:46rem){
+  .ctl-reg-index thead{ display:none; }
+  .ctl-reg-index tr{ display:block; border-top:1px solid var(--border,rgba(0,0,0,.14)); padding:.9rem 0; }
+  .ctl-reg-index th, .ctl-reg-index td{ display:block; border:0; padding:.15rem 0; width:auto; }
+  .ctl-reg-index td:nth-child(3)::before{ content:"Establishes: "; font-weight:600; }
+  .ctl-reg-index td:nth-child(4)::before{ content:"Does not: "; font-weight:600; }
+}
 
 /* Compact hero proof line — the technical evidence, kept visually dominant
    over the regulatory reference row above it. */

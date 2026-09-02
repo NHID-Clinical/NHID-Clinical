@@ -79,7 +79,7 @@
     <updated>2026-05-01T00:00:00Z</updated>
     <published>2026-05-01T00:00:00Z</published>
     <category term="Open Proposal"/>
-    <summary>We are actively seeking payer and provider organizations to run a 90-day shadow evaluation — no vendor changes, no production risk. Observe incoming AI voice calls against the v1.3 behavioral baseline and help shape the standard before v2 ships.</summary>
+    <summary>We are actively seeking payer and provider organizations to run a 90-day shadow evaluation — observe-only, non-intercepting, no vendor changes. Observe incoming AI voice calls against the v1.3 behavioral baseline and help shape the standard before v2 ships.</summary>
   </entry>
   <entry>
     <title>Submitted to NIST</title>
