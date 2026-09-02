@@ -593,8 +593,8 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
 (v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
-failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **920 passed /
-18 skipped / 938 total**, and
+failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **921 passed /
+18 skipped / 939 total**, and
 `UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
 `scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
 without failing the build; `scripts/validate_ci.py` warns when the two diverge.
@@ -1093,7 +1093,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 920 passing unit tests across 54 files
+│   └── test_*.py                      # 921 passing unit tests across 54 files
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -1332,11 +1332,11 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
 | + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current:** `UNIT_PUBLISHED = 920` in `scripts/validate_ci.py`. This is not an invariant and not
+**Current:** `UNIT_PUBLISHED = 921` in `scripts/validate_ci.py`. This is not an invariant and not
 a gate — it is the number published on README badges, the website and the PDFs, which
 `scripts/check_number_drift.py` compares those surfaces against.
 
-**Total suite:** 986 passing (920 Python + 66 TypeScript middleware)
+**Total suite:** 987 passing (921 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1407,7 +1407,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 920 passed (18 skipped when no server running = integration tests)
+# Expected: 921 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1433,7 +1433,7 @@ legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked fo
 
 ```python
 # scripts/validate_ci.py
-UNIT_PUBLISHED = 920
+UNIT_PUBLISHED = 921
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -1571,7 +1571,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The full suite (currently **920 passed / 18 skipped**) must
+1. **All existing tests must pass.** The full suite (currently **921 passed / 18 skipped**) must
    stay green after
    every change. Run `python scripts/validate_ci.py` before committing.
 
@@ -2619,7 +2619,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_PUBLISHED = 920  # scripts/validate_ci.py (published count, not a CI gate)
+UNIT_PUBLISHED = 921  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2664,8 +2664,8 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
-| `test_site_navigation.py` | 69 | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
-| **Total** | **920 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
+| `test_site_navigation.py` | 70 | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
+| **Total** | **921 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2742,6 +2742,121 @@ assert len(decision.violations) == 0
 ---
 
 ## Changelog
+
+### 2026-09-02 · CSS consolidation stage 3 — the `ctl-` prefix is gone
+
+`ctl` stood for "Cinematic Trust Lattice", a visual language retired as the
+site's identity while its component CSS was kept. The prefix outlived the thing
+it named, so every class, every token and the stylesheet filename now say what
+they are instead. **No rule was rewritten and no value changed** — this is a
+rename, verified as one.
+
+| | Before | After |
+|---|---|---|
+| Classes | 83 `ctl-*` | 83 semantic names, e.g. `ctl-lattice` → `diagram-layers`, `ctl-trace-panel` → `evidence-trace-panel`, `ctl-step-n` → `sequence-step-number` |
+| Tokens | 34 `--ctl-*` | 32 renamed (26 to `--panel-*`, 6 to type/measure/motion names), **2 removed** |
+| Stylesheet | `assets/css/cinematic-trust-lattice.css` | `assets/css/components.css` (38 pages relinked) |
+| Keyframes | `ctl-lattice-travel` | `diagram-token-travel` |
+
+Every proposed name was checked against the 347 classes and all custom
+properties the other two sheets define before anything was applied. Four
+collided and were renamed rather than merged: `ctl-section-title`,
+`ctl-hero`, `ctl-hero-inner` and `ctl-hero-actions` would have landed on
+`.section-heading` and `.page-hero`, which already exist in
+`nhid-clinical-ui.css` and mean different things there. Reusing those names
+would have silently merged two components.
+
+**A stage-1 claim needs qualifying.** Stage 1 aliased 11 `--ctl-*` tokens to
+canonical ones (`--ctl-text-strong: var(--ink)`) and that was recorded as
+unifying the token systems. It unified **the light theme only.** Each of those
+tokens is also redefined under `[data-theme="dark"]` with its own value, and
+those values do not match the canonical token's dark value:
+
+| Token | light | dark (component) | dark (canonical) |
+|---|---|---|---|
+| `--ctl-text-strong` | `var(--ink)` | `#f2f7fc` | `--ink` is `#cfe2f7` |
+| `--ctl-text` | `var(--body)` | `#c2d0df` | `--body` is `#728a9e` |
+| `--ctl-paper` | `var(--paper)` | `#102038` | `--paper` is `#0d1d2f` |
+| `--ctl-line` | `var(--line)` | `#29445e` | `--line` is `rgba(30,65,100,.65)` |
+
+Eight of the ten diverge this way, so collapsing them would change dark
+rendering. They were renamed instead. Two genuinely were exact aliases in both
+themes — neither `--radius` nor `--sans` is redefined for dark — so
+`--ctl-radius-sm` and `--ctl-font-ui` were **deleted** and their use sites now
+reference the canonical tokens directly. The remaining `--panel-*` set is named
+for what it is: the darker, higher-contrast palette the evidence panels,
+diagrams and code blocks are built on, genuinely distinct from the base paper
+palette rather than a second opinion about it. Two token systems remain, and
+that is now an accurate description rather than an unnoticed one.
+
+**How the rename was verified.** Diffing renamed CSS by eye cannot show that
+nothing broke — a missed selector, a class left behind on one page, or two
+components landing on the same new name all read fine in the source. So
+`scripts/visual/computed_style_snapshot.py` walks the real DOM of 9 pages × 3
+viewports × both themes and records 34 computed properties plus the layout box
+for every element, keyed by a structural path that excludes class names so the
+snapshots are comparable across a rename.
+`scripts/visual/diff_style_snapshots.py` compares two runs.
+
+Result: **0 computed-style differences across 16,902 elements and 54
+page/viewport/theme pairs.** The dark pass is a real check, not a duplicate —
+light and dark differ on 1,206 property values on the homepage alone.
+
+Making that tool trustworthy took three corrections, each a fault in the probe
+rather than the site, and each worth recording because the first version would
+have reported the rename as broken:
+
+1. The `.reveal` entry transition was sampled mid-flight, so every run differed
+   from the last. Fixed by running under `prefers-reduced-motion`, which the
+   site already honours by pinning `.reveal` to its final state — using the
+   site's own code path rather than injecting foreign CSS.
+2. The sticky header's `margin-inline: auto` intermittently read `0px` while the
+   same element's width still read `1320` inside a `1440` viewport — a pair that
+   cannot both be true. Requiring two consecutive agreeing reads did not
+   stabilise it, and it moved to a different page on each run of an unchanged
+   tree. Those two properties were dropped, documented: a real horizontal margin
+   change moves the element, and the recorded box already carries `x` and
+   `width`.
+3. Before both fixes the tool reported 143 differences for this rename. After
+   them, on an unchanged tree, three consecutive runs agree exactly — which is
+   what makes the 0 above mean something.
+
+**Regression guard.** `test_no_ctl_prefix_survives_in_published_css_or_markup`
+fails on any reappearance of `ctl-`, `--ctl-` or the old stylesheet filename in
+published HTML, CSS or JS. A stray prefix from a copied snippet would reference
+a selector that no longer exists, and CSS has no error for an unmatched class.
+
+**Historical records were left alone.** The mechanical pass also rewrote
+`docs/cinematic-trust-lattice-handoff/design-system.md`,
+`implementation-spec.md` and the stage-2 entry above. All three were reverted:
+they record what those names were when written, and a search-and-replace through
+them would make the archive describe a past that did not happen. The handoff
+directory keeps its name for the same reason.
+
+**Published-count propagation.** The new guard added one test, so the published
+count moved again: **920 → 921 passed, 938 → 939 collected**, across the same
+surfaces reconciled in the entry below, until `check_number_drift.py` stopped
+naming any.
+
+**Verification:** 921 passed / 18 skipped, `DRIFT PASS`, `BASELINE PASS`
+(Fabricate byte-identical), build 33.72 MB / 162 files, 2,264 internal
+references / 0 broken, all three stylesheets parsing clean, 0 overflowing
+page/viewport combinations, navigation 30/30, and all three stylesheets
+confirmed loading in the browser under their new names with none loading under
+the old one.
+
+**Files affected:** `assets/css/components.css` (renamed from
+`cinematic-trust-lattice.css`), `nhid-clinical-ui.css` (comment reference), 38
+published `.html` pages, `tests/test_site_navigation.py`,
+`scripts/visual/computed_style_snapshot.py` (new),
+`scripts/visual/diff_style_snapshots.py` (new), this document.
+
+**Issue remaining.** Roughly 200 classes are unreferenced by any built page and
+can be removed; `surface-technical-grid` (formerly `ctl-grid-surface`) reads as
+unused by that measure but is deliberately retained for dark evidence panels.
+The two token systems described above remain two.
+
+---
 
 ### 2026-09-02 · Website redesign — CSS consolidation stages 1 and 2
 

@@ -1,11 +1,12 @@
 /* ==========================================================================
-   Cinematic Trust Lattice — NHID-Clinical visual system
+   NHID-Clinical component styles
    --------------------------------------------------------------------------
    Loaded AFTER /nhid-clinical-ui.css and /assets/css/premium.css.
 
-   Additive by design: every public class is namespaced `ctl-*` and no legacy
-   selector is overridden, so unmigrated routes keep rendering from the
-   existing stylesheet while routes migrate one at a time.
+   Classes are named for what they are on the page. They used to carry a `ctl-`
+   prefix, for a visual language that is no longer the site's identity; the
+   prefix outlived it and is gone. No legacy selector is overridden, so
+   unmigrated routes keep rendering from the existing stylesheet.
 
    Token values are taken verbatim from
    docs/cinematic-trust-lattice-handoff/design-system.md §3.
@@ -17,149 +18,147 @@
 
 :root {
   /* Surfaces and ink */
-  --ctl-ink-950: #07111f;
-  --ctl-ink-900: #0b1d35;
-  --ctl-ink-800: #102b48;
-  --ctl-text-strong: var(--ink);        /* alias -> canonical */
-  --ctl-text: var(--body);              /* alias -> canonical */
-  --ctl-text-muted: #5b636c;            /* muted charcoal; no canonical equivalent */
-  --ctl-paper: var(--paper);            /* alias -> canonical warm paper */
-  --ctl-canvas: var(--mist);            /* alias -> canonical */
-  --ctl-mist: var(--mist);              /* alias -> canonical */
-  --ctl-line: var(--line);              /* alias -> canonical grey border */
+  --panel-ink-950: #07111f;
+  --panel-ink-900: #0b1d35;
+  --panel-ink-800: #102b48;
+  --panel-text-strong: var(--ink);        /* alias -> canonical */
+  --panel-text: var(--body);              /* alias -> canonical */
+  --panel-text-muted: #5b636c;            /* muted charcoal; no canonical equivalent */
+  --panel-paper: var(--paper);            /* alias -> canonical warm paper */
+  --panel-canvas: var(--mist);            /* alias -> canonical */
+  --panel-mist: var(--mist);              /* alias -> canonical */
+  --panel-line: var(--line);              /* alias -> canonical grey border */
 
   /* Semantic roles */
-  --ctl-cobalt: #1e63db;
-  --ctl-cobalt-hover: #164da8;
-  --ctl-cobalt-soft: #e8f0ff;
-  --ctl-teal: var(--teal);              /* alias -> canonical accent */
-  --ctl-teal-bright: #55d9cb;
-  --ctl-teal-soft: var(--teal-soft);    /* alias -> canonical */
-  --ctl-amber: #986600;
-  --ctl-amber-soft: #fff5d7;
-  --ctl-red: #b42318;
-  --ctl-red-soft: #fff0ef;
-  --ctl-focus: #0b57d0;
+  --panel-cobalt: #1e63db;
+  --panel-cobalt-hover: #164da8;
+  --panel-cobalt-soft: #e8f0ff;
+  --panel-teal: var(--teal);              /* alias -> canonical accent */
+  --panel-teal-bright: #55d9cb;
+  --panel-teal-soft: var(--teal-soft);    /* alias -> canonical */
+  --panel-amber: #986600;
+  --panel-amber-soft: #fff5d7;
+  --panel-red: #b42318;
+  --panel-red-soft: #fff0ef;
+  --panel-focus: #0b57d0;
 
   /* Shape and elevation */
-  --ctl-radius-sm: var(--radius);       /* alias -> canonical */
-  --ctl-radius-md: 10px;
-  --ctl-radius-lg: 14px;
-  --ctl-shadow-1: 0 2px 8px rgba(16, 35, 61, 0.08);
-  --ctl-shadow-2: 0 5px 16px rgba(16, 35, 61, 0.12);
-  --ctl-grid-line: rgba(28, 32, 38, 0.07);   /* neutral, not blue */
+  --panel-radius-md: 10px;
+  --panel-radius-lg: 14px;
+  --panel-shadow-1: 0 2px 8px rgba(16, 35, 61, 0.08);
+  --panel-shadow-2: 0 5px 16px rgba(16, 35, 61, 0.12);
+  --panel-grid-line: rgba(28, 32, 38, 0.07);   /* neutral, not blue */
 
   /* Typography and measure */
-  --ctl-font-ui: var(--sans);           /* alias -> canonical */
-  --ctl-font-data: "IBM Plex Mono", ui-monospace, monospace;
-  --ctl-prose: 68ch;
-  --ctl-container: 1320px;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --prose-measure: 68ch;
+  --wide-container-max: 1320px;
 
   /* Motion — §8: 160–220ms deliberate transitions */
-  --ctl-motion-fast: 160ms;
-  --ctl-motion: 200ms;
-  --ctl-ease: cubic-bezier(0.2, 0.6, 0.3, 1);
+  --motion-duration-fast: 160ms;
+  --motion-duration: 200ms;
+  --motion-ease: cubic-bezier(0.2, 0.6, 0.3, 1);
 }
 
 [data-theme="dark"] {
-  --ctl-text-strong: #f2f7fc;
-  --ctl-text: #c2d0df;
-  --ctl-text-muted: #96abc0;
-  --ctl-paper: #102038;
-  --ctl-canvas: #07111f;
-  --ctl-mist: #0d1c30;
-  --ctl-line: #29445e;
-  --ctl-cobalt: #79b7ff;
-  --ctl-cobalt-hover: #afd3ff;
-  --ctl-cobalt-soft: #142e51;
-  --ctl-teal: #55d9cb;
-  --ctl-teal-bright: #75ece0;
-  --ctl-teal-soft: #103c3b;
-  --ctl-amber: #ffd26c;
-  --ctl-amber-soft: #3a2c10;
-  --ctl-red: #ffaaa4;
-  --ctl-red-soft: #411f25;
-  --ctl-focus: #a3caff;
-  --ctl-shadow-1: 0 2px 10px rgba(0, 0, 0, 0.24);
-  --ctl-shadow-2: 0 6px 20px rgba(0, 0, 0, 0.34);
-  --ctl-grid-line: rgba(144, 211, 255, 0.09);
+  --panel-text-strong: #f2f7fc;
+  --panel-text: #c2d0df;
+  --panel-text-muted: #96abc0;
+  --panel-paper: #102038;
+  --panel-canvas: #07111f;
+  --panel-mist: #0d1c30;
+  --panel-line: #29445e;
+  --panel-cobalt: #79b7ff;
+  --panel-cobalt-hover: #afd3ff;
+  --panel-cobalt-soft: #142e51;
+  --panel-teal: #55d9cb;
+  --panel-teal-bright: #75ece0;
+  --panel-teal-soft: #103c3b;
+  --panel-amber: #ffd26c;
+  --panel-amber-soft: #3a2c10;
+  --panel-red: #ffaaa4;
+  --panel-red-soft: #411f25;
+  --panel-focus: #a3caff;
+  --panel-shadow-1: 0 2px 10px rgba(0, 0, 0, 0.24);
+  --panel-shadow-2: 0 6px 20px rgba(0, 0, 0, 0.34);
+  --panel-grid-line: rgba(144, 211, 255, 0.09);
 }
 
 /* --------------------------------------------------------------------------
    2. Typography scale (§4)
    -------------------------------------------------------------------------- */
 
-.ctl-display {
-  font-family: var(--ctl-font-ui);
+.display-title {
+  font-family: var(--sans);
   font-weight: 700;
   font-size: clamp(2.1rem, 3.6vw, 3.4rem);
   line-height: 1.03;
   letter-spacing: -0.022em;
   text-wrap: balance;
-  color: var(--ctl-text-strong);
+  color: var(--panel-text-strong);
   margin: 0;
 }
 
-.ctl-page-title {
-  font-family: var(--ctl-font-ui);
+.page-heading {
+  font-family: var(--sans);
   font-weight: 700;
   font-size: clamp(2rem, 3.2vw, 3.25rem);
   line-height: 1.08;
   letter-spacing: -0.018em;
   text-wrap: balance;
-  color: var(--ctl-text-strong);
+  color: var(--panel-text-strong);
   margin: 0;
 }
 
-.ctl-section-title {
-  font-family: var(--ctl-font-ui);
+.section-title {
+  font-family: var(--sans);
   font-weight: 700;
   font-size: clamp(1.35rem, 1.9vw, 1.75rem);
   line-height: 1.18;
   letter-spacing: -0.012em;
-  color: var(--ctl-text-strong);
+  color: var(--panel-text-strong);
   margin: 0;
 }
 
-.ctl-body {
-  font-family: var(--ctl-font-ui);
+.body-text {
+  font-family: var(--sans);
   font-weight: 400;
   font-size: 1.0625rem;
   line-height: 1.72;
-  color: var(--ctl-text);
+  color: var(--panel-text);
 }
 
-.ctl-lede {
-  font-family: var(--ctl-font-ui);
+.lede-text {
+  font-family: var(--sans);
   font-weight: 400;
   font-size: clamp(1.05rem, 1.35vw, 1.25rem);
   line-height: 1.65;
-  color: var(--ctl-text);
+  color: var(--panel-text);
   max-width: 58ch;
 }
 
-.ctl-meta {
-  font-family: var(--ctl-font-ui);
+.meta-label {
+  font-family: var(--sans);
   font-weight: 600;
   font-size: 0.8125rem;
   line-height: 1.4;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ctl-text-muted);
+  color: var(--panel-text-muted);
 }
 
-.ctl-data,
-.ctl-data code,
-code.ctl-data {
-  font-family: var(--ctl-font-data);
+.data-text,
+.data-text code,
+code.data-text {
+  font-family: var(--mono);
   font-weight: 400;
   font-size: 0.875rem;
   line-height: 1.6;
   font-variant-numeric: tabular-nums;
 }
 
-.ctl-prose {
-  max-width: var(--ctl-prose);
+.prose-measure {
+  max-width: var(--prose-measure);
 }
 
 /* Screen-reader-only. Used for table captions that would be redundant visually
@@ -181,53 +180,53 @@ code.ctl-data {
    3. Layout primitives (§5)
    -------------------------------------------------------------------------- */
 
-.ctl-container {
+.wide-container {
   width: 100%;
-  max-width: var(--ctl-container);
+  max-width: var(--wide-container-max);
   margin-inline: auto;
   padding-inline: clamp(1rem, 3vw, 2.5rem);
 }
 
 /* Quiet 42px technical grid — hero and lattice surfaces only, never global */
-.ctl-grid-surface {
-  background-color: var(--ctl-ink-950);
+.surface-technical-grid {
+  background-color: var(--panel-ink-950);
   background-image:
-    linear-gradient(to right, var(--ctl-grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--ctl-grid-line) 1px, transparent 1px);
+    linear-gradient(to right, var(--panel-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--panel-grid-line) 1px, transparent 1px);
   background-size: 42px 42px;
 }
 
-.ctl-surface-canvas { background-color: var(--ctl-canvas); }
-.ctl-surface-mist   { background-color: var(--ctl-mist); }
-.ctl-surface-paper  { background-color: var(--ctl-paper); }
+.surface-canvas { background-color: var(--panel-canvas); }
+.surface-mist   { background-color: var(--panel-mist); }
+.surface-paper  { background-color: var(--panel-paper); }
 
 /* On dark surfaces the ink tokens do not apply — set explicit reading colors */
-.ctl-on-dark { color: #dce8f5; }
-.ctl-on-dark .ctl-display,
-.ctl-on-dark .ctl-page-title,
-.ctl-on-dark .ctl-section-title { color: #f7fbff; }
-.ctl-on-dark .ctl-lede,
-.ctl-on-dark .ctl-body { color: #c2d4e6; }
-.ctl-on-dark .ctl-meta { color: var(--ctl-teal-bright); }
+.on-dark { color: #dce8f5; }
+.on-dark .display-title,
+.on-dark .page-heading,
+.on-dark .section-title { color: #f7fbff; }
+.on-dark .lede-text,
+.on-dark .body-text { color: #c2d4e6; }
+.on-dark .meta-label { color: var(--panel-teal-bright); }
 
 /* --------------------------------------------------------------------------
    4. Hero (§5, §6 CtlHero)
    -------------------------------------------------------------------------- */
 
-.ctl-hero {
+.hero-band {
   position: relative;
   overflow: clip;
   padding-block: clamp(3.5rem, 8vw, 7rem);
 }
 
-.ctl-hero-inner {
+.hero-band-inner {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
   gap: clamp(2rem, 5vw, 4.5rem);
   align-items: center;
 }
 
-.ctl-hero-actions {
+.hero-band-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -235,19 +234,19 @@ code.ctl-data {
 }
 
 /* Boundary note — the non-certification line. Text, never a badge. */
-.ctl-boundary-note {
+.boundary-note {
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
   margin-top: 1.75rem;
   font-size: 0.9375rem;
   line-height: 1.6;
-  color: var(--ctl-text-muted);
+  color: var(--panel-text-muted);
 }
-.ctl-on-dark .ctl-boundary-note { color: #9fb4c9; }
+.on-dark .boundary-note { color: #9fb4c9; }
 
 @media (max-width: 900px) {
-  .ctl-hero-inner { grid-template-columns: minmax(0, 1fr); }
+  .hero-band-inner { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* --------------------------------------------------------------------------
@@ -255,204 +254,204 @@ code.ctl-data {
    No pills.
    -------------------------------------------------------------------------- */
 
-.ctl-btn {
+.action-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   min-height: 44px;                 /* §7 touch target */
   padding: 0.7rem 1.4rem;
-  border-radius: var(--ctl-radius-sm);
+  border-radius: var(--radius);
   border: 1px solid transparent;
-  font-family: var(--ctl-font-ui);
+  font-family: var(--sans);
   font-size: 0.9375rem;
   font-weight: 600;
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color var(--ctl-motion) var(--ctl-ease),
-              border-color var(--ctl-motion) var(--ctl-ease),
-              transform var(--ctl-motion-fast) var(--ctl-ease);
+  transition: background-color var(--motion-duration) var(--motion-ease),
+              border-color var(--motion-duration) var(--motion-ease),
+              transform var(--motion-duration-fast) var(--motion-ease);
 }
 
-.ctl-btn-primary {
-  background: var(--ctl-cobalt);
+.action-button-primary {
+  background: var(--panel-cobalt);
   color: #ffffff;
 }
-[data-theme="dark"] .ctl-btn-primary { color: #06152b; }
-.ctl-btn-primary:hover { background: var(--ctl-cobalt-hover); transform: translateY(-1px); }
+[data-theme="dark"] .action-button-primary { color: #06152b; }
+.action-button-primary:hover { background: var(--panel-cobalt-hover); transform: translateY(-1px); }
 
-.ctl-btn-secondary {
+.action-button-secondary {
   background: transparent;
-  color: var(--ctl-cobalt);
-  border-color: var(--ctl-cobalt);
+  color: var(--panel-cobalt);
+  border-color: var(--panel-cobalt);
 }
-.ctl-btn-secondary:hover { background: var(--ctl-cobalt-soft); transform: translateY(-1px); }
+.action-button-secondary:hover { background: var(--panel-cobalt-soft); transform: translateY(-1px); }
 
-.ctl-on-dark .ctl-btn-secondary { color: #a8ccff; border-color: #4f7fc4; }
-.ctl-on-dark .ctl-btn-secondary:hover { background: rgba(30, 99, 219, 0.18); }
+.on-dark .action-button-secondary { color: #a8ccff; border-color: #4f7fc4; }
+.on-dark .action-button-secondary:hover { background: rgba(30, 99, 219, 0.18); }
 
 /* --------------------------------------------------------------------------
    6. Focus — §7: minimum 3px solid, visible offset, never glow-only
    -------------------------------------------------------------------------- */
 
-.ctl-scope a:focus-visible,
-.ctl-scope button:focus-visible,
-.ctl-scope input:focus-visible,
-.ctl-scope select:focus-visible,
-.ctl-scope textarea:focus-visible,
-.ctl-scope summary:focus-visible,
-.ctl-scope [tabindex]:focus-visible,
-a.ctl-btn:focus-visible,
-button.ctl-btn:focus-visible,
-.ctl-skip-link:focus-visible {
-  outline: 3px solid var(--ctl-focus);
+.scope-note a:focus-visible,
+.scope-note button:focus-visible,
+.scope-note input:focus-visible,
+.scope-note select:focus-visible,
+.scope-note textarea:focus-visible,
+.scope-note summary:focus-visible,
+.scope-note [tabindex]:focus-visible,
+a.action-button:focus-visible,
+button.action-button:focus-visible,
+.skip-link:focus-visible {
+  outline: 3px solid var(--panel-focus);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
 /* Skip link — visible on focus, not permanently hidden from keyboard users */
-.ctl-skip-link {
+.skip-link {
   position: absolute;
   left: 0.75rem;
   top: -100%;
   z-index: 999;
   padding: 0.75rem 1.25rem;
-  background: var(--ctl-paper);
-  color: var(--ctl-text-strong);
-  border: 1px solid var(--ctl-line);
-  border-radius: var(--ctl-radius-sm);
+  background: var(--panel-paper);
+  color: var(--panel-text-strong);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
   font-weight: 600;
   text-decoration: none;
-  transition: top var(--ctl-motion-fast) var(--ctl-ease);
+  transition: top var(--motion-duration-fast) var(--motion-ease);
 }
-.ctl-skip-link:focus { top: 0.75rem; }
+.skip-link:focus { top: 0.75rem; }
 
 /* --------------------------------------------------------------------------
    7. Metric rail (§6 CtlMetricRail)
    Values must come from repository sources — see the drift guard.
    -------------------------------------------------------------------------- */
 
-.ctl-metric-rail {
+.metric-rail {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
   gap: 1px;
-  background: var(--ctl-line);
-  border-block: 1px solid var(--ctl-line);
+  background: var(--panel-line);
+  border-block: 1px solid var(--panel-line);
 }
 
-.ctl-metric {
-  background: var(--ctl-canvas);
+.metric {
+  background: var(--panel-canvas);
   padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 2vw, 1.75rem);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 }
 
-.ctl-metric-value {
-  font-family: var(--ctl-font-ui);
+.metric-value {
+  font-family: var(--sans);
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.02em;
-  color: var(--ctl-cobalt);
+  color: var(--panel-cobalt);
   font-variant-numeric: tabular-nums;
 }
 
-.ctl-metric-label {
+.metric-label {
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ctl-text-muted);
+  color: var(--panel-text-muted);
 }
 
 /* --------------------------------------------------------------------------
    8. Status — §7: never hue alone. Text + icon/pattern + color.
    -------------------------------------------------------------------------- */
 
-.ctl-status {
+.evidence-status {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.25rem 0.6rem;
-  border-radius: var(--ctl-radius-sm);
+  border-radius: var(--radius);
   border: 1px solid currentColor;
   font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.35;
 }
-.ctl-status::before { font-family: var(--ctl-font-data); font-weight: 700; }
+.evidence-status::before { font-family: var(--mono); font-weight: 700; }
 
-.ctl-status-verified { color: var(--ctl-teal);   background: var(--ctl-teal-soft); }
-.ctl-status-verified::before { content: "\2713"; }          /* ✓ */
+.evidence-status-verified { color: var(--panel-teal);   background: var(--panel-teal-soft); }
+.evidence-status-verified::before { content: "\2713"; }          /* ✓ */
 
-.ctl-status-review   { color: var(--ctl-amber);  background: var(--ctl-amber-soft); }
-.ctl-status-review::before { content: "\26A0"; }            /* ⚠ */
+.evidence-status-review   { color: var(--panel-amber);  background: var(--panel-amber-soft); }
+.evidence-status-review::before { content: "\26A0"; }            /* ⚠ */
 
-.ctl-status-blocked  { color: var(--ctl-red);    background: var(--ctl-red-soft); }
-.ctl-status-blocked::before { content: "\2717"; }           /* ✗ */
+.evidence-status-blocked  { color: var(--panel-red);    background: var(--panel-red-soft); }
+.evidence-status-blocked::before { content: "\2717"; }           /* ✗ */
 
-.ctl-status-info     { color: var(--ctl-cobalt); background: var(--ctl-cobalt-soft); }
-.ctl-status-info::before { content: "\2022"; }              /* • */
+.evidence-status-info     { color: var(--panel-cobalt); background: var(--panel-cobalt-soft); }
+.evidence-status-info::before { content: "\2022"; }              /* • */
 
 /* --------------------------------------------------------------------------
    9. Panels, control cards, evidence frames (§6)
    -------------------------------------------------------------------------- */
 
-.ctl-panel {
-  background: var(--ctl-paper);
-  border: 1px solid var(--ctl-line);
-  border-radius: var(--ctl-radius-md);
+.panel {
+  background: var(--panel-paper);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--panel-radius-md);
   padding: clamp(1.25rem, 2.5vw, 1.75rem);
-  box-shadow: var(--ctl-shadow-1);
+  box-shadow: var(--panel-shadow-1);
 }
 
-.ctl-panel-viz { border-radius: var(--ctl-radius-lg); }
+.panel-viz { border-radius: var(--panel-radius-lg); }
 
-.ctl-card-grid {
+.card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   gap: 1.25rem;
 }
 
-.ctl-control-card { display: flex; flex-direction: column; gap: 0.6rem; }
+.control-card { display: flex; flex-direction: column; gap: 0.6rem; }
 
-.ctl-control-id {
-  font-family: var(--ctl-font-data);
+.control-card-id {
+  font-family: var(--mono);
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: var(--ctl-teal);
+  color: var(--panel-teal);
 }
 
 /* Evidence frame: claim / evidence / limitation / source */
-.ctl-evidence-frame {
+.evidence-frame {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  border-left: 3px solid var(--ctl-cobalt);
+  border-left: 3px solid var(--panel-cobalt);
   padding-left: 1.1rem;
 }
-.ctl-evidence-limitation {
+.evidence-limitation {
   font-size: 0.9375rem;
-  color: var(--ctl-text-muted);
-  border-top: 1px solid var(--ctl-line);
+  color: var(--panel-text-muted);
+  border-top: 1px solid var(--panel-line);
   padding-top: 0.75rem;
 }
 
 /* Trace panel — raw text stays selectable and scrollable */
-.ctl-trace-panel {
-  background: var(--ctl-ink-900);
-  border: 1px solid var(--ctl-line);
-  border-radius: var(--ctl-radius-md);
+.evidence-trace-panel {
+  background: var(--panel-ink-900);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--panel-radius-md);
   padding: 1rem 1.15rem;
   overflow-x: auto;
   color: #d6e6f6;
 }
-.ctl-trace-panel pre,
-.ctl-trace-panel code {
-  font-family: var(--ctl-font-data);
+.evidence-trace-panel pre,
+.evidence-trace-panel code {
+  font-family: var(--mono);
   font-size: 0.8125rem;
   line-height: 1.65;
   user-select: text;
@@ -463,14 +462,14 @@ button.ctl-btn:focus-visible,
    10. Document shell (§5, template 3)
    -------------------------------------------------------------------------- */
 
-.ctl-doc-shell {
+.doc-shell {
   display: grid;
   grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
   gap: clamp(1.5rem, 4vw, 3.5rem);
   align-items: start;
 }
 
-.ctl-doc-toc {
+.doc-toc {
   position: sticky;
   top: 1.5rem;
   align-self: start;
@@ -479,59 +478,59 @@ button.ctl-btn:focus-visible,
   font-size: 0.9375rem;
   line-height: 1.7;
 }
-.ctl-doc-toc ol, .ctl-doc-toc ul { list-style: none; margin: 0; padding: 0; }
-.ctl-doc-toc a { color: var(--ctl-text); text-decoration: none; display: block; padding: 0.2rem 0; }
-.ctl-doc-toc a:hover { color: var(--ctl-cobalt); text-decoration: underline; }
-.ctl-doc-toc [aria-current="true"] { color: var(--ctl-cobalt); font-weight: 600; }
+.doc-toc ol, .doc-toc ul { list-style: none; margin: 0; padding: 0; }
+.doc-toc a { color: var(--panel-text); text-decoration: none; display: block; padding: 0.2rem 0; }
+.doc-toc a:hover { color: var(--panel-cobalt); text-decoration: underline; }
+.doc-toc [aria-current="true"] { color: var(--panel-cobalt); font-weight: 600; }
 
-.ctl-doc-body { max-width: var(--ctl-prose); }
+.doc-body { max-width: var(--prose-measure); }
 
 /* Normative callout — for MUST/SHOULD spec text */
-.ctl-norm-block {
-  background: var(--ctl-cobalt-soft);
-  border-left: 3px solid var(--ctl-cobalt);
-  border-radius: 0 var(--ctl-radius-sm) var(--ctl-radius-sm) 0;
+.normative-block {
+  background: var(--panel-cobalt-soft);
+  border-left: 3px solid var(--panel-cobalt);
+  border-radius: 0 var(--radius) var(--radius) 0;
   padding: 1rem 1.25rem;
   margin-block: 1.25rem;
 }
 
 /* Wide content never scrolls the page body sideways */
-.ctl-scroll-x { overflow-x: auto; max-width: 100%; }
+.scroll-x { overflow-x: auto; max-width: 100%; }
 
-.ctl-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
-.ctl-table th, .ctl-table td {
+.content-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.content-table th, .content-table td {
   text-align: left;
   padding: 0.65rem 0.85rem;
-  border-bottom: 1px solid var(--ctl-line);
+  border-bottom: 1px solid var(--panel-line);
   vertical-align: top;
 }
-.ctl-table th { font-weight: 700; color: var(--ctl-text-strong); }
-.ctl-table td { color: var(--ctl-text); }
+.content-table th { font-weight: 700; color: var(--panel-text-strong); }
+.content-table td { color: var(--panel-text); }
 
 @media (max-width: 900px) {
-  .ctl-doc-shell { grid-template-columns: minmax(0, 1fr); }
-  .ctl-doc-toc { position: static; max-height: none; }
+  .doc-shell { grid-template-columns: minmax(0, 1fr); }
+  .doc-toc { position: static; max-height: none; }
 }
 
 /* --------------------------------------------------------------------------
    11. Trust Lattice (§6 TrustLattice, §8 motion)
    -------------------------------------------------------------------------- */
 
-.ctl-lattice { width: 100%; height: auto; display: block; }
+.diagram-layers { width: 100%; height: auto; display: block; }
 
 /* One token travels the five layers once, 2.4–3.2s, on entry only */
-.ctl-lattice-token {
-  animation: ctl-lattice-travel 2.8s var(--ctl-ease) 1 both;
+.diagram-token {
+  animation: diagram-token-travel 2.8s var(--motion-ease) 1 both;
 }
 
-@keyframes ctl-lattice-travel {
+@keyframes diagram-token-travel {
   from { opacity: 0; transform: translateY(-58px); }
   12%  { opacity: 1; }
   to   { opacity: 1; transform: translateY(96px); }
 }
 
 /* Text/list equivalent for the diagram — §7 diagrams requirement */
-.ctl-lattice-alt {
+.diagram-layers-alt {
   margin: 1rem 0 0;
   padding: 0;
   list-style: none;
@@ -540,29 +539,29 @@ button.ctl-btn:focus-visible,
   gap: 0.5rem;
   font-size: 0.875rem;
 }
-.ctl-lattice-alt li {
-  border: 1px solid var(--ctl-line);
-  border-radius: var(--ctl-radius-sm);
+.diagram-layers-alt li {
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
   padding: 0.3rem 0.6rem;
-  color: var(--ctl-text-muted);
+  color: var(--panel-text-muted);
 }
 
 /* --------------------------------------------------------------------------
    12. Loading / empty / error states (app-wide-system.md)
    -------------------------------------------------------------------------- */
 
-.ctl-state {
-  border: 1px dashed var(--ctl-line);
-  border-radius: var(--ctl-radius-md);
+.phase-state {
+  border: 1px dashed var(--panel-line);
+  border-radius: var(--panel-radius-md);
   padding: 1.5rem;
-  color: var(--ctl-text-muted);
+  color: var(--panel-text-muted);
   text-align: left;
 }
-.ctl-state-title { font-weight: 700; color: var(--ctl-text-strong); margin: 0 0 0.35rem; }
+.phase-state-title { font-weight: 700; color: var(--panel-text-strong); margin: 0 0 0.35rem; }
 
-.ctl-skeleton {
-  background: linear-gradient(90deg, var(--ctl-mist), var(--ctl-canvas), var(--ctl-mist));
-  border-radius: var(--ctl-radius-sm);
+.skeleton {
+  background: linear-gradient(90deg, var(--panel-mist), var(--panel-canvas), var(--panel-mist));
+  border-radius: var(--radius);
   height: 0.9rem;
   margin-block: 0.4rem;
 }
@@ -572,28 +571,28 @@ button.ctl-btn:focus-visible,
    -------------------------------------------------------------------------- */
 
 @media (max-width: 720px) {
-  .ctl-hero { padding-block: clamp(2.5rem, 9vw, 4rem); }
-  .ctl-hero-actions .ctl-btn { width: 100%; }
+  .hero-band { padding-block: clamp(2.5rem, 9vw, 4rem); }
+  .hero-band-actions .action-button { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ctl-scope *,
-  .ctl-scope *::before,
-  .ctl-scope *::after,
-  .ctl-lattice-token {
+  .scope-note *,
+  .scope-note *::before,
+  .scope-note *::after,
+  .diagram-token {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
-  .ctl-lattice-token { transform: none; opacity: 1; }
-  .ctl-btn:hover { transform: none; }
+  .diagram-token { transform: none; opacity: 1; }
+  .action-button:hover { transform: none; }
 }
 
 @media (forced-colors: active) {
-  .ctl-btn,
-  .ctl-panel,
-  .ctl-status { border: 1px solid CanvasText; }
+  .action-button,
+  .panel,
+  .evidence-status { border: 1px solid CanvasText; }
 }
 
 /* ── Regulatory evidence index ─────────────────────────────────────────────
@@ -601,37 +600,37 @@ button.ctl-btn:focus-visible,
    establishes AND what it does not, so the page cannot be read as claiming the
    three add up to one rule. Thin rules and neutral surfaces per the evidence
    surface treatment; no colour carries meaning on its own. */
-.ctl-reg-index{
+.regulatory-index{
   width:100%; border-collapse:collapse; margin-top:1.5rem;
   font-size:.9375rem; line-height:1.6;
 }
-.ctl-reg-index th, .ctl-reg-index td{
+.regulatory-index th, .regulatory-index td{
   text-align:left; vertical-align:top; padding:.85rem .9rem;
   border-top:1px solid var(--border,rgba(0,0,0,.14));
 }
-.ctl-reg-index thead th{
+.regulatory-index thead th{
   font-size:.6875rem; text-transform:uppercase; letter-spacing:.07em;
   font-weight:600; opacity:.65; border-top:0; padding-bottom:.5rem;
 }
-.ctl-reg-index tbody th{ font-weight:600; width:11rem; }
-.ctl-reg-index td:nth-child(2){ white-space:nowrap; font-variant-numeric:tabular-nums; opacity:.75; }
-.ctl-reg-sub{ display:block; font-weight:400; font-size:.8125rem; opacity:.6; margin-top:.15rem; }
-.ctl-sr-only{
+.regulatory-index tbody th{ font-weight:600; width:11rem; }
+.regulatory-index td:nth-child(2){ white-space:nowrap; font-variant-numeric:tabular-nums; opacity:.75; }
+.regulatory-subnote{ display:block; font-weight:400; font-size:.8125rem; opacity:.6; margin-top:.15rem; }
+.sr-only-text{
   position:absolute; width:1px; height:1px; padding:0; margin:-1px;
   overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
 }
 /* Small screens: the table becomes labelled blocks rather than a scroll. */
 @media (max-width: 900px) {
-  .ctl-reg-index thead{ display:none; }
-  .ctl-reg-index tr{ display:block; border-top:1px solid var(--border,rgba(0,0,0,.14)); padding:.9rem 0; }
-  .ctl-reg-index th, .ctl-reg-index td{ display:block; border:0; padding:.15rem 0; width:auto; }
-  .ctl-reg-index td:nth-child(3)::before{ content:"Establishes: "; font-weight:600; }
-  .ctl-reg-index td:nth-child(4)::before{ content:"Does not: "; font-weight:600; }
+  .regulatory-index thead{ display:none; }
+  .regulatory-index tr{ display:block; border-top:1px solid var(--border,rgba(0,0,0,.14)); padding:.9rem 0; }
+  .regulatory-index th, .regulatory-index td{ display:block; border:0; padding:.15rem 0; width:auto; }
+  .regulatory-index td:nth-child(3)::before{ content:"Establishes: "; font-weight:600; }
+  .regulatory-index td:nth-child(4)::before{ content:"Does not: "; font-weight:600; }
 }
 
 /* Compact hero proof line — the technical evidence, kept visually dominant
    over the regulatory reference row above it. */
-.ctl-proof-line{
+.proof-line{
   margin:1.15rem 0 0; font-size:.9375rem; font-weight:600;
   letter-spacing:.01em; font-variant-numeric:tabular-nums;
 }
@@ -642,42 +641,42 @@ button.ctl-btn:focus-visible,
    records. Monospace on the identifiers and reason codes per the evidence
    treatment — those are literal strings from the engine, and reading them as
    prose would be wrong. */
-.ctl-control-table{
+.control-table{
   width:100%; border-collapse:collapse; margin-top:.5rem;
   font-size:.9375rem; line-height:1.6;
 }
-.ctl-control-table th, .ctl-control-table td{
+.control-table th, .control-table td{
   text-align:left; vertical-align:top; padding:.9rem .9rem;
   border-top:1px solid var(--border,rgba(0,0,0,.14));
 }
-.ctl-control-table thead th{
+.control-table thead th{
   font-size:.6875rem; text-transform:uppercase; letter-spacing:.07em;
   font-weight:600; opacity:.65; border-top:0; padding-bottom:.5rem;
 }
-.ctl-control-table tbody th{ width:13rem; font-weight:400; }
-.ctl-ctrl-id{
+.control-table tbody th{ width:13rem; font-weight:400; }
+.control-table-id{
   display:inline-block; font-weight:600; font-size:.875rem;
   letter-spacing:.02em;
 }
-.ctl-ctrl-name{ display:block; font-size:.8125rem; opacity:.7; margin-top:.2rem; }
-.ctl-ctrl-opt{
+.control-table-name{ display:block; font-size:.8125rem; opacity:.7; margin-top:.2rem; }
+.control-table-optional{
   font-size:.6875rem; text-transform:uppercase; letter-spacing:.06em;
   border:1px solid currentColor; border-radius:2px; padding:0 .3em;
   margin-left:.4em; opacity:.7;
 }
-.ctl-ctrl-act, .ctl-ctrl-code{ font-size:.8125rem; overflow-wrap:anywhere; }
-.ctl-ctrl-act{ font-weight:600; }
-.ctl-ctrl-code{ opacity:.78; }
+.control-table-action, .control-table-code{ font-size:.8125rem; overflow-wrap:anywhere; }
+.control-table-action{ font-weight:600; }
+.control-table-code{ opacity:.78; }
 
 @media (max-width: 900px) {
-  .ctl-control-table thead{ display:none; }
-  .ctl-control-table tr{
+  .control-table thead{ display:none; }
+  .control-table tr{
     display:block; border-top:1px solid var(--border,rgba(0,0,0,.14)); padding:.9rem 0;
   }
-  .ctl-control-table th, .ctl-control-table td{ display:block; border:0; padding:.2rem 0; width:auto; }
-  .ctl-control-table td:nth-child(2)::before{ content:"Trigger: "; font-weight:600; }
-  .ctl-control-table td:nth-child(3)::before{ content:"Decision: "; font-weight:600; }
-  .ctl-control-table td:nth-child(4)::before{ content:"Evidence: "; font-weight:600; }
+  .control-table th, .control-table td{ display:block; border:0; padding:.2rem 0; width:auto; }
+  .control-table td:nth-child(2)::before{ content:"Trigger: "; font-weight:600; }
+  .control-table td:nth-child(3)::before{ content:"Decision: "; font-weight:600; }
+  .control-table td:nth-child(4)::before{ content:"Evidence: "; font-weight:600; }
 }
 
 /* ── Before/after control sequences ────────────────────────────────────────
@@ -687,63 +686,63 @@ button.ctl-btn:focus-visible,
    assistive technology, and so it reflows to one column on narrow screens
    instead of scrolling. The risk step is marked by a rule and a label, never
    by colour alone. */
-.ctl-seq-pair{
+.sequence-pair{
   display:grid; gap:1.5rem; grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));
   align-items:start;
 }
-.ctl-seq{ border:1px solid var(--border,rgba(0,0,0,.14)); padding:1.1rem 1.2rem 1.3rem; }
-.ctl-seq-h{
+.sequence{ border:1px solid var(--border,rgba(0,0,0,.14)); padding:1.1rem 1.2rem 1.3rem; }
+.sequence-heading{
   font-size:.6875rem; text-transform:uppercase; letter-spacing:.08em;
   font-weight:600; opacity:.7; margin:0 0 .9rem;
 }
-.ctl-step-list{ list-style:none; margin:0; padding:0; counter-reset:none; }
-.ctl-step{
+.sequence-step-list{ list-style:none; margin:0; padding:0; counter-reset:none; }
+.sequence-step{
   display:flex; align-items:baseline; gap:.7rem;
   padding:.5rem 0; border-top:1px solid var(--border,rgba(0,0,0,.09));
   font-size:.875rem; line-height:1.45;
 }
-.ctl-step:first-child{ border-top:0; }
-.ctl-step-n{
+.sequence-step:first-child{ border-top:0; }
+.sequence-step-number{
   flex:0 0 auto; min-width:1.35rem; font-size:.6875rem; font-weight:600;
   opacity:.55; font-variant-numeric:tabular-nums;
 }
-.ctl-step-t{ letter-spacing:.02em; }
-.ctl-step-c{
+.sequence-step-title{ letter-spacing:.02em; }
+.sequence-step-copy{
   display:inline-block; margin-left:.5rem; font-size:.6875rem;
   border:1px solid currentColor; border-radius:2px; padding:0 .3em; opacity:.65;
 }
 /* The exposure step: marked structurally (heavier rule + weight), not by hue. */
-.ctl-step-risk{ border-top-width:2px; font-weight:600; }
-.ctl-step-risk .ctl-step-t::after{
+.sequence-step-risk{ border-top-width:2px; font-weight:600; }
+.sequence-step-risk .sequence-step-title::after{
   content:" — exposure point"; font-weight:400; opacity:.6; letter-spacing:0;
 }
 
-.ctl-latency-note{
+.evidence-latency-note{
   margin-top:1.5rem; padding:1.1rem 1.2rem;
   border-left:3px solid var(--teal,currentColor);
   background:var(--bg-alt,transparent);
 }
-.ctl-latency-h{ font-size:1rem; margin:0 0 .5rem; }
-.ctl-latency-note p{ margin:0; color:var(--body); line-height:1.75; max-width:70ch; }
-.ctl-latency-caveat{ margin-top:.6rem !important; font-size:.85rem; opacity:.75; }
+.evidence-latency-heading{ font-size:1rem; margin:0 0 .5rem; }
+.evidence-latency-note p{ margin:0; color:var(--body); line-height:1.75; max-width:70ch; }
+.evidence-latency-caveat{ margin-top:.6rem !important; font-size:.85rem; opacity:.75; }
 
 /* ── Shadow evaluation phases ──────────────────────────────────────────────
    Three phases as an ordered list: the sequence is the meaning, so it is real
    list markup rather than styled divs. */
-.ctl-phase-row{
+.phase-row{
   list-style:none; margin:0; padding:0;
   display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));
 }
-.ctl-phase{ border-top:2px solid var(--teal,currentColor); padding-top:.9rem; }
-.ctl-phase-n{
+.phase{ border-top:2px solid var(--teal,currentColor); padding-top:.9rem; }
+.phase-number{
   display:block; font-size:.6875rem; font-weight:600; letter-spacing:.08em;
   opacity:.55; font-variant-numeric:tabular-nums;
 }
-.ctl-phase-h{
+.phase-heading{
   font-size:.9375rem; letter-spacing:.09em; text-transform:uppercase;
   margin:.3rem 0 .5rem;
 }
-.ctl-phase p{ margin:0; color:var(--body); font-size:.9375rem; line-height:1.7; }
+.phase p{ margin:0; color:var(--body); font-size:.9375rem; line-height:1.7; }
 
 /* ── Evidence surfaces ─────────────────────────────────────────────────────
    Quiet, neutral panes holding literal input and literal engine output.
@@ -751,23 +750,23 @@ button.ctl-btn:focus-visible,
    able to match them against the repository character for character. Code
    scrolls horizontally on small screens rather than wrapping, which would
    change the alignment that makes the output readable. */
-.ctl-evidence{
+.evidence{
   display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));
   align-items:start;
 }
-.ctl-evidence-pane{ border:1px solid var(--border,rgba(0,0,0,.14)); }
-.ctl-evidence-label{
+.evidence-pane{ border:1px solid var(--border,rgba(0,0,0,.14)); }
+.evidence-label{
   margin:0; padding:.6rem .85rem; font-size:.6875rem; font-weight:600;
   text-transform:uppercase; letter-spacing:.07em; opacity:.7;
   border-bottom:1px solid var(--border,rgba(0,0,0,.14));
 }
-.ctl-evidence-label code{ text-transform:none; letter-spacing:0; opacity:.9; }
-.ctl-evidence-code{
+.evidence-label code{ text-transform:none; letter-spacing:0; opacity:.9; }
+.evidence-code{
   margin:0; padding:.85rem; overflow-x:auto;
   font-size:.8125rem; line-height:1.65; tab-size:2;
 }
-.ctl-evidence-code code{ white-space:pre; }
-.ctl-evidence-repro{
+.evidence-code code{ white-space:pre; }
+.evidence-repro{
   margin-top:1rem; font-size:.9rem; color:var(--ink-soft); line-height:1.7; max-width:70ch;
 }
 
@@ -782,7 +781,7 @@ button.ctl-btn:focus-visible,
    excluded — they need no scroll area, and giving them one would reintroduce
    the horizontal scroll this rule exists to remove. */
 @media (max-width: 900px) {
-  main table:not(.ctl-control-table):not(.ctl-reg-index),
+  main table:not(.control-table):not(.regulatory-index),
   .premium-metrics{
     display:block;
     width:100%;

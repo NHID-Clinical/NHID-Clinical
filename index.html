@@ -12,14 +12,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
-  <link rel="stylesheet" href="/assets/css/cinematic-trust-lattice.css"/>
+  <link rel="stylesheet" href="/assets/css/components.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
 </head>
 <body>
 
-<a class="ctl-skip-link" href="#main">Skip to main content</a>
+<a class="skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
   <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
@@ -151,34 +151,34 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main id="main" class="ctl-scope">
+<main id="main" class="scope-note">
 
   <!-- ── Section 1: Cinematic Trust Lattice hero ───────────────────────────── -->
-  <section class="ctl-scope ctl-hero">
-    <div class="ctl-container ctl-hero-inner">
+  <section class="scope-note hero-band">
+    <div class="wide-container hero-band-inner">
       <div>
-        <p class="ctl-meta reveal">Healthcare AI voice &middot; provider&ndash;payer calls</p>
-        <h1 class="ctl-display reveal">Know who your AI voice agents are before they exchange healthcare operations data.</h1>
-        <p class="ctl-lede reveal" style="margin-top:1.15rem">NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.</p>
-        <div class="ctl-hero-actions reveal">
-          <a class="ctl-btn ctl-btn-primary" href="/for-payers.html">Run an observe-only shadow evaluation</a>
-          <a class="ctl-btn ctl-btn-secondary" href="/framework/">Explore the framework</a>
+        <p class="meta-label reveal">Healthcare AI voice &middot; provider&ndash;payer calls</p>
+        <h1 class="display-title reveal">Know who your AI voice agents are before they exchange healthcare operations data.</h1>
+        <p class="lede-text reveal" style="margin-top:1.15rem">NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.</p>
+        <div class="hero-band-actions reveal">
+          <a class="action-button action-button-primary" href="/for-payers.html">Run an observe-only shadow evaluation</a>
+          <a class="action-button action-button-secondary" href="/framework/">Explore the framework</a>
         </div>
-        <p class="ctl-proof-line reveal">5 controls &middot; 920 passing tests &middot; machine-readable traces &middot; open implementation</p>
-        <p class="ctl-lede reveal" style="margin-top:1rem;font-size:1rem;opacity:.9">A shadow evaluation runs against call traces you already hold. Observe-only and non-intercepting: it does not sit in the call path and requires no vendor changes. It is time-bounded, and it produces a baseline showing where identity was disclosed, where protected data moved, where calls escalated to a human, and what audit evidence exists today. Handling those traces still carries your existing privacy, security and contractual obligations.</p>
-        <p class="ctl-boundary-note reveal">
+        <p class="proof-line reveal">5 controls &middot; 921 passing tests &middot; machine-readable traces &middot; open implementation</p>
+        <p class="lede-text reveal" style="margin-top:1rem;font-size:1rem;opacity:.9">A shadow evaluation runs against call traces you already hold. Observe-only and non-intercepting: it does not sit in the call path and requires no vendor changes. It is time-bounded, and it produces a baseline showing where identity was disclosed, where protected data moved, where calls escalated to a human, and what audit evidence exists today. Handling those traces still carries your existing privacy, security and contractual obligations.</p>
+        <p class="boundary-note reveal">
           <span aria-hidden="true">&#9679;</span>
           <span>Open specification &middot; testable controls &middot; not a certification, not an accredited standard, and not a regulatory endorsement. Working reference implementation; no production-scale deployment. Seeking the first shadow-evaluation partners.</span>
         </p>
       </div>
       <div class="reveal">
-        <img src="/assets/diagrams/trust-lattice.svg" class="ctl-lattice"
+        <img src="/assets/diagrams/trust-lattice.svg" class="diagram-layers"
              alt="Conceptual diagram: five stacked trust layers labelled Disclose, Authorize, Scope, Audit and Observe, with a single request descending through them in order."
              width="520" height="420" loading="eager"/>
-        <ul class="ctl-lattice-alt">
+        <ul class="diagram-layers-alt">
           <li>1 · Disclose</li><li>2 · Authorize</li><li>3 · Scope</li><li>4 · Audit</li><li>5 · Observe</li>
         </ul>
-        <p class="ctl-boundary-note" style="margin-top:.75rem;font-size:.875rem">A conceptual trust pathway, not a deployed system architecture.</p>
+        <p class="boundary-note" style="margin-top:.75rem;font-size:.875rem">A conceptual trust pathway, not a deployed system architecture.</p>
       </div>
     </div>
   </section>
@@ -190,33 +190,33 @@
       <p class="section-kicker reveal">Regulatory pressure</p>
       <h2 id="reg-h" class="reveal" style="margin-bottom:.6rem">Different jurisdictions are approaching synthetic voice from different directions</h2>
       <p class="reveal" style="color:var(--body);line-height:1.8;max-width:64ch">These are separate instruments with separate scopes, triggers and legal mechanisms. They do not add up to one healthcare AI voice rule, and none of them requires NHID-Clinical. What they share is a direction of travel: when a person is dealing with an automated system, they are increasingly entitled to know.</p>
-      <table class="ctl-reg-index reveal">
-        <caption class="ctl-sr-only">Regulatory reference points, what each establishes, and what it does not</caption>
+      <table class="regulatory-index reveal">
+        <caption class="sr-only-text">Regulatory reference points, what each establishes, and what it does not</caption>
         <thead>
           <tr><th scope="col">Instrument</th><th scope="col">In force</th><th scope="col">What it establishes</th><th scope="col">What it does not</th></tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row"><a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240AB2905" target="_blank" rel="noopener noreferrer">California AB&nbsp;2905</a><br><span class="ctl-reg-sub">Cal. Pub. Util. Code &sect;2874</span></th>
+            <th scope="row"><a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240AB2905" target="_blank" rel="noopener noreferrer">California AB&nbsp;2905</a><br><span class="regulatory-subnote">Cal. Pub. Util. Code &sect;2874</span></th>
             <td>1 Jan 2025</td>
             <td>Covered automatic dialing-announcing devices must tell the called person when a prerecorded message uses an artificial voice.</td>
             <td>Does not govern every conversational AI call, and is not healthcare-specific.</td>
           </tr>
           <tr>
-            <th scope="row"><a href="https://docs.fcc.gov/public/attachments/FCC-24-17A1.pdf" target="_blank" rel="noopener noreferrer">FCC&nbsp;24&#8209;17</a><br><span class="ctl-reg-sub">TCPA declaratory ruling</span></th>
+            <th scope="row"><a href="https://docs.fcc.gov/public/attachments/FCC-24-17A1.pdf" target="_blank" rel="noopener noreferrer">FCC&nbsp;24&#8209;17</a><br><span class="regulatory-subnote">TCPA declaratory ruling</span></th>
             <td>8 Feb 2024</td>
             <td>AI-generated voices fall within the TCPA's existing restrictions on artificial or prerecorded voice calls.</td>
             <td>Does not create a disclosure standard for provider&ndash;payer administrative calls.</td>
           </tr>
           <tr>
-            <th scope="row"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener noreferrer">EU AI Act Art.&nbsp;50</a><br><span class="ctl-reg-sub">Transparency obligations</span></th>
+            <th scope="row"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener noreferrer">EU AI Act Art.&nbsp;50</a><br><span class="regulatory-subnote">Transparency obligations</span></th>
             <td>2 Aug 2026</td>
             <td>People must be informed when they are interacting directly with an AI system, subject to the Article's scope and exceptions.</td>
             <td>Does not specify how disclosure is verified, scoped, or evidenced on a call.</td>
           </tr>
         </tbody>
       </table>
-      <p class="reveal ctl-boundary-note" style="margin-top:1.1rem">
+      <p class="reveal boundary-note" style="margin-top:1.1rem">
         <span aria-hidden="true">&#9679;</span>
         <span>NHID-Clinical addresses the operational control point these instruments leave open: establishing identity, disclosure, authorization and evidence before sensitive workflow actions occur. It does not make any system legally compliant, and nothing here is legal advice.</span>
       </p>
@@ -230,59 +230,59 @@
       <h2 id="problem-h" class="reveal" style="max-width:34ch">A verified phone number does not tell you the caller is allowed to act for that provider.</h2>
       <p class="reveal" style="color:var(--body);max-width:64ch;margin-bottom:1.75rem">Telephony authenticates the number. Identity systems authenticate the account. Neither establishes that <em>this</em> caller may act for <em>that</em> organization on <em>this</em> call &mdash; and on an administrative call, operational data starts moving early.</p>
 
-      <div class="ctl-seq-pair reveal">
-        <div class="ctl-seq">
-          <h3 class="ctl-seq-h">Without a control baseline</h3>
-          <ol class="ctl-step-list">
-            <li class="ctl-step">
-              <span class="ctl-step-n">1</span><span class="ctl-step-t">CALL CONNECTS</span>
+      <div class="sequence-pair reveal">
+        <div class="sequence">
+          <h3 class="sequence-heading">Without a control baseline</h3>
+          <ol class="sequence-step-list">
+            <li class="sequence-step">
+              <span class="sequence-step-number">1</span><span class="sequence-step-title">CALL CONNECTS</span>
             </li>
-            <li class="ctl-step">
-              <span class="ctl-step-n">2</span><span class="ctl-step-t">PHONE NUMBER / TELEPHONY SIGNAL</span>
+            <li class="sequence-step">
+              <span class="sequence-step-number">2</span><span class="sequence-step-title">PHONE NUMBER / TELEPHONY SIGNAL</span>
             </li>
-            <li class="ctl-step">
-              <span class="ctl-step-n">3</span><span class="ctl-step-t">ORGANIZATION / ACCOUNT SIGNAL</span>
+            <li class="sequence-step">
+              <span class="sequence-step-number">3</span><span class="sequence-step-title">ORGANIZATION / ACCOUNT SIGNAL</span>
             </li>
-            <li class="ctl-step">
-              <span class="ctl-step-n">4</span><span class="ctl-step-t">AI AGENT SPEAKS</span>
+            <li class="sequence-step">
+              <span class="sequence-step-number">4</span><span class="sequence-step-title">AI AGENT SPEAKS</span>
             </li>
-            <li class="ctl-step ctl-step-risk">
-              <span class="ctl-step-n">5</span><span class="ctl-step-t">OPERATIONAL DATA MAY ALREADY BE EXCHANGED</span>
+            <li class="sequence-step sequence-step-risk">
+              <span class="sequence-step-number">5</span><span class="sequence-step-title">OPERATIONAL DATA MAY ALREADY BE EXCHANGED</span>
             </li>
           </ol>
         </div>
-        <div class="ctl-seq">
-          <h3 class="ctl-seq-h">With NHID-Clinical</h3>
-          <ol class="ctl-step-list">
-            <li class="ctl-step">
-              <span class="ctl-step-n">1</span><span class="ctl-step-t">CALL CONNECTS</span>
+        <div class="sequence">
+          <h3 class="sequence-heading">With NHID-Clinical</h3>
+          <ol class="sequence-step-list">
+            <li class="sequence-step">
+              <span class="sequence-step-number">1</span><span class="sequence-step-title">CALL CONNECTS</span>
             </li>
-            <li class="ctl-step">
-              <span class="ctl-step-n">2</span><span class="ctl-step-t">IDENTITY DISCLOSURE<code class="ctl-step-c">IDG-01</code></span>
+            <li class="sequence-step">
+              <span class="sequence-step-number">2</span><span class="sequence-step-title">IDENTITY DISCLOSURE<code class="sequence-step-copy">IDG-01</code></span>
             </li>
-            <li class="ctl-step">
-              <span class="ctl-step-n">3</span><span class="ctl-step-t">PRE-DATA EXCHANGE GATE<code class="ctl-step-c">PDX-01</code></span>
+            <li class="sequence-step">
+              <span class="sequence-step-number">3</span><span class="sequence-step-title">PRE-DATA EXCHANGE GATE<code class="sequence-step-copy">PDX-01</code></span>
             </li>
-            <li class="ctl-step">
-              <span class="ctl-step-n">4</span><span class="ctl-step-t">AUTHORIZATION / SCOPE<code class="ctl-step-c">DLG-01</code></span>
+            <li class="sequence-step">
+              <span class="sequence-step-number">4</span><span class="sequence-step-title">AUTHORIZATION / SCOPE<code class="sequence-step-copy">DLG-01</code></span>
             </li>
-            <li class="ctl-step">
-              <span class="ctl-step-n">5</span><span class="ctl-step-t">DECEPTIVE-BEHAVIOR CHECK<code class="ctl-step-c">DBC-01</code></span>
+            <li class="sequence-step">
+              <span class="sequence-step-number">5</span><span class="sequence-step-title">DECEPTIVE-BEHAVIOR CHECK<code class="sequence-step-copy">DBC-01</code></span>
             </li>
-            <li class="ctl-step">
-              <span class="ctl-step-n">6</span><span class="ctl-step-t">ESCALATION IF NEEDED<code class="ctl-step-c">EIT-01</code></span>
+            <li class="sequence-step">
+              <span class="sequence-step-number">6</span><span class="sequence-step-title">ESCALATION IF NEEDED<code class="sequence-step-copy">EIT-01</code></span>
             </li>
-            <li class="ctl-step">
-              <span class="ctl-step-n">7</span><span class="ctl-step-t">AUDIT TRACE<code class="ctl-step-c">ATR-01</code></span>
+            <li class="sequence-step">
+              <span class="sequence-step-number">7</span><span class="sequence-step-title">AUDIT TRACE<code class="sequence-step-copy">ATR-01</code></span>
             </li>
           </ol>
         </div>
       </div>
 
-      <div class="reveal ctl-latency-note">
-        <h3 class="ctl-latency-h">Impersonation latency</h3>
+      <div class="reveal evidence-latency-note">
+        <h3 class="evidence-latency-heading">Impersonation latency</h3>
         <p>The interval between a voice agent entering an interaction and the receiving party establishing that the caller is a disclosed, authorized non-human actor. In the left-hand sequence that interval runs until the call ends, because nothing in it ever establishes the fact. The controls on the right exist to close it and to make it measurable.</p>
-        <p class="ctl-latency-caveat">This is a measurement concept defined by this project for its own use. It is not an established industry term or a published metric.</p>
+        <p class="evidence-latency-caveat">This is a measurement concept defined by this project for its own use. It is not an established industry term or a published metric.</p>
       </div>
 
       <div style="margin-top:1.5rem">
@@ -297,47 +297,47 @@
       <p class="section-kicker reveal">The control layer</p>
       <h2 id="controls-h" class="reveal" style="max-width:30ch">Five checks on every AI-agent call, and a sixth when you opt in.</h2>
       <p class="reveal" style="color:var(--body);max-width:64ch;margin-bottom:1.5rem">Each control is triggered by something observable on the call, returns one decision, and records a reason code in the machine-readable trace. The decisions and reason codes below are the ones the reference engine actually emits &mdash; <a href="/framework/controls.html">read the control definitions</a> or <a href="/specification.html">the normative text</a>. Mapped, not certified.</p>
-      <table class="ctl-control-table reveal">
-        <caption class="ctl-sr-only">The five canonical controls plus the opt-in delegated-authority gate, with the call behaviour that triggers each, the decision it returns, and the reason codes it records</caption>
+      <table class="control-table reveal">
+        <caption class="sr-only-text">The five canonical controls plus the opt-in delegated-authority gate, with the call behaviour that triggers each, the decision it returns, and the reason codes it records</caption>
         <thead>
           <tr><th scope="col">Control</th><th scope="col">Trigger &mdash; observable on the call</th><th scope="col">Decision</th><th scope="col">Evidence &mdash; reason code in the trace</th></tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row"><code class="ctl-ctrl-id">IDG-01</code><span class="ctl-ctrl-name">Identity Disclosure Gate</span></th>
+            <th scope="row"><code class="control-table-id">IDG-01</code><span class="control-table-name">Identity Disclosure Gate</span></th>
             <td>Agent speaks before any disclosure is recorded for the call.</td>
-            <td><code class="ctl-ctrl-act">DISCLOSE_IDENTITY</code></td>
-            <td><code class="ctl-ctrl-code">IDG01_DISCLOSURE_MISSING · IDG01_DISCLOSURE_CONTRADICTED</code></td>
+            <td><code class="control-table-action">DISCLOSE_IDENTITY</code></td>
+            <td><code class="control-table-code">IDG01_DISCLOSURE_MISSING · IDG01_DISCLOSURE_CONTRADICTED</code></td>
           </tr>
           <tr>
-            <th scope="row"><code class="ctl-ctrl-id">PDX-01</code><span class="ctl-ctrl-name">Pre-Data Exchange Gate</span></th>
+            <th scope="row"><code class="control-table-id">PDX-01</code><span class="control-table-name">Pre-Data Exchange Gate</span></th>
             <td>Protected data is requested or supplied on the call.</td>
-            <td><code class="ctl-ctrl-act">DENY_DATA</code></td>
-            <td><code class="ctl-ctrl-code">PDX01_PHI_GATE_TRIGGERED · PDX01_DISCLOSURE_NOT_SEQUENCED</code></td>
+            <td><code class="control-table-action">DENY_DATA</code></td>
+            <td><code class="control-table-code">PDX01_PHI_GATE_TRIGGERED · PDX01_DISCLOSURE_NOT_SEQUENCED</code></td>
           </tr>
           <tr>
-            <th scope="row"><code class="ctl-ctrl-id">DBC-01</code><span class="ctl-ctrl-name">Deceptive Behavior Check</span></th>
+            <th scope="row"><code class="control-table-id">DBC-01</code><span class="control-table-name">Deceptive Behavior Check</span></th>
             <td>Agent speech carries impersonation phrasing or a deceptive-artifact flag.</td>
-            <td><code class="ctl-ctrl-act">LOG_ONLY</code></td>
-            <td><code class="ctl-ctrl-code">DBC01_ARTIFACT_DETECTED · DBC01_IMPERSONATION_PHRASE_DETECTED</code></td>
+            <td><code class="control-table-action">LOG_ONLY</code></td>
+            <td><code class="control-table-code">DBC01_ARTIFACT_DETECTED · DBC01_IMPERSONATION_PHRASE_DETECTED</code></td>
           </tr>
           <tr>
-            <th scope="row"><code class="ctl-ctrl-id">EIT-01</code><span class="ctl-ctrl-name">Escalation Implementation Test</span></th>
+            <th scope="row"><code class="control-table-id">EIT-01</code><span class="control-table-name">Escalation Implementation Test</span></th>
             <td>Caller asks for a human, or an escalation outcome is recorded.</td>
-            <td><code class="ctl-ctrl-act">ESCALATE_HUMAN</code></td>
-            <td><code class="ctl-ctrl-code">EIT01_NO_ESCALATION_PATH · EIT01_ESCALATION_NOT_HONORED</code></td>
+            <td><code class="control-table-action">ESCALATE_HUMAN</code></td>
+            <td><code class="control-table-code">EIT01_NO_ESCALATION_PATH · EIT01_ESCALATION_NOT_HONORED</code></td>
           </tr>
           <tr>
-            <th scope="row"><code class="ctl-ctrl-id">ATR-01</code><span class="ctl-ctrl-name">Audit Trail Requirements</span></th>
+            <th scope="row"><code class="control-table-id">ATR-01</code><span class="control-table-name">Audit Trail Requirements</span></th>
             <td>Every evaluated event, checked for the required audit fields.</td>
-            <td><code class="ctl-ctrl-act">LOG_ONLY</code></td>
-            <td><code class="ctl-ctrl-code">ATR01_AUDIT_FIELDS_MISSING · ATR01_AUDIT_COMPLETE</code></td>
+            <td><code class="control-table-action">LOG_ONLY</code></td>
+            <td><code class="control-table-code">ATR01_AUDIT_FIELDS_MISSING · ATR01_AUDIT_COMPLETE</code></td>
           </tr>
           <tr>
-            <th scope="row"><code class="ctl-ctrl-id">DLG-01</code><span class="ctl-ctrl-name">Delegated Authority Gate <span class="ctl-ctrl-opt">opt-in</span></span></th>
+            <th scope="row"><code class="control-table-id">DLG-01</code><span class="control-table-name">Delegated Authority Gate <span class="control-table-optional">opt-in</span></span></th>
             <td>A signed delegation is presented for the call.</td>
-            <td><code class="ctl-ctrl-act">CONTINUE_AI</code></td>
-            <td><code class="ctl-ctrl-code">DLG01_DELEGATION_VERIFIED · DLG01_NO_DELEGATION_PRESENTED</code></td>
+            <td><code class="control-table-action">CONTINUE_AI</code></td>
+            <td><code class="control-table-code">DLG01_DELEGATION_VERIFIED · DLG01_NO_DELEGATION_PRESENTED</code></td>
           </tr>
         </tbody>
       </table>
@@ -350,7 +350,7 @@
     <div class="container">
       <h2 id="built-open" class="section-kicker reveal" style="margin-bottom:.9rem">Built in the open &mdash; every claim below is checkable</h2>
       <ul class="reveal" style="list-style:none;padding:0;margin:0;display:grid;gap:.75rem 2rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));font-size:.95rem;line-height:1.55">
-        <li><strong>920 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
+        <li><strong>921 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
         <li><strong>Versioned specification</strong><br><span style="color:var(--ink-soft)">v1.3, five named controls &mdash; <a href="/specification.html">read it</a></span></li>
         <li><strong>Deterministic engine</strong><br><span style="color:var(--ink-soft)">Same inputs produce the same decision, every time &mdash; <a href="/framework/reference-implementation.html">how it works</a></span></li>
         <li><strong>FHIR R4 AuditEvent</strong><br><span style="color:var(--ink-soft)">Audit records in a standard healthcare schema &mdash; <a href="/evidence-pack.html">see an example</a></span></li>
@@ -361,26 +361,26 @@
 
 <!-- ── By the numbers (stats strip) ──────────────────────────────────────── -->
   <section class="page-section" style="padding-block:1rem 2.5rem">
-    <div class="ctl-scope ctl-metric-rail reveal">
-      <div class="ctl-metric">
-        <span class="ctl-metric-value">920</span>
-        <span class="ctl-metric-label">Passing tests</span>
-        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">18 skipped · 938 total, in the open repo</span>
+    <div class="scope-note metric-rail reveal">
+      <div class="metric">
+        <span class="metric-value">921</span>
+        <span class="metric-label">Passing tests</span>
+        <span style="font-size:.8125rem;color:var(--panel-text-muted)">18 skipped · 939 total, in the open repo</span>
       </div>
-      <div class="ctl-metric">
-        <span class="ctl-metric-value">5</span>
-        <span class="ctl-metric-label">Controls</span>
-        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">IDG-01 · PDX-01 · DBC-01 · EIT-01 · ATR-01, plus the bot-to-bot rule</span>
+      <div class="metric">
+        <span class="metric-value">5</span>
+        <span class="metric-label">Controls</span>
+        <span style="font-size:.8125rem;color:var(--panel-text-muted)">IDG-01 · PDX-01 · DBC-01 · EIT-01 · ATR-01, plus the bot-to-bot rule</span>
       </div>
-      <div class="ctl-metric">
-        <span class="ctl-metric-value">FHIR</span>
-        <span class="ctl-metric-label">AuditEvent</span>
-        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">R4 base spec v4.0.1 — no named IG conformance claimed</span>
+      <div class="metric">
+        <span class="metric-value">FHIR</span>
+        <span class="metric-label">AuditEvent</span>
+        <span style="font-size:.8125rem;color:var(--panel-text-muted)">R4 base spec v4.0.1 — no named IG conformance claimed</span>
       </div>
-      <div class="ctl-metric">
-        <span class="ctl-metric-value">Open</span>
-        <span class="ctl-metric-label">CC BY 4.0</span>
-        <span style="font-size:.8125rem;color:var(--ctl-text-muted)">NIST comment on public record</span>
+      <div class="metric">
+        <span class="metric-value">Open</span>
+        <span class="metric-label">CC BY 4.0</span>
+        <span style="font-size:.8125rem;color:var(--panel-text-muted)">NIST comment on public record</span>
       </div>
     </div>
   </section>
@@ -420,18 +420,18 @@
       <h2 id="evidence-h" class="reveal" style="max-width:32ch">One call in, a decision and a reason code out.</h2>
       <p class="reveal" style="color:var(--body);max-width:64ch;margin-bottom:1.5rem">The engine is deterministic: the same input produces the same decision every time. Below is an actual evaluation, not an illustration &mdash; an agent asking for a member ID before disclosing that it is automated.</p>
 
-      <div class="ctl-evidence reveal">
-        <div class="ctl-evidence-pane">
-          <p class="ctl-evidence-label">Input &mdash; one turn of a call</p>
-          <pre class="ctl-evidence-code"><code>speech_text  "Hi, this is Morgan from provider
+      <div class="evidence reveal">
+        <div class="evidence-pane">
+          <p class="evidence-label">Input &mdash; one turn of a call</p>
+          <pre class="evidence-code"><code>speech_text  "Hi, this is Morgan from provider
               services. Can I get the member ID?"
 turn_count   0
 phi_accessed ["member_id"]
 disclosure   (none recorded)</code></pre>
         </div>
-        <div class="ctl-evidence-pane">
-          <p class="ctl-evidence-label">Output &mdash; <code>evaluate_all()</code></p>
-          <pre class="ctl-evidence-code"><code>action       DENY_DATA
+        <div class="evidence-pane">
+          <p class="evidence-label">Output &mdash; <code>evaluate_all()</code></p>
+          <pre class="evidence-code"><code>action       DENY_DATA
 reason_code  PDX01_PHI_GATE_TRIGGERED
 next_state   GATE_BLOCKED
 
@@ -442,7 +442,7 @@ violations
         </div>
       </div>
 
-      <p class="reveal ctl-evidence-repro">Reproduce it: <code>evaluate_all()</code> in <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/src/nhid_policy_engine_v1.py">src/nhid_policy_engine_v1.py</a>, or run the same scenario in the <a href="/simulator.html">simulator</a>. The decision is recorded in a machine-readable trace and, where audit is enabled, emitted as a FHIR R4 AuditEvent.</p>
+      <p class="reveal evidence-repro">Reproduce it: <code>evaluate_all()</code> in <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/src/nhid_policy_engine_v1.py">src/nhid_policy_engine_v1.py</a>, or run the same scenario in the <a href="/simulator.html">simulator</a>. The decision is recorded in a machine-readable trace and, where audit is enabled, emitted as a FHIR R4 AuditEvent.</p>
 
       <div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">
         <a class="cta-button" href="/evidence-pack.html">See the evidence pack <span aria-hidden="true">&rarr;</span></a>
@@ -458,25 +458,25 @@ violations
       <h2 id="shadow-h" class="reveal" style="max-width:32ch">Measure what your AI callers establish today, without changing anything.</h2>
       <p class="reveal" style="color:var(--body);max-width:64ch;margin-bottom:1.75rem">A time-bounded, observe-only assessment against call traces you already hold. It is non-intercepting: the controls run over recorded interactions, not in the live call path.</p>
 
-      <ol class="ctl-phase-row reveal">
-        <li class="ctl-phase">
-          <span class="ctl-phase-n">01</span>
-          <h3 class="ctl-phase-h">OBSERVE</h3>
+      <ol class="phase-row reveal">
+        <li class="phase">
+          <span class="phase-number">01</span>
+          <h3 class="phase-heading">OBSERVE</h3>
           <p>Analyze call traces or logs you already hold. Nothing is inserted into the call path and no production workflow changes.</p>
         </li>
-        <li class="ctl-phase">
-          <span class="ctl-phase-n">02</span>
-          <h3 class="ctl-phase-h">EVALUATE</h3>
+        <li class="phase">
+          <span class="phase-number">02</span>
+          <h3 class="phase-heading">EVALUATE</h3>
           <p>Run the NHID-Clinical controls against those observed interactions, using the same deterministic engine the conformance suite exercises.</p>
         </li>
-        <li class="ctl-phase">
-          <span class="ctl-phase-n">03</span>
-          <h3 class="ctl-phase-h">EVIDENCE</h3>
+        <li class="phase">
+          <span class="phase-number">03</span>
+          <h3 class="phase-heading">EVIDENCE</h3>
           <p>Produce measurable findings: per-control outcomes, where identity was disclosed, where protected data moved, and implementation recommendations.</p>
         </li>
       </ol>
 
-      <p class="reveal ctl-boundary-note" style="margin-top:1.5rem">
+      <p class="reveal boundary-note" style="margin-top:1.5rem">
         <span aria-hidden="true">&#9679;</span>
         <span><strong>On data handling.</strong> Call traces are operational records and may contain protected information. A shadow evaluation does not remove any privacy, security or contractual obligation attached to that data &mdash; scope, access and retention are agreed before anything is shared, and the assessment can run against de-identified or sampled traces. We will tell you what is needed and why before you send anything.</span>
       </p>

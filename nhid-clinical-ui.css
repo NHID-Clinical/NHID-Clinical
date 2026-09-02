@@ -4,7 +4,7 @@
   Preserve calm whitespace, precise hierarchy, soft medical blues, muted teal accents, and restrained movement.
 
   BREAKPOINTS (shared by this file, /assets/css/premium.css and
-  /assets/css/cinematic-trust-lattice.css). Four viewport widths, each one an
+  /assets/css/components.css). Four viewport widths, each one an
   actual layout transition rather than an inherited number. Add a fifth only
   when a layout genuinely breaks somewhere none of these covers -- and when you
   retire a width, round UP to the next one here, never down: collapsing a

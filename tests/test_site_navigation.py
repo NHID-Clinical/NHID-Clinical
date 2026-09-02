@@ -111,3 +111,29 @@ def test_narrow_viewport_rule_keeps_the_toggle_visible():
     assert f".icon-button:not(.{cls})" in css, (
         f"the phone-tier icon-button rule no longer spares .{cls}"
     )
+
+
+# ── The retired visual-system prefix must not come back ────────────────────
+
+def test_no_ctl_prefix_survives_in_published_css_or_markup():
+    """
+    `ctl-` stood for a visual language that is no longer the site's identity.
+    The classes, the tokens and the stylesheet filename were renamed to say what
+    they are instead. A stray `ctl-` reintroduced by a copied snippet would
+    reference a selector that no longer exists -- silently unstyled, since CSS
+    has no error for an unmatched class.
+    """
+    offenders = []
+    for dirpath, dirnames, filenames in os.walk(REPO_ROOT):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".")]
+        for name in filenames:
+            if not name.endswith((".html", ".css", ".js")):
+                continue
+            rel = os.path.relpath(os.path.join(dirpath, name), REPO_ROOT)
+            for i, line in enumerate(read(rel).splitlines(), 1):
+                if re.search(r"(?<![\w-])--?ctl-[a-z0-9-]", line) or "cinematic-trust-lattice.css" in line:
+                    offenders.append(f"{rel}:{i}")
+    assert not offenders, (
+        "the retired ctl-/cinematic-trust-lattice naming reappeared in: "
+        + ", ".join(offenders[:10])
+    )
