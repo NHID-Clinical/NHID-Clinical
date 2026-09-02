@@ -679,3 +679,68 @@ button.ctl-btn:focus-visible,
   .ctl-control-table td:nth-child(3)::before{ content:"Decision: "; font-weight:600; }
   .ctl-control-table td:nth-child(4)::before{ content:"Evidence: "; font-weight:600; }
 }
+
+/* ── Before/after control sequences ────────────────────────────────────────
+   The problem is shown as two numbered sequences side by side so the control
+   boundary is visible without reading a paragraph. Built in HTML rather than
+   as an image so it stays accurate, selectable, translatable and readable by
+   assistive technology, and so it reflows to one column on narrow screens
+   instead of scrolling. The risk step is marked by a rule and a label, never
+   by colour alone. */
+.ctl-seq-pair{
+  display:grid; gap:1.5rem; grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));
+  align-items:start;
+}
+.ctl-seq{ border:1px solid var(--border,rgba(0,0,0,.14)); padding:1.1rem 1.2rem 1.3rem; }
+.ctl-seq-h{
+  font-size:.6875rem; text-transform:uppercase; letter-spacing:.08em;
+  font-weight:600; opacity:.7; margin:0 0 .9rem;
+}
+.ctl-step-list{ list-style:none; margin:0; padding:0; counter-reset:none; }
+.ctl-step{
+  display:flex; align-items:baseline; gap:.7rem;
+  padding:.5rem 0; border-top:1px solid var(--border,rgba(0,0,0,.09));
+  font-size:.875rem; line-height:1.45;
+}
+.ctl-step:first-child{ border-top:0; }
+.ctl-step-n{
+  flex:0 0 auto; min-width:1.35rem; font-size:.6875rem; font-weight:600;
+  opacity:.55; font-variant-numeric:tabular-nums;
+}
+.ctl-step-t{ letter-spacing:.02em; }
+.ctl-step-c{
+  display:inline-block; margin-left:.5rem; font-size:.6875rem;
+  border:1px solid currentColor; border-radius:2px; padding:0 .3em; opacity:.65;
+}
+/* The exposure step: marked structurally (heavier rule + weight), not by hue. */
+.ctl-step-risk{ border-top-width:2px; font-weight:600; }
+.ctl-step-risk .ctl-step-t::after{
+  content:" — exposure point"; font-weight:400; opacity:.6; letter-spacing:0;
+}
+
+.ctl-latency-note{
+  margin-top:1.5rem; padding:1.1rem 1.2rem;
+  border-left:3px solid var(--teal,currentColor);
+  background:var(--bg-alt,transparent);
+}
+.ctl-latency-h{ font-size:1rem; margin:0 0 .5rem; }
+.ctl-latency-note p{ margin:0; color:var(--body); line-height:1.75; max-width:70ch; }
+.ctl-latency-caveat{ margin-top:.6rem !important; font-size:.85rem; opacity:.75; }
+
+/* ── Shadow evaluation phases ──────────────────────────────────────────────
+   Three phases as an ordered list: the sequence is the meaning, so it is real
+   list markup rather than styled divs. */
+.ctl-phase-row{
+  list-style:none; margin:0; padding:0;
+  display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));
+}
+.ctl-phase{ border-top:2px solid var(--teal,currentColor); padding-top:.9rem; }
+.ctl-phase-n{
+  display:block; font-size:.6875rem; font-weight:600; letter-spacing:.08em;
+  opacity:.55; font-variant-numeric:tabular-nums;
+}
+.ctl-phase-h{
+  font-size:.9375rem; letter-spacing:.09em; text-transform:uppercase;
+  margin:.3rem 0 .5rem;
+}
+.ctl-phase p{ margin:0; color:var(--body); font-size:.9375rem; line-height:1.7; }
