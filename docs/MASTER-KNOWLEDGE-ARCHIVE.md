@@ -593,8 +593,8 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
 (v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
-failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **921 passed /
-18 skipped / 939 total**, and
+failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **924 passed /
+18 skipped / 942 total**, and
 `UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
 `scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
 without failing the build; `scripts/validate_ci.py` warns when the two diverge.
@@ -1093,7 +1093,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 921 passing unit tests across 54 files
+│   └── test_*.py                      # 924 passing unit tests across 54 files
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -1332,11 +1332,11 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
 | + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current:** `UNIT_PUBLISHED = 921` in `scripts/validate_ci.py`. This is not an invariant and not
+**Current:** `UNIT_PUBLISHED = 924` in `scripts/validate_ci.py`. This is not an invariant and not
 a gate — it is the number published on README badges, the website and the PDFs, which
 `scripts/check_number_drift.py` compares those surfaces against.
 
-**Total suite:** 987 passing (921 Python + 66 TypeScript middleware)
+**Total suite:** 990 passing (924 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1407,7 +1407,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 921 passed (18 skipped when no server running = integration tests)
+# Expected: 924 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1433,7 +1433,7 @@ legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked fo
 
 ```python
 # scripts/validate_ci.py
-UNIT_PUBLISHED = 921
+UNIT_PUBLISHED = 924
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -1571,7 +1571,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The full suite (currently **921 passed / 18 skipped**) must
+1. **All existing tests must pass.** The full suite (currently **924 passed / 18 skipped**) must
    stay green after
    every change. Run `python scripts/validate_ci.py` before committing.
 
@@ -2619,7 +2619,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_PUBLISHED = 921  # scripts/validate_ci.py (published count, not a CI gate)
+UNIT_PUBLISHED = 924  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2664,8 +2664,8 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
-| `test_site_navigation.py` | 70 | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
-| **Total** | **921 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
+| `test_site_navigation.py` | 73 | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
+| **Total** | **924 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2742,6 +2742,97 @@ assert len(decision.violations) == 0
 ---
 
 ## Changelog
+
+### 2026-09-02 · Dead CSS removed — and a bug in the tool that removed it
+
+**41% of `nhid-clinical-ui.css` was rules that could never match anything the
+site builds.** 350 selectors there and 24 in `premium.css`, 41.8 KB in total.
+They are the residue of page sections deleted over time — hero variants, plan
+and pricing cards, an impact-metrics band, a mock UI, spec-collapsible blocks —
+whose CSS was never removed with them.
+
+| Sheet | Before | After | Selectors removed |
+|---|---|---|---|
+| `nhid-clinical-ui.css` | 103.5 KB | 61.9 KB | 350 |
+| `assets/css/premium.css` | 10.2 KB | 8.6 KB | 24 |
+| `assets/css/components.css` | unchanged | unchanged | 0 — see below |
+
+`scripts/visual/prune_unused_css.py` does the analysis and is committed, so the
+next pass is a re-run rather than a fresh judgement call. A class counts as used
+if it appears in a class attribute **anywhere** in `_site/` — including the
+eleven pages that do not load these sheets, since one of them could start
+tomorrow — or as an identifier in any script those sheets can reach. A selector
+is removed only when **every** class it names is unused; `:not()` contents are
+ignored, because `:not(.x)` matches precisely when `.x` is absent.
+
+Two scoping decisions the tool enforces rather than assumes:
+
+- **`components.css` is excluded.** Thirty of its classes are unreferenced, but
+  it is the vocabulary this redesign is being built with, and the
+  `evidence-status-*` set, `doc-shell` and the `surface-*` family are staged for
+  pages not yet migrated. Unused there means "not yet", not "left over".
+- **Scripts are read only from pages that link these sheets.** Two places would
+  otherwise break the analysis: the vendored React bundle under
+  `_site/simulator/`, and `assets/media/front-desk-walkthrough.html`, a
+  self-contained page with its own styles. Both build class names by
+  concatenation, which a static scan cannot follow. Neither loads these sheets,
+  so neither can apply a class from them. The tool refuses to run at all if
+  dynamic class construction appears **inside** its scope — that check fired
+  twice during development, correctly, before the scope was right.
+
+**The tool's first version corrupted the stylesheet, and the existing checks did
+not catch it.** Splitting a rule's prelude used `prelude.rfind("*/") + 1`, one
+byte inside a two-byte terminator. When the rule after a comment was dropped,
+the comment's closing `/` went with it:
+
+```
+-/* nav layer separator */
++/* nav layer separator *
+```
+
+That unterminated comment disabled every rule until the next `*/`. It rendered
+as a 39-pixel header shift on every page — and **the brace-balance check passed
+anyway**, because the comment stripper's `/\*.*?\*/` matched across to a later
+terminator and the braces balanced either side of it. The stylesheet looked
+fine, loaded fine, and reported no error.
+
+What caught it was the computed-style snapshot built for the `ctl-` rename:
+**19,278 differences across 66 of 74 page/theme pairs.** Diagnosis started from
+the wrong end — a check of which *used* classes had lost selector occurrences
+came back with exactly one, `.section-kicker`, and that one was legitimate
+(inside a `:not()` on a rule whose other classes were dead). Only a direct diff
+of the two stylesheets showed the truncated comment. After the fix: **0
+differences across all 74 pairs**, and 0 again on the 54-pair deep pass at three
+viewports.
+
+**Regression guard.** `test_stylesheet_is_structurally_intact` asserts balanced
+comment delimiters as well as braces, empty declarations and dangling commas, on
+all three sheets. Verified by reintroducing the exact truncation: it fails and
+names the sheet. Comment balance is the assertion that matters — the other three
+were already effectively true when the bug shipped.
+
+**Also added:** `scripts/bump_published_test_count.py`. Adding tests has now
+made every published surface stale three times in two days, each time costing a
+round trip per file as the drift guard named them one at a time. This rewrites
+the whole set in one pass; the drift guard remains the check that it worked, and
+historical changelog entries are untouched.
+
+**Verification:** 924 passed / 18 skipped, `DRIFT PASS`, `BASELINE PASS`
+(Fabricate byte-identical), 2,264 internal references / 0 broken, 0 overflowing
+page/viewport combinations, navigation 30/30, all three stylesheets parsing
+clean, and 0 computed-style differences on both the 74-pair all-pages sweep and
+the 54-pair deep sweep.
+
+**Metrics:** 921 → 924 passed / 942 collected (+3, the structural guard),
+propagated across all published surfaces. Engine and corpora untouched.
+
+**Files affected:** `nhid-clinical-ui.css`, `assets/css/premium.css`,
+`scripts/visual/prune_unused_css.py` (new),
+`scripts/bump_published_test_count.py` (new), `tests/test_site_navigation.py`,
+`scripts/visual/computed_style_snapshot.py` (`NHID_VIEWPORTS` override), and the
+published-count surfaces.
+
+---
 
 ### 2026-09-02 · CSS consolidation stage 3 — the `ctl-` prefix is gone
 

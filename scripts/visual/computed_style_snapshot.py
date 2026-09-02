@@ -40,6 +40,13 @@ VIEWPORTS = [("mobile", 390, 844), ("tablet", 834, 1112), ("desktop", 1440, 900)
 # Both themes. The dark palette is a separate set of token values, so a token
 # change can leave the light theme untouched and still break dark rendering.
 THEMES = ["light", "dark"]
+# NHID_VIEWPORTS="desktop:1440x900" narrows the sweep, for passes that trade
+# viewport coverage for page coverage (e.g. every page at one width).
+if os.environ.get("NHID_VIEWPORTS"):
+    VIEWPORTS = [(spec.split(":")[0],
+                  int(spec.split(":")[1].split("x")[0]),
+                  int(spec.split(":")[1].split("x")[1]))
+                 for spec in os.environ["NHID_VIEWPORTS"].split(",")]
 SETTLE_ATTEMPTS = 8
 
 # The properties a stylesheet in this repo actually sets. Recording every

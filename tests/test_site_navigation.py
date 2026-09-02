@@ -137,3 +137,38 @@ def test_no_ctl_prefix_survives_in_published_css_or_markup():
         "the retired ctl-/cinematic-trust-lattice naming reappeared in: "
         + ", ".join(offenders[:10])
     )
+
+
+# ── Stylesheets must be structurally intact ────────────────────────────────
+
+@pytest.mark.parametrize("sheet", [
+    "nhid-clinical-ui.css", "assets/css/premium.css", "assets/css/components.css",
+])
+def test_stylesheet_is_structurally_intact(sheet):
+    """
+    Balanced braces, no empty declarations, and -- the one that matters --
+    balanced comment delimiters.
+
+    An unterminated `/*` comments out every rule after it until the next `*/`,
+    and nothing else notices: the browser reports no error, and a brace-counting
+    check passes because the stripper's `/\\*.*?\\*/` happily matches across to a
+    later terminator. scripts/visual/prune_unused_css.py shipped exactly that
+    once, by splitting a rule's prelude one byte inside `*/` and leaving the `*`
+    behind. It rendered as a 39px header shift on every page.
+    """
+    src = read(sheet)
+    assert src.count("/*") == src.count("*/"), (
+        f"{sheet}: {src.count('/*')} comment openers vs {src.count('*/')} closers "
+        f"-- an unterminated comment silently disables every rule that follows it"
+    )
+    body = re.sub(r"/\*.*?\*/", "", src, flags=re.S)
+    depth = low = 0
+    for ch in body:
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            low = min(low, depth)
+    assert depth == 0 and low == 0, f"{sheet}: unbalanced braces (final {depth}, min {low})"
+    assert not re.findall(r"[\w-]+\s*:\s*;", body), f"{sheet}: empty declaration"
+    assert not re.findall(r",\s*\{", body), f"{sheet}: selector list ends in a dangling comma"
