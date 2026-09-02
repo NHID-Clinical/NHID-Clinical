@@ -20,21 +20,21 @@
   --ctl-ink-950: #07111f;
   --ctl-ink-900: #0b1d35;
   --ctl-ink-800: #102b48;
-  --ctl-text-strong: #0d2846;   /* deep navy — structural */
-  --ctl-text: #3a424b;          /* charcoal — body */
-  --ctl-text-muted: #5b636c;    /* muted charcoal */
-  --ctl-paper: #ffffff;
-  --ctl-canvas: #f4f8fb;
-  --ctl-mist: #eaf3fa;
-  --ctl-line: #c8d7e5;
+  --ctl-text-strong: var(--ink);        /* alias -> canonical */
+  --ctl-text: var(--body);              /* alias -> canonical */
+  --ctl-text-muted: #5b636c;            /* muted charcoal; no canonical equivalent */
+  --ctl-paper: var(--paper);            /* alias -> canonical warm paper */
+  --ctl-canvas: var(--mist);            /* alias -> canonical */
+  --ctl-mist: var(--mist);              /* alias -> canonical */
+  --ctl-line: var(--line);              /* alias -> canonical grey border */
 
   /* Semantic roles */
   --ctl-cobalt: #1e63db;
   --ctl-cobalt-hover: #164da8;
   --ctl-cobalt-soft: #e8f0ff;
-  --ctl-teal: #0b8276;
+  --ctl-teal: var(--teal);              /* alias -> canonical accent */
   --ctl-teal-bright: #55d9cb;
-  --ctl-teal-soft: #e4f7f3;
+  --ctl-teal-soft: var(--teal-soft);    /* alias -> canonical */
   --ctl-amber: #986600;
   --ctl-amber-soft: #fff5d7;
   --ctl-red: #b42318;
@@ -42,7 +42,7 @@
   --ctl-focus: #0b57d0;
 
   /* Shape and elevation */
-  --ctl-radius-sm: 6px;
+  --ctl-radius-sm: var(--radius);       /* alias -> canonical */
   --ctl-radius-md: 10px;
   --ctl-radius-lg: 14px;
   --ctl-shadow-1: 0 2px 8px rgba(16, 35, 61, 0.08);
@@ -50,7 +50,7 @@
   --ctl-grid-line: rgba(28, 32, 38, 0.07);   /* neutral, not blue */
 
   /* Typography and measure */
-  --ctl-font-ui: "Inter", system-ui, sans-serif;
+  --ctl-font-ui: var(--sans);           /* alias -> canonical */
   --ctl-font-data: "IBM Plex Mono", ui-monospace, monospace;
   --ctl-prose: 68ch;
   --ctl-container: 1320px;

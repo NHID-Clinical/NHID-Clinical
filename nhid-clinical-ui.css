@@ -46,10 +46,11 @@ html {
 body {
   margin: 0;
   color: var(--ink-soft);
-  background:
-    radial-gradient(circle at 92% 9%, rgba(204, 229, 244, 0.66), transparent 27rem),
-    radial-gradient(circle at 7% 20%, rgba(225, 247, 248, 0.55), transparent 24rem),
-    linear-gradient(180deg, #f9fcfe 0%, #f7fbfd 42%, #ffffff 100%);
+  /* Flat warm paper. This was two radial-gradient washes over a cool
+     blue-white gradient, hardcoded rather than tokenised — which is why the
+     palette change did not appear to take: every page was painted cool
+     regardless of the tokens. */
+  background: var(--paper);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -615,7 +616,7 @@ p { margin: 0; }
   padding: 1.3rem;
   border: 1px solid var(--line);
   border-radius: 1.4rem;
-  background: radial-gradient(circle at 85% 15%, rgba(211,239,243,0.66), transparent 15rem), rgba(248,252,254,0.86);
+  background: var(--mist);
   box-shadow: var(--shadow);
 }
 
@@ -755,11 +756,8 @@ p { margin: 0; }
   min-height: 28rem;
   padding: clamp(2rem, 5vw, 4rem);
   border-radius: 2rem;
-  background:
-    radial-gradient(circle at 84% 8%, rgba(63,188,190,0.32), transparent 22rem),
-    radial-gradient(circle at 14% 92%, rgba(136,196,234,0.25), transparent 18rem),
-    linear-gradient(135deg, #082a5b, #0f578b 52%, #117879);
-  box-shadow: 0 40px 120px rgba(8, 42, 91, 0.24);
+  background: #0d2846;   /* deliberate dark panel — flat, no decorative wash */
+  box-shadow: var(--shadow);
 }
 
 .closing-panel .section-kicker {
@@ -1103,10 +1101,7 @@ p { margin: 0; }
 
 [data-theme="dark"] body {
   color: var(--ink-soft);
-  background:
-    radial-gradient(circle at 92% 9%, rgba(10, 40, 80, 0.7), transparent 27rem),
-    radial-gradient(circle at 7% 20%, rgba(8, 50, 65, 0.55), transparent 24rem),
-    linear-gradient(180deg, #091524 0%, #0c1e30 100%);
+  background: #0b1725;   /* flat dark ground, no decorative wash */
 }
 
 [data-theme="dark"] .site-header {
@@ -1217,10 +1212,7 @@ p { margin: 0; }
 [data-theme="dark"] .tier-grid span   { color: #5a7a96; }
 
 [data-theme="dark"] .closing-panel {
-  background:
-    radial-gradient(circle at 84% 8%, rgba(20, 80, 90, 0.45), transparent 22rem),
-    radial-gradient(circle at 14% 92%, rgba(20, 60, 100, 0.3), transparent 18rem),
-    linear-gradient(135deg, #040e1c, #071829 52%, #041418);
+  background: #071829;   /* flat dark panel */
 }
 
 [data-theme="dark"] .site-footer {
@@ -3257,9 +3249,10 @@ h2 { font-weight: 700; }
 /* Hero — airier, with a soft teal/cyan glow behind the illustration */
 .hero-section { position: relative; overflow: clip; padding-block: clamp(3rem, 7vw, 6rem); }
 .hero-glow { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
-.hero-glow::before, .hero-glow::after { content: ""; position: absolute; border-radius: 50%; filter: blur(72px); }
-.hero-glow::before { width: min(38rem, 62vw); height: min(38rem, 62vw); right: -6rem; top: -5rem; background: radial-gradient(circle, var(--glow-cyan), transparent 68%); }
-.hero-glow::after  { width: min(30rem, 52vw); height: min(30rem, 52vw); right: 5rem; bottom: -9rem; background: radial-gradient(circle, var(--glow-teal), transparent 66%); }
+/* .hero-glow previously painted two 72px-blurred radial blobs. Removed:
+   glowing blobs and radial backgrounds are out under the design spec. The
+   element is still in the markup on 31 pages, so the class is kept and
+   simply paints nothing rather than requiring a sweep of every page. */
 .hero-grid { position: relative; z-index: 1; }
 
 /* Standards-alignment bar (honest, text-based — not customer logos) */
