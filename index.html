@@ -413,50 +413,57 @@
   })();
   </script>
 
-    <!-- ── The control layer (capability grid) ───────────────────────────────── -->
-  <section class="page-section">
+    <!-- ── The control layer: control-system table ───────────────────────────── -->
+  <section class="page-section" aria-labelledby="controls-h">
     <div class="container">
       <p class="section-kicker reveal">The control layer</p>
-      <h2 class="reveal" style="max-width:26ch">Five checks on every AI-agent call, and a sixth when you opt in.</h2>
-      <p class="reveal" style="color:var(--body);max-width:62ch;margin-bottom:2rem">Each is observable on a real call and checkable against a machine-readable trace. Mapped, not certified. The five canonical controls always run; DLG-01 is evaluated only when a deployment configures delegated authority.</p>
-      <div class="feature-grid">
-        <div class="feature-card reveal">
-          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-04.jpg" alt="Identity Disclosure Gate" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
-          <span class="code">IDG-01</span>
-          <h3>Identity Disclosure Gate</h3>
-          <p>Disclose non-human identity before any PHI is exchanged.</p>
-        </div>
-        <div class="feature-card reveal">
-          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-05.jpg" alt="Pre-Data Exchange Gate" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
-          <span class="code">PDX-01</span>
-          <h3>Pre-Data Exchange Gate</h3>
-          <p>No protected data moves until identity is disclosed.</p>
-        </div>
-        <div class="feature-card reveal">
-          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-06.jpg" alt="Deceptive Behavior Check" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
-          <span class="code">DBC-01</span>
-          <h3>Deceptive Behavior Check</h3>
-          <p>No synthetic human-presence cues or false human-status claims.</p>
-        </div>
-        <div class="feature-card reveal">
-          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-10.jpg" alt="Escalation Implementation Test" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
-          <span class="code">EIT-01</span>
-          <h3>Escalation Implementation Test</h3>
-          <p>A clear human handoff, honored on request.</p>
-        </div>
-        <div class="feature-card reveal">
-          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-14.jpg" alt="Audit Trail" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
-          <span class="code">ATR-01</span>
-          <h3>Audit Trail</h3>
-          <p>Every call produces a machine-readable trace.</p>
-        </div>
-        <div class="feature-card reveal">
-          <span class="feature-ico"><img src="/assets/icons/3d/nhid-icon-15.jpg" alt="Delegated Authority Gate" style="width:100%;max-width:140px;border-radius:12px;box-shadow:0 4px 12px rgba(20,184,166,0.2)"/></span>
-          <span class="code">DLG-01 · opt-in</span>
-          <h3>Delegated Authority</h3>
-          <p>A signed, scoped delegation from the provider organization, and a data boundary that honors its scope. Off unless a deployment turns it on.</p>
-        </div>
-      </div>
+      <h2 id="controls-h" class="reveal" style="max-width:30ch">Five checks on every AI-agent call, and a sixth when you opt in.</h2>
+      <p class="reveal" style="color:var(--body);max-width:64ch;margin-bottom:1.5rem">Each control is triggered by something observable on the call, returns one decision, and records a reason code in the machine-readable trace. The decisions and reason codes below are the ones the reference engine actually emits &mdash; <a href="/framework/controls.html">read the control definitions</a> or <a href="/specification.html">the normative text</a>. Mapped, not certified.</p>
+      <table class="ctl-control-table reveal">
+        <caption class="ctl-sr-only">The five canonical controls plus the opt-in delegated-authority gate, with the call behaviour that triggers each, the decision it returns, and the reason codes it records</caption>
+        <thead>
+          <tr><th scope="col">Control</th><th scope="col">Trigger &mdash; observable on the call</th><th scope="col">Decision</th><th scope="col">Evidence &mdash; reason code in the trace</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><code class="ctl-ctrl-id">IDG-01</code><span class="ctl-ctrl-name">Identity Disclosure Gate</span></th>
+            <td>Agent speaks before any disclosure is recorded for the call.</td>
+            <td><code class="ctl-ctrl-act">DISCLOSE_IDENTITY</code></td>
+            <td><code class="ctl-ctrl-code">IDG01_DISCLOSURE_MISSING · IDG01_DISCLOSURE_CONTRADICTED</code></td>
+          </tr>
+          <tr>
+            <th scope="row"><code class="ctl-ctrl-id">PDX-01</code><span class="ctl-ctrl-name">Pre-Data Exchange Gate</span></th>
+            <td>Protected data is requested or supplied on the call.</td>
+            <td><code class="ctl-ctrl-act">DENY_DATA</code></td>
+            <td><code class="ctl-ctrl-code">PDX01_PHI_GATE_TRIGGERED · PDX01_DISCLOSURE_NOT_SEQUENCED</code></td>
+          </tr>
+          <tr>
+            <th scope="row"><code class="ctl-ctrl-id">DBC-01</code><span class="ctl-ctrl-name">Deceptive Behavior Check</span></th>
+            <td>Agent speech carries impersonation phrasing or a deceptive-artifact flag.</td>
+            <td><code class="ctl-ctrl-act">LOG_ONLY</code></td>
+            <td><code class="ctl-ctrl-code">DBC01_ARTIFACT_DETECTED · DBC01_IMPERSONATION_PHRASE_DETECTED</code></td>
+          </tr>
+          <tr>
+            <th scope="row"><code class="ctl-ctrl-id">EIT-01</code><span class="ctl-ctrl-name">Escalation Implementation Test</span></th>
+            <td>Caller asks for a human, or an escalation outcome is recorded.</td>
+            <td><code class="ctl-ctrl-act">ESCALATE_HUMAN</code></td>
+            <td><code class="ctl-ctrl-code">EIT01_NO_ESCALATION_PATH · EIT01_ESCALATION_NOT_HONORED</code></td>
+          </tr>
+          <tr>
+            <th scope="row"><code class="ctl-ctrl-id">ATR-01</code><span class="ctl-ctrl-name">Audit Trail Requirements</span></th>
+            <td>Every evaluated event, checked for the required audit fields.</td>
+            <td><code class="ctl-ctrl-act">LOG_ONLY</code></td>
+            <td><code class="ctl-ctrl-code">ATR01_AUDIT_FIELDS_MISSING · ATR01_AUDIT_COMPLETE</code></td>
+          </tr>
+          <tr>
+            <th scope="row"><code class="ctl-ctrl-id">DLG-01</code><span class="ctl-ctrl-name">Delegated Authority Gate <span class="ctl-ctrl-opt">opt-in</span></span></th>
+            <td>A signed delegation is presented for the call.</td>
+            <td><code class="ctl-ctrl-act">CONTINUE_AI</code></td>
+            <td><code class="ctl-ctrl-code">DLG01_DELEGATION_VERIFIED · DLG01_NO_DELEGATION_PRESENTED</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="reveal" style="color:var(--ink-soft);font-size:.9rem;margin-top:1rem">The five canonical controls always run. DLG-01 is evaluated only when a deployment configures delegated authority; absent a delegation it returns <code>DLG01_NOT_EVALUATED</code> and changes nothing.</p>
     </div>
   </section>
 

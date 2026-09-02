@@ -635,3 +635,47 @@ button.ctl-btn:focus-visible,
   margin:1.15rem 0 0; font-size:.9375rem; font-weight:600;
   letter-spacing:.01em; font-variant-numeric:tabular-nums;
 }
+
+/* ── Control-system table ──────────────────────────────────────────────────
+   The controls are a control system, not a feature list, so they are set as a
+   table with one row per control: what triggers it, what it decides, what it
+   records. Monospace on the identifiers and reason codes per the evidence
+   treatment — those are literal strings from the engine, and reading them as
+   prose would be wrong. */
+.ctl-control-table{
+  width:100%; border-collapse:collapse; margin-top:.5rem;
+  font-size:.9375rem; line-height:1.6;
+}
+.ctl-control-table th, .ctl-control-table td{
+  text-align:left; vertical-align:top; padding:.9rem .9rem;
+  border-top:1px solid var(--border,rgba(0,0,0,.14));
+}
+.ctl-control-table thead th{
+  font-size:.6875rem; text-transform:uppercase; letter-spacing:.07em;
+  font-weight:600; opacity:.65; border-top:0; padding-bottom:.5rem;
+}
+.ctl-control-table tbody th{ width:13rem; font-weight:400; }
+.ctl-ctrl-id{
+  display:inline-block; font-weight:600; font-size:.875rem;
+  letter-spacing:.02em;
+}
+.ctl-ctrl-name{ display:block; font-size:.8125rem; opacity:.7; margin-top:.2rem; }
+.ctl-ctrl-opt{
+  font-size:.6875rem; text-transform:uppercase; letter-spacing:.06em;
+  border:1px solid currentColor; border-radius:2px; padding:0 .3em;
+  margin-left:.4em; opacity:.7;
+}
+.ctl-ctrl-act, .ctl-ctrl-code{ font-size:.8125rem; overflow-wrap:anywhere; }
+.ctl-ctrl-act{ font-weight:600; }
+.ctl-ctrl-code{ opacity:.78; }
+
+@media (max-width:52rem){
+  .ctl-control-table thead{ display:none; }
+  .ctl-control-table tr{
+    display:block; border-top:1px solid var(--border,rgba(0,0,0,.14)); padding:.9rem 0;
+  }
+  .ctl-control-table th, .ctl-control-table td{ display:block; border:0; padding:.2rem 0; width:auto; }
+  .ctl-control-table td:nth-child(2)::before{ content:"Trigger: "; font-weight:600; }
+  .ctl-control-table td:nth-child(3)::before{ content:"Decision: "; font-weight:600; }
+  .ctl-control-table td:nth-child(4)::before{ content:"Evidence: "; font-weight:600; }
+}
