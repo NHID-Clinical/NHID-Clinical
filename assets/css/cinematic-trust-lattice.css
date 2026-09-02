@@ -770,3 +770,24 @@ button.ctl-btn:focus-visible,
 .ctl-evidence-repro{
   margin-top:1rem; font-size:.9rem; color:var(--ink-soft); line-height:1.7; max-width:70ch;
 }
+
+/* ── Narrow-viewport table containment ─────────────────────────────────────
+   Data tables on specification.html and evidence-pack.html pushed the page
+   wider than the viewport on mobile (up to 543px of content in a 390px
+   window), so the whole page scrolled sideways. A table that is genuinely
+   wider than a phone should scroll inside its own box, not drag the document
+   with it.
+
+   The two tables that already reflow into labelled blocks at this width are
+   excluded — they need no scroll area, and giving them one would reintroduce
+   the horizontal scroll this rule exists to remove. */
+@media (max-width:52rem){
+  main table:not(.ctl-control-table):not(.ctl-reg-index),
+  .premium-metrics{
+    display:block;
+    width:100%;
+    max-width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+}
