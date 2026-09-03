@@ -134,9 +134,58 @@ def _server_reachable() -> bool:
         return False
 
 
+_SERVER_UP = _server_reachable()
+
+# CI sets NHID_REQUIRE_SERVER=1. Without it, an unreachable server silently
+# turns 18 integration tests into 18 skips and the job still reports green —
+# which is precisely how these tests went unexecuted long enough for seven
+# real divergences to accumulate behind them. Fail loudly instead.
+if os.environ.get("NHID_REQUIRE_SERVER") == "1" and not _SERVER_UP:
+    raise RuntimeError(
+        f"NHID_REQUIRE_SERVER=1 but nothing answered at {BASE_URL}. "
+        "The integration tests must run, not skip. Start the server "
+        "(python -m uvicorn app:app --port 8000) or unset the variable."
+    )
+
 requires_server = pytest.mark.skipif(
-    not _server_reachable(),
+    not _SERVER_UP,
     reason=f"NHID FastAPI server not reachable at {BASE_URL}. Start the server to run integration tests.",
+)
+
+
+# ── Known divergences between this harness and the implementation ─────────
+#
+# The seven tests marked below first executed on 2026-09-03, when CI began
+# starting the server instead of skipping past it. They fail for exactly two
+# reasons, and both are open product decisions recorded in
+# docs/skipped-test-audit.md §8 — not flaky infrastructure, and not defects in
+# the tests' own mechanics. Recording them as xfail keeps them running and
+# keeps the divergence legible; deleting them or relaxing their assertions
+# would destroy the only evidence that the contradiction exists.
+#
+# strict=True is deliberate. If either decision is implemented, these become
+# unexpected passes and CI turns red until the marker is removed, so a marker
+# cannot quietly outlive the contradiction it describes.
+
+xfail_callsid_contract = pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "OPEN DECISION 1 — missing or empty CallSid. This harness requires HTTP 400; "
+        "app.py coerces the value to the literal session id 'unknown' and returns 200 "
+        "TwiML. Both positions are defensible — a Twilio webhook wants TwiML back, "
+        "while ATR-01 wants a distinct session identifier per call — and the "
+        "repository does not record which was intended. See docs/skipped-test-audit.md §8.1."
+    ),
+)
+
+xfail_replay_contract = pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "OPEN DECISION 2 — what /debug/replay returns. assert_replay_identity POSTs to "
+        "the endpoint and requires the original TwiML back; app.py exposes it as GET and "
+        "returns a JSON forensic trace. Correcting the verb alone does not reconcile "
+        "these: a JSON trace can never equal TwiML. See docs/skipped-test-audit.md §8.2."
+    ),
 )
 
 
@@ -181,6 +230,7 @@ class TestInputValidation:
         assert_no_500(r)
         assert_twiml(r)
 
+    @xfail_callsid_contract
     def test_missing_callsid(self) -> None:
         """CallSid is absent. Must return 400. Must not 500."""
         r = _post({"SpeechResult": "checking member eligibility"})
@@ -190,6 +240,7 @@ class TestInputValidation:
             "The pipeline must reject requests without a session identifier."
         )
 
+    @xfail_callsid_contract
     def test_missing_all_fields(self) -> None:
         """Empty body. Must return 400. Must not 500."""
         r = _post({})
@@ -198,6 +249,7 @@ class TestInputValidation:
             f"Expected HTTP 400 for empty body, got {r.status_code}."
         )
 
+    @xfail_callsid_contract
     def test_empty_callsid(self) -> None:
         """CallSid is empty string. Equivalent to missing. Must return 400."""
         r = _post({"CallSid": "", "SpeechResult": "checking eligibility"})
@@ -222,6 +274,7 @@ class TestChaosMode:
     multiple simultaneous failure conditions.
     """
 
+    @xfail_callsid_contract
     def test_chaos_null_bytes_empty_callsid(self) -> None:
         """Null bytes in SpeechResult AND empty CallSid. Must return 400."""
         r = _post({"CallSid": "", "SpeechResult": "\x00\x00\x00check claim"})
@@ -257,6 +310,7 @@ class TestChaosMode:
         assert_no_500(r)
         assert_twiml(r)
 
+    @xfail_callsid_contract
     def test_chaos_full_adversarial(self) -> None:
         """Full adversarial: empty CallSid + null bytes + chaos headers."""
         r = _post(
@@ -356,6 +410,7 @@ class TestReplayDeterminism:
     identical output with no external calls. Divergence = ATR-01 violation.
     """
 
+    @xfail_replay_contract
     def test_replay_identity_normal_request(self) -> None:
         """
         Send a normal request. Then replay it. Assert outputs are identical.
@@ -392,6 +447,7 @@ class TestReplayDeterminism:
             f"First:  {r1.text[:400]}\nSecond: {r2.text[:400]}"
         )
 
+    @xfail_replay_contract
     def test_replay_empty_speech_determinism(self) -> None:
         """
         Empty speech result replayed must produce identical output.

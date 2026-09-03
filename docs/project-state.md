@@ -24,18 +24,20 @@ rather than inferring.
 |---|---|---|
 | `NHID_SPEC_VERSION` | `1.3` | `src/nhid_policy_engine_v1.py` |
 | `POLICY_ENGINE_VERSION` | `1.0.0` | `src/nhid_policy_engine_v1.py` |
-| `UNIT_PUBLISHED` | `987` | `scripts/validate_ci.py` — published-number reference, **not** a CI gate |
-| `INTEGRATION_EXPECTED` | `18` | `scripts/validate_ci.py` — skips expected without a live server |
+| `UNIT_PUBLISHED` | `998` | `scripts/validate_ci.py` — published-number reference, **not** a CI gate |
+| `SKIP_EXPECTED` | `0` | `scripts/validate_ci.py` — CI starts the API, so a skip means it did not come up |
+| `XFAIL_EXPECTED` | `7` | `scripts/validate_ci.py` — recorded divergences, see `skipped-test-audit.md` §8 |
 
 ## 2. Test suite
 
 ```
-987 passed, 18 skipped        # python -m pytest tests/ -q
+998 passed, 7 xfailed        # python -m pytest tests/ -q (API running)
+987 passed, 18 skipped        # ...the same command with no API listening
 1005 collected                # python -m pytest tests/ --collect-only -q
 55 files                      # files under tests/ that pytest collects from
 ```
 
-987 + 18 = 1005. Every published surface stating these three numbers must
+998 + 7 = 1005. Every published surface stating these three numbers must
 satisfy that arithmetic; `scripts/check_number_drift.py` enforces the passed
 count, and as of `aaad25a` also reads the text of every `specs/*.pdf`.
 
@@ -184,7 +186,8 @@ Recorded because they change what a session can verify:
 
 ```bash
 git rev-parse HEAD
-python -m pytest tests/ -q                      # 987 passed, 18 skipped
+python -m uvicorn app:app --port 8000 &         # required, or 18 tests skip
+python -m pytest tests/ -q                      # 998 passed, 7 xfailed
 python -m pytest tests/ --collect-only -q       # 1005 collected
 python scripts/validate_ci.py                   # CI PASS
 python scripts/check_baseline.py                # Fabricate baseline

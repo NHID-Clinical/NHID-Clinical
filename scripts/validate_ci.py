@@ -5,47 +5,81 @@ NHID-Clinical CI Validation
 Validates test suite health by verifying:
 - All tests execute successfully (no collection errors)
 - No test failures
-- Expected integration tests are skipped (18)
+- Nothing is silently skipped
 
 Does NOT enforce an exact historical test count, since the suite grows legitimately
 with new controls and features. CI validates correctness of execution, not linecount.
+
+Suite shape, as of 2026-09-03
+-----------------------------
+Until this date the suite reported 987 passed and 18 skipped. Those 18 skipped
+because nothing was listening on the API port, and CI never started a server —
+so they had never once executed. Running them revealed 11 passes and 7 genuine
+divergences between the harness and app.py, recorded as strict xfail and
+documented in docs/skipped-test-audit.md §8.
+
+The suite is therefore expected to report 998 passed, 7 xfailed, 0 skipped when
+run against a live API. Run it without one and you get the old 987/18 shape,
+which is why a nonzero skip count is now worth warning about: it means the
+integration tests did not run.
 """
 import re, subprocess, sys
 
-# Expected skipped count: integration tests that require external resources
-INTEGRATION_EXPECTED = 18
+# Expected skipped count. Zero is the point: a skip here means the API was not
+# running and 18 tests silently did not execute.
+SKIP_EXPECTED = 0
+
+# Known divergences carried as strict xfail. Each is an open product decision,
+# not a flaky test. An xpass means a decision was implemented and the marker
+# must be removed — pytest fails the run itself when that happens.
+XFAIL_EXPECTED = 7
 
 # The unit-test count currently published on public surfaces (README badge,
 # website stats, PDFs). This is NOT a CI gate — the suite is allowed to grow
 # without failing the build. It exists so scripts/check_number_drift.py has a
 # canonical number to compare published claims against. Update it in the same
 # commit as any change to the published count.
-UNIT_PUBLISHED = 987
+UNIT_PUBLISHED = 998
 
 def run_pytest():
     result = subprocess.run([sys.executable,"-m","pytest","tests/","-q","--tb=short","--no-header"],capture_output=True,text=True)
     return result.stdout+result.stderr, result.returncode
 
 def parse_summary(output):
-    pattern = re.compile(r"(?:(\d+) failed,?\s*)?(?:(\d+) error,?\s*)?(\d+) passed(?:,\s*(\d+) skipped)?",re.IGNORECASE)
-    counts = {"passed":0,"skipped":0,"failed":0,"error":0}
+    """Read pytest's terminal summary line, whatever order the outcomes appear in."""
+    counts = {"passed":0,"skipped":0,"failed":0,"error":0,"xfailed":0,"xpassed":0}
+    aliases = {"error":"error","errors":"error"}
     for line in output.splitlines():
-        m = pattern.search(line)
-        if m and "passed" in line:
-            counts["failed"]=int(m.group(1) or 0);counts["error"]=int(m.group(2) or 0)
-            counts["passed"]=int(m.group(3) or 0);counts["skipped"]=int(m.group(4) or 0)
+        if "passed" not in line and "failed" not in line and "error" not in line:
+            continue
+        found = re.findall(r"(\d+)\s+(passed|failed|skipped|xfailed|xpassed|errors?)", line)
+        if not found:
+            continue
+        for n, word in found:
+            counts[aliases.get(word, word)] = int(n)
     return counts
 
 def validate(counts):
-    """Validate test execution health. Fail on errors/failures, warn on unexpected skips."""
+    """Validate test execution health. Fail on errors/failures, warn on shape drift."""
     v=[]
     # Fail on actual failures
     if counts["failed"]>0: v.append(f"FAIL: {counts['failed']} test(s) failed")
     # Fail on collection errors
     if counts["error"]>0: v.append(f"FAIL: {counts['error']} collection error(s)")
-    # Warn (but don't fail) on unexpected skip counts
-    if counts["skipped"] != INTEGRATION_EXPECTED:
-        print(f"WARNING: expected {INTEGRATION_EXPECTED} skipped tests, got {counts['skipped']}")
+    # Warn on unexpected skips. A skip here almost always means "no API running",
+    # which silently removes the 18 integration tests from the run.
+    if counts["skipped"] != SKIP_EXPECTED:
+        print(
+            f"WARNING: expected {SKIP_EXPECTED} skipped tests, got {counts['skipped']}. "
+            f"If this is 18, the API was not running and the integration tests did "
+            f"not execute — start it with: python -m uvicorn app:app --port 8000"
+        )
+    # Warn when the recorded divergences change shape.
+    if counts["xfailed"] != XFAIL_EXPECTED:
+        print(
+            f"WARNING: expected {XFAIL_EXPECTED} xfailed tests, got {counts['xfailed']}. "
+            f"See docs/skipped-test-audit.md §8 — the recorded divergences changed."
+        )
     # Warn (but don't fail) when the published count no longer matches reality.
     # check_number_drift.py only enforces that published surfaces agree with
     # UNIT_PUBLISHED — they can all be consistently wrong, which is how a
@@ -72,7 +106,10 @@ def main():
         sys.exit(1)
     violations=validate(counts)
     if not violations:
-        print(f"CI PASS: {counts['passed']} tests passed (+ {counts['skipped']} skipped)")
+        print(
+            f"CI PASS: {counts['passed']} tests passed "
+            f"({counts['xfailed']} xfailed, {counts['skipped']} skipped)"
+        )
         sys.exit(0)
     else:
         for v in violations: print(v)

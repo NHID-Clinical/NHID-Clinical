@@ -41,9 +41,9 @@ and the claim is not repaired by inference.
 
 | # | Verbatim | Page(s) | Method | Verdict |
 |---|---|---|---|---|
-| A1 | "The reference implementation includes **987 passing tests** to ensure deterministic policy evaluation." | `faq.html` | `measured` + `constant` | **VERIFIED** — `pytest` reports 987 passed; `UNIT_PUBLISHED = 987` |
-| A2 | "5 controls · **987 passing tests** · machine-readable traces · open implementation" | `index.html` | `measured` | **VERIFIED** |
-| A3 | "18 skipped · **1005 total**, in the open repo" | `index.html` | `measured` | **VERIFIED** — 987 + 18 = 1005 |
+| A1 | "The reference implementation includes **998 passing tests** to ensure deterministic policy evaluation." | `faq.html` | `measured` + `constant` | **VERIFIED, restated 2026-09-03** — `pytest` reports 998 passed against a live API; `UNIT_PUBLISHED = 998`. Was 987 while 18 integration tests silently skipped |
+| A2 | "5 controls · **998 passing tests** · machine-readable traces · open implementation" | `index.html` | `measured` | **VERIFIED** |
+| A3 | "7 recorded divergences · **1005 total**, in the open repo" | `index.html` | `measured` | **VERIFIED, restated 2026-09-03** — 998 + 7 = 1005. The 18 skips became 11 passes and 7 documented failures once CI started the API; "skipped" would now be false. See `skipped-test-audit.md` §8 |
 | A4 | "IDG-01 (Identity Disclosure Gate) **70/70 100.0%** … 0/127 0.0%" | `evidence-pack.html` | `constant` | **VERIFIED** — matches `EXPECTED` in `check_baseline.py` |
 | A5 | "PDX-01 (Pre-Data Exchange Gate) **41/41 100.0%** … 0/127 0.0%" | `evidence-pack.html` | `constant` | **VERIFIED** |
 | A6 | "DBC-01 (Deceptive Behavior Check) **183/200 91.5%** … 5/127 3.9%" | `evidence-pack.html` | `constant` | **VERIFIED** |

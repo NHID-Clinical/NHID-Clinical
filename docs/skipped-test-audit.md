@@ -1,5 +1,14 @@
 # NHID-Clinical — Audit of the 18 Skipped Tests
 
+> **Superseded in part on 2026-09-03. The 18 now run.** Sections 1–5 were written
+> while the tests were still skipping and are preserved as written, because the
+> reasoning in them is what motivated running the tests at all. **Section 6 has
+> been replaced** — its recommendation was built on the assumption that the 18
+> were untested-but-presumed-sound, and that assumption did not survive contact
+> with a running server. **Sections 7–9 are new** and record what executing them
+> actually produced. Read §7 first if you want the outcome rather than the
+> reasoning that led to it.
+
 **Question.** What exactly are the 18 skipped tests, why are they skipped, and do
 they cover core requirements or optional/integration-specific behaviour?
 
@@ -8,11 +17,16 @@ they cover core requirements or optional/integration-specific behaviour?
 elsewhere. Their absence is not a control-conformance gap, but it *is* a real
 coverage gap, and one CI job is named for precisely the thing it does not run.
 
+**What running them showed.** 11 pass. 7 fail, for exactly two reasons, both of
+which are genuine unresolved contradictions between the harness and `app.py`
+rather than defects in either. See §7.
+
 | | |
 |---|---|
-| **Commit** | `27ba28e` |
+| **Audited at commit** | `27ba28e` |
+| **Executed at commit** | `628d614` |
 | **Measured** | 2026-09-03 |
-| **Command** | `python -m pytest tests/ -q -rs` |
+| **Command** | `python -m pytest tests/ -q -rs` (audit) · `python -m uvicorn app:app --port 8000` then `python -m pytest tests/` (execution) |
 
 ---
 
@@ -147,42 +161,154 @@ question, not an environmental one.
 **No recommendation to act is made here.** The instruction was not to modify
 tests to eliminate the skipped count, and §6 does not depend on doing so.
 
-## 6. Recommended public reporting metric
+## 6. Recommended public reporting metric — **superseded, see §9**
 
-The current published phrasing — *"987 passing · 18 skipped · 1005 total"* — is
-**accurate but incomplete**: a reader cannot tell what the 18 are or why they do
-not run, and the natural assumption ("optional extras") understates §3.3.
+The recommendation originally made here was to keep publishing 987 and describe
+the 18 in prose. It rested on a premise that turned out to be false: that the 18
+were sound tests which merely lacked an environment. Seven of them were not.
 
-**Recommended:**
+The original text is not reproduced, because repeating a recommendation that has
+been withdrawn invites it being quoted back as current. What it got right is
+carried into §9: **lead with the number that actually runs, and never present a
+collected total as a passing total.**
 
-> **987 automated tests run on every change**, covering the five controls, the
-> policy engine, and the conformance suite.
+---
+
+## 7. What happened when they ran
+
+The environment was fixed rather than the tests — `python -m uvicorn app:app
+--port 8000`, then the full suite. Note that the correct target is `app:app`,
+not `main:app`: `main.py` mounts the voice application *under* `/voice`, which
+moves `/voice/process` to `/voice/voice/process` and makes every one of these
+tests 404.
+
+**Result: 11 passed, 7 failed, 0 skipped.** Whole suite: **998 passed, 7 recorded
+divergences, 0 skipped, 1005 collected.**
+
+| Group | Ran | Passed | Failed |
+|---|---|---|---|
+| `TestInputValidation` (§3.1) | 8 | 5 | **3** |
+| `TestChaosMode` (§3.2) | 4 | 2 | **2** |
+| `TestPolicyEnforcement` (§3.3) | 3 | **3** | 0 |
+| `TestReplayDeterminism` (§3.4) | 3 | 1 | **2** |
+
+**The most important row is §3.3.** Those three tests were the audit's single
+largest concern — the only ones covering *"the API actually applies the engine
+and persists the audit trail"* end to end. **All three pass.** The gap §3.3
+identified was real, and it is now closed by evidence rather than by assertion.
+
+**The audit's ranking was wrong in one direction.** §3.1 and §3.2 were rated
+"no conformance gap — coverage gap only". Five of those twelve tests fail. They
+are still not control-conformance failures, but they are not the low-value
+robustness checks the ranking implied either.
+
+---
+
+## 8. The two open decisions
+
+Neither is a bug to fix unilaterally. Each is a contradiction between two
+defensible positions, and **the repository does not record which was intended**.
+Both are marked `xfail(strict=True)` so they keep running and stay visible; a
+strict marker fails the build the moment the behaviour changes, so it cannot
+silently outlive the question it stands for.
+
+### 8.1 Missing or empty `CallSid` — 5 tests
+
+| | |
+|---|---|
+| **Tests** | `test_missing_callsid`, `test_missing_all_fields`, `test_empty_callsid`, `test_chaos_null_bytes_empty_callsid`, `test_chaos_full_adversarial` |
+| **Harness requires** | HTTP 400 — "the pipeline must reject requests without a session identifier" |
+| **`app.py` does** | `session_id = (form.get("CallSid") or "unknown").strip()` — coerces to the literal string `unknown`, returns 200 with valid TwiML |
+
+**The case for 200 + TwiML.** This is a Twilio webhook. A 4xx makes Twilio play
+its own failure message to the caller instead of the application's. Returning
+usable TwiML is the more defensive production behaviour.
+
+**The case for 400.** Coercion to a shared literal means every unidentified call
+writes its audit events under the *same* `session_id` of `"unknown"`, collapsing
+distinct calls into one indistinguishable stream. ATR-01 is an audit-traceability
+control; an audit trail that cannot separate two calls is weaker evidence than
+one that refuses the call.
+
+**This is not a tie.** The two positions optimise for different things —
+call-continuity versus evidence integrity — and a third option exists that
+neither test nor implementation currently takes: accept the call, return TwiML,
+and mint a **synthetic unique** session id rather than a shared constant. That
+would satisfy both. It is not implemented, and choosing it is a product decision.
+
+**Status: UNKNOWN — requires human judgment.**
+
+### 8.2 What `/debug/replay` returns — 2 tests
+
+| | |
+|---|---|
+| **Tests** | `test_replay_identity_normal_request`, `test_replay_empty_speech_determinism` |
+| **Harness requires** | `POST` to the endpoint, and the **original TwiML** back, byte-identical |
+| **`app.py` does** | Exposes it as `GET` (so `POST` → 405) returning a **JSON forensic trace** |
+
+**Correcting the HTTP verb does not fix this**, which is the part worth being
+precise about. With `GET`, the endpoint returns
+`{"session_id": …, "reconstructed_state": {…}, "events": [...]}`. The assertion
+is `r2.text == first_response`, where `first_response` is TwiML. A JSON trace can
+never equal TwiML, so the two encode genuinely different contracts:
+
+- **Replay-as-re-execution** — feed the event stream back through the pipeline
+  and prove the same output comes out. This is what the harness tests, and it is
+  the stronger determinism claim.
+- **Replay-as-inspection** — reconstruct and return what happened. This is what
+  is implemented, and it is the more useful debugging affordance.
+
+The docstring at the top of the harness says only *"the server implements
+`/debug/replay/{session_id}`"* and does not disambiguate.
+
+**Determinism itself is not at risk here.** It is asserted offline in ten other
+test files, and `test_replay_idempotency_same_request_id` — which compares two
+live responses rather than a response against a trace — **passes**.
+
+**Status: UNKNOWN — requires human judgment.**
+
+---
+
+## 9. The public reporting metric
+
+**Published figure: 998 passing.** Derived by running the suite against a live
+API, which is now what CI does in both the `test` and `security_gates` jobs.
+
+> **998 automated tests pass on every change**, covering the five controls, the
+> policy engine, the conformance suite, and — since 2026-09-03 — the hosted HTTP
+> API, including end-to-end proof that the API applies the engine and writes a
+> complete audit record.
 >
-> A further **18 integration tests exercise the hosted HTTP API** — input
-> hardening, fault injection, end-to-end policy enforcement, and the replay
-> endpoint. They require a running server and **are not currently executed in
-> CI**. The control logic they cross-check is separately covered by the 987.
+> **7 further tests are recorded divergences.** They run on every change and are
+> expected to fail: each marks a contradiction between the test harness and the
+> implementation that is awaiting a product decision, documented in §8. They are
+> not skipped, not deleted, and not relaxed.
+>
+> **1005 tests collected.** 998 + 7.
 
 **Rules this follows:**
 
-- **Lead with the deterministic number.** 987 is what actually runs.
-- **Never present 1005 as "tests that run."** 987 + 18 = 1005 is arithmetic, not
-  coverage.
-- **Say what the 18 are**, so "skipped" is not read as "optional extras". §3.3 is
-  not an optional extra.
-- **Do not claim end-to-end API conformance** until §3.3 runs somewhere.
+- **The number that runs is the number published.** 998 is measured, not derived.
+- **Never present 1005 as "tests that pass."** 998 + 7 = 1005 is arithmetic.
+- **Do not report 100%, and do not report zero skips as an achievement.** The
+  skips became visible failures. That is an improvement in what is *known*, not
+  in what works.
+- **"Recorded divergence" is not a euphemism for "skipped".** A skipped test
+  produces no signal. These execute, assert, and fail on purpose.
 
-## 7. Verdict
+---
+
+## 10. Verdict
 
 | Question | Answer |
 |---|---|
-| Are the 18 testing core requirements? | **Mostly no.** 15 of 18 cover the HTTP boundary and optional endpoints. **3 cover core end-to-end enforcement of IDG-01 and ATR-01** |
-| Is the skip legitimate? | **Yes.** One honest cause, correctly reported, with no second hidden cause |
-| Do they represent a conformance gap? | **Not for control logic** — covered by 987 tests including 21 in this same file. **Yes for the deployed API path**: nothing in CI proves the API applies the engine or writes a complete audit record |
-| Can they run deterministically in CI? | **Yes, all 18** |
-| Is the current public metric wrong? | **Not wrong — incomplete.** See §6 |
+| Are the 18 testing core requirements? | **Mostly no.** 15 of 18 cover the HTTP boundary and optional endpoints. **3 cover core end-to-end enforcement of IDG-01 and ATR-01 — and those 3 pass** |
+| Was the skip legitimate? | **The cause was honest; the consequence was not.** One real cause, correctly reported — but it hid 7 failures for as long as it went unexamined |
+| Do they represent a conformance gap? | **No, for control logic.** §3.3 now proves the API applies the engine and writes a complete audit record. **The remaining gap is contractual, not behavioural**: two questions in §8 with no recorded answer |
+| Can they run deterministically in CI? | **Yes — verified, not predicted.** All 18 run, with identical results across repeated runs |
+| Is the current public metric wrong? | **It was incomplete, and it is now replaced.** 987 → 998, and the 18 skips → 7 recorded divergences |
 
-**The single most useful change** is not raising the number. It is running §3.3's
-three tests somewhere in CI, so the claim "the API enforces the controls" has
-evidence behind it, and renaming the "abuse + input hardening" job to match what
-it executes.
+**The single most useful change** was not raising the number. It was discovering
+that the number was concealing seven unanswered questions, three of which sat on
+the exact path the audit had flagged as least-evidenced — and that path turned
+out to be sound.

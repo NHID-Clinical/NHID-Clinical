@@ -18,8 +18,43 @@ jobs:
           cache: pip
       - name: install deps
         run: pip install -r requirements.txt
-      - name: run full test suite
-        run: pytest tests/ -v --disable-warnings --maxfail=1
+
+      # The published test count comes from this job. It runs against a live
+      # API so that number reflects the whole suite, rather than the whole
+      # suite minus the 18 tests that quietly skip when nothing is listening.
+      #
+      # Server and tests share one step deliberately: a process backgrounded
+      # in one step is not guaranteed to survive into the next, and a silently
+      # dead server would put the 18 straight back to skipping.
+      - name: run full test suite against a live API
+        env:
+          NHID_REQUIRE_SERVER: "1"
+        run: |
+          python -m uvicorn app:app --host 127.0.0.1 --port 8000 \
+            > /tmp/nhid-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+              echo "API ready after ${i}s"
+              break
+            fi
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "::error::API process exited during startup"
+              cat /tmp/nhid-server.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          if ! curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+            echo "::error::API did not become ready within 30s"
+            cat /tmp/nhid-server.log
+            exit 1
+          fi
+
+          python -m pytest tests/ -v --disable-warnings --maxfail=1
 
   identity_determinism:
     name: identity determinism + crypto consistency
@@ -95,7 +130,7 @@ jobs:
           "
 
   security_gates:
-    name: abuse + input hardening
+    name: abuse, input hardening + delegation rejection
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -104,8 +139,42 @@ jobs:
           python-version: "3.11"
           cache: pip
       - run: pip install -r requirements.txt
-      - name: run failure injection suite (unit tests only)
-        run: pytest tests/failure_injection_harness.py -v --disable-warnings
+
+      # Until 2026-09-03 this job ran the harness with no server, so the 18
+      # tests that constitute abuse and input hardening skipped and the job
+      # reported green having run only the 21 offline policy-engine tests.
+      # The job was named for the thing it did not do. It now starts the app.
+      # NHID_REQUIRE_SERVER=1 makes an unreachable server a hard error rather
+      # than 18 silent skips. -rX lists the recorded divergences in the log.
+      - name: run failure injection suite against a live API
+        env:
+          NHID_REQUIRE_SERVER: "1"
+        run: |
+          python -m uvicorn app:app --host 127.0.0.1 --port 8000 \
+            > /tmp/nhid-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+              echo "API ready after ${i}s"
+              break
+            fi
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "::error::API process exited during startup"
+              cat /tmp/nhid-server.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          if ! curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+            echo "::error::API did not become ready within 30s"
+            cat /tmp/nhid-server.log
+            exit 1
+          fi
+
+          python -m pytest tests/failure_injection_harness.py -v --disable-warnings -rX
       - name: enforce tampered signature rejection
         run: |
           python -c "

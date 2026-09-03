@@ -77,12 +77,16 @@ that *illustrates* it.
 | 18 | Governance Evaluation Corpus | 25 scenarios / 55 turns / 29 of 32 detected. Research measurement, not conformance |
 | 19 | Adversarial corpus | 40 scenarios; evasion resistance |
 | 20 | Conformance suite | Implementation tests, distinct from detection quality |
-| 21 | **What the evidence does not establish** | `project-state.md` §8 + `skipped-test-audit.md` §6–7 |
+| 21 | **What the evidence does not establish** | `project-state.md` §8 + `skipped-test-audit.md` §7–9 |
 | 22 | Known limitations | ATR-01 unmeasurable in the Fabricate corpus; DBC-01 and PDX-01 coverage gaps; reference implementation not load-tested |
 
-§21 must include the finding from `skipped-test-audit.md`: **987 tests run
-deterministically; 18 integration tests exercising the HTTP API do not run in
-CI**, three of which cover end-to-end IDG-01 and ATR-01 enforcement.
+§21 must include the finding from `skipped-test-audit.md`: **998 tests run
+deterministically, including the HTTP API tests that previously did not run at
+all**. The three covering end-to-end IDG-01 and ATR-01 enforcement now pass, so
+§21 can state that the API applies the engine and writes a complete audit record
+— a claim that was not available before. It must also carry the other half:
+**7 recorded divergences remain**, being two unresolved contracts (§8), not
+defects and not passes.
 
 ### Part V — Implement
 

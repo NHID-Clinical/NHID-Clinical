@@ -28,8 +28,38 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Test-count invariant (via validate_ci.py)
-        run: python scripts/validate_ci.py
+      # Same reason as ci.yml: validate_ci.py runs the suite, and without a
+      # live API it measures the pre-2026-09-03 shape (987 passed / 18 skipped)
+      # instead of the published one.
+      - name: Test-count invariant (via validate_ci.py, live API)
+        env:
+          NHID_REQUIRE_SERVER: "1"
+        run: |
+          python -m uvicorn app:app --host 127.0.0.1 --port 8000 \
+            > /tmp/nhid-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+              echo "API ready after ${i}s"
+              break
+            fi
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "::error::API process exited during startup"
+              cat /tmp/nhid-server.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          if ! curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+            echo "::error::API did not become ready within 30s"
+            cat /tmp/nhid-server.log
+            exit 1
+          fi
+
+          python scripts/validate_ci.py
 
       - name: Confusion-matrix baseline guard
         run: python scripts/check_baseline.py
