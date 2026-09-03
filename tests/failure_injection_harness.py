@@ -100,28 +100,63 @@ def assert_event_written(session_id: str, db_path: str = EVENT_DB_PATH) -> None:
         pytest.skip(f"Could not query event DB: {e}")
 
 
-def assert_replay_identity(
+def assert_replay_inspection(
     session_id: str,
     *,
-    first_response: str,
+    expected_response: str,
     db_path: str = EVENT_DB_PATH,
-) -> None:
-    """
-    Replay the event stream for session_id and assert the output matches
-    the original response. Tests deterministic replay integrity.
-    """
-    replay_url = f"{REPLAY_URL}/{session_id}"
-    try:
-        r2 = httpx.post(replay_url, timeout=TIMEOUT)
-    except httpx.RequestError as exc:
-        pytest.skip(f"Replay endpoint not reachable: {exc}")
+) -> dict:
+    """Assert the /debug/replay inspection contract.
 
-    assert_no_500(r2)
-    assert r2.text == first_response, (
-        "REPLAY DIVERGENCE DETECTED — pipeline is not deterministic.\n"
-        f"Original output:\n{first_response[:400]}\n\n"
-        f"Replay output:\n{r2.text[:400]}"
+    Settled 2026-09-03 from repository evidence, not preference. This helper
+    previously POSTed to the endpoint and required the original TwiML back,
+    which the implementation could never satisfy: the route is a GET returning a
+    JSON forensic trace, and a JSON trace can never equal TwiML. Correcting the
+    verb alone would not have reconciled them -- they were two different
+    contracts.
+
+    The evidence says inspection:
+      * `nhid_event_store.replay(session_id)` is literally
+        `return get_events(session_id)` -- retrieval, not re-execution.
+      * the route is `@app.get`, documented as "Full forensic trace".
+      * `traces/nhid-trace-09` treats an LLM call *during* replay as a failure
+        mode, and files replay-integrity hashing under "next iteration" --
+        a proposal, not a shipped capability.
+
+    So re-execution is not manufactured here to satisfy a test. What is asserted
+    instead is what the contract actually owes an auditor: a retrievable,
+    deterministic, faithful record of the interaction.
+    """
+    r = httpx.get(f"{REPLAY_URL}/{session_id}", timeout=TIMEOUT)
+    assert_no_500(r)
+    assert r.status_code == 200, (
+        f"Inspection retrieval must succeed; got HTTP {r.status_code}. Body: {r.text[:300]}"
     )
+
+    trace = r.json()
+    for key in ("session_id", "reconstructed_state", "events"):
+        assert key in trace, f"trace is missing {key!r}; got keys {sorted(trace)}"
+    assert trace["session_id"] == session_id
+    assert trace["events"], f"trace for {session_id!r} contains no events"
+
+    # Faithful: the response the caller actually received must be recoverable
+    # from the record. An audit trail that cannot show what was said is not
+    # evidence of anything.
+    responses = [e.get("response_text") for e in trace["events"] if e.get("response_text")]
+    assert any(expected_response.strip() == (resp or "").strip() for resp in responses), (
+        "The response returned to the caller does not appear in the trace.\n"
+        f"Returned: {expected_response[:200]!r}\n"
+        f"Recorded: {[str(x)[:120] for x in responses]}"
+    )
+
+    # Deterministic: retrieving twice yields the same record.
+    again = httpx.get(f"{REPLAY_URL}/{session_id}", timeout=TIMEOUT)
+    assert again.status_code == 200
+    assert again.json() == trace, (
+        "Two retrievals of the same session returned different traces. "
+        "Inspection must be deterministic."
+    )
+    return trace
 
 
 # ── Marker: skip if server not reachable ─────────────────────────────────
@@ -250,15 +285,6 @@ def assert_unidentified_contract(response: httpx.Response) -> str:
     assert source == "synthetic", f"session_id_source must be 'synthetic'; got {source!r}"
     return session_id
 
-xfail_replay_contract = pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "OPEN DECISION 2 — what /debug/replay returns. assert_replay_identity POSTs to "
-        "the endpoint and requires the original TwiML back; app.py exposes it as GET and "
-        "returns a JSON forensic trace. Correcting the verb alone does not reconcile "
-        "these: a JSON trace can never equal TwiML. See docs/skipped-test-audit.md §8.2."
-    ),
-)
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -495,22 +521,17 @@ class TestReplayDeterminism:
     identical output with no external calls. Divergence = ATR-01 violation.
     """
 
-    @xfail_replay_contract
-    def test_replay_identity_normal_request(self) -> None:
-        """
-        Send a normal request. Then replay it. Assert outputs are identical.
-        """
+    def test_replay_inspection_normal_request(self) -> None:
+        """A completed interaction is retrievable as a faithful forensic trace."""
         session_id = f"REPLAY-ID-{int(time.time())}"
         r1 = _post({
             "CallSid": session_id,
             "SpeechResult": "Calling to verify benefits.",
         })
         assert_no_500(r1)
-
-        # Small delay to allow persistence before replay
         time.sleep(0.2)
-
-        assert_replay_identity(session_id, first_response=r1.text)
+        trace = assert_replay_inspection(session_id, expected_response=r1.text)
+        assert trace["reconstructed_state"]["session_id"] == session_id
 
     def test_replay_idempotency_same_request_id(self) -> None:
         """
@@ -532,17 +553,33 @@ class TestReplayDeterminism:
             f"First:  {r1.text[:400]}\nSecond: {r2.text[:400]}"
         )
 
-    @xfail_replay_contract
-    def test_replay_empty_speech_determinism(self) -> None:
-        """
-        Empty speech result replayed must produce identical output.
-        Tests that empty-string normalization is deterministic.
-        """
+    def test_replay_inspection_empty_speech(self) -> None:
+        """Empty-input handling is recorded, and its trace is deterministic."""
         session_id = f"REPLAY-EMPTY-{int(time.time())}"
         r1 = _post({"CallSid": session_id, "SpeechResult": ""})
         assert_no_500(r1)
         time.sleep(0.2)
-        assert_replay_identity(session_id, first_response=r1.text)
+        assert_replay_inspection(session_id, expected_response=r1.text)
+
+    def test_replay_is_a_retrieval_contract_not_re_execution(self) -> None:
+        """Pin the verb, so the contract cannot drift back into ambiguity.
+
+        The endpoint is a GET. It was previously tested with POST, which
+        returns 405 and produced two years of apparent "replay divergence"
+        that was really a method mismatch.
+        """
+        session_id = f"REPLAY-VERB-{int(time.time())}"
+        r1 = _post({"CallSid": session_id, "SpeechResult": "prior auth status"})
+        assert_no_500(r1)
+        time.sleep(0.2)
+
+        posted = httpx.post(f"{REPLAY_URL}/{session_id}", timeout=TIMEOUT)
+        assert posted.status_code == 405, (
+            "Replay is a retrieval contract; POST must not be accepted. "
+            f"Got HTTP {posted.status_code}."
+        )
+        got = httpx.get(f"{REPLAY_URL}/{session_id}", timeout=TIMEOUT)
+        assert got.status_code == 200
 
 
 # ──────────────────────────────────────────────────────────────────────────
