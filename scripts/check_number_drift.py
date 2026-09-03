@@ -197,6 +197,50 @@ def _check_corpus_claims(corpus, failures):
                     )
 
 
+PUBLISHED_PDFS = "specs/*.pdf"
+
+
+def _check_published_pdfs(unit_expected):
+    """Read the text of every downloadable PDF and hold it to the same count.
+
+    PDFs are the surface where a stale number survives longest: the site can be
+    corrected in an afternoon, but a downloaded file keeps asserting whatever it
+    said the day it was generated. This guard watched only HTML and Markdown, so
+    `NHID-Clinical-v1.3-Overview.pdf` went on claiming "847 passing unit tests"
+    across four count changes -- 847 to 851 to 920 to 924 to 987 -- while every
+    web page was reconciled each time.
+
+    A missing extractor is reported as a FAILURE, not a warning. The last time a
+    check here degraded to a warning and still exited 0, it hid for a month.
+    """
+    failures = []
+    paths = sorted(glob.glob(PUBLISHED_PDFS))
+    if not paths:
+        return [f"no PDFs matched {PUBLISHED_PDFS}: the published-artifact check ran against nothing"]
+    try:
+        from pdfminer.high_level import extract_text
+    except ImportError:
+        return [
+            "pdfminer.six is not installed, so the published PDFs were not checked. "
+            "Install it (it is in requirements.txt) rather than letting this pass."
+        ]
+
+    claim = re.compile(r"\b(\d{2,5})\s+passing\s+(?:unit\s+)?tests?\b", re.I)
+    for path in paths:
+        try:
+            text = " ".join(extract_text(path).split())
+        except Exception as exc:  # a PDF we cannot read is a PDF we cannot vouch for
+            failures.append(f"{path}: could not extract text ({exc})")
+            continue
+        for m in claim.finditer(text):
+            if int(m.group(1)) != unit_expected:
+                failures.append(
+                    f"{path}: claims '{m.group(0)}' but the suite invariant is "
+                    f"{unit_expected} passed. Regenerate with scripts/generate_pdfs.py."
+                )
+    return failures
+
+
 def main() -> int:
     unit_expected = _module_constant("scripts/validate_ci.py", "UNIT_PUBLISHED")
     baseline = _module_constant("scripts/check_baseline.py", "EXPECTED")
@@ -225,6 +269,8 @@ def main() -> int:
                         f"{path}:{lineno}: claims DBC-01 {m.group(1)}% but the "
                         f"recorded baseline is {dbc_rate}%"
                     )
+
+    failures += _check_published_pdfs(unit_expected)
 
     # The CI job name hardcodes the count by change-control convention.
     ci_yml = Path(".github/workflows/ci.yml").read_text()
