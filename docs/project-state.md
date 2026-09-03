@@ -122,7 +122,7 @@ with `UNIT_PUBLISHED`.
 
 ## 7. Website shape
 
-44 published pages, ~18,000 words of body content — page count is inflated
+45 published pages, ~18,000 words of body content — page count is inflated
 relative to substance.
 
 **15 pages are orphans** (nothing on the site links to them). Two carry real
