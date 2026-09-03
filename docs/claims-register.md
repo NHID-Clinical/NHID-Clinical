@@ -139,6 +139,28 @@ endorsement or compliance.
 
 ---
 
+## D-bis. Control-set completeness — a defect found 2026-09-03
+
+Not a wording issue. A published surface omits a canonical control.
+
+| # | Surface | Finding | Verdict |
+|---|---|---|---|
+| DB1 | `specification.html` | Names IDG-01, DBC-01, EIT-01, ATR-01. **PDX-01 does not appear.** Says "four behaviors" and "Why These Four" | **DEFECT — material.** The page in navigation as *Specification (v1.3)* is missing the Pre-Data Exchange Gate: no PHI, member ID, NPI, DOB or claim number until IDG-01 disclosure is confirmed. Engine-enforced, baselined 41/41 with 0 FP, named 8× on `index.html` |
+| DB2 | `specs/…Core-Specification.pdf` | Carries all five controls including PDX-01 | **CORRECT.** The PDF is the sound artifact; the web page has diverged from it. The fix is reconciliation against existing text, **not new normative drafting** |
+| DB3 | `specs/…Core-Specification.pdf` | Overview says "four deterministic behavioral controls"; metric row says "5 Controls"; heading says "The Five Controls" | **DEFENSIBLE, presentationally poor.** Four *behavioral* controls plus ATR-01, which the same document calls the "fifth canonical control" — an audit control. Nothing missing; disambiguate the prose |
+| DB4 | `specs/…Operational-Blueprint-v1.3.pdf` | No mention of PDX-01 anywhere | **DEFECT.** Same omission as DB1, in a second downloadable artifact |
+| DB5 | — | The two "fours" are **different sets** — the PDF's is IDG/PDX/DBC/EIT, the website's is IDG/DBC/EIT/ATR | **Load-bearing.** The page did not inherit the behavioural-vs-audit distinction; it dropped the PHI gate. Any fix that merely changes "Four" to "Five" would leave the control missing while asserting it is present |
+
+> **Why the drift guard did not catch this.** `check_number_drift.py` compares
+> *numbers* across a `WATCHED` list, and `specification.html` is not on that
+> list. Even if it were, the guard has no notion of "this page should name five
+> control IDs" — the page is numerically self-consistent. **A control-set
+> completeness check is a different guard**, and one this repository does not
+> have. Recommended: assert that every surface naming any control ID names all
+> five, or explicitly declares the subset it covers and why.
+
+---
+
 ## E. Capability claims
 
 | # | Verbatim | Page(s) | Method | Verdict |

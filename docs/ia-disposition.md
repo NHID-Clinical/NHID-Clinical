@@ -389,11 +389,60 @@ Resolved as: **11 core pages**, or **12–13** if both flagged items stay.
 Neither is an IA question; both are factual and were found while reading the
 pages rather than counting them.
 
-**`specification.html` says "Why These Four".** The normative specification
-contains a section justifying **four** behaviours. There are **five** canonical
-controls — IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 — and the site says so
-everywhere else. The heading and its paragraph are stale, in the one document
-where staleness matters most. Fix in place, whatever happens to the IA.
+**`specification.html` omits PDX-01 entirely.** *(This entry corrected within
+the hour of first writing it. The first diagnosis — "a stale heading" — was
+wrong, and wrong in the dangerous direction: it implied the fix was to change
+"Four" to "Five", which would have left the control missing while making the
+page assert otherwise.)*
+
+The page at `/specification.html`, titled *NHID-Clinical v1.3 Specification* and
+linked from navigation as *Specification (v1.3)*, names exactly four control IDs:
+
+| Surface | Control IDs named |
+|---|---|
+| `specification.html` | IDG-01, DBC-01, EIT-01, ATR-01 — **no PDX-01** |
+| `framework/controls.html` | all five, plus DLG-01 |
+| `index.html` | all five, plus DLG-01 |
+| `specs/…Core-Specification.pdf` | all five |
+
+It says *"The proposal suggests four behaviors"* and closes with *"Why These
+Four"*. **The page is internally consistent and externally wrong.** The heading
+is correct *for the page*; the page is incomplete *for the framework*.
+
+**PDX-01 is the Pre-Data Exchange Gate** — no PHI, member ID, NPI, DOB or claim
+number until IDG-01 disclosure is confirmed. In a healthcare framework it is
+plausibly the most consequential of the five, it is enforced by the engine, and
+it is baselined at 41/41 with zero false positives. It is absent from the
+document a reader would treat as authoritative.
+
+**The canonical PDF is the correct artifact and disagrees with the page.**
+`specs/NHID-Clinical-v1.3-Core-Specification.pdf` carries PDX-01 in its control
+cards. So the fix is **reconciliation against an existing source, not new
+normative drafting** — the text exists and does not need inventing.
+
+**A second, milder inconsistency inside that PDF.** Its overview says
+*"defines **four** deterministic behavioral controls"* while the metric row
+immediately below reads *"**5** Controls"* under the heading *"The Five
+Controls"*. Unlike the page, this one is **defensible rather than wrong**: the
+four are the *behavioral* controls (IDG-01, PDX-01, DBC-01, EIT-01) and ATR-01 is
+labelled in the same document as the *"fifth canonical control"* — an audit
+control, not a behavioural one. It reads as a contradiction and should be
+disambiguated, but nothing is missing.
+
+**Note the two "fours" are different sets.** The PDF's four is IDG/PDX/DBC/EIT.
+The website's four is IDG/DBC/EIT/ATR. The page did not inherit the PDF's
+behavioural-vs-audit distinction; it dropped the PHI gate.
+
+**Also affected:** `specs/NHID-Clinical-Operational-Blueprint-v1.3.pdf` contains
+no mention of PDX-01 at all.
+
+**Not fixed in this pass, deliberately.** This is normative text, and the
+standing instruction is that an exception to audit-only work gets flagged and
+waits. It is one decision away: **approve sourcing the PDX-01 section from the
+canonical PDF into `specification.html`, and re-titling "Why These Four".** No
+wording needs to be authored. Merging `framework/controls.html` into
+`specification.html` (§4.4) would also resolve it, which is an argument for that
+merge independent of page count.
 
 **`roadmap.html` is not a roadmap.** Navigation labels it *Roadmap*; its `<h1>`
 is *"NHID-Auth v2: Cryptographic Agent Identity"*, and its content is a v2
