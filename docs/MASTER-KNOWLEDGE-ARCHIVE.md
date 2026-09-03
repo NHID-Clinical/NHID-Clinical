@@ -2744,6 +2744,77 @@ assert len(decision.violations) == 0
 
 ## Changelog
 
+### 2026-09-03 · Eighteen tests that had never run, and what they were hiding
+
+The suite reported **987 passed, 18 skipped** for months. The skip was honest —
+`tests/failure_injection_harness.py` skips when nothing answers at
+`http://127.0.0.1:8000` — but **no CI job ever started a server**, so the
+condition was permanent rather than transient, and "18 skipped integration
+tests" described tests that had never executed once.
+
+Starting the API and running them: **11 pass, 7 fail.** Suite is now
+**998 passed, 7 xfailed, 0 skipped, 1005 collected.**
+
+**The good news first.** `TestPolicyEnforcement`'s three tests — the audit's
+single largest concern, the only ones proving the API *applies* the engine and
+persists a complete audit record rather than merely having a correct engine
+behind it — **all pass**. That claim now rests on evidence. The audit had also
+rated input hardening and chaos as coverage-only concerns; five of those twelve
+fail, so the ranking erred in the reassuring direction.
+
+**The 7 failures are 2 contradictions, not 7 bugs.**
+
+1. **Missing or empty `CallSid` (5 tests).** The harness requires HTTP 400.
+   `app.py` coerces the value to the literal session id `"unknown"` and returns
+   200 with valid TwiML. Both are defensible: a Twilio webhook wants TwiML back,
+   while ATR-01 wants distinct calls to stay distinguishable in the audit trail —
+   and coercion to a shared constant means every unidentified call writes events
+   under the *same* session id. A third option neither side takes, minting a
+   synthetic unique id, would satisfy both. Not implemented; not decided.
+2. **What `/debug/replay` returns (2 tests).** The harness POSTs and expects the
+   original TwiML byte-for-byte; the endpoint is a `GET` returning a JSON
+   forensic trace. **Correcting the verb does not reconcile this** — JSON can
+   never equal TwiML. They encode different contracts: replay-as-re-execution
+   versus replay-as-inspection. Determinism itself is not at risk; it is asserted
+   in ten other files, and the sibling idempotency test passes.
+
+Both are **UNKNOWN pending human judgment**, recorded in
+`docs/skipped-test-audit.md` §8.
+
+**Why xfail and not deletion.** `xfail(strict=True)` keeps them executing and
+keeps the divergence legible. Strict means that implementing either decision
+makes them XPASS and turns the build red until the marker is removed, so a
+marker cannot outlive the question it stands for — verified, not assumed. The
+instruction was explicitly not to manufacture 100% by converting skips to passes
+or deleting tests, and deleting these would have destroyed the only evidence
+that the contradictions exist.
+
+**Three CI jobs were measuring the wrong thing.** `ci.yml`, `nightly-verify.yml`
+and `nhid-gates.yml` all ran the suite with no server. `nhid-gates.yml`'s job was
+named **"abuse + input hardening"** while the twelve tests constituting abuse and
+input hardening were exactly the twelve that skipped — it reported green having
+run 21 offline policy-engine tests and zero abuse tests. All three now start the
+API; the job is renamed *"abuse, input hardening + delegation rejection"*.
+
+**Server startup and pytest share a single step.** A process backgrounded in one
+GitHub Actions step is not guaranteed to survive into the next, and this was
+confirmed locally: the backgrounded server did not outlive its step. A silently
+dead server would put all 18 straight back to skipping while the job still
+reported green — the exact failure being fixed. `NHID_REQUIRE_SERVER=1` makes an
+unreachable server a collection error instead of 18 skips.
+
+**Number propagation:** 987 → 998 across 34 count claims and 16 skip phrases in
+12 files, plus all seven PDFs regenerated. `UNIT_PUBLISHED` 987 → 998;
+`INTEGRATION_EXPECTED = 18` replaced by `SKIP_EXPECTED = 0` and
+`XFAIL_EXPECTED = 7`; `validate_ci.py`'s summary parser rewritten to read
+`xfailed`/`xpassed`, which it previously could not see at all.
+
+**This is not a 100% score and is not presented as one.** Eighteen invisible
+skips became eleven passes and seven visible failures. That is an improvement in
+what is *known*, not in what works.
+
+---
+
 ### 2026-09-03 · A stale number inside a downloadable PDF, and the guard that could not see it
 
 `specs/NHID-Clinical-v1.3-Overview.pdf` claimed **"847 passing unit tests"**. The

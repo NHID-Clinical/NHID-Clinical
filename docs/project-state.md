@@ -201,6 +201,52 @@ ls adapters/*_adapter.py; ls specs/*.pdf
 
 ---
 
+## 11. Metric verification — 2026-09-03
+
+Every public figure re-derived from its source on this date, at commit `dc136ca`.
+`origin/main` was `6985644`; its tree is **byte-identical** to this branch's base
+`79d81a6`, so "verified against `main`" and "verified against this branch's base"
+are the same statement here. The three intervening commits on `main` are merges
+that introduced no net change.
+
+| Figure | Value | Derived by |
+|---|---|---|
+| Suite passing | **998** | `python -m pytest tests/ -q` with the API running |
+| Recorded divergences | **7** | same run, reported as `xfailed` |
+| Skipped | **0** | same run |
+| Collected | **1005** | `--collect-only -q`; 998 + 7 |
+| IDG-01 | 70/70, 0 FP | `scripts/check_baseline.py` |
+| PDX-01 | 41/41, 0 FP | `scripts/check_baseline.py` |
+| DBC-01 | 183/200 = 91.5%, 5 FP | `scripts/check_baseline.py` |
+| EIT-01 | 169/171, 5 FP | `scripts/check_baseline.py` |
+| Fabricate corpus | **550** conversations, 4838 turns | row count of `fixtures/fabricate/conversations.csv` / `turns.csv` |
+| Fabricate compliant | **127** | conversations with `0` on all five `*_violation` columns |
+| Governance corpus | **25** scenarios, **55** turns | `scripts/eval_corpus.py` |
+| Governance detection | **29/32 = 90.6%** | `scripts/eval_corpus.py` |
+| Governance false positives | 0 of 5 compliant scenarios | `scripts/eval_corpus.py` |
+| Adversarial corpus | **40** scenarios | length of `tests/adversarial_corpus_v1.json` |
+
+**One figure could not be reconciled and is not published.** A metric of
+*"1,005 automated conformance tests passing · 18 currently skipped"*, and a
+related *"98.2% of 1,023 automated tests"*, were raised for use on public
+surfaces. Neither reconciles with anything this repository produces:
+
+- **1,005 is the collected total, not the passing count.** It was 987 + 18
+  before this change and is 998 + 7 after. Publishing 1,005 as *passing* would
+  count the skipped — and now the failing — tests as passes.
+- **1,023 does not appear anywhere.** No file, corpus, or command yields it, and
+  1,005 + 18 = 1,023 suggests the collected total was added to the skips it
+  already contains.
+- **98.2% of 1,023 is 1,004.6**, which rounds to neither figure quoted.
+
+Per the rule against resolving contradictions by silent selection, these are
+recorded as **UNKNOWN in origin** rather than adopted, averaged, or quietly
+replaced. The measured figure is 998 of 1005 (99.3%), and 99.3% is not published
+either — a percentage invites reading the remaining 0.7% as flaw rather than as
+two documented open decisions.
+
+---
+
 *Maintenance: update this file in the same commit as any change to the figures
 it records. If it disagrees with the repository, the repository is right and this
 file is stale.*
