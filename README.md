@@ -199,7 +199,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 
 **Engine Validation**:
 - ✅ **998 passing tests** (1005 total; comprehensive rule coverage across all phases)
-- ✅ **25-scenario evaluation corpus** (90.6% detection; 0% false positives across 5 compliant scenarios)
+- ✅ **25-scenario evaluation corpus** (90.6% detection; 0% false positives across 5 compliant scenarios; 8 unexpected detections on violation scenarios, reported separately)
 - ✅ **Live endpoint tested** against noncompliant VAPI payload
 - ✅ **Deterministic** — same input always produces same output
 

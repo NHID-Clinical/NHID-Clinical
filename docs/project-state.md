@@ -98,7 +98,7 @@ Source of truth: `EXPECTED` in `scripts/check_baseline.py`, gated in CI.
 
 ### 5.2 Governance Evaluation Corpus — research measurement
 25 scenarios (5 compliant, 20 violation), 55 turns, 32 expected violations.
-**29/32 detected = 90.6%. 0/5 compliant scenarios produced a false positive.**
+**29/32 detected = 90.6%. 0/5 compliant scenarios produced a false positive. 8 unexpected detections on violation scenarios — a separate quantity, see `governance-corpus-remediation.md`.**
 Derived by *running* the corpus (`scripts/eval_corpus.py`), not from a constant.
 Small and hand-authored: a research measurement, not a conformance claim,
 certification, assurance score, or independent validation.

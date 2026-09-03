@@ -83,13 +83,27 @@ def collect_scenarios(corpus):
 
 def evaluate_corpus(scenarios):
     """
-    Run every scenario and return (detection_stats, false_positives).
+    Run every scenario and return (detection_stats, false_positives, unexpected).
 
     `false_positives` maps each compliant scenario's id to the sorted rule ids
     it emitted — an empty list means that scenario is clean.
+
+    `unexpected` maps each *violation* scenario's id to rules it emitted that
+    the scenario did not declare. This was invisible until 2026-09-03, and the
+    gap mattered: the published false-positive figure is measured only over the
+    five compliant scenarios, so a rule firing where it was not expected on any
+    of the other twenty could not show up in any number the project reported.
+    There were eight such detections before this run and none of them were
+    known. It is reported separately rather than folded into the
+    false-positive rate, because the two are different quantities: a compliant
+    scenario emitting anything is a defect, whereas a violation scenario
+    emitting an undeclared rule is usually the corpus under-specifying what a
+    turn contains. Judging which requires reading the scenario, so the number
+    is surfaced and not interpreted.
     """
     stats = {}
     false_positives = {}
+    unexpected = {}
 
     for scenario in scenarios:
         scenario_id = scenario.get("scenario_id", "unknown")
@@ -104,6 +118,10 @@ def evaluate_corpus(scenarios):
             false_positives[scenario_id] = sorted(detected_violations)
             continue
 
+        extra = sorted(detected_violations - expected_violations)
+        if extra:
+            unexpected[scenario_id] = extra
+
         for rule_id in expected_violations:
             bucket = stats.setdefault(rule_id, {"expected": 0, "detected": 0, "missed": []})
             bucket["expected"] += 1
@@ -117,7 +135,7 @@ def evaluate_corpus(scenarios):
             bucket["detected"] / bucket["expected"] if bucket["expected"] else 0.0
         )
 
-    return stats, false_positives
+    return stats, false_positives, unexpected
 
 
 def print_detection(stats):
@@ -142,6 +160,27 @@ def print_detection(stats):
         overall_rate = total_detected / total_expected
         print(f"{'OVERALL':<12} {total_expected:>10} {total_detected:>10} {overall_rate:>9.1%}")
     print("="*60)
+
+
+def print_unexpected(unexpected):
+    """Rules fired on violation scenarios that did not declare them.
+
+    Not folded into the false-positive rate: see evaluate_corpus().
+    """
+    total = sum(len(v) for v in unexpected.values())
+    print("\n" + "=" * 60)
+    print("UNEXPECTED DETECTIONS (violation scenarios only)")
+    print("=" * 60)
+    if not unexpected:
+        print("None.")
+    else:
+        for sid in sorted(unexpected):
+            print(f"  {sid}: {', '.join(unexpected[sid])}")
+    print("-" * 60)
+    print(f"Total: {total}")
+    print("Reported separately from the false-positive rate, which is measured")
+    print("only over compliant scenarios and cannot see any of these.")
+    print("=" * 60)
 
 
 def print_false_positives(false_positives):
@@ -176,7 +215,7 @@ def print_false_positives(false_positives):
     print("="*60 + "\n")
 
 
-def build_report(corpus_path, scenarios, stats, false_positives):
+def build_report(corpus_path, scenarios, stats, false_positives, unexpected):
     """
     Render the corpus report as Markdown.
 
@@ -299,13 +338,13 @@ def main(argv=None):
 
     corpus = load_corpus(corpus_path)
     scenarios = collect_scenarios(corpus)
-    stats, false_positives = evaluate_corpus(scenarios)
+    stats, false_positives, unexpected = evaluate_corpus(scenarios)
 
     try:
         rel = corpus_path.resolve().relative_to(ROOT)
     except ValueError:
         rel = corpus_path
-    report = build_report(rel, scenarios, stats, false_positives)
+    report = build_report(rel, scenarios, stats, false_positives, unexpected)
 
     if args.check:
         if not REPORT.exists():
@@ -330,6 +369,7 @@ def main(argv=None):
           f"{sum(len(s.get('turns', [])) for s in scenarios)}")
     print_detection(stats)
     print_false_positives(false_positives)
+    print_unexpected(unexpected)
     return 0
 
 

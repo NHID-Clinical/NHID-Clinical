@@ -131,7 +131,7 @@ def _corpus_facts():
     if not Path(DEFAULT_CORPUS).exists():
         return None
     scenarios = collect_scenarios(load_corpus(DEFAULT_CORPUS))
-    stats, false_positives = evaluate_corpus(scenarios)
+    stats, false_positives, _unexpected = evaluate_corpus(scenarios)
     clean = len(false_positives)
     dirty = sum(1 for rules in false_positives.values() if rules)
     return {
