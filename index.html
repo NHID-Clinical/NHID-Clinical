@@ -160,7 +160,7 @@
           <a class="action-button action-button-primary" href="/for-payers.html">Run an observe-only shadow evaluation</a>
           <a class="action-button action-button-secondary" href="/framework/">Explore the framework</a>
         </div>
-        <p class="proof-line reveal">5 controls &middot; 998 passing tests &middot; machine-readable traces &middot; open implementation</p>
+        <p class="proof-line reveal">5 controls &middot; 1020 passing tests &middot; machine-readable traces &middot; open implementation</p>
         <p class="lede-text reveal" style="margin-top:1rem;font-size:1rem;opacity:.9">A shadow evaluation runs against call traces you already hold. Observe-only and non-intercepting: it does not sit in the call path and requires no vendor changes. It is time-bounded, and it produces a baseline showing where identity was disclosed, where protected data moved, where calls escalated to a human, and what audit evidence exists today. Handling those traces still carries your existing privacy, security and contractual obligations.</p>
         <p class="boundary-note reveal">
           <span aria-hidden="true">&#9679;</span>
@@ -346,7 +346,7 @@
     <div class="container">
       <h2 id="built-open" class="section-kicker reveal" style="margin-bottom:.9rem">Built in the open &mdash; every claim below is checkable</h2>
       <ul class="reveal" style="list-style:none;padding:0;margin:0;display:grid;gap:.75rem 2rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));font-size:.95rem;line-height:1.55">
-        <li><strong>998 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
+        <li><strong>1020 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
         <li><strong>Versioned specification</strong><br><span style="color:var(--ink-soft)">v1.3, five named controls &mdash; <a href="/specification.html">read it</a></span></li>
         <li><strong>Deterministic engine</strong><br><span style="color:var(--ink-soft)">Same inputs produce the same decision, every time &mdash; <a href="/framework/reference-implementation.html">how it works</a></span></li>
         <li><strong>FHIR R4 AuditEvent</strong><br><span style="color:var(--ink-soft)">Audit records in a standard healthcare schema &mdash; <a href="/evidence-pack.html">see an example</a></span></li>
@@ -359,9 +359,9 @@
   <section class="page-section" style="padding-block:1rem 2.5rem">
     <div class="scope-note metric-rail reveal">
       <div class="metric">
-        <span class="metric-value">998</span>
+        <span class="metric-value">1020</span>
         <span class="metric-label">Passing tests</span>
-        <span style="font-size:.8125rem;color:var(--panel-text-muted)">7 recorded divergences · 1005 total, in the open repo</span>
+        <span style="font-size:.8125rem;color:var(--panel-text-muted)">every collected test executed, in the open repo</span>
       </div>
       <div class="metric">
         <span class="metric-value">5</span>

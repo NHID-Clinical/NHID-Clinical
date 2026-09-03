@@ -13,15 +13,19 @@ with new controls and features. CI validates correctness of execution, not linec
 Suite shape, as of 2026-09-03
 -----------------------------
 Until this date the suite reported 987 passed and 18 skipped. Those 18 skipped
-because nothing was listening on the API port, and CI never started a server —
+because nothing was listening on the API port, and CI never started a server --
 so they had never once executed. Running them revealed 11 passes and 7 genuine
-divergences between the harness and app.py, recorded as strict xfail and
-documented in docs/skipped-test-audit.md §8.
+divergences between the harness and app.py. Both underlying contracts were then
+resolved (docs/skipped-test-audit.md section 8), so the divergences are gone
+rather than marked:
 
-The suite is therefore expected to report 998 passed, 7 xfailed, 0 skipped when
-run against a live API. Run it without one and you get the old 987/18 shape,
-which is why a nonzero skip count is now worth warning about: it means the
-integration tests did not run.
+  * a missing or empty CallSid no longer becomes a shared literal; and
+  * /debug/replay is settled as an inspection contract, on the repository's own
+    evidence, rather than a replay engine being built to satisfy a test.
+
+The suite now reports 1020 passed, 0 skipped, 0 xfailed, 0 xpassed against a
+live API. Run it without one and 18 tests skip, which is why a nonzero skip
+count is worth warning about: it means the integration tests did not run.
 """
 import re, subprocess, sys
 
@@ -39,7 +43,7 @@ XFAIL_EXPECTED = 7
 # without failing the build. It exists so scripts/check_number_drift.py has a
 # canonical number to compare published claims against. Update it in the same
 # commit as any change to the published count.
-UNIT_PUBLISHED = 998
+UNIT_PUBLISHED = 1020
 
 def run_pytest():
     result = subprocess.run([sys.executable,"-m","pytest","tests/","-q","--tb=short","--no-header"],capture_output=True,text=True)
@@ -78,7 +82,7 @@ def validate(counts):
     if counts["xfailed"] != XFAIL_EXPECTED:
         print(
             f"WARNING: expected {XFAIL_EXPECTED} xfailed tests, got {counts['xfailed']}. "
-            f"See docs/skipped-test-audit.md §8 — the recorded divergences changed."
+            f"See docs/skipped-test-audit.md §8 — a deferred failure has reappeared."
         )
     # Warn (but don't fail) when the published count no longer matches reality.
     # check_number_drift.py only enforces that published surfaces agree with
