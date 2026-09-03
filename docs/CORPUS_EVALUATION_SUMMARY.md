@@ -268,7 +268,7 @@ the fact that Tier 0 is observe-only.
 - Pure design constraints maintained — `evaluate_all()` still performs no I/O
 - Tier 0 is shadow mode: decisions are recorded, never enforced
 
-**Corpus Evaluation**: ✅ **Implemented, all four controls accurate on this corpus**
+**Corpus Evaluation**: ✅ **Implemented; the four deterministic behavioral controls accurate on this corpus**
 - Adapter and harness are built and have been run against all 150 sessions
 - 100% detection, 0% false positives across IDG-01, PDX-01, DBC-01 and EIT-01
 - The corpus is a synthetic reference dataset, not a conformance claim

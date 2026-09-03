@@ -197,13 +197,19 @@
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Everything else in this proposal flows from that single principle.</p>
 
       <h2 style="margin-top:2.5rem">Suggested Behaviors</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The proposal suggests four behaviors for AI voice agents in these workflows. These are not mandatory requirements — they are a starting point for shared expectations.</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The proposal defines <strong>five controls</strong> for AI voice agents in these workflows. Four are deterministic <em>behavioral</em> controls governing what the agent does on the call &mdash; IDG-01, PDX-01, DBC-01 and EIT-01. The fifth, ATR-01, is the <em>audit and evidence</em> control: it does not change the agent&rsquo;s behavior, it records what the other four did. These are not mandatory requirements &mdash; they are a starting point for shared expectations.</p>
       <div class="feature-grid" style="margin-top:1.4rem">
         <div class="feature-card reveal">
           <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3M6 6v11M10 3v18M14 8v7M18 5v13M22 10v3"/></svg></div>
           <span class="code">IDG-01</span>
           <h3>Identify as automated before any data exchange.</h3>
           <p>The first meaningful act of the call.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12h6"/></svg></div>
+          <span class="code">PDX-01</span>
+          <h3>No protected health information before disclosure is confirmed.</h3>
+          <p>No PHI &mdash; member ID, NPI, date of birth, claim number &mdash; until IDG-01 disclosure is confirmed.</p>
         </div>
         <div class="feature-card reveal">
           <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5a3 3 0 0 1 6 0v2M12 12v3"/></svg></div>
@@ -221,7 +227,7 @@
           <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13l2 2 4-4"/></svg></div>
           <span class="code">ATR-01</span>
           <h3>Maintain a basic record.</h3>
-          <p>Sufficient logging to establish what happened, and when.</p>
+          <p>Sufficient logging to establish what happened, and when. <span style="opacity:.75">The audit control &mdash; evidence rather than behavior.</span></p>
         </div>
       </div>
 
@@ -241,8 +247,8 @@ sequenceDiagram
     Note over A,P: Operational data exchange proceeds
       </div>
 
-      <h2 style="margin-top:2.5rem">Why These Four</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">These behaviors address the specific operational friction that motivated this proposal. They are observable, testable in context, and achievable without significant architectural changes in most systems.</p>
+      <h2 style="margin-top:2.5rem">Why These Five</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">These controls address the specific operational friction that motivated this proposal. They are observable, testable in context, and achievable without significant architectural changes in most systems.</p>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">They are also the minimum set that would meaningfully change the impersonation latency problem — not a comprehensive AI governance framework.</p>
 
       <h2 style="margin-top:2.5rem">Scope</h2>

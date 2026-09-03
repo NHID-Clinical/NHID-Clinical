@@ -60,3 +60,6 @@ jobs:
       # stale for a month while nightly-only checks reported green.
       - name: Published-number drift guard
         run: python scripts/check_number_drift.py
+
+      - name: Control-set completeness guard
+        run: python scripts/check_control_set.py

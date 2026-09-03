@@ -67,6 +67,9 @@ jobs:
       - name: Published-number drift guard
         run: python scripts/check_number_drift.py
 
+      - name: Control-set completeness guard
+        run: python scripts/check_control_set.py
+
   live-demo-smoke:
     name: "Live API smoke (no-auth routes only)"
     runs-on: ubuntu-latest
