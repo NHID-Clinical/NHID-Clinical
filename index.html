@@ -708,7 +708,209 @@ violations
   })();
   </script>
 
-                    </main>
+                    
+<!-- ── About the project (merged from about.html) ───────────────────── -->
+  <section class="page-section" id="about">
+    <div class="container" style="max-width:860px">
+      <h2>About the project</h2>
+      <p class="lede-text" style="color:var(--body);line-height:1.85">An operational AI governance framework for non-human actor accountability — disclosure, delegated authority, and auditability of AI-operated interactions in healthcare AI workflows.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">NHID-Clinical was created by Brianna Baynard, who worked directly in healthcare payer operations — live eligibility, claims, and prior-authorization phone lines. She was on the receiving end of hundreds of calls from AI voice agents acting for provider offices, including agents that disclosed their automated status only after PHI had been exchanged, or not at all. NHID-Clinical documents those failure patterns and defines a testable baseline for addressing them. It is published openly under CC BY 4.0 and was submitted as a public comment to NIST (<a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a>).</p>
+
+      <blockquote class="reveal" style="border-left:4px solid var(--teal-bright);margin:1.5rem 0;padding:.75rem 1.25rem;color:var(--body);font-size:1rem;line-height:1.8;font-style:italic">
+        "I sat in the exact seat that payer representatives are in today — receiving calls from systems that sounded human, exchanged sensitive data, and only later admitted they were automated. That firsthand experience showed how much friction, wasted time, and unnecessary risk this creates on both sides."
+      </blockquote>
+
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">This is a voluntary, open framework — not an official standard, not a certification program, and not backed by any organization. It documents a specific operational gap and defines a practical, testable way to reduce it.</p>
+
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><strong>Current status:</strong> Practitioner-led open framework, developed independently. Submitted to the NIST AI Safety Institute (docket <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a>). No organizations have adopted or piloted it in production yet.</p>
+
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">Because public comments to federal dockets are public record, this submission is independently indexed by Google and AI search tools and surfaces when searching her name or NHID-Clinical — it's a findable public document, not a hand-picked citation. Worth keeping in context: NIST's RFI drew 932 public comments before it closed in March 2026, so this is one submission among many, not a unique distinction.</p>
+
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">If you work in payer operations, provider offices, or voice AI platforms and see similar patterns, your feedback would be genuinely appreciated.</p>
+
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem"><a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright);font-weight:600">contact@nhid-clinical.org</a></p>
+
+      <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">For a one-page overview aimed at leadership and procurement teams, see the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md" style="color:var(--teal-bright);font-weight:600">Executive Brief</a>.</p>
+
+      <div class="reveal" style="border-top:1px solid var(--border);padding-top:2rem;margin-top:2rem">
+        <h4 style="font-size:1.1rem">Other work by the maintainer</h4>
+        <p style="font-size:0.95rem;line-height:1.6;color:var(--body)">
+          The maintainer has also created the AI Governance Map, a separate project with its own
+          repository and deployment. It is not part of NHID-Clinical, and nothing on this site
+          depends on it.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+<!-- ── Technical stack (merged from technical-stack.html) ───────────────────── -->
+  <section class="page-section" id="technical-stack">
+    <div class="container" style="max-width:860px">
+      <h2>Technical stack</h2>
+      <p class="lede-text" style="color:var(--body);line-height:1.85">The trust stack for B2B healthcare voice AI.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+      <h3>The Trust Stack for B2B Healthcare Voice</h3>
+      <p style="margin-bottom:1.5rem">STIR/SHAKEN verifies the phone number. NHID-Clinical verifies the <strong>AI agent behind</strong> the call and what it is authorized to do.</p>
+
+      <h4>The Five-Layer Stack</h4>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:2rem">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border);text-align:left">
+            <th style="padding:.75rem">Layer</th>
+            <th style="padding:.75rem">Purpose</th>
+            <th style="padding:.75rem">Key Standards</th>
+            <th style="padding:.75rem">NHID Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 0: NPI Gap</td>
+            <td style="padding:.75rem">Public NPI spoofing risk</td>
+            <td style="padding:.75rem">NPPES</td>
+            <td style="padding:.75rem">IDG-01 + NHID-Auth v2</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 1: STIR/SHAKEN</td>
+            <td style="padding:.75rem">Carrier number authentication</td>
+            <td style="padding:.75rem">RFC 8224</td>
+            <td style="padding:.75rem">Complementary</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 2: NHID-Clinical v1.3</td>
+            <td style="padding:.75rem">Behavioral disclosure baseline</td>
+            <td style="padding:.75rem">Voluntary proposal</td>
+            <td style="padding:.75rem">Core (IDG-01, PDX-01, DBC-01, EIT-01) + ATR-01</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 3: NHID-Auth v2</td>
+            <td style="padding:.75rem">Cryptographic authorization</td>
+            <td style="padding:.75rem">NHID-Auth v2 (reference implementation)</td>
+            <td style="padding:.75rem">Authorization proof</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:.75rem">Layer 4: FHIR AuditEvent</td>
+            <td style="padding:.75rem">Healthcare-native logging</td>
+            <td style="padding:.75rem">HL7 FHIR R4</td>
+            <td style="padding:.75rem">ATR-01 compliance</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="text-align:center">
+        <a href="/developers.html" class="primary-pill">Developers → Run the reference implementation</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--mist)">
+    <div class="container" style="max-width:62rem">
+      <h3>The Framework at a Glance</h3>
+      <p style="margin-bottom:1.5rem;color:var(--body)">Every component of NHID-Clinical on one map — the proposal, the v1.3 controls, the technical stack, pilot tooling, regulatory alignment, and the v2 authorization layer (NHID-Auth).</p>
+      <img src="/assets/diagrams/framework-mindmap.svg" alt="Mind map of the NHID-Clinical framework: the proposal, v1.3 core controls (IDG-01, PDX-01, DBC-01, EIT-01), technical stack, pilot and evaluation tooling, regulatory alignment, v2 identity layer, and community governance" style="width:100%;height:auto;border-radius:14px;border:1px solid var(--border)" loading="lazy"/>
+    </div>
+  </section>
+
+
+<!-- ── The open framework (merged from index.html) ───────────────────── -->
+  <section class="page-section" id="framework">
+    <div class="container" style="max-width:860px">
+      <h2>The open framework</h2>
+      <p class="lede-text" style="color:var(--body);line-height:1.85">Specification, control catalog, reference implementation, conformance tests, and regulatory mapping for AI agent identity, authorization, disclosure, and audit evidence in healthcare voice workflows.</p>
+    </div>
+  </section>
+
+
+  <section class="page-section">
+    <div class="container">
+      <p class="section-kicker">What the framework contains</p>
+      <h3 style="margin-bottom:.35rem">Seven components, all open</h3>
+      <p style="color:var(--body);max-width:62ch;margin-bottom:1.75rem">Each is independently usable. You can adopt the controls without the reference implementation, run the conformance suite against your own engine, or read the regulatory mapping on its own.</p>
+      <div class="module-grid">
+        <a class="module-card" href="/specification.html">
+          <span class="module-num">01</span>
+          <h4>Specification</h4>
+          <p>The v1.3 normative document: the problem, the behaviors, the sequence of interaction, scope boundaries, and known gaps.</p>
+          <span class="arr">Read the specification &rarr;</span>
+        </a>
+        <a class="module-card" href="/framework/controls.html">
+          <span class="module-num">02</span>
+          <h4>Control catalog</h4>
+          <p>IDG-01, PDX-01, DBC-01, EIT-01, and ATR-01 — what each control checks, what a pass looks like, and where to try it.</p>
+          <span class="arr">Browse the controls &rarr;</span>
+        </a>
+        <a class="module-card" href="/framework/nhid-auth.html">
+          <span class="module-num">03</span>
+          <h4>NHID-Auth</h4>
+          <p>The v2 cryptographic authorization layer: Ed25519 agent passports, provider-signed delegation, and offline verification.</p>
+          <span class="arr">Read about NHID-Auth &rarr;</span>
+        </a>
+        <a class="module-card" href="/framework/reference-implementation.html">
+          <span class="module-num">04</span>
+          <h4>Reference implementation</h4>
+          <p>A pure-Python policy engine with no runtime dependencies, TypeScript middleware, voice-platform adapters, and a PowerShell module.</p>
+          <span class="arr">See the implementation &rarr;</span>
+        </a>
+        <a class="module-card" href="/framework/conformance-suite.html">
+          <span class="module-num">05</span>
+          <h4>Conformance test suite</h4>
+          <p>Machine-readable, deterministic pass/fail tests. Same inputs, same verdict — every time, for anyone who runs them.</p>
+          <span class="arr">Run the tests &rarr;</span>
+        </a>
+        <a class="module-card" href="/technical-stack.html">
+          <span class="module-num">06</span>
+          <h4>Technical stack</h4>
+          <p>The five-layer trust stack, from carrier authentication through behavioral disclosure to audit and observability.</p>
+          <span class="arr">See the stack &rarr;</span>
+        </a>
+        <a class="module-card" href="/regulatory-alignment.html">
+          <span class="module-num">07</span>
+          <h4>Regulatory alignment</h4>
+          <p>How the controls map to NIST AI RMF, the EU AI Act, ISO/IEC 42001, CMS-0057-F, HIPAA documentation, and state AI laws.</p>
+          <span class="arr">Read the mapping &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--mist)">
+    <div class="container" style="max-width:56rem">
+      <p class="section-kicker">How the framework relates to the platform</p>
+      <h3>The framework is the standard. TrustLayer is optional infrastructure.</h3>
+      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">The specification, control catalog, conformance tests, reference implementation, and simulator remain open under CC BY 4.0. You can implement all of it yourself and never talk to us.</p>
+      <p style="color:var(--body);line-height:1.8;margin-top:.85rem"><a href="/platform/" style="color:var(--teal-bright);font-weight:600">TrustLayer</a> runs the same deterministic controls as production infrastructure — monitoring, evidence generation, agent identity management, authorization, and reporting for organizations operating AI agents at scale. It operationalizes the framework. It does not replace it, and it never becomes a prerequisite for using it.</p>
+      <div class="status-note">
+        <span>&#9432;</span>
+        <span><b>The specification is never paid.</b> No tier, plan, or contract gates the specification, the control catalog, or the conformance test suite.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-cta">
+    <div class="container">
+      <h3>Start with the framework</h3>
+      <p>Read it, run it, and tell us where it breaks.</p>
+      <div class="page-cta-grid">
+        <a class="page-cta-card" href="/specification.html"><b>Read the specification <span class="arr">&rarr;</span></b><span>The v1.3 normative document.</span></a>
+        <a class="page-cta-card" href="/framework/conformance-suite.html"><b>Run the tests <span class="arr">&rarr;</span></b><span>Deterministic pass/fail conformance.</span></a>
+        <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical"><b>Contribute <span class="arr">&rarr;</span></b><span>Issues, discussions, pull requests.</span></a>
+      </div>
+      <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0.</p>
+    </div>
+  </section>
+
+</main>
 
 
 

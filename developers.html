@@ -408,6 +408,259 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
       <a class="closing-button" href="/for-payers.html">Start a pilot →</a>
     </div>
   </section>
+
+<!-- ── Reference implementation (merged from reference-implementation.html) ───────────────────── -->
+  <section class="page-section" id="reference-implementation">
+    <div class="container" style="max-width:860px">
+      <h2>Reference implementation</h2>
+      <p class="lede-text" style="color:var(--body);line-height:1.85">A working implementation of every control in the specification — so &ldquo;conformant&rdquo; means something you can run, not something you can claim.</p>
+    </div>
+  </section>
+
+
+  <section class="page-section">
+    <div class="container" style="max-width:60rem">
+      <h3>What ships</h3>
+      <div class="module-grid">
+        <div class="module-card">
+          <span class="module-num">ENGINE</span>
+          <h4>Policy engine</h4>
+          <p>Pure Python with zero runtime dependencies. Evaluates each control against a session and event and returns a deterministic verdict.</p>
+        </div>
+        <div class="module-card">
+          <span class="module-num">MIDDLEWARE</span>
+          <h4>TypeScript middleware</h4>
+          <p>Request-path enforcement for Node services, mirroring the Python engine&rsquo;s verdicts.</p>
+        </div>
+        <div class="module-card">
+          <span class="module-num">ADAPTERS</span>
+          <h4>VAPI &amp; Twilio adapters</h4>
+          <p>Accept native call payloads from either platform and normalize them into the evaluation format — no transcript reformatting required.</p>
+        </div>
+        <div class="module-card">
+          <span class="module-num">AUTH</span>
+          <h4>NHID-Auth v2</h4>
+          <p>Ed25519 agent passports, provider-signed delegation, and offline verification. <a href="/framework/nhid-auth.html" style="color:var(--teal-bright);font-weight:600">Details &rarr;</a></p>
+        </div>
+        <div class="module-card">
+          <span class="module-num">SCHEMA</span>
+          <h4>Trace schema</h4>
+          <p>The machine-readable audit envelope every event validates against, published as JSON Schema.</p>
+        </div>
+        <div class="module-card">
+          <span class="module-num">TOOLING</span>
+          <h4>OpenAPI, Postman, PowerShell</h4>
+          <p>An OpenAPI description, a Postman collection, and a PowerShell module for teams whose operations tooling lives there.</p>
+        </div>
+      </div>
+
+      <h3 style="margin-top:2.75rem">Determinism is the point</h3>
+      <p style="color:var(--body);line-height:1.85;margin-top:.75rem">The engine contains no model calls and no scoring heuristics in the control path. The same session and event produce the same verdict on every machine, every run. That is what makes a conformance claim checkable by someone who does not trust you — including a regulator, an auditor, or a competitor.</p>
+      <p style="color:var(--body);line-height:1.85;margin-top:.75rem">It is also what lets the same control logic run in three places without drift: in the test suite, in the simulator, and in production enforcement.</p>
+
+      <h3 style="margin-top:2.5rem">Getting started</h3>
+      <div class="content-cards" style="grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin-top:1.25rem">
+        <div class="content-card">
+          <span class="step-num">1</span>
+          <h4>Clone and run the tests</h4>
+          <p>The repository ships with its full test suite. Run it before you write a line of integration code.</p>
+          <a class="card-link" href="https://github.com/NHID-Clinical/NHID-Clinical">Get the repository &rarr;</a>
+        </div>
+        <div class="content-card">
+          <span class="step-num">2</span>
+          <h4>Try the live API</h4>
+          <p>Demo routes require no key. Send a VAPI or Twilio payload and read the verdict.</p>
+        </div>
+        <div class="content-card">
+          <span class="step-num">3</span>
+          <h4>Wire it into your stack</h4>
+          <p>The developer guide covers architecture, the event schema, and the failure-injection harness.</p>
+          <a class="card-link" href="/developers.html">Read the developer guide &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-cta">
+    <div class="container">
+      <h3>Build on it</h3>
+      <p>Everything here is CC BY 4.0. Fork it, vendor it, or replace it with your own engine and test against the same suite.</p>
+      <div class="page-cta-grid">
+        <a class="page-cta-card" href="/framework/conformance-suite.html"><b>Conformance suite <span class="arr">&rarr;</span></b><span>Prove your engine agrees.</span></a>
+        <a class="page-cta-card" href="/interoperability.html"><b>Interoperability <span class="arr">&rarr;</span></b><span>Working with existing telephony.</span></a>
+        <a class="page-cta-card" href="/registry.html"><b>Implementation Registry <span class="arr">&rarr;</span></b><span>Self-attested implementations.</span></a>
+        <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical"><b>Contribute <span class="arr">&rarr;</span></b><span>Issues, discussions, pull requests.</span></a>
+      </div>
+      <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0.</p>
+    </div>
+  </section>
+
+
+<!-- ── Interoperability (merged from interoperability.html) ───────────────────── -->
+  <section class="page-section" id="interoperability">
+    <div class="container" style="max-width:860px">
+      <h2>Interoperability</h2>
+      <p class="lede-text" style="color:var(--body);line-height:1.85">This page shows how a real vendor's call transcript format can be mapped to an NHID-Clinical v1.3 event trace and evaluated for conformance. The adapter is open source — replace the sample input with real logs to test your own vendor.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+
+      <div class="callout" role="note" style="margin-bottom:2rem">
+        <strong>Simulation only.</strong> These examples use synthetic Twilio-format transcripts to demonstrate the mapping. No real call data is shown. The adapter source is at <code style="font-size:.82rem;background:var(--paper);padding:.1rem .3rem;border-radius:3px">adapters/twilio_adapter.py</code>.
+      </div>
+
+      <!-- How it works -->
+      <h3>How It Works</h3>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">Vendors who use Twilio produce call transcripts with text, timestamps, and speaker labels. The NHID-Clinical Twilio adapter reads that format and produces a structured event trace showing when disclosure happened, when data was first requested, and whether the call passes IDG-01.</p>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.5rem">The same pattern applies to other voice platforms — each needs its own adapter, but the output schema is identical. Five adapters are wired to live routes today: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">POST /v1/adapters/{twilio|vapi|vonage|retell|connect}/check</code>. An ElevenLabs post-call adapter exists in the repository without a hosted route.</p>
+
+      <!-- Case 1: Compliant -->
+      <h3 style="margin-top:2.5rem">Case 1: Compliant Call</h3>
+      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.5rem;color:var(--ink-soft)">Agent discloses before requesting any operational data.</p>
+
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-top:1.25rem;margin-bottom:.4rem">Input — Twilio transcript</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.82rem;line-height:1.75;overflow-x:auto;color:var(--body);margin:0">{
+  "call_sid": "CA123456789",
+  "start_time": "2026-05-27T14:00:00Z",
+  "transcript": [
+    {"text": "Hello, this is an automated system calling on behalf of Dr. Smith's office.",
+     "timestamp": 0.5, "speaker": "agent"},
+    {"text": "Can I get the NPI number please?",
+     "timestamp": 3.2, "speaker": "agent"},
+    {"text": "Sure, it's 1234567890.",
+     "timestamp": 5.8, "speaker": "human"}
+  ]
+}</pre>
+
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-top:1.25rem;margin-bottom:.4rem">Output — NHID-Clinical trace</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.82rem;line-height:1.75;overflow-x:auto;color:var(--body);margin:0">{
+  "trace_id": "twilio_CA123456789",
+  "source_format": "twilio_transcript",
+  "policy_version": "1.3",
+  "events": [
+    {"event_type": "DISCLOSURE",    "timestamp_offset_s": 0.5, "nhid_rule": "IDG-01"},
+    {"event_type": "DATA_REQUEST",  "timestamp_offset_s": 3.2, "nhid_rule": "PDX-01"}
+  ],
+  "compliance": {
+    "IDG-01": "PASS",
+    "disclosure_timestamp_offset_s": 0.5,
+    "first_data_request_offset_s": 3.2,
+    "disclosure_made": true
+  }
+}</pre>
+      <p style="margin-top:.75rem;padding:.6rem 1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;font-size:.9rem;color:#166534"><strong>IDG-01: PASS</strong> — disclosure at 0.5s, data request at 3.2s. Disclosure preceded data exchange.</p>
+
+      <!-- Case 2: Non-compliant -->
+      <h3 style="margin-top:2.5rem">Case 2: Non-Compliant Call (Late Disclosure)</h3>
+      <p style="color:var(--body);font-size:.88rem;line-height:1.7;margin-top:.5rem;color:var(--ink-soft)">Agent requests data before identifying as automated — impersonation latency.</p>
+
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-top:1.25rem;margin-bottom:.4rem">Input — Twilio transcript</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.82rem;line-height:1.75;overflow-x:auto;color:var(--body);margin:0">{
+  "call_sid": "CA999888777",
+  "start_time": "2026-05-27T14:05:00Z",
+  "transcript": [
+    {"text": "Hi, can I get the member ID and NPI?",
+     "timestamp": 0.3, "speaker": "agent"},
+    {"text": "Sure — NPI is 1234567890.",
+     "timestamp": 2.1, "speaker": "human"},
+    {"text": "Thank you. By the way, I'm an automated system.",
+     "timestamp": 4.0, "speaker": "agent"}
+  ]
+}</pre>
+
+      <p style="font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-top:1.25rem;margin-bottom:.4rem">Output — NHID-Clinical trace</p>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.82rem;line-height:1.75;overflow-x:auto;color:var(--body);margin:0">{
+  "trace_id": "twilio_CA999888777",
+  "source_format": "twilio_transcript",
+  "policy_version": "1.3",
+  "events": [
+    {"event_type": "DATA_REQUEST",  "timestamp_offset_s": 2.1, "nhid_rule": "PDX-01"},
+    {"event_type": "DISCLOSURE",    "timestamp_offset_s": 4.0, "nhid_rule": "IDG-01"}
+  ],
+  "compliance": {
+    "IDG-01": "FAIL – disclosure occurred after data request (impersonation latency)",
+    "disclosure_timestamp_offset_s": 4.0,
+    "first_data_request_offset_s": 2.1,
+    "disclosure_made": true
+  }
+}</pre>
+      <p style="margin-top:.75rem;padding:.6rem 1rem;background:#fee2e2;border:1px solid #fca5a5;border-radius:6px;font-size:.9rem;color:#991b1b"><strong>IDG-01: FAIL</strong> — data requested at 2.1s, disclosure not until 4.0s. 1.9 seconds of impersonation latency.</p>
+
+      <!-- Run it yourself -->
+      <h3 style="margin-top:2.5rem">Run It Yourself</h3>
+      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body)">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
+cd NHID-Clinical
+pip install -r requirements.txt
+python -m pytest tests/ -v</pre>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">Replace <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">SAMPLE_TWILIO_COMPLIANT</code> or <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">SAMPLE_TWILIO_NONCOMPLIANT</code> in the adapter with your own call transcript to test your vendor's output.</p>
+
+      <!-- Other vendors -->
+      <h3 style="margin-top:2.5rem">Other Vendor Formats</h3>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:.75rem">The <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">adapters/</code> directory contains format adapters that convert vendor-specific call transcripts to NHID-Clinical event traces. Available: Twilio Voice Intelligence, VAPI, Vonage, Retell AI, and Amazon Connect, each behind a hosted <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">/v1/adapters/&hellip;/check</code> route, plus an ElevenLabs post-call adapter in the repository.</p>
+
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Open for feedback</p>
+        <h3>Questions or suggestions?</h3>
+        <p>Start a pilot or reach out directly.</p>
+      </div>
+      <a class="closing-button" href="/for-payers.html">Start a pilot →</a>
+    </div>
+  </section>
+
+
+<!-- ── Implementation registry (merged from registry.html) ───────────────────── -->
+  <section class="page-section" id="registry">
+    <div class="container" style="max-width:860px">
+      <h2>Implementation registry</h2>
+      <p class="lede-text" style="color:var(--body);line-height:1.85">A self-attestation list of NHID-Clinical implementations. NHID-Clinical does not score, rate, certify, or verify the entries.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+      <div class="callout" role="note" style="margin-bottom:2rem">
+        <strong>This is a self-attestation list, not a certification.</strong> NHID-Clinical does not
+        certify, audit, or warrant any vendor's implementation. A listing means the vendor ran the
+        public conformance test suite (CTS) against their own integration and chose to publish the
+        result. NHID-Clinical assigns no score, grade, tier, or badge to any listed entry, and
+        publishing an entry involves no review by this project. Verify a vendor's claims
+        independently — by running the conformance suite against their integration yourself —
+        before relying on any listing for a procurement decision.
+      </div>
+
+      <h3>Listed Implementations</h3>
+      <div id="registry-list" style="margin:1.5rem 0">
+        <p style="color:var(--body)">Loading…</p>
+      </div>
+
+      <h3 style="margin-top:2.5rem">How to Get Listed</h3>
+      <p style="margin-bottom:1rem">
+        Run the conformance test suite against your integration, then complete the
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md">vendor trust questionnaire</a>
+        and open a pull request adding your entry to
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/content/registry_entries.json">content/registry_entries.json</a>.
+        Each entry needs a <code>vendor_id</code>. Listing publishes what you attest to; it does not
+        add any assessment by this project.
+      </p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
+        <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md"
+           class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
+          Vendor Trust Questionnaire →
+        </a>
+        <a href="/developers.html#adapters" class="secondary-button" style="display:inline-flex;align-items:center;gap:.4rem">
+          Adapter Reference →
+        </a>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 

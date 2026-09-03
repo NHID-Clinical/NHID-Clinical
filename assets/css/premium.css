@@ -91,6 +91,57 @@ img.premium-3d, svg.premium-3d, picture.premium-3d img {
   margin-top: 1.25rem;
 }
 
+/* Step cards used by the shadow-evaluation journey.
+   These lived in a <style> block inside for-payers.html. When that page was
+   merged into shadow-evaluation-guide.html the markup moved and the rules did
+   not, and the page overflowed horizontally to 2196px: a grid item will not
+   shrink below its min-content width, and a <pre> holding a long RFP clause
+   has a very large one. The pre rules below are what kept it in check.
+
+   shadow-evaluation-guide.html had also been using .pilot-card with no
+   definition anywhere, so those cards were already unstyled -- the merge only
+   made an existing gap visible. Defining them here rather than in another page
+   -local block is the point of the consolidation. */
+.pilot-card {
+  padding: 1.2rem 1.5rem;
+  background: var(--bg-alt);
+  border-left: 3px solid var(--teal-bright);
+  border-radius: 0 6px 6px 0;
+  min-width: 0; /* let the card shrink inside its grid track */
+}
+.pilot-card p,
+.pilot-card li { color: var(--body); font-size: .93rem; line-height: 1.75; }
+.pilot-card ol,
+.pilot-card ul { padding-left: 1.3rem; margin: .5rem 0; }
+.pilot-card li { margin-bottom: .2rem; }
+.pilot-card code {
+  font-size: .82rem;
+  background: var(--paper);
+  padding: .1rem .35rem;
+  border-radius: 3px;
+  color: var(--teal-bright);
+}
+.pilot-card pre {
+  margin: .65rem 0 0;
+  background: var(--paper);
+  padding: .9rem 1rem;
+  border-radius: 6px;
+  font-size: .82rem;
+  line-height: 1.75;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--body);
+}
+.step-header {
+  display: flex;
+  align-items: center;
+  margin: 0 0 .6rem;
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
 .disclaimer-small {
   font-size: .85rem; margin-top: 2.2rem; padding-top: 1rem; line-height: 1.7;
 }
