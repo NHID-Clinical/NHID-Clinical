@@ -121,7 +121,7 @@ For a one-page overview aimed at hospital, payer, compliance, and procurement le
 An honest maturity snapshot. NHID-Clinical is a working reference implementation, not a production-scale product.
 
 **Available today**
-- Deterministic policy engine with 1006 tests (987 passing) across all phases
+- Deterministic policy engine with 1005 tests (987 passing) across all phases
 - Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
 - Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
 - Conformance Test Suite, plus an evidence pack export a vendor can hand to a reviewer
@@ -198,7 +198,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 ### Evidence Summary
 
 **Engine Validation**:
-- ✅ **987 passing tests** (1006 total; comprehensive rule coverage across all phases)
+- ✅ **987 passing tests** (1005 total; comprehensive rule coverage across all phases)
 - ✅ **25-scenario evaluation corpus** (90.6% detection; 0% false positives across 5 compliant scenarios)
 - ✅ **Live endpoint tested** against noncompliant VAPI payload
 - ✅ **Deterministic** — same input always produces same output
@@ -243,7 +243,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 | **EIT-01** | Escalation Implementation Test | Clear human handoff path, honored on request |
 
 Plus **ATR-01** (audit trail) — every call must produce a machine-readable trace.  
-Comprehensive test suite · same inputs → identical output · **987 passing** + 18 skipped (1006 total tests)
+Comprehensive test suite · same inputs → identical output · **987 passing** + 18 skipped (1005 total tests)
 
 [**Try the Governance Simulator →**](https://nhid-clinical.org/simulator.html)
 
@@ -379,7 +379,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected: **987 passing** in ~3.0s (~18 skipped integration tests; 1006 total). Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
+Expected: **987 passing** in ~3.0s (~18 skipped integration tests; 1005 total). Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
 
 <details>
 <summary><b>Repository structure</b></summary>
@@ -435,7 +435,7 @@ python examples/issue_and_verify.py
 | `src/` | Packaged Python modules used by the engine and tests (e.g. agent identity). |
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio). |
 | `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (987 passing, 1006 total; all phases: foundations, adversarial, synthetic, hardening). |
+| `tests/` | The Python conformance and invariant tests (987 passing, 1005 total; all phases: foundations, adversarial, synthetic, hardening). |
 | `scripts/` | CI guards — `validate_ci.py`, `check_baseline.py`, `check_number_drift.py` — and tooling. |
 | `schema/` | Event and audit-trace schemas. |
 | `docs/` | Specification docs, the [Executive Brief](docs/executive-brief.md), the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md), and the knowledge archive. |

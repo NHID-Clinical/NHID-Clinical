@@ -594,7 +594,7 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
 (v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
 failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **987 passed /
-19 skipped / 1,006 total**, and
+18 skipped / 1,005 total**, and
 `UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
 `scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
 without failing the build; `scripts/validate_ci.py` warns when the two diverge.
@@ -1407,7 +1407,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 987 passed (19 skipped when no server running = integration tests)
+# Expected: 987 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1571,7 +1571,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The full suite (currently **987 passed / 19 skipped**) must
+1. **All existing tests must pass.** The full suite (currently **987 passed / 18 skipped**) must
    stay green after
    every change. Run `python scripts/validate_ci.py` before committing.
 
@@ -2665,8 +2665,8 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
 | `test_site_navigation.py` | 76 |
-| `test_svg_assets_render.py` | 61 | Every published SVG parses as XML and declares an intrinsic size; sprite sheets exempt | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
-| **Total** | **987 passed, 19 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
+| `test_svg_assets_render.py` | 60 | Every published SVG parses as XML and declares an intrinsic size; sprite sheets exempt | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
+| **Total** | **987 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2795,8 +2795,11 @@ Neither the link checker (the SVG file existed) nor the visual capture (no
 horizontal overflow) could see the broken diagram. That is why the guard reads
 the asset rather than the reference to it.
 
-**Metrics:** 924 → 987 passed, 942 → 1,006 collected, 18 → 19 skipped (the sprite
-exemption). Engine and corpora untouched. Site build 33.68 MB / 162 files →
+**Metrics:** 924 → 987 passed, 942 → 1,005 collected. The skip count stays at 18:
+sprite sheets are excluded from the size check's parameter list rather than
+skipped inside it, because that published figure means "integration tests not run
+without a live server" and a sprite sheet is not one of those. Engine and corpora
+untouched. Site build 33.68 MB / 162 files →
 32.57 MB / 155 files; internal references 2,264 → 2,086, still 0 broken.
 
 **Files affected:** `assets/images/3d-svg/latency-split.svg`,

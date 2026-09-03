@@ -2,7 +2,7 @@
 
 **Date**: 2026-08-11  
 **Evaluated Corpus**: Tonic Fabricate Synthetic Evaluation (150 sessions, 1,227 turns)  
-**Engine Status**: Tier 0 Pilot Ready (987 tests passing, 18 skipped; 1006 total)  
+**Engine Status**: Tier 0 Pilot Ready (987 tests passing, 18 skipped; 1005 total)  
 **Corpus Integration Status**: Schema adapter implemented; all four behavioural controls evaluated
 
 ---
@@ -215,7 +215,7 @@ the fact that Tier 0 is observe-only.
 ## Integration Status
 
 ### Complete
-- ✅ 987 passing unit tests (18 skipped; 1006 total)
+- ✅ 987 passing unit tests (18 skipped; 1005 total)
 - ✅ 8 EIT-01 multi-turn regression tests
 - ✅ 13 Tonic adapter regression tests (`tests/test_tonic_schema_adapter.py`)
 - ✅ 5 ATR-01 persistence integration tests
@@ -263,7 +263,7 @@ the fact that Tier 0 is observe-only.
 ## Conclusion
 
 **Tier 0 Shadow Pilot**: ✅ **Suitable for observe-only evaluation**
-- Unit suite green: 987 passing, 18 skipped, 1006 total
+- Unit suite green: 987 passing, 18 skipped, 1005 total
 - External audit persistence operational and tested
 - Pure design constraints maintained — `evaluate_all()` still performs no I/O
 - Tier 0 is shadow mode: decisions are recorded, never enforced
@@ -273,4 +273,4 @@ the fact that Tier 0 is observe-only.
 - 100% detection, 0% false positives across IDG-01, PDX-01, DBC-01 and EIT-01
 - The corpus is a synthetic reference dataset, not a conformance claim
 
-**Next Action**: Run the Tier 0 shadow pilot against the 1006-test baseline. The corpus path is now clean, but a 150-session synthetic corpus is a floor, not a validation — real call data remains the meaningful test.
+**Next Action**: Run the Tier 0 shadow pilot against the 1005-test baseline. The corpus path is now clean, but a 150-session synthetic corpus is a floor, not a validation — real call data remains the meaningful test.

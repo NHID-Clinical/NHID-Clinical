@@ -31,7 +31,27 @@ def svg_files():
     return sorted(found)
 
 
+SYMBOL = "{http://www.w3.org/2000/svg}symbol"
+
+
+def is_sprite_sheet(rel):
+    """
+    A hidden root holding <symbol> elements, pulled in by <use href="...#id">.
+    Each symbol carries its own viewBox; the root deliberately has no size.
+    """
+    try:
+        root = ET.parse(os.path.join(REPO_ROOT, rel)).getroot()
+    except ET.ParseError:
+        return False
+    return root.find(f".//{SYMBOL}") is not None and "display:none" in (root.get("style") or "")
+
+
 SVGS = svg_files()
+# Sprite sheets are excluded from the size check rather than skipped inside it.
+# A runtime skip would raise the suite's skip count, and that number is published
+# as "integration tests not run without a live server" -- a sprite sheet is not
+# one of those, and blurring the two makes the published figure mean less.
+SIZED_SVGS = [s for s in SVGS if not is_sprite_sheet(s)]
 
 
 def test_svg_assets_were_found():
@@ -50,24 +70,15 @@ def test_svg_is_well_formed_xml(rel):
         )
 
 
-SYMBOL = "{http://www.w3.org/2000/svg}symbol"
-
-
-@pytest.mark.parametrize("rel", SVGS)
+@pytest.mark.parametrize("rel", SIZED_SVGS)
 def test_svg_declares_intrinsic_size(rel):
     """
     Without viewBox (or width+height) an <img> has no intrinsic ratio to lay out
     against, so it collapses or stretches depending on the surrounding CSS.
 
-    Sprite sheets are exempt and must be: they are hidden containers of <symbol>
-    elements pulled in by <use href="...#id">, each symbol carrying its own
-    viewBox, and the root deliberately has no size of its own. Asserting one
-    there would be asserting the wrong thing about a correct file.
+    Sprite sheets are excluded from this parametrisation -- see is_sprite_sheet.
     """
     root = ET.parse(os.path.join(REPO_ROOT, rel)).getroot()
-    is_sprite = root.find(f".//{SYMBOL}") is not None and "display:none" in (root.get("style") or "")
-    if is_sprite:
-        pytest.skip(f"{rel} is a <symbol> sprite sheet, not a standalone image")
     assert root.get("viewBox") or (root.get("width") and root.get("height")), (
         f"{rel} declares neither viewBox nor width+height"
     )
