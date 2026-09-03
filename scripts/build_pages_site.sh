@@ -20,8 +20,19 @@ copy_tree() {
 }
 
 # Root pages + shared assets
+# Retired from the site: the simulator is a side demonstration that competed with
+# the framework for attention, and docs.html is a Swagger page whose bundle loads
+# from a CDN and renders nothing when that fails. Both stay in the repository and
+# in git history; they are simply no longer published or linked.
+RETIRED_PAGES=(simulator.html docs.html)
+
 shopt -s nullglob
 for f in "$ROOT"/*.html; do
+  skip=""
+  for r in "${RETIRED_PAGES[@]}"; do
+    [[ "$(basename "$f")" == "$r" ]] && skip=1
+  done
+  [[ -n "$skip" ]] && continue
   cp "$f" "$OUT/"
 done
 shopt -u nullglob
@@ -72,12 +83,14 @@ copy_tree "$ROOT/platform" "$OUT/platform" \
   --exclude='node_modules' \
   --exclude='.DS_Store'
 
-copy_tree "$ROOT/simulator" "$OUT/simulator" \
-  --exclude='*.pdf' \
-  --exclude='*.zip' \
+# registry.html fetches /content/registry_entries.json. Without this the fetch
+# 404s and the page only looks right because its catch handler happens to fire;
+# real entries would never appear.
+copy_tree "$ROOT/content" "$OUT/content" \
   --exclude='__pycache__' \
-  --exclude='node_modules' \
   --exclude='.DS_Store'
+
+# (the simulator app directory is retired along with simulator.html — see RETIRED_PAGES)
 
 copy_tree "$ROOT/specs" "$OUT/specs" \
   --exclude='*.zip' \

@@ -51,7 +51,6 @@
         <div class="nav-dropdown-menu">
           <a href="/evidence-pack.html">Evidence pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow evaluation guide</a>
-          <a href="/simulator.html">Governance simulator</a>
           <a href="/registry.html">Implementation registry</a>
         </div>
       </div>
@@ -59,7 +58,6 @@
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Developers <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
           <a href="/developers.html">Developer guide</a>
-          <a href="/docs.html">Live API explorer</a>
           <a href="/framework/reference-implementation.html">Reference implementation</a>
           <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
           <a href="/interoperability.html">Interoperability</a>
@@ -125,10 +123,8 @@
   <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
   <a href="/platform/enterprise.html">Enterprise Workflow</a>
   <strong class="mobile-nav-group">Simulator</strong>
-  <a href="/simulator.html">Open the simulator</a>
   <strong class="mobile-nav-group">Docs</strong>
   <a href="/developers.html">Developer guide</a>
-  <a href="/docs.html">Live API explorer</a>
   <a href="/interoperability.html">Interoperability</a>
   <a href="/registry.html">Implementation Registry</a>
   <strong class="mobile-nav-group">Resources</strong>
@@ -275,7 +271,6 @@
         <div style="flex:1;min-width:0">
           <h3 style="margin:0 0 .35rem;font-size:1.05rem">Policy Engine Playground <span style="font-size:.75rem;font-weight:500;color:var(--ink-soft);margin-left:.4rem">experimental</span></h3>
           <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:.75rem 0 .85rem">Browser-based interactive demo of the disclosure policy rules. Paste or select a canonical event JSON, run the engine, and inspect the deterministic trace output. Identical input always produces identical output.</p>
-          <a class="primary-pill" href="/simulator.html">Open Playground →</a>
         </div>
       </div>
 
@@ -300,7 +295,7 @@ python tests/trace_generator.py --offline</pre>
           <p style="margin:0 0 .4rem;font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--ink-soft);text-transform:uppercase">Endpoint</p>
           <code style="font-size:.85rem;color:var(--teal-bright);word-break:break-all">POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/conformance/check</code>
         </div>
-        <p style="color:var(--body);font-size:.88rem;line-height:1.75;margin:0 0 .75rem">Requests require an <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">x-api-key</code> header. The <a href="/simulator.html" style="color:var(--teal-bright)">Governance Simulator</a> uses a rate-limited demo key automatically. To obtain a key for your integration, contact <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright)">contact@nhid-clinical.org</a>.</p>
+        <p style="color:var(--body);font-size:.88rem;line-height:1.75;margin:0 0 .75rem">Requests require an <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">x-api-key</code> header. The  uses a rate-limited demo key automatically. To obtain a key for your integration, contact <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright)">contact@nhid-clinical.org</a>.</p>
         <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.25rem;font-size:.82rem;line-height:1.8;overflow-x:auto;color:var(--body);margin:0">curl -s -X POST \
   https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/conformance/check \
   -H "x-api-key: YOUR_KEY" \
@@ -421,7 +416,7 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
     <div class="premium-callout">
       <h3>Architecture, visualized</h3>
       <p>The interactive five-layer trust stack on the homepage shows where adapters, the policy engine, NHID-Auth v2, and the audit ledger sit relative to each other.</p>
-      <a href="/#trust-stack">View the Trust Stack →</a>&nbsp;&nbsp; <a href="/simulator.html?scenario=idg-01">Deep-link a scenario: /simulator.html?scenario=idg-01 →</a>&nbsp;&nbsp;
+      <a href="/#trust-stack">View the Trust Stack →</a>&nbsp;&nbsp; &nbsp;&nbsp;
     </div>
   </div>
 </section>
@@ -431,7 +426,6 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
     <p>Four ways into NHID-Clinical, whatever you came to do.</p>
     <div class="page-cta-grid">
       <a class="page-cta-card" href="/specification.html"><b>Read the Specification <span class="arr">&rarr;</span></b><span>The v1.3 controls, in full.</span></a>
-      <a class="page-cta-card" href="/simulator.html"><b>Try the Simulator <span class="arr">&rarr;</span></b><span>Run the controls on call scenarios.</span></a>
       <a class="page-cta-card" href="/evidence-pack.html"><b>Review the Evidence Pack <span class="arr">&rarr;</span></b><span>Guarantees, a failure trace, the audit model.</span></a>
       <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer"><b>Join the Community <span class="arr">&#x2197;</span></b><span>Questions and feedback on GitHub.</span></a>
     </div>

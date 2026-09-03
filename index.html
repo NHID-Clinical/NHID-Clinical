@@ -51,7 +51,6 @@
         <div class="nav-dropdown-menu">
           <a href="/evidence-pack.html">Evidence pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow evaluation guide</a>
-          <a href="/simulator.html">Governance simulator</a>
           <a href="/registry.html">Implementation registry</a>
         </div>
       </div>
@@ -59,7 +58,6 @@
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Developers <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
           <a href="/developers.html">Developer guide</a>
-          <a href="/docs.html">Live API explorer</a>
           <a href="/framework/reference-implementation.html">Reference implementation</a>
           <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
           <a href="/interoperability.html">Interoperability</a>
@@ -125,10 +123,8 @@
   <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
   <a href="/platform/enterprise.html">Enterprise Workflow</a>
   <strong class="mobile-nav-group">Simulator</strong>
-  <a href="/simulator.html">Open the simulator</a>
   <strong class="mobile-nav-group">Docs</strong>
   <a href="/developers.html">Developer guide</a>
-  <a href="/docs.html">Live API explorer</a>
   <a href="/interoperability.html">Interoperability</a>
   <strong class="mobile-nav-group">Resources</strong>
   <a href="/evidence-pack.html">Evidence Pack</a>
@@ -164,7 +160,7 @@
           <a class="action-button action-button-primary" href="/for-payers.html">Run an observe-only shadow evaluation</a>
           <a class="action-button action-button-secondary" href="/framework/">Explore the framework</a>
         </div>
-        <p class="proof-line reveal">5 controls &middot; 924 passing tests &middot; machine-readable traces &middot; open implementation</p>
+        <p class="proof-line reveal">5 controls &middot; 987 passing tests &middot; machine-readable traces &middot; open implementation</p>
         <p class="lede-text reveal" style="margin-top:1rem;font-size:1rem;opacity:.9">A shadow evaluation runs against call traces you already hold. Observe-only and non-intercepting: it does not sit in the call path and requires no vendor changes. It is time-bounded, and it produces a baseline showing where identity was disclosed, where protected data moved, where calls escalated to a human, and what audit evidence exists today. Handling those traces still carries your existing privacy, security and contractual obligations.</p>
         <p class="boundary-note reveal">
           <span aria-hidden="true">&#9679;</span>
@@ -350,11 +346,11 @@
     <div class="container">
       <h2 id="built-open" class="section-kicker reveal" style="margin-bottom:.9rem">Built in the open &mdash; every claim below is checkable</h2>
       <ul class="reveal" style="list-style:none;padding:0;margin:0;display:grid;gap:.75rem 2rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));font-size:.95rem;line-height:1.55">
-        <li><strong>924 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
+        <li><strong>987 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
         <li><strong>Versioned specification</strong><br><span style="color:var(--ink-soft)">v1.3, five named controls &mdash; <a href="/specification.html">read it</a></span></li>
         <li><strong>Deterministic engine</strong><br><span style="color:var(--ink-soft)">Same inputs produce the same decision, every time &mdash; <a href="/framework/reference-implementation.html">how it works</a></span></li>
         <li><strong>FHIR R4 AuditEvent</strong><br><span style="color:var(--ink-soft)">Audit records in a standard healthcare schema &mdash; <a href="/evidence-pack.html">see an example</a></span></li>
-        <li><strong>Open simulator</strong><br><span style="color:var(--ink-soft)">Run the controls against a call yourself &mdash; <a href="/simulator.html">open it</a></span></li>
+        <li><strong>Open simulator</strong><br><span style="color:var(--ink-soft)">Run the controls against a call yourself &mdash; </span></li>
       </ul>
     </div>
   </section>
@@ -363,9 +359,9 @@
   <section class="page-section" style="padding-block:1rem 2.5rem">
     <div class="scope-note metric-rail reveal">
       <div class="metric">
-        <span class="metric-value">924</span>
+        <span class="metric-value">987</span>
         <span class="metric-label">Passing tests</span>
-        <span style="font-size:.8125rem;color:var(--panel-text-muted)">18 skipped · 942 total, in the open repo</span>
+        <span style="font-size:.8125rem;color:var(--panel-text-muted)">18 skipped · 1006 total, in the open repo</span>
       </div>
       <div class="metric">
         <span class="metric-value">5</span>
@@ -393,7 +389,6 @@
         <h2>The open simulator demonstrates NHID-Clinical controls.</h2>
         <p style="color:var(--body);max-width:54ch;line-height:1.75;margin-top:.85rem">Sit at a payer desk and watch an AI caller reveal itself too late. The zero-latency modules, dashboard, knowledge base, and evaluation records are all open — no account, no signup, nothing to install.</p>
         <div class="hero-actions-premium" style="margin-top:1.4rem">
-          <a class="btn-premium" href="/simulator.html">Run a free evaluation</a>
           <a class="btn-ghost" href="/platform/">Connect your agent to TrustLayer</a>
         </div>
         <p class="disclaimer-small" style="margin-top:1rem">The simulator is education and demonstration — not the framework itself, and not a certification.</p>
@@ -442,11 +437,10 @@ violations
         </div>
       </div>
 
-      <p class="reveal evidence-repro">Reproduce it: <code>evaluate_all()</code> in <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/src/nhid_policy_engine_v1.py">src/nhid_policy_engine_v1.py</a>, or run the same scenario in the <a href="/simulator.html">simulator</a>. The decision is recorded in a machine-readable trace and, where audit is enabled, emitted as a FHIR R4 AuditEvent.</p>
+      <p class="reveal evidence-repro">Reproduce it: <code>evaluate_all()</code> in <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/src/nhid_policy_engine_v1.py">src/nhid_policy_engine_v1.py</a>, or run the same scenario in the . The decision is recorded in a machine-readable trace and, where audit is enabled, emitted as a FHIR R4 AuditEvent.</p>
 
       <div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">
         <a class="cta-button" href="/evidence-pack.html">See the evidence pack <span aria-hidden="true">&rarr;</span></a>
-        <a class="cta-button cta-button-secondary" href="/docs.html">Try the live API <span aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
   </section>
@@ -583,7 +577,6 @@ violations
         <div class="content-card">
           <h3>Simulator</h3>
           <p>Run the v1.3 controls against call scenarios in real time.</p>
-          <a class="card-link" href="/simulator.html">Open the simulator →</a>
         </div>
         <div class="content-card">
           <h3>Specification (v1.3)</h3>
@@ -691,7 +684,7 @@ violations
         links: [["Interoperability notes","/interoperability.html"],["Technical stack","/technical-stack.html"]] },
       l2: { tag: "Layer 2", title: "Behavioral Disclosure Controls (IDG-01 · PDX-01 · DBC-01 · EIT-01)",
         body: "The heart of v1.3: disclose non-human identity before anything else (IDG-01), verify before any PHI moves (PDX-01), never imply a human is speaking (DBC-01), and honor a request for a human (EIT-01). Each is deterministic and testable.",
-        links: [["Try in Simulator","/simulator.html?scenario=spoofed-identity"],["Read the controls","/specification.html"]] },
+        links: [["Read the controls","/framework/controls.html"],["The normative text","/specification.html"]] },
       l3: { tag: "Layer 3", title: "Cryptographic Authorization (NHID-Auth v2 · DLG-01)",
         body: "Ed25519 agent passports: a provider signs a delegation binding an agent key to an NPI and scope; the receiving side verifies offline. When a deployment opts in, DLG-01 evaluates that delegation in the policy path — signatures, expiry, revocation, call binding, and scope narrowing across sub-delegations — and the verified scope then constrains the data boundary, so a delegation for eligibility does not authorize asking for a claim number. Verification uses a trust anchor the deployment configures itself: no registry, no gatekeeper, and no NPPES check.",
         links: [["Developer guide","/developers.html"],["Controls","/framework/controls.html"]] },

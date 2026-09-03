@@ -172,3 +172,73 @@ def test_stylesheet_is_structurally_intact(sheet):
     assert depth == 0 and low == 0, f"{sheet}: unbalanced braces (final {depth}, min {low})"
     assert not re.findall(r"[\w-]+\s*:\s*;", body), f"{sheet}: empty declaration"
     assert not re.findall(r",\s*\{", body), f"{sheet}: selector list ends in a dangling comma"
+
+
+# ── Retired routes must stay retired, and adapter claims must match the repo ──
+
+RETIRED_ROUTES = ("/simulator.html", "/docs.html")
+
+
+def test_retired_routes_are_not_linked_from_any_published_page():
+    """
+    The simulator competed with the framework for attention and docs.html renders
+    nothing when its CDN-hosted Swagger bundle fails. Both were removed from the
+    site. Generator scripts and copied nav blocks are how such links come back.
+    """
+    offenders = []
+    for dirpath, dirnames, filenames in os.walk(REPO_ROOT):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".")]
+        for name in filenames:
+            if not name.endswith(".html") or name in ("simulator.html", "docs.html"):
+                continue
+            rel = os.path.relpath(os.path.join(dirpath, name), REPO_ROOT)
+            content = read(rel)
+            for route in RETIRED_ROUTES:
+                if f'href="{route}' in content:
+                    offenders.append(f"{rel} -> {route}")
+    assert not offenders, "retired routes linked again: " + ", ".join(offenders[:10])
+
+
+def test_no_calendar_booking_links():
+    """Scheduling was removed in favour of email and GitHub Discussions."""
+    offenders = []
+    for dirpath, dirnames, filenames in os.walk(REPO_ROOT):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".")]
+        for name in filenames:
+            if not name.endswith(".html"):
+                continue
+            rel = os.path.relpath(os.path.join(dirpath, name), REPO_ROOT)
+            if "calendar.app.google" in read(rel):
+                offenders.append(rel)
+    assert not offenders, f"calendar booking links reappeared in: {offenders}"
+
+
+def test_published_adapter_claims_match_the_repository():
+    """
+    interoperability.html once said Retell was "planned" while
+    adapters/retell_adapter.py and /v1/adapters/retell/check both existed, and
+    developers.html listed it as available. A reader checking the repo finds the
+    site understating it, which reads as carelessness rather than modesty.
+    """
+    import glob
+    import re as _re
+
+    modules = {
+        os.path.basename(p)[: -len("_adapter.py")]
+        for p in glob.glob(os.path.join(REPO_ROOT, "adapters", "*_adapter.py"))
+    }
+    # vendor adapters only; these three are internal plumbing, not integrations
+    vendors = modules - {"fabricate", "call_progress"}
+    assert vendors, "no vendor adapters found — check the path"
+
+    page = read("interoperability.html")
+    for vendor, shown_as in [("retell", "Retell"), ("vonage", "Vonage"),
+                             ("amazon_connect", "Amazon Connect")]:
+        if vendor in vendors:
+            assert _re.search(rf"\b{_re.escape(shown_as)}\b", page), (
+                f"adapters/{vendor}_adapter.py exists but interoperability.html "
+                f"never mentions {shown_as}"
+            )
+    assert "adapters are planned" not in page, (
+        "interoperability.html still describes implemented adapters as planned"
+    )
