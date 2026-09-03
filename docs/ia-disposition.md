@@ -1,11 +1,26 @@
 # NHID-Clinical — Information Architecture Disposition
 
+> **Revised 2026-09-03. The target changed; the measurements did not.**
+> Parts 1–3 below were written to answer *"which pages duplicate each other?"*
+> Their measurements stand and are not repeated. But **45 → 30 was an audit
+> finding, not a goal**, and it was reached with the wrong test for keeping a
+> page: *"is this content unique?"* Uniqueness is the right test for rejecting a
+> merge-as-deduplication. It is not what earns a route.
+>
+> **Part 4 supersedes the disposition.** The objective is a substantially smaller
+> public website, and the test is now *"does this have a distinct job in one of
+> the five mission journeys, and is it a place a reader would arrive at?"*
+> Target: **11 core pages**, plus two flagged decisions. See §4.
+
 **Purpose.** A page-by-page decision record for the website consolidation: what
 is kept, merged, moved to the Playbook, moved to GitHub, or retired — with the
 measurement behind each call.
 
-The final page count is an outcome of this table, not a target set in advance.
 No files have been moved. This is the proposal, with its evidence.
+
+*(Original framing: "the final page count is an outcome of this table, not a
+target set in advance." That was right about not reverse-engineering evidence to
+hit a number, and wrong about the objective — see the banner above and §4.)*
 
 | | |
 |---|---|
@@ -235,3 +250,171 @@ mission's distinction.
 - **The three statute URLs have still not been opened** — all three hosts are
   egress-blocked from this environment. Substance was verified by search against
   authoritative domains, which is not the same thing.
+
+
+---
+
+# Part 4 — Revised disposition: consolidation, not deduplication
+
+## 4.1 What the first pass got wrong
+
+Part 1 measured **textual** overlap: shared 6-word sequences. It proved the
+external audits wrong about which pages duplicate each other, and that finding
+holds. But it was then used for a second job it cannot do — deciding what stays
+— and it silently answered a different question than the one that matters.
+
+Two pages can share **0% of their 6-word sequences and still be the same page**.
+Textual overlap cannot see that, and two examples in this repository prove it:
+
+| Pair | Textual | **Topical** | What it means |
+|---|---|---|---|
+| `for-payers` ↔ `shadow-evaluation-guide` | 2% | **0.27** | Same subject, different sentences |
+| `roadmap` ↔ `framework/nhid-auth` | below threshold | **0.17** | Both are the NHID-Auth v2 page |
+
+**Topical similarity** here is cosine over TF-IDF term signatures across the 34
+pages with enough text to compare, computed the same day.
+
+## 4.2 The actual diagnosis: fragmented, not duplicated
+
+The topical scan is the useful result, and it is **not** the one that was
+expected. Outside `platform/`, the highest topical similarity on the whole site
+is **0.36** (`faq` ↔ `specification`), and nearly every pair sits between 0.05
+and 0.28.
+
+**The site is not redundant. It is fragmented** — many small pages each doing one
+narrow job, so that answering a single question means visiting four routes.
+Fragmentation and duplication call for opposite remedies:
+
+- Duplication is fixed by **deleting** the copy. Little is lost.
+- Fragmentation is fixed by **assembling** the pieces. Nothing is lost — and
+  low overlap is what makes the assembly *safe*, because the pieces do not
+  collide.
+
+This is why the revised target can be far smaller than 30 while preserving
+substantive information: **13,594 words are retained across 11 pages.** The
+consolidation deletes routes, not content.
+
+## 4.3 The test a page must now pass
+
+A standalone route must satisfy **all three**:
+
+1. **Destination** — it is a place a reader deliberately arrives at, in one of
+   the five mission journeys: *understand, evaluate, implement, validate, adopt*.
+2. **Completeness** — a reader who lands there gets a whole answer, not a
+   fragment that sends them onward.
+3. **Citability** — someone would plausibly link to or bookmark it by itself.
+
+A page that fails any one of these is **content, not a destination** — it becomes
+a section. Being unique does not exempt it. Neither does being good.
+
+## 4.4 The 11 core pages
+
+| # | Canonical page | Journey | Absorbs | Words |
+|---|---|---|---|---|
+| 1 | `index.html` | Understand | `about.html`, `technical-stack.html`, `framework/index.html` | ~2,600 |
+| 2 | `specification.html` | Understand (normative) | `framework/controls.html` | 1,508 |
+| 3 | `shadow-evaluation-guide.html` | **Evaluate** | `for-payers.html`, `script-examples.html`, `demo.html` | 2,150 |
+| 4 | `developers.html` | **Implement** | `framework/reference-implementation.html`, `interoperability.html`, `registry.html` | 2,029 |
+| 5 | `evidence-pack.html` | **Validate** | `framework/conformance-suite.html` | 1,624 |
+| 6 | `regulatory-alignment.html` | Validate | the four `alignment/*` stubs | 569 |
+| 7 | `framework/nhid-auth.html` | Adopt (what's next) | `roadmap.html` | 984 |
+| 8 | `faq.html` | Understand | `community.html` | 959 |
+| 9 | `specs/index.html` | All | *(becomes the Playbook download surface in Phase C)* | 326 |
+| 10 | `privacy.html` | Legal | — | 293 |
+| 11 | `sms-opt-in.html` | Legal / operational | — | 132 |
+
+### Why each merge, specifically
+
+- **`framework/index.html` is a hub, not a page.** Its distinctive terms are
+  *catalog, mapping, browse, read* — it is navigation wearing a page's clothes.
+  On an 11-page site, a hub between the reader and four destinations is pure
+  overhead. Its links redistribute; little text needs absorbing.
+- **`framework/controls.html` into `specification.html`.** The five controls
+  *are* the specification. Splitting the normative text from the controls it
+  defines is the fragmentation in its purest form.
+- **`for-payers` + `script-examples` + `demo` into the evaluation guide.**
+  Part 3 already established that `for-payers` is a genuine merge. Adding
+  `script-examples` (748 words of concrete disclosure phrasing, currently an
+  orphan no visitor can reach) turns the guide from instructions into
+  instructions *with the actual words to say*. `demo.html` (235 words) is a
+  pointer to a phone line — a section, not a route.
+- **`interoperability` + `reference-implementation` + `registry` into
+  `developers.html`.** All three are the implementer's journey.
+  `interoperability` is literally adapter payload shapes. **`registry.html` is
+  173 words and currently lists nothing** — an empty room is worse as a
+  destination than as a "get listed" section.
+- **`roadmap.html` into `framework/nhid-auth.html`** — see the defect in §4.6.
+- **`community.html` into `faq.html`.** 280 words of pure signposting to GitHub.
+  Its own topical similarity to `about` is 0.05: it is not a subject, it is a
+  set of links.
+
+### What moves to the Playbook rather than the site
+
+Per the mission's instruction to centralise regulatory context, the **detailed**
+mapping tables move into the Playbook (Phase C), leaving `regulatory-alignment.html`
+as the short public summary that links to it:
+
+| Content | From | To |
+|---|---|---|
+| Full instrument-by-instrument mapping with citations and applicability | `regulatory-alignment.html` + four `alignment/*` stubs | Playbook, regulatory section |
+| ATR-01 traceability matrix and evidence-validation report (2,139 words, two `docs/*.html` routes) | `docs/ATR-01-*.html` | Playbook, evidence section |
+| Conformance case-by-case detail | `framework/conformance-suite.html` | Playbook; summary stays on `evidence-pack.html` |
+
+## 4.5 Two decisions that are yours, not the audit's
+
+Neither is answerable from repository evidence. Both are marked **UNKNOWN**
+rather than decided.
+
+**1. `platform/` — does TrustLayer keep a public presence at all?**
+Six pages, 2,679 words, describing a **concept-stage offering with no production
+deployments and — per your decision — no design partners.** Part 2 already
+collapses six pages into one. The open question is whether that one survives.
+Against the test in §4.3 it fails *completeness*: there is no product to
+evaluate, implement, or validate. The honest alternatives are a section on
+`index.html` or `framework/nhid-auth.html` saying what is planned, or keeping one
+page. **This is a commercial decision and I have not made it.**
+
+**2. `news.html` — a website page, or GitHub Releases?**
+825 words, ten dated entries, a legitimate historical record (register A10) that
+must not be silently rewritten. But a changelog is a thing readers *check*, not a
+destination they arrive at. Moving it to GitHub Releases preserves it verbatim,
+removes a route, and puts it where the commits are. It also contains a
+**"Pilot Partners Sought"** entry that needs reconciling with the
+no-design-partners decision either way.
+
+Resolved as: **11 core pages**, or **12–13** if both flagged items stay.
+
+## 4.6 Two defects this pass surfaced
+
+Neither is an IA question; both are factual and were found while reading the
+pages rather than counting them.
+
+**`specification.html` says "Why These Four".** The normative specification
+contains a section justifying **four** behaviours. There are **five** canonical
+controls — IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 — and the site says so
+everywhere else. The heading and its paragraph are stale, in the one document
+where staleness matters most. Fix in place, whatever happens to the IA.
+
+**`roadmap.html` is not a roadmap.** Navigation labels it *Roadmap*; its `<h1>`
+is *"NHID-Auth v2: Cryptographic Agent Identity"*, and its content is a v2
+technical deep-dive — credentials, revocation, the passport flow — which is also
+what `framework/nhid-auth.html` covers. A reader clicking "Roadmap" to learn
+what is planned gets a protocol description instead. Merging the two fixes both
+the mislabel and the split subject, but note the consequence: **after the merge
+the site has no roadmap.** If a forward-looking page is wanted, it has to be
+written, not relabelled.
+
+## 4.7 Count
+
+| | Routes |
+|---|---|
+| Published today | 45 |
+| First pass (Part 2, superseded) | 30 |
+| **Revised target** | **11** core, 12–13 with both flagged items |
+| Words retained | **13,594** |
+| Routes retired outright (stubs, orphans, dev artifacts) | 9 |
+
+The reduction comes almost entirely from **merging destinations, not discarding
+content**. Of the routes removed, only ~673 words are retired outright, and all
+of that is stubs, orphans and dev artifacts.
+
