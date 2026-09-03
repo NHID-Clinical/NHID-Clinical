@@ -1,6 +1,7 @@
 import hashlib
 import logging
 import time
+import uuid
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import Response, JSONResponse
@@ -32,11 +33,13 @@ async def incoming(request: Request):
 
     Minimal I/O boundary. Routes to orchestrator.
     """
-    session_id = "unknown"
+    session_id = None
+    call_sid = None
+    session_id_source = "synthetic"
 
     try:
         form = await request.form()
-        session_id = (form.get("CallSid") or "unknown").strip()
+        session_id, call_sid, session_id_source = _resolve_call_identity(form)
 
         tw_response = twiml(
             "This is an automated healthcare intake system. Please describe your concern."
@@ -68,12 +71,16 @@ async def incoming(request: Request):
             ],
             "incoming",
             mark_processed=True,
+            call_sid=call_sid,
+            session_id_source=session_id_source,
         )
 
         logger.info(
             "incoming call",
             extra={
-                "call_sid": session_id,
+                "call_sid": call_sid,
+                "session_id": session_id,
+                "session_id_source": session_id_source,
                 "state_before": "INIT",
                 "state_after": "DISCLOSURE",
                 "policy_action": "CALL_STARTED",
@@ -84,8 +91,38 @@ async def incoming(request: Request):
 
         return Response(content=tw_response, media_type="application/xml")
     except Exception:
-        logger.exception("incoming failure", extra={"call_sid": session_id})
+        logger.exception("incoming failure", extra={"call_sid": call_sid, "session_id": session_id})
         raise HTTPException(status_code=500, detail="incoming failure")
+
+
+# Twilio CallSids are 34 characters: "CA" plus 32 hex digits. This prefix
+# cannot collide with one, so a synthetic identifier can never be mistaken for
+# a real call identifier by a reader, a query, or a downstream system.
+SYNTHETIC_SESSION_PREFIX = "nhid-anon-"
+
+
+def _resolve_call_identity(form) -> tuple[str, str | None, str]:
+    """Resolve the identity of an inbound interaction.
+
+    Returns (session_id, call_sid, session_id_source).
+
+    A missing or empty CallSid used to become the literal string "unknown".
+    That is a shared constant, so every unidentified interaction wrote its audit
+    events under one session id and they collapsed into a single indistinguishable
+    stream -- the opposite of what ATR-01 exists to provide. It also asserted a
+    call identifier that no upstream system ever sent.
+
+    So: absence is recorded as absence (call_sid is None), and a distinct
+    synthetic session id is minted purely so the interaction remains separable
+    in the audit trail. The two are different fields and never conflated.
+    """
+    raw = form.get("CallSid") if form is not None else None
+    call_sid = raw.strip() if isinstance(raw, str) else None
+
+    if call_sid:
+        return call_sid, call_sid, "twilio_callsid"
+
+    return f"{SYNTHETIC_SESSION_PREFIX}{uuid.uuid4().hex}", None, "synthetic"
 
 
 def _generate_request_id(session_id: str, user_text: str, message_sid: str = None) -> str:
@@ -101,12 +138,14 @@ def _generate_request_id(session_id: str, user_text: str, message_sid: str = Non
 
 
 async def process_pipeline(request: Request) -> str:
-    session_id = "unknown"
+    session_id = None
     request_id = None
+    call_sid = None
+    session_id_source = "synthetic"
 
     try:
         form = await request.form()
-        session_id = (form.get("CallSid") or "unknown").strip()
+        session_id, call_sid, session_id_source = _resolve_call_identity(form)
         message_sid = (form.get("MessageSid") or "").strip()
         raw_text = form.get("SpeechResult")
         user_text = " ".join((raw_text or "").split())
@@ -175,7 +214,7 @@ async def process_pipeline(request: Request) -> str:
         try:
             decision = policy.evaluate(session, user_text)
         except Exception:
-            logger.exception("policy failure", extra={"call_sid": session_id, "request_id": request_id})
+            logger.exception("policy failure", extra={"call_sid": call_sid, "session_id": session_id, "request_id": request_id})
             raise HTTPException(status_code=500, detail="policy evaluation failed")
 
         if decision.action == PolicyAction.ROUTE_LLM:
@@ -187,7 +226,7 @@ async def process_pipeline(request: Request) -> str:
             if decision.message is None:
                 logger.error(
                     "policy decision produced no message",
-                    extra={"call_sid": session_id, "request_id": request_id, "action": decision.action},
+                    extra={"call_sid": call_sid, "session_id": session_id, "request_id": request_id, "action": decision.action},
                 )
                 raise HTTPException(status_code=500, detail="policy decision returned no message")
             response_payload = decision.message
@@ -246,12 +285,14 @@ async def process_pipeline(request: Request) -> str:
             ],
             request_id,
             mark_processed=True,
+            call_sid=call_sid,
+            session_id_source=session_id_source,
         )
         return tw_response
     except HTTPException:
         raise
     except Exception:
-        logger.exception("pipeline failure", extra={"call_sid": session_id, "request_id": request_id})
+        logger.exception("pipeline failure", extra={"call_sid": call_sid, "session_id": session_id, "request_id": request_id})
         raise HTTPException(status_code=500, detail="pipeline failure")
 
 
@@ -275,7 +316,7 @@ async def debug_replay(session_id: str):
     except Exception:
         return JSONResponse(
             {
-                "call_sid": session_id,
+                "session_id": session_id,
                 "error": "could not reconstruct session",
             },
             status_code=500,

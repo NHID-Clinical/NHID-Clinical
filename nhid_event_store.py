@@ -14,6 +14,21 @@ def _utc_timestamp() -> str:
     return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
 
+def _migrate_identity_columns(conn: sqlite3.Connection) -> None:
+    """Add call_sid / session_id_source to an events table created before them.
+
+    CREATE TABLE IF NOT EXISTS silently does nothing when the table already
+    exists, so a database written by an earlier version keeps the old shape and
+    every insert naming the new columns fails. Existing rows get NULL, which is
+    honest: those events predate the distinction and nothing here knows whether
+    their session_id was a real CallSid.
+    """
+    existing = {row["name"] for row in conn.execute("PRAGMA table_info(events);")}
+    for column in ("call_sid", "session_id_source"):
+        if column not in existing:
+            conn.execute(f"ALTER TABLE events ADD COLUMN {column} TEXT;")
+
+
 def _get_db_connection() -> sqlite3.Connection:
     conn = sqlite3.connect(str(DB_PATH), timeout=5.0, check_same_thread=False)
     conn.row_factory = sqlite3.Row
@@ -36,9 +51,18 @@ def _get_db_connection() -> sqlite3.Connection:
         "response_text TEXT,"
         "llm_input TEXT,"
         "llm_output TEXT,"
-        "policy_version TEXT"
+        "policy_version TEXT,"
+        # The Twilio CallSid as received. NULL means the upstream request did
+        # not carry one -- which is a fact worth recording, not a value to
+        # invent. session_id then holds a synthetic identifier instead.
+        "call_sid TEXT,"
+        # 'twilio_callsid' when session_id IS the upstream CallSid;
+        # 'synthetic' when it was minted here. Without this an auditor cannot
+        # tell a real call identifier from one this service made up.
+        "session_id_source TEXT"
         ");"
     )
+    _migrate_identity_columns(conn)
     conn.execute(
         "CREATE TABLE IF NOT EXISTS processed_requests ("
         "request_id TEXT PRIMARY KEY,"
@@ -183,7 +207,7 @@ def _validate_event_shape(event: Dict[str, Any], session_id: str, request_id: st
     return full
 
 
-def append_events_batch(session_id: str, events: List[Dict[str, Any]], request_id: str, mark_processed: bool = False) -> None:
+def append_events_batch(session_id: str, events: List[Dict[str, Any]], request_id: str, mark_processed: bool = False, call_sid: Optional[str] = None, session_id_source: str = "twilio_callsid") -> None:
     """Append a batch of events for a single request_id. This is atomic.
 
     Args:
@@ -191,6 +215,9 @@ def append_events_batch(session_id: str, events: List[Dict[str, Any]], request_i
         events: list of event dicts (will be normalized)
         request_id: idempotency key
         mark_processed: if True, mark request as processed in same transaction
+        call_sid: the upstream Twilio CallSid, or None when the request did not
+            carry one. Never synthesised -- absence is recorded as absence.
+        session_id_source: 'twilio_callsid' or 'synthetic'.
     """
 
     if mark_processed and not any(event.get("event_type") == "RESPONSE" for event in events):
@@ -205,7 +232,7 @@ def append_events_batch(session_id: str, events: List[Dict[str, Any]], request_i
                 for event in events:
                     ev = _validate_event_shape(event, session_id, request_id)
                     conn.execute(
-                        "INSERT OR IGNORE INTO events (session_id, request_id, timestamp, event_type, state_before, state_after, input_text, policy_action, reason_code, response_text, llm_input, llm_output, policy_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "INSERT OR IGNORE INTO events (session_id, request_id, timestamp, event_type, state_before, state_after, input_text, policy_action, reason_code, response_text, llm_input, llm_output, policy_version, call_sid, session_id_source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         (
                             ev.get("session_id"),
                             ev.get("request_id"),
@@ -220,6 +247,8 @@ def append_events_batch(session_id: str, events: List[Dict[str, Any]], request_i
                             ev.get("llm_input"),
                             ev.get("llm_output"),
                             ev.get("policy_version"),
+                            call_sid,
+                            session_id_source,
                         ),
                     )
                 if mark_processed:

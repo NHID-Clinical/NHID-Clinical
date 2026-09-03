@@ -167,16 +167,88 @@ requires_server = pytest.mark.skipif(
 # unexpected passes and CI turns red until the marker is removed, so a marker
 # cannot quietly outlive the contradiction it describes.
 
-xfail_callsid_contract = pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "OPEN DECISION 1 — missing or empty CallSid. This harness requires HTTP 400; "
-        "app.py coerces the value to the literal session id 'unknown' and returns 200 "
-        "TwiML. Both positions are defensible — a Twilio webhook wants TwiML back, "
-        "while ATR-01 wants a distinct session identifier per call — and the "
-        "repository does not record which was intended. See docs/skipped-test-audit.md §8.1."
-    ),
-)
+# ── The missing/empty CallSid contract ────────────────────────────────────
+#
+# Resolved 2026-09-03. These tests previously required HTTP 400 while the
+# implementation coerced a missing CallSid to the shared literal "unknown" and
+# returned 200 TwiML. Neither side was right: 400 breaks the Twilio webhook
+# contract, and a shared constant collapses every unidentified interaction into
+# one audit identity, which is precisely what ATR-01 exists to prevent.
+#
+# The approved contract takes neither position. The request is accepted and
+# answered with TwiML; the absent CallSid is recorded as absent rather than
+# invented; and a distinct synthetic session id keeps the interaction separable
+# in the audit trail. The assertions below are written against that contract,
+# not relaxed to accommodate the old behaviour.
+
+SYNTHETIC_SESSION_PREFIX = "nhid-anon-"
+
+
+def _identity_row(session_id: str, db_path: str = EVENT_DB_PATH):
+    """Return (call_sid, session_id_source) for a session, or None if absent."""
+    if not os.path.exists(db_path):
+        pytest.fail(f"Event DB not found at {db_path}; the audit contract cannot be verified.")
+    con = sqlite3.connect(db_path)
+    try:
+        row = con.execute(
+            "SELECT call_sid, session_id_source FROM events WHERE session_id = ? LIMIT 1",
+            (session_id,),
+        ).fetchone()
+    finally:
+        con.close()
+    return row
+
+
+def _latest_synthetic_sessions(limit: int = 8, db_path: str = EVENT_DB_PATH):
+    """Most recent synthetic session ids, newest first."""
+    if not os.path.exists(db_path):
+        pytest.fail(f"Event DB not found at {db_path}; the audit contract cannot be verified.")
+    con = sqlite3.connect(db_path)
+    try:
+        rows = con.execute(
+            "SELECT DISTINCT session_id FROM events WHERE session_id_source = 'synthetic' "
+            "ORDER BY id DESC LIMIT ?",
+            (limit,),
+        ).fetchall()
+    finally:
+        con.close()
+    return [r[0] for r in rows]
+
+
+def assert_unidentified_contract(response: httpx.Response) -> str:
+    """Assert the full contract for an interaction with no usable CallSid.
+
+    Returns the synthetic session id that was minted, so callers can assert
+    that separate interactions did not share one.
+    """
+    assert_no_500(response)
+    assert response.status_code == 200, (
+        f"An otherwise-valid webhook with no CallSid must still be accepted and "
+        f"answered; got HTTP {response.status_code}."
+    )
+    assert_twiml(response)
+
+    sessions = _latest_synthetic_sessions()
+    assert sessions, (
+        "No event was written under a synthetic session id. An interaction "
+        "without a CallSid must still be auditable."
+    )
+    session_id = sessions[0]
+    assert session_id.startswith(SYNTHETIC_SESSION_PREFIX), (
+        f"Synthetic session id {session_id!r} must carry the "
+        f"{SYNTHETIC_SESSION_PREFIX!r} prefix so it can never be mistaken for a "
+        "Twilio CallSid."
+    )
+
+    row = _identity_row(session_id)
+    assert row is not None, f"No audit row for session {session_id!r}"
+    call_sid, source = row
+    assert call_sid is None, (
+        f"call_sid must be NULL when the upstream request carried none; got {call_sid!r}. "
+        "The synthetic id must never be presented as the actual Twilio CallSid."
+    )
+    assert source == "synthetic", f"session_id_source must be 'synthetic'; got {source!r}"
+    return session_id
 
 xfail_replay_contract = pytest.mark.xfail(
     strict=True,
@@ -230,32 +302,50 @@ class TestInputValidation:
         assert_no_500(r)
         assert_twiml(r)
 
-    @xfail_callsid_contract
     def test_missing_callsid(self) -> None:
-        """CallSid is absent. Must return 400. Must not 500."""
+        """CallSid absent: accept, answer, and mint a distinct audit identity."""
         r = _post({"SpeechResult": "checking member eligibility"})
-        assert_no_500(r)
-        assert r.status_code == 400, (
-            f"Expected HTTP 400 for missing CallSid, got {r.status_code}. "
-            "The pipeline must reject requests without a session identifier."
-        )
+        assert_unidentified_contract(r)
 
-    @xfail_callsid_contract
     def test_missing_all_fields(self) -> None:
-        """Empty body. Must return 400. Must not 500."""
+        """Empty body: still answered, still auditable under its own identity."""
         r = _post({})
-        assert_no_500(r)
-        assert r.status_code == 400, (
-            f"Expected HTTP 400 for empty body, got {r.status_code}."
+        assert_unidentified_contract(r)
+
+    def test_empty_callsid(self) -> None:
+        """Empty CallSid is treated as absent, not as the literal empty string."""
+        r = _post({"CallSid": "", "SpeechResult": "checking eligibility"})
+        assert_unidentified_contract(r)
+
+    def test_unidentified_interactions_do_not_share_an_audit_identity(self) -> None:
+        """The defect this contract exists to prevent.
+
+        Two separate interactions with no CallSid must not end up under one
+        session id. Coercing to a shared literal made every unidentified call
+        indistinguishable in the audit trail, which is the opposite of what
+        ATR-01 is for.
+        """
+        first = assert_unidentified_contract(_post({"SpeechResult": "first unidentified call"}))
+        second = assert_unidentified_contract(_post({"SpeechResult": "second unidentified call"}))
+        assert first != second, (
+            f"Two unidentified interactions collapsed into one audit identity "
+            f"({first!r}). They must remain separable."
         )
 
-    @xfail_callsid_contract
-    def test_empty_callsid(self) -> None:
-        """CallSid is empty string. Equivalent to missing. Must return 400."""
-        r = _post({"CallSid": "", "SpeechResult": "checking eligibility"})
+    def test_present_callsid_is_preserved_verbatim(self) -> None:
+        """A real CallSid is used as-is and recorded as upstream-provided."""
+        session_id = f"CAtest{int(time.time())}"
+        r = _post({"CallSid": session_id, "SpeechResult": "verify benefits"})
         assert_no_500(r)
-        assert r.status_code == 400, (
-            f"Expected HTTP 400 for empty CallSid, got {r.status_code}."
+        assert_twiml(r)
+        row = _identity_row(session_id)
+        assert row is not None, f"no audit row for {session_id!r}"
+        call_sid, source = row
+        assert call_sid == session_id, (
+            f"upstream CallSid must be preserved verbatim; got {call_sid!r}"
+        )
+        assert source == "twilio_callsid", (
+            f"source must record that the id came from upstream; got {source!r}"
         )
 
     def test_very_long_speech(self) -> None:
@@ -274,12 +364,10 @@ class TestChaosMode:
     multiple simultaneous failure conditions.
     """
 
-    @xfail_callsid_contract
     def test_chaos_null_bytes_empty_callsid(self) -> None:
-        """Null bytes in SpeechResult AND empty CallSid. Must return 400."""
+        """Null bytes AND empty CallSid: both handled, identity still distinct."""
         r = _post({"CallSid": "", "SpeechResult": "\x00\x00\x00check claim"})
-        assert_no_500(r)
-        assert r.status_code == 400
+        assert_unidentified_contract(r)
 
     def test_chaos_correlation_id_header(self) -> None:
         """
@@ -310,16 +398,13 @@ class TestChaosMode:
         assert_no_500(r)
         assert_twiml(r)
 
-    @xfail_callsid_contract
     def test_chaos_full_adversarial(self) -> None:
         """Full adversarial: empty CallSid + null bytes + chaos headers."""
         r = _post(
             {"CallSid": "", "SpeechResult": "\x00\x00\x00check claim status"},
             headers={"X-NHID-TEST": "CHAOS"},
         )
-        assert_no_500(r)
-        # Empty CallSid must still produce 400
-        assert r.status_code == 400
+        assert_unidentified_contract(r)
 
 
 @requires_server
