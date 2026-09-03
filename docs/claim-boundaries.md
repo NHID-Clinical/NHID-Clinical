@@ -79,7 +79,7 @@ question.
 | "Governs the moment a non-human actor crosses an organizational boundary." | "Governs healthcare AI." / "Governs autonomous AI." |
 | "A non-human-actor identity and delegated-authorization protocol (reference implementation)." | "A universal identity layer." / "Trust infrastructure." / "A control plane." |
 | "A healthcare-specific delegation scheme aligned with emerging authenticated-delegation approaches, composable with SPIFFE/OAuth-style stacks." | "A profile of authenticated delegation" (implies an adopted base standard) · "We invented delegated authority / agent identity / scope attenuation." |
-| "Mapped to NIST AI RMF and ISO/IEC 42001; designed to support the transparency obligations described in EU AI Act Article 50." | "Compliant with / certified against" any of them. |
+| "Mapped to NIST AI RMF and ISO/IEC 42001; designed to support the disclosure obligation described in EU AI Act Article 50(1)." | "Compliant with / certified against" any of them. |
 | "A voluntary open proposal with standards-oriented artifacts." | "An emerging standard." / "The standard for AI agents in healthcare." / "A standards candidate" (implies a formal standards process has started). |
 | "Reference implementation; revocation is in-memory; key custody and federation are documented but not built." | "Production-ready." / "Enterprise infrastructure." |
 | "Disclosure latency is measured on recorded traffic; the framework does not detect covert agents." | "Detects unauthorized/rogue AI callers." |
@@ -175,7 +175,7 @@ policy decision and `evaluate_all()` structurally cannot read it.
 | "A **deterministic, testable conformance model** (same inputs → identical output)." | `conformance/nhid_conformance_test_suite_v1.yaml` + `src/cts_runner.py`; passing unit suite |
 | "Five controls (IDG/PDX/DBC/EIT/ATR-01) plus a documented **Enforcement Profile — not a sixth control.**" | `docs/enforcement-profile.md`; `evaluate_all` ladder |
 | "Emits **FHIR AuditEvent** evidence for the interaction." | `src/fhir_audit_emitter.py`, `nhid_audit_export.py` |
-| "**Mapped to** NIST AI RMF and ISO/IEC 42001; **designed to support** EU AI Act Art. 50 transparency obligations." | `regulatory-alignment.html` — mapping only |
+| "**Mapped to** NIST AI RMF and ISO/IEC 42001; **designed to support** the EU AI Act Art. 50(1) disclosure obligation." | `regulatory-alignment.html` — mapping only |
 | "Addresses an **underserved operational gap** in cross-organizational healthcare AI voice workflows." | Narrow scope; conservative, hedged |
 | "A **voluntary open proposal with standards-oriented artifacts**; submitted a **public comment** to NIST (NIST-2025-0035-0026)." | Public comment ≠ endorsement or an opened standards process |
 | "Revocation is **checked at verification and in-memory** in the reference implementation." | `src/agent_identity.py` — not live / not cross-org |
