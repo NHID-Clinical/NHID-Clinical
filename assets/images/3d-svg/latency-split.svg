@@ -89,7 +89,8 @@
   <text x="80" y="295" font-size="13" fill="#E2E8F0">No disclosure gate · no audit trail · PHI at risk.</text>
 
   <!-- RIGHT: with NHID-Clinical v1.3 - 3D isometric card -->
-  <g filter="url(#shadow-success)" filter="url(#glow-success)">
+  <g filter="url(#shadow-success)">
+   <g filter="url(#glow-success)">
     <!-- Card top face -->
     <path d="M 560 100 L 940 70 L 990 110 L 610 140 Z" fill="url(#grad-success-top)" opacity="0.9"/>
     <!-- Card left face -->
@@ -100,6 +101,7 @@
     <path d="M 560 100 L 940 70 L 990 110 L 610 140 Z" fill="url(#grad-glass)" opacity="0.6"/>
     <!-- Top edge highlight - stronger for success -->
     <path d="M 565 105 L 935 78 L 985 115" stroke="#FFFFFF" stroke-width="2.5" fill="none" opacity="0.5"/>
+   </g>
   </g>
 
   <text x="750" y="85" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFFFFF" font-family="Inter, sans-serif">With NHID-Clinical v1.3</text>

@@ -593,8 +593,8 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
 (v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
-failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **924 passed /
-18 skipped / 942 total**, and
+failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **987 passed /
+18 skipped / 1,005 total**, and
 `UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
 `scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
 without failing the build; `scripts/validate_ci.py` warns when the two diverge.
@@ -1093,7 +1093,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 924 passing unit tests across 54 files
+│   └── test_*.py                      # 987 passing unit tests across 55 files
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -1332,11 +1332,11 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
 | + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current:** `UNIT_PUBLISHED = 924` in `scripts/validate_ci.py`. This is not an invariant and not
+**Current:** `UNIT_PUBLISHED = 987` in `scripts/validate_ci.py`. This is not an invariant and not
 a gate — it is the number published on README badges, the website and the PDFs, which
 `scripts/check_number_drift.py` compares those surfaces against.
 
-**Total suite:** 990 passing (924 Python + 66 TypeScript middleware)
+**Total suite:** 1,053 passing (987 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1407,7 +1407,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 924 passed (18 skipped when no server running = integration tests)
+# Expected: 987 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1433,7 +1433,7 @@ legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked fo
 
 ```python
 # scripts/validate_ci.py
-UNIT_PUBLISHED = 924
+UNIT_PUBLISHED = 987
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
@@ -1571,7 +1571,7 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The full suite (currently **924 passed / 18 skipped**) must
+1. **All existing tests must pass.** The full suite (currently **987 passed / 18 skipped**) must
    stay green after
    every change. Run `python scripts/validate_ci.py` before committing.
 
@@ -2619,7 +2619,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_PUBLISHED = 924  # scripts/validate_ci.py (published count, not a CI gate)
+UNIT_PUBLISHED = 987  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2664,8 +2664,9 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
-| `test_site_navigation.py` | 73 | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
-| **Total** | **924 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
+| `test_site_navigation.py` | 76 |
+| `test_svg_assets_render.py` | 60 | Every published SVG parses as XML and declares an intrinsic size; sprite sheets exempt | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
+| **Total** | **987 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2743,7 +2744,114 @@ assert len(decision.violations) == 0
 
 ## Changelog
 
+### 2026-09-03 · Public-site audit — a broken diagram, retired routes, and four claim contradictions
+
+Two external audits (Perplexity, ChatGPT) were commissioned against the live
+site. Both were run **before** the 2026-09-02 merge, so several findings were
+already fixed. Every claim was re-checked against `main` at `dcd9665` rather than
+taken on trust; the results split three ways.
+
+**Confirmed and fixed.**
+
+| Finding | Evidence | Fix |
+|---|---|---|
+| The hero diagram on `for-payers.html` and `shadow-evaluation-guide.html` does not render | `assets/images/3d-svg/latency-split.svg` had `filter="…" filter="…"` on one `<g>`. SVG is XML, so a duplicate attribute is fatal: the browser reported `naturalWidth 0` with `complete: true` and the `<img>` collapsed to 59px, the height of its alt text | Nested the two filters. Now decodes at 288×150 and renders 672×350 |
+| `docs.html` shows nothing | Loads `swagger-ui-bundle` from cdnjs; renders empty when that fails | Removed from navigation and from the published build |
+| Simulator competes with the framework | 196 links across the site | All links removed; page and app retired from the build |
+| Calendar booking | 5 links to `calendar.app.google` across three pages, plus "about 30 minutes of staff time" | Replaced with email and GitHub Discussions |
+| "zero vendor changes, zero production risk" | `for-payers.html` | Observe-only is not risk-free. Now: no vendor changes, observe-only, does not sit in the call path, and the organisation's privacy, security and contractual obligations still apply |
+| NHID-Auth v2 "Open for production use" beside "early testing only", while the homepage calls it "documented but not yet solved" | `roadmap.html` | Licence permits any use; maturity does not. Reference implementation, not independently security audited, no production issuers |
+| `interoperability.html` said "Bland.ai and Retell AI adapters are planned" | `adapters/retell_adapter.py` exists and `/v1/adapters/retell/check` is live; `developers.html` listed it as available | Corrected to the five adapters with live routes (twilio, vapi, vonage, retell, connect) plus the routeless ElevenLabs adapter |
+
+**Reported but not true of the current site.** Recorded so the same findings are
+not re-fixed later.
+
+- *"FAQ says 779 passing tests while the homepage says 924."* The FAQ says 924.
+  Every published page agrees, and the drift guard enforces it. The counts in
+  `news.html` (306, 284, 198) sit inside entries dated June 2026 and describe what
+  was true when written — history, not drift.
+- *"Registry shows Loading… with no fallback."* It renders "No implementations are
+  listed yet." The catch handler fires correctly. **But it was right by accident:**
+  `content/registry_entries.json` was never copied into the build, so the fetch
+  404'd and the error path was the only path. `content/` is now published, so real
+  entries will appear.
+- *"Home says 847 passing / 18 skipped / 865 total."* Superseded by the merge.
+
+**Regression guards added,** because each of these shipped silently:
+
+- `tests/test_svg_assets_render.py` (61 tests) parses every published SVG as XML
+  and requires an intrinsic size. Sprite sheets — a hidden root holding `<symbol>`
+  elements, each with its own viewBox — are exempt, because asserting a root size
+  there would assert the wrong thing about a correct file. Verified by
+  reintroducing the duplicate attribute.
+- `test_retired_routes_are_not_linked_from_any_published_page` — generator scripts
+  and copied nav blocks are how removed links return.
+- `test_no_calendar_booking_links`.
+- `test_published_adapter_claims_match_the_repository` — derives the vendor list
+  from `adapters/*_adapter.py` rather than restating it, so the page and the code
+  cannot drift apart again.
+
+Neither the link checker (the SVG file existed) nor the visual capture (no
+horizontal overflow) could see the broken diagram. That is why the guard reads
+the asset rather than the reference to it.
+
+**Metrics:** 924 → 987 passed, 942 → 1,005 collected. The skip count stays at 18:
+sprite sheets are excluded from the size check's parameter list rather than
+skipped inside it, because that published figure means "integration tests not run
+without a live server" and a sprite sheet is not one of those. Engine and corpora
+untouched. Site build 33.68 MB / 162 files →
+32.57 MB / 155 files; internal references 2,264 → 2,086, still 0 broken.
+
+**Files affected:** `assets/images/3d-svg/latency-split.svg`,
+`scripts/build_pages_site.sh`, 33 published pages, `for-payers.html`,
+`shadow-evaluation-guide.html`, `community.html`, `interoperability.html`,
+`roadmap.html`, `tests/test_svg_assets_render.py` (new),
+`tests/test_site_navigation.py`, and the published-count surfaces.
+
+**Not done — needs a decision or a person.** The information-architecture
+consolidation both audits recommend (25 pages → ~6) is a larger change than a
+truth pass and is not attempted here. Neither is the demo video: this environment
+cannot record or edit video, generate images, or produce design comps.
+
+---
+
 ### 2026-09-02 · Dead CSS removed — and a bug in the tool that removed it
+
+**Merged and deployed.** The whole cycle — the drift-guard fix, the website redesign, and
+all four CSS consolidation stages — went to `main` as PR #376, squash-merged as
+**`b828228`** on 2026-09-02 at 23:09 UTC: 16 commits, +3,681/−4,147 across 72 files. The
+squash means the branch's individual commits are not ancestors of `main`; `b828228` is the
+single commit carrying them.
+
+All four workflows concluded `success` on that commit: `CI`, `Deploy GitHub Pages`,
+`pages build and deployment`, and `NHID Clinical - Production Readiness Gates`, all by
+23:10 UTC. Deployment is confirmed **from the workflow conclusions only** — the rendered
+page was not fetched, because outbound to nhid-clinical.org is blocked by this
+environment's proxy.
+
+Re-verified against `origin/main` after the merge rather than assuming the squash carried
+everything:
+
+| Check on `b828228` | Result |
+|---|---|
+| `pytest tests/` | 924 passed, 18 skipped |
+| `scripts/validate_ci.py` | `CI PASS: 924 tests passed (+ 18 skipped)` |
+| `scripts/check_baseline.py` | Fabricate byte-identical — IDG-01 70/70, PDX-01 41/41, DBC-01 183/200, EIT-01 169/171 |
+| `scripts/check_number_drift.py` | `DRIFT PASS` with the corpus line present |
+| `build_pages_site.sh` | 33.68 MB, 162 files |
+| Internal links | 2,264 references, 0 broken |
+| `assets/css/components.css` present, `cinematic-trust-lattice.css` gone | yes / yes |
+| Live `ctl-` references in HTML or CSS | 0 (one prose mention survives in the components.css header, which documents the rename) |
+| Distinct viewport breakpoints | 720 / 900 / 1060 / 1240, plus the paired 1241–1380 band |
+| Pages rendering the restored drawer toggle | 33 |
+| `nhid-clinical-ui.css` | 63.4 KB, down from 103.5 KB |
+
+**Still outstanding, carried forward.** The three statute URLs on the homepage
+(`leginfo.legislature.ca.gov`, `docs.fcc.gov`, `eur-lex.europa.eu`) remain unverified —
+they are the canonical official locations, but outbound is blocked here and they have now
+shipped to production unopened. Roughly 200 classes in `assets/css/components.css` are
+unreferenced and deliberately retained as staged vocabulary.
+
 
 **41% of `nhid-clinical-ui.css` was rules that could never match anything the
 site builds.** 350 selectors there and 24 in `premium.css`, 41.8 KB in total.
