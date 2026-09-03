@@ -129,34 +129,72 @@ regulatory context.
 
 ---
 
-## 3. Blocked — needs a decision before disposition
+## 3. The evaluation journey — decided 2026-09-03
 
-| Pages | Words | Blocked on |
+Previously blocked. The decisions:
+
+> Present NHID-Clinical as an **observe-only shadow evaluation / pilot
+> framework**, never as a current production deployment. **No mandatory
+> 30/60/90-day duration.** The initial evaluation is small and observe-only;
+> longitudinal evaluation is optional if useful. The production call flow is
+> unchanged throughout.
+
+This resolves `claims-register.md` B1/B3 and settles four pages.
+
+| Page | Words | Disposition |
 |---|---|---|
-| `for-payers.html` | 616 | **`claims-register.md` F2.** Is the evaluation a pilot or explicitly not a pilot, and is it 2–4 weeks, 30 days, or 90 days? |
-| `shadow-evaluation-guide.html` | 540 | Same |
-| `community.html` | 280 | Carries the third duration ("90 day engagement … 2–4 week measurement sprint") |
-| `demo.html` | 235 | Depends on whether the evaluation entry point is a demo, a kit, or a guide |
+| `shadow-evaluation-guide.html` | 540 | **Becomes the single evaluation destination.** Absorbs what is distinct in `for-payers`. Month 1 / Month 2 / Month 3 structure is **removed** — no mandatory duration. "This is not a pilot program" is removed: it is a pilot *framework*, observe-only |
+| `for-payers.html` | 616 | **Merged in.** At 2% textual overlap this is a genuine merge, not a dedup — its payer-specific framing is content the destination does not have |
+| `community.html` | 280 | **Keep**, minus its duration claim. "90 day engagement … 2–4 week measurement sprint" is removed. Community is GitHub Discussions and Issues |
+| `demo.html` | 235 | **Retire.** With one evaluation destination and `script-examples.html` restored, a separate demo route has no distinct job |
 
-These four are the site's primary evaluation journey — the mission's journey #2,
-and its most important. They are **not** merged here because at 2% textual
-overlap the merge is a reconciliation of contradictory claims, and choosing which
-claim survives is a decision about what the offering *is*. Making that call by
-inference would be exactly the failure mode the mission file prohibits.
+**Wording that must not survive the merge**, per the decision and the register:
 
----
+- Any mandatory duration — "90 day", "30 days", "Month 1/2/3", "2–4 week sprint"
+  as a *requirement* rather than an illustration.
+- "This is not a pilot program" — it is a pilot framework; the distinction the
+  site needs is observe-only vs production, not pilot vs not-pilot.
+- "zero production risk" (already fixed) and any successor phrasing.
+- Anything implying current production deployment.
+
+**"Start a pilot →" (10 pages, register B1)** is not banned by this decision, but
+it must lead to the observe-only framing rather than imply an existing programme
+with named participants. The 10 instances need one consistent destination and
+label. Recommended: **"Run a shadow evaluation →"** — it describes the action, is
+already the homepage's primary CTA, and cannot be read as joining a cohort.
+
+### 3.1 `platform/` and the design-partner claim
+
+**Decision: no design partners exist.** All six *"TrustLayer is being built with
+design partners"* claims are unsupported and must not be represented.
+
+§2.1 already retires five of the six pages carrying that phrase. The surviving
+`platform/index.html` **must drop it**, and must not replace it with any other
+adoption, customer, pilot, or external-validation claim. The honest framing is
+concept-stage with no production deployments.
+
+### 3.2 `script-examples.html`
+
+**Decision: return it to the public information architecture.** 748 words of
+practitioner-useful disclosure phrasing, directly supporting the
+impersonation-latency concept.
+
+**Placement:** under the framework, adjacent to the controls — it is the concrete
+answer to "what does compliant disclosure actually sound like?", which the
+normative text states and does not illustrate. Not under evaluation: it is
+reference material, not a procedure.
 
 ## 4. Resulting shape
 
 **45 pages are published today** (the count in `project-state.md` §7 said 44;
 45 is correct and includes the Search Console verification file).
 
-§2.1 retires **13**: five `platform/`, six stubs, one dev artifact
-(`svg-preview.html`), one orphaned simulator (`gov-sim.html`).
+**15 pages leave the site.** §2.1 retires 13 — five `platform/`, six stubs, one
+dev artifact (`svg-preview.html`), one orphaned simulator (`gov-sim.html`). §3
+retires `demo.html` and folds `for-payers.html` into the evaluation destination.
 
-**45 → 32 decided.** If §3 then resolves the four evaluation pages into a single
-destination, **→ 29**. Neither number is a target; both are arithmetic on the
-rows above and change if any row changes.
+**45 → 30.** §2.1 retires 13; §3 retires `demo.html` and merges `for-payers.html`
+into `shadow-evaluation-guide.html` (−2 more). Nothing is now blocked.
 
 The two orphans in §2.2 return to navigation without changing the count — they
 are already published, merely unreachable.
@@ -167,7 +205,10 @@ are already published, merely unreachable.
 |---|---|
 | `platform/` — 5 pages retired, `index` survives | 2,034 |
 | Stubs, dev artifact, orphaned simulator | 723 |
-| **Total leaving the site** | **2,757** |
+| `demo.html` retired | 235 |
+| `for-payers.html` — **merged, not deleted** | 616 |
+| **Leaving the site as routes** | **3,608** |
+| **Genuinely retired content** | **~2,992** (the 616 relocates) |
 
 Of that, the ~2,034 `platform/` words are the only genuinely *duplicated* text on
 the site (13–25% mutual overlap). The 723 stub words are not duplicated — they
@@ -179,9 +220,18 @@ mission's distinction.
 
 ## 5. What this table does not decide
 
-- **The Playbook's structure.** Material marked "belongs in the Playbook" needs
-  the Playbook to exist first.
-- **Navigation labels and hierarchy.** A separate exercise from disposition.
+- **Navigation labels and hierarchy.** Disposition says which pages exist, not
+  what the menu calls them.
 - **The canonical visual system.** §2.4 identifies the diagram problem but does
   not design the fix.
-- **Anything in §3.**
+- **The Playbook's contents.** Its structure is proposed in
+  `docs/playbook-structure.md`; the writing is a separate pass.
+
+## 6. Open — still unknown, not filled in
+
+- **AB 2905's 1 Jan 2025 effective date** (`claims-register.md` D1) is the only
+  regulatory figure not verified. The statute's substance is confirmed; the date
+  is not.
+- **The three statute URLs have still not been opened** — all three hosts are
+  egress-blocked from this environment. Substance was verified by search against
+  authoritative domains, which is not the same thing.

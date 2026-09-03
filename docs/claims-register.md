@@ -26,6 +26,7 @@ and the claim is not repaired by inference.
 | `filesystem` | Established by what exists in the repository (adapter modules, routes) |
 | `cross-page` | Compared against another published page's wording |
 | `browser` | Rendered and inspected in a headless browser |
+| `web-search` | Checked against authoritative domains by search; establishes substance, **not** that a specific URL resolves |
 | `pdf-text` | Extracted from a PDF with `pdfminer.six` |
 | `none-available` | No source in the repository can settle it |
 
@@ -101,9 +102,26 @@ endorsement or compliance.
 
 | # | Verbatim | Page(s) | Method | Verdict |
 |---|---|---|---|---|
-| D1 | California AB 2905 / Cal. Pub. Util. Code §2874 — from 1 Jan 2025 | `index.html` | `none-available` | **UNKNOWN — URL never opened.** The citation is the canonical official location; outbound is blocked here. Live in production, unverified by any person |
-| D2 | FCC 24-17 (TCPA declaratory ruling) — from 8 Feb 2024 | `index.html` | `none-available` | **UNKNOWN — URL never opened** |
-| D3 | EU AI Act Article 50 — from 2 Aug 2026 | `index.html` | `none-available` | **UNKNOWN — URL never opened** |
+| D1 | "Covered automatic dialing-announcing devices must tell the called person when a prerecorded message uses an artificial voice." — California AB 2905 / Cal. Pub. Util. Code §2874, **from 1 Jan 2025** | `index.html` | `web-search` | **SUBSTANCE VERIFIED.** AB 2905 amends PUC §2874, approved by the Governor 20 Sep 2024. Operative requirement confirmed: the announcement must "inform the person called if the prerecorded message uses an artificial voice." **Effective date 1 Jan 2025 NOT confirmed** — California statutes default to 1 January following enactment, which makes it plausible, but no source read here states it |
+| D1a | AB 2905 caveat: "Does not govern every conversational AI call, and is not healthcare-specific." | `index.html` | `web-search` | **VERIFIED and correctly scoped.** The statute is limited to automatic dialing-announcing devices and prerecorded messages |
+| D2 | "AI-generated voices fall within the TCPA's existing restrictions on artificial or prerecorded voice calls." — FCC 24-17, **from 8 Feb 2024** | `index.html` | `web-search` | **VERIFIED.** FCC 24-17 adopted 2 Feb 2024, **released 8 Feb 2024** — the published date is the release date and is correct. Substance confirmed: TCPA "artificial or prerecorded voice" encompasses AI-generated voices; such calls require prior express consent |
+| D2a | FCC 24-17 caveat: "Does not create a disclosure standard for provider–payer administrative calls." | `index.html` | `web-search` | **VERIFIED and important.** The ruling addresses outbound calls **to consumers**. NHID-Clinical's scope is B2B provider–payer administrative calls. The caveat correctly prevents the over-reading |
+| D3 | "People must be informed when they are interacting directly with an AI system, subject to the Article's scope and exceptions." — EU AI Act Art. 50, **from 2 Aug 2026** | `index.html` | `web-search` | **VERIFIED.** Regulation (EU) 2024/1689; Article 50 transparency obligations apply **from 2 August 2026** |
+| D3a | EU AI Act caveat: "Does not specify how disclosure is verified, scoped, or evidenced on a call." | `index.html` | `web-search` | **VERIFIED** — Article 50 states the obligation, not a verification or evidencing method |
+
+> **What could not be done, and why it matters.** The instruction was to *open*
+> the three URLs. **All three are blocked by this environment's egress proxy**
+> (`leginfo.legislature.ca.gov`, `docs.fcc.gov`, `eur-lex.europa.eu`), so no URL
+> was fetched. The verification above is by **web search against authoritative
+> domains**, which establishes what each instrument says but **cannot confirm that
+> the specific cited URL resolves**.
+>
+> Two of the three exact URLs did appear as live search results
+> (`docs.fcc.gov/public/attachments/FCC-24-17A1.pdf` exactly; the leginfo bill_id
+> `202320240AB2905` under sibling views). The EUR-Lex ELI form
+> (`eli/reg/2024/1689/oj`) did not appear, though a different EUR-Lex URL for the
+> same regulation did. **A person on an unrestricted network should still click
+> all three once.** The remaining unverified item is the 1 Jan 2025 date in D1.
 | D4 | "three different instruments with different scopes and triggers, **not one uniform rule**" | `index.html` | `cross-page` | **VERIFIED** — load-bearing framing; AB 2905 concerns dialing-announcing devices and prerecorded messages and should not be generalised |
 | D5 | "NHID-Clinical does not make any system legally compliant" / "nothing on this page is legal advice" | `index.html` | `cross-page` | **VERIFIED** — disclaimer |
 
@@ -128,10 +146,10 @@ Not defects. Questions the repository cannot answer.
 
 | # | Question | Why it needs you |
 |---|---|---|
-| F1 | Do any **design partners** exist for TrustLayer? (B2) | If none, the wording overstates. If some exist, the repository holds no record of them |
-| F2 | Is the shadow evaluation a **pilot** or explicitly **not a pilot**, and is it 2–4 weeks, 30 days, or 90 days? (B1, B3) | Three durations and two names are live simultaneously. This is the most visible contradiction on the site |
-| F3 | Should the three **statute URLs** be opened before they keep shipping? (D1–D3) | They are live in production and no person has confirmed they resolve |
-| F4 | Should `script-examples.html` (748 words, orphaned) return to navigation? | Practitioner-grade content no visitor can currently reach |
+| F1 | ~~Do design partners exist?~~ **Answered: no.** The six "being built with design partners" claims are unsupported and must not be represented. Disposition retires five of the six pages carrying them; the surviving `platform/index.html` must drop the phrase | Resolved — action pending in the IA pass |
+| F2 | ~~Pilot or not a pilot, and how long?~~ **Answered.** Present it as an **observe-only shadow evaluation / pilot framework**, never as current production deployment. **No mandatory 30/60/90-day duration.** The initial evaluation is small and observe-only; longitudinal evaluation is optional. Production call flow is unchanged throughout | Resolved — action pending in the IA pass |
+| F3 | ~~Should the three statute URLs be opened?~~ **Answered: yes.** Substance verified for all three (D1–D3); **the URLs themselves remain unopened** — all three hosts are egress-blocked here. Outstanding: click all three once on an unrestricted network, and confirm AB 2905's 1 Jan 2025 effective date | A person on an open network |
+| F4 | ~~Should `script-examples.html` return to navigation?~~ **Answered: yes.** Practitioner-useful material directly supporting the disclosure and impersonation-latency concept. Final placement decided in the IA pass | Resolved — placement pending |
 
 ---
 
