@@ -33,10 +33,10 @@ import re, subprocess, sys
 # running and 18 tests silently did not execute.
 SKIP_EXPECTED = 0
 
-# Known divergences carried as strict xfail. Each is an open product decision,
-# not a flaky test. An xpass means a decision was implemented and the marker
-# must be removed — pytest fails the run itself when that happens.
-XFAIL_EXPECTED = 7
+# Zero, and it should stay zero. The seven divergences that briefly lived here
+# were resolved by fixing the contracts they marked, not by keeping markers on
+# them. A nonzero value means someone has started deferring a failure again.
+XFAIL_EXPECTED = 0
 
 # The unit-test count currently published on public surfaces (README badge,
 # website stats, PDFs). This is NOT a CI gate — the suite is allowed to grow
