@@ -156,6 +156,14 @@ must be written as one.
 
 ---
 
+> **Do not add this file to `WATCHED` in `scripts/check_number_drift.py`.** The
+> register quotes superseded figures verbatim — "847 passing unit tests",
+> "306 passing", "198 passing conformance tests" — because a register that
+> paraphrases the claim it is recording is useless for checking. The guard uses
+> an explicit 20-surface list rather than a glob over `docs/`, so these quotations
+> are safe today. Adding this file to that list would make the guard fail on its
+> own audit trail. The same applies to `docs/project-state.md`.
+
 *Maintenance: a claim changes category only when its evidence changes. Add new
 claims as they are published; do not delete resolved rows — a fixed contradiction
 is part of the record.*
