@@ -38,3 +38,8 @@ _site/
 
 # Internal, development-only material (kept locally, out of the public repo)
 _internal/
+
+# Python packaging build artifacts
+*.egg-info/
+build/
+dist/

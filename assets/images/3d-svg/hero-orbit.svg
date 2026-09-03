@@ -6,7 +6,7 @@
       <stop offset="0" stop-color="#67E8F9"/><stop offset="1" stop-color="#14B8A6"/>
     </linearGradient>
     <linearGradient id="hoTop2" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#0ea5b7"/>
+      <stop offset="0" stop-color="#A78BFA"/><stop offset="1" stop-color="#7C3AED"/>
     </linearGradient>
     <linearGradient id="hoSideL" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#1e3a5f"/><stop offset="1" stop-color="#0F172A"/>
@@ -14,12 +14,27 @@
     <linearGradient id="hoSideR" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#264a72"/><stop offset="1" stop-color="#14243c"/>
     </linearGradient>
+    <linearGradient id="hoGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0.1" />
+    </linearGradient>
     <radialGradient id="hoGlow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#67E8F9" stop-opacity="0.55"/><stop offset="1" stop-color="#67E8F9" stop-opacity="0"/>
+      <stop offset="0" stop-color="#67E8F9" stop-opacity="0.7"/><stop offset="1" stop-color="#67E8F9" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="hoBeam" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#67E8F9" stop-opacity="0.28"/><stop offset="1" stop-color="#67E8F9" stop-opacity="0"/>
+      <stop offset="0" stop-color="#67E8F9" stop-opacity="0.35"/><stop offset="1" stop-color="#67E8F9" stop-opacity="0"/>
     </linearGradient>
+    <filter id="hoShadow">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity="0.35"/>
+    </filter>
+    <filter id="hoGlowEffect">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
     <style>
       .tok { fill:#ffffff; }
       .tokline { stroke:#14B8A6; stroke-width:6; stroke-linecap:round; }
@@ -29,12 +44,14 @@
     </style>
   </defs>
 
-  <!-- ambient glow -->
-  <circle cx="360" cy="250" r="210" fill="url(#hoGlow)"/>
+  <!-- ambient glow - enhanced -->
+  <circle cx="360" cy="250" r="210" fill="url(#hoGlow)" opacity="0.8"/>
+  <!-- secondary glow for depth -->
+  <circle cx="360" cy="250" r="140" fill="url(#hoGlow)" opacity="0.4"/>
 
-  <!-- soft light beams -->
-  <path d="M300 -20 L360 -20 L250 300 L215 300 Z" fill="url(#hoBeam)"/>
-  <path d="M410 -20 L452 -20 L392 250 L364 250 Z" fill="url(#hoBeam)" opacity="0.7"/>
+  <!-- soft light beams - enhanced -->
+  <path d="M300 -20 L360 -20 L250 300 L215 300 Z" fill="url(#hoBeam)" opacity="0.45"/>
+  <path d="M410 -20 L452 -20 L392 250 L364 250 Z" fill="url(#hoBeam)" opacity="0.35"/>
 
   <!-- contact shadows -->
   <ellipse cx="330" cy="474" rx="172" ry="34" fill="#0F172A" opacity="0.08"/>
@@ -47,20 +64,37 @@
   <path class="link" d="M330 400 L418 212"/>
 
   <!-- Platform A (base, large) : center 330,400 w150 h75 depth34 -->
-  <path d="M330 366 L480 400 L330 434 L180 400 Z" fill="url(#hoTop)"/>
-  <path d="M180 400 L330 434 L330 468 L180 434 Z" fill="url(#hoSideL)"/>
-  <path d="M330 434 L480 400 L480 434 L330 468 Z" fill="url(#hoSideR)"/>
-  <path d="M330 366 L480 400 L330 434 L180 400 Z" fill="#ffffff" opacity="0.08"/>
+  <g filter="url(#hoShadow)">
+    <path d="M330 366 L480 400 L330 434 L180 400 Z" fill="url(#hoTop)"/>
+    <path d="M180 400 L330 434 L330 468 L180 434 Z" fill="url(#hoSideL)"/>
+    <path d="M330 434 L480 400 L480 434 L330 468 Z" fill="url(#hoSideR)"/>
+    <!-- Glass overlay -->
+    <path d="M330 366 L480 400 L330 434 L180 400 Z" fill="url(#hoGlass)" opacity="0.4"/>
+    <!-- Edge highlight -->
+    <path d="M335 371 L475 403 L335 429" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.35"/>
+  </g>
 
   <!-- Platform B (mid) : center 250,300 w100 h50 depth26 -->
-  <path d="M250 276 L350 300 L250 324 L150 300 Z" fill="url(#hoTop2)"/>
-  <path d="M150 300 L250 324 L250 350 L150 326 Z" fill="url(#hoSideL)"/>
-  <path d="M250 324 L350 300 L350 326 L250 350 Z" fill="url(#hoSideR)"/>
+  <g filter="url(#hoShadow)">
+    <path d="M250 276 L350 300 L250 324 L150 300 Z" fill="url(#hoTop2)"/>
+    <path d="M150 300 L250 324 L250 350 L150 326 Z" fill="url(#hoSideL)"/>
+    <path d="M250 324 L350 300 L350 326 L250 350 Z" fill="url(#hoSideR)"/>
+    <!-- Glass overlay -->
+    <path d="M250 276 L350 300 L250 324 L150 300 Z" fill="url(#hoGlass)" opacity="0.45"/>
+    <!-- Edge highlight -->
+    <path d="M255 281 L345 303 L255 321" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.4"/>
+  </g>
 
   <!-- Platform C (top, small) : center 418,212 w80 h40 depth22 -->
-  <path d="M418 190 L498 212 L418 234 L338 212 Z" fill="url(#hoTop)"/>
-  <path d="M338 212 L418 234 L418 256 L338 234 Z" fill="url(#hoSideL)"/>
-  <path d="M418 234 L498 212 L498 234 L418 256 Z" fill="url(#hoSideR)"/>
+  <g filter="url(#hoShadow)">
+    <path d="M418 190 L498 212 L418 234 L338 212 Z" fill="url(#hoTop)"/>
+    <path d="M338 212 L418 234 L418 256 L338 234 Z" fill="url(#hoSideL)"/>
+    <path d="M418 234 L498 212 L498 234 L418 256 Z" fill="url(#hoSideR)"/>
+    <!-- Glass overlay -->
+    <path d="M418 190 L498 212 L418 234 L338 212 Z" fill="url(#hoGlass)" opacity="0.45"/>
+    <!-- Edge highlight -->
+    <path d="M423 195 L493 215 L423 231" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.35"/>
+  </g>
 
   <!-- nodes on the links -->
   <circle class="node" cx="330" cy="400" r="9"/>
@@ -68,32 +102,41 @@
   <circle class="node" cx="418" cy="212" r="8"/>
 
   <!-- Floating identity token: disclosure (waveform) -->
-  <g transform="translate(196 150)">
+  <g transform="translate(196 150)" filter="url(#hoShadow)">
     <rect x="0" y="0" width="118" height="92" rx="18" fill="#0F172A"/>
-    <rect x="0" y="0" width="118" height="92" rx="18" fill="url(#hoTop)" opacity="0.14"/>
+    <rect x="0" y="0" width="118" height="92" rx="18" fill="url(#hoTop)" opacity="0.22"/>
+    <rect x="0" y="0" width="118" height="92" rx="18" fill="url(#hoGlass)" opacity="0.35"/>
     <g class="tokline">
       <line x1="30" y1="52" x2="30" y2="40"/><line x1="44" y1="58" x2="44" y2="34"/>
       <line x1="58" y1="64" x2="58" y2="28"/><line x1="72" y1="58" x2="72" y2="34"/>
       <line x1="86" y1="52" x2="86" y2="40"/>
     </g>
     <text x="16" y="28" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#67E8F9">DISCLOSE</text>
+    <!-- Edge highlight -->
+    <path d="M8 6 L110 6" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
   </g>
 
   <!-- Floating identity token: verified authorization (check) -->
-  <g transform="translate(410 92)">
+  <g transform="translate(410 92)" filter="url(#hoShadow)">
     <rect x="0" y="0" width="104" height="88" rx="18" fill="#0F172A"/>
-    <rect x="0" y="0" width="104" height="88" rx="18" fill="url(#hoTop)" opacity="0.14"/>
+    <rect x="0" y="0" width="104" height="88" rx="18" fill="url(#hoTop)" opacity="0.22"/>
+    <rect x="0" y="0" width="104" height="88" rx="18" fill="url(#hoGlass)" opacity="0.35"/>
     <circle cx="52" cy="50" r="22" fill="none" stroke="#67E8F9" stroke-width="5"/>
     <path d="M42 50 L49 57 L63 42" fill="none" stroke="#14B8A6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
     <text x="16" y="24" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#67E8F9">VERIFY</text>
+    <!-- Edge highlight -->
+    <path d="M6 4 L100 4" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
   </g>
 
   <!-- Floating token: sealed audit (lock) lower-left -->
-  <g transform="translate(96 372)">
+  <g transform="translate(96 372)" filter="url(#hoShadow)">
     <rect x="0" y="0" width="96" height="84" rx="16" fill="#0F172A"/>
-    <rect x="0" y="0" width="96" height="84" rx="16" fill="url(#hoTop)" opacity="0.12"/>
+    <rect x="0" y="0" width="96" height="84" rx="16" fill="url(#hoTop)" opacity="0.2"/>
+    <rect x="0" y="0" width="96" height="84" rx="16" fill="url(#hoGlass)" opacity="0.32"/>
     <rect x="34" y="44" width="30" height="24" rx="4" fill="none" stroke="#67E8F9" stroke-width="4.5"/>
     <path d="M37 44 v-8 a12 12 0 0 1 24 0 v8" fill="none" stroke="#14B8A6" stroke-width="4.5"/>
     <text x="14" y="26" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#67E8F9">AUDIT</text>
+    <!-- Edge highlight -->
+    <path d="M4 4 L92 4" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.25"/>
   </g>
 </svg>

@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 446 passed"
+    name: "Unit invariant: 1005 total (987 passed + 18 skipped)"
     runs-on: ubuntu-latest
 
     steps:
@@ -24,3 +24,8 @@ jobs:
 
       - name: Validate test invariants
         run: python scripts/validate_ci.py
+
+      # Runs on every PR, not only nightly: the published corpus figures went
+      # stale for a month while nightly-only checks reported green.
+      - name: Published-number drift guard
+        run: python scripts/check_number_drift.py

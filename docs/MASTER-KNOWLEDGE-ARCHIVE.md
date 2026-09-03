@@ -1,12 +1,23 @@
 # NHID-CLINICAL MASTER KNOWLEDGE ARCHIVE
 
-**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-07-31
+**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-09-01
 **Author:** Brianna Baynard · **License:** CC BY 4.0
 
 > This document is the single authoritative reference for all NHID-Clinical knowledge: technical
 > specification, governance architecture, implementation guide, regulatory alignment, marketing
 > positioning, and future roadmap. Treat it as a living playbook, whitepaper source, training
 > corpus, and stakeholder briefing simultaneously.
+>
+> **Internal document.** Not published by `scripts/build_pages_site.sh` and not part of the public
+> surface. It may discuss positioning and strategy candidly; nothing here is a claim the project
+> makes externally. Public claims are governed by `docs/claim-boundaries.md`.
+
+> **Update 2026-08-22 — DLG-01 released (commit `65923b4`, PR #369).** Delegated authority is now
+> evaluated inside the policy path; a verified scope constrains PDX-01. CAS has been demoted to a
+> research component and removed from every public surface. Test count moved 669 → 779. The
+> constant `UNIT_EXPECTED` no longer exists — it is `UNIT_PUBLISHED`, and it is **not** a CI gate.
+> Sections 6, 7, 8, 19 and 20 are current as of this commit; sections written before it may still
+> describe the pre-DLG-01 engine.
 
 ---
 
@@ -139,10 +150,20 @@ shadow pilots rather than broad policy changes.
 
 ## 2. NHID-Clinical Core Framework
 
-### 2.1 The Four Controls
+### 2.1 The Five Canonical Controls
 
-NHID-Clinical v1.3 defines four deterministic behavioral controls, each named with a permanent
-identifier:
+NHID-Clinical v1.3 defines **five** canonical deterministic behavioral controls — IDG-01, PDX-01,
+DBC-01, EIT-01 and **ATR-01** — each named with a permanent identifier. The **supplemental** rule
+is **bot-to-bot**, not ATR-01.
+
+> **Corrected 2026-08-22.** This section previously read "The Four Controls" and §2.2 labelled
+> ATR-01 "supplemental". That was the same mislabel corrected across the public site in commit
+> `28c8102`; the archive was missed at the time. ATR-01 is canonical. The four controls named
+> together in historical corpus tables are a *measurement* scope — ATR-01 is untestable in replay —
+> and not a statement about the control set.
+
+The first four are described below; ATR-01 follows in §2.2 and DLG-01 (opt-in, added 2026-08-22)
+in §2.3a.
 
 #### IDG-01 — Identity Disclosure Gate
 
@@ -229,12 +250,12 @@ _ESCALATION_TRIGGERS = (
 
 **Fail condition (CRITICAL):** Escalation requested AND `escalation_path_available == False`.
 
-### 2.2 Supplemental Control: ATR-01
+### 2.2 ATR-01 — Audit Trail Requirements (fifth canonical control)
 
 **ATR-01 — Audit Trail Requirements**
 
-Not in the original four controls, but enforced as a structural requirement. Every NHID event
-must contain:
+Added after the original four and **canonical**, not supplemental. Enforced as a structural
+requirement: every NHID event must contain:
 
 **Top-level required fields:**
 `event_id`, `timestamp`, `session_id`, `request_id`, `event_type`, `actor_id`,
@@ -264,6 +285,87 @@ calls, no external I/O in the policy engine.
 
 See §2.5 for the synthetic-conversation evaluation loop that exercises these same controls
 outside the YAML-based CTS fixtures.
+
+
+### 2.3a DLG-01 — Delegated Authority Gate (opt-in, added 2026-08-22)
+
+The sixth evaluator, and the only opt-in one. It closes the second link in the chain
+*identity → **delegated authority** → disclosure → data boundary → decision → escalation →
+evidence*, which the engine did not evaluate before this release.
+
+**It adds no cryptography.** All verification is performed by `src/agent_identity.py`, which is
+unchanged — DLG-01 connects existing machinery to the policy path.
+
+**Signature**
+
+```python
+evaluate_all(session, event, delegation: DelegationContext | None = None)
+
+DelegationContext(resolver, require_delegation=False, enforce_scope=True)
+DelegationResult(evaluated, verified, reason, scope, provider_npi, agent_id)
+```
+
+**Opt-in by construction.** Without a `DelegationContext` the control returns
+`DLG01_NOT_EVALUATED` and contributes nothing to the composite decision. Every pre-existing caller
+and every corpus figure is unchanged — `check_baseline.py` output is byte-identical before and
+after.
+
+**Where the passport travels.** In `session["agent_passport"]`, **not** the event.
+`schema/nhid_trace_schema_v1.json` is published and sets `additionalProperties: false`, so an event
+cannot carry a passport without a v1 schema break. A delegation is per-call state anyway — it is
+`call_sid`-bound — and every adapter already maps `event["session_id"]` to the call sid, so the
+existing replay binding works untouched. Accepts a single passport or a chain, as objects or plain
+dicts.
+
+**What it checks** (all delegated to `agent_identity.py`):
+
+| Check | Failure reason code |
+| :--- | :--- |
+| Provider + agent Ed25519 signature | `DLG01_VERIFICATION_FAILED` |
+| Expiry / TTL | `DLG01_VERIFICATION_FAILED` |
+| `call_sid` nonce binding (replay) | `DLG01_VERIFICATION_FAILED` |
+| Agent or delegation revocation | `DLG01_VERIFICATION_FAILED` |
+| Monotonic scope narrowing across hops | `DLG01_VERIFICATION_FAILED` |
+| NPI resolvable to a configured trust anchor | `DLG01_TRUST_ANCHOR_UNRESOLVED` |
+| Passport parseable | `DLG01_MALFORMED_PASSPORT` |
+| Passport present when `require_delegation` | `DLG01_NO_DELEGATION_PRESENTED` |
+
+Every failure is an explicit `DENY_DATA` `PolicyDecision` — never an exception that bypasses the
+engine.
+
+**Scope constrains PDX-01.** This is the product behaviour, not a record-keeping addition. Scope
+vocabulary reuses `eligibility`, `claim_status`, `prior_auth` from `examples/issue_and_verify.py`;
+no general authorization ontology was invented. An **unrecognized scope authorizes nothing** — an
+unknown grant must never widen authority.
+
+| Delegation scope | Agent asks for | Result |
+| :--- | :--- | :--- |
+| `["eligibility"]` | member id, date of birth | `CONTINUE_AI` |
+| `["eligibility"]` | **claim number** | `DENY_DATA` / `PDX01_SCOPE_NOT_AUTHORIZED` |
+| `["claim_status"]` | claim number | `CONTINUE_AI` |
+| `["eligibility","claim_status"]` → narrowed to `["eligibility"]` | claim number | `DENY_DATA` — enforcement follows the narrowest link, not the root grant |
+
+The violation text is written to be auditable without replay:
+
+> Protected-data request outside delegated authority. Delegated scope: [eligibility]. Requested:
+> [claim_number]. Not authorized by any delegated scope: [claim_number]. Delegation
+> 1234567890/voice-agent-001.
+
+**Disclosure outranks scope.** An undisclosed agent asking out of scope is reported as
+`PDX01_PHI_GATE_TRIGGERED`, the more fundamental breach — not as a scope failure.
+
+**Four limits that must always travel with any DLG-01 claim** (verbatim from
+`docs/claim-boundaries.md`):
+
+1. It is **opt-in**. Never describe delegated authority as verified "by default" or "on every call".
+2. It verifies against a **trust anchor the deploying organization configured itself**. No
+   directory, registry or discovery service exists. An unconfigured NPI is **refused**, not accepted.
+3. The NPI is format-validated and cryptographically bound, and is **not verified against NPPES**.
+4. Enforcement covers **what the agent asked for on the interaction**. It is not a database- or
+   API-layer authorization control.
+
+Tests: `tests/test_dlg01_delegated_authority.py` (31), `tests/test_trust_anchor.py` (17).
+
 
 ### 2.4 Impersonation Latency — The Core Failure Mode
 
@@ -490,8 +592,12 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 ### 2.5.1 v1.1 Eval Repair (July 2026) — supersedes the per-rule rates in §2.5
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
-(v1.1 is a patch-set label, not a release). Suite: **446 passed / 18 skipped / 0 failed**;
-`UNIT_EXPECTED = 446` holds (Phase 6A added 91 new tests, net count +91).
+(v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
+failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **987 passed /
+18 skipped / 1,005 total**, and
+`UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
+`scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
+without failing the build; `scripts/validate_ci.py` warns when the two diverge.
 
 The detection rates reported in §2.5 (DBC-01 0.5→2.5%, EIT-01 94.7%, PDX-01 58.6%) were
 re-measured after a full replay of `src/nhid_policy_engine_v1.py` via
@@ -585,23 +691,38 @@ this repair.
 | Version | Description | Status |
 | :--- | :--- | :--- |
 | **v1.0** | Original 4 controls (IDG-01, PDX-01, DBC-01, EIT-01) | Superseded |
-| **v1.3** | Current: ATR-01 added, CTS expanded to 18 tests, CAS scoring | **Current** |
-| **v2.0** | NHID-Auth cryptographic layer (Ed25519, delegation chains) | Reference implementation live |
+| **v1.3** | Current: ATR-01 added, CTS expanded to 18 tests. (CAS shipped in this line but was demoted to a research component 2026-08-22 — §19.6.) | **Current** |
+| **v2.0** | NHID-Auth cryptographic layer (Ed25519, delegation chains) | Reference implementation live. **2026-08-22: wired into the policy path as DLG-01** — see §2.6. Previously the primitive existed but `evaluate_all()` never called it. |
 | **v2.1** | Planned: STIR/SHAKEN integration, attestation registry | Future |
 
-### 3.3 Call Authorization Score (CAS)
+### 3.3 Call Authorization Score (CAS) — research component, not governance architecture
 
-CAS provides a continuous compliance signal between 0.0 and 1.0 per call session.
+> **Status: demoted 2026-08-22 (§19.6).** CAS is **not** part of the trust stack, not a control,
+> and not a product capability. It is retained as a research scoring model. This section documents
+> the formula because the code still exists and the design discussion is worth preserving — not
+> because CAS governs anything.
+>
+> **Two facts govern every use of what follows:**
+>
+> 1. **Nothing in this repository produces its inputs.** `entity_match_rate`, `intent_accuracy`,
+>    `domain_hit_rate`, `hallucination_risk`, `pii_leakage_risk`, `identity_ambiguity_risk`,
+>    `deepfake_risk_score`, `sip_attestation` and `oig_exclusion_match` are consumed by the formula
+>    and measured by no component here. A CAS score can be computed for a hypothetical trace and
+>    **never for a real call this system observed.**
+> 2. **The tier names are a trust rating this project does not issue.** "Verified Trust",
+>    "Conditional Trust" and `badge_eligible` L1/L2 must not appear on any public surface, in any
+>    published artifact, or in procurement material.
+>
+> CAS never influences a policy decision. `evaluate_all()` structurally cannot read it — asserted by
+> `tests/test_enforcement_profile.py::test_evaluate_all_does_not_consume_cas`.
 
-**Formula:** `CAS = F_IAF × F_NOCF × ECF`
+**Formula (as implemented in `src/nhid_cas.py`, unchanged):** `CAS = F_IAF × F_NOCF × ECF`
 
-**Components:**
-
-| Factor | Definition | Range |
-| :--- | :--- | :--- |
-| **F_IAF** | Identity Assurance Factor: 1.0 if no IDG-01 or PDX-01 critical violations; else 0.0 | {0.0, 1.0} |
-| **F_NOCF** | Operational Conformance Factor: derived from violation severity pattern | 0.0–1.0 |
-| **ECF** | Evidence Completeness Factor: fraction of required audit fields present | 0.0–1.0 |
+| Factor | Definition | Range | Inputs available? |
+| :--- | :--- | :--- | :--- |
+| **F_IAF** | Identity Assurance Factor: 1.0 if no IDG-01 or PDX-01 critical violations; else 0.0 | {0.0, 1.0} | **Yes** — derived from the policy decision |
+| **F_NOCF** | Operational Conformance Factor | 0.0–1.0 | **No** — see the NOCF inputs below |
+| **ECF** | Evidence Completeness Factor: fraction of `REQUIRED_FIELDS_V1` present in the trace | 0.0–1.0 | **Mechanically, yes — meaningfully, no.** It counts non-`None` fields, but 7 of the 12 (`ani`, `sip_attestation`, `t_n_result`, `e_r_count`, `disambiguation_method`, `confirmed_npi`, `denial_gate`) are populated by nothing in this repository, so a real trace scores low completeness for reasons that have nothing to do with the call |
 
 **Full NOCF formula** (from `src/nhid_cas.py`):
 ```
@@ -615,15 +736,29 @@ A_nocf         = C × E × S × L_hat × (1 − R)
 Weights (w_H=0.40, w_P=0.35, w_I=0.25) apply only to the risk factor R.
 l_max_ms default=2500 ms; floor=1500 ms; ceiling=5000 ms.
 
-**CAS Tier Ladder:**
+**Every term in C and R is a measurement this repository does not take**, and 7 of ECF's 12
+required fields are never populated either. That is the reason for the demotion, stated concretely:
+F_IAF is the only factor that reflects something the system actually observes, and CAS is the
+*product* of all three — so a real call yields a number driven mostly by absent inputs. It cannot
+describe the call, and it must not be presented as though it does.
 
-| CAS Score | Tier | Badge |
-| :--- | :--- | :--- |
-| ≥ 0.90 | Verified Trust | L2 |
-| ≥ 0.75 | Conditional Trust | L1 |
-| ≥ 0.50 | Review Required | (none) |
-| ≥ 0.20 | Denied / Degraded | (none) |
-| < 0.20 | Hard Denial | (none) |
+**Tier thresholds** — recorded for completeness because the constants exist in code
+(`CAS_VERIFIED_TRUST = 0.90`, `CAS_CONDITIONAL_TRUST = 0.75`, `CAS_REVIEW_REQUIRED = 0.50`,
+`CAS_DENIED_DEGRADED = 0.20`). **Do not reproduce this ladder outside this document.** It reads as a
+grading scheme, and the project issues no grades.
+
+| Threshold constant | Value | Tier string returned | `badge_eligible` |
+| :--- | :--- | :--- | :--- |
+| `CAS_VERIFIED_TRUST` | 0.90 | Verified Trust | `"L2"` |
+| `CAS_CONDITIONAL_TRUST` | 0.75 | Conditional Trust | `"L1"` |
+| `CAS_REVIEW_REQUIRED` | 0.50 | Review Required | `None` |
+| `CAS_DENIED_DEGRADED` | 0.20 | Denied / Degraded | `None` |
+| — | < 0.20 | Hard Denial | `None` |
+
+**Where the governance actually sits.** The trust stack's authorization layer is **Layer 3 —
+NHID-Auth v2, evaluated as DLG-01** (§2.3a). That is the control that verifies delegated authority
+and constrains the data boundary. CAS was never that, and this section previously implied it was by
+sitting inside "Governance Architecture" without qualification.
 
 ### 3.4 Policy Engine Action Priority
 
@@ -925,14 +1060,18 @@ turn POST. The engine evaluates each turn independently and returns an action.
 NHID-Clinical/
 ├── schema/
 │   └── nhid_trace_schema_v1.json     # JSON Schema Draft 2020-12
+├── pyproject.toml                     # Packaging (added 2026-08-22; see §6.6)
 ├── src/
-│   ├── nhid_policy_engine_v1.py       # Policy engine (670+ lines)
-│   ├── agent_identity.py              # Ed25519 delegation & passports
-│   ├── nhid_cas.py                    # CAS scoring engine
+│   ├── nhid_policy_engine_v1.py       # Policy engine — 5 controls + bot-to-bot + DLG-01
+│   ├── agent_identity.py              # Ed25519 delegation & passports (unchanged by DLG-01)
+│   ├── trust_anchor.py                # NPI → provider signing key (static resolver only)
+│   ├── cli.py                         # `nhid conformance` / `nhid export-evidence`
+│   ├── nhid_cas.py                    # CAS — RESEARCH COMPONENT, not product surface (§19.6)
 │   ├── fhir_audit_emitter.py          # FHIR R4 AuditEvent generator
-│   ├── cts_runner.py                  # CTS YAML test runner
-│   ├── nhid_badge_generator.py        # SVG badge generator
-│   └── npi_registry_validator.py      # NPI format + NPPES validation
+│   ├── cts_runner.py                  # CTS YAML test runner (reads tests/, not conformance/)
+│   ├── audit_store.py                 # SQLite audit store + hash-chain verification
+│   ├── nhid_badge_generator.py        # SVG badge generator — retained, not surfaced publicly
+│   └── npi_registry_validator.py      # NPI format validation (NPPES lookup NOT implemented)
 ├── adapters/
 │   ├── vapi_adapter.py
 │   ├── twilio_adapter.py
@@ -941,16 +1080,20 @@ NHID-Clinical/
 │   ├── amazon_connect_adapter.py
 │   ├── call_progress_adapter.py       # Turn-by-turn webhook
 │   └── fabricate_adapter.py           # Fabricate CSV corpus → batch eval (§2.5)
+├── scripts/
+│   ├── export_evidence_pack.py        # Reproducible evidence bundle (§6.7)
+│   ├── check_number_drift.py          # Published-number guard (watch list, §8)
+│   └── validate_ci.py                 # Suite health + UNIT_PUBLISHED drift warning
 ├── functions/
-│   └── handler.py                     # Lambda entry point (362 lines)
+│   └── handler.py                     # Lambda entry point (732 lines)
 ├── tests/
-│   ├── nhid_conformance_test_suite_v1.yaml   # 18 CTS test cases
+│   ├── nhid_conformance_test_suite_v1.yaml   # 18 CTS cases — THIS is the copy run_cts() executes
 │   ├── demo_scenarios/
 │   │   ├── vapi_noncompliant.json
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 343 passing unit tests
+│   └── test_*.py                      # 987 passing unit tests across 55 files
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -983,19 +1126,32 @@ NHID-Clinical/
 
 | Method | Path | Auth | Purpose |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/v1/demo/check` | none | Raw NHID event → conformance result + CAS |
+| `POST` | `/v1/demo/check` | none | Raw NHID event → conformance result (response still carries a `cas` block; read `action`/`violations`, ignore `cas`) |
 | `POST` | `/v1/adapters/vapi/check` | none | VAPI payload → conformance result |
 | `POST` | `/v1/adapters/twilio/check` | none | Twilio payload → conformance result |
 | `POST` | `/v1/adapters/vonage/check` | none | Vonage payload → conformance result |
 | `POST` | `/v1/adapters/retell/check` | none | Retell AI payload → conformance result |
 | `POST` | `/v1/adapters/connect/check` | none | Amazon Connect Contact Lens → result |
 | `POST` | `/v1/webhooks/call-progress` | none | Turn-by-turn in-call evaluation |
-| `GET`  | `/v1/public/vendor/{id}/badge` | none | CAS badge SVG (embeddable) |
-| `GET`  | `/v1/vendor/metrics/summary` | `x-api-key` | Per-vendor CAS trend + pass rate |
+| `GET`  | `/v1/public/vendor/{id}/badge` | none | Legacy CAS badge SVG. Endpoint retained for existing callers; **removed from every public surface** 2026-08-22 — do not link, embed, or advertise it |
+| `GET`  | `/v1/vendor/metrics/summary` | `x-api-key` | Per-vendor conformance trend + pass rate (CAS fields present but not a product claim) |
 | `POST` | `/v1/pilot/enroll` | none | Shadow pilot enrollment |
 | `POST` | `/v1/cts/evaluate` | none | Run CTS YAML suite against policy engine |
 | `POST` | `/v1/conformance/check` | `x-api-key` | Production conformance check |
+| `POST` | `/v1/identity/verify-passport` | none | Verify an NHID-Auth v2 agent passport |
+| `POST` | `/v1/identity/revoke-passport` | `x-api-key` | Durably revoke a `delegation_id` |
 | `GET`  | `/health` | none | Lambda liveness probe |
+
+**CLI surface (added 2026-08-22).** `pyproject.toml` declares one console script, `nhid`:
+
+| Command | Delegates to |
+| :--- | :--- |
+| `nhid conformance [--ci] [--json]` | `src.cts_runner.run_cts` — `--ci` exits non-zero on any failing case |
+| `nhid export-evidence --out DIR` | `scripts/export_evidence_pack.py` |
+
+Core install dependencies are **`cryptography` and `pyyaml` only** — the policy engine itself is
+standard library, so a vendor embedding it in a call path does not inherit a web stack. FastAPI,
+uvicorn and httpx are an `api` extra; test tooling is a `dev` extra.
 
 ### 6.4 Response Format
 
@@ -1128,15 +1284,26 @@ All items from the original 7-gap enterprise production readiness plan:
 | Traceability matrix | ✅ Complete | `docs/ATR-01-TRACEABILITY-MATRIX.html` — published governance artifact mapping all 11 ATR-01 requirements to implementation, tests, and corpus coverage; verification: 11/11 implemented, 0 critical gaps |
 | Implementation guide | ✅ Complete | `docs/ATR-01-IMPLEMENTATION.md` — technical specification, usage examples, testing strategy, limitations & Phase 2 roadmap |
 
-**Evaluation corpus final metrics (July 31, 2026):**
-- Total conversations: 52 (TONIC Fabricate)
-- Expected violations: 52 conversation-level labels across 5 rules
-- Detected violations: 42 (81.2% overall detection rate)
-  - IDG-01: 14/16 (87.5%)
-  - PDX-01: 14/16 (87.5%)
-  - DBC-01: 8/10 (80.0% with heuristic post-processing)
-  - EIT-01: 8/11 (72.7% — known engine gap from turn-level evaluation gate)
-  - ATR-01: 0/10 (known limitation — corpus provides all fields by design; unit tests verify missing-field scenarios)
+**Evaluation corpus final metrics (July 31, 2026) — RETRACTED 2026-08-29.**
+
+> This block does not reconcile with itself and must not be quoted. Its per-rule
+> lines sum to 44 detected of 63 expected (69.8%), not the 42 detected, 52
+> expected, or 81.2% stated alongside them. The 81.2% matches the Governance
+> Evaluation Corpus (26/32 = 81.25%), a different dataset of 25 scenarios,
+> which suggests the figure was carried across from there. No committed artifact
+> reproduces the block as written, and the correct values cannot be
+> reconstructed from the repository, so it is retracted rather than corrected.
+>
+> For current, reproducible figures use the generated reports:
+> `docs/EVALUATION_CORPUS_REPORT_v1.md` (Governance Evaluation Corpus, 25
+> scenarios — `python scripts/eval_corpus.py`), `docs/CORPUS_EVALUATION_SUMMARY.md`
+> (Tonic, 150 sessions), and `scripts/check_baseline.py` (Fabricate, 550
+> conversations, CI-enforced).
+
+~~- Total conversations: 52 (TONIC Fabricate)~~
+~~- Expected violations: 52 conversation-level labels across 5 rules~~
+~~- Detected violations: 42 (81.2% overall detection rate)~~
+~~  - IDG-01: 14/16 (87.5%) · PDX-01: 14/16 (87.5%) · DBC-01: 8/10 (80.0%) · EIT-01: 8/11 (72.7%) · ATR-01: 0/10~~
 
 ### 7.2 Test Count Progression
 
@@ -1165,9 +1332,11 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
 | + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current invariant:** `UNIT_EXPECTED = 446` in `scripts/validate_ci.py`
+**Current:** `UNIT_PUBLISHED = 987` in `scripts/validate_ci.py`. This is not an invariant and not
+a gate — it is the number published on README badges, the website and the PDFs, which
+`scripts/check_number_drift.py` compares those surfaces against.
 
-**Total suite:** 512 passing (446 Python + 66 TypeScript middleware)
+**Total suite:** 1,053 passing (987 Python + 66 TypeScript middleware)
 
 ### 7.3 Near-Term Roadmap
 
@@ -1238,7 +1407,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 446 passed (18 skipped when no server running = integration tests)
+# Expected: 987 passed (18 skipped when no server running = integration tests)
 ```
 
 ### 8.2 Key Dependencies
@@ -1258,18 +1427,24 @@ PyJWT>=2.8.0
 
 ### 8.3 CI Invariant
 
-The CI pipeline enforces exactly `UNIT_EXPECTED = 446` passing tests with 0 failures:
+The CI pipeline fails on test failures and collection errors. It does **not** enforce an exact
+count — that was the old `UNIT_EXPECTED` behavior and it was removed because a growing suite is
+legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked for drift:
 
 ```python
 # scripts/validate_ci.py
-UNIT_EXPECTED = 446
+UNIT_PUBLISHED = 987
 INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
 ```
 
 **When adding tests:**
-1. Update `UNIT_EXPECTED` in `scripts/validate_ci.py`
+1. Update `UNIT_PUBLISHED` in `scripts/validate_ci.py`
 2. Update job name in `.github/workflows/ci.yml`
-3. Update test count in `README.md` badges and `.github/CONTRIBUTING.md`
+3. Update every surface `scripts/check_number_drift.py` watches — `README.md` badges and body,
+   `.github/CONTRIBUTING.md`, `index.html`, `faq.html`, `evidence-pack.html`,
+   `conformance/nhid_conformance_test_suite_v1.yaml` (`suite_metadata`), the `docs/` pages that
+   quote suite totals, and `scripts/generate_pdfs.py`
+4. Run `python scripts/check_number_drift.py` — it fails if any watched surface disagrees
 4. Update CTS count text in `README.md` if CTS tests are added
 
 ### 8.4 Running Specific Test Suites
@@ -1396,7 +1571,8 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The CI invariant (`UNIT_EXPECTED = 446`) must hold after
+1. **All existing tests must pass.** The full suite (currently **987 passed / 18 skipped**) must
+   stay green after
    every change. Run `python scripts/validate_ci.py` before committing.
 
 2. **"Impersonation Latency" is the permanent canonical term.** It must never be renamed,
@@ -1407,9 +1583,12 @@ When Claude Code or any LLM is working on this repository:
 
 4. **Never use `git add -A` or `git add .`.** Always stage files by explicit name.
 
-5. **UNIT_EXPECTED must be updated atomically with new tests.** When adding test files,
-   update `scripts/validate_ci.py`, `.github/workflows/ci.yml` job name, `README.md` badges,
-   and `.github/CONTRIBUTING.md` in the same commit.
+5. **`UNIT_PUBLISHED` must be updated atomically with new tests.** Update
+   `scripts/validate_ci.py`, the `.github/workflows/ci.yml` job name, and every surface the drift
+   guard watches, in the same commit. Then run `scripts/check_number_drift.py`. This matters more
+   than it looks: the guard only checks that published surfaces agree with the constant, so if the
+   constant is stale they can all be *consistently wrong* — which is exactly how a superseded count
+   once survived repository-wide.
 
 6. **ATR-01 required fields.** Every event dict passed to `evaluate_all()` must include
    `actor_id`, `replay_mode`, and `external_calls_cached`. Missing these causes test failures.
@@ -1422,9 +1601,9 @@ When Claude Code or any LLM is working on this repository:
 ```
 1. Write test file tests/test_<feature>.py
 2. Run pytest and verify count
-3. Update UNIT_EXPECTED = <new count> in scripts/validate_ci.py
+3. Update UNIT_PUBLISHED = <new count> in scripts/validate_ci.py
 4. Update CI job name in .github/workflows/ci.yml:
-   name: "Unit invariant: <new count> passed, 0 skipped"
+   name: "Unit invariant: <total> total (<new count> passed + 18 skipped)"
 5. Update README.md badge: [![Tests](https://img.shields.io/badge/tests-<N>%20passing-brightgreen)]
 6. Update README.md description: "372 passing across the Python test suite (306) and TypeScript..."
    → adjust both numbers
@@ -1462,8 +1641,8 @@ When Claude Code or any LLM is working on this repository:
 When resuming a Claude Code session after context limit:
 
 > "Continue from where you left off. The plan file is at
-> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_EXPECTED is 446.
-> All 446 tests pass. The most recent completed task was Phase 6A infrastructure. The next task is Phase 6B production hardening."
+> `/root/.claude/plans/did-i-make-an-fluffy-quiche.md`. Current UNIT_PUBLISHED is 779.
+> All 779 tests pass. The most recent completed task was Phase 6A infrastructure. The next task is Phase 6B production hardening."
 
 ---
 
@@ -1532,7 +1711,7 @@ Expected response:
 **Structure:**
 1. Abstract — The impersonation latency problem
 2. Scope and voluntary nature
-3. The four controls (IDG-01, PDX-01, DBC-01, EIT-01) with formal definitions
+3. The five canonical controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) with formal definitions, plus the supplemental bot-to-bot rule
 4. ATR-01 audit trail requirements
 5. Conformance Test Suite (CTS) — 5 core tests, 18 YAML scenarios
 6. Call Authorization Score (CAS) — formula and tier definitions
@@ -1593,6 +1772,12 @@ for comment-volume and discoverability context.
 
 ## 12. Diagrams & Visual Concepts
 
+> **All figures referenced in this section are missing.** `assets/archive/` does not exist in the
+> repository, so `fig1`–`fig7` are broken image links throughout §2.4, §3.1, §6.1 and §12. Found
+> 2026-08-22 while editing §12.3; pre-existing and not introduced by that change. The written
+> descriptions below stand on their own — treat them as diagram *specifications* to be produced
+> from, not as captions for artwork that exists.
+
 ### 12.1 Five-Layer Trust Stack
 
 ![Five-Layer Trust Stack](assets/archive/fig1-trust-stack.svg)
@@ -1601,9 +1786,19 @@ for comment-volume and discoverability context.
 
 ![Impersonation Latency — turn-by-turn anatomy](assets/archive/fig2-impersonation-latency.svg)
 
-### 12.3 CAS Tier Ladder
+### 12.3 CAS Tier Ladder — withdrawn
 
-![CAS Tier Ladder — 0.0 to 1.0 with tier bands and badge eligibility](assets/archive/fig3-cas-tier-ladder.svg)
+**Do not produce, commission, or reuse this diagram.** It rendered the CAS score band as a ladder
+with badge eligibility, which is precisely the trust-rating presentation the 2026-08-22 demotion
+removed from every surface (§19.6). The equivalent diagram was deleted from `svg-preview.html` and
+from `scripts/generate_pdfs.py` in the same change.
+
+The figure this section previously referenced (`assets/archive/fig3-cas-tier-ladder.svg`) does not
+exist in the repository — see the note at the head of §12. Its absence is convenient rather than
+unfortunate: nothing needs to be withdrawn from circulation.
+
+If a diagram is wanted for the authorization layer, the subject is **DLG-01** (§2.3a) — delegation
+verification and scope-constrained data boundary — not a score ladder.
 
 ### 12.4 API Request Flow
 
@@ -1941,7 +2136,7 @@ Badge tiers: L2 (Verified Trust, CAS ≥ 0.90), L1 (Conditional Trust, CAS ≥ 0
 
 #### GitHub README
 - Lead with live curl demo → instant result
-- Show all four controls as a table
+- Show all five canonical controls as a table
 - Five-layer stack as a table
 - Link to simulator, spec, GitHub Discussions
 
@@ -1988,15 +2183,20 @@ NHID-Clinical is not positioned against any existing product. It fills a gap:
 | **Lambda runtime** | Python 3.13 | Latest stable; matches dev environment |
 | **API framework** | AWS API Gateway + SAM | Serverless; pay-per-use; easy deployment |
 | **CTS format** | YAML | Human-readable; version-controllable; multi-doc support |
-| **CAS formula** | IAF × NOCF × ECF | Multiplicative: any critical failure collapses score |
+| **CAS formula** | IAF × NOCF × ECF | Multiplicative: any critical failure collapses score. Formula unchanged; status demoted — see §19.6 |
+| **DLG-01 opt-in** | `evaluate_all(session, event, delegation=None)` | Delegation must never be required implicitly. Absent a `DelegationContext` the control returns `DLG01_NOT_EVALUATED` and contributes nothing, so pre-existing integrations and every corpus figure are unchanged |
+| **Passport location** | `session`, not `event` | `schema/nhid_trace_schema_v1.json` is published and sets `additionalProperties: false`; a passport in the event would be a v1 schema break. A delegation is per-call state anyway (`call_sid`-bound), and every adapter already maps `event["session_id"]` to the call sid |
+| **Trust anchor** | Injected resolver, static map only | The engine performs no I/O. An unresolvable NPI is **refused**, never accepted. Interface shaped so a JWKS-backed resolver could be added later; none exists and none is claimed |
+| **Scope vocabulary** | `eligibility`, `claim_status`, `prior_auth` | Reuses the vocabulary already in `examples/issue_and_verify.py`. No general authorization ontology invented. An unrecognized scope authorizes **nothing** — an unknown grant must never widen authority |
 
 ### 19.2 Naming Decisions
 
 | Name | Rationale | Permanence |
 | :--- | :--- | :--- |
 | **Impersonation Latency** | Specific, vivid, accurate to the failure mode | **Permanent — never rename** |
-| **IDG-01, PDX-01, DBC-01, EIT-01** | ISO-style rule IDs; stable across versions | Permanent |
-| **NHID-CAS** | Call Authorization Score; code: `nhid_cas.py` line 1 docstring | Permanent |
+| **IDG-01, PDX-01, DBC-01, EIT-01, ATR-01** | ISO-style rule IDs; stable across versions. ATR-01 is the fifth **canonical** control — bot-to-bot is the supplemental rule | Permanent |
+| **DLG-01** | Delegated Authority Gate, added 2026-08-22. Deliberately **not** `IDG-02`, which exists only as a v2 NHID-Auth CTS control | Permanent |
+| **NHID-CAS** | Call Authorization Score; code: `nhid_cas.py`. **Demoted 2026-08-22 to a research component** — retained in code and tests, removed from all public surfaces (§19.6) | Name permanent; status changed |
 | **IDG-01** | Identity Disclosure Gate; code: `nhid_policy_engine_v1.py` line 129 | Permanent |
 | **PDX-01** | Pre-Data Exchange Gate; code: `nhid_policy_engine_v1.py` line 205 | Permanent |
 | **DBC-01** | Deceptive Behavior Check; code: `nhid_policy_engine_v1.py` line 296 | Permanent |
@@ -2013,9 +2213,9 @@ NHID-Clinical is not positioned against any existing product. It fills a gap:
 | :--- | :--- |
 | **FHIR IG claims** | Never claim conformance to named IG; "plain R4 AuditEvent validation" only |
 | **"Standard" claims** | Never call NHID-Clinical a standard; it is a voluntary baseline |
-| **"Certification" claims** | Never claim to issue certifications; CAS is a compliance score |
+| **"Certification" claims** | Never claim to issue certifications. **CAS is not a compliance score and is not a product capability** — see §19.6; it is a research component whose inputs nothing in the repository produces |
 | **Regulatory claims** | Never claim NHID-Clinical satisfies specific regulatory requirements; it "aligns with" them |
-| **Test count** | CI enforces exactly UNIT_EXPECTED; no more, no fewer |
+| **Test count** | CI fails on failures and collection errors, **not** on an exact count — the suite may grow. `UNIT_PUBLISHED` is the published number; `check_number_drift.py` holds public surfaces to it |
 
 ### 19.4 Adapter Design Decisions
 
@@ -2045,16 +2245,71 @@ After extensive debugging, two key precision rules were established:
 
 ---
 
+
+### 19.6 CAS demotion — 2026-08-22
+
+**Decision:** CAS is reclassified as a research component. The module
+(`src/nhid_cas.py`), the badge generator (`src/nhid_badge_generator.py`) and all 38 CAS tests are
+**retained and unmodified**. The formula is not rewritten. What changed is where it may appear.
+
+**Why.** Two things were true at once:
+
+1. **Nothing in the repository produces its inputs.** `hallucination_risk`,
+   `deepfake_risk_score`, `sip_attestation`, `oig_exclusion_match` and `entity_match_rate` are
+   consumed by the formula and measured by no component here. A CAS score can be computed for a
+   hypothetical trace and never for a real call this system observed.
+2. **Its outputs read as a trust rating.** "Verified Trust", "Conditional Trust" and
+   `badge_eligible` L1/L2 describe a grading scheme. NHID-Clinical is not a certification
+   authority, so those outputs cannot appear on a public surface without contradicting
+   `docs/claim-boundaries.md`.
+
+**Removed from the public surface:** `registry.html`'s "live NHID-CAS conformance badges" headline,
+badge column and endpoint call (the registry has zero entries, so the badges advertised a feature
+with no subjects); the homepage Trust Stack layer, feature card and demo blurb; the
+`framework/controls.html` and `developers.html` sections; the CAS scoring-tier diagram entry in
+`svg-preview.html`; and in `scripts/generate_pdfs.py` the objective of making CAS "a
+procurement-grade compliance signal" plus the score/tier/badge table. All 7 PDFs regenerated and
+scanned clean.
+
+**Retained deliberately:** the hosted endpoints still return a `cas` block, so
+`docs/5-minute-quickstart.md` shows the real response rather than a falsified one, annotated with
+which fields to read instead.
+
+**Structural guarantee.** CAS never influences a policy decision and `evaluate_all()` cannot read
+it — asserted by `tests/test_enforcement_profile.py::test_evaluate_all_does_not_consume_cas`, which
+pins the signature as an exact allowlist rather than relying on convention.
+
+### 19.7 Defects found during the DLG-01 work — 2026-08-22
+
+Recorded because each is a live constraint or a recurrence risk, not a closed ticket.
+
+| Finding | Status |
+| :--- | :--- |
+| **`AuditStore.verify_chain` cannot support third-party verification.** The HMAC secret is generated per-instance (`secret_key or os.urandom(32)`) and never persisted, so a verifier without the writer's key gets `signature verification failed` — **indistinguishable from genuine tampering**. | **Open constraint.** The evidence exporter now reports *unavailable* rather than `chain_valid: false` when no key is supplied, because publishing "invalid" for an intact record would be a false claim. Independent verification of the chain is therefore not currently possible. |
+| `AuditStore.__init__` creates its database file, so a collector that opened the store changed what a later collector observed. | Fixed in `export_evidence_pack.py` by resolving existence once up front. The underlying constructor behavior is unchanged. |
+| `write_event` accepts `evidence_hash=None`, silently producing a chain that can never verify. | **Open.** Not fixed; a writer must sign explicitly. |
+| **Two copies of the conformance suite exist.** `run_cts()` reads `tests/nhid_conformance_test_suite_v1.yaml`; the copy published to reviewers is `conformance/…`. Semantically identical, with nothing enforcing it. | Pinned by `tests/test_cli_and_packaging.py::test_published_and_executed_suites_are_semantically_identical`. |
+| The published suite's `suite_metadata` claimed **"173 passed"** long after the suite outgrew it, invisible because that file was not watched. | Fixed and added to the drift guard's watch list, plus a test comparing it to `UNIT_PUBLISHED`. |
+| **The drift guard was narrower than the claim surface.** It reported PASS while six files carried a superseded count, and nothing compared `UNIT_PUBLISHED` to reality — so every surface could be *consistently wrong*. | Guard widened by 7 files; `validate_ci.py` now warns on divergence (a warning, not a gate, preserving the documented decision that the suite may grow). |
+| `docs/csa-ai-caiq-summary.md` claimed a "CI-enforced 284-test baseline". | Fixed. |
+| `pilot_evidence_bundle/EXECUTIVE_SUMMARY.md` says "evidence-based assurance" and is signed "NHID-Clinical Safety Assurance Team". | **Open — maintainer's call.** Assurance language the project should not use. A dated historical artifact, not published by the site build, so flagged rather than silently rewritten. |
+| Packaging installs top-level `src`, `adapters`, `scripts`. | **Open — pre-publication blocker**, recorded in `pyproject.toml`. Fine for an editable install; unacceptable on a public index. The rename to a single `nhid_clinical` package touches every import. |
+
+
 ## 20. Future Work
 
 ### 20.1 High Priority
 
 | Item | Notes |
 | :--- | :--- |
-| **Live NPPES NPI validation** | Replace format-only check with NPPES API call; cache results |
+| **Live NPPES NPI validation** | Replace format-only check with NPPES API call; cache results. **Still open as of 2026-08-22** — DLG-01 binds the NPI cryptographically to the delegation but does **not** verify it against NPPES. `docs/claim-boundaries.md` states this limit explicitly; do not let it drift. |
 | **Persistent revocation store** | ~~RDS or DynamoDB for production AgentIdentityManager~~ — delivered in v1.3 final as a SQLite `revoked_delegations` table (`nhid_event_store.py`), wired into `POST /v1/identity/verify-passport` / `POST /v1/identity/revoke-passport` (`functions/handler.py`, 2026-06-25). A managed datastore swap remains open if call volume outgrows SQLite, but the durability gap itself (in-memory revocation dying every stateless Lambda invocation) is closed. |
 | **WebSocket streaming evaluation** | True per-utterance evaluation (not turn-by-turn POST) |
-| **STIR/SHAKEN Layer 1 correlation** | Correlate A/B/C attestation level with CAS score |
+| **STIR/SHAKEN Layer 1 correlation** | Correlate A/B/C attestation level with the policy decision. (Previously written as "with CAS score" — CAS is no longer a product surface, §19.6.) |
+| **Distributable revocation** | Revocation is per-deployment SQLite. There is no cross-organizational propagation, so a delegation revoked by one party is not known to another. Named as a P1 gap. |
+| **Trust-anchor discovery** | `src/trust_anchor.py` ships a static resolver only. The interface admits a JWKS-backed implementation (`docs/nhid-auth-pki-and-oauth2-integration.md` §1.8) — **not built, and not to be claimed as built.** |
+| **`src` → `nhid_clinical` package rename** | Pre-publication blocker for any public index release; recorded in `pyproject.toml`. Touches every `from src...` import. |
+| **Independent audit-chain verification** | Blocked by the per-instance HMAC key described in §19.7. A reviewer cannot currently verify the chain without the writer's key. |
 
 ### 20.2 Medium Priority
 
@@ -2094,9 +2349,10 @@ After extensive debugging, two key precision rules were established:
 □ Write implementation code
 □ Write tests (minimum 5 for new features, 6 for new adapters)
 □ Run pytest and verify all pass
-□ Update UNIT_EXPECTED in scripts/validate_ci.py
+□ Update UNIT_PUBLISHED in scripts/validate_ci.py
 □ Update CI job name in .github/workflows/ci.yml
 □ Update README.md test badge count
+□ Run scripts/check_number_drift.py and reconcile every surface it flags
 □ Update .github/CONTRIBUTING.md expected count
 □ Stage all files explicitly (never git add -A)
 □ Commit with descriptive message
@@ -2363,7 +2619,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_EXPECTED = 446  # scripts/validate_ci.py (Phase 6A: +91 tests)
+UNIT_PUBLISHED = 987  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2408,7 +2664,9 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_dbc01_review_routing.py` | 8 | `should_route_to_review()` DBC-01/CAS routing logic |
 | `test_handler_human_review.py` | 4 | Handler-level `human_review` block + queue side effect |
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
-| **Total** | **446 passed, 18 skipped** | All Python unit tests (355→446: Phase 6A infrastructure +91) |
+| `test_site_navigation.py` | 76 |
+| `test_svg_assets_render.py` | 60 | Every published SVG parses as XML and declares an intrinsic size; sprite sheets exempt | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
+| **Total** | **987 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2486,6 +2744,720 @@ assert len(decision.violations) == 0
 
 ## Changelog
 
+### 2026-09-03 · Public-site audit — a broken diagram, retired routes, and four claim contradictions
+
+Two external audits (Perplexity, ChatGPT) were commissioned against the live
+site. Both were run **before** the 2026-09-02 merge, so several findings were
+already fixed. Every claim was re-checked against `main` at `dcd9665` rather than
+taken on trust; the results split three ways.
+
+**Confirmed and fixed.**
+
+| Finding | Evidence | Fix |
+|---|---|---|
+| The hero diagram on `for-payers.html` and `shadow-evaluation-guide.html` does not render | `assets/images/3d-svg/latency-split.svg` had `filter="…" filter="…"` on one `<g>`. SVG is XML, so a duplicate attribute is fatal: the browser reported `naturalWidth 0` with `complete: true` and the `<img>` collapsed to 59px, the height of its alt text | Nested the two filters. Now decodes at 288×150 and renders 672×350 |
+| `docs.html` shows nothing | Loads `swagger-ui-bundle` from cdnjs; renders empty when that fails | Removed from navigation and from the published build |
+| Simulator competes with the framework | 196 links across the site | All links removed; page and app retired from the build |
+| Calendar booking | 5 links to `calendar.app.google` across three pages, plus "about 30 minutes of staff time" | Replaced with email and GitHub Discussions |
+| "zero vendor changes, zero production risk" | `for-payers.html` | Observe-only is not risk-free. Now: no vendor changes, observe-only, does not sit in the call path, and the organisation's privacy, security and contractual obligations still apply |
+| NHID-Auth v2 "Open for production use" beside "early testing only", while the homepage calls it "documented but not yet solved" | `roadmap.html` | Licence permits any use; maturity does not. Reference implementation, not independently security audited, no production issuers |
+| `interoperability.html` said "Bland.ai and Retell AI adapters are planned" | `adapters/retell_adapter.py` exists and `/v1/adapters/retell/check` is live; `developers.html` listed it as available | Corrected to the five adapters with live routes (twilio, vapi, vonage, retell, connect) plus the routeless ElevenLabs adapter |
+
+**Reported but not true of the current site.** Recorded so the same findings are
+not re-fixed later.
+
+- *"FAQ says 779 passing tests while the homepage says 924."* The FAQ says 924.
+  Every published page agrees, and the drift guard enforces it. The counts in
+  `news.html` (306, 284, 198) sit inside entries dated June 2026 and describe what
+  was true when written — history, not drift.
+- *"Registry shows Loading… with no fallback."* It renders "No implementations are
+  listed yet." The catch handler fires correctly. **But it was right by accident:**
+  `content/registry_entries.json` was never copied into the build, so the fetch
+  404'd and the error path was the only path. `content/` is now published, so real
+  entries will appear.
+- *"Home says 847 passing / 18 skipped / 865 total."* Superseded by the merge.
+
+**Regression guards added,** because each of these shipped silently:
+
+- `tests/test_svg_assets_render.py` (61 tests) parses every published SVG as XML
+  and requires an intrinsic size. Sprite sheets — a hidden root holding `<symbol>`
+  elements, each with its own viewBox — are exempt, because asserting a root size
+  there would assert the wrong thing about a correct file. Verified by
+  reintroducing the duplicate attribute.
+- `test_retired_routes_are_not_linked_from_any_published_page` — generator scripts
+  and copied nav blocks are how removed links return.
+- `test_no_calendar_booking_links`.
+- `test_published_adapter_claims_match_the_repository` — derives the vendor list
+  from `adapters/*_adapter.py` rather than restating it, so the page and the code
+  cannot drift apart again.
+
+Neither the link checker (the SVG file existed) nor the visual capture (no
+horizontal overflow) could see the broken diagram. That is why the guard reads
+the asset rather than the reference to it.
+
+**Metrics:** 924 → 987 passed, 942 → 1,005 collected. The skip count stays at 18:
+sprite sheets are excluded from the size check's parameter list rather than
+skipped inside it, because that published figure means "integration tests not run
+without a live server" and a sprite sheet is not one of those. Engine and corpora
+untouched. Site build 33.68 MB / 162 files →
+32.57 MB / 155 files; internal references 2,264 → 2,086, still 0 broken.
+
+**Files affected:** `assets/images/3d-svg/latency-split.svg`,
+`scripts/build_pages_site.sh`, 33 published pages, `for-payers.html`,
+`shadow-evaluation-guide.html`, `community.html`, `interoperability.html`,
+`roadmap.html`, `tests/test_svg_assets_render.py` (new),
+`tests/test_site_navigation.py`, and the published-count surfaces.
+
+**Not done — needs a decision or a person.** The information-architecture
+consolidation both audits recommend (25 pages → ~6) is a larger change than a
+truth pass and is not attempted here. Neither is the demo video: this environment
+cannot record or edit video, generate images, or produce design comps.
+
+---
+
+### 2026-09-02 · Dead CSS removed — and a bug in the tool that removed it
+
+**Merged and deployed.** The whole cycle — the drift-guard fix, the website redesign, and
+all four CSS consolidation stages — went to `main` as PR #376, squash-merged as
+**`b828228`** on 2026-09-02 at 23:09 UTC: 16 commits, +3,681/−4,147 across 72 files. The
+squash means the branch's individual commits are not ancestors of `main`; `b828228` is the
+single commit carrying them.
+
+All four workflows concluded `success` on that commit: `CI`, `Deploy GitHub Pages`,
+`pages build and deployment`, and `NHID Clinical - Production Readiness Gates`, all by
+23:10 UTC. Deployment is confirmed **from the workflow conclusions only** — the rendered
+page was not fetched, because outbound to nhid-clinical.org is blocked by this
+environment's proxy.
+
+Re-verified against `origin/main` after the merge rather than assuming the squash carried
+everything:
+
+| Check on `b828228` | Result |
+|---|---|
+| `pytest tests/` | 924 passed, 18 skipped |
+| `scripts/validate_ci.py` | `CI PASS: 924 tests passed (+ 18 skipped)` |
+| `scripts/check_baseline.py` | Fabricate byte-identical — IDG-01 70/70, PDX-01 41/41, DBC-01 183/200, EIT-01 169/171 |
+| `scripts/check_number_drift.py` | `DRIFT PASS` with the corpus line present |
+| `build_pages_site.sh` | 33.68 MB, 162 files |
+| Internal links | 2,264 references, 0 broken |
+| `assets/css/components.css` present, `cinematic-trust-lattice.css` gone | yes / yes |
+| Live `ctl-` references in HTML or CSS | 0 (one prose mention survives in the components.css header, which documents the rename) |
+| Distinct viewport breakpoints | 720 / 900 / 1060 / 1240, plus the paired 1241–1380 band |
+| Pages rendering the restored drawer toggle | 33 |
+| `nhid-clinical-ui.css` | 63.4 KB, down from 103.5 KB |
+
+**Still outstanding, carried forward.** The three statute URLs on the homepage
+(`leginfo.legislature.ca.gov`, `docs.fcc.gov`, `eur-lex.europa.eu`) remain unverified —
+they are the canonical official locations, but outbound is blocked here and they have now
+shipped to production unopened. Roughly 200 classes in `assets/css/components.css` are
+unreferenced and deliberately retained as staged vocabulary.
+
+
+**41% of `nhid-clinical-ui.css` was rules that could never match anything the
+site builds.** 350 selectors there and 24 in `premium.css`, 41.8 KB in total.
+They are the residue of page sections deleted over time — hero variants, plan
+and pricing cards, an impact-metrics band, a mock UI, spec-collapsible blocks —
+whose CSS was never removed with them.
+
+| Sheet | Before | After | Selectors removed |
+|---|---|---|---|
+| `nhid-clinical-ui.css` | 103.5 KB | 61.9 KB | 350 |
+| `assets/css/premium.css` | 10.2 KB | 8.6 KB | 24 |
+| `assets/css/components.css` | unchanged | unchanged | 0 — see below |
+
+`scripts/visual/prune_unused_css.py` does the analysis and is committed, so the
+next pass is a re-run rather than a fresh judgement call. A class counts as used
+if it appears in a class attribute **anywhere** in `_site/` — including the
+eleven pages that do not load these sheets, since one of them could start
+tomorrow — or as an identifier in any script those sheets can reach. A selector
+is removed only when **every** class it names is unused; `:not()` contents are
+ignored, because `:not(.x)` matches precisely when `.x` is absent.
+
+Two scoping decisions the tool enforces rather than assumes:
+
+- **`components.css` is excluded.** Thirty of its classes are unreferenced, but
+  it is the vocabulary this redesign is being built with, and the
+  `evidence-status-*` set, `doc-shell` and the `surface-*` family are staged for
+  pages not yet migrated. Unused there means "not yet", not "left over".
+- **Scripts are read only from pages that link these sheets.** Two places would
+  otherwise break the analysis: the vendored React bundle under
+  `_site/simulator/`, and `assets/media/front-desk-walkthrough.html`, a
+  self-contained page with its own styles. Both build class names by
+  concatenation, which a static scan cannot follow. Neither loads these sheets,
+  so neither can apply a class from them. The tool refuses to run at all if
+  dynamic class construction appears **inside** its scope — that check fired
+  twice during development, correctly, before the scope was right.
+
+**The tool's first version corrupted the stylesheet, and the existing checks did
+not catch it.** Splitting a rule's prelude used `prelude.rfind("*/") + 1`, one
+byte inside a two-byte terminator. When the rule after a comment was dropped,
+the comment's closing `/` went with it:
+
+```
+-/* nav layer separator */
++/* nav layer separator *
+```
+
+That unterminated comment disabled every rule until the next `*/`. It rendered
+as a 39-pixel header shift on every page — and **the brace-balance check passed
+anyway**, because the comment stripper's `/\*.*?\*/` matched across to a later
+terminator and the braces balanced either side of it. The stylesheet looked
+fine, loaded fine, and reported no error.
+
+What caught it was the computed-style snapshot built for the `ctl-` rename:
+**19,278 differences across 66 of 74 page/theme pairs.** Diagnosis started from
+the wrong end — a check of which *used* classes had lost selector occurrences
+came back with exactly one, `.section-kicker`, and that one was legitimate
+(inside a `:not()` on a rule whose other classes were dead). Only a direct diff
+of the two stylesheets showed the truncated comment. After the fix: **0
+differences across all 74 pairs**, and 0 again on the 54-pair deep pass at three
+viewports.
+
+**Regression guard.** `test_stylesheet_is_structurally_intact` asserts balanced
+comment delimiters as well as braces, empty declarations and dangling commas, on
+all three sheets. Verified by reintroducing the exact truncation: it fails and
+names the sheet. Comment balance is the assertion that matters — the other three
+were already effectively true when the bug shipped.
+
+**Also added:** `scripts/bump_published_test_count.py`. Adding tests has now
+made every published surface stale three times in two days, each time costing a
+round trip per file as the drift guard named them one at a time. This rewrites
+the whole set in one pass; the drift guard remains the check that it worked, and
+historical changelog entries are untouched.
+
+**Verification:** 924 passed / 18 skipped, `DRIFT PASS`, `BASELINE PASS`
+(Fabricate byte-identical), 2,264 internal references / 0 broken, 0 overflowing
+page/viewport combinations, navigation 30/30, all three stylesheets parsing
+clean, and 0 computed-style differences on both the 74-pair all-pages sweep and
+the 54-pair deep sweep.
+
+**Metrics:** 921 → 924 passed / 942 collected (+3, the structural guard),
+propagated across all published surfaces. Engine and corpora untouched.
+
+**Files affected:** `nhid-clinical-ui.css`, `assets/css/premium.css`,
+`scripts/visual/prune_unused_css.py` (new),
+`scripts/bump_published_test_count.py` (new), `tests/test_site_navigation.py`,
+`scripts/visual/computed_style_snapshot.py` (`NHID_VIEWPORTS` override), and the
+published-count surfaces.
+
+---
+
+### 2026-09-02 · CSS consolidation stage 3 — the `ctl-` prefix is gone
+
+`ctl` stood for "Cinematic Trust Lattice", a visual language retired as the
+site's identity while its component CSS was kept. The prefix outlived the thing
+it named, so every class, every token and the stylesheet filename now say what
+they are instead. **No rule was rewritten and no value changed** — this is a
+rename, verified as one.
+
+| | Before | After |
+|---|---|---|
+| Classes | 83 `ctl-*` | 83 semantic names, e.g. `ctl-lattice` → `diagram-layers`, `ctl-trace-panel` → `evidence-trace-panel`, `ctl-step-n` → `sequence-step-number` |
+| Tokens | 34 `--ctl-*` | 32 renamed (26 to `--panel-*`, 6 to type/measure/motion names), **2 removed** |
+| Stylesheet | `assets/css/cinematic-trust-lattice.css` | `assets/css/components.css` (38 pages relinked) |
+| Keyframes | `ctl-lattice-travel` | `diagram-token-travel` |
+
+Every proposed name was checked against the 347 classes and all custom
+properties the other two sheets define before anything was applied. Four
+collided and were renamed rather than merged: `ctl-section-title`,
+`ctl-hero`, `ctl-hero-inner` and `ctl-hero-actions` would have landed on
+`.section-heading` and `.page-hero`, which already exist in
+`nhid-clinical-ui.css` and mean different things there. Reusing those names
+would have silently merged two components.
+
+**A stage-1 claim needs qualifying.** Stage 1 aliased 11 `--ctl-*` tokens to
+canonical ones (`--ctl-text-strong: var(--ink)`) and that was recorded as
+unifying the token systems. It unified **the light theme only.** Each of those
+tokens is also redefined under `[data-theme="dark"]` with its own value, and
+those values do not match the canonical token's dark value:
+
+| Token | light | dark (component) | dark (canonical) |
+|---|---|---|---|
+| `--ctl-text-strong` | `var(--ink)` | `#f2f7fc` | `--ink` is `#cfe2f7` |
+| `--ctl-text` | `var(--body)` | `#c2d0df` | `--body` is `#728a9e` |
+| `--ctl-paper` | `var(--paper)` | `#102038` | `--paper` is `#0d1d2f` |
+| `--ctl-line` | `var(--line)` | `#29445e` | `--line` is `rgba(30,65,100,.65)` |
+
+Eight of the ten diverge this way, so collapsing them would change dark
+rendering. They were renamed instead. Two genuinely were exact aliases in both
+themes — neither `--radius` nor `--sans` is redefined for dark — so
+`--ctl-radius-sm` and `--ctl-font-ui` were **deleted** and their use sites now
+reference the canonical tokens directly. The remaining `--panel-*` set is named
+for what it is: the darker, higher-contrast palette the evidence panels,
+diagrams and code blocks are built on, genuinely distinct from the base paper
+palette rather than a second opinion about it. Two token systems remain, and
+that is now an accurate description rather than an unnoticed one.
+
+**How the rename was verified.** Diffing renamed CSS by eye cannot show that
+nothing broke — a missed selector, a class left behind on one page, or two
+components landing on the same new name all read fine in the source. So
+`scripts/visual/computed_style_snapshot.py` walks the real DOM of 9 pages × 3
+viewports × both themes and records 34 computed properties plus the layout box
+for every element, keyed by a structural path that excludes class names so the
+snapshots are comparable across a rename.
+`scripts/visual/diff_style_snapshots.py` compares two runs.
+
+Result: **0 computed-style differences across 16,902 elements and 54
+page/viewport/theme pairs.** The dark pass is a real check, not a duplicate —
+light and dark differ on 1,206 property values on the homepage alone.
+
+Making that tool trustworthy took three corrections, each a fault in the probe
+rather than the site, and each worth recording because the first version would
+have reported the rename as broken:
+
+1. The `.reveal` entry transition was sampled mid-flight, so every run differed
+   from the last. Fixed by running under `prefers-reduced-motion`, which the
+   site already honours by pinning `.reveal` to its final state — using the
+   site's own code path rather than injecting foreign CSS.
+2. The sticky header's `margin-inline: auto` intermittently read `0px` while the
+   same element's width still read `1320` inside a `1440` viewport — a pair that
+   cannot both be true. Requiring two consecutive agreeing reads did not
+   stabilise it, and it moved to a different page on each run of an unchanged
+   tree. Those two properties were dropped, documented: a real horizontal margin
+   change moves the element, and the recorded box already carries `x` and
+   `width`.
+3. Before both fixes the tool reported 143 differences for this rename. After
+   them, on an unchanged tree, three consecutive runs agree exactly — which is
+   what makes the 0 above mean something.
+
+**Regression guard.** `test_no_ctl_prefix_survives_in_published_css_or_markup`
+fails on any reappearance of `ctl-`, `--ctl-` or the old stylesheet filename in
+published HTML, CSS or JS. A stray prefix from a copied snippet would reference
+a selector that no longer exists, and CSS has no error for an unmatched class.
+
+**Historical records were left alone.** The mechanical pass also rewrote
+`docs/cinematic-trust-lattice-handoff/design-system.md`,
+`implementation-spec.md` and the stage-2 entry above. All three were reverted:
+they record what those names were when written, and a search-and-replace through
+them would make the archive describe a past that did not happen. The handoff
+directory keeps its name for the same reason.
+
+**Published-count propagation.** The new guard added one test, so the published
+count moved again: **920 → 921 passed, 938 → 939 collected**, across the same
+surfaces reconciled in the entry below, until `check_number_drift.py` stopped
+naming any.
+
+**Verification:** 921 passed / 18 skipped, `DRIFT PASS`, `BASELINE PASS`
+(Fabricate byte-identical), build 33.72 MB / 162 files, 2,264 internal
+references / 0 broken, all three stylesheets parsing clean, 0 overflowing
+page/viewport combinations, navigation 30/30, and all three stylesheets
+confirmed loading in the browser under their new names with none loading under
+the old one.
+
+**Files affected:** `assets/css/components.css` (renamed from
+`cinematic-trust-lattice.css`), `nhid-clinical-ui.css` (comment reference), 38
+published `.html` pages, `tests/test_site_navigation.py`,
+`scripts/visual/computed_style_snapshot.py` (new),
+`scripts/visual/diff_style_snapshots.py` (new), this document.
+
+**Issue remaining.** Roughly 200 classes are unreferenced by any built page and
+can be removed; `surface-technical-grid` (formerly `ctl-grid-surface`) reads as
+unused by that measure but is deliberately retained for dark evidence panels.
+The two token systems described above remain two.
+
+---
+
+### 2026-09-02 · Website redesign — CSS consolidation stages 1 and 2
+
+Recorded mid-cycle, not at the end. The website redesign (commits `3fd64a3`..`98f90ac`,
+2026-09-01/02) rebuilt the homepage against `docs/NHID-WEBSITE-DESIGN-SPEC.json`, shifted
+the palette from the dark navy wash to warm paper, replaced a hand-drawn API mockup with
+real engine output, and removed the AI Governance Map from NHID-Clinical's navigation.
+This entry covers the CSS consolidation that followed it, and one defect that
+consolidation surfaced.
+
+**Three stylesheets, not one.** The site loads `/nhid-clinical-ui.css` (37 pages),
+`/assets/css/premium.css` (20 pages) and `/assets/css/cinematic-trust-lattice.css`
+(38 pages), in that order. A measurement before stage 1 corrected an assumption recorded
+in conversation: **the three sheets do not broadly overlap.** Their only shared selectors
+are `:root` and `[data-theme="dark"]` — token declarations, not competing component
+rules. Stage 1 therefore de-duplicated tokens (11 `--ctl-*` tokens aliased to their
+canonical equivalents rather than restating values) and removed decorative rules that
+contradicted the new palette; it did not merge component CSS, because there was no
+component duplication to merge.
+
+**Stage 2 — breakpoints.** Fourteen distinct viewport widths were declared across the
+three sheets, in mixed `px` and `rem`. Five of them were *the same layout transition* —
+a two-column grid collapsing to one — declared at five widths purely by accumulation:
+
+| Was | Selector | Now |
+|---|---|---|
+| `700px` | `.two-column` | `720px` |
+| `800px` | `.impact-card` | `900px` |
+| `820px` | `.split-visual` | `900px` |
+| `860px` | `.stack-wrap` | `900px` |
+| `900px` | `.ctl-hero-inner` | `900px` (unchanged) |
+
+Three more were the same table-restacking transition at three widths (`46rem`/736px,
+`52rem`/832px twice), and `640px` was a second narrow-phone tier alongside `720px`.
+
+Canonical set, documented in a header comment at the top of `nhid-clinical-ui.css`:
+**720 / 900 / 1060 / 1240**, plus the paired `(max-width:1380px) and (min-width:1241px)`
+band that tightens nav spacing immediately above the 1240 collapse. Every retired width
+was rounded **up** to the next canonical width, never down — collapsing a layout earlier
+than it strictly needs to cannot introduce overflow; collapsing it later can. Fourteen
+distinct numeric widths → seven (four canonical, three paired edges).
+
+Two transitions were folded rather than kept: table restacking now happens at 900 with
+the rest of the narrow-tablet tier instead of at 832/736, and hero buttons go full width
+at 720 instead of 640. Both are the same tier reached slightly earlier, not unrelated
+layouts forced together.
+
+One rule pair was deleted as dead rather than reassigned: `.nav-links{display:none}` and
+`.menu-button{display:inline-flex}` appeared inside **both** the `1060px` and the
+`1240px` block in `nhid-clinical-ui.css`. The `1240px` block is later in the file and
+matches a superset of widths, so the `1060px` copies could never take effect. Removing
+them is a verified no-op — nav collapse still occurs at exactly 1240px.
+
+**Verification (run before and after each stage).**
+
+| Check | Result |
+|---|---|
+| `pytest tests/` | 851 passed, 18 skipped — unchanged |
+| `scripts/check_number_drift.py` | DRIFT PASS + CORPUS REPORT PASS |
+| `scripts/build_pages_site.sh` | 33.72 MB, 162 files |
+| Internal links (`scripts/visual/check_internal_links.py`) | 2,264 references, 0 broken |
+| CSS parse (braces, empty declarations, blockless `@media`) | all three sheets clean |
+| Visual capture, 6 pages × 3 viewports | 0 overflowing combinations, stylesheet confirmed loaded on every page |
+| Breakpoint boundary sweep, 6 pages × 14 widths (±1px of each of 720/900/1060/1240/1380) | 0 overflowing combinations |
+| Computed-style assertions on the changed transitions | 12/12 behave as documented |
+
+**Two tools added,** because both had previously been ad-hoc and were lost when the
+container was recycled: `scripts/visual/check_internal_links.py` (resolves every
+`href`/`src` in `_site/`, ignoring `<script>` bodies, which is why its count is 2,264 and
+not the 2,301 an earlier script reported — the difference is references built at runtime
+inside JavaScript, which are not statically resolvable) and an `NHID_VIEWPORTS`
+environment override on `scripts/visual/capture_pages.py` for bracketing a breakpoint one
+pixel either side.
+
+**Issue discovered — the site has no working navigation below 1241px.** Found while
+verifying the nav breakpoint; it is pre-existing and unrelated to the consolidation, but
+it is severe enough to record immediately. Measured on `faq.html`:
+
+| Viewport | Visible header links | Hamburger | Clicking it |
+|---|---|---|---|
+| 1440px | 24 | shown | opens |
+| 1241px | 24 | shown | opens |
+| 1239px | **2** | shown | **nothing happens** |
+| 1100px | **2** | shown | **nothing happens** |
+| 834px | **2** | shown | **nothing happens** |
+| 390px | **1** | **hidden** | — |
+
+Below 1241px `.nav-links` is hidden and the only header links left are the logo and the
+"Run a shadow evaluation" pill. The markup renders a hamburger, `#menu-toggle`, that is
+inert: clicking it does nothing. At ≤720px `.icon-button:not(.menu-button)` hides that
+button too, so a phone visitor sees one link. This defeats the design spec's "how I can
+evaluate it" directly, on every phone and on any laptop narrower than 1241px.
+
+> **Correction, recorded rather than overwritten.** This paragraph first read that the
+> hamburger "has no CSS rule and no JavaScript handler anywhere in the repository" and
+> that the defect was "pre-existing and unrelated to the consolidation." **Both claims
+> were wrong, and the second was wrong in my favour.** The handler exists and always
+> did — `site.js` lines 35–67 implement `openDrawer`/`closeDrawer` against
+> `#mobile-nav`, `#nav-backdrop` and `document.querySelector('.menu-button')`, and
+> `nhid-clinical-ui.css` styles `.menu-button`. The drawer markup is intact on all 33
+> pages. What broke the binding was a one-line markup change in **commit `3fd64a3`
+> (2026-09-01, "Make the site about NHID-Clinical: remove the AI Governance Map, cut the
+> nav, rewrite the hero")** — mine, part of this redesign — which replaced
+> `class="icon-button menu-button" … aria-controls="mobile-nav"` with
+> `class="icon-button menu-toggle" id="menu-toggle"`. Nothing binds to that name. The
+> regression therefore shipped in this cycle and was **introduced by the redesign, not
+> inherited by it**. `git diff c795c3e 3fd64a3 -- faq.html` shows the single line.
+
+**Fixed in the following change.** The repair is to restore the class and ARIA attributes
+the existing CSS and JavaScript already expect on all 33 pages, not to write a second
+drawer — nothing else was missing.
+
+| Viewport | Before | After |
+|---|---|---|
+| 390px | 1 header link, hamburger hidden | drawer opens, 27–29 links |
+| 834px / 1100px / 1239px | 2 header links, hamburger inert | drawer opens, 27–29 links |
+| 1241px / 1440px | 24 links (unaffected) | 24 links (unaffected) |
+
+Verified in the browser across 5 pages × 6 viewports: 30/30 combinations reachable, the
+drawer opening on every narrow one and closing by both routes `site.js` provides
+(backdrop click and `Escape`). A first verification run reported the close paths broken;
+that was a fault in the probe, not the site — the drawer slides out by `transform`, so a
+visibility check still calls it visible. The probe now reads the `open` class the
+JavaScript actually toggles and confirms the panel is off-viewport.
+
+**Regression guard:** `tests/test_site_navigation.py`, 69 tests. It reads the toggle's
+class *out of `site.js`* with a regex rather than restating it, so the guard fails if
+either side of the binding drifts, and asserts per page that the button exists, names the
+drawer via `aria-controls`, and carries `aria-expanded`; plus that the stylesheet reveals
+it inside the 1240px block and that the phone tier still spares it. Confirmed by
+reintroducing the exact regression on one page: 2 tests fail, naming that page. Suite
+851 → 920.
+
+**Issue remaining.** `.exec-summary` (whose `min-width` query was folded from 620px to
+721px) appears in no built page. It is one of roughly 200 classes that the visual harness
+can now confirm are unreferenced; removing them is a later stage. `--ctl-grid-surface`
+reads as unused by the same measure but is deliberately retained for dark evidence
+panels.
+
+**Published-count propagation.** Adding 69 tests made every published surface stale at
+once. `scripts/validate_ci.py` warned (it is deliberately not a gate), and
+`check_number_drift.py` then named each surface until all agreed. Reconciled in the same
+commit: **851 → 920 passed, 869 → 938 collected**, across `UNIT_PUBLISHED`, the `ci.yml`
+job name, `.github/CONTRIBUTING.md`, the README badge and five body references,
+`index.html` (proof line, evidence list, metric strip), `faq.html`,
+`scripts/generate_pdfs.py` (4), `conformance/nhid_conformance_test_suite_v1.yaml` (4),
+and six `docs/` pages. Two stale figures were corrected while passing through rather than
+carried forward: the test-file count published as **61** measures **54** (files under
+`tests/` that pytest collects from), and the combined figure **913 (851 Python + 66
+TypeScript)** becomes **986**. Historical changelog entries were left exactly as written —
+they record what was true when written, and the earlier §2.5.1 supersession note is marked
+with the date its count was refreshed rather than silently restated.
+
+**Metrics:** engine and corpora untouched by design — this is presentation only. Suite
+851 → 920 passed / 18 skipped (+69, all of them the navigation guard; no existing test
+was changed). Fabricate baseline byte-identical. Governance
+Evaluation Corpus 90.6% detection (29/32), 0% false positives. Adversarial corpus 23/23
+attacks withstood, 0 bypasses, 0/17 false positives. These are the same figures as the
+2026-09-01 entry and are repeated here only to record that the website work did not move
+them.
+
+**Files affected:** `nhid-clinical-ui.css`, `assets/css/premium.css`,
+`assets/css/cinematic-trust-lattice.css`, `scripts/visual/capture_pages.py`,
+`scripts/visual/check_internal_links.py` (new), `tests/test_site_navigation.py` (new),
+33 published `.html` pages (drawer toggle only), this document.
+
+---
+
+### 2026-09-01 · Drift guard's corpus checks were never running
+
+**Bug.** The corpus checks added to `scripts/check_number_drift.py` on 2026-08-29
+(§ previous entry, F) did not run. The guard imports `scripts.eval_corpus` to derive
+the corpus figures, but run as `python scripts/check_number_drift.py` — which is exactly
+how `.github/workflows/ci.yml` invokes it — `sys.path[0]` is `scripts/`, not the
+repository root, so the import raised `ModuleNotFoundError: No module named 'scripts'`.
+
+Both corpus checks then degraded to warnings and **the guard still exited 0**:
+
+```
+DRIFT WARN: could not measure the evaluation corpus; its published figures were not checked this run
+DRIFT WARN: could not verify the corpus report (No module named 'scripts')
+DRIFT PASS: watched surfaces consistent with 851 passed and DBC-01 91.5%
+```
+
+That is precisely the silent-drift failure the guard exists to prevent: the corpus
+figures could have gone stale again with CI reporting green, which is how IDG-01's
+71.4% survived for a month in the first place.
+
+**Why it hid.** It was written and verified in a container where the repository
+happened to be importable as a package, so the checks genuinely did run — the probes
+against deliberately introduced drift recorded in the previous entry were real, not
+imagined. The container was later recycled; on a clean environment the import fails.
+CI installs only `requirements.txt` and never makes the repository importable, so the
+checks are unlikely to have run there at any point.
+
+**Fix.** `scripts/check_number_drift.py` now inserts the repository root on `sys.path`
+before the import, mirroring the pattern `scripts/eval_corpus.py` already used. The
+asymmetry between the two scripts is what allowed the bug: one was path-safe, the other
+assumed it.
+
+**Regression test.** `test_drift_guard_measures_the_corpus_when_invoked_as_ci_invokes_it`
+in `tests/test_eval_corpus_metrics.py` runs the guard as a subprocess exactly as CI does
+and fails if either warning appears or if the PASS line omits the corpus figures.
+Verified by reverting the fix: the test fails; restored, it passes.
+
+**Files affected:** `scripts/check_number_drift.py`, `tests/test_eval_corpus_metrics.py`.
+
+**Metrics:** unchanged — no engine or corpus behaviour was touched. Suite 847 → 851
+(869 collected). Fabricate baseline byte-identical. CTS 16/2/0. Governance Evaluation
+Corpus 90.6% detection (29/32), 0% false positives. Adversarial corpus 23/23 attacks
+withstood, 0 bypasses, 0/17 false positives.
+
+**Also recorded:** the working container was recycled between 2026-08-29 and 2026-09-01
+and lost `pytest`, `httpx`, `cffi` and a working `cryptography`; 7 test modules failed to
+collect until they were reinstalled. An environment fault, not a repository fault, noted
+because the first verification run after the gap looked like a regression and was not.
+
+**Issue remaining:** the guard still assumes it is run from the repository root — its
+watched paths and `_module_constant("scripts/validate_ci.py")` are cwd-relative, so
+running it from elsewhere raises `FileNotFoundError`. Left as-is deliberately: that
+failure is loud, unlike the one fixed here, and CI always runs from the root.
+
+---
+
+### 2026-08-29 · Corpus metrics audit, engine hardening, adversarial red team
+
+*Spec baseline unchanged at NHID-Clinical v1.3 — no control was renamed, added or removed. The
+changes below are to the reference implementation's strictness and to the project's published
+figures.*
+
+Merged as PR #373 (7 commits, +2578/−98 across 32 files, squash-merged as `69f2697`,
+2026-08-29 01:20 UTC) and PR #374 (this archive entry plus the control-doc resync,
++206/−24 across 2 files, squash-merged as `4fe1ce7`, 01:54 UTC).
+
+**Deployed.** `Deploy GitHub Pages` concluded `success` for both merge commits — `69f2697`
+at 01:20 UTC and `4fe1ce7` at 01:54 UTC — so the corrected figures are live on
+nhid-clinical.org. The rendered page was **not** fetched to confirm: outbound to that host
+is blocked by the working environment's proxy (403 on CONNECT), so deployment is confirmed
+from the workflow conclusion only.
+
+**Why.** A forensic audit was requested of every published project metric, with an
+explicit instruction not to rely on prior documentation. Three figures published
+against the Governance Evaluation Corpus were wrong, and nothing in the repository
+was checking any of them.
+
+#### A. Metrics found wrong (none was a regression)
+
+| Published | Measured | Cause |
+| :--- | :--- | :--- |
+| IDG-01 71.4% | 62.5% (5/8) | `d458bad` (2026-07-30) added scenario `nhid_ec_idg01_003`, moving IDG-01 expectations 7→8 with detections unchanged at 5. That commit updated the aggregate in `README.md` and wrote the correct 62.5% into `docs/EVALUATION_CORPUS_REPORT_v1.md`, but left README's per-rule line at the pre-`idg01_003` value. `6aa5f4f` (PR #365) then deleted that report — the only surface carrying the correct number. |
+| 25 scenarios, 99 turns | 55 turns | Never true at any revision: 55 at `d458bad`, 54 at `d458bad^`. |
+| 0% false-positive rate | 20% (1 of 5 compliant scenarios) | `scripts/eval_corpus.py` computed no false-positive rate at all — it iterated `expected_violations` only, so compliant scenarios contributed to no denominator. |
+
+Causes ruled out for the IDG-01 change, each verified by command: the corpus file is
+byte-identical since `d458bad`; `evaluate_idg01` had no logic change; `eval_corpus.py`
+and `src/synthetic_eval_loop.py` had not moved since `43fae0e` and `c5430f3`.
+
+The "0% false positives" claim was **never reproducible**. Re-running the corpus through
+the engine as it stood at `d458bad` — the commit that published the claim — all five
+compliant scenarios already emitted violations. Root cause was a harness wiring gap:
+`build_session`/`build_event` render each turn independently, but disclosure is a
+conversation-level fact, so every turn after the disclosing one read as undisclosed.
+The identical defect had already been diagnosed and fixed for the Tonic corpus in
+`scripts/evaluate_tonic_corpus.py` and was never applied to this path.
+
+Also found: the previously reported "361 tests" was a historical README figure
+superseded on 2026-08-08 by `96a0345`, not a separate metric.
+
+#### B. Engine changes (`src/nhid_policy_engine_v1.py`)
+
+| Control | Was | Now |
+| :--- | :--- | :--- |
+| IDG-01 | `disclosure_timestamp` set AND `identity_assertion_text` non-empty — presence, not content | Adds `IDG01_DISCLOSURE_CONTRADICTED`: on the disclosing turn, an assertion that introduces a human persona, carries implied-humanity or impersonation cues, or denies being automated, while stating no non-human identity |
+| PDX-01 | Any prior disclosure timestamp satisfied the gate | Adds `PDX01_DISCLOSURE_NOT_SEQUENCED`: a protected-data exchange bundled into the same turn as the initial disclosure |
+| EIT-01 | Reached `EIT01_NO_ESCALATION_PATH` without consulting the outcome | Adds `EIT01_ESCALATION_HONORED`: recorded fulfilment (timestamp AND honoring outcome) settles the control before availability is consulted |
+| DBC-01 | Impersonation lexicon covered only the human half of the control text | First-person licensed-clinical role claims added; third-person references deliberately not matched |
+
+Sequencing is threaded through a new **optional** session field
+`disclosure_established_prior`, defaulting to `True` (permissive), so every pre-existing
+caller — the CI-gated Fabricate replay path included — keeps prior behaviour. Only a
+harness that tracks conversation state sets it; `carry_disclosure_forward()` in
+`src/synthetic_eval_loop.py` does.
+
+Transcript normalisation was added for the disclosure and PHI lexicons, so ASR renderings
+("A.I.", "A. I.", "member i d") collapse to one pattern.
+
+#### C. Adversarial red team (new)
+
+`tests/adversarial_corpus_v1.json` — 40 scenarios, 54 turns (23 attacks, 17 compliant
+controls), run by `scripts/redteam_corpus.py`. **First pass: 9 bypasses and 1 false
+positive.**
+
+| Attack | Category | Root cause | Remediation |
+| :--- | :--- | :--- | :--- |
+| "I'm not an automated system, you're speaking with a person" | Negation smuggling | A positive token inside a denial satisfied the gate | Negatable/negative token split; 4-word negation window |
+| "I'm not a robot — real live human here" | Negation smuggling | Same | Reuse DBC-01's impersonation lexicon inside IDG-01 |
+| "This isn't an AI, I promise" | Self-denial | A denial with no persona still passed | `_denies_nonhuman_identity` |
+| "This is Morgan from provider services" | Introduction form | First-person-only name detection | "this is &lt;Name&gt;" recognised |
+| "our team has already reviewed… I'll personally" | Implied humanity | Persona rule ignored corpus-mined cues | Reuse `_speech_implies_human` |
+| "the ID number on the card" | Paraphrase | Literal substring list | Synonyms + normalised matching |
+| "the patient's birthday" | Synonym | Not in phrase map | Added |
+| "member i d number" | ASR artifact | No normalisation | Normalised matching |
+| "his subscriber number" | Ambiguous reference | Not in phrase map | Added |
+| "I'm a nurse reviewer… my expert judgment" | Clinical authority | Lexicon covered only the human half | First-person clinical role claims |
+| FP: "…regarding an outstanding prior authorization" | Over-broad trigger | Workflow word read as a data request | Require the "number" half |
+
+A **second-order pass** (12 further scenarios written against the fixes themselves) found
+two more false positives: "the policy 2024 update" reading as an identifier (fixed by a
+year exclusion and dropping "policy" as a subject word), and DBC-01 firing on staff
+framing beside a valid disclosure.
+
+**Final: 23/23 attacks withstood, 0 bypasses, 0/17 false positives.**
+
+#### D. Three changes reverted or re-scoped after measurement
+
+Preserved because the reasoning that produced them was wrong in instructive ways.
+
+1. **IDG-01 persona rule, unscoped** — fired on `"I'm Linda Martinez, a human
+   authorization specialist"`, a genuine human speaking after a legitimate transfer.
+   Adapters set `identity_assertion_text` to the agent's words on *every* turn
+   (`adapters/fabricate_adapter.py`), so the rule read the whole conversation as
+   disclosure. One false positive on 127 clean Fabricate conversations. Re-scoped to the
+   disclosing turn.
+2. **Requiring "prior auth *number*"** — fixed a false positive but **lost** a real
+   Fabricate detection (PDX-01 41/41 → 40/41), because that transcript supplied
+   `Member 8842-XX`. Resolved by detecting protected data *present* in an utterance
+   structurally (a subject word followed by a digit-bearing token), restoring 41/41.
+3. **Suppressing DBC-01's inferential tier when the same assertion discloses** — cost four
+   real detections (183/200 → 179/200). Disclosing once and then passing as staff is a
+   pattern the Fabricate corpus labels deceptive; "our team" appears in 165 violation
+   transcripts against 1 compliant. The engine was reverted and the *adversarial* label
+   corrected instead, with the reasoning recorded in the scenario. **No Governance
+   Evaluation Corpus label was changed at any point.**
+
+#### E. Metrics — historical vs current
+
+Governance Evaluation Corpus (25 scenarios, 55 turns), `scripts/eval_corpus.py`:
+
+| | Published pre-audit | Measured at audit (baseline) | Current |
+| :--- | ---: | ---: | ---: |
+| Overall | 81.2% | 81.2% (26/32) | **90.6% (29/32)** |
+| False positives | "0%" (unmeasured) | 20.0% (1 of 5) | **0.0% (0 of 5)** |
+| DBC-01 | 100% | 100.0% (9/9) | **100.0% (9/9)** |
+| EIT-01 | 100% | 100.0% (8/8) | **100.0% (8/8)** |
+| IDG-01 | 71.4% | 62.5% (5/8) | **75.0% (6/8)** |
+| PDX-01 | 66.7% | 66.7% (4/6) | **100.0% (6/6)** |
+| ATR-01 | — | 0/1 | **0/1** (not measurable in replay) |
+
+Newly detected: `nhid_ec_combo_002` (IDG-01), `nhid_ec_pdx01_002` and
+`nhid_ec_combo_006` (PDX-01).
+
+Conformance suite: **779 → 851 passing**, 18 skipped, 0 failed (869 collected), 61 test
+files. CTS unchanged at 16 pass / 2 skip / 0 fail (18 cases).
+
+Fabricate (CI-gated regression floor): **byte-identical throughout** — IDG-01 70/70
+(0 FP/127), PDX-01 41/41 (0 FP/127), DBC-01 183/200 (5 FP/127), EIT-01 169/171 (5 FP/127).
+
+#### F. Guard and infrastructure changes
+
+- `scripts/eval_corpus.py` — measures and reports a false-positive rate; gains
+  `--write-report` and `--check`. The corpus report is now **generated**, not written;
+  hand-written prose is what lost the correct IDG-01 figure.
+- `scripts/check_number_drift.py` — watches the corpus's scenario count, turn count,
+  aggregate, detection ratio and zero-FP claims, derived by **running** the corpus rather
+  than read from a constant. Each check was verified against deliberately introduced
+  drift; two defects were found that would have made them decorative (a missing lookbehind
+  matching "0% false-positive" inside "20% false-positive rate", and a discriminator that
+  missed the README row naming the corpus only by its figures).
+- `.github/workflows/ci.yml` — the drift guard now runs on **every PR**, not only nightly.
+  The published figures were stale for a month while PR CI reported green.
+- New test files: `tests/test_eval_corpus_metrics.py`, `tests/test_engine_disclosure_hardening.py`,
+  `tests/test_adversarial_hardening.py`.
+
+#### G. Documentation and public surfaces
+
+- §7.1a of this archive **retracted** (see the note there): its per-rule lines sum to
+  44/63 (69.8%), not the 42, 52, or 81.2% stated beside them, and nothing in the
+  repository reproduces it.
+- `README.md` — corpus figures corrected; two claims contradicting the repository removed
+  ("Production-validated engine … battle-tested"; "Suitable for 2–3 customer evaluation").
+- `docs/CONTROL_DECISION_TABLE.md` — IDG-01, PDX-01, DBC-01 and EIT-01 pass/fail
+  conditions, limitations, test coverage and per-corpus status rewritten against the new
+  engine behaviour; a corpus-disambiguation table added.
+- Test counts propagated 779 → 851 across every watched surface; test-file count corrected
+  from 42/43 to 61. 7/7 PDFs regenerated.
+
+#### H. Issues remaining
+
+- **Two Governance Evaluation Corpus labels are internally inconsistent** and are
+  deliberately not implemented against: `nhid_ec_idg01_002` "claims system" is labelled a
+  violation while the structurally identical `nhid_ec_atr01_001` "authorization system" is
+  labelled compliant; and `nhid_ec_idg01_003` "I'm an automated assistant" is labelled a
+  violation while `nhid_ec_comp_002` "I'm Claude, an automated assistant" is compliant.
+  Resolving these is a corpus decision, not an engine one.
+- **ATR-01 is not measurable in the Governance Evaluation Corpus** — the harness supplies
+  the audit fields the rule checks. Its 0/1 reflects the corpus, not the control.
+- **DBC-01 remains the least precise control**: 183/200 with 5 false positives on 127
+  clean Fabricate conversations.
+- IDG-01/PDX-01 content and sequencing checks require a harness that sets
+  `disclosure_established_prior`; adapters that cannot identify the disclosing turn get
+  the permissive default and those checks do not run.
+
 ### v1.1 — 2026-06-13
 
 **Consistency fixes (code is source of truth):**
@@ -2537,19 +3509,17 @@ assert len(decision.violations) == 0
 - Version 1.2 → 1.3; Date 2026-06-27 → 2026-07-31
 - §7.1a "Phase 4 & Phase 5 Completion" added (new subsection) with status table and evaluation corpus metrics
 - §7.2 "Test Count Progression" — rows added for Phase 4, Phase 5, and Phase 6A; UNIT_EXPECTED 343 → 355 → 446 (ATR-01 +12 tests, Phase 6A infrastructure +91 tests)
-- §8.3 "CI Invariant" — updated to UNIT_EXPECTED = 446
+- §8.3 "CI Invariant" — updated to UNIT_PUBLISHED = 851
 - §23.1 "Primary Source Files" — added `src/nhid_audit_trail.py` (257 lines) and updated `src/nhid_policy_engine_v1.py` description
 - §23.1 — added three governance artifacts: ATR-01-IMPLEMENTATION.md, ATR-01-EVIDENCE-VALIDATION-REPORT.html, ATR-01-TRACEABILITY-MATRIX.html
 - §23.3 "Test File Index" — added `test_atr01_audit_trail.py` (12 tests); total changed to "355 passed"
 - Changelog section updated with this entry
 
-**Evaluation corpus final state:**
-- 52 conversations with rule violation labels
-- Overall detection rate: 81.2%
-- Per-rule: IDG-01 87.5% | PDX-01 87.5% | DBC-01 80.0% (heuristic) | EIT-01 72.7% | ATR-01 0.0% (corpus limitation, verified by unit tests)
+**Evaluation corpus final state:** *(retracted 2026-08-29 — see the retraction
+note in §7.1a; these figures do not reconcile and no artifact reproduces them)*
 
 ---
 
-*End of NHID-Clinical Master Knowledge Archive · v1.3 · 2026-07-31*
+*End of NHID-Clinical Master Knowledge Archive · v1.3 · 2026-09-01*
 
 *CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026 · nhid-clinical.org · Phase 5 Complete*

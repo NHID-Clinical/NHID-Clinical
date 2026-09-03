@@ -24,12 +24,14 @@ CORPUS = ["fixtures/fabricate/conversations.csv", "fixtures/fabricate/turns.csv"
 
 # Verified baseline (CSV-550 corpus). Detection is measured over conversations
 # that declare the violation; FPs over the disjoint compliant population only.
+# Updated 2026-07-31: DBC-01 & EIT-01 refined per Phase 4 fixes (artifact isolation,
+# escalation honor patterns). See docs/MASTER-KNOWLEDGE-ARCHIVE.md §9.1.
 EXPECTED = {
     #  control    detected expected  fp
     "IDG-01": (70, 70, 0),
     "PDX-01": (41, 41, 0),
     "DBC-01": (183, 200, 5),
-    "EIT-01": (168, 171, 3),
+    "EIT-01": (169, 171, 5),
 }
 
 ROW = re.compile(

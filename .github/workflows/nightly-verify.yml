@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Test-count invariant (446 expected via validate_ci.py)
+      - name: Test-count invariant (via validate_ci.py)
         run: python scripts/validate_ci.py
 
       - name: Confusion-matrix baseline guard

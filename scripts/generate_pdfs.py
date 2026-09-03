@@ -749,13 +749,58 @@ class ExecutiveSummary(Flowable):
 
 
 def _key_metrics(width=6.5 * inch):
-    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 343 Tests · 6 Adapters."""
+    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 987 Tests · 6 Adapters."""
     return _stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("343", "Tests"),
+        ("987", "Tests"),
         ("6", "Adapters"),
     ])
+
+
+
+def _corpus_detection_rates():
+    """Per-control detection/FP over the committed Fabricate corpus.
+
+    Computed at build time from scripts/confusion_matrix.py so the PDF and the
+    website consume one measurement path instead of transcribing numbers. Raises
+    if the corpus is missing rather than falling back to stale constants.
+    """
+    import sys as _sys
+    _root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    if _root not in _sys.path:
+        _sys.path.insert(0, _root)
+    from scripts.confusion_matrix import compute, load, ALL_CONTROLS
+
+    # load() takes full argv, including argv[0]
+    convs = load([
+        "confusion_matrix",
+        os.path.join(_root, "fixtures", "fabricate", "conversations.csv"),
+        os.path.join(_root, "fixtures", "fabricate", "turns.csv"),
+    ])
+    res = compute(convs)
+    by = {c["control"]: c for c in res["controls"]}
+    names = {
+        "IDG-01": "IDG-01 (Identity Disclosure Gate)",
+        "PDX-01": "PDX-01 (Pre-Data Exchange Gate)",
+        "DBC-01": "DBC-01 (Deceptive Behavior Check)",
+        "EIT-01": "EIT-01 (Escalation Implementation Test)",
+    }
+    rows = []
+    for ctrl in ALL_CONTROLS:
+        c = by[ctrl]
+        rate = (c["detected"] / c["expected"]) if c["expected"] else None
+        fpr = (c["fp"] / c["clean"]) if c["clean"] else None
+        rows.append([
+            names[ctrl],
+            f"{c['detected']}/{c['expected']}",
+            "n/a" if rate is None else f"{rate:.1%}",
+            f"{c['fp']}/{c['clean']}",
+            "n/a" if fpr is None else f"{fpr:.1%}",
+        ])
+    return {"rows": rows,
+            "n_conversations": res["n_conversations"],
+            "n_compliant": res["n_compliant"]}
 
 
 def _cover(story, title, subtitle, version, audience, logo_path=None):
@@ -925,7 +970,7 @@ def make_shadow_guide():
          "claim status, and prior authorization calls."),
         ("Month 2 — Gap Analysis",
          "Evaluate identified AI calls against the v1.3 controls (IDG-01, PDX-01, DBC-01, "
-         "EIT-01, plus the supplemental ATR-01 audit-trail control). Quantify what passes, "
+         "EIT-01, ATR-01), plus the supplemental bot-to-bot rule. Quantify what passes, "
          "what fails, what is ambiguous."),
         ("Month 3 — Written Assessment",
          "Compile findings into a short written assessment. Share anonymized results "
@@ -935,14 +980,16 @@ def make_shadow_guide():
         story.append(Paragraph(title, H2))
         story.append(Paragraph(body_txt, BODY))
 
-    # The Four Controls
+    # The Five Controls
     story.append(Spacer(1, 0.1*inch))
-    story.append(Paragraph("The Four Controls You Are Observing", H1))
+    story.append(Paragraph("The Five Controls You Are Observing", H1))
     story.append(Spacer(1, 0.08*inch))
 
     controls = [
         ("IDG-01", "Identity Disclosure Gate",
          "AI agent must disclose it is automated before any PHI or data exchange.", C_IDG),
+        ("PDX-01", "Pre-Data Exchange Gate",
+         "No PHI may be exchanged until IDG-01 disclosure is confirmed.", C_PDX),
         ("DBC-01", "Deceptive Behavior Check",
          "No synthetic voice artifacts designed to impersonate a human. No fake breathing.", C_DBC),
         ("EIT-01", "Escalation Implementation Test",
@@ -964,6 +1011,29 @@ def make_shadow_guide():
         story.append(Spacer(1, 0.1*inch))
 
     # What you need
+    story.append(Paragraph("How Disclosure Timeliness Is Scored", H1))
+    story.append(Paragraph(
+        "Impersonation Latency is reported as a raw measurement and bucketed into four bands, so "
+        "an agent that discloses slowly reads differently from one that never discloses at all.",
+        SMALL
+    ))
+    story.append(Spacer(1, 0.06 * inch))
+    story.append(_premium_table([
+        ["Band", "Disclosure", "Reported as"],
+        ["Pass", "Turn 0, before any data request", "Conformant"],
+        ["Delayed", "Present, within 10s, before any PHI", "Observation"],
+        ["Late", "Present, after 10s, before any PHI", "Human review"],
+        ["Critical", "PHI before disclosure, or never disclosed", "Violation"],
+    ], [1.0 * inch, 3.3 * inch, 2.2 * inch]))
+    story.append(Spacer(1, 0.08 * inch))
+    story.append(Paragraph(
+        "These bands are a reporting convention, not an enforcement threshold. No control imposes "
+        "a seconds-based deadline; the normative target remains disclosure before any data request "
+        "(IL in turns = 0). Tier 0 is observe-only in all cases.",
+        SMALL
+    ))
+    story.append(Spacer(1, 0.14 * inch))
+
     story.append(Paragraph("What You Need", H1))
     needs = [
         "Access to call logs or recordings for a sample of incoming administrative calls "
@@ -1029,12 +1099,12 @@ def make_core_spec():
     story.append(_stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("343", "Unit Tests"),
+        ("987", "Unit Tests"),
         ("6", "Adapters"),
     ]))
     story.append(Spacer(1, 0.12 * inch))
 
-    _section(story, "The Four Controls", H1)
+    _section(story, "The Five Controls", H1)
     story.append(Paragraph(
         "Each control maps to RFC 2119 keywords in the full specification. "
         "Illustrated cards below summarize the v1.3 behavioral gates.",
@@ -1067,7 +1137,7 @@ def make_core_spec():
         story.append(Spacer(1, 0.08 * inch))
 
     story.append(ColorBlock(
-        "ATR-01  ·  Audit Trail (supplemental)",
+        "ATR-01  ·  Audit Trail (fifth canonical control)",
         "Machine-readable JSON event trace for every call: disclosure timestamps, state transitions, "
         "escalation events, and execution context. Maps to HL7 FHIR R4 AuditEvent (base v4.0.1) — "
         "no named Implementation Guide conformance (e.g. IHE BALP) is claimed.",
@@ -1206,7 +1276,7 @@ def make_operational_blueprint():
     phases = [
         ("Phase 1  ·  Weeks 1–2", BLUE, "Add RFP Language",
          "Insert the standard NHID-Clinical conformance clause into your next voice AI vendor "
-         "RFP or BAA amendment. One clause covers all four controls."),
+         "RFP or BAA amendment. One clause covers all five controls."),
         ("Phase 2  ·  Weeks 3–6", TEAL, "Vendor Sandbox Testing",
          "Ask your vendor to run: git clone + pip install -r requirements.txt + "
          "python -m pytest tests/ -v. Results in under 5 minutes. Request full terminal output."),
@@ -1310,8 +1380,8 @@ def make_technical_playbook():
         "Provide an open, testable reference: every claim is backed by runnable, deterministic code.",
         "Layer in cryptographic agent identity (NHID-Auth v2) as authorization matures beyond "
         "behavior alone — NPI-bound passports, scoped delegation, per-agent revocation.",
-        "Make Call Authorization Score (CAS) a procurement-grade compliance signal payers and "
-        "vendors can both verify independently.",
+        "Produce reproducible evidence a vendor can hand to a payer or provider security "
+        "reviewer, and that the reviewer can re-derive independently rather than take on trust.",
     ]:
         story.append(Paragraph(f"•  {n}", BODY))
     story.append(Spacer(1, 0.1*inch))
@@ -1327,7 +1397,7 @@ def make_technical_playbook():
         ["Layer", "Component", "Purpose"],
         ["Policy engine",  "src/nhid_policy_engine_v1.py",   "Deterministic rule evaluation (670+ lines)"],
         ["Identity (v2)",  "src/agent_identity.py",          "Ed25519 delegation & agent passports"],
-        ["Scoring",        "src/nhid_cas.py",                "Call Authorization Score engine"],
+        ["Scoring",        "src/nhid_cas.py",                "CAS — research component, not part of the product surface"],
         ["Audit",          "src/fhir_audit_emitter.py",      "FHIR R4 AuditEvent generation"],
         ["Conformance",    "tests/nhid_conformance_test_suite_v1.yaml", "18 deterministic CTS cases"],
         ["Adapters",       "adapters/*.py",                  "VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress"],
@@ -1358,7 +1428,7 @@ def make_technical_playbook():
     ))
     tier_data = [
         ["Tier", "Time", "What You Get", "What You Need"],
-        ["0", "15 min", "Conformance verdict + CAS score per call", "A transcript and curl"],
+        ["0", "15 min", "Conformance verdict per call", "A transcript and curl"],
         ["1", "~2 hr",  "Automated per-call checks in your pipeline", "An end-of-call webhook"],
         ["2", "~1 day", "Cryptographic agent identity (NPI-bound)",   "pip install cryptography"],
     ]
@@ -1379,23 +1449,34 @@ def make_technical_playbook():
 
     story.append(PageBreak())
 
-    # Governance Framework — CAS
-    story.append(Paragraph("Governance Framework — Call Authorization Score (CAS)", H1))
+    # Governance Framework — delegated authority
+    story.append(Paragraph("Governance Framework — Delegated Authority (DLG-01)", H1))
     story.append(Paragraph(
-        "CAS provides a continuous compliance signal between 0.0 and 1.0 per call session: "
-        "<b>CAS = F_IAF × F_NOCF × ECF</b> — Identity Assurance, Operational Conformance, and "
-        "Evidence Completeness factors.",
+        "An agent asserting it acts for a provider organization may present a signed delegation "
+        "naming that organization's NPI, the scope it grants, and its expiry. When a deployment "
+        "opts in, the engine verifies provider and agent signatures, expiry, revocation and call "
+        "binding, refuses any sub-delegation that widens scope, and lets the verified scope "
+        "constrain the data boundary: a delegation for eligibility does not authorize requesting "
+        "a claim number. Absent an opt-in the control is not evaluated at all.",
+        BODY
+    ))
+    story.append(Paragraph(
+        "Limits, which travel with the capability: verification is against a trust anchor the "
+        "deploying organization configures itself — there is no directory or discovery service, "
+        "and an unconfigured NPI is refused rather than accepted. The NPI is cryptographically "
+        "bound to the delegation but is not checked against NPPES.",
         BODY
     ))
     cas_data = [
-        ["CAS Score", "Tier", "Badge"],
-        ["≥ 0.90", "Verified Trust", "L2"],
-        ["≥ 0.75", "Conditional Trust", "L1"],
-        ["≥ 0.50", "Review Required", "—"],
-        ["≥ 0.20", "Denied / Degraded", "—"],
-        ["< 0.20", "Hard Denial", "—"],
+        ["Check", "Enforced by", "On failure"],
+        ["Provider + agent signature", "Ed25519 over the delegation", "DENY_DATA"],
+        ["Expiry / TTL", "delegation.expires_at", "DENY_DATA"],
+        ["Call binding", "call_sid nonce", "DENY_DATA"],
+        ["Revocation", "agent + delegation lists", "DENY_DATA"],
+        ["Scope narrowing", "subset check per hop", "DENY_DATA"],
+        ["Requested data in scope", "PDX-01", "DENY_DATA"],
     ]
-    t8 = Table(cas_data, colWidths=[1.5*inch, 2.5*inch, 1.0*inch])
+    t8 = Table(cas_data, colWidths=[1.9*inch, 2.2*inch, 1.1*inch])
     t8.setStyle(TableStyle([
         ("BACKGROUND",    (0,0), (-1,0), DARK),
         ("TEXTCOLOR",     (0,0), (-1,0), WHITE),
@@ -1518,7 +1599,7 @@ def make_knowledge_archive():
     story.append(Spacer(1, 0.15*inch))
 
     # Core Framework
-    story.append(Paragraph("Core Framework — The Four Controls + ATR-01", H1))
+    story.append(Paragraph("Core Framework — The Five Controls", H1))
     controls = [
         ("IDG-01", "Identity Disclosure Gate",
          "AI agent must disclose it is automated before any PHI request or exchange.", C_IDG),
@@ -1734,7 +1815,7 @@ def make_v13_overview():
         ("EIT-01 — Human escalation",
          "A human escalation path is communicated and honored immediately when the receiving "
          "party requests a person."),
-        ("ATR-01 — Audit trace (supplemental)",
+        ("ATR-01 — Audit trace",
          "Every call produces a machine-readable JSON event trace with disclosure timestamps, "
          "state transitions, and execution context — deterministic under identical input conditions."),
     ]
@@ -1815,7 +1896,7 @@ def make_v13_overview():
         "A deterministic policy engine that produces stable trace output under identical input "
         "conditions (modulo timestamps and non-deterministic IDs).",
         "An 18-case conformance test suite (CTS) in machine-readable YAML plus a pytest failure "
-        "injection harness (343 passing unit tests in the reference implementation).",
+        "injection harness (987 passing unit tests in the reference implementation).",
         "10 canonical trace files in traces/ demonstrating real-world scenarios (eligibility, "
         "prior auth, claims status, bot-to-bot, audit gaps, and more).",
         "Six vendor adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress) "
@@ -1975,23 +2056,35 @@ def make_evidence_pack():
         story.append(Spacer(1, 0.08 * inch))
 
     _section(story, "2 · Real-Corpus Detection Rates", H1)
+    _cm = _corpus_detection_rates()
     story.append(Paragraph(
         "The CTS YAML suite validates the policy engine against synthetic, hand-authored cases. "
-        "To check behavior against real conversational phrasing, the engine was also run against "
-        "the Fabricate Battle-Test Corpus — 550 real-world voice AI conversations (4,839 turns). "
-        "Detection rate is the share of corpus turns where a control correctly fired. These are "
-        "reported honestly, including where coverage is weak.",
+        "To check behavior against real conversational phrasing, the engine is also replayed "
+        f"against the Fabricate Battle-Test Corpus \u2014 {_cm['n_conversations']} conversations, of "
+        f"which {_cm['n_compliant']} are labelled scenario_type=compliant. Detection and false "
+        "positives are measured on disjoint populations, per conversation \u2014 not per turn. "
+        "Detection is the share of conversations declaring a violation in which that control "
+        "fired; the false-positive rate is the share of the compliant conversations in which it "
+        "fired anyway. Figures are computed at build time by scripts/confusion_matrix.py, not "
+        "transcribed.",
         SMALL
     ))
     story.append(Spacer(1, 0.06 * inch))
-    story.append(_premium_table([
-        ["Control", "Detection Rate", "Notes"],
-        ["IDG-01 (Identity Disclosure)", "100%", "Holds against real phrasing"],
-        ["EIT-01 (Escalation Trigger)", "94.7%", "Holds against real phrasing"],
-        ["PDX-01 (PHI Data Exchange)", "58.6%", "Partial — real-world phrasing diverges from synthetic cases"],
-        ["DBC-01 (Deceptive Behavior Claim)", "2.5%", "Weak — heuristic phrase list does not yet cover most real phrasing"],
-        ["ATR-01 (supplemental)", "0.0%", "Corpus/adapter structural limitation — not a representative test"],
-    ], [2.1 * inch, 1.2 * inch, 3.2 * inch]))
+    story.append(_premium_table(
+        [["Control", "Detected", "Detection", "FP / clean", "FP rate"]] + _cm["rows"],
+        [2.0 * inch, 1.0 * inch, 1.05 * inch, 1.05 * inch, 0.9 * inch]
+    ))
+    story.append(Spacer(1, 0.08 * inch))
+    story.append(Paragraph(
+        "ATR-01 is not listed because this corpus cannot measure it: the replay harness drops all "
+        "ATR-01 expectations as untestable, since audit-field completeness is a property of the "
+        "live event envelope rather than a replayed transcript. That is a limitation of the "
+        "measurement, not a score of zero. ATR-01 remains one of the five canonical controls; the "
+        "supplemental rule is bot-to-bot. The harness also drops PDX-01 expectations where "
+        "disclosure occurs at turn 0, because the probe is then post-disclosure. Self-reported, "
+        "not independently audited, and not a conformance claim.",
+        SMALL
+    ))
     story.append(Spacer(1, 0.12 * inch))
 
     _section(story, "3 · Anonymized Failure Trace Example", H1)

@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nhid-clinical"
+version = "1.3.0"
+description = "Policy and evidence layer for healthcare administrative AI voice interactions"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "CC-BY-4.0" }
+authors = [{ name = "Brianna Nicole Baynard-Malone" }]
+keywords = ["healthcare", "voice-ai", "policy-engine", "audit", "fhir", "delegation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Healthcare Industry",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+
+# The policy engine itself is standard library only. These two cover the
+# conformance suite (pyyaml) and NHID-Auth v2 delegation (cryptography).
+# Everything heavier — the API surface, demo tooling — is an optional extra, so
+# a vendor embedding the engine in a call path does not inherit a web stack.
+dependencies = [
+    "cryptography>=41.0.0",
+    "pyyaml>=6.0.1",
+]
+
+[project.optional-dependencies]
+api = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.29.0",
+    "httpx>=0.27.0",
+    "python-multipart>=0.0.9",
+    "pydantic>=2.6.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "jsonschema>=4.21.0",
+]
+
+[project.urls]
+Homepage = "https://nhid-clinical.org"
+Repository = "https://github.com/NHID-Clinical/NHID-Clinical"
+Specification = "https://nhid-clinical.org/specification.html"
+
+[project.scripts]
+nhid = "src.cli:main"
+
+[tool.setuptools]
+# NOTE (pre-publication blocker): the distribution installs top-level packages
+# named `src`, `adapters` and `scripts`. That is fine for an editable install
+# from a checkout, which is how the project is consumed today, but those names
+# are too generic to claim in a shared site-packages and this must be renamed
+# to a single `nhid_clinical` package before any public index release. The
+# rename touches every `from src...` import in the repository and is
+# deliberately not bundled with the DLG-01 work.
+packages = ["src", "src.safety_evaluation", "adapters", "scripts"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.yml", "*.json"]
+
+# pytest configuration deliberately stays in pytest.ini — a single source of
+# truth. Do not duplicate it here.

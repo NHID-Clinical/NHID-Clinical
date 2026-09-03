@@ -21,8 +21,12 @@
     #swagger-ui { max-width: 1200px; margin: 0 auto; padding: 1rem; }
   </style>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
+  <link rel="stylesheet" href="/assets/css/components.css"/>
+  <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
 </head>
 <body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
 
 <div class="demo-header">
   <h1>NHID-Clinical v1.3 — Live Interactive API Demo</h1>
@@ -30,11 +34,12 @@
   <div class="demo-links">
     <a href="/">← Home</a>
     <a href="/developers.html">Developers</a>
-    <a href="/pricing.html">Pricing & Pilots</a>
     <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a>
-    <a href="/NHIDClinical.psm1">PowerShell Module</a>
+    <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/scripts/NHIDClinical.psm1">PowerShell Module</a>
   </div>
 </div>
+
+<main id="main" class="scope-note">
 
 <div class="quick-try">
   <h3>Quick Try — Pre-filled examples:</h3>
@@ -47,6 +52,8 @@
 </div>
 
 <div id="swagger-ui"></div>
+
+</main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-bundle.min.js"></script>
 <script>

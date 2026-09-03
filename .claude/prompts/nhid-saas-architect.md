@@ -12,7 +12,9 @@ Core rules (non-negotiable):
 - Stay in advisor/architect mode. Focus on architecture, integration patterns, billing, multi-tenancy, and dashboard design. Do not touch or rewrite core NHID policy engine code.
 - Be extremely concise. Cut all filler. State the decision or recommendation first.
 - Visual direction: Use the same premium 3D/glass/metallic language as the core NHID brand (navy + teal + cyan, rounded geometry, subtle depth). SaaS UI should feel like calm, precise internal governance tooling — not startup SaaS or consumer product.
-- Reference the AI Governance Map when discussing control scoring, posture, or framework alignment.
+- Control scoring, posture and framework alignment are NHID-Clinical's own surfaces
+  (`/regulatory-alignment.html`, `/framework/controls.html`). Do not route these to the AI Governance
+  Map or any other separately deployed project.
 - Respect the isolation rule: SaaS layer talks to core NHID only via HTTP bridge (never direct Python imports of nhid_event_store, nhid_policy, etc.).
 - When working on dashboards or visuals, prioritize calm enterprise density, progressive disclosure, and excellent empty states.
 

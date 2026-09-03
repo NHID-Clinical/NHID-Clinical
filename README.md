@@ -9,8 +9,21 @@
 </p>
 
 <p align="center">
-  <b>NHID-Clinical is an open reference implementation and proposed control model for receiver-side governance of inbound healthcare AI agents.</b><br>
-  It governs the identity disclosure, authorization, and auditability of AI-operated interactions across organizational boundaries — not the AI model itself.
+  <b>NHID-Clinical is an open policy-and-evidence layer for healthcare administrative AI voice interactions.</b><br>
+  It records which agent acted, under whose delegated authority, within what scope, whether it disclosed
+  itself before requesting protected data, whether escalation was honored, and what auditable evidence
+  remains — deterministically, and in a form the receiving organization can verify without trusting the
+  caller. It governs conduct at the interaction boundary, not the AI model itself.
+</p>
+
+<p align="center">
+  <sub>
+    The engine evaluates observable conduct and does not care who runs it. A payer or provider can run it
+    <b>receiver-side</b> on inbound calls; a voice-AI vendor can run it <b>sender-side</b> in their own call
+    path to produce evidence for their customers. Both use the same controls and the same artifacts.
+    Sender-side operation is supported by the engine, the adapters and the evidence export today; it is
+    not a packaged product, and no vendor has deployed it.
+  </sub>
 </p>
 
 <p align="center">
@@ -28,7 +41,7 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-446%20passing-brightgreen?style=flat-square">
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-987%20passing-brightgreen?style=flat-square">
   <img alt="Middleware Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
   <img alt="License" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?style=flat-square">
@@ -43,7 +56,7 @@
 
 **Designed to support the transparency obligations described in EU AI Act Article 50; mapped to NIST AI RMF 1.0.**
 
-NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, a per-call Call Authorization Score (CAS), and an optional cryptographic layer (NHID-Auth v2) for proving delegated authority. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
+NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, an optional delegated-authority gate (DLG-01) that verifies a cryptographically signed, scoped delegation and constrains what protected data an agent may request, and machine-readable audit evidence for what happened. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
 
 ## Start here
 
@@ -53,7 +66,7 @@ Pick your path — each is runnable today:
 
 **🔍 Reviewers & security teams** — read the boundaries, then run the tests.
 1. Skim [what it is / is not](#what-nhid-clinical-is--is-not) and the [claim boundaries](docs/claim-boundaries.md)
-2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **446 passing**
+2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **987 passing** (+ 18 skipped)
 3. Inspect the five controls in [`src/nhid_policy_engine_v1.py`](src/nhid_policy_engine_v1.py) and the [Enforcement Profile](docs/enforcement-profile.md)
 4. Read the [Conformance Test Suite](conformance/nhid_conformance_test_suite_v1.yaml) — each case asserts an expected policy action
 
@@ -108,10 +121,10 @@ For a one-page overview aimed at hospital, payer, compliance, and procurement le
 An honest maturity snapshot. NHID-Clinical is a working reference implementation, not a production-scale product.
 
 **Available today**
-- Deterministic policy engine with 343 passing tests
+- Deterministic policy engine with 1005 tests (987 passing) across all phases
 - Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
 - Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
-- Conformance Test Suite and a per-call Call Authorization Score (CAS)
+- Conformance Test Suite, plus an evidence pack export a vendor can hand to a reviewer
 - Documented **[Enforcement Profile](docs/enforcement-profile.md)** — how each control's `PolicyDecision` maps to a receiver action (a documented layer over the five controls, **not a sixth control**)
 - NHID-Auth v2 cryptographic authorization layer, published as public reference code
 
@@ -158,11 +171,11 @@ Phase 5 targeted-edge-case testing (15 healthcare scenarios) confirmed heuristic
 
 **Known limitations (documented)**: DBC-01 @ 40% on subtle deception, IDG-01 @ 20% on vague disclosure. Both deferred to Phase 2 ML/NLP work. IDG-01 and PDX-01 baseline (presence + timing gate) remain stable and suitable for pilot.
 
-**Recommendation**: Do not release to GA. Proceed to limited pilot (2–3 customers, 4 weeks) only after addressing critical gaps and obtaining legal/compliance sign-off. See **[Architecture Review Visual Summary](docs/ARCHITECTURE_REVIEW_VISUAL.md)** for detailed go/no-go criteria and timeline.
+**Recommendation**: Do not release to GA. Proceed to limited pilot (2–3 customers, 4 weeks) only after addressing critical gaps and obtaining legal/compliance sign-off. See the [**Enforcement Profile**](docs/enforcement-profile.md) for detailed control decision criteria and receiver actions.
 
 **Timeline to production**: 12–14 weeks (remediation → pilot → post-pilot review → GA), not immediate.
 
-See **[Phase 5 Findings](docs/PHASE5_FINDINGS.md)** and **[Architecture Review](docs/ARCHITECTURE_REVIEW_VISUAL.md)** for full technical analysis.
+See **[NHID Audit Event Spec](docs/NHID_AUDIT_EVENT_SPEC_v1.0.md)** and **[Metrics & Observability](docs/NHID_METRICS_AND_OBSERVABILITY_v1.md)** for full technical specifications.
 
 ---
 
@@ -176,8 +189,8 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 
 | Item | Deliverable | Status | Purpose |
 |------|---|---|---|
-| **1** | **Governance Evaluation Corpus v1.0** | ✅ Complete | 25 healthcare scenarios (5 compliant + 10 single-rule + 10 multi-rule) with 100+ turns; demonstrates rule-combination coverage |
-| **2** | **Detection Rate Report** | ✅ Complete | 81.2% aggregate detection (26/32 violations); 0% false-positive rate; per-rule accuracy breakdown |
+| **1** | **Governance Evaluation Corpus v1.0** | ✅ Complete | 25 healthcare scenarios (5 compliant + 10 single-rule + 10 multi-rule), 55 turns; demonstrates rule-combination coverage |
+| **2** | **Detection Rate Report** | ✅ Complete | 90.6% aggregate detection (29/32 violations); 0% false-positive rate (0 of 5 compliant scenarios); per-rule accuracy breakdown |
 | **3** | **NHID Audit Event Spec v1.0** | ✅ Complete | Formal audit trail schema, immutability requirements (append-only + hash chain options), 7-year retention, compliance mappings (HIPAA §164.312b) |
 | **4** | **Metrics & Observability v1.0** | ✅ Complete | 6 metric categories, CloudWatch integration, pilot dashboard layout, alert thresholds, weekly reporting template |
 | **5** | **Architecture Overview (Pilot-Ready)** | ✅ Complete | 10-minute executive brief for security architects; governance statement for portfolio; pilot success criteria and go/no-go recommendation |
@@ -185,30 +198,30 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 ### Evidence Summary
 
 **Engine Validation**:
-- ✅ **361 passing unit tests** (comprehensive rule coverage)
-- ✅ **25-scenario evaluation corpus** (81.2% detection, 0% false positives)
+- ✅ **987 passing tests** (1005 total; comprehensive rule coverage across all phases)
+- ✅ **25-scenario evaluation corpus** (90.6% detection; 0% false positives across 5 compliant scenarios)
 - ✅ **Live endpoint tested** against noncompliant VAPI payload
 - ✅ **Deterministic** — same input always produces same output
 
 **Governance Readiness**:
-- ✅ **Strong rules**: DBC-01 (100%), EIT-01 (100%)
-- ✅ **Acceptable rules**: IDG-01 (71.4%), PDX-01 (66.7%) — edge cases documented
+- ✅ **Strong rules**: DBC-01 (100%), EIT-01 (100%), PDX-01 (100%)
+- ⚠️ **Weaker rule**: IDG-01 (75.0%) — the engine rejects a disclosure that asserts a human persona, but does not judge whether a bare organisational name ("claims system") is adequate. See the [Evaluation Corpus Report](docs/EVALUATION_CORPUS_REPORT_v1.md) for why that boundary is deliberate
 - ✅ **Audit trail spec**: Format, retention, immutability, HIPAA compliance complete
 - ✅ **Monitoring spec**: Pilot dashboard, alert thresholds, weekly reporting
 
 **Portfolio Positioning**:
 - ✅ **Not an enterprise product**: Minimal surrounding infrastructure
-- ✅ **Production-validated engine**: Deterministic policy enforcement battle-tested
-- ✅ **Pilot-ready**: Suitable for 2–3 customer evaluation (4 weeks)
+- ✅ **Deterministic engine**: Same inputs produce identical outputs; no production deployments to date
+- ✅ **Pilot-ready**: Suitable for shadow evaluation; no pilots are running
 - ✅ **Evidence-backed**: Test results, corpus, detection rates, governance statement
 
 ### Artifacts
 
-- [`tests/evaluation_corpus_v1.json`](tests/evaluation_corpus_v1.json) — 25 scenarios, 99 turns
-- [`docs/EVALUATION_CORPUS_REPORT_v1.md`](docs/EVALUATION_CORPUS_REPORT_v1.md) — Detection rates, false-positive analysis
+- [`tests/evaluation_corpus_v1.json`](tests/evaluation_corpus_v1.json) — 25 scenarios, 55 turns
+- **[Evaluation Corpus Report](docs/EVALUATION_CORPUS_REPORT_v1.md)** — detection and false-positive rates for this corpus, generated by `scripts/eval_corpus.py`
+- **[Corpus Evaluation Summary](docs/CORPUS_EVALUATION_SUMMARY.md)** — the *Tonic* corpus (150 sessions). A different dataset; its figures are not interchangeable with the above
 - [`docs/NHID_AUDIT_EVENT_SPEC_v1.0.md`](docs/NHID_AUDIT_EVENT_SPEC_v1.0.md) — Formal spec (schema, retention, compliance)
 - [`docs/NHID_METRICS_AND_OBSERVABILITY_v1.md`](docs/NHID_METRICS_AND_OBSERVABILITY_v1.md) — Pilot monitoring & alerting
-- [`docs/ARCHITECTURE_OVERVIEW_PILOT_READY.md`](docs/ARCHITECTURE_OVERVIEW_PILOT_READY.md) — Executive brief + go/no-go criteria
 
 ### Next Steps
 
@@ -230,7 +243,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 | **EIT-01** | Escalation Implementation Test | Clear human handoff path, honored on request |
 
 Plus **ATR-01** (audit trail) — every call must produce a machine-readable trace.  
-18-case CTS suite · same inputs → identical output · **446** Python tests passing (+ 66 TypeScript middleware tests)
+Comprehensive test suite · same inputs → identical output · **987 passing** + 18 skipped (1005 total tests)
 
 [**Try the Governance Simulator →**](https://nhid-clinical.org/simulator.html)
 
@@ -253,7 +266,7 @@ flowchart LR
     class A,HR acc
 ```
 
-<sub>Precedence: `DENY_DATA > ESCALATE_HUMAN > DISCLOSE_IDENTITY > LOG_ONLY > CONTINUE_AI`. CAS may route a call to human review, but it never overrides the `PolicyDecision`.</sub>
+<sub>Precedence: `DENY_DATA > ESCALATE_HUMAN > DISCLOSE_IDENTITY > LOG_ONLY > CONTINUE_AI`. CAS is a **research component**, not part of the product surface: nothing in this repository produces its inputs, and it never overrides the `PolicyDecision` — `evaluate_all()` structurally cannot read it. See `src/nhid_cas.py`.</sub>
 
 ## Five-Layer Trust Stack
 
@@ -349,7 +362,7 @@ curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/a
 | `POST /v1/adapters/retell/check` | none | Native Retell AI payload → result |
 | `POST /v1/adapters/connect/check` | none | Amazon Connect → result |
 | `POST /v1/webhooks/call-progress` | none | Turn-by-turn in-call evaluation |
-| `GET /v1/public/vendor/{id}/badge` | none | Public CAS badge SVG |
+| `GET /v1/public/vendor/{id}/badge` | none | Legacy CAS badge SVG. Retained for existing callers; CAS is a research component and is not part of the product surface — see `src/nhid_cas.py`. |
 | `POST /v1/cts/evaluate` | none | Run CTS YAML suite |
 | `POST /v1/conformance/check` | `x-api-key` | Production conformance check |
 
@@ -366,7 +379,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected: **446 passing** in ~3.0s (~18 skip without a running server). Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
+Expected: **987 passing** in ~3.0s (~18 skipped integration tests; 1005 total). Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
 
 <details>
 <summary><b>Repository structure</b></summary>
@@ -396,7 +409,7 @@ NHID-Clinical/
 | NIST CAISI RFI | Cross-org agent identity | NHID-Auth v2 |
 | EU AI Act Art. 50 | Transparency for AI interacting with humans | IDG-01 + DBC-01 |
 | ISO/IEC 42001 | AI management system transparency controls | Full control set + ATR-01 |
-| NIST AI RMF 1.0 | Map & Measure functions for identity risk | Full framework + CAS |
+| NIST AI RMF 1.0 | Map & Measure functions for identity risk | Full framework |
 
 [Full matrix →](https://nhid-clinical.org/regulatory-alignment.html)
 
@@ -422,7 +435,7 @@ python examples/issue_and_verify.py
 | `src/` | Packaged Python modules used by the engine and tests (e.g. agent identity). |
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio). |
 | `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (446 passing, including Phase 6A infrastructure). |
+| `tests/` | The Python conformance and invariant tests (987 passing, 1005 total; all phases: foundations, adversarial, synthetic, hardening). |
 | `scripts/` | CI guards — `validate_ci.py`, `check_baseline.py`, `check_number_drift.py` — and tooling. |
 | `schema/` | Event and audit-trace schemas. |
 | `docs/` | Specification docs, the [Executive Brief](docs/executive-brief.md), the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md), and the knowledge archive. |
@@ -430,7 +443,7 @@ python examples/issue_and_verify.py
 
 ## Contributing & Pilot Partners
 
-We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required. Start small: the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) produces usable impersonation-latency and CAS data from your own call logs in 2–4 weeks.
+We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required. Start small: the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) produces usable impersonation-latency data from your own call logs in 2–4 weeks.
 
 [**For Payers →**](https://nhid-clinical.org/for-payers.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
@@ -443,7 +456,7 @@ AI Governance & Security Researcher · AIGP · ISC² CC · WGU Cybersecurity
 
 Creator and project lead for NHID-Clinical. Background in healthcare payer operations, identity-verification workflows, and regulated-data environments. NHID-Clinical grew out of direct experience observing operational gaps in healthcare AI voice workflows, and is maintained as an open reference implementation for technical review — feedback and criticism are welcome.
 
-[LinkedIn](https://linkedin.com/in/brianna-baynard) · [GitHub](https://github.com/NHID-Clinical/NHID-Clinical) · [Project website](https://nhid-clinical.org)
+[LinkedIn](https://www.linkedin.com/in/brianna-baynard) · [GitHub](https://github.com/NHID-Clinical/NHID-Clinical) · [Project website](https://nhid-clinical.org)
 
 <br clear="left"/>
 

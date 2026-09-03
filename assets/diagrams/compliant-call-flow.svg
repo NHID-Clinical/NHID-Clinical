@@ -1,68 +1,111 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700">
   <defs>
-    <linearGradient id="successGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    <linearGradient id="successGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="successGradLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D1FAE5;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#A7F3D0;stop-opacity:0.8" />
+    </linearGradient>
+    <linearGradient id="successGradDark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#047857;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#065F46;stop-opacity:0.9" />
+    </linearGradient>
+    <linearGradient id="glassOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0.08" />
     </linearGradient>
     <filter id="shadow">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#047857" flood-opacity="0.25"/>
+    </filter>
+    <filter id="shadowDark">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#065F46" flood-opacity="0.35"/>
     </filter>
     <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#059669" />
+      <path d="M0,0 L0,6 L9,3 z" fill="#10B981" />
     </marker>
   </defs>
 
+  <!-- Background -->
+  <rect width="800" height="700" fill="#0B1220"/>
+
   <!-- Header Banner -->
-  <rect x="0" y="0" width="800" height="60" fill="url(#successGrad)"/>
+  <rect x="0" y="0" width="800" height="60" fill="url(#successGrad)" filter="url(#shadowDark)"/>
   <text x="400" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">
     ✅ Compliant Call Flow
   </text>
 
   <!-- Step 1: Call Initiated -->
-  <rect x="50" y="90" width="700" height="70" rx="8" fill="#f0fdf4" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
-  <text x="70" y="115" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#047857">Step 1: Call Initiated</text>
-  <text x="70" y="140" font-family="Arial, sans-serif" font-size="13" fill="#065f46">AI agent connects to payer customer service</text>
+  <g filter="url(#shadow)">
+    <rect x="50" y="90" width="700" height="70" rx="8" fill="url(#successGradLight)" stroke="#10B981" stroke-width="2"/>
+    <rect x="50" y="90" width="700" height="70" rx="8" fill="url(#glassOverlay)" opacity="0.5"/>
+    <path d="M55 97 L745 97" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </g>
+  <text x="70" y="115" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#065F46">Step 1: Call Initiated</text>
+  <text x="70" y="140" font-family="Arial, sans-serif" font-size="13" fill="#065F46">AI agent connects to payer customer service</text>
 
   <!-- Arrow 1 -->
-  <line x1="400" y1="160" x2="400" y2="190" stroke="#059669" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <line x1="400" y1="160" x2="400" y2="190" stroke="#10B981" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
 
   <!-- Step 2: Identity Disclosure (BEFORE DATA) -->
-  <rect x="50" y="190" width="700" height="90" rx="8" fill="#dcfce7" stroke="#059669" stroke-width="3" filter="url(#shadow)"/>
+  <g filter="url(#shadow)">
+    <rect x="50" y="190" width="700" height="90" rx="8" fill="url(#successGradLight)" stroke="#10B981" stroke-width="3"/>
+    <rect x="50" y="190" width="700" height="90" rx="8" fill="url(#glassOverlay)" opacity="0.6"/>
+    <path d="M55 197 L745 197" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.35"/>
+  </g>
   <text x="70" y="215" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#047857">✓ Step 2: Identity Disclosure (BEFORE DATA EXCHANGE)</text>
   <text x="70" y="240" font-family="Arial, sans-serif" font-size="13" fill="#065f46">"Hello, this is an automated system calling on behalf of</text>
   <text x="70" y="260" font-family="Arial, sans-serif" font-size="13" fill="#065f46">Dr. Smith's Dental Office, NPI 1234567890. I can assist with claim status."</text>
 
   <!-- Arrow 2 -->
-  <line x1="400" y1="280" x2="400" y2="310" stroke="#059669" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <line x1="400" y1="280" x2="400" y2="310" stroke="#10B981" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
 
   <!-- Step 3: Authorization Verification -->
-  <rect x="50" y="310" width="700" height="90" rx="8" fill="#dcfce7" stroke="#059669" stroke-width="3" filter="url(#shadow)"/>
+  <g filter="url(#shadow)">
+    <rect x="50" y="310" width="700" height="90" rx="8" fill="url(#successGradLight)" stroke="#10B981" stroke-width="3"/>
+    <rect x="50" y="310" width="700" height="90" rx="8" fill="url(#glassOverlay)" opacity="0.6"/>
+    <path d="M55 317 L745 317" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.35"/>
+  </g>
   <text x="70" y="335" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#047857">✓ Step 3: Authorization Verification</text>
   <text x="70" y="360" font-family="Arial, sans-serif" font-size="13" fill="#065f46">Payer rep verifies AI caller credentials against trusted registry</text>
   <text x="70" y="380" font-family="Arial, sans-serif" font-size="13" fill="#065f46">or validates digital token/BAA-linked reference code</text>
 
   <!-- Arrow 3 -->
-  <line x1="400" y1="400" x2="400" y2="430" stroke="#059669" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <line x1="400" y1="400" x2="400" y2="430" stroke="#10B981" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
 
   <!-- Step 4: Data Exchange -->
-  <rect x="50" y="430" width="700" height="70" rx="8" fill="#f0fdf4" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
-  <text x="70" y="455" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#047857">Step 4: Secure Data Exchange</text>
+  <g filter="url(#shadow)">
+    <rect x="50" y="430" width="700" height="70" rx="8" fill="url(#successGradLight)" stroke="#10B981" stroke-width="2"/>
+    <rect x="50" y="430" width="700" height="70" rx="8" fill="url(#glassOverlay)" opacity="0.5"/>
+    <path d="M55 437 L745 437" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </g>
+  <text x="70" y="455" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#065F46">Step 4: Secure Data Exchange</text>
   <text x="70" y="480" font-family="Arial, sans-serif" font-size="13" fill="#065f46">AI provides authentication → Rep shares claim status, eligibility info</text>
 
   <!-- Arrow 4 -->
-  <line x1="400" y1="500" x2="400" y2="530" stroke="#059669" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <line x1="400" y1="500" x2="400" y2="530" stroke="#10B981" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
 
   <!-- Step 5: Escalation Available -->
-  <rect x="50" y="530" width="700" height="70" rx="8" fill="#f0fdf4" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
-  <text x="70" y="555" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#047857">Step 5: Escalation Available (if needed)</text>
+  <g filter="url(#shadow)">
+    <rect x="50" y="530" width="700" height="70" rx="8" fill="url(#successGradLight)" stroke="#10B981" stroke-width="2"/>
+    <rect x="50" y="530" width="700" height="70" rx="8" fill="url(#glassOverlay)" opacity="0.5"/>
+    <path d="M55 537 L745 537" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </g>
+  <text x="70" y="555" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#065F46">Step 5: Escalation Available (if needed)</text>
   <text x="70" y="580" font-family="Arial, sans-serif" font-size="13" fill="#065f46">Clear path to human agent with context preserved + Reference ID</text>
 
   <!-- Arrow 5 -->
-  <line x1="400" y1="600" x2="400" y2="630" stroke="#059669" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <line x1="400" y1="600" x2="400" y2="630" stroke="#10B981" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
 
   <!-- Step 6: Success -->
-  <rect x="50" y="630" width="700" height="50" rx="8" fill="#047857" stroke="#065f46" stroke-width="3" filter="url(#shadow)"/>
-  <text x="400" y="662" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">
+  <g filter="url(#shadowDark)">
+    <rect x="50" y="630" width="700" height="50" rx="8" fill="url(#successGradDark)" stroke="#10B981" stroke-width="3"/>
+    <rect x="50" y="630" width="700" height="50" rx="8" fill="url(#glassOverlay)" opacity="0.4"/>
+    <path d="M55 636 L745 636" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>
+  </g>
+  <text x="400" y="662" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#E0F2F1" text-anchor="middle">
     ✅ WORKFLOW COMPLETE — Fast, Secure, Auditable
   </text>
 </svg>
