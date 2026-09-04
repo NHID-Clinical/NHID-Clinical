@@ -28,9 +28,9 @@ from several partial runs.
 
 | Outcome | Count |
 |---|---|
-| **Collected** | **1056** |
-| **Executed** | **1056** |
-| **Passed** | **1056** |
+| **Collected** | **1073** |
+| **Executed** | **1073** |
+| **Passed** | **1073** |
 | Failed | **0** |
 | Skipped | **0** |
 | xfailed | **0** |
@@ -53,7 +53,7 @@ python -m venv ../cleanenv
 # instead of a quiet 18-test hole.
 ../cleanenv/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8011 &
 
-../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1056 collected
+../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1073 collected
 NHID_REQUIRE_SERVER=1 NHID_BASE_URL=http://127.0.0.1:8011 \
   ../cleanenv/bin/python -m pytest tests/ -q --disable-warnings -rsxX
 ```

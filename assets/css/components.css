@@ -1134,3 +1134,195 @@ caption.visually-hidden {
 [data-theme="dark"] .cm-audit rect {
   stroke: #58b4f0;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Canonical visual model — the interaction boundary (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   positioning.md states the thesis in one sentence: NHID-Clinical "does not
+   govern the AI model. It governs the moment a non-human actor crosses an
+   organizational boundary." The most common misreading of this project is that
+   it is healthcare AI governance broadly, so the diagram draws the scope
+   line rather than asserting it — the model sits inside the provider
+   organization, greyed and dashed and labelled "Not governed here", while
+   NHID-Clinical sits on the boundary itself and nowhere else.
+
+   The out-of-scope block is deliberately the visually quietest thing in the
+   figure. It is there to be excluded, not to compete. */
+
+.boundary-model {
+  margin: 1.75rem 0 0;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.boundary-model svg {
+  min-width: 36rem;
+}
+
+.ib-org rect {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.ib-org-label {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* Out of scope: quiet, dashed, and stated. */
+.ib-outside rect {
+  fill: var(--mist);
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.ib-outside-title {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ib-outside-note {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.ib-actor rect {
+  fill: var(--teal-soft);
+  stroke: #9cc5cf;
+  stroke-width: 1.25;
+}
+
+.ib-actor-label {
+  fill: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.ib-boundary {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-dasharray: 8 5;
+  opacity: 0.55;
+}
+
+.ib-boundary-label {
+  fill: var(--ink);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  opacity: 0.75;
+}
+
+.ib-call {
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+.ib-call-head {
+  fill: var(--blue);
+}
+
+/* The only filled, emphasised element: what this project actually governs. */
+.ib-gate rect {
+  fill: var(--blue-soft);
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+.ib-gate-title {
+  fill: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ib-gate-q {
+  fill: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 12.5px;
+}
+
+.ib-note {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 12.5px;
+}
+
+[data-theme="dark"] .ib-outside rect { fill: #12202f; }
+[data-theme="dark"] .ib-actor rect   { fill: #08222a; stroke: #1d5462; }
+[data-theme="dark"] .ib-gate rect    { fill: #0a2033; stroke: #58b4f0; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Canonical visual model — shadow evaluation (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   The property readers most often get wrong is that a shadow evaluation
+   intercepts the call. It does not: it reads traces the adopter already holds.
+   Prose has said "observe-only, non-intercepting" on this page for a long time
+   and it kept being misread, so the diagram makes it structural — the live call
+   sits above a divider, the evaluation below it, and exactly one arrow crosses,
+   downward, representing recording that already happens. There is deliberately
+   no upward arrow anywhere in the figure, because there is no mechanism for
+   one. */
+
+.shadow-model {
+  margin: 1.5rem 0 0;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.shadow-model svg { min-width: 36rem; }
+
+.sm-live rect {
+  fill: var(--mist);
+  stroke: var(--line);
+  stroke-width: 1.25;
+}
+
+.sm-eval rect {
+  fill: var(--teal-soft);
+  stroke: #9cc5cf;
+  stroke-width: 1.25;
+}
+
+.sm-call, .sm-flow { stroke: var(--body); stroke-width: 2; }
+.sm-call-head, .sm-flow-head { fill: var(--body); }
+
+/* The one crossing. Dashed, because it is a recording that already exists
+   rather than a connection this framework installs. */
+.sm-tap { stroke: var(--blue); stroke-width: 1.75; stroke-dasharray: 5 4; }
+.sm-tap-head { fill: var(--blue); }
+
+.sm-divider { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 3 4; }
+
+.sm-zone {
+  fill: var(--body); font-family: var(--sans); font-size: 11.5px;
+  font-weight: 700; letter-spacing: 0.11em;
+}
+
+.sm-label { fill: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 600; }
+.sm-sub   { fill: var(--body); font-family: var(--sans); font-size: 11.5px; }
+.sm-note  { fill: var(--body); font-family: var(--sans); font-size: 12px; }
+
+[data-theme="dark"] .sm-live rect { fill: #12202f; }
+[data-theme="dark"] .sm-eval rect { fill: #08222a; stroke: #1d5462; }
+[data-theme="dark"] .sm-tap       { stroke: #58b4f0; }
+[data-theme="dark"] .sm-tap-head  { fill: #58b4f0; }
