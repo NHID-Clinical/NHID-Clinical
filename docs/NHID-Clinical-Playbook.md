@@ -197,7 +197,7 @@ Stated plainly, because a reader who discovers these later has been misled.
 
 - **Detection is lexical.** PDX-01 and DBC-01 match phrase maps plus a small number of structural rules. A paraphrase outside the map is missed.
 - **DBC-01 is the least precise control** — 91.5% detection with 5 false positives on 127 clean conversations.
-- **Disclosure *adequacy* is not judged.** IDG-01 checks for contradiction, not sufficiency. A bare organisational name is not flagged — see G2.
+- **Disclosure *adequacy* is not judged.** IDG-01 checks for contradiction, not sufficiency. A bare organisational name is not flagged — see G2, which remains open.
 - **Sequencing checks need a cooperating harness.** Same-turn disclosure-and-request detection requires `disclosure_established_prior`; absent it the check does not run.
 - **ATR-01 persistence is external.** The engine emits the audit trail; it cannot detect that a downstream store failed to persist it.
 - **Escalation quality is not assessed.** EIT-01 verifies that an escalation path exists and was honoured, not that a competent human answered.
@@ -830,15 +830,18 @@ explicitly decided. Full account: `governance-corpus-remediation.md` §2.1.
 
 ## 5. Open governance and specification questions (G1–G4)
 
-**Unresolved. Not decided anywhere in this Playbook, and not to be resolved by
-adjusting the corpus or the implementation to suit.**
+**Analysed in full in `decision-gate-G1-G4.md` (2026-09-04).** Three are settled
+by repository evidence; one needs a person. **No engine, corpus or test change
+was made in settling them**, and the measured governance figures are unchanged —
+several of the resolutions below would, if applied to the corpus, raise the
+reported rate, which is why they were recorded rather than performed.
 
-| # | Question | Why it cannot be settled from repository evidence |
+| # | Question | Disposition |
 |---|---|---|
-| **G1** | Does IDG-01 require the literal word "AI", or is "automated" sufficient? | The canonical specification says the agent must identify itself as **automated**, and the engine's own remediation text is *"I am an automated system."* The evaluation corpus expects stricter. Both readings are internally coherent; they disagree. Deciding it changes `nhid_ec_idg01_003` and possibly the engine's remediation wording |
-| **G2** | Is a bare organisational name sufficient disclosure — and why does the corpus contain contradictory expectations for that shape? | The corpus declares `"claims system"` a violation and does not declare `"authorization system"` one. They are the same shape. Until it is settled the engine abstains, by explicit prior decision. Deciding it closes one miss and changes four other scenarios |
-| **G3** | Should ATR-01 be evaluated from transcripts at all? | ATR-01 validates an audit **record**; a transcript is not one. A replay harness constructs complete audit envelopes by definition, so the control cannot fail in that setting. The pilot kit records the same limitation independently. Possibly the corpus should not carry ATR-01 expectations, or a different harness should evaluate them |
-| **G4** | Is same-turn disclosure followed by a PHI request a PDX-01 violation? | The engine says yes — disclosure should precede the request as a distinct turn, so the counterparty has a chance to react. Four corpus scenarios disagree by omission. Defensible either way |
+| **G1** | Does IDG-01 require the literal word "AI", or is "automated" sufficient? | **Resolved — "automated" is sufficient.** Every normative source says *automated*, the normative CTS case passes *"I am an automated system"*, and six of the seven corpus scenarios using "automated" are labelled compliant. The seventh, `nhid_ec_idg01_003`, cannot be reconciled with its own sibling `nhid_ec_comp_002` — the two assertions differ by a first name. No engine change |
+| **G2** | Is a bare organisational name sufficient disclosure — and why does the corpus contain contradictory expectations for that shape? | **Open — human judgment required.** The recommended reading is that it is *not* sufficient: a system name identifies the organisation, not the nature of the speaker. Acting on it means overturning a documented prior decision locked by `test_bare_organisational_names_are_out_of_scope`. That lock worked as designed; reversing it is a decision, not a consequence. The engine keeps abstaining until it is made |
+| **G3** | Should ATR-01 be evaluated from transcripts at all? | **Resolved — no.** The normative CTS case `ATR-01-FAIL-MISSING` nulls fields on the *event object* via `input_event_overrides`, never in speech. ATR-01 is an event-layer control, exercised properly in three offline suites plus the CTS. The corpus scenario is a category error — but the 0/1 stays in the denominator, because removing it would raise the rate |
+| **G4** | Is same-turn disclosure followed by a PHI request a PDX-01 violation? | **Resolved — yes, at MAJOR severity.** `nhid_ec_pdx01_002` and `nhid_ec_combo_006` declare exactly this shape a PDX-01 violation and the engine detects both. Of the four scenarios previously described as disagreeing, only two are this shape at all; the other two omit PDX-01 on turns carrying *no disclosure whatsoever*, which is under-declaration of the ordinary gate, not a contrary position |
 
 ## 6. Risk register
 

@@ -108,8 +108,18 @@ Two pieces of repository evidence point the same way:
 
 Making the engine reject it would therefore require the engine to contradict
 both the specification and its own remediation. **No change was made in either
-the engine or the corpus.** Whether NHID-Clinical requires the literal word
-"AI", or accepts "automated", is a specification decision for a person.
+the engine or the corpus.**
+
+**This has since been resolved — see `docs/decision-gate-G1-G4.md` §G1.** The
+premise above, that "the corpus treats this as too weak", was drawn from this
+scenario alone. Read across the whole corpus it does not hold: seven scenarios
+use "automated" with no form of "AI", and six of them are labelled compliant on
+IDG-01 — including `nhid_ec_comp_002`, *"I'm Claude, an automated assistant"*,
+which differs from this assertion by the token `Claude` and nothing else. The
+corpus does not require the literal word "AI"; one of its labels does. The
+engine is correct as it stands, and this scenario's expectation is the outlier.
+The corpus was still not edited, because that edit removes a miss and so moves
+the published figure — see the decision gate, §5.
 
 ### 2.3 `nhid_ec_atr01_001` — "Missing Audit Event" · **NOT FIXABLE ON THIS PATH**
 
@@ -143,11 +153,17 @@ None were introduced by this work; all eight pre-date it and none had ever been
 reported. Read individually, all eight look like **correct detections against
 scenarios that under-declare what their turns contain**:
 
-| Scenario | Undeclared rule fired | Why it looks correct |
-|---|---|---|
-| `nhid_ec_idg01_001/002/003`, `nhid_ec_combo_005` | PDX-01 | A protected-data request made in the same turn as the initial disclosure. The engine holds that disclosure must precede the request as a distinct turn |
-| `nhid_ec_pdx01_001` | IDG-01 | Turn 0 carries **no disclosure at all**. The scenario is about PHI before disclosure, so IDG-01 firing is the point |
-| `nhid_ec_dbc01_001/002`, `nhid_ec_combo_003` | IDG-01 | Human personas — *"I'm Representative Alex from claims"*, *"I'm a specialist"*, *"I'm Taylor with Authorization Services"* — with no non-human assertion |
+| Scenario | Undeclared rule fired | Reason code | Why it looks correct |
+|---|---|---|---|
+| `nhid_ec_idg01_002/003` | PDX-01 | `PDX01_DISCLOSURE_NOT_SEQUENCED` | A protected-data request made in the same turn as the initial disclosure. The engine holds that disclosure must precede the request as a distinct turn |
+| `nhid_ec_idg01_001`, `nhid_ec_combo_005` | PDX-01 | `PDX01_PHI_GATE_TRIGGERED` | Turn 0 carries **no disclosure at all** and asks for a member ID — the ordinary gate, which the normative case `PDX-01-FAIL-NOPHI` declares critical |
+| `nhid_ec_pdx01_001` | IDG-01 | `PDX01_PHI_GATE_TRIGGERED` | Turn 0 carries **no disclosure at all**. The scenario is about PHI before disclosure, so IDG-01 firing is the point |
+| `nhid_ec_dbc01_001/002`, `nhid_ec_combo_003` | IDG-01 | `IDG01_DISCLOSURE_CONTRADICTED` | Human personas — *"I'm Representative Alex from claims"*, *"I'm a specialist"*, *"I'm Taylor with Authorization Services"* — with no non-human assertion |
+
+An earlier version of this table grouped all four of the first two rows together
+as same-turn disclosures. Executing them shows two different rules: only
+`idg01_002` and `idg01_003` disclose at all. The distinction matters to **G4**
+and is worked through in `docs/decision-gate-G1-G4.md`.
 
 **No scenario was edited to declare them.** Adding these to `expected_violations`
 would raise the reported detection rate, which is exactly the move that must not
@@ -160,7 +176,7 @@ All three misses are blocked on decisions rather than on code:
 | Miss | Blocked on |
 |---|---|
 | `nhid_ec_idg01_002` | A corpus contradiction the engine deliberately abstains from (§2.1, G2) |
-| `nhid_ec_idg01_003` | Whether IDG-01 requires the literal word "AI" (§2.2, G1) |
+| `nhid_ec_idg01_003` | Nothing — **G1 is resolved**: the corpus label is wrong, not the engine. Left in place because correcting it would raise the rate (§2.2, G1) |
 | `nhid_ec_atr01_001` | ATR-01 is not observable through transcript replay (§2.3, G3) |
 
 Reaching 98–99% from here would require editing the corpus, relaxing a control,
@@ -174,10 +190,10 @@ None was taken.
 
 | # | Question | Why it cannot be settled from repository evidence |
 |---|---|---|
-| G1 | Does IDG-01 require the literal word "AI", or is "automated" sufficient? | The specification says "automated"; the corpus expects stricter. Both are internally coherent; they disagree. Settling it changes `nhid_ec_idg01_003` and possibly the engine's remediation wording |
-| G2 | Is a bare organisational name ("claims system", "authorization system") an IDG-01 violation? | **The corpus says both yes and no.** It declares `"claims system"` a violation and does not declare `"authorization system"` one, and the two are the same shape. Until that is settled the engine abstains, by an explicit prior decision (§2.1). Settling it closes `nhid_ec_idg01_002` and changes four other scenarios |
-| G3 | Should ATR-01 be measurable from transcripts at all? | It validates the audit record, and a transcript is not one. Possibly the corpus should not carry ATR-01 expectations, or a different harness should evaluate them |
-| G4 | Is a same-turn disclosure plus PHI request a PDX-01 violation? | The engine says yes and four scenarios disagree by omission. Defensible either way |
+| G1 | Does IDG-01 require the literal word "AI", or is "automated" sufficient? | **Resolved 2026-09-04 — "automated" is sufficient.** Six corpus scenarios agree with the specification and one does not; the outlier cannot be reconciled with its own sibling `nhid_ec_comp_002`. No engine change. See `docs/decision-gate-G1-G4.md` §G1 |
+| G2 | Is a bare organisational name ("claims system", "authorization system") an IDG-01 violation? | **The corpus says both yes and no.** It declares `"claims system"` a violation and does not declare `"authorization system"` one, and the two are the same shape. Until that is settled the engine abstains, by an explicit prior decision (§2.1). Settling it closes `nhid_ec_idg01_002` and changes four other scenarios. **Still open** — the recommended reading and everything it would require are in `docs/decision-gate-G1-G4.md` §G2 |
+| G3 | Should ATR-01 be measurable from transcripts at all? | **Resolved 2026-09-04 — no.** The normative CTS case evaluates ATR-01 by overriding event fields, never from speech. The scenario belongs in an event-layer harness; the denominator stays as it is. See §G3 |
+| G4 | Is a same-turn disclosure plus PHI request a PDX-01 violation? | **Resolved 2026-09-04 — yes, at MAJOR severity.** Two scenarios declare exactly this shape and both call it PDX-01; the engine agrees. Only two of the four "disagreeing" scenarios are this shape at all — the other two under-declare the ordinary gate. See §G4 |
 
 ---
 
