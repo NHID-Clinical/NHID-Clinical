@@ -87,17 +87,41 @@ def test_count_claim_detection(phrase, flagged, why):
     assert bool(hits) is flagged, f"{why}: {phrase!r} -> {hits}"
 
 
-def test_guard_would_have_caught_the_original_defect(tmp_path):
+# specification.html as it stood at ba93e21, before PDX-01 was restored to it.
+# Committed rather than fetched: CI checks out with fetch-depth 1, so
+# `git show ba93e21:specification.html` fails on the runner and this test used
+# to skip there while passing locally. A regression guard that only runs on one
+# machine is not a guard, and this was the skip behind CI reporting "1144
+# passed, 1 skipped" under a job named "0 skipped".
+PRE_FIX = ROOT / "tests" / "fixtures" / "specification-pre-pdx01-ba93e21.html"
+
+
+def test_guard_would_have_caught_the_original_defect():
     """Regression proof against the real pre-fix file, not a synthetic one."""
     g = _guard()
-    pre_fix = subprocess.run(
+    assert PRE_FIX.exists(), (
+        "the pre-fix specification fixture is missing; without it this test "
+        "proves nothing about the original defect"
+    )
+    named = g._named(g._visible_text(PRE_FIX))
+    assert "PDX-01" not in named, "the pre-fix file should be missing PDX-01"
+    assert len(named) == 4
+
+
+def test_the_fixture_is_the_real_pre_fix_file_when_history_is_available():
+    """
+    Belt and braces. Where the full history *is* present — a maintainer's
+    checkout — confirm the committed fixture still matches the commit it claims
+    to be, so it cannot be quietly edited into a synthetic example.
+
+    Skipped only on a shallow clone, where there is nothing to compare against.
+    """
+    original = subprocess.run(
         ["git", "show", "ba93e21:specification.html"],
         cwd=ROOT, capture_output=True, text=True,
     )
-    if pre_fix.returncode != 0:
-        pytest.skip("commit ba93e21 not reachable in this checkout")
-    p = tmp_path / "specification.html"
-    p.write_text(pre_fix.stdout)
-    named = g._named(g._visible_text(p))
-    assert "PDX-01" not in named, "the pre-fix file should be missing PDX-01"
-    assert len(named) == 4
+    if original.returncode != 0:
+        pytest.skip("shallow checkout: ba93e21 not reachable, nothing to compare")
+    assert PRE_FIX.read_text(encoding="utf-8") == original.stdout, (
+        "the committed fixture no longer matches ba93e21:specification.html"
+    )

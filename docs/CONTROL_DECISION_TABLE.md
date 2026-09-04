@@ -155,7 +155,7 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 | EIT-01 | `test_eit01_multiturn.py` (8) | 2 violations | 2 detected — 100% detection, 100% accuracy |
 | ATR-01 | `test_atr01_audit_trail.py` (12), `test_atr01_persistence.py` (5) | 150 sessions | Audit trail operational across all sessions |
 
-Suite totals: **1145 passing, 0 skipped, 0 xfailed** across 55 test files. The per-control
+Suite totals: **1148 passing, 0 skipped, 0 xfailed** across 55 test files. The per-control
 figures in *this* table are read from `corpus_evaluation_output/corpus_metrics.json`
 (Tonic, 150 sessions, 1,227 turns).
 
@@ -190,4 +190,4 @@ have dedicated regression files (`test_engine_disclosure_hardening.py`,
 
 ---
 
-**Status**: Tier 0 Ready (1145 passing, 0 skipped, 0 xfailed; audit trail operational)
+**Status**: Tier 0 Ready (1148 passing, 0 skipped, 0 xfailed; audit trail operational)
