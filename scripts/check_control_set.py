@@ -105,14 +105,27 @@ _QUALIFIER = (
     r"|comprises?|contains?|consists\s+of)"
 )
 _NUMBER = r"(one|two|three|four|five|six|\d+)"
+# Two shapes, because the qualifier can fall on either side of the number.
+#   "the proposal suggests four behaviors"  -> qualifier precedes  (shape 1)
+#   "four suggested behaviors"              -> qualifier follows   (shape 2)
+# Shape 2 was found on specs/index.html after shape 1 alone had been declared
+# sufficient, which is the second time a version of this guard has been too
+# narrow. Shape 2 is deliberately restricted to adjectives that only appear when
+# the control set itself is being counted.
+_SET_ADJ = r"(?:suggested|canonical|behaviou?ral|deterministic|core|policy)"
 COUNT_CLAIM = re.compile(
-    r"\b" + _QUALIFIER + r"\s+" + _NUMBER
-    + r"\s+(?:deterministic\s+)?(?:canonical\s+)?(?:behaviors?|behaviours?|controls?)\b",
+    r"(?:\b" + _QUALIFIER + r"\s+" + _NUMBER
+    + r"\s+(?:deterministic\s+)?(?:canonical\s+)?(?:behaviors?|behaviours?|controls?)\b"
+    + r"|\b" + _NUMBER + r"\s+" + _SET_ADJ
+    + r"\s+(?:behaviors?|behaviours?|controls?)\b)",
     re.I,
 )
-# "four deterministic behavioral controls" is the correct description of the
-# behavioral subset and must not be flagged.
-BEHAVIORAL_OK = re.compile(r"four\s+deterministic\s+behaviou?ral\s+controls?", re.I)
+# Naming the subset is what matters, not the exact adjective. "four
+# behavioural controls" is already unambiguous; requiring the word
+# "deterministic" made the guard fire on four correct surfaces, and a guard
+# that flags correct text gets muted.
+BEHAVIORAL_OK = re.compile(
+    r"four\s+(?:deterministic\s+)?behaviou?ral\s+controls?", re.I)
 WORD_TO_INT = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
 
 
@@ -178,7 +191,12 @@ def check_count_claims() -> list[str]:
             window = text[max(0, m.start() - 70): m.end() + 70]
             if BEHAVIORAL_OK.search(window):
                 continue
-            raw = m.group(1).lower()
+            # The pattern alternates, so the number lands in whichever
+            # branch matched; take the first group that captured.
+            captured = next((g for g in m.groups() if g), None)
+            if captured is None:
+                continue
+            raw = captured.lower()
             claimed = WORD_TO_INT.get(raw)
             if claimed is None:
                 try:

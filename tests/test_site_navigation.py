@@ -267,14 +267,17 @@ def test_published_adapter_claims_match_the_repository():
     vendors = modules - {"fabricate", "call_progress"}
     assert vendors, "no vendor adapters found — check the path"
 
-    page = read("interoperability.html")
+    # interoperability.html was merged into developers.html by the IA
+    # consolidation. Reading the retired file would leave this guard passing
+    # while checking a page nobody can reach.
+    page = read("developers.html")
     for vendor, shown_as in [("retell", "Retell"), ("vonage", "Vonage"),
                              ("amazon_connect", "Amazon Connect")]:
         if vendor in vendors:
             assert _re.search(rf"\b{_re.escape(shown_as)}\b", page), (
-                f"adapters/{vendor}_adapter.py exists but interoperability.html "
+                f"adapters/{vendor}_adapter.py exists but developers.html "
                 f"never mentions {shown_as}"
             )
     assert "adapters are planned" not in page, (
-        "interoperability.html still describes implemented adapters as planned"
+        "developers.html still describes implemented adapters as planned"
     )

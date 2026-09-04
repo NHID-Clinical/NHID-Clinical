@@ -31,13 +31,13 @@ rather than inferring.
 ## 2. Test suite
 
 ```
-1031 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
+1049 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
 1002 passed, 18 skipped             # ...the same command with no API listening
 1005 collected                # python -m pytest tests/ --collect-only -q
 55 files                      # files under tests/ that pytest collects from
 ```
 
-1031 collected, 1031 passed. Every published surface stating these numbers must
+1049 collected, 1049 passed. Every published surface stating these numbers must
 satisfy that arithmetic; `scripts/check_number_drift.py` enforces the passed
 count, and as of `aaad25a` also reads the text of every `specs/*.pdf`.
 
@@ -187,7 +187,7 @@ Recorded because they change what a session can verify:
 ```bash
 git rev-parse HEAD
 python -m uvicorn app:app --port 8000 &         # required, or 18 tests skip
-python -m pytest tests/ -q                      # 1031 passed, 0 skipped, 0 xfailed
+python -m pytest tests/ -q                      # 1049 passed, 0 skipped, 0 xfailed
 python -m pytest tests/ --collect-only -q       # 1005 collected
 python scripts/validate_ci.py                   # CI PASS
 python scripts/check_baseline.py                # Fabricate baseline
@@ -211,10 +211,10 @@ that introduced no net change.
 
 | Figure | Value | Derived by |
 |---|---|---|
-| Suite passing | **1031** | `python -m pytest tests/ -q` with the API running |
+| Suite passing | **1049** | `python -m pytest tests/ -q` with the API running |
 | Recorded divergences | **0** | both contracts resolved; see `skipped-test-audit.md` §8 |
 | Skipped | **0** | same run |
-| Collected | **1031** | `--collect-only -q`; equals the passing count |
+| Collected | **1049** | `--collect-only -q`; equals the passing count |
 | IDG-01 | 70/70, 0 FP | `scripts/check_baseline.py` |
 | PDX-01 | 41/41, 0 FP | `scripts/check_baseline.py` |
 | DBC-01 | 183/200 = 91.5%, 5 FP | `scripts/check_baseline.py` |
