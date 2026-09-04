@@ -1347,10 +1347,10 @@ def make_operational_blueprint():
     return path
 
 
-# ── Document 4: v2 Technical Playbook ────────────────────────────────────────
+# ── Document 4: NHID-Auth v2 Technical Reference ─────────────────────────────
 
 def make_technical_playbook():
-    path = os.path.join(OUT_DIR, "NHID-Clinical-v2-Technical-Playbook.pdf")
+    path = os.path.join(OUT_DIR, "NHID-Auth-v2-Technical-Reference.pdf")
     doc = SimpleDocTemplate(path, pagesize=letter,
                             leftMargin=inch, rightMargin=inch,
                             topMargin=0.75*inch, bottomMargin=0.75*inch)
@@ -1359,8 +1359,8 @@ def make_technical_playbook():
 
     _cover(
         story,
-        "v2 Technical Playbook",
-        "NHID-Clinical  ·  Tech Stack, Adoption Tiers & Governance Framework Reference",
+        "NHID-Auth v2 Technical Reference",
+        "Agent Identity  ·  Tech Stack, Adoption Tiers & Governance Framework Reference",
         "2.0",
         "Engineering Reference",
     )

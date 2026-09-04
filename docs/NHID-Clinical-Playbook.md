@@ -986,7 +986,7 @@ committee, working group, or member organisation, and none is implied.
 | **Status** | Voluntary open proposal. **Not** an accredited standard, certification programme, or regulatory requirement |
 | **Known limitations** | Part I §9, Part III §1 and §6, Part V §6 |
 | **Unresolved decisions** | G1–G4, Part V §5 |
-| **Naming note** | `specs/NHID-Clinical-v2-Technical-Playbook.pdf` is a separate, narrower document about NHID-Auth v2. The overlap in name is unresolved — see `playbook-source-inventory.md` §Open items |
+| **Naming note** | Resolved 2026-09-04. The narrower NHID-Auth v2 document was renamed to `specs/NHID-Auth-v2-Technical-Reference.pdf`, so "Playbook" now names exactly one artifact. Its contents were **not** merged here — it covers a different subject |
 
 **Publication does not confer status.** This document is a reference for people
 evaluating, implementing, or assessing NHID-Clinical. It is not an external

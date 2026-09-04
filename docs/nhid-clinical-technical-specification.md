@@ -359,7 +359,7 @@ must address before relying on this as live infrastructure rather than a demonst
 | Enterprise observability layer | Not implemented | OpenTelemetry integration (five-layer trust stack, layer 5) |
 | STIR/SHAKEN integration | Not implemented | Future version candidate |
 | Attestation registry | Not implemented | Planned v2.1; depends on a registry operator existing (PKI guide §1.14) |
-| Real pilot data | None — "no organizations have adopted or piloted it yet" | 90-day shadow pilot program (`roadmap.html`, `pilot.html`) |
+| Real pilot data | None — "no organizations have adopted or piloted it yet" | An observe-only shadow evaluation, run to the sequence in `docs/pilot-kit/` — no prescribed duration |
 
 None of these gaps block using NHID-Clinical's **behavioral** controls (§2) today — IDG-01/PDX-01/
 DBC-01/EIT-01/ATR-01 evaluation has no dependency on the cryptographic layer. They specifically

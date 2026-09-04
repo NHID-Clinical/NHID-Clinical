@@ -15,7 +15,7 @@ This questionnaire is meant to be **placed in front of** the [technical specific
 - **Providers** selecting or auditing the AI voice platform calling on their behalf.
 - **Compliance officers** who need a defensible, repeatable record of what was asked and answered.
 - **AI voice vendors** who want to get ahead of these questions before a payer or provider asks them.
-- **Shadow-pilot participants** deciding whether to onboard a vendor into a 90-day observation pilot (see `roadmap.html` / `for-payers.html`).
+- **Shadow-evaluation teams** deciding whether to onboard a vendor into an observe-only evaluation (see `docs/pilot-kit/` and the shadow evaluation guide). The evaluation has no prescribed duration.
 
 Each section lists the question, why it matters, and what a credible answer looks like at each of the three integration tiers (Tier 0 — behavioral check only, Tier 1 — continuous monitoring, Tier 2 — cryptographic identity). A vendor answering "not applicable" or "not yet implemented" to a Tier 2 question is not automatically disqualified — NHID-Clinical v1.3 alone does not require cryptographic identity. Treat Tier 2 gaps as a roadmap conversation, not a hard fail. Treat Tier 0 gaps (disclosure, PHI gating, escalation) as a hard fail.
 

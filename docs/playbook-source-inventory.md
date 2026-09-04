@@ -29,11 +29,14 @@ measure — is sound and is absorbed. **The calendar is not.** The Playbook
 describes an ordered sequence whose stages depend on each other, with no
 prescribed length.
 
-**One naming collision needs a human decision.** `specs/NHID-Clinical-v2-Technical-Playbook.pdf`
-already exists. It is 722 words about NHID-Auth v2 tech stack and adoption
-tiers — a different and much narrower artifact than this one. Two documents
-called "Playbook" in the same `specs/` directory is a discoverability problem
-that the Playbook cannot solve about itself. Recorded in §Open items.
+**One naming collision, since resolved.** `specs/NHID-Clinical-v2-Technical-Playbook.pdf`
+was 722 words about NHID-Auth v2 tech stack and adoption tiers — a different and
+much narrower artifact. Two documents called "Playbook" in one `specs/`
+directory was a discoverability problem the Playbook could not solve about
+itself, so it was raised rather than worked around. **Resolved 2026-09-04** by
+renaming it to `specs/NHID-Auth-v2-Technical-Reference.pdf`. Its contents were
+deliberately **not** merged into the Playbook: eliminating a name clash is not a
+reason to fold one subject into another.
 
 ## Sources by Playbook part
 
@@ -135,5 +138,5 @@ why it reads as a discrepancy until you go looking.
 
 | # | Item |
 |---|---|
-| P1 | Two artifacts named "Playbook" in `specs/`. The existing v2 Technical Playbook is 722 words on NHID-Auth v2; this one is the comprehensive guide. Rename, fold in, or retire the older one |
-| P2 | `docs/pilot-kit/README.md` still contains a "30-day pilot plan" heading, contrary to the approved no-mandatory-duration decision. The Playbook does not carry it. Whether the kit itself should be edited is a separate call |
+| P1 | ~~Two artifacts named "Playbook" in `specs/`.~~ **Resolved 2026-09-04** — renamed to `NHID-Auth-v2-Technical-Reference.pdf`. **One consequence to note:** the old URL `/specs/NHID-Clinical-v2-Technical-Playbook.pdf` will now 404. A static host cannot redirect a `.pdf` path (an HTML stub served with `application/pdf` does not render), so unlike the retired HTML routes this one cannot be given a redirect. It was linked only from the downloads page internally; any external link to it breaks |
+| P2 | ~~`docs/pilot-kit/README.md` contains a "30-day pilot plan" heading.~~ **Resolved 2026-09-04** — replaced with an ordered workflow carrying no required number of days or weeks |

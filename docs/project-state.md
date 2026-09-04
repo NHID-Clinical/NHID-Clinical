@@ -116,7 +116,7 @@ above: it tests the implementation, not detection quality over a corpus.
 Seven PDFs in `specs/`, all produced by `scripts/generate_pdfs.py`:
 Evidence Pack · Knowledge Archive · Operational Blueprint v1.3 ·
 Shadow Evaluation Guide · v1.3 Core Specification · v1.3 Overview ·
-v2 Technical Playbook.
+NHID-Auth v2 Technical Reference.
 
 They are **generated, not hand-maintained**. Regenerate after any change to a
 published figure; `check_number_drift.py` now fails if a PDF's text disagrees
