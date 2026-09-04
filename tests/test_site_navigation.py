@@ -176,27 +176,63 @@ def test_stylesheet_is_structurally_intact(sheet):
 
 # ── Retired routes must stay retired, and adapter claims must match the repo ──
 
-RETIRED_ROUTES = ("/simulator.html", "/docs.html")
+# The eleven routes the site actually publishes after the IA consolidation.
+# Everything else either redirects or is not built at all.
+PUBLISHED = (
+    "index.html",
+    "specification.html",
+    "shadow-evaluation-guide.html",
+    "developers.html",
+    "evidence-pack.html",
+    "regulatory-alignment.html",
+    "framework/nhid-auth.html",
+    "faq.html",
+    "specs/index.html",
+    "privacy.html",
+    "sms-opt-in.html",
+)
+
+# Every route removed from the site. The first two predate the IA work; the rest
+# were merged into the destinations above on 2026-09-04. All of them still exist
+# as files in the repository and all of them redirect, so the risk is not a dead
+# link -- it is a published page quietly pointing back at a route that no longer
+# holds the content, which is how a consolidation unwinds itself.
+#
+# This list was two entries long while twenty-seven further routes were being
+# retired, which would have made the guard silently useless.
+RETIRED_ROUTES = (
+    "/simulator.html", "/docs.html",
+    "/about.html", "/technical-stack.html",
+    "/for-payers.html", "/script-examples.html", "/demo.html",
+    "/interoperability.html", "/registry.html",
+    "/roadmap.html", "/news.html", "/community.html",
+    "/identity-layer.html", "/implementation-review.html",
+    "/gov-sim.html", "/svg-preview.html", "/pilot.html", "/conformance.html",
+    "/framework/index.html", "/framework/controls.html",
+    "/framework/conformance-suite.html", "/framework/reference-implementation.html",
+    "/alignment/", "/platform/",
+)
 
 
-def test_retired_routes_are_not_linked_from_any_published_page():
+def test_the_published_set_is_what_the_build_emits():
+    """Guards the list below against drifting away from the real site."""
+    missing = [p for p in PUBLISHED if not os.path.exists(os.path.join(REPO_ROOT, p))]
+    assert not missing, f"published pages missing from the repository: {missing}"
+
+
+@pytest.mark.parametrize("page", PUBLISHED)
+def test_retired_routes_are_not_linked_from_any_published_page(page):
     """
-    The simulator competed with the framework for attention and docs.html renders
-    nothing when its CDN-hosted Swagger bundle fails. Both were removed from the
-    site. Generator scripts and copied nav blocks are how such links come back.
+    A published page must not link to a route the consolidation removed.
+
+    Scoped to the published set on purpose. The retired files remain in the
+    repository and still link to each other -- that is harmless, because none of
+    them is served. What matters is that nothing a visitor can reach sends them
+    to a route that redirects away again.
     """
-    offenders = []
-    for dirpath, dirnames, filenames in os.walk(REPO_ROOT):
-        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".")]
-        for name in filenames:
-            if not name.endswith(".html") or name in ("simulator.html", "docs.html"):
-                continue
-            rel = os.path.relpath(os.path.join(dirpath, name), REPO_ROOT)
-            content = read(rel)
-            for route in RETIRED_ROUTES:
-                if f'href="{route}' in content:
-                    offenders.append(f"{rel} -> {route}")
-    assert not offenders, "retired routes linked again: " + ", ".join(offenders[:10])
+    content = read(page)
+    offenders = [route for route in RETIRED_ROUTES if f'href="{route}' in content]
+    assert not offenders, f"{page} links retired routes: {offenders}"
 
 
 def test_no_calendar_booking_links():

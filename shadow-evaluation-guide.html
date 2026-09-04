@@ -49,11 +49,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
-          <a href="/framework/">Framework overview</a>
           <a href="/specification.html">Specification (v1.3)</a>
-          <a href="/framework/controls.html">The five controls</a>
-          <a href="/framework/conformance-suite.html">Conformance test suite</a>
           <a href="/regulatory-alignment.html">Regulatory alignment</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -61,30 +59,11 @@
         <div class="nav-dropdown-menu">
           <a href="/evidence-pack.html">Evidence pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow evaluation guide</a>
-          <a href="/registry.html">Implementation registry</a>
         </div>
       </div>
-      <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Developers <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="nav-dropdown-menu">
-          <a href="/developers.html">Developer guide</a>
-          <a href="/framework/reference-implementation.html">Reference implementation</a>
-          <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
-          <a href="/interoperability.html">Interoperability</a>
-          <a href="/technical-stack.html">Technical stack</a>
-        </div>
-      </div>
-      <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">About <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="nav-dropdown-menu">
-          <a href="/about.html">About the project</a>
-          <a href="/roadmap.html">Roadmap</a>
-          <a href="/news.html">News</a>
-          <a href="/faq.html">FAQ</a>
-          <a href="/community.html">Community</a>
-          <a href="/platform/">TrustLayer (in development)</a>
-        </div>
-      </div>
+      <a href="/developers.html">Developers</a>
+      <a href="/specs/">Downloads</a>
+      <a href="/faq.html">FAQ</a>
       <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
     <div class="nav-actions">
@@ -94,7 +73,7 @@
       <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
-      <a class="primary-pill" href="/for-payers.html">Run a shadow evaluation</a>
+      <a class="primary-pill" href="/shadow-evaluation-guide.html">Run a shadow evaluation</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
@@ -117,36 +96,17 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <strong class="mobile-nav-group">Framework</strong>
-  <a href="/framework/">Framework overview</a>
-  <a href="/specification.html">Specification</a>
-  <a href="/framework/controls.html">Controls</a>
-  <a href="/framework/nhid-auth.html">NHID-Auth</a>
-  <a href="/framework/reference-implementation.html">Reference Implementation</a>
-  <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
-  <a href="/technical-stack.html">Technical Stack</a>
-  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-  <strong class="mobile-nav-group">Platform</strong>
-  <a href="/platform/">TrustLayer overview</a>
-  <a href="/platform/agent-registry.html">Agent Registry</a>
-  <a href="/platform/trust-gateway.html">Trust Gateway</a>
-  <a href="/platform/evidence-center.html">Evidence Center</a>
-  <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
-  <a href="/platform/enterprise.html">Enterprise Workflow</a>
-  <strong class="mobile-nav-group">Simulator</strong>
-  <strong class="mobile-nav-group">Docs</strong>
-  <a href="/developers.html">Developer guide</a>
-  <a href="/interoperability.html">Interoperability</a>
-  <a href="/registry.html">Implementation Registry</a>
-  <strong class="mobile-nav-group">Resources</strong>
-  <a href="/evidence-pack.html">Evidence Pack</a>
-  <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
-  <a href="/for-payers.html">For Payers</a>
-  <a href="/community.html">Community</a>
-  <a href="/roadmap.html">Roadmap</a>
-  <a href="/news.html">News</a>
-  <a href="/faq.html">FAQ</a>
+  <a href="/specification.html">Specification (v1.3)</a>
+  <a href="/regulatory-alignment.html">Regulatory alignment</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
+  <strong class="mobile-nav-group">Evidence</strong>
+  <a href="/evidence-pack.html">Evidence pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow evaluation guide</a>
+  <strong class="mobile-nav-group">Build</strong>
+  <a href="/developers.html">Developers</a>
+  <a href="/specs/">Downloads</a>
   <strong class="mobile-nav-group">More</strong>
-  <a href="/about.html">About</a>
+  <a href="/faq.html">FAQ</a>
   <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
@@ -164,7 +124,7 @@
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
-        <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/for-payers.html">For Payers</a><span>/</span><span>Shadow Evaluation Guide</span></div>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/shadow-evaluation-guide.html">For Payers</a><span>/</span><span>Shadow Evaluation Guide</span></div>
         <p class="eyebrow meta-label">Behavioral Baseline &middot; Shadow Mode &middot; 90 Days</p>
         <h1 class="reveal page-heading">Shadow Evaluation Guide</h1>
         <p class="lede reveal lede-text">A structured, no-cost process for payer operations teams to establish a behavioral baseline for incoming AI voice calls — <strong>without changing anything in your call flow.</strong></p>
@@ -266,9 +226,9 @@
       <h2 style="margin-top:2.5rem">Related Resources</h2>
       <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
         <li><a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit" style="font-weight:600;color:var(--teal-bright)">Tier 0 Shadow Pilot Kit &rarr;</a> <span style="color:var(--body)">— capture schema, measurement script, 2&#8209;4 week plan, report template</span></li>
-        <li><a href="/for-payers.html" style="font-weight:600;color:var(--teal-bright)">For Payers guide &rarr;</a> <span style="color:var(--body)">— full 90-day pilot framing</span></li>
+        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">For Payers guide &rarr;</a> <span style="color:var(--body)">— full 90-day pilot framing</span></li>
         <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--teal-bright)">Evidence Pack &rarr;</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
-        <li><a href="/demo.html" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line &rarr;</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
+        <li><a href="#demo" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line &rarr;</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
       </ul>
 
     </div>
@@ -304,17 +264,6 @@
     </div>
   </section>
 
-  <section class="page-section" style="padding-top:1rem;padding-bottom:.5rem">
-    <div class="container" style="max-width:52rem">
-      <div class="pilot-banner" style="background:linear-gradient(135deg,var(--blue-soft),var(--teal-soft));border:1px solid var(--line);border-radius:1rem;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
-        <div style="flex:1;min-width:14rem">
-          <strong style="display:block;font-size:1rem;color:var(--ink);margin-bottom:.25rem">Interested in becoming a pilot partner?</strong>
-          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are actively seeking payer and provider organizations for the 90-day shadow evaluation below &mdash; its technical core is a 2&#8209;4 week measurement sprint. You would be among the first.</p>
-        </div>
-        <a class="cta-button" href="mailto:contact@nhid-clinical.org" style="flex-shrink:0;white-space:nowrap">Get in Touch <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  </section>
 
   <!-- ── Start here: Tier 0 quick start ─────────────────────────────────── -->
   <section class="page-section" style="padding-top:1rem;padding-bottom:.5rem">
@@ -429,7 +378,7 @@
 
       <div class="callout" role="note" style="margin-top:2.5rem">
         <strong>v1.3 vs. v2:</strong> v1.3 covers disclosure behavior and audit trails — suitable for shadow evaluations today. v2 adds cryptographic agent identity (NHID-Auth v2) for when you must verify the agent was authorized by the provider it claims to represent. NPIs are public; v1.3 alone does not prove authorization.
-        <a href="/roadmap.html" style="color:var(--teal-bright);font-weight:600;display:inline-block;margin-top:.5rem">Read the v2 roadmap →</a>
+        <a href="/framework/nhid-auth.html#v2" style="color:var(--teal-bright);font-weight:600;display:inline-block;margin-top:.5rem">Read the v2 roadmap →</a>
       </div>
 
       <h3 style="margin-top:2.5rem">Evaluation Resources</h3>
@@ -438,7 +387,7 @@
         <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">Shadow Evaluation Guide →</a> <span style="color:var(--body)">— full 90-day process</span></li>
         <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--teal-bright)">Evidence Pack →</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
         <li><a href="/regulatory-alignment.html" style="font-weight:600;color:var(--teal-bright)">Regulatory Alignment →</a> <span style="color:var(--body)">— CMS-0057-F, MACPAC, DOJ FCA, state AI laws</span></li>
-        <li><a href="/demo.html" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line →</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
+        <li><a href="#demo" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line →</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
       </ul>
 
     </div>
@@ -582,7 +531,7 @@
         <h3>Seen something different in the real world?</h3>
         <p>Real call patterns from payer operations staff are the most valuable input to this proposal. Share what you've seen.</p>
       </div>
-      <a class="closing-button" href="/for-payers.html">Start a pilot →</a>
+      <a class="closing-button" href="/shadow-evaluation-guide.html">Start a pilot →</a>
     </div>
   </section>
 

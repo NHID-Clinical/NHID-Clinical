@@ -17,9 +17,9 @@ from several partial runs.
 
 | Outcome | Count |
 |---|---|
-| **Collected** | **1020** |
-| **Executed** | **1020** |
-| **Passed** | **1020** |
+| **Collected** | **1031** |
+| **Executed** | **1031** |
+| **Passed** | **1031** |
 | Failed | **0** |
 | Skipped | **0** |
 | xfailed | **0** |
@@ -42,7 +42,7 @@ python -m venv ../cleanenv
 # instead of a quiet 18-test hole.
 ../cleanenv/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8011 &
 
-../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1020 collected
+../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1031 collected
 NHID_REQUIRE_SERVER=1 NHID_BASE_URL=http://127.0.0.1:8011 \
   ../cleanenv/bin/python -m pytest tests/ -q --disable-warnings -rsxX
 ```
@@ -69,7 +69,7 @@ typing-inspection==0.4.4  typing_extensions==4.16.0  uvicorn==0.52.4
 
 ## How the number got here
 
-987 → 1020, and the path matters because it is not simple growth.
+987 → 1031, and the path matters because it is not simple growth.
 
 | Step | Effect |
 |---|---|
