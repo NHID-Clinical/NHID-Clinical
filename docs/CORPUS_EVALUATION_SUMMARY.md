@@ -2,7 +2,7 @@
 
 **Date**: 2026-08-11  
 **Evaluated Corpus**: Tonic Fabricate Synthetic Evaluation (150 sessions, 1,227 turns)  
-**Engine Status**: Tier 0 Pilot Ready (1049 tests passing, 0 skipped, 0 xfailed)  
+**Engine Status**: Tier 0 Pilot Ready (1056 tests passing, 0 skipped, 0 xfailed)  
 **Corpus Integration Status**: Schema adapter implemented; all four behavioural controls evaluated
 
 ---
@@ -11,7 +11,7 @@
 
 The Tonic synthetic evaluation corpus is well-designed, comprehensive, and ready for use as a reference dataset. However, direct evaluation against the current NHID-Clinical policy engine requires a schema adapter—the corpus uses a simplified turn-level event format while the engine expects healthcare system governance context fields.
 
-**Recommendation**: The schema adapter development is now prioritized. The engine is ready for shadow pilots based on 1049 passing tests and verified control implementations.
+**Recommendation**: The schema adapter development is now prioritized. The engine is ready for shadow pilots based on 1056 passing tests and verified control implementations.
 
 ---
 
@@ -215,7 +215,7 @@ the fact that Tier 0 is observe-only.
 ## Integration Status
 
 ### Complete
-- ✅ 1049 passing unit tests (0 skipped, 0 xfailed)
+- ✅ 1056 passing unit tests (0 skipped, 0 xfailed)
 - ✅ 8 EIT-01 multi-turn regression tests
 - ✅ 13 Tonic adapter regression tests (`tests/test_tonic_schema_adapter.py`)
 - ✅ 5 ATR-01 persistence integration tests
@@ -241,7 +241,7 @@ the fact that Tier 0 is observe-only.
 
 ### ✅ What Works Now
 1. **Corpus quality**: Well-structured, comprehensive, ground-truth validated
-2. **Engine reliability**: 1049 passing / 0 skipped / 0 xfailed, deterministic, pure design preserved
+2. **Engine reliability**: 1056 passing / 0 skipped / 0 xfailed, deterministic, pure design preserved
 3. **Control coverage**: All 5 controls represented across 150 scenarios
 4. **Audit trail**: ATR-01 external persistence operational
 5. **Multi-turn detection**: EIT-01 escalation tracking verified in the unit suite across 5-turn gaps
@@ -263,7 +263,7 @@ the fact that Tier 0 is observe-only.
 ## Conclusion
 
 **Tier 0 Shadow Pilot**: ✅ **Suitable for observe-only evaluation**
-- Unit suite green: 1049 passing, 0 skipped, 0 xfailed
+- Unit suite green: 1056 passing, 0 skipped, 0 xfailed
 - External audit persistence operational and tested
 - Pure design constraints maintained — `evaluate_all()` still performs no I/O
 - Tier 0 is shadow mode: decisions are recorded, never enforced
@@ -273,4 +273,4 @@ the fact that Tier 0 is observe-only.
 - 100% detection, 0% false positives across IDG-01, PDX-01, DBC-01 and EIT-01
 - The corpus is a synthetic reference dataset, not a conformance claim
 
-**Next Action**: Run the Tier 0 shadow pilot against the 1049-test baseline. The corpus path is now clean, but a 150-session synthetic corpus is a floor, not a validation — real call data remains the meaningful test.
+**Next Action**: Run the Tier 0 shadow pilot against the 1056-test baseline. The corpus path is now clean, but a 150-session synthetic corpus is a floor, not a validation — real call data remains the meaningful test.

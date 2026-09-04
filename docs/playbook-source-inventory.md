@@ -113,8 +113,8 @@ Re-derived at `7c6c89d`, not copied from prose.
 
 | Figure | Value | Source |
 |---|---|---|
-| Conformance | 1049 collected / executed / passed; 0 failed, skipped, xfailed, xpassed | `conformance-run-record.md`, clean-clone run |
-| Governance detection | 29/32 = 90.6% | `scripts/eval_corpus.py` |
+| Conformance | 1056 collected / executed / passed; 0 failed, skipped, xfailed, xpassed | `conformance-run-record.md`, clean-clone run |
+| Governance detection | 30/32 = 93.8% | `scripts/eval_corpus.py` |
 | False positives | 0 of 5 compliant scenarios | `scripts/eval_corpus.py` |
 | Unexpected detections | 8, on violation scenarios, reported separately | `scripts/eval_corpus.py` |
 | Fabricate corpus | 550 conversations, 127 compliant | row count of the CSVs |

@@ -138,6 +138,28 @@ def evaluate_corpus(scenarios):
     return stats, false_positives, unexpected
 
 
+# G3, decided 2026-09-04. The five controls do not all live at the same layer,
+# and a transcript-replay harness can only observe one of those layers.
+#
+# IDG-01, PDX-01, DBC-01 and EIT-01 are *behavioural*: what was said, in what
+# order. A transcript is exactly the right evidence for them.
+#
+# ATR-01 is *audit/evidence*: it validates that required fields are present on
+# the audit event record. A transcript is not an audit record. The normative
+# conformance case ATR-01-FAIL-MISSING makes the layer explicit — it does not
+# supply a transcript missing anything, it nulls `session_id` and
+# `execution_context.pipeline_version` on the event object via
+# `input_event_overrides`. Replayed from speech, ATR-01 cannot fail here,
+# because build_event() constructs a complete, well-formed event from any turn.
+#
+# The scenario is NOT dropped and the denominator is NOT reduced — that would
+# raise the headline rate by removing an inconvenient miss. Both figures are
+# printed instead: the whole-corpus rate stays the headline, and the
+# transcript-observable rate says what the replay harness can actually measure.
+TRANSCRIPT_OBSERVABLE = ("IDG-01", "PDX-01", "DBC-01", "EIT-01")
+AUDIT_EVIDENCE = ("ATR-01",)
+
+
 def print_detection(stats):
     print("\n" + "="*60)
     print("EVALUATION CORPUS DETECTION RATES")
@@ -147,19 +169,38 @@ def print_detection(stats):
 
     total_expected = 0
     total_detected = 0
+    obs_expected = 0
+    obs_detected = 0
 
     for rule_id in sorted(stats.keys()):
         bucket = stats[rule_id]
         rate = bucket["detection_rate"]
-        print(f"{rule_id:<12} {bucket['expected']:>10} {bucket['detected']:>10} {rate:>9.1%}")
+        layer = "" if rule_id in TRANSCRIPT_OBSERVABLE else "  (audit/evidence)"
+        print(f"{rule_id:<12} {bucket['expected']:>10} {bucket['detected']:>10} {rate:>9.1%}{layer}")
         total_expected += bucket["expected"]
         total_detected += bucket["detected"]
+        if rule_id in TRANSCRIPT_OBSERVABLE:
+            obs_expected += bucket["expected"]
+            obs_detected += bucket["detected"]
 
     print("-"*60)
     if total_expected:
         overall_rate = total_detected / total_expected
         print(f"{'OVERALL':<12} {total_expected:>10} {total_detected:>10} {overall_rate:>9.1%}")
     print("="*60)
+
+    if obs_expected and obs_expected != total_expected:
+        obs_rate = obs_detected / obs_expected
+        audit_expected = total_expected - obs_expected
+        print()
+        print("Measurement layers (G3) — the OVERALL figure above remains the")
+        print("headline; neither layer replaces it, and no scenario is excluded.")
+        print(f"  transcript-observable (IDG-01, PDX-01, DBC-01, EIT-01): "
+              f"{obs_detected}/{obs_expected} = {obs_rate:.1%}")
+        print(f"  audit/evidence (ATR-01): {total_detected - obs_detected}/{audit_expected} "
+              f"— not measurable from transcripts; validated instead by")
+        print("    tests/test_atr01_audit_trail.py, tests/test_atr01_persistence.py,")
+        print("    tests/test_audit_integrity.py and the ATR-01 conformance pair.")
 
 
 def print_unexpected(unexpected):

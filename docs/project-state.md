@@ -31,13 +31,13 @@ rather than inferring.
 ## 2. Test suite
 
 ```
-1049 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
+1056 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
 1002 passed, 18 skipped             # ...the same command with no API listening
 1005 collected                # python -m pytest tests/ --collect-only -q
 55 files                      # files under tests/ that pytest collects from
 ```
 
-1049 collected, 1049 passed. Every published surface stating these numbers must
+1056 collected, 1056 passed. Every published surface stating these numbers must
 satisfy that arithmetic; `scripts/check_number_drift.py` enforces the passed
 count, and as of `aaad25a` also reads the text of every `specs/*.pdf`.
 
@@ -98,7 +98,7 @@ Source of truth: `EXPECTED` in `scripts/check_baseline.py`, gated in CI.
 
 ### 5.2 Governance Evaluation Corpus — research measurement
 25 scenarios (5 compliant, 20 violation), 55 turns, 32 expected violations.
-**29/32 detected = 90.6%. 0/5 compliant scenarios produced a false positive. 8 unexpected detections on violation scenarios — a separate quantity, see `governance-corpus-remediation.md`.**
+**30/32 detected = 93.8%. 0/5 compliant scenarios produced a false positive. 12 unexpected detections on violation scenarios — a separate quantity, see `governance-corpus-remediation.md`.**
 Derived by *running* the corpus (`scripts/eval_corpus.py`), not from a constant.
 Small and hand-authored: a research measurement, not a conformance claim,
 certification, assurance score, or independent validation.
@@ -187,7 +187,7 @@ Recorded because they change what a session can verify:
 ```bash
 git rev-parse HEAD
 python -m uvicorn app:app --port 8000 &         # required, or 18 tests skip
-python -m pytest tests/ -q                      # 1049 passed, 0 skipped, 0 xfailed
+python -m pytest tests/ -q                      # 1056 passed, 0 skipped, 0 xfailed
 python -m pytest tests/ --collect-only -q       # 1005 collected
 python scripts/validate_ci.py                   # CI PASS
 python scripts/check_baseline.py                # Fabricate baseline
@@ -211,10 +211,10 @@ that introduced no net change.
 
 | Figure | Value | Derived by |
 |---|---|---|
-| Suite passing | **1049** | `python -m pytest tests/ -q` with the API running |
+| Suite passing | **1056** | `python -m pytest tests/ -q` with the API running |
 | Recorded divergences | **0** | both contracts resolved; see `skipped-test-audit.md` §8 |
 | Skipped | **0** | same run |
-| Collected | **1049** | `--collect-only -q`; equals the passing count |
+| Collected | **1056** | `--collect-only -q`; equals the passing count |
 | IDG-01 | 70/70, 0 FP | `scripts/check_baseline.py` |
 | PDX-01 | 41/41, 0 FP | `scripts/check_baseline.py` |
 | DBC-01 | 183/200 = 91.5%, 5 FP | `scripts/check_baseline.py` |
@@ -222,7 +222,7 @@ that introduced no net change.
 | Fabricate corpus | **550** conversations, 4838 turns | row count of `fixtures/fabricate/conversations.csv` / `turns.csv` |
 | Fabricate compliant | **127** | conversations with `0` on all five `*_violation` columns |
 | Governance corpus | **25** scenarios, **55** turns | `scripts/eval_corpus.py` |
-| Governance detection | **29/32 = 90.6%** | `scripts/eval_corpus.py` |
+| Governance detection | **30/32 = 93.8%** | `scripts/eval_corpus.py` |
 | Governance false positives | 0 of 5 compliant scenarios | `scripts/eval_corpus.py` |
 | Adversarial corpus | **40** scenarios | length of `tests/adversarial_corpus_v1.json` |
 

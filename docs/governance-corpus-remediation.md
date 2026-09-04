@@ -6,22 +6,32 @@ not a pass/fail gate. Conformance-test pass rate, governance detection rate,
 false-positive rate, scenario count and control count are five different
 numbers and none of them substitutes for another.
 
-| | Before | After |
-|---|---|---|
-| Detection | 29/32 = **90.6%** | 29/32 = **90.6%** — unchanged |
-| False positives (5 compliant scenarios) | 0/5 = **0.0%** | 0/5 = **0.0%** |
-| Unexpected detections (20 violation scenarios) | **8, unmeasured** | **8, now measured and reported** |
-| Corpus scenarios / turns | 25 / 55 | 25 / 55 — **unchanged** |
-| Engine logic | — | **unchanged** |
+| | Before | After remediation | After the G1–G4 decisions |
+|---|---|---|---|
+| Detection | 29/32 = **90.6%** | 29/32 = **90.6%** | **30/32 = 93.8%** |
+| False positives (5 compliant scenarios) | 0/5 = **0.0%** | 0/5 = **0.0%** | 0/5 = **0.0%** |
+| Unexpected detections (20 violation scenarios) | **8, unmeasured** | **8, measured** | **12, measured** |
+| Corpus scenarios / turns | 25 / 55 | 25 / 55 | 25 / 55 — **unchanged throughout** |
+| Engine logic | — | unchanged | **IDG-01 changed by the G2 decision** |
+
+> **Two records, in order.** §§1–4 below are the remediation of 2026-09-03, when
+> the engine was left alone and the rate stayed at 90.6%. The move to 93.8% came
+> later, from the G1–G4 decisions of 2026-09-04 — a specification decision
+> implemented in the engine, not a corpus edit. Full analysis:
+> **`docs/decision-gate-G1-G4.md`**. The corpus is byte-identical across both.
 
 **The 98–99% target was not reached, and nothing was done to make the number
-say otherwise.** Measured detection is **90.6%**. The one change shipped is a
+say otherwise.** Measured detection at the time of this record was **90.6%**;
+after the G1–G4 decisions it is **93.8%**, still short of the aspiration and
+reported as measured. The one change shipped is a
 *measurement* improvement, not a detection one: an entire class of engine
 behaviour was previously invisible to every published figure (§1).
 
 **Nothing was manipulated.** `tests/evaluation_corpus_v1.json` is byte-identical
 to its prior state — no scenario added, removed, relabelled, reworded, excluded,
-or re-declared. The engine is byte-identical too. The Fabricate baseline is
+or re-declared. That remains true after the G1–G4 decisions. The engine was
+byte-identical at the time of this record; G2 later changed it, deliberately and
+on the record. The Fabricate baseline is
 unchanged and verified (§6).
 
 **An engine fix was attempted and deliberately reverted.** §2.1 records it in
@@ -86,9 +96,20 @@ strength of one scenario, and keeping it green would have meant deleting a test
 because it failed. Both were ruled out. The engine was restored to its committed
 state.
 
-**This miss is therefore not an engine defect.** It is the visible consequence of
-an unresolved contradiction *inside the corpus*, which is item **G2** in §5. The
-engine is not wrong to abstain; the corpus has not said what the right answer is.
+**Reinstated 2026-09-04, on a different basis.** G2 was decided against the
+specification rather than against `nhid_ec_idg01_002`: the control says the agent
+must identify itself as *automated*, and a bare organisational name does not.
+The test was **reversed with its rationale recorded**, not deleted — it is now
+`test_bare_organisational_names_are_not_a_disclosure`. The distinction matters:
+the change was rejected the first time because it rested on one scenario, and
+accepted the second time because it rests on the normative control text. See
+`docs/decision-gate-G1-G4.md` §G2.
+
+**At the time of this record the miss was not an engine defect.** It was the
+visible consequence of an unresolved contradiction *inside the corpus* — item
+**G2** in §5. The engine was not wrong to abstain while the question was open.
+**G2 has since been decided and the miss is closed:** the corpus contradiction is
+real but the specification is not ambiguous, and the specification governs.
 
 ### 2.2 `nhid_ec_idg01_003` — "Borderline AI Language" · **NOT FIXED — UNKNOWN**
 
@@ -175,7 +196,7 @@ All three misses are blocked on decisions rather than on code:
 
 | Miss | Blocked on |
 |---|---|
-| `nhid_ec_idg01_002` | A corpus contradiction the engine deliberately abstains from (§2.1, G2) |
+| `nhid_ec_idg01_002` | **Closed** — G2 decided 2026-09-04; now detected (§2.1) |
 | `nhid_ec_idg01_003` | Nothing — **G1 is resolved**: the corpus label is wrong, not the engine. Left in place because correcting it would raise the rate (§2.2, G1) |
 | `nhid_ec_atr01_001` | ATR-01 is not observable through transcript replay (§2.3, G3) |
 
@@ -183,15 +204,20 @@ Reaching 98–99% from here would require editing the corpus, relaxing a control
 overturning a documented decision, or deleting a test. All four were available.
 None was taken.
 
-**Measured result: 90.6% detection · 0.0% false positives on compliant scenarios
-· 8 unexpected detections, reported separately.**
+**Measured result at this record: 90.6% detection · 0.0% false positives on
+compliant scenarios · 8 unexpected detections, reported separately.**
+**Current measured result after the G1–G4 decisions: 30/32 = 93.8% detection ·
+0/5 false positives · 12 unexpected detections.**
 
-## 5. Open items requiring human judgment
+## 5. G1–G4 — all four decided 2026-09-04
 
-| # | Question | Why it cannot be settled from repository evidence |
+Full analysis, evidence and consequences: **`docs/decision-gate-G1-G4.md`**.
+Nothing here remains open.
+
+| # | Question | Decision |
 |---|---|---|
 | G1 | Does IDG-01 require the literal word "AI", or is "automated" sufficient? | **Resolved 2026-09-04 — "automated" is sufficient.** Six corpus scenarios agree with the specification and one does not; the outlier cannot be reconciled with its own sibling `nhid_ec_comp_002`. No engine change. See `docs/decision-gate-G1-G4.md` §G1 |
-| G2 | Is a bare organisational name ("claims system", "authorization system") an IDG-01 violation? | **The corpus says both yes and no.** It declares `"claims system"` a violation and does not declare `"authorization system"` one, and the two are the same shape. Until that is settled the engine abstains, by an explicit prior decision (§2.1). Settling it closes `nhid_ec_idg01_002` and changes four other scenarios. **Still open** — the recommended reading and everything it would require are in `docs/decision-gate-G1-G4.md` §G2 |
+| G2 | Is a bare organisational name ("claims system", "authorization system") an IDG-01 violation? | **Decided 2026-09-04 — yes, it is not sufficient disclosure.** The corpus says both yes and no for the same shape, but the specification does not: the agent must identify itself as *automated*, and a system name identifies the department, not the speaker — a human employee could say it verbatim. The engine now requires an affirmative non-human assertion on the disclosing turn; the locking test was **reversed with its rationale recorded**, not deleted. Four scenarios that under-declare now surface as unexpected detections and were **not** relabelled. See `docs/decision-gate-G1-G4.md` §G2 |
 | G3 | Should ATR-01 be measurable from transcripts at all? | **Resolved 2026-09-04 — no.** The normative CTS case evaluates ATR-01 by overriding event fields, never from speech. The scenario belongs in an event-layer harness; the denominator stays as it is. See §G3 |
 | G4 | Is a same-turn disclosure plus PHI request a PDX-01 violation? | **Resolved 2026-09-04 — yes, at MAJOR severity.** Two scenarios declare exactly this shape and both call it PDX-01; the engine agrees. Only two of the four "disagreeing" scenarios are this shape at all — the other two under-declare the ordinary gate. See §G4 |
 

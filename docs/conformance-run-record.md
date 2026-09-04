@@ -17,9 +17,9 @@ from several partial runs.
 
 | Outcome | Count |
 |---|---|
-| **Collected** | **1049** |
-| **Executed** | **1049** |
-| **Passed** | **1049** |
+| **Collected** | **1056** |
+| **Executed** | **1056** |
+| **Passed** | **1056** |
 | Failed | **0** |
 | Skipped | **0** |
 | xfailed | **0** |
@@ -42,7 +42,7 @@ python -m venv ../cleanenv
 # instead of a quiet 18-test hole.
 ../cleanenv/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8011 &
 
-../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1049 collected
+../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1056 collected
 NHID_REQUIRE_SERVER=1 NHID_BASE_URL=http://127.0.0.1:8011 \
   ../cleanenv/bin/python -m pytest tests/ -q --disable-warnings -rsxX
 ```
@@ -69,7 +69,7 @@ typing-inspection==0.4.4  typing_extensions==4.16.0  uvicorn==0.52.4
 
 ## How the number got here
 
-987 → 1049, and the path matters because it is not simple growth.
+987 → 1056, and the path matters because it is not simple growth.
 
 | Step | Effect |
 |---|---|
@@ -92,7 +92,7 @@ count rose because tests were added and previously-unrun ones were made to run.
 
 ## What this number is not
 
-- **Not a governance detection rate.** That is 29/32 = 90.6% on the Governance
+- **Not a governance detection rate.** That is 30/32 = 93.8% on the Governance
   Evaluation Corpus, a separate research measurement — see
   `governance-corpus-remediation.md`.
 - **Not a false-positive rate.** That is 0/5 compliant scenarios, with 8

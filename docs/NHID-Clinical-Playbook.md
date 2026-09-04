@@ -160,13 +160,13 @@ all four.
 
 | Evidence body | What it measures | Result | Date |
 |---|---|---|---|
-| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1049 collected · 1049 executed · 1049 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `7c6c89d` |
+| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1056 collected · 1056 executed · 1056 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `7c6c89d` |
 | **Fabricate Battle-Test Corpus** | Detection against 550 real-world voice AI conversations, 127 of them compliant | IDG-01 70/70 · PDX-01 41/41 · DBC-01 183/200 (91.5%) · EIT-01 169/171 (98.8%). False positives on clean conversations: 0, 0, 5, 5 of 127 | CI-gated, unchanged |
-| **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **29 of 32 = 90.6%**. False positives **0 of 5** compliant scenarios. **8 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
+| **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **30 of 32 = 93.8%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
 
-**These are four different denominators.** 1049/1049 is a *test pass rate*, not
-a detection rate. 90.6% is a *detection rate*, not a test pass rate. Neither is
+**These are four different denominators.** 1056/1056 is a *test pass rate*, not
+a detection rate. 93.8% is a *detection rate*, not a test pass rate. Neither is
 an accuracy figure for the framework as a whole.
 
 **On the 8 unexpected detections.** The published false-positive figure is
@@ -197,7 +197,7 @@ Stated plainly, because a reader who discovers these later has been misled.
 
 - **Detection is lexical.** PDX-01 and DBC-01 match phrase maps plus a small number of structural rules. A paraphrase outside the map is missed.
 - **DBC-01 is the least precise control** — 91.5% detection with 5 false positives on 127 clean conversations.
-- **Disclosure *adequacy* is not judged.** IDG-01 checks for contradiction, not sufficiency. A bare organisational name is not flagged — see G2, which remains open.
+- **Disclosure *sufficiency* is judged only on the disclosing turn.** Since the G2 decision, IDG-01 requires the disclosing turn to state a non-human identity affirmatively, so a bare organisational name *is* flagged. The check needs a harness that sets `disclosure_established_prior`; without it the permissive default applies and only contradiction is caught.
 - **Sequencing checks need a cooperating harness.** Same-turn disclosure-and-request detection requires `disclosure_established_prior`; absent it the check does not run.
 - **ATR-01 persistence is external.** The engine emits the audit trail; it cannot detect that a downstream store failed to persist it.
 - **Escalation quality is not assessed.** EIT-01 verifies that an escalation path exists and was honoured, not that a competent human answered.
@@ -746,7 +746,7 @@ produce a number that describes nothing.
 
 | Body | Population | Question it answers |
 |---|---|---|
-| **Conformance suite** | 1049 tests | Does the implementation behave as specified? |
+| **Conformance suite** | 1056 tests | Does the implementation behave as specified? |
 | **Fabricate Battle-Test Corpus** | 550 real conversations, 127 compliant | Does it detect violations in real-world phrasing? |
 | **Governance Evaluation Corpus** | 25 scenarios, 55 turns | Does it detect labelled governance conditions? |
 | **Adversarial corpus** | 40 hostile scenarios | Does it survive deliberate evasion? |
@@ -776,9 +776,9 @@ detection rate and not an accuracy figure.
 
 | | |
 |---|---|
-| **Collected** | 1049 |
-| **Executed** | 1049 |
-| **Passed** | 1049 |
+| **Collected** | 1056 |
+| **Executed** | 1056 |
+| **Passed** | 1056 |
 | **Failed / skipped / xfailed / xpassed** | 0 / 0 / 0 / 0 |
 | **Verified** | fresh clone at `7c6c89d`, fresh virtualenv, `requirements.txt` only |
 
@@ -818,30 +818,37 @@ figure is 90.6%.** No scenario has been added, removed, relabelled, reworded,
 excluded, or had its expectations edited, and no control has been relaxed, to
 move it.
 
-**One engine change was written, worked, and was reverted.** Requiring the
-disclosing turn to affirmatively assert non-human identity raised detection to
-30/32 with the Fabricate baseline untouched and compliant false positives still
-at zero. It broke a pre-existing test whose docstring records a deliberate
-decision to abstain, because the corpus labels `"claims system"` a violation and
-the structurally identical `"authorization system"` not. Shipping it would have
-overturned a recorded decision on one scenario's strength; keeping it green
-would have meant deleting a failing test. **The revert stands** unless G2 is
-explicitly decided. Full account: `governance-corpus-remediation.md` §2.1.
+**One engine change was written, reverted, and later reinstated on a different
+basis.** Requiring the disclosing turn to affirmatively assert non-human identity
+raises detection to 30/32 with the Fabricate baseline untouched and compliant
+false positives still at zero. It was **reverted** the first time because it
+broke a pre-existing test recording a deliberate decision to abstain, and rested
+on one scenario. It was **reinstated** when G2 was decided against the
+*specification* — the control says the agent must identify itself as automated,
+and a bare organisational name does not. The locking test was reversed with its
+rationale recorded, not deleted. Full account:
+`governance-corpus-remediation.md` §2.1 and `decision-gate-G1-G4.md` §G2.
 
-## 5. Open governance and specification questions (G1–G4)
+## 5. Governance and specification decisions (G1–G4)
 
-**Analysed in full in `decision-gate-G1-G4.md` (2026-09-04).** Three are settled
-by repository evidence; one needs a person. **No engine, corpus or test change
-was made in settling them**, and the measured governance figures are unchanged —
-several of the resolutions below would, if applied to the corpus, raise the
-reported rate, which is why they were recorded rather than performed.
+**All four decided 2026-09-04.** Full analysis, evidence and consequences:
+`decision-gate-G1-G4.md`. One engine change followed (G2); the corpus was **not**
+edited, and `tests/evaluation_corpus_v1.json` is byte-identical throughout.
 
-| # | Question | Disposition |
+| # | Question | Decision |
 |---|---|---|
-| **G1** | Does IDG-01 require the literal word "AI", or is "automated" sufficient? | **Resolved — "automated" is sufficient.** Every normative source says *automated*, the normative CTS case passes *"I am an automated system"*, and six of the seven corpus scenarios using "automated" are labelled compliant. The seventh, `nhid_ec_idg01_003`, cannot be reconciled with its own sibling `nhid_ec_comp_002` — the two assertions differ by a first name. No engine change |
-| **G2** | Is a bare organisational name sufficient disclosure — and why does the corpus contain contradictory expectations for that shape? | **Open — human judgment required.** The recommended reading is that it is *not* sufficient: a system name identifies the organisation, not the nature of the speaker. Acting on it means overturning a documented prior decision locked by `test_bare_organisational_names_are_out_of_scope`. That lock worked as designed; reversing it is a decision, not a consequence. The engine keeps abstaining until it is made |
-| **G3** | Should ATR-01 be evaluated from transcripts at all? | **Resolved — no.** The normative CTS case `ATR-01-FAIL-MISSING` nulls fields on the *event object* via `input_event_overrides`, never in speech. ATR-01 is an event-layer control, exercised properly in three offline suites plus the CTS. The corpus scenario is a category error — but the 0/1 stays in the denominator, because removing it would raise the rate |
-| **G4** | Is same-turn disclosure followed by a PHI request a PDX-01 violation? | **Resolved — yes, at MAJOR severity.** `nhid_ec_pdx01_002` and `nhid_ec_combo_006` declare exactly this shape a PDX-01 violation and the engine detects both. Of the four scenarios previously described as disagreeing, only two are this shape at all; the other two omit PDX-01 on turns carrying *no disclosure whatsoever*, which is under-declaration of the ordinary gate, not a contrary position |
+| **G1** | Does IDG-01 require the literal word "AI", or is "automated" sufficient? | **"Automated" is sufficient; no vocabulary is mandated.** Every normative source says *automated*, and the CTS case `IDG-01-PASS` passes an "automated system" script. The CTS note that a disclosure must contain *both* automation and a "not human" clause is **descriptive of that fixture, not conjunctive** — enforced as a conjunction it would fire on all five compliant scenarios, none of which carries a "not human" clause. **No engine change**; both readings are now pinned by tests |
+| **G2** | Is a bare organisational name sufficient disclosure? | **No.** "You've reached the claims system" names the department, not the nature of the speaker — a human employee could say it verbatim. The corpus labels this shape both ways; the specification does not, and it governs. **Engine changed**: the disclosing turn must affirmatively state a non-human identity, returning the new `IDG01_DISCLOSURE_INSUFFICIENT`. The locking test was reversed with its rationale recorded. Four under-declaring scenarios now surface as unexpected detections and were **not** relabelled |
+| **G3** | Should ATR-01 be evaluated from transcripts at all? | **No.** `ATR-01-FAIL-MISSING` nulls fields on the *event object* via `input_event_overrides`, never in speech. The methodology now reports the two layers separately — transcript-observable **30/31 = 96.8%**, audit/evidence **0/1, not measurable here** — while the headline denominator stays at 32, because dropping the scenario would raise the rate |
+| **G4** | Is same-turn disclosure followed by a PHI request a PDX-01 violation? | **Yes, at MAJOR severity.** `nhid_ec_pdx01_002` and `nhid_ec_combo_006` declare exactly this shape and the engine detects both. **No change** — engine, corpus, tests and specification already agree |
+
+**Five corpus labels are now known to be wrong and were deliberately left in
+place**, because correcting them would move a published figure: `idg01_003`
+(G1, counted as a miss) and `atr01_001`, `eit01_001`, `eit01_002`, `combo_010`
+(G2/G3, counted as unexpected detections). `decision-gate-G1-G4.md` §5 lists
+each with its effect.
+
+**No item remains as REQUIRES HUMAN JUDGMENT.**
 
 ## 6. Risk register
 
