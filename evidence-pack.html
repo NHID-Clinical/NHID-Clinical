@@ -163,6 +163,77 @@
       </div>
 
       <!-- ── 1. System Behavior Guarantees ──────────────────────────────── -->
+      <h2 style="margin-top:2.5rem" id="evidence-lifecycle">0. How Evidence Is Produced &mdash; and Why There Are Four Figures</h2>
+      <p style="color:var(--body);line-height:1.8;margin-top:.6rem">Everything below this section is a number. This is where they come from, and why collapsing them into one &ldquo;accuracy&rdquo; figure would misrepresent all four.</p>
+
+      <figure class="evidence-model">
+        <svg viewBox="0 0 880 430" role="img" aria-labelledby="el-title el-desc" style="width:100%;height:auto;display:block">
+          <title id="el-title">How NHID-Clinical evidence is produced, and the four bodies it produces</title>
+          <desc id="el-desc">A recorded interaction is normalised into an event, evaluated by the policy engine against the five controls, and produces a policy decision carrying a reason code and any violations. That decision is written to an append-only audit record. The same engine and the same path then feed four separate measurements, which are never combined: the conformance suite, which is a test pass rate; the Fabricate battle-test corpus of 550 conversations, which is a detection and false-positive rate measured on two disjoint populations; the governance evaluation corpus of 25 scenarios, which is a research detection measurement; and an adversarial corpus, which measures resistance to deliberate evasion. Each answers a different question, so a single combined accuracy figure would describe none of them.</desc>
+
+          <text x="20" y="24" class="ev-zone">ONE PATH, FOR EVERY MEASUREMENT</text>
+          <g class="ev-box">
+            <rect x="20" y="38" width="190" height="62" rx="9"/>
+            <text x="36" y="64" class="ev-title">Recorded interaction</text>
+            <text x="36" y="85" class="ev-sub">A call trace, already held</text>
+          </g>
+          <line x1="210" y1="69" x2="240" y2="69" class="ev-flow"/><polygon points="244,69 234,64 234,74" class="ev-flow-head"/>
+          <g class="ev-box">
+            <rect x="244" y="38" width="180" height="62" rx="9"/>
+            <text x="260" y="64" class="ev-title">Normalised event</text>
+            <text x="260" y="85" class="ev-sub">One schema, any vendor</text>
+          </g>
+          <line x1="424" y1="69" x2="454" y2="69" class="ev-flow"/><polygon points="458,69 448,64 448,74" class="ev-flow-head"/>
+          <g class="ev-box ev-core">
+            <rect x="458" y="38" width="180" height="62" rx="9"/>
+            <text x="474" y="64" class="ev-title">Policy engine</text>
+            <text x="474" y="85" class="ev-sub">Deterministic, no I/O</text>
+          </g>
+          <line x1="638" y1="69" x2="668" y2="69" class="ev-flow"/><polygon points="672,69 662,64 662,74" class="ev-flow-head"/>
+          <g class="ev-box">
+            <rect x="672" y="38" width="188" height="62" rx="9"/>
+            <text x="688" y="64" class="ev-title">Audit record</text>
+            <text x="688" y="85" class="ev-sub">Reason code + violations</text>
+          </g>
+
+          <line x1="440" y1="112" x2="440" y2="146" class="ev-flow"/><polygon points="440,150 435,140 445,140" class="ev-flow-head"/>
+          <text x="452" y="136" class="ev-note">the same path feeds all four</text>
+
+          <line x1="20" y1="164" x2="860" y2="164" class="ev-divider"/>
+          <text x="20" y="190" class="ev-zone">FOUR MEASUREMENTS &mdash; NEVER COMBINED</text>
+
+          <g class="ev-body">
+            <rect x="20" y="202" width="200" height="104" rx="9"/>
+            <text x="36" y="228" class="ev-title">Conformance suite</text>
+            <text x="36" y="250" class="ev-sub">A test pass rate.</text>
+            <text x="36" y="268" class="ev-sub">Does the engine do</text>
+            <text x="36" y="286" class="ev-sub">what it says?</text>
+
+            <rect x="240" y="202" width="200" height="104" rx="9"/>
+            <text x="256" y="228" class="ev-title">Fabricate corpus</text>
+            <text x="256" y="250" class="ev-sub">Detection and false</text>
+            <text x="256" y="268" class="ev-sub">positives, on two</text>
+            <text x="256" y="286" class="ev-sub">disjoint populations.</text>
+
+            <rect x="460" y="202" width="200" height="104" rx="9"/>
+            <text x="476" y="228" class="ev-title">Governance corpus</text>
+            <text x="476" y="250" class="ev-sub">A research detection</text>
+            <text x="476" y="268" class="ev-sub">measurement, not a</text>
+            <text x="476" y="286" class="ev-sub">pass/fail gate.</text>
+
+            <rect x="680" y="202" width="180" height="104" rx="9"/>
+            <text x="696" y="228" class="ev-title">Adversarial corpus</text>
+            <text x="696" y="250" class="ev-sub">Resistance to</text>
+            <text x="696" y="268" class="ev-sub">deliberate evasion.</text>
+          </g>
+
+          <text x="20" y="340" class="ev-warn">Each answers a different question, over a different population, with a different denominator.</text>
+          <text x="20" y="362" class="ev-note">A single combined &ldquo;accuracy&rdquo; figure would describe none of them &mdash; which is why this project does not publish one.</text>
+          <text x="20" y="392" class="ev-note">ATR-01 is absent from the Fabricate corpus because that corpus cannot measure it. That is a stated structural limit, not a score of zero.</text>
+          <text x="20" y="414" class="ev-note">Every figure on this page is reproducible: the commands are in the conformance run record.</text>
+        </svg>
+      </figure>
+
       <h2 style="margin-top:0">1. System Behavior Guarantees</h2>
 
       <div class="payer-phase-grid" style="margin-top:1rem">
