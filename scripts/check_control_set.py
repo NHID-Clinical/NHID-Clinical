@@ -63,11 +63,17 @@ CANONICAL = ("IDG-01", "PDX-01", "DBC-01", "EIT-01", "ATR-01")
 
 # Rule 2. Adding a surface here asserts that a reader may treat it as the
 # authoritative control set.
+# framework/controls.html was on this list until the Phase B consolidation
+# (2026-09-05) merged it into specification.html and retired the route to a
+# redirect stub. A stub names no controls, so leaving it here would fail the
+# guard forever; removing it without noting why would look like the guard being
+# quietly narrowed to make a failure go away. It is neither — the surface moved,
+# and specification.html (already listed) is where a reader now finds the set.
 AUTHORITATIVE = (
     "specification.html",
-    "framework/controls.html",
     "index.html",
     "README.md",
+    "docs/NHID-Clinical-Playbook.md",
     "specs/NHID-Clinical-v1.3-Core-Specification.pdf",
 )
 

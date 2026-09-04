@@ -490,7 +490,7 @@ def _handle_pilot_enroll(event: dict) -> dict:
         "pilot_id": pilot_id,
         "org_name": org_name,
         "status": "enrolled",
-        "next_steps_url": "https://nhid-clinical.org/for-payers.html",
+        "next_steps_url": "https://nhid-clinical.org/shadow-evaluation-guide.html",
         "next_steps": [
             "Read the 90-day shadow evaluation guide",
             "Run baseline calls through POST /v1/demo/check or a vendor adapter route",

@@ -62,7 +62,7 @@ Start with the [Tier 0 Shadow Pilot Kit](pilot-kit/README.md).
 ## Contact
 
 - Website: <https://nhid-clinical.org>
-- For payers and evaluation teams: <https://nhid-clinical.org/for-payers.html>
+- For payers and evaluation teams: <https://nhid-clinical.org/shadow-evaluation-guide.html>
 - Email: <contact@nhid-clinical.org>
 
 CC BY 4.0 · Submitted as public comment to NIST (NIST-2025-0035-0026) — a public

@@ -52,8 +52,18 @@ def drawer_button_selector():
 
 
 def test_pages_with_a_drawer_were_found():
-    """A path change that finds zero pages would make every check below vacuous."""
-    assert len(PAGES) >= 30, f"only {len(PAGES)} pages carry the drawer markup"
+    """A path change that finds zero pages would make every check below vacuous.
+
+    The floor was >= 30 while the site had 43 pages. The Phase B consolidation
+    (2026-09-05) retired 32 routes to redirect stubs, and a stub carries no
+    drawer, so the real number is now the published set. Tying the floor to
+    PUBLISHED rather than to a hand-written constant keeps this honest: it still
+    catches a path change that finds nothing, and it cannot be satisfied by a
+    consolidation that quietly drops a destination.
+    """
+    assert len(PAGES) >= len(PUBLISHED) - 1, (
+        f"only {len(PAGES)} of {len(PUBLISHED)} published pages carry the drawer markup"
+    )
 
 
 @pytest.mark.parametrize("page", PAGES)

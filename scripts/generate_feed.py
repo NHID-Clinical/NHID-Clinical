@@ -2,12 +2,20 @@
 """
 NHID-Clinical — Atom feed generator
 ===================================
-Generates `feed.xml` from `news.html`, so the project has a following mechanism
-that belongs to the project rather than to a platform account.
+Generates `feed.xml` from `docs/release-history.md`, so the project has a
+following mechanism that belongs to the project rather than to a platform
+account.
 
-`news.html` is the single source of truth. This script parses the entries
-already published there and emits an Atom 1.0 document; it never carries its
-own copy of the news text, so the two cannot drift.
+`docs/release-history.md` is the single source of truth. This script parses the
+entries already published there and emits an Atom 1.0 document; it never carries
+its own copy of the release text, so the two cannot drift.
+
+The source was `news.html` until the Phase B IA consolidation (2026-09-05)
+retired that route: a changelog is something people check, not a destination
+they arrive at, so it failed the destination test in `ia-disposition.md` §4.3.
+Retiring the route without moving the generator would have silently killed the
+feed, so the generator moved with the content. Entry links now point at the
+release history on GitHub, which is where the record actually lives.
 
 Design notes:
 
@@ -37,12 +45,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-NEWS_HTML = ROOT / "news.html"
+RELEASE_HISTORY = ROOT / "docs" / "release-history.md"
 FEED_XML = ROOT / "feed.xml"
 
 SITE = "https://nhid-clinical.org"
 FEED_URL = f"{SITE}/feed.xml"
-NEWS_URL = f"{SITE}/news.html"
+NEWS_URL = "https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md"
 TITLE = "NHID-Clinical"
 SUBTITLE = (
     "Release notes and updates from NHID-Clinical — an open policy-and-evidence "
@@ -62,11 +70,16 @@ _MONTHS = {
     )
 }
 
-_ARTICLE = re.compile(r'<article class="news-card">(.*?)</article>', re.S)
-_BADGE = re.compile(r'<span class="news-badge[^"]*">(.*?)</span>', re.S)
-_DATE = re.compile(r'<time class="news-date">(.*?)</time>', re.S)
-_TITLE = re.compile(r"<h2>(.*?)</h2>", re.S)
-_PARA = re.compile(r"<p[^>]*>(.*?)</p>", re.S)
+# An entry in the release history is an H2 followed by an italic
+# "*Month Year · Category*" line and then its prose. Anything before the first
+# H2 is front matter (the move note and the annotation table) and is skipped.
+_ENTRY = re.compile(
+    r"^## +(?P<title>.+?)\s*$\n+\*(?P<month>[A-Z][a-z]+ \d{4})\s*·\s*(?P<category>[^*]+?)\*\s*$"
+    r"(?P<rest>.*?)(?=^## |\Z)",
+    re.M | re.S,
+)
+_MD_LINK = re.compile(r"\[([^\]]+)\]\([^)]*\)")
+_MD_EMPH = re.compile(r"[*_`]+")
 _TAGS = re.compile(r"<[^>]+>")
 
 
@@ -96,22 +109,32 @@ def _parse_month(value: str) -> datetime:
     return datetime(int(parts[1]), _MONTHS[parts[0]], 1, tzinfo=timezone.utc)
 
 
-def parse_news(html_text: str) -> list[Entry]:
-    """Extract entries from news.html in document order (newest first)."""
-    entries: list[Entry] = []
-    for block in _ARTICLE.findall(html_text):
-        title_m = _TITLE.search(block)
-        date_m = _DATE.search(block)
-        if not title_m or not date_m:
+def _first_paragraph(rest: str) -> str:
+    """The entry's first prose paragraph, as plain text.
+
+    Skips blank lines, block quotes and tables so the summary is the entry's
+    own sentence rather than a piece of an annotation.
+    """
+    for para in re.split(r"\n\s*\n", rest.strip()):
+        line = para.strip()
+        if not line or line.startswith((">", "|", "#", "-", "*   ")):
             continue
-        badge_m = _BADGE.search(block)
-        paras = _PARA.findall(block)
+        text = _MD_LINK.sub(r"\1", line)
+        text = _MD_EMPH.sub("", _TAGS.sub("", text))
+        return re.sub(r"\s+", " ", text).strip()
+    return ""
+
+
+def parse_news(source_text: str) -> list[Entry]:
+    """Extract entries from the release history in document order (newest first)."""
+    entries: list[Entry] = []
+    for m in _ENTRY.finditer(source_text):
         entries.append(
             Entry(
-                title=_text(title_m.group(1)),
-                category=_text(badge_m.group(1)) if badge_m else "Update",
-                summary=_text(paras[0]) if paras else "",
-                published=_parse_month(date_m.group(1)),
+                title=_MD_EMPH.sub("", m.group("title")).strip(),
+                category=m.group("category").strip() or "Update",
+                summary=_first_paragraph(m.group("rest")),
+                published=_parse_month(m.group("month")),
             )
         )
     return entries
@@ -158,19 +181,20 @@ def build_feed(entries: list[Entry], updated: datetime | None = None) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="Generate the Atom feed from news.html.")
+    ap = argparse.ArgumentParser(
+        description="Generate the Atom feed from docs/release-history.md.")
     ap.add_argument("--check", action="store_true",
                     help="fail if feed.xml is missing or out of date; write nothing")
     args = ap.parse_args(argv)
 
-    if not NEWS_HTML.exists():
-        print(f"ERROR: {NEWS_HTML} not found", file=sys.stderr)
+    if not RELEASE_HISTORY.exists():
+        print(f"ERROR: {RELEASE_HISTORY} not found", file=sys.stderr)
         return 1
 
-    entries = parse_news(NEWS_HTML.read_text(encoding="utf-8"))
+    entries = parse_news(RELEASE_HISTORY.read_text(encoding="utf-8"))
     if not entries:
-        print("ERROR: no news entries parsed — has news.html's markup changed?",
-              file=sys.stderr)
+        print("ERROR: no entries parsed — has docs/release-history.md's "
+              "heading format changed?", file=sys.stderr)
         return 1
 
     feed = build_feed(entries)
@@ -181,11 +205,13 @@ def main(argv: list[str] | None = None) -> int:
                   file=sys.stderr)
             return 1
         if FEED_XML.read_text(encoding="utf-8") != feed:
-            print("FEED FAIL: feed.xml is stale relative to news.html. "
+            print("FEED FAIL: feed.xml is stale relative to "
+                  "docs/release-history.md. "
                   "Run scripts/generate_feed.py and commit the result.",
                   file=sys.stderr)
             return 1
-        print(f"FEED PASS: feed.xml matches news.html ({len(entries)} entries)")
+        print(f"FEED PASS: feed.xml matches docs/release-history.md "
+              f"({len(entries)} entries)")
         return 0
 
     FEED_XML.write_text(feed, encoding="utf-8")

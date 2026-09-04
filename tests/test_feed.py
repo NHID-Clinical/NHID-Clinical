@@ -2,9 +2,15 @@
 Atom feed — regression tests
 ============================
 The feed is the project's platform-independent following mechanism, so the
-properties that matter are: it is valid Atom, it derives from news.html rather
-than carrying its own copy of the news, entry ids are stable across
-regenerations, and it cannot silently go stale.
+properties that matter are: it is valid Atom, it derives from
+docs/release-history.md rather than carrying its own copy of the release notes,
+entry ids are stable across regenerations, and it cannot silently go stale.
+
+The source was news.html until the Phase B IA consolidation (2026-09-05) retired
+that route. These tests moved with the generator: every property below is the
+one it guarded before, restated against the new source. The point of the suite
+is that the feed cannot drift from whatever holds the release record — not that
+the record lives at any particular path.
 """
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
@@ -14,7 +20,7 @@ import pytest
 
 from scripts.generate_feed import (
     FEED_XML,
-    NEWS_HTML,
+    RELEASE_HISTORY,
     TAG_BASE,
     Entry,
     build_feed,
@@ -28,7 +34,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 @pytest.fixture(scope="module")
 def entries():
-    return parse_news(NEWS_HTML.read_text(encoding="utf-8"))
+    return parse_news(RELEASE_HISTORY.read_text(encoding="utf-8"))
 
 
 @pytest.fixture(scope="module")
@@ -64,22 +70,29 @@ def test_every_entry_has_the_required_elements(feed_root):
             assert e.find(f"a:{element}", ATOM) is not None
 
 
-# ── It derives from news.html ──────────────────────────────────────────────
+# ── It derives from the release history ────────────────────────────────────
 
-def test_entry_count_matches_the_news_page(entries, feed_root):
+def test_entry_count_matches_the_release_history(entries, feed_root):
     assert len(feed_root.findall("a:entry", ATOM)) == len(entries)
     assert len(entries) >= 1
 
 
-def test_entry_titles_come_from_the_news_page(entries, feed_root):
+def test_entry_titles_come_from_the_release_history(entries, feed_root):
     feed_titles = {e.find("a:title", ATOM).text for e in feed_root.findall("a:entry", ATOM)}
     assert feed_titles == {e.title for e in entries}
 
 
 def test_feed_adds_no_prose_of_its_own(entries, feed_root):
-    """Every summary must be text that already appears on the news page."""
-    news = NEWS_HTML.read_text(encoding="utf-8")
+    """Every summary must be text that already appears in the release history."""
+    source = RELEASE_HISTORY.read_text(encoding="utf-8")
     import html as _html
+
+    # The generator strips markdown emphasis and link syntax from summaries, so
+    # compare against a source with the same stripping applied. Anything that
+    # survives both is prose the generator carried over rather than invented.
+    import re as _re
+    flat = _re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", source)
+    flat = " ".join(_html.unescape(_re.sub(r"[*_`]+", "", flat)).split())
 
     for e in feed_root.findall("a:entry", ATOM):
         summary = e.find("a:summary", ATOM)
@@ -87,20 +100,19 @@ def test_feed_adds_no_prose_of_its_own(entries, feed_root):
             continue
         # first eight words is enough to prove provenance without whitespace games
         probe = " ".join(summary.text.split()[:8])
-        assert probe in " ".join(_html.unescape(news).split()), \
-            f"summary text not found in news.html: {probe!r}"
+        assert probe in flat, \
+            f"summary text not found in docs/release-history.md: {probe!r}"
 
 
 def test_parser_fails_loudly_on_unrecognised_date():
     with pytest.raises(ValueError, match="unrecognised news date"):
-        parse_news(
-            '<article class="news-card">'
-            '<time class="news-date">Smarch 2026</time><h2>T</h2></article>'
-        )
+        parse_news("## Title\n\n*Smarch 2026 · Release*\n\nBody.\n")
 
 
 def test_parser_skips_blocks_without_a_title_or_date():
-    assert parse_news('<article class="news-card"><p>orphan</p></article>') == []
+    """Front matter and undated headings are not entries."""
+    assert parse_news("# Release history\n\nSome prose with no entry.\n") == []
+    assert parse_news("## Orphan\n\nNo date line, so not an entry.\n") == []
 
 
 # ── Stability and determinism ──────────────────────────────────────────────
@@ -139,8 +151,8 @@ def test_markup_is_escaped():
 
 # ── It cannot go stale ─────────────────────────────────────────────────────
 
-def test_committed_feed_matches_current_news(entries):
-    """The guard that catches an edited news.html with a forgotten regenerate."""
+def test_committed_feed_matches_current_release_history(entries):
+    """Catches an edited release history with a forgotten regenerate."""
     assert FEED_XML.read_text(encoding="utf-8") == build_feed(entries), (
         "feed.xml is stale — run `python scripts/generate_feed.py` and commit it"
     )
@@ -152,10 +164,11 @@ def test_check_mode_returns_zero_when_current():
 
 # ── Site integration ───────────────────────────────────────────────────────
 
-def test_news_page_advertises_the_feed():
-    news = NEWS_HTML.read_text(encoding="utf-8")
-    assert 'type="application/atom+xml"' in news, "no <link rel=alternate> for discovery"
-    assert 'href="/feed.xml"' in news
+def test_the_retired_news_route_still_redirects():
+    """news.html is a stub now; it must still resolve rather than 404."""
+    stub = (REPO_ROOT / "news.html").read_text(encoding="utf-8")
+    assert 'http-equiv="refresh"' in stub, "news.html should be a redirect stub"
+    assert 'rel="canonical"' in stub
 
 
 def test_key_pages_carry_the_discovery_link():
