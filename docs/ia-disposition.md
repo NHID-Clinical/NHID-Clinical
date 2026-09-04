@@ -30,6 +30,14 @@ hit a number, and wrong about the objective — see the banner above and §4.)*
 
 ---
 
+> **Executed 2026-09-04.** Part 4's disposition is no longer a proposal — the
+> consolidation is done. **45 published routes → 11**, with a redirect for every
+> retired one. `platform/` and `news.html` were retired on the approved
+> decisions; the roadmap page was merged into NHID-Auth rather than relabelled,
+> so the site now has **no roadmap** — writing one is new work, not a rename.
+> What actually happened, including two defects the execution surfaced, is in
+> the commit history and in `conformance-run-record.md`.
+
 ## 1. The duplication measurement — and what it overturns
 
 Both external audits asserted that several page pairs "overlap heavily" and

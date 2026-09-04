@@ -6,8 +6,8 @@ from several partial runs.
 
 | | |
 |---|---|
-| **Commit tested** | `cd3c611f7a3b014c62a7ca8b991fa6b508854aa5` |
-| **Date** | 2026-09-03 |
+| **Commit tested** | `0116f5d78c109a1e8bde4a6bf2cd75499ac8a7a4` |
+| **Date** | 2026-09-04 |
 | **Checkout** | fresh `git clone`, checked out at that SHA |
 | **Interpreter** | CPython 3.11.15 |
 | **Platform** | Linux-6.18.44-fc-v24-x86_64-with-glibc2.39 |
@@ -32,7 +32,7 @@ marked, or excluded.
 
 ```bash
 git clone <repo> cleanclone && cd cleanclone
-git checkout cd3c611f7a3b014c62a7ca8b991fa6b508854aa5
+git checkout 0116f5d78c109a1e8bde4a6bf2cd75499ac8a7a4
 
 python -m venv ../cleanenv
 ../cleanenv/bin/pip install -r requirements.txt
@@ -78,6 +78,12 @@ typing-inspection==0.4.4  typing_extensions==4.16.0  uvicorn==0.52.4
 | Resolved the `/debug/replay` contract | 2 failures → passing, +1 new test |
 | Added the control-set completeness guard | +12 tests |
 | Governance-corpus instrumentation | +0 (measurement only) |
+| Scoped the retired-route guard to the published set, parametrised | +11 tests |
+
+The last row is the IA consolidation's doing: a single test that scanned the
+whole repository for links to retired routes became one test per published
+page. It is a stricter check, not a padded count -- it caught 44 stale links
+the previous version could not see.
 
 **Nothing on that list is a denominator change.** No test was deleted, skipped,
 xfailed, weakened, deselected, or excluded to produce a green result, and the
