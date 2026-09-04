@@ -6,7 +6,7 @@ traces to a row here.
 
 | | |
 |---|---|
-| **Inventory taken at** | `41b391b` |
+| **Inventory taken at** | `7c6c89d` |
 | **Date** | 2026-09-04 |
 
 ## What the structure survey changed
@@ -106,7 +106,7 @@ that the Playbook cannot solve about itself. Recorded in §Open items.
 
 ## Figures verified for citation
 
-Re-derived at `41b391b`, not copied from prose.
+Re-derived at `7c6c89d`, not copied from prose.
 
 | Figure | Value | Source |
 |---|---|---|

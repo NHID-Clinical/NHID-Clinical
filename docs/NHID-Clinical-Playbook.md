@@ -7,7 +7,7 @@
 | **Playbook version** | 1.0 |
 | **Published** | 2026-09-04 |
 | **Framework version** | NHID-Clinical v1.3 |
-| **Source commit** | `41b391b` |
+| **Source commit** | `7c6c89d` |
 | **Canonical location** | `docs/NHID-Clinical-Playbook.md` in `NHID-Clinical/NHID-Clinical` |
 | **Licence** | CC BY 4.0 |
 | **Author** | Brianna Baynard — independent, practitioner-led |
@@ -160,7 +160,7 @@ all four.
 
 | Evidence body | What it measures | Result | Date |
 |---|---|---|---|
-| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1049 collected · 1049 executed · 1049 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `41b391b` |
+| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1049 collected · 1049 executed · 1049 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `7c6c89d` |
 | **Fabricate Battle-Test Corpus** | Detection against 550 real-world voice AI conversations, 127 of them compliant | IDG-01 70/70 · PDX-01 41/41 · DBC-01 183/200 (91.5%) · EIT-01 169/171 (98.8%). False positives on clean conversations: 0, 0, 5, 5 of 127 | CI-gated, unchanged |
 | **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **29 of 32 = 90.6%**. False positives **0 of 5** compliant scenarios. **8 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
@@ -780,7 +780,7 @@ detection rate and not an accuracy figure.
 | **Executed** | 1049 |
 | **Passed** | 1049 |
 | **Failed / skipped / xfailed / xpassed** | 0 / 0 / 0 / 0 |
-| **Verified** | fresh clone at `41b391b`, fresh virtualenv, `requirements.txt` only |
+| **Verified** | fresh clone at `7c6c89d`, fresh virtualenv, `requirements.txt` only |
 
 Full record, including exact commands, interpreter, platform and dependency
 set: `conformance-run-record.md`.
@@ -980,7 +980,7 @@ committee, working group, or member organisation, and none is implied.
 | **Version** | Playbook 1.0 |
 | **Published** | 2026-09-04 |
 | **Framework version** | NHID-Clinical v1.3 |
-| **Source commit** | `41b391b` |
+| **Source commit** | `7c6c89d` |
 | **Evidence dates** | Conformance and governance figures measured 2026-09-04; Fabricate baseline unchanged since before this cycle; regulatory verifications 2026-09-03 |
 | **Canonical location** | `docs/NHID-Clinical-Playbook.md` |
 | **Status** | Voluntary open proposal. **Not** an accredited standard, certification programme, or regulatory requirement |

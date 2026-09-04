@@ -6,7 +6,7 @@ from several partial runs.
 
 | | |
 |---|---|
-| **Commit tested** | `0116f5d78c109a1e8bde4a6bf2cd75499ac8a7a4` |
+| **Commit tested** | `7c6c89d9bbca49a8810f228a06e3550d24892f9c` |
 | **Date** | 2026-09-04 |
 | **Checkout** | fresh `git clone`, checked out at that SHA |
 | **Interpreter** | CPython 3.11.15 |
@@ -32,7 +32,7 @@ marked, or excluded.
 
 ```bash
 git clone <repo> cleanclone && cd cleanclone
-git checkout 0116f5d78c109a1e8bde4a6bf2cd75499ac8a7a4
+git checkout 7c6c89d9bbca49a8810f228a06e3550d24892f9c
 
 python -m venv ../cleanenv
 ../cleanenv/bin/pip install -r requirements.txt
@@ -79,6 +79,7 @@ typing-inspection==0.4.4  typing_extensions==4.16.0  uvicorn==0.52.4
 | Added the control-set completeness guard | +12 tests |
 | Governance-corpus instrumentation | +0 (measurement only) |
 | Scoped the retired-route guard to the published set, parametrised | +11 tests |
+| Playbook integrity tests (figures, control set, maturity labels, PDF fidelity) | +18 tests |
 
 The last row is the IA consolidation's doing: a single test that scanned the
 whole repository for links to retired routes became one test per published
