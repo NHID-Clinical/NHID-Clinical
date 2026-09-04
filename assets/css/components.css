@@ -1437,3 +1437,159 @@ caption.visually-hidden {
 [data-theme="dark"] .ev-box rect  { fill: #12202f; }
 [data-theme="dark"] .ev-core rect { fill: #0a2033; stroke: #58b4f0; }
 [data-theme="dark"] .ev-body rect { fill: #08222a; stroke: #1d5462; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   The Trust Gateway (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   This replaces an illustration. The component it supersedes carried the
+   disclaimer "Illustrative — dialogue, mock config payloads, and artwork are
+   for explanation only", which is the correct disclaimer for a mock and the
+   wrong artifact for a page arguing that the controls are checkable.
+
+   Every action, reason code and violation rendered here came out of
+   `evaluate_all`, recorded by scripts/build_gateway_fixture.py replaying real
+   corpus scenarios. The markup is generated and committed, so:
+
+     - it reads correctly with JavaScript disabled — the stepper is an
+       enhancement over content that is already complete;
+     - it needs no network, no server, and no API key;
+     - a test regenerates it, so "real engine output" stays true rather than
+       becoming a claim about the past.
+
+   The action colours reuse the maturity palette's logic (semantic, not
+   decorative) but are their own scale: an enforcement outcome is not a
+   maturity standing, and conflating them would make both meaningless. */
+
+.trust-gateway {
+  margin: 1.5rem 0 0;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+}
+
+.tg-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+
+.tg-step {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--mist);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tg-step:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); }
+.tg-step:disabled { opacity: 0.45; cursor: default; }
+.tg-step:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.tg-step-quiet { margin-left: auto; }
+
+.tg-position {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--body);
+}
+
+.tg-scenario + .tg-scenario {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.tg-scenario-title { margin: 0 0 0.25rem; font-size: 1.02rem; }
+.tg-scenario-note  { margin: 0 0 1rem; color: var(--body); font-size: 0.9rem; line-height: 1.65; }
+
+.tg-turns { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.9rem; min-width: 0; }
+
+.tg-turn {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--mist);
+  min-width: 0;
+}
+
+.tg-said { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.55rem; min-width: 0; }
+
+.tg-turn-no {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--body);
+}
+
+.tg-said q { min-width: 0; color: var(--ink-soft); font-size: 0.94rem; line-height: 1.6; }
+
+.tg-verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+  min-width: 0;
+}
+
+.tg-action {
+  padding: 0.15em 0.6em 0.2em;
+  border: 1px solid currentColor;
+  border-radius: 2em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* The enforcement ladder, most restrictive first. */
+.tg-action-deny     { color: #9b2c2c; background: #fdeaea; }
+.tg-action-escalate { color: #8a5a12; background: #fdf2e0; }
+.tg-action-disclose { color: #0b6ebc; background: var(--blue-soft); }
+.tg-action-log      { color: #6b4a86; background: #f3edf9; }
+.tg-action-continue { color: #10603f; background: #e8f5ee; }
+
+.tg-reason {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.8rem;
+  color: var(--body);
+}
+
+.tg-violations { margin: 0.7rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; min-width: 0; }
+.tg-violations li { color: var(--body); font-size: 0.86rem; line-height: 1.6; }
+
+.tg-sev {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.tg-clean { margin: 0.7rem 0 0; color: var(--body); font-size: 0.86rem; opacity: 0.8; }
+
+[data-theme="dark"] .tg-turn { background: #12202f; }
+[data-theme="dark"] .tg-step { background: #12202f; }
+[data-theme="dark"] .tg-action-deny     { color: #f2a2a2; background: #2c1414; }
+[data-theme="dark"] .tg-action-escalate { color: #e0bd7c; background: #2a2114; }
+[data-theme="dark"] .tg-action-disclose { color: #7cc2f5; background: #0a2033; }
+[data-theme="dark"] .tg-action-log      { color: #c3a6dd; background: #221a2c; }
+[data-theme="dark"] .tg-action-continue { color: #7fd8ab; background: #0b2a1d; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .tg-turn { transition: opacity 140ms ease; }
+}

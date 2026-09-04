@@ -56,7 +56,7 @@ def _unit_published() -> str:
     """The canonical conformance count, read from its source of truth.
 
     Hardcoding it here would mean every propagation breaks this test -- which is
-    exactly what happened the first time: the figure moved from 1031 to 1094
+    exactly what happened the first time: the figure moved from 1031 to 1110
     across sixty-four places and this assertion was not one of them.
     """
     import ast

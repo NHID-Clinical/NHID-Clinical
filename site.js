@@ -464,3 +464,62 @@ window.NHIDDemoStatus = (function () {
   if (document.readyState !== 'loading') run();
   else document.addEventListener('DOMContentLoaded', run);
 })();
+
+/* ── Trust Gateway stepper ────────────────────────────────────────────────
+   Progressive enhancement, strictly. The turns are server-rendered from real
+   engine output and are complete without this file: every turn, its action,
+   its reason code and its violations are already in the HTML. All this does is
+   let a reader walk the call one turn at a time instead of reading it whole,
+   which is the difference between a transcript and an explanation.
+
+   Because the content is already there, the controls stay hidden until the
+   script runs. A reader with JavaScript disabled sees the full trace and no
+   buttons that do nothing. */
+(function () {
+  "use strict";
+
+  var root = document.querySelector("[data-trust-gateway]");
+  if (!root) return;
+
+  var turns = Array.prototype.slice.call(root.querySelectorAll(".tg-turn"));
+  if (turns.length < 2) return;
+
+  var controls = root.querySelector(".tg-controls");
+  var prev = root.querySelector("[data-tg-prev]");
+  var next = root.querySelector("[data-tg-next]");
+  var all = root.querySelector("[data-tg-all]");
+  var position = root.querySelector("[data-tg-position]");
+  if (!controls || !prev || !next || !all || !position) return;
+
+  var shown = 1;
+  var expanded = false;
+
+  function render() {
+    turns.forEach(function (turn, i) {
+      turn.hidden = !expanded && i >= shown;
+    });
+    prev.disabled = expanded || shown <= 1;
+    next.disabled = expanded || shown >= turns.length;
+    all.textContent = expanded ? "Step through again" : "Show every turn";
+    position.textContent = expanded
+      ? "All " + turns.length + " turns"
+      : "Turn " + shown + " of " + turns.length;
+  }
+
+  prev.addEventListener("click", function () {
+    if (shown > 1) { shown -= 1; render(); }
+  });
+
+  next.addEventListener("click", function () {
+    if (shown < turns.length) { shown += 1; render(); }
+  });
+
+  all.addEventListener("click", function () {
+    expanded = !expanded;
+    if (!expanded) shown = 1;
+    render();
+  });
+
+  controls.hidden = false;
+  render();
+})();

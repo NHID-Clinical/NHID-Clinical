@@ -568,7 +568,7 @@ exists to prevent. Added.
 
 | Check | Result |
 |---|---|
-| Conformance suite | **1094 passed**, 0 failed / skipped / xfailed |
+| Conformance suite | **1110 passed**, 0 failed / skipped / xfailed |
 | Internal links | 513 references, **0 broken** |
 | Build | `_site` assembles; **14 files**, 11 destinations + verification file + 2 asset fragments; **30 redirects** |
 | Render (desktop 1280px) | all 11 destinations 200, no horizontal overflow |
