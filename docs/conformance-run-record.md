@@ -4,17 +4,21 @@ The published conformance metric comes from this run and no other. It is not an
 intermediate figure from the middle of the remediation, and it is not assembled
 from several partial runs.
 
-> **Corrected 2026-09-05.** This record previously named commit `7c6c89d` while
-> reporting 1056 passed. Both could not be true: at `7c6c89d` the suite was
-> **1049**, and 1056 is the count after the seven tests added by the G1–G4
-> decisions. The figure had been propagated into this record without its commit.
-> The run described below is the clean-clone verification actually performed at
-> `e68a65d` — same method, same environment, correct SHA.
+> **Corrected 2026-09-05, twice.** This record first named commit `7c6c89d`
+> while reporting 1056 passed. Both could not be true: at `7c6c89d` the suite
+> was **1049**, and 1056 is the count after the seven tests the G1–G4 decisions
+> added. The figure had been propagated into the record without its commit.
+>
+> The count then changed again — **1056 → 1015** — when the Phase B IA
+> consolidation retired 32 routes. Two suites are parametrised over the
+> published set, so shrinking the site shrank them with it. The arithmetic is
+> in §"How the number got here"; it is a denominator change and is stated as
+> one. The run below is the verification performed at `1954117`.
 
 | | |
 |---|---|
-| **Commit tested** | `e68a65dec0a1319acf20ed728dd3834684b4c778` |
-| **Date** | 2026-09-04 |
+| **Commit tested** | `1954117` (Phase C close) |
+| **Date** | 2026-09-05 |
 | **Checkout** | fresh `git clone`, checked out at that SHA |
 | **Interpreter** | CPython 3.11.15 |
 | **Platform** | Linux-6.18.44-fc-v24-x86_64-with-glibc2.39 |
@@ -24,9 +28,9 @@ from several partial runs.
 
 | Outcome | Count |
 |---|---|
-| **Collected** | **1056** |
-| **Executed** | **1056** |
-| **Passed** | **1056** |
+| **Collected** | **1015** |
+| **Executed** | **1015** |
+| **Passed** | **1015** |
 | Failed | **0** |
 | Skipped | **0** |
 | xfailed | **0** |
@@ -39,7 +43,7 @@ marked, or excluded.
 
 ```bash
 git clone <repo> cleanclone && cd cleanclone
-git checkout e68a65dec0a1319acf20ed728dd3834684b4c778
+git checkout 1954117
 
 python -m venv ../cleanenv
 ../cleanenv/bin/pip install -r requirements.txt
@@ -49,7 +53,7 @@ python -m venv ../cleanenv
 # instead of a quiet 18-test hole.
 ../cleanenv/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8011 &
 
-../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1056 collected
+../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1015 collected
 NHID_REQUIRE_SERVER=1 NHID_BASE_URL=http://127.0.0.1:8011 \
   ../cleanenv/bin/python -m pytest tests/ -q --disable-warnings -rsxX
 ```
@@ -76,7 +80,8 @@ typing-inspection==0.4.4  typing_extensions==4.16.0  uvicorn==0.52.4
 
 ## How the number got here
 
-987 → 1049 → 1056, and the path matters because it is not simple growth.
+987 → 1049 → 1056 → **1015**, and the path matters because it is not simple
+growth: the last step is a **decrease**.
 
 | Step | Effect |
 |---|---|
@@ -94,9 +99,28 @@ whole repository for links to retired routes became one test per published
 page. It is a stricter check, not a padded count -- it caught 44 stale links
 the previous version could not see.
 
-**Nothing on that list is a denominator change.** No test was deleted, skipped,
-xfailed, weakened, deselected, or excluded to produce a green result, and the
-count rose because tests were added and previously-unrun ones were made to run.
+### The decrease, itemised
+
+The Phase B IA consolidation retired 32 routes. Two suites run once per
+published page, so the published set shrinking from 32 routes to 11
+destinations shrank them with it.
+
+| Suite | Before | After | Why |
+|---|---|---|---|
+| `test_site_navigation.py` | 87 | 43 | one test per published page; there are fewer published pages |
+| `test_alignment_pages.py` | 14 | 7 | four stubs × three assertions became four redirect assertions plus three on the destination that absorbed them |
+| `test_responsive_containment.py` | 0 | 10 | new — guards the four mobile overflow causes |
+| | | **−41** | 1056 → 1015 |
+
+**This is a denominator change, and it is named as one.** It is not the
+forbidden kind: no test was deleted, skipped, xfailed, weakened, deselected or
+excluded to produce a green result, and no assertion was dropped. What shrank is
+the *subject* — a test that ran once per route cannot keep running for a route
+that no longer exists, and a redirect stub has no navigation to check. Coverage
+of the published site is complete: every one of the 11 destinations is checked.
+
+Nothing else on the list above is a denominator change; those counts rose
+because tests were added and previously-unrun ones were made to run.
 
 ## What this number is not
 

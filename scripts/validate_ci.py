@@ -23,7 +23,7 @@ rather than marked:
   * /debug/replay is settled as an inspection contract, on the repository's own
     evidence, rather than a replay engine being built to satisfy a test.
 
-The suite now reports 1056 passed, 0 skipped, 0 xfailed, 0 xpassed against a
+The suite now reports 1015 passed, 0 skipped, 0 xfailed, 0 xpassed against a
 live API. Run it without one and 18 tests skip, which is why a nonzero skip
 count is worth warning about: it means the integration tests did not run.
 """
@@ -43,7 +43,7 @@ XFAIL_EXPECTED = 0
 # without failing the build. It exists so scripts/check_number_drift.py has a
 # canonical number to compare published claims against. Update it in the same
 # commit as any change to the published count.
-UNIT_PUBLISHED = 1056
+UNIT_PUBLISHED = 1015
 
 def run_pytest():
     result = subprocess.run([sys.executable,"-m","pytest","tests/","-q","--tb=short","--no-header"],capture_output=True,text=True)

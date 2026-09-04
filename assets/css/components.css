@@ -790,3 +790,87 @@ button.action-button:focus-visible,
     -webkit-overflow-scrolling:touch;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Layout containment — added 2026-09-05 (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   Four destinations scrolled horizontally at a 390px viewport: faq.html to
+   574px, sms-opt-in.html to 459px, developers.html to 446px, evidence-pack.html
+   to 417px. Measured with Playwright at 390x900; index.html and the other seven
+   destinations were already clean, which is why this is containment rather than
+   a layout rewrite.
+
+   Three distinct causes, and the first two are the same bug wearing different
+   clothes: a flex or grid item defaults to `min-width: auto`, so it refuses to
+   shrink below the max-content width of the prose inside it. `.faq-item` is a
+   grid child and the SMS consent copy is a flex child; both sized to their
+   longest line and pushed the page wider than the screen.
+
+   Scoped deliberately. A blanket `* { min-width: 0 }` would also flatten the
+   intrinsic sizing that data tables and code blocks rely on to stay readable,
+   so each rule names what it contains. */
+
+/* 1. Prose inside a flex or grid container must be allowed to wrap. */
+.faq-item,
+.faq-list > * {
+  min-width: 0;
+}
+
+/* The consent row is a checkbox beside a paragraph of required disclosure
+   copy. It was an inline `display:flex` with no min-width on either the label
+   or its text, so both sized to the copy's longest line — 424px of content in
+   a 320px column. Named here so the containment travels with the component
+   instead of living in a page's style attribute. */
+.consent-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  min-width: 0;
+}
+
+.consent-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-width: 0;
+}
+
+.consent-row > input[type="checkbox"] {
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.consent-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 2. A long unbreakable token — an import path, a URL, a file path — is the
+      only thing on the line that cannot wrap, so it alone gets to break.
+      `<pre>` is excluded: it scrolls inside its own box on purpose, and
+      breaking it would corrupt copy-pasted commands. */
+code {
+  overflow-wrap: anywhere;
+}
+
+pre code {
+  overflow-wrap: normal;
+}
+
+/* 3. A visually-hidden <caption> still participates in table layout: the
+      `position: absolute` in .visually-hidden does not take a caption out of
+      flow the way it does a div, so its `white-space: nowrap` text — 663px on
+      the evidence-pack conformance table — set the table's minimum width. The
+      caption stays in the accessibility tree; only its layout contribution
+      goes. */
+caption.visually-hidden {
+  display: block;
+  white-space: normal;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
