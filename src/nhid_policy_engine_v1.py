@@ -502,12 +502,28 @@ def evaluate_idg01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
                 gather_speech=True,
             )
 
-        # A disclosure that introduces a human persona and never states a
-        # non-human identity is not a disclosure — it asserts the opposite of
-        # what IDG-01 requires. Both conditions are needed: an assertion that
-        # names a persona *and* discloses ("I'm Claude, an automated
-        # assistant") is compliant, and a bare organisational name with no
-        # persona ("authorization system") is out of scope for this check.
+        # The control is "the agent MUST identify itself as automated". On the
+        # turn that carries the disclosure, that is read literally: the
+        # assertion must affirmatively state a non-human identity.
+        #
+        # G1 — every term in _NONHUMAN_POSITIVE_TOKENS is equivalent for this
+        # purpose. "Automated", "AI", "virtual agent", "bot" and the rest all
+        # satisfy the control; no specific vocabulary is mandated, because no
+        # normative source mandates one. The `notes` on the conformance case
+        # IDG-01-PASS describe what that fixture's script happens to contain
+        # ("automated system" *and* "not a human representative"); they are not
+        # a conjunctive requirement. Read as one, every compliant scenario in
+        # the governance corpus would become a violation, since not one of them
+        # carries an explicit "not human" clause.
+        #
+        # G2 — naming an organisation or a function is not a disclosure.
+        # "You've reached the claims system" identifies the department, not the
+        # nature of the speaker; a human employee could say it verbatim. The
+        # engine previously abstained here because the corpus labels
+        # "claims system" a violation and "authorization system" compliant, and
+        # no rule separates them. That contradiction is in the corpus, not in
+        # the specification, and the specification governs.
+        #
         # Scoped to the disclosing turn only. Adapters commonly set
         # identity_assertion_text to the agent's words on *every* turn (see
         # adapters/fabricate_adapter.py), so an unscoped check would read the
@@ -517,30 +533,40 @@ def evaluate_idg01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
         # authorization specialist" — which is not an IDG-01 violation at all.
         # A harness that cannot say which turn carries the disclosure gets the
         # permissive default and this check does not run.
-        # A disclosure that denies being automated contradicts itself outright,
-        # with or without a persona: "this isn't an AI, I promise" sets a
-        # disclosure timestamp and asserts the opposite of a disclosure.
-        persona = None
-        if not disclosure_established_prior:
+        if not disclosure_established_prior and not _asserts_nonhuman_identity(assertion_text):
             persona = _claims_human_persona(assertion_text)
-            if not persona and _denies_nonhuman_identity(assertion_text):
-                persona = "denial of automated identity"
-        if persona and not _asserts_nonhuman_identity(assertion_text):
+            if persona:
+                reason_code = "IDG01_DISCLOSURE_CONTRADICTED"
+                description = (
+                    "Identity assertion introduces a human persona and states no "
+                    f"non-human identity (matched {persona!r}). A disclosure that "
+                    "presents the caller as a person does not disclose that the "
+                    "caller is automated."
+                )
+            elif _denies_nonhuman_identity(assertion_text):
+                reason_code = "IDG01_DISCLOSURE_CONTRADICTED"
+                description = (
+                    "Identity assertion denies being automated. A disclosure that "
+                    "asserts the caller is a person is not a disclosure."
+                )
+            else:
+                reason_code = "IDG01_DISCLOSURE_INSUFFICIENT"
+                description = (
+                    "Identity assertion states no non-human identity. Naming an "
+                    "organisation, a line or a function does not identify the "
+                    "speaker as automated — a human employee could say the same "
+                    "words."
+                )
             violations = [
                 BoundaryViolation(
                     rule_id="IDG-01",
-                    description=(
-                        "Identity assertion introduces a human persona and states no "
-                        f"non-human identity (matched {persona!r}). A disclosure that "
-                        "presents the caller as a person does not disclose that the "
-                        "caller is automated."
-                    ),
+                    description=description,
                     severity=ViolationSeverity.CRITICAL,
                 )
             ]
             return PolicyDecision(
                 action=PolicyAction.DISCLOSE_IDENTITY,
-                reason_code="IDG01_DISCLOSURE_CONTRADICTED",
+                reason_code=reason_code,
                 violations=violations,
                 next_state="AWAITING_DISCLOSURE",
                 twiml_fallback=_fallback_twiml(

@@ -67,9 +67,10 @@ def test_carrying_disclosure_forward_never_loses_a_detection(scenarios):
     Stated as a subset rather than equality because the sequencing signal
     legitimately gains detections: PDX-01 on nhid_ec_pdx01_002 and
     nhid_ec_combo_006 (protected-data request bundled into the disclosing
-    utterance) and IDG-01 on nhid_ec_combo_002 (a disclosure that introduces a
-    human persona). Those are asserted by name below so the gain cannot quietly
-    become a loss somewhere else.
+    utterance), and IDG-01 on nhid_ec_combo_002 (a disclosure that introduces a
+    human persona) and nhid_ec_idg01_002 (a bare organisational name, added by
+    the G2 decision). Those are asserted by name below so the gain cannot
+    quietly become a loss somewhere else.
     """
     for s in scenarios:
         expected = set(s.get("expected_violations") or [])
@@ -96,7 +97,14 @@ def test_the_sequencing_signal_gains_exactly_the_expected_detections(scenarios):
         if after - before:
             gained[sid] = sorted(after - before)
     assert gained == {
+        # A disclosure that introduces a human persona.
         "nhid_ec_combo_002": ["IDG-01"],
+        # A bare organisational name — "You've reached the claims system" —
+        # which states no non-human identity. Added by the G2 decision of
+        # 2026-09-04; see docs/decision-gate-G1-G4.md §G2 and
+        # tests/test_engine_disclosure_hardening.py.
+        "nhid_ec_idg01_002": ["IDG-01"],
+        # A protected-data request bundled into the disclosing utterance.
         "nhid_ec_combo_006": ["PDX-01"],
         "nhid_ec_pdx01_002": ["PDX-01"],
     }, f"unexpected change in what the sequencing signal detects: {gained}"

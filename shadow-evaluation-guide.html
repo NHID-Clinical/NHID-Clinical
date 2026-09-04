@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Shadow Evaluation Guide — a no-cost, 90-day behavioral baseline observation guide for payers assessing AI voice agent transparency in B2B administrative workflows."/>
+  <meta name="description" content="NHID-Clinical Shadow Evaluation Guide — a no-cost behavioral baseline observation guide for payers assessing AI voice agent transparency in B2B administrative workflows."/>
   <title>Shadow Evaluation Guide | NHID-Clinical</title>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
@@ -49,11 +49,9 @@
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="nav-dropdown-menu">
-          <a href="/framework/">Framework overview</a>
           <a href="/specification.html">Specification (v1.3)</a>
-          <a href="/framework/controls.html">The five controls</a>
-          <a href="/framework/conformance-suite.html">Conformance test suite</a>
           <a href="/regulatory-alignment.html">Regulatory alignment</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -61,30 +59,11 @@
         <div class="nav-dropdown-menu">
           <a href="/evidence-pack.html">Evidence pack</a>
           <a href="/shadow-evaluation-guide.html">Shadow evaluation guide</a>
-          <a href="/registry.html">Implementation registry</a>
         </div>
       </div>
-      <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Developers <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="nav-dropdown-menu">
-          <a href="/developers.html">Developer guide</a>
-          <a href="/framework/reference-implementation.html">Reference implementation</a>
-          <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
-          <a href="/interoperability.html">Interoperability</a>
-          <a href="/technical-stack.html">Technical stack</a>
-        </div>
-      </div>
-      <div class="nav-dropdown">
-        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">About <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="nav-dropdown-menu">
-          <a href="/about.html">About the project</a>
-          <a href="/roadmap.html">Roadmap</a>
-          <a href="/news.html">News</a>
-          <a href="/faq.html">FAQ</a>
-          <a href="/community.html">Community</a>
-          <a href="/platform/">TrustLayer (in development)</a>
-        </div>
-      </div>
+      <a href="/developers.html">Developers</a>
+      <a href="/specs/">Downloads</a>
+      <a href="/faq.html">FAQ</a>
       <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
     <div class="nav-actions">
@@ -94,7 +73,7 @@
       <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
-      <a class="primary-pill" href="/for-payers.html">Run a shadow evaluation</a>
+      <a class="primary-pill" href="/shadow-evaluation-guide.html">Run a shadow evaluation</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
@@ -117,36 +96,17 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
   <a href="/">Home</a>
   <strong class="mobile-nav-group">Framework</strong>
-  <a href="/framework/">Framework overview</a>
-  <a href="/specification.html">Specification</a>
-  <a href="/framework/controls.html">Controls</a>
-  <a href="/framework/nhid-auth.html">NHID-Auth</a>
-  <a href="/framework/reference-implementation.html">Reference Implementation</a>
-  <a href="/framework/conformance-suite.html">Conformance Test Suite</a>
-  <a href="/technical-stack.html">Technical Stack</a>
-  <a href="/regulatory-alignment.html">Regulatory Alignment</a>
-  <strong class="mobile-nav-group">Platform</strong>
-  <a href="/platform/">TrustLayer overview</a>
-  <a href="/platform/agent-registry.html">Agent Registry</a>
-  <a href="/platform/trust-gateway.html">Trust Gateway</a>
-  <a href="/platform/evidence-center.html">Evidence Center</a>
-  <a href="/platform/continuous-conformance.html">Continuous Conformance</a>
-  <a href="/platform/enterprise.html">Enterprise Workflow</a>
-  <strong class="mobile-nav-group">Simulator</strong>
-  <strong class="mobile-nav-group">Docs</strong>
-  <a href="/developers.html">Developer guide</a>
-  <a href="/interoperability.html">Interoperability</a>
-  <a href="/registry.html">Implementation Registry</a>
-  <strong class="mobile-nav-group">Resources</strong>
-  <a href="/evidence-pack.html">Evidence Pack</a>
-  <a href="/shadow-evaluation-guide.html">Shadow Evaluation Guide</a>
-  <a href="/for-payers.html">For Payers</a>
-  <a href="/community.html">Community</a>
-  <a href="/roadmap.html">Roadmap</a>
-  <a href="/news.html">News</a>
-  <a href="/faq.html">FAQ</a>
+  <a href="/specification.html">Specification (v1.3)</a>
+  <a href="/regulatory-alignment.html">Regulatory alignment</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
+  <strong class="mobile-nav-group">Evidence</strong>
+  <a href="/evidence-pack.html">Evidence pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow evaluation guide</a>
+  <strong class="mobile-nav-group">Build</strong>
+  <a href="/developers.html">Developers</a>
+  <a href="/specs/">Downloads</a>
   <strong class="mobile-nav-group">More</strong>
-  <a href="/about.html">About</a>
+  <a href="/faq.html">FAQ</a>
   <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
@@ -164,8 +124,8 @@
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
-        <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/for-payers.html">For Payers</a><span>/</span><span>Shadow Evaluation Guide</span></div>
-        <p class="eyebrow meta-label">Behavioral Baseline &middot; Shadow Mode &middot; 90 Days</p>
+        <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/shadow-evaluation-guide.html">For Payers</a><span>/</span><span>Shadow Evaluation Guide</span></div>
+        <p class="eyebrow meta-label">Behavioral Baseline &middot; Shadow Mode &middot; Observe Only</p>
         <h1 class="reveal page-heading">Shadow Evaluation Guide</h1>
         <p class="lede reveal lede-text">A structured, no-cost process for payer operations teams to establish a behavioral baseline for incoming AI voice calls — <strong>without changing anything in your call flow.</strong></p>
         <div class="payer-hero-visual" style="margin-top:1.25rem">
@@ -206,21 +166,22 @@
         <li>Willingness to share anonymized findings if you choose to.</li>
       </ul>
 
-      <h2 style="margin-top:2.5rem">The 90-Day Structure</h2>
+      <h2 style="margin-top:2.5rem">How an evaluation unfolds</h2>
+        <p style="color:var(--body);line-height:1.8;margin-top:.6rem">A sequence, not a schedule. The stages run in this order because each depends on the one before it; how long each takes is yours to decide, and an evaluation can stop after any of them.</p>
       <div class="feature-grid" style="margin-top:1.25rem">
         <div class="feature-card reveal">
           <span class="step-num" aria-hidden="true">1</span>
-          <h3>Month 1 — Behavioral Baseline</h3>
+          <h3>Behavioral baseline</h3>
           <p>Log incoming calls. Identify which callers are AI voice agents. Record disclosure timing, escalation behavior, and audit trail presence.</p>
         </div>
         <div class="feature-card reveal">
           <span class="step-num" aria-hidden="true">2</span>
-          <h3>Month 2 — Gap Analysis</h3>
+          <h3>Gap analysis</h3>
           <p>Evaluate identified AI calls against the five v1.3 controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01), plus the supplemental bot&#8209;to&#8209;bot rule. Quantify what passes, what fails, what is ambiguous.</p>
         </div>
         <div class="feature-card reveal">
           <span class="step-num" aria-hidden="true">3</span>
-          <h3>Month 3 — Written Assessment</h3>
+          <h3>Written assessment</h3>
           <p>Compile findings into a short written assessment. Share the anonymized results with the community to help inform the next version of the proposal.</p>
         </div>
       </div>
@@ -265,9 +226,9 @@
       <h2 style="margin-top:2.5rem">Related Resources</h2>
       <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
         <li><a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit" style="font-weight:600;color:var(--teal-bright)">Tier 0 Shadow Pilot Kit &rarr;</a> <span style="color:var(--body)">— capture schema, measurement script, 2&#8209;4 week plan, report template</span></li>
-        <li><a href="/for-payers.html" style="font-weight:600;color:var(--teal-bright)">For Payers guide &rarr;</a> <span style="color:var(--body)">— full 90-day pilot framing</span></li>
+        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">For Payers guide &rarr;</a> <span style="color:var(--body)">— the payer-side framing</span></li>
         <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--teal-bright)">Evidence Pack &rarr;</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
-        <li><a href="/demo.html" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line &rarr;</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
+        <li><a href="#demo" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line &rarr;</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
       </ul>
 
     </div>
@@ -292,6 +253,345 @@
         <p>Whether you have a process question, a concern about the controls, or you want to share what you're seeing in your own call traffic — feedback from payer operations teams is what shapes this work.</p>
       </div>
       <a class="closing-button" href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation">Email us about a shadow evaluation &rarr;</a>
+    </div>
+  </section>
+
+<!-- ── For payers (merged from for-payers.html) ───────────────────── -->
+  <section class="page-section" id="for-payers">
+    <div class="container" style="max-width:860px">
+      <h2>For payers</h2>
+      <p class="lede-text" style="color:var(--body);line-height:1.85">Establish a behavioral baseline for AI voice agent transparency — <strong>no vendor changes, observe-only.</strong> It runs alongside live traffic without sitting in the call path; your privacy, security, and contractual obligations still apply. Observe, collect evidence, decide what to require later.</p>
+    </div>
+  </section>
+
+
+  <!-- ── Start here: Tier 0 quick start ─────────────────────────────────── -->
+  <section class="page-section" style="padding-top:1rem;padding-bottom:.5rem">
+    <div class="container" style="max-width:52rem">
+      <h3 style="margin-bottom:.35rem">Start here — a pilot in three steps</h3>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.7;margin-bottom:1.25rem">The Tier 0 Shadow Pilot Kit runs on your own call logs. Observe-only, no vendor changes, and it produces usable numbers without altering the production call flow.</p>
+      <div style="display:grid;gap:1rem">
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">1</span> Get the kit</p>
+          <p>Download the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/README.md">Tier 0 Shadow Pilot Kit</a> — a minimal event schema, a measurement script, and a report template.</p>
+        </div>
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">2</span> Run it on your logs</p>
+          <p>Map a sample of your call records to the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/minimal-event-schema.json">minimal event schema</a>, then run <code>measure_pilot.py</code>. Nothing touches production.</p>
+        </div>
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">3</span> Read your numbers</p>
+          <p>You get impersonation-latency and disclosure metrics on your own traffic in a <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/pilot-report-template.md">ready-to-share report</a>. Use it to decide what to require of vendors.</p>
+        </div>
+      </div>
+      <p style="margin-top:1rem;font-size:.95rem"><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">See the full shadow-evaluation guide →</a></p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+
+      <div class="callout" role="note" style="margin-bottom:2rem;border-color:#b91c1c;background:#fef2f2">
+        <strong>Important:</strong> No payer has adopted NHID-Clinical in production yet. It is a voluntary reference model, not an accredited standard, certification, or regulatory requirement.
+      </div>
+
+      <h3>What You Gain</h3>
+      <table class="premium-metrics">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Today (typical)</th>
+            <th>Target with NHID-Clinical</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Verification latency</td>
+            <td>3–5 min or call terminated</td>
+            <td>&lt; 5 seconds</td>
+          </tr>
+          <tr>
+            <td>Audit effort per vendor</td>
+            <td>Manual call review (hours)</td>
+            <td>~2 minutes (test suite)</td>
+          </tr>
+          <tr>
+            <td>RFP disclosure language</td>
+            <td>Custom per vendor</td>
+            <td>One standard clause</td>
+          </tr>
+          <tr>
+            <td>Escalation response time</td>
+            <td>Untracked</td>
+            <td>≤ 2 seconds, logged</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>How a payer-side evaluation works</h3>
+      <div class="payer-phase-grid">
+
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">1</span> Add RFP language</p>
+          <p>Insert this clause into your next voice AI vendor RFP or BAA amendment:</p>
+          <pre>"The vendor's AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all B2B administrative calls, including disclosure timestamps and opt-out handling. The payer may run the open-source conformance test suite against vendor output at any time."</pre>
+          <p style="margin-top:.65rem"><em>Existing contract? Send as a formal amendment request.</em></p>
+        </div>
+
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">2</span> Vendor sandbox testing</p>
+          <p>Ask your vendor to run the open-source suite — results in under 5 minutes.</p>
+          <ol>
+            <li><code>git clone https://github.com/NHID-Clinical/NHID-Clinical.git</code></li>
+            <li><code>pip install -r requirements.txt</code></li>
+            <li><code>python -m pytest tests/ -v</code></li>
+            <li>Send full terminal output (+ optional sample traces)</li>
+          </ol>
+        </div>
+
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">3</span> Validate logs yourself</p>
+          <ol>
+            <li>Place vendor JSON traces in <code>traces/</code></li>
+            <li>Run <code>python -m pytest tests/ -v</code></li>
+            <li>Verify: disclosure before NPI/member ID; no deceptive artifacts; escalation ≤ 2s on request</li>
+          </ol>
+        </div>
+
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">4</span> Measure impact</p>
+          <ul>
+            <li><strong>Verification latency</strong> (target &lt; 5s)</li>
+            <li><strong>Escalation volume</strong> from identity uncertainty (target &gt; 30% reduction)</li>
+          </ul>
+        </div>
+
+        <div class="pilot-card">
+          <p class="step-header"><span class="step-num">5</span> Decide Next Steps</p>
+          <ul>
+            <li><strong>Tests pass + metrics improve</strong> → consider requiring conformance in future contracts</li>
+            <li><strong>Tests fail or flat metrics</strong> → remediation or disqualify from future bids</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="callout" role="note" style="margin-top:2.5rem">
+        <strong>v1.3 vs. v2:</strong> v1.3 covers disclosure behavior and audit trails — suitable for shadow evaluations today. v2 adds cryptographic agent identity (NHID-Auth v2) for when you must verify the agent was authorized by the provider it claims to represent. NPIs are public; v1.3 alone does not prove authorization.
+        <a href="/framework/nhid-auth.html#v2" style="color:var(--teal-bright);font-weight:600;display:inline-block;margin-top:.5rem">Read the v2 roadmap →</a>
+      </div>
+
+      <h3 style="margin-top:2.5rem">Evaluation Resources</h3>
+      <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
+        <li><a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md" style="font-weight:600;color:var(--teal-bright)">Executive Brief →</a> <span style="color:var(--body)">— one-page overview for leadership and procurement</span></li>
+        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">Shadow Evaluation Guide →</a> <span style="color:var(--body)">— the full process</span></li>
+        <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--teal-bright)">Evidence Pack →</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
+        <li><a href="/regulatory-alignment.html" style="font-weight:600;color:var(--teal-bright)">Regulatory Alignment →</a> <span style="color:var(--body)">— CMS-0057-F, MACPAC, DOJ FCA, state AI laws</span></li>
+        <li><a href="#demo" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line →</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>
+      </ul>
+
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Get involved</p>
+        <h3>Read the specification. Share what you think.</h3>
+        <p>Whether it is right, wrong, incomplete, or misses the real problem — that feedback shapes the next version.</p>
+      </div>
+      <a class="closing-button" href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation">Email us about a shadow evaluation →</a>
+    </div>
+  </section>
+
+
+<!-- ── What transparent disclosure sounds like (merged from script-examples.html) ───────────────────── -->
+  <section class="page-section" id="script-examples">
+    <div class="container" style="max-width:860px">
+      <h2>What transparent disclosure sounds like</h2>
+      <p class="lede-text" style="color:var(--body);line-height:1.85">Side-by-side examples of AI voice agent openings — the kind of interaction this proposal is trying to encourage, and the kind it is trying to reduce.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:52rem">
+      <p style="color:var(--body);font-size:1.05rem;line-height:1.8;margin-bottom:2rem">The core idea is simple: an AI voice agent should say it is not human <strong>before</strong> asking for or sharing any operational information. The examples below show what that looks like — and what it looks like when it does not happen.</p>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)" id="good-examples">
+    <div class="container" style="max-width:52rem">
+      <p class="section-kicker">Good examples — disclosure upfront</p>
+      <h3>What we'd like to see more of</h3>
+      <p style="color:var(--body);margin-bottom:2rem;line-height:1.75">These openings work because the AI identifies itself immediately — before asking for anything. The representative knows what they're dealing with from the first sentence.</p>
+
+      <div class="script-example-block">
+        <h5>General payer operations inquiry</h5>
+        <div class="script-quote script-quote-pass">"Hello, this is an automated AI voice agent from Acme Health Plan. I am not a human. I'm calling regarding a claim. Do I have permission to continue?"</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Automated nature disclosed immediately. No data exchanged before identification.</p>
+      </div>
+
+      <div class="script-example-block">
+        <h5>Dental payer — claim status</h5>
+        <div class="script-quote script-quote-pass">"This is the AI claims assistant for Delta Dental. I am a non-human system. May I have your NPI to check a claim status?"</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Non-human status disclosed before any data is requested.</p>
+      </div>
+
+      <div class="script-example-block">
+        <h5>Prior authorization follow-up</h5>
+        <div class="script-quote script-quote-pass">"Good morning. This is an automated system calling on behalf of Riverside Medical Group to follow up on a prior authorization request. I am not a person — I'm an AI agent. Are you available to continue?"</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Clear, early, unambiguous. The representative can make an informed decision about how to proceed.</p>
+      </div>
+
+      <div class="script-example-block">
+        <h5>Eligibility verification</h5>
+        <div class="script-quote script-quote-pass">"Hi, this is an automated voice agent — not a human — calling from Valley Provider Services to verify eligibility for a patient visit. Before I give you any details, do I have your permission to proceed?"</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Discloses first, then asks permission. Gives the representative control.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" id="problematic-examples">
+    <div class="container" style="max-width:52rem">
+      <p class="section-kicker">Problematic examples — what this proposal aims to reduce</p>
+      <h3>Patterns that create impersonation latency</h3>
+      <p style="color:var(--body);margin-bottom:2rem;line-height:1.75">These examples illustrate the problem. Each one involves data being exchanged before the representative knows they are talking to an automated system. The scenarios are based on real patterns observed in healthcare payer–provider calls.</p>
+
+      <div class="script-example-block">
+        <div class="script-fail-severe-label" aria-label="Most concerning pattern">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          The full impersonation latency pattern
+        </div>
+        <div class="script-dialogue" role="region" aria-label="Problematic call example — disclosure only after challenge">
+          <div class="dialogue-turn">
+            <span class="dialogue-speaker dialogue-speaker-agent">AI Agent</span>
+            <span class="dialogue-text-agent">"Hi, this is Sarah from Dr. Smith's office calling to check claim status for a patient. The provider's NPI is 1234567890."</span>
+          </div>
+          <div class="dialogue-turn">
+            <span class="dialogue-speaker dialogue-speaker-rep">Payer Rep</span>
+            <span class="dialogue-text-rep">"Sure, I can help with that. What's the patient's member ID?"</span>
+          </div>
+          <div class="dialogue-turn">
+            <span class="dialogue-speaker dialogue-speaker-agent">AI Agent</span>
+            <span class="dialogue-text-agent">"The member ID is 987654321 and the date of service was January 15th."</span>
+          </div>
+          <div class="dialogue-turn">
+            <span class="dialogue-speaker dialogue-speaker-rep">Payer Rep</span>
+            <span class="dialogue-text-rep">"Okay, I'm pulling that up. The claim is currently in review... wait, are you a real person?"</span>
+          </div>
+          <div class="dialogue-turn">
+            <span class="dialogue-speaker dialogue-speaker-agent">AI Agent</span>
+            <span class="dialogue-text-agent">"I am an automated system calling on behalf of Dr. Smith's office."</span>
+          </div>
+        </div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.75rem">The representative shared claim status and engaged in a full workflow exchange before knowing they were talking to automation. NPI and member ID were already exchanged. There is no record of when — or whether — this would have been disclosed without a direct challenge.</p>
+      </div>
+
+      <div class="script-example-block">
+        <div class="script-fail-label">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          Disclosure buried mid-call
+        </div>
+        <div class="script-quote script-quote-fail">"Good morning, this is the billing department at Valley Medical calling about claim 789012. The provider NPI is 5551234567 and we're following up on an authorization request from last week. By the way, I should mention I'm an automated calling system."</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Disclosure comes after the purpose and claim details are established. A busy representative may have already started pulling up records.</p>
+      </div>
+
+      <div class="script-example-block">
+        <div class="script-fail-label">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          Human sounds designed to deceive
+        </div>
+        <div class="script-quote script-quote-fail">"[audible breath] Hi, this is Mike from Advanced Medical Solutions. [pause] I'm calling to verify some patient eligibility information — just give me a moment to pull up the file. [typing sounds] Okay, so the provider NPI is..."</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Breathing sounds, hesitation pauses, and typing are added to create the impression of a human caller. Even if disclosure eventually comes, the framing is designed to mislead.</p>
+      </div>
+
+      <div class="script-example-block">
+        <div class="script-fail-label">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          Disclosure only when challenged
+        </div>
+        <div class="script-quote script-quote-fail">"Hello, I'm calling about a claim for member 445566. Can you confirm current claim status? [After representative challenges] Yes, this is an automated system."</div>
+        <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Disclosure is contingent on being asked. This is the core pattern this proposal aims to change.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" style="background:var(--bg-alt)">
+    <div class="container" style="max-width:52rem">
+      <h3>A note on scope</h3>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">These examples cover B2B administrative voice workflows — AI systems calling payer offices on behalf of providers or vendors. They do not apply to patient-facing calls, secure messaging, or internal systems.</p>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The examples above are illustrative, not exhaustive. If you encounter patterns in real calls that are not covered here, <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright);font-weight:600">we want to hear about them</a>.</p>
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">Get involved</p>
+        <h3>Seen something different in the real world?</h3>
+        <p>Real call patterns from payer operations staff are the most valuable input to this proposal. Share what you've seen.</p>
+      </div>
+      <a class="closing-button" href="mailto:contact@nhid-clinical.org">Get in touch →</a>
+    </div>
+  </section>
+
+
+<!-- ── The demo line (merged from demo.html) ───────────────────── -->
+  <section class="page-section" id="demo">
+    <div class="container" style="max-width:860px">
+      <h2>The demo line</h2>
+      <p class="lede-text" style="color:var(--body);line-height:1.85">A scripted, deterministic phone call — no AI variance — run through the exact same NHID-Clinical evaluation pipeline that production traffic goes through. Only the speech is fake.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:860px">
+      <div class="card" style="margin-bottom:1.5rem">
+        <h4>1. Call the Live Demo Line (Beacon)</h4>
+        <p class="sub">Dial <a class="demo-line-phone" href="tel:+17176706772"><strong id="demo-phone-number">+1 (717) 670-6772</strong></a> from any phone.</p>
+        <div class="callout" role="note">
+          This is the public <strong>Grok Voice / Beacon</strong> inbound demo line — a website demo feature, not a personal contact number.
+          Say something like <em>&ldquo;I am an automated assistant&hellip;&rdquo;</em> to exercise disclosure controls (IDG-01, DBC-01, and related gates).
+        </div>
+        <p>After the call ends, evaluation results appear below in real time through the same pipeline production traffic uses.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem">
+        <h4>2. Or get a call directly from Beacon</h4>
+        <p class="sub">Beacon — our outbound demo agent — calls your phone and the conversation is evaluated against the same five controls once the call ends. This costs us real calling minutes per request, so it's CAPTCHA- and rate-limited.</p>
+        <div class="call-demo-form" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+          <input type="tel" id="demo-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your phone number" style="flex:1;min-width:200px"/>
+          <button class="cta-button" id="demo-call-btn" type="button">Receive a Call from Beacon</button>
+        </div>
+        <!-- Cloudflare Turnstile site key (public). The matching secret key is never committed — it's passed only at deploy time via `make deploy CLOUDFLARE_TURNSTILE_SECRET=...` and verified server-side in handler._verify_turnstile(). -->
+        <div class="cf-turnstile" id="demo-call-turnstile" data-sitekey="0x4AAAAAADoOpjQr1DAbFwwY" data-callback="nhidOnTurnstileSuccess"></div>
+        <p id="demo-call-status" hidden aria-live="polite" style="margin-top:.75rem"></p>
+      </div>
+
+      <div class="card">
+        <h4>3. Watch it evaluated live</h4>
+        <p class="sub">Every turn of the call — disclosure, PHI requests, escalation — is run through <code>adapters/call_progress_adapter.py</code> + <code>src/nhid_policy_engine_v1.py</code> exactly like a real vendor webhook, and shown below as it happens.</p>
+        <div id="nhid-demo-status-container"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container closing-section">
+    <div class="closing-panel">
+      <div>
+        <p class="section-kicker">How this works</p>
+        <h3>This is the same evaluation pipeline production traffic uses.</h3>
+        <p>The two call scripts are the only fake part. The conformance evaluation — IDG-01, PDX-01, DBC-01, EIT-01 — is real.</p>
+      </div>
+      <a class="closing-button" href="/developers.html">Read the Developer Docs →</a>
+    </div>
+  </section>
+
+
+<!-- ── Playbook pointer ─────────────────────────────────────── -->
+  <section class="page-section" style="padding-block:1.25rem">
+    <div class="container" style="max-width:860px">
+      <p class="disclaimer-small" style="margin:0">Going further: <a href="/specs/NHID-Clinical-Playbook.pdf" download><strong>Part III of the NHID-Clinical Playbook</strong></a> covers the full evaluation method, governance and data-handling considerations, and what it cannot establish.</p>
     </div>
   </section>
 </main>

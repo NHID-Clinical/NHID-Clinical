@@ -33,15 +33,15 @@
 
 <p align="center">
   <a href="https://nhid-clinical.org"><strong>Website</strong></a> ·
-  <a href="https://nhid-clinical.org/simulator.html">Simulator</a> ·
+  <a href="https://nhid-clinical.org/developers.html">Simulator</a> ·
   <a href="https://nhid-clinical.org/specification.html">Specification</a> ·
-  <a href="https://nhid-clinical.org/roadmap.html">v2 Identity</a> ·
+  <a href="https://nhid-clinical.org/framework/nhid-auth.html#v2">v2 Identity</a> ·
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions">Discussions</a>
 </p>
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-987%20passing-brightgreen?style=flat-square">
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-1056%20passing-brightgreen?style=flat-square">
   <img alt="Middleware Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
   <img alt="License" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?style=flat-square">
@@ -54,7 +54,7 @@
 
 ---
 
-**Designed to support the transparency obligations described in EU AI Act Article 50; mapped to NIST AI RMF 1.0.**
+**Designed to support the disclosure obligation described in EU AI Act Article 50(1); mapped to NIST AI RMF 1.0.**
 
 NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, an optional delegated-authority gate (DLG-01) that verifies a cryptographically signed, scoped delegation and constrains what protected data an agent may request, and machine-readable audit evidence for what happened. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
 
@@ -66,17 +66,17 @@ Pick your path — each is runnable today:
 
 **🔍 Reviewers & security teams** — read the boundaries, then run the tests.
 1. Skim [what it is / is not](#what-nhid-clinical-is--is-not) and the [claim boundaries](docs/claim-boundaries.md)
-2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **987 passing** (+ 18 skipped)
+2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **1056 passing** (0 skipped, 0 xfailed)
 3. Inspect the five controls in [`src/nhid_policy_engine_v1.py`](src/nhid_policy_engine_v1.py) and the [Enforcement Profile](docs/enforcement-profile.md)
 4. Read the [Conformance Test Suite](conformance/nhid_conformance_test_suite_v1.yaml) — each case asserts an expected policy action
 
 **🛠 AI voice vendors** — see the controls fire, then find your integration points.
-1. Run the [Governance Simulator](https://nhid-clinical.org/simulator.html)
+1. Run the [Governance Simulator](https://nhid-clinical.org/developers.html)
 2. Send a native call payload to a demo adapter — no key required (see [Live API](#live-api--try-it-now))
 3. Map your call flow to the controls via the [Developer guide](https://nhid-clinical.org/developers.html)
 
 **🏥 Payers & providers** — review the controls, then scope a shadow pilot.
-1. Read [the controls](#the-four-core-controls-v13) and the [For Payers](https://nhid-clinical.org/for-payers.html) framing
+1. Read [the controls](#the-four-core-controls-v13) and the [For Payers](https://nhid-clinical.org/shadow-evaluation-guide.html) framing
 2. Pick one workflow (eligibility, claim status, prior auth)
 3. Run the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) on your own logs — observe-only, 2–4 weeks
 
@@ -108,7 +108,7 @@ The governance gap is well documented; large-scale production evidence is still 
 
 For a one-page overview aimed at hospital, payer, compliance, and procurement leaders, see the [**Executive Brief**](docs/executive-brief.md).
 
-**Standards alignment (mapped, not certified):** Explicitly supports EU AI Act Article 50 transparency obligations for AI systems interacting with humans. Mapped to NIST AI RMF 1.0 Map and Measure functions for identity disclosure and risk. Aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability.
+**Standards alignment (mapped, not certified):** Explicitly supports the EU AI Act Article 50(1) obligation to inform people that they are interacting with an AI system. Mapped to NIST AI RMF 1.0 Map and Measure functions for identity disclosure and risk. Aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability.
 
 <p align="center">
   <img alt="NHID-Clinical trust verification pathway: payer and provider bridged by conformance verification" src="assets/images/3d-svg/nexus.svg" width="760">
@@ -121,7 +121,7 @@ For a one-page overview aimed at hospital, payer, compliance, and procurement le
 An honest maturity snapshot. NHID-Clinical is a working reference implementation, not a production-scale product.
 
 **Available today**
-- Deterministic policy engine with 1005 tests (987 passing) across all phases
+- Deterministic policy engine with 1056 tests, all passing, across all phases
 - Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
 - Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
 - Conformance Test Suite, plus an evidence pack export a vendor can hand to a reviewer
@@ -190,7 +190,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 | Item | Deliverable | Status | Purpose |
 |------|---|---|---|
 | **1** | **Governance Evaluation Corpus v1.0** | ✅ Complete | 25 healthcare scenarios (5 compliant + 10 single-rule + 10 multi-rule), 55 turns; demonstrates rule-combination coverage |
-| **2** | **Detection Rate Report** | ✅ Complete | 90.6% aggregate detection (29/32 violations); 0% false-positive rate (0 of 5 compliant scenarios); per-rule accuracy breakdown |
+| **2** | **Detection Rate Report** | ✅ Complete | 93.8% aggregate detection (30/32 violations); 0% false-positive rate (0 of 5 compliant scenarios); per-rule accuracy breakdown |
 | **3** | **NHID Audit Event Spec v1.0** | ✅ Complete | Formal audit trail schema, immutability requirements (append-only + hash chain options), 7-year retention, compliance mappings (HIPAA §164.312b) |
 | **4** | **Metrics & Observability v1.0** | ✅ Complete | 6 metric categories, CloudWatch integration, pilot dashboard layout, alert thresholds, weekly reporting template |
 | **5** | **Architecture Overview (Pilot-Ready)** | ✅ Complete | 10-minute executive brief for security architects; governance statement for portfolio; pilot success criteria and go/no-go recommendation |
@@ -198,8 +198,8 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 ### Evidence Summary
 
 **Engine Validation**:
-- ✅ **987 passing tests** (1005 total; comprehensive rule coverage across all phases)
-- ✅ **25-scenario evaluation corpus** (90.6% detection; 0% false positives across 5 compliant scenarios)
+- ✅ **1056 passing tests** (comprehensive rule coverage across all phases)
+- ✅ **25-scenario evaluation corpus** (93.8% detection; 0% false positives across 5 compliant scenarios; 12 unexpected detections on violation scenarios, reported separately)
 - ✅ **Live endpoint tested** against noncompliant VAPI payload
 - ✅ **Deterministic** — same input always produces same output
 
@@ -233,7 +233,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 
 **v2.0 Identity Layer**: NHID-Auth v2 (reference code in `src/agent_identity.py`, 60+ passing tests)
 
-## The Four Core Controls (v1.3)
+## The Four Behavioral Controls (v1.3)
 
 | Control | Name | Requirement |
 | :--- | :--- | :--- |
@@ -243,9 +243,9 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 | **EIT-01** | Escalation Implementation Test | Clear human handoff path, honored on request |
 
 Plus **ATR-01** (audit trail) — every call must produce a machine-readable trace.  
-Comprehensive test suite · same inputs → identical output · **987 passing** + 18 skipped (1005 total tests)
+Comprehensive test suite · same inputs → identical output · **1056 passing**, every collected test executed
 
-[**Try the Governance Simulator →**](https://nhid-clinical.org/simulator.html)
+[**Try the Governance Simulator →**](https://nhid-clinical.org/developers.html)
 
 ## Enforcement Profile
 
@@ -284,7 +284,7 @@ flowchart LR
 | **4** | FHIR AuditEvent R4 (base spec) | Healthcare-native audit logging |
 | **5** | OpenTelemetry | Enterprise observability export |
 
-[Full technical architecture →](https://nhid-clinical.org/technical-stack.html)
+[Full technical architecture →](https://nhid-clinical.org/#technical-stack)
 
 ## The Impersonation Latency Problem
 
@@ -379,7 +379,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected: **987 passing** in ~3.0s (~18 skipped integration tests; 1005 total). Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
+Expected: **1056 passing** in ~3.0s, with no skips and no xfails. Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
 
 <details>
 <summary><b>Repository structure</b></summary>
@@ -407,7 +407,7 @@ NHID-Clinical/
 | MACPAC 2026 | AI transparency, human review | EIT-01 + ATR-01 |
 | State AI laws | Auditable AI decisions | IDG-01 + DBC-01 |
 | NIST CAISI RFI | Cross-org agent identity | NHID-Auth v2 |
-| EU AI Act Art. 50 | Transparency for AI interacting with humans | IDG-01 + DBC-01 |
+| EU AI Act Art. 50(1) | Informing people they are interacting with an AI system | IDG-01 + DBC-01 |
 | ISO/IEC 42001 | AI management system transparency controls | Full control set + ATR-01 |
 | NIST AI RMF 1.0 | Map & Measure functions for identity risk | Full framework |
 
@@ -424,7 +424,7 @@ python -m pytest tests/test_identity.py -v
 python examples/issue_and_verify.py
 ```
 
-[Details →](https://nhid-clinical.org/roadmap.html)
+[Details →](https://nhid-clinical.org/framework/nhid-auth.html#v2)
 
 ## Repository layout
 
@@ -435,7 +435,7 @@ python examples/issue_and_verify.py
 | `src/` | Packaged Python modules used by the engine and tests (e.g. agent identity). |
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio). |
 | `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (987 passing, 1005 total; all phases: foundations, adversarial, synthetic, hardening). |
+| `tests/` | The Python conformance and invariant tests (1056 passing, all phases: foundations, adversarial, synthetic, hardening). |
 | `scripts/` | CI guards — `validate_ci.py`, `check_baseline.py`, `check_number_drift.py` — and tooling. |
 | `schema/` | Event and audit-trace schemas. |
 | `docs/` | Specification docs, the [Executive Brief](docs/executive-brief.md), the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md), and the knowledge archive. |
@@ -445,7 +445,7 @@ python examples/issue_and_verify.py
 
 We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required. Start small: the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) produces usable impersonation-latency data from your own call logs in 2–4 weeks.
 
-[**For Payers →**](https://nhid-clinical.org/for-payers.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
+[**For Payers →**](https://nhid-clinical.org/shadow-evaluation-guide.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
 ## Creator & Project Lead
 

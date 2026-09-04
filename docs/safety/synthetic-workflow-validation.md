@@ -339,7 +339,9 @@ simulator.export_results_markdown("report.md")
 - **Unit Tests**: 35 tests in `tests/safety/test_synthetic_workflows.py`
   - Scenario generation: 10 tests (corpus size, rule coverage, field validation)
   - Workflow simulation: 25 tests (outcome classification, violation detection, remediation, export)
-- **Integration Tests**: 18 skipped (non-blocking shadow mode evaluation)
+- **Integration Tests**: run against a live API since 2026-09-03 — 11 pass,
+  7 are recorded divergences (`docs/skipped-test-audit.md` §8). Previously
+  reported here as "18 skipped"
 
 ## Future Enhancements (Phase 4+)
 

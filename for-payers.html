@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical For Payers — 90-day shadow pilot guide for payer operations teams evaluating AI voice agent transparency."/>
-  <title>For Payers – 90-Day Pilot Guide | NHID-Clinical</title>
+  <meta name="description" content="NHID-Clinical For Payers — shadow evaluation guide for payer operations teams evaluating AI voice agent transparency."/>
+  <title>For Payers – Shadow Evaluation Guide | NHID-Clinical</title>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -206,7 +206,7 @@
     <div class="container inner-hero-grid" style="position:relative;z-index:1">
       <div>
         <div class="crumbs"><a href="/">Home</a><span>/</span><span>For Payers</span></div>
-        <p class="eyebrow meta-label">Shadow Evaluation · 90 Days · Observe Only</p>
+        <p class="eyebrow meta-label">Shadow Evaluation · Observe Only</p>
         <h1 class="reveal page-heading">For Payers: Shadow Evaluation Guide</h1>
         <p class="lede reveal lede-text">Establish a behavioral baseline for AI voice agent transparency — <strong>no vendor changes, observe-only.</strong> It runs alongside live traffic without sitting in the call path; your privacy, security, and contractual obligations still apply. Observe, collect evidence, decide what to require later.</p>
         <div class="payer-hero-visual">
@@ -224,7 +224,7 @@
       <div class="pilot-banner" style="background:linear-gradient(135deg,var(--blue-soft),var(--teal-soft));border:1px solid var(--line);border-radius:1rem;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
         <div style="flex:1;min-width:14rem">
           <strong style="display:block;font-size:1rem;color:var(--ink);margin-bottom:.25rem">Interested in becoming a pilot partner?</strong>
-          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are actively seeking payer and provider organizations for the 90-day shadow evaluation below &mdash; its technical core is a 2&#8209;4 week measurement sprint. You would be among the first.</p>
+          <p style="margin:0;font-size:.9rem;color:var(--ink-soft);line-height:1.6">We are actively seeking payer and provider organizations for the shadow evaluation below. You would be among the first. You set the pace &mdash; the stages are ordered, not scheduled.</p>
         </div>
         <a class="cta-button" href="mailto:contact@nhid-clinical.org" style="flex-shrink:0;white-space:nowrap">Get in Touch <span aria-hidden="true">→</span></a>
       </div>
@@ -294,18 +294,18 @@
         </tbody>
       </table>
 
-      <h2>How the 90-Day Shadow Evaluation Works</h2>
+      <h2>How the Shadow Evaluation Works</h2>
       <div class="payer-phase-grid">
 
         <div class="pilot-card">
-          <p class="step-header"><span class="step-num">1</span> Weeks 1–2 — Add RFP Language</p>
+          <p class="step-header"><span class="step-num">1</span> Add RFP language</p>
           <p>Insert this clause into your next voice AI vendor RFP or BAA amendment:</p>
           <pre>"The vendor's AI agent SHALL produce NHID-Clinical v1.3 JSON trace logs for all B2B administrative calls, including disclosure timestamps and opt-out handling. The payer may run the open-source conformance test suite against vendor output at any time."</pre>
           <p style="margin-top:.65rem"><em>Existing contract? Send as a formal amendment request.</em></p>
         </div>
 
         <div class="pilot-card">
-          <p class="step-header"><span class="step-num">2</span> Weeks 3–6 — Vendor Sandbox Testing</p>
+          <p class="step-header"><span class="step-num">2</span> Vendor sandbox testing</p>
           <p>Ask your vendor to run the open-source suite — results in under 5 minutes.</p>
           <ol>
             <li><code>git clone https://github.com/NHID-Clinical/NHID-Clinical.git</code></li>
@@ -316,7 +316,7 @@
         </div>
 
         <div class="pilot-card">
-          <p class="step-header"><span class="step-num">3</span> Weeks 7–10 — Validate Logs Yourself</p>
+          <p class="step-header"><span class="step-num">3</span> Validate logs yourself</p>
           <ol>
             <li>Place vendor JSON traces in <code>traces/</code></li>
             <li>Run <code>python -m pytest tests/ -v</code></li>
@@ -325,7 +325,7 @@
         </div>
 
         <div class="pilot-card">
-          <p class="step-header"><span class="step-num">4</span> Weeks 11–12 — Measure Impact</p>
+          <p class="step-header"><span class="step-num">4</span> Measure impact</p>
           <ul>
             <li><strong>Verification latency</strong> (target &lt; 5s)</li>
             <li><strong>Escalation volume</strong> from identity uncertainty (target &gt; 30% reduction)</li>
@@ -350,7 +350,7 @@
       <h2 style="margin-top:2.5rem">Evaluation Resources</h2>
       <ul style="list-style:none;padding:0;display:grid;gap:.75rem;margin-top:1rem">
         <li><a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md" style="font-weight:600;color:var(--teal-bright)">Executive Brief →</a> <span style="color:var(--body)">— one-page overview for leadership and procurement</span></li>
-        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">Shadow Evaluation Guide →</a> <span style="color:var(--body)">— full 90-day process</span></li>
+        <li><a href="/shadow-evaluation-guide.html" style="font-weight:600;color:var(--teal-bright)">Shadow Evaluation Guide →</a> <span style="color:var(--body)">— the full process</span></li>
         <li><a href="/evidence-pack.html" style="font-weight:600;color:var(--teal-bright)">Evidence Pack →</a> <span style="color:var(--body)">— guarantees, failure trace, audit model</span></li>
         <li><a href="/regulatory-alignment.html" style="font-weight:600;color:var(--teal-bright)">Regulatory Alignment →</a> <span style="color:var(--body)">— CMS-0057-F, MACPAC, DOJ FCA, state AI laws</span></li>
         <li><a href="/demo.html" style="font-weight:600;color:var(--teal-bright)">Reference demonstration line →</a> <span style="color:var(--body)">— hear the disclosure controls in a real call</span></li>

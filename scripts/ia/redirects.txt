@@ -1,0 +1,33 @@
+# retired route -> destination
+# Every route the consolidation removed keeps a redirect. Inbound links exist in
+# PDFs, the NIST docket comment, and anywhere the site was ever cited; a 404 is
+# not an acceptable outcome of an internal reorganisation.
+about.html	/#about
+technical-stack.html	/#technical-stack
+framework/index.html	/#framework
+framework/controls.html	/specification.html#controls
+for-payers.html	/shadow-evaluation-guide.html#for-payers
+script-examples.html	/shadow-evaluation-guide.html#script-examples
+demo.html	/shadow-evaluation-guide.html#demo
+framework/reference-implementation.html	/developers.html#reference-implementation
+interoperability.html	/developers.html#interoperability
+registry.html	/developers.html#registry
+framework/conformance-suite.html	/evidence-pack.html#conformance-suite
+alignment/stir-shaken.html	/regulatory-alignment.html#stir-shaken
+alignment/cms-0057-f.html	/regulatory-alignment.html#cms-0057-f
+alignment/nist-ai-agent-standards.html	/regulatory-alignment.html#nist-ai-agent-standards
+alignment/vendor-evidence-pack.html	/regulatory-alignment.html#vendor-evidence-pack
+roadmap.html	/framework/nhid-auth.html#v2
+community.html	/faq.html#community
+identity-layer.html	/framework/nhid-auth.html
+implementation-review.html	/developers.html
+news.html	https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md
+platform/index.html	/
+platform/agent-registry.html	/
+platform/trust-gateway.html	/
+platform/evidence-center.html	/
+platform/continuous-conformance.html	/
+platform/enterprise.html	/
+gov-sim.html	/
+pilot.html	/shadow-evaluation-guide.html
+conformance.html	/evidence-pack.html

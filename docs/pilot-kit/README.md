@@ -82,9 +82,19 @@ read a nested block, and flat fields are silently ignored:
 | `escalation_requested` + `escalation_honored` | `session.escalation_path_available` | `False` only when a request was explicitly not honored |
 | `speech_text` | `event.input_payload.speech_text` | Drives text heuristics (DBC-01 Tier B, EIT-01 triggers, PHI speech signals) |
 
-## 30-day pilot plan
+## The evaluation workflow
 
-**Week 1–2 — capture and baseline**
+An **ordered sequence**, not a schedule. Each stage depends on the one before
+it; none has a required length, and an evaluation may legitimately stop after
+any of them. Sample sizes below are sizes, not durations — how long it takes to
+gather them is yours to determine.
+
+> This replaces a "30-day pilot plan" that prescribed Week 1–2 / Week 3 /
+> Week 4. The approved observe-only methodology does not impose a mandatory
+> 30-, 60- or 90-day duration, and the stages here depend on each other rather
+> than on a calendar.
+
+**Stage 1 — capture and baseline**
 - Pull 500–2,000 historical or live shadow calls from one workflow
   (prior auth, claims status, or billing)
 - Map each call's turns to `minimal-event-schema.json` records (one JSONL line
@@ -92,18 +102,25 @@ read a nested block, and flat fields are silently ignored:
 - Run `measure_pilot.py calls.jsonl` for the baseline Impersonation Latency and
   violation rates
 
-**Week 3 — analyze**
+*Stop condition:* a sample replays cleanly and the baseline numbers are produced.
+
+**Stage 2 — analyse**
 - Re-run with `--results-dir out/` and generate the report:
   `python tools/pilot_report_generator.py out/ pilot_report.md`
 - Read the CAS tier distribution and the top-3 violations per workflow
 - Spot-check 10–20 flagged calls by hand — confirm the violations are real
   before drawing conclusions
 
-**Week 4 — decide and write up**
+*Stop condition:* the flagged calls have been read by a person, not only counted.
+
+**Stage 3 — decide and write up**
 - Fill in [`pilot-report-template.md`](pilot-report-template.md) (or edit the
   generated report) with observations and recommendations
 - Decide the follow-up: move to Tier 1 controls, require disclosure language
   from vendors, or expand the sample
+
+*Stop condition:* someone who did not run the evaluation can read the report and
+know what was and was not established.
 
 ## What "good enough" pilot data looks like
 
@@ -122,6 +139,6 @@ decisions — a small or noisy sample overstates whatever it happens to contain.
 
 - [5-minute quickstart](../5-minute-quickstart.md) — run the engine locally
 - [v2 integration guide](../v2-integration-guide.md) — Tier 0 → Tier 2 ladder
-- [Shadow evaluation guide](https://nhid-clinical.org/shadow-evaluation-guide.html) — the full 90-day structure
+- [Shadow evaluation guide](https://nhid-clinical.org/shadow-evaluation-guide.html) — the full evaluation sequence
 - Live adapter routes (VAPI/Twilio/Vonage/Retell/Connect) — evaluate calls via
   the hosted API instead of local replay

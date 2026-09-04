@@ -2744,6 +2744,148 @@ assert len(decision.violations) == 0
 
 ## Changelog
 
+### 2026-09-03 · Eighteen tests that had never run, and what they were hiding
+
+The suite reported **987 passed, 18 skipped** for months. The skip was honest —
+`tests/failure_injection_harness.py` skips when nothing answers at
+`http://127.0.0.1:8000` — but **no CI job ever started a server**, so the
+condition was permanent rather than transient, and "18 skipped integration
+tests" described tests that had never executed once.
+
+Starting the API and running them: **11 pass, 7 fail.** Suite is now
+**998 passed, 7 xfailed, 0 skipped, 1005 collected.**
+
+**The good news first.** `TestPolicyEnforcement`'s three tests — the audit's
+single largest concern, the only ones proving the API *applies* the engine and
+persists a complete audit record rather than merely having a correct engine
+behind it — **all pass**. That claim now rests on evidence. The audit had also
+rated input hardening and chaos as coverage-only concerns; five of those twelve
+fail, so the ranking erred in the reassuring direction.
+
+**The 7 failures are 2 contradictions, not 7 bugs.**
+
+1. **Missing or empty `CallSid` (5 tests).** The harness requires HTTP 400.
+   `app.py` coerces the value to the literal session id `"unknown"` and returns
+   200 with valid TwiML. Both are defensible: a Twilio webhook wants TwiML back,
+   while ATR-01 wants distinct calls to stay distinguishable in the audit trail —
+   and coercion to a shared constant means every unidentified call writes events
+   under the *same* session id. A third option neither side takes, minting a
+   synthetic unique id, would satisfy both. Not implemented; not decided.
+2. **What `/debug/replay` returns (2 tests).** The harness POSTs and expects the
+   original TwiML byte-for-byte; the endpoint is a `GET` returning a JSON
+   forensic trace. **Correcting the verb does not reconcile this** — JSON can
+   never equal TwiML. They encode different contracts: replay-as-re-execution
+   versus replay-as-inspection. Determinism itself is not at risk; it is asserted
+   in ten other files, and the sibling idempotency test passes.
+
+Both are **UNKNOWN pending human judgment**, recorded in
+`docs/skipped-test-audit.md` §8.
+
+**Why xfail and not deletion.** `xfail(strict=True)` keeps them executing and
+keeps the divergence legible. Strict means that implementing either decision
+makes them XPASS and turns the build red until the marker is removed, so a
+marker cannot outlive the question it stands for — verified, not assumed. The
+instruction was explicitly not to manufacture 100% by converting skips to passes
+or deleting tests, and deleting these would have destroyed the only evidence
+that the contradictions exist.
+
+**Three CI jobs were measuring the wrong thing.** `ci.yml`, `nightly-verify.yml`
+and `nhid-gates.yml` all ran the suite with no server. `nhid-gates.yml`'s job was
+named **"abuse + input hardening"** while the twelve tests constituting abuse and
+input hardening were exactly the twelve that skipped — it reported green having
+run 21 offline policy-engine tests and zero abuse tests. All three now start the
+API; the job is renamed *"abuse, input hardening + delegation rejection"*.
+
+**Server startup and pytest share a single step.** A process backgrounded in one
+GitHub Actions step is not guaranteed to survive into the next, and this was
+confirmed locally: the backgrounded server did not outlive its step. A silently
+dead server would put all 18 straight back to skipping while the job still
+reported green — the exact failure being fixed. `NHID_REQUIRE_SERVER=1` makes an
+unreachable server a collection error instead of 18 skips.
+
+**Number propagation:** 987 → 998 across 34 count claims and 16 skip phrases in
+12 files, plus all seven PDFs regenerated. `UNIT_PUBLISHED` 987 → 998;
+`INTEGRATION_EXPECTED = 18` replaced by `SKIP_EXPECTED = 0` and
+`XFAIL_EXPECTED = 7`; `validate_ci.py`'s summary parser rewritten to read
+`xfailed`/`xpassed`, which it previously could not see at all.
+
+**This is not a 100% score and is not presented as one.** Eighteen invisible
+skips became eleven passes and seven visible failures. That is an improvement in
+what is *known*, not in what works.
+
+---
+
+### 2026-09-03 · A stale number inside a downloadable PDF, and the guard that could not see it
+
+`specs/NHID-Clinical-v1.3-Overview.pdf` claimed **"847 passing unit tests"**. The
+suite is 987. That figure survived four separate reconciliations — 847 → 851 →
+920 → 924 → 987 — during each of which every HTML and Markdown surface was
+corrected and the PDF was not.
+
+**Why it survived.** `scripts/check_number_drift.py` reads text files. PDFs were
+never in `WATCHED`, so nothing ever looked inside them. The generator's source
+(`scripts/generate_pdfs.py`) *was* current at 987 — the PDFs simply had not been
+regenerated since the source changed, and nothing required them to be.
+
+This is the surface where a stale claim does the most damage: a web page can be
+corrected in an afternoon, but a downloaded file keeps asserting whatever it said
+the day it was generated, in someone else's inbox, after the site has moved on.
+
+**Fixed.** All seven PDFs regenerated from current source; the Overview now reads
+987. `_check_published_pdfs()` extracts the text of every `specs/*.pdf` and holds
+it to the same invariant as every other surface. Verified in both directions:
+restoring the old PDF produces
+`DRIFT FAIL: … claims '847 passing unit tests' but the suite invariant is 987`.
+
+A missing extractor is a **failure**, not a warning. The 2026-09-01 entry records
+what happened the last time a check here degraded to a warning and still exited 0
+— it hid for a month. `pdfminer.six` is now in `requirements.txt`.
+
+**Checked and found correct — not defects.** Both are historical statements and
+must stay:
+
+- `NHID-Clinical-Knowledge-Archive.pdf` contains "Original 4 controls (IDG-01,
+  PDX-01, DBC-01, EIT-01) — **Superseded**", a row in the version-history table.
+  A naive substring search for "four controls" flags it; reading the context does
+  not. ATR-01 is canonical and the current row says so.
+- The counts in `news.html` (306, 284, 198) sit inside entries dated June 2026.
+
+**Site inventory, measured for the consolidation work.** 45 published pages
+totalling ~18,000 words of body content, with a long tail of near-empty pages:
+`identity-layer.html` (47 words), `alignment/*` (37–61 words each, 4 pages),
+`implementation-review.html` (78), `sms-opt-in.html` (132),
+`technical-stack.html` (155), `registry.html` (173). Three more are redirect
+stubs (`pilot.html`, `conformance.html`, `conformance/index.html`).
+
+**15 of 45 pages are orphans** — nothing on the site links to them. Two carry
+real content and are simply unreachable:
+
+- `script-examples.html` (748 words) — "What transparent disclosure sounds like",
+  concrete phrasing patterns and the patterns that create impersonation latency.
+  The sixth-largest page on the site.
+- `specs/index.html` (326 words) — "Download the Proposal", the PDF index. There
+  is no canonical downloads page in the navigation; PDFs are instead linked
+  ad-hoc from six different pages.
+
+The rest are redirect stubs, a Search Console verification file, dev artifacts
+(`svg-preview.html`), the retired `gov-sim.html`, and the four `alignment/*`
+stubs.
+
+**The repeated-architecture-diagram complaint, measured.** The five-layer stack
+appears on 5 pages (`index.html` ×10 references, `technical-stack.html` ×4,
+`framework/nhid-auth.html` ×2, `roadmap.html`, `svg-preview.html`) — not on
+every page. Most of the 34 pages carrying inline `<svg>` carry ~11, which is the
+navigation chrome baseline, not diagrams.
+
+**Metrics:** unchanged at 987 passed / 18 skipped / 1,005 collected. Engine and
+corpora untouched. PDFs regenerated (all seven checksums changed); site build
+32.57 → 32.46 MB.
+
+**Files affected:** `specs/*.pdf` (7), `scripts/check_number_drift.py`,
+`requirements.txt`, this document.
+
+---
+
 ### 2026-09-03 · Public-site audit — a broken diagram, retired routes, and four claim contradictions
 
 Two external audits (Perplexity, ChatGPT) were commissioned against the live

@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 1005 total (987 passed + 18 skipped)"
+    name: "Unit invariant: 1056 passed, 0 skipped, 0 xfailed"
     runs-on: ubuntu-latest
 
     steps:
@@ -22,10 +22,44 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Validate test invariants
-        run: python scripts/validate_ci.py
+      # validate_ci.py runs the suite itself, so the API has to be up around
+      # it -- otherwise it measures 987 passed / 18 skipped while this job's
+      # own name advertises 1056, which is the mislabelling this change exists
+      # to remove. NHID_REQUIRE_SERVER=1 turns a dead server into an error.
+      - name: Validate test invariants against a live API
+        env:
+          NHID_REQUIRE_SERVER: "1"
+        run: |
+          python -m uvicorn app:app --host 127.0.0.1 --port 8000 \
+            > /tmp/nhid-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+              echo "API ready after ${i}s"
+              break
+            fi
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "::error::API process exited during startup"
+              cat /tmp/nhid-server.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          if ! curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+            echo "::error::API did not become ready within 30s"
+            cat /tmp/nhid-server.log
+            exit 1
+          fi
+
+          python scripts/validate_ci.py
 
       # Runs on every PR, not only nightly: the published corpus figures went
       # stale for a month while nightly-only checks reported green.
       - name: Published-number drift guard
         run: python scripts/check_number_drift.py
+
+      - name: Control-set completeness guard
+        run: python scripts/check_control_set.py

@@ -19,7 +19,7 @@ only describes one direction of disclosure — it does not say what the payer's
 agent itself must do when it is the caller, nor what either side must do when
 both parties are AI.
 
-## The four controls, payer-initiated
+## The four deterministic behavioral controls, payer-initiated
 
 **IDG-01 — Identity Disclosure Gate.** Applies identically regardless of which
 side initiates. The payer's agent must disclose, in its first substantive
@@ -70,7 +70,7 @@ If you are building or evaluating a payer-side outbound AI voice agent against
 NHID-Clinical, run it through the existing conformance test suite exactly as a
 provider-side agent would (`/v1/conformance/check` or the matching vendor
 adapter route) — the suite does not currently take call direction as an input,
-because the four controls above apply the same way regardless of who placed
+because the four deterministic behavioral controls above apply the same way regardless of who placed
 the call. There is no separate "outbound" CTS profile to opt into; pass the
 same transcript format as documented in the
 [5-minute quickstart](5-minute-quickstart.md).
