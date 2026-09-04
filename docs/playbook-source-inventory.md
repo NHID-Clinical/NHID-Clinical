@@ -86,7 +86,7 @@ reason to fold one subject into another.
 | Source | Contributes |
 |---|---|
 | `docs/conformance-run-record.md` | The conformance figure and how it was produced |
-| `docs/governance-corpus-remediation.md` | Governance detection, false-positive methodology, the 8 unexpected detections, G1–G4 |
+| `docs/governance-corpus-remediation.md` | Governance detection, false-positive methodology, the 12 unexpected detections, G1–G4 |
 | `docs/claims-register.md` | Claims taxonomy, regulatory verdicts D1–D3b, prohibited vocabulary |
 | `docs/skipped-test-audit.md` | Why the suite executes everything it collects |
 | `docs/safety/adversarial-testing-report.md` | Adversarial corpus, case taxonomy, mutation strategies |

@@ -5,9 +5,9 @@
 | | |
 |---|---|
 | **Playbook version** | 1.0 |
-| **Published** | 2026-09-04 |
+| **Published** | 2026-09-04 · revised 2026-09-05 |
 | **Framework version** | NHID-Clinical v1.3 |
-| **Source commit** | `7c6c89d` |
+| **Source commit** | `e68a65d` — the commit the evidence below was measured and clean-clone verified at |
 | **Canonical location** | `docs/NHID-Clinical-Playbook.md` in `NHID-Clinical/NHID-Clinical` |
 | **Licence** | CC BY 4.0 |
 | **Author** | Brianna Baynard — independent, practitioner-led |
@@ -160,7 +160,7 @@ all four.
 
 | Evidence body | What it measures | Result | Date |
 |---|---|---|---|
-| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1056 collected · 1056 executed · 1056 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `7c6c89d` |
+| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1056 collected · 1056 executed · 1056 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `e68a65d` |
 | **Fabricate Battle-Test Corpus** | Detection against 550 real-world voice AI conversations, 127 of them compliant | IDG-01 70/70 · PDX-01 41/41 · DBC-01 183/200 (91.5%) · EIT-01 169/171 (98.8%). False positives on clean conversations: 0, 0, 5, 5 of 127 | CI-gated, unchanged |
 | **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **30 of 32 = 93.8%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
@@ -169,10 +169,12 @@ all four.
 a detection rate. 93.8% is a *detection rate*, not a test pass rate. Neither is
 an accuracy figure for the framework as a whole.
 
-**On the 8 unexpected detections.** The published false-positive figure is
+**On the 12 unexpected detections.** The published false-positive figure is
 measured only over the five compliant scenarios, so a control firing where it
 was not expected on any of the other twenty could not appear in it. There are
-eight such detections. They are reported as a distinct quantity rather than
+twelve such detections — eight found when the quantity was first measured, and
+four more added by the G2 decision, which made a bare organisational name an
+IDG-01 violation on four scenarios that do not declare one. They are reported as a distinct quantity rather than
 folded into the false-positive rate, because a compliant scenario emitting
 anything is an engine defect, whereas a violation scenario emitting an
 undeclared rule is usually the corpus under-specifying its own turns. Judging
@@ -780,7 +782,7 @@ detection rate and not an accuracy figure.
 | **Executed** | 1056 |
 | **Passed** | 1056 |
 | **Failed / skipped / xfailed / xpassed** | 0 / 0 / 0 / 0 |
-| **Verified** | fresh clone at `7c6c89d`, fresh virtualenv, `requirements.txt` only |
+| **Verified** | fresh clone at `e68a65d`, fresh virtualenv, `requirements.txt` only, live API |
 
 Full record, including exact commands, interpreter, platform and dependency
 set: `conformance-run-record.md`.
@@ -798,25 +800,31 @@ rate.
 
 | | |
 |---|---|
-| **Detection** | **29 of 32 = 90.6%** |
+| **Detection** | **30 of 32 = 93.8%** |
+| **Transcript-observable layer** | **30 of 31 = 96.8%** (IDG-01, PDX-01, DBC-01, EIT-01) |
+| **Audit/evidence layer** | **0 of 1** — ATR-01 is not transcript-observable (G3); retained in the denominator |
 | **False positives** | **0 of 5** compliant scenarios |
-| **Unexpected detections** | **8**, on violation scenarios — reported separately |
+| **Unexpected detections** | **12**, on violation scenarios — reported separately |
 | **Corpus** | 25 scenarios, 55 turns — unmodified |
 
 **Why the unexpected detections are separate.** The false-positive rate is
 measured only over the five compliant scenarios and therefore cannot see a
-control firing where it was not expected on any of the other twenty. Eight such
-detections exist and none had ever been reported. They are surfaced as a
-distinct quantity because a compliant scenario emitting anything is an engine
-defect, whereas a violation scenario emitting an undeclared rule is usually the
-corpus under-specifying its own turns. Reading them individually, all eight look
-like correct detections against under-declared scenarios — but confirming that
-is a human judgment, so the tooling reports and does not interpret.
+control firing where it was not expected on any of the other twenty. Twelve such
+detections exist; before this quantity was measured, none had ever been
+reported. They are surfaced as a distinct quantity because a compliant scenario
+emitting anything is an engine defect, whereas a violation scenario emitting an
+undeclared rule is usually the corpus under-specifying its own turns. Reading
+them individually, all twelve look like correct detections against
+under-declared scenarios — but confirming that is a human judgment, so the
+tooling reports and does not interpret.
 
 **On the 98–99% figure.** It is an aspiration, not a result. **The measured
-figure is 90.6%.** No scenario has been added, removed, relabelled, reworded,
+figure is 93.8%.** No scenario has been added, removed, relabelled, reworded,
 excluded, or had its expectations edited, and no control has been relaxed, to
-move it.
+move it. The rise from 90.6% came entirely from the G2 specification decision
+implemented in the engine — five corpus labels are now known to be wrong and
+were deliberately left in place, because correcting them would move a published
+figure. `decision-gate-G1-G4.md` §5 lists each with its effect.
 
 **One engine change was written, reverted, and later reinstated on a different
 basis.** Requiring the disclosing turn to affirmatively assert non-human identity
@@ -988,9 +996,9 @@ committee, working group, or member organisation, and none is implied.
 | | |
 |---|---|
 | **Version** | Playbook 1.0 |
-| **Published** | 2026-09-04 |
+| **Published** | 2026-09-04 · revised 2026-09-05 |
 | **Framework version** | NHID-Clinical v1.3 |
-| **Source commit** | `7c6c89d` |
+| **Source commit** | `e68a65d` — the commit the evidence below was measured and clean-clone verified at |
 | **Evidence dates** | Conformance and governance figures measured 2026-09-04; Fabricate baseline unchanged since before this cycle; regulatory verifications 2026-09-03 |
 | **Canonical location** | `docs/NHID-Clinical-Playbook.md` |
 | **Status** | Voluntary open proposal. **Not** an accredited standard, certification programme, or regulatory requirement |

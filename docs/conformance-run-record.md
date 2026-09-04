@@ -4,9 +4,16 @@ The published conformance metric comes from this run and no other. It is not an
 intermediate figure from the middle of the remediation, and it is not assembled
 from several partial runs.
 
+> **Corrected 2026-09-05.** This record previously named commit `7c6c89d` while
+> reporting 1056 passed. Both could not be true: at `7c6c89d` the suite was
+> **1049**, and 1056 is the count after the seven tests added by the G1–G4
+> decisions. The figure had been propagated into this record without its commit.
+> The run described below is the clean-clone verification actually performed at
+> `e68a65d` — same method, same environment, correct SHA.
+
 | | |
 |---|---|
-| **Commit tested** | `7c6c89d9bbca49a8810f228a06e3550d24892f9c` |
+| **Commit tested** | `e68a65dec0a1319acf20ed728dd3834684b4c778` |
 | **Date** | 2026-09-04 |
 | **Checkout** | fresh `git clone`, checked out at that SHA |
 | **Interpreter** | CPython 3.11.15 |
@@ -32,7 +39,7 @@ marked, or excluded.
 
 ```bash
 git clone <repo> cleanclone && cd cleanclone
-git checkout 7c6c89d9bbca49a8810f228a06e3550d24892f9c
+git checkout e68a65dec0a1319acf20ed728dd3834684b4c778
 
 python -m venv ../cleanenv
 ../cleanenv/bin/pip install -r requirements.txt
@@ -69,7 +76,7 @@ typing-inspection==0.4.4  typing_extensions==4.16.0  uvicorn==0.52.4
 
 ## How the number got here
 
-987 → 1056, and the path matters because it is not simple growth.
+987 → 1049 → 1056, and the path matters because it is not simple growth.
 
 | Step | Effect |
 |---|---|
@@ -80,6 +87,7 @@ typing-inspection==0.4.4  typing_extensions==4.16.0  uvicorn==0.52.4
 | Governance-corpus instrumentation | +0 (measurement only) |
 | Scoped the retired-route guard to the published set, parametrised | +11 tests |
 | Playbook integrity tests (figures, control set, maturity labels, PDF fidelity) | +18 tests |
+| G1–G4 decisions: IDG-01 equivalence, the CTS non-conjunctive reading, the reversed bare-organisational-name test and its scoping companion | +7 tests |
 
 The last row is the IA consolidation's doing: a single test that scanned the
 whole repository for links to retired routes became one test per published
@@ -95,7 +103,7 @@ count rose because tests were added and previously-unrun ones were made to run.
 - **Not a governance detection rate.** That is 30/32 = 93.8% on the Governance
   Evaluation Corpus, a separate research measurement — see
   `governance-corpus-remediation.md`.
-- **Not a false-positive rate.** That is 0/5 compliant scenarios, with 8
+- **Not a false-positive rate.** That is 0/5 compliant scenarios, with 12
   unexpected detections on violation scenarios reported separately.
 - **Not a Fabricate detection figure.** That is IDG-01 70/70, PDX-01 41/41,
   DBC-01 183/200, EIT-01 169/171 — see below.
