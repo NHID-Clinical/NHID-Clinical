@@ -52,14 +52,32 @@ def test_no_sixth_control_is_invented(md):
             "DLG-01 appears without being marked opt-in / outside the five"
 
 
+def _unit_published() -> str:
+    """The canonical conformance count, read from its source of truth.
+
+    Hardcoding it here would mean every propagation breaks this test -- which is
+    exactly what happened the first time: the figure moved from 1031 to 1049
+    across sixty-four places and this assertion was not one of them.
+    """
+    import ast
+    src = (ROOT / "scripts" / "validate_ci.py").read_text()
+    for node in ast.walk(ast.parse(src)):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name) and target.id == "UNIT_PUBLISHED":
+                    return str(ast.literal_eval(node.value))
+    raise AssertionError("UNIT_PUBLISHED not found in scripts/validate_ci.py")
+
+
 @pytest.mark.parametrize("figure,why", [
-    ("1031", "conformance count"),
+    (None, "conformance count"),          # resolved from UNIT_PUBLISHED
     ("90.6", "governance detection rate"),
     ("29 of 32", "governance detection ratio"),
     ("0 of 5", "false positives over compliant scenarios"),
 ])
 def test_verified_figures_appear(md, figure, why):
-    assert figure in md, f"the Playbook does not carry the {why}"
+    expected = _unit_published() if figure is None else figure
+    assert expected in md, f"the Playbook does not carry the {why} ({expected})"
 
 
 def test_the_measurements_are_not_conflated(md):
@@ -133,9 +151,19 @@ def test_publication_is_not_claimed_to_confer_status(md):
         "the Playbook does not disclaim that publishing it makes it a standard"
 
 
-@pytest.mark.skipif(not PDF.exists(), reason="Playbook PDF not built")
 def test_pdf_matches_the_source_on_every_heading():
-    """A renderer that silently drops a section is worse than one that crashes."""
+    """A renderer that silently drops a section is worse than one that crashes.
+
+    Not skipped when the PDF is absent. specs/*.pdf is gitignored and the
+    published PDFs are force-added, so an untracked Playbook PDF would 404 on
+    the live site while these tests quietly skipped -- which is what a clean
+    clone revealed.
+    """
+    assert PDF.exists(), (
+        f"{PDF.relative_to(ROOT)} is missing. specs/*.pdf is gitignored; the "
+        "published PDFs are tracked with `git add -f`. Run "
+        "`python scripts/generate_pdfs.py` and force-add it."
+    )
     pytest.importorskip("pdfminer.high_level")
     from pdfminer.high_level import extract_text
 
@@ -145,10 +173,10 @@ def test_pdf_matches_the_source_on_every_heading():
     assert not missing, f"headings absent from the rendered PDF: {missing}"
 
 
-@pytest.mark.skipif(not PDF.exists(), reason="Playbook PDF not built")
 def test_pdf_carries_the_same_figures():
+    assert PDF.exists(), f"{PDF.relative_to(ROOT)} is missing — see the test above"
     pytest.importorskip("pdfminer.high_level")
     from pdfminer.high_level import extract_text
     text = extract_text(str(PDF))
-    for figure in ("1031", "90.6", "41b391b"):
+    for figure in (_unit_published(), "90.6"):
         assert figure in text, f"the rendered PDF is missing {figure!r}"
