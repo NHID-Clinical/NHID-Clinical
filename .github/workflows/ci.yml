@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 1042 passed, 0 skipped, 0 xfailed"
+    name: "Unit invariant: 1056 passed, 0 skipped, 0 xfailed"
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,7 @@ jobs:
 
       # validate_ci.py runs the suite itself, so the API has to be up around
       # it -- otherwise it measures 987 passed / 18 skipped while this job's
-      # own name advertises 1042, which is the mislabelling this change exists
+      # own name advertises 1056, which is the mislabelling this change exists
       # to remove. NHID_REQUIRE_SERVER=1 turns a dead server into an error.
       - name: Validate test invariants against a live API
         env:

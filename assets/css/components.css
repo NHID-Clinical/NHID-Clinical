@@ -1026,3 +1026,111 @@ caption.visually-hidden {
     transition: background-color 120ms ease, border-color 120ms ease;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Canonical visual model — the five controls (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   The framework is five controls, and four of them are not like the fifth.
+   IDG-01, PDX-01, DBC-01 and EIT-01 act on the call; ATR-01 records what they
+   decided and changes no behaviour. That distinction has been misstated
+   repeatedly — the site and its PDFs have each at some point described "four
+   controls" — so the diagram encodes it structurally: the four sit on the call
+   timeline, ATR-01 sits beneath it, spanning the whole call, tied upward to
+   each gate. A reader who never gets past the picture still gets the shape.
+
+   Scales with the container via the viewBox; every colour comes from the theme
+   tokens so it re-grounds in dark rather than glowing. */
+
+.control-model {
+  margin: 1.75rem 0 0;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.control-model svg {
+  min-width: 34rem;    /* below this the labels collide; the figure scrolls instead */
+}
+
+.cm-axis {
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.cm-arrowhead {
+  fill: var(--line);
+}
+
+/* The four behavioural gates. */
+.cm-gate rect {
+  fill: var(--teal-soft);
+  stroke: #9cc5cf;
+  stroke-width: 1.5;
+}
+
+/* ATR-01. Deliberately not a gate: no fill from the gate palette, a dashed
+   edge, and it spans the full width rather than occupying a slot. */
+.cm-audit rect {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+  opacity: 0.85;
+}
+
+.cm-tie path {
+  stroke: var(--line);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+  fill: none;
+}
+
+.cm-id {
+  fill: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.cm-name {
+  fill: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cm-act {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 12.5px;
+}
+
+.cm-eyebrow,
+.cm-note {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.cm-note {
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-weight: 400;
+  font-size: 12.5px;
+}
+
+[data-theme="dark"] .cm-gate rect {
+  fill: #08222a;
+  stroke: #1d5462;
+}
+
+[data-theme="dark"] .cm-audit rect {
+  stroke: #58b4f0;
+}

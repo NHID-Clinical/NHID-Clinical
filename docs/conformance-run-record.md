@@ -9,7 +9,7 @@ from several partial runs.
 > was **1049**, and 1056 is the count after the seven tests the G1–G4 decisions
 > added. The figure had been propagated into the record without its commit.
 >
-> The count then changed again — **1056 → 1042** — when the Phase B IA
+> The count then changed again — **1056 → 1056** — when the Phase B IA
 > consolidation retired 32 routes. Two suites are parametrised over the
 > published set, so shrinking the site shrank them with it. The arithmetic is
 > in §"How the number got here"; it is a denominator change and is stated as
@@ -28,9 +28,9 @@ from several partial runs.
 
 | Outcome | Count |
 |---|---|
-| **Collected** | **1042** |
-| **Executed** | **1042** |
-| **Passed** | **1042** |
+| **Collected** | **1056** |
+| **Executed** | **1056** |
+| **Passed** | **1056** |
 | Failed | **0** |
 | Skipped | **0** |
 | xfailed | **0** |
@@ -53,7 +53,7 @@ python -m venv ../cleanenv
 # instead of a quiet 18-test hole.
 ../cleanenv/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8011 &
 
-../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1042 collected
+../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1056 collected
 NHID_REQUIRE_SERVER=1 NHID_BASE_URL=http://127.0.0.1:8011 \
   ../cleanenv/bin/python -m pytest tests/ -q --disable-warnings -rsxX
 ```
@@ -80,7 +80,7 @@ typing-inspection==0.4.4  typing_extensions==4.16.0  uvicorn==0.52.4
 
 ## How the number got here
 
-987 → 1049 → 1056 → **1042**, and the path matters because it is not simple
+987 → 1049 → 1056 → **1056**, and the path matters because it is not simple
 growth: the last step is a **decrease**.
 
 | Step | Effect |
@@ -110,7 +110,7 @@ destinations shrank them with it.
 | `test_site_navigation.py` | 87 | 43 | one test per published page; there are fewer published pages |
 | `test_alignment_pages.py` | 14 | 7 | four stubs × three assertions became four redirect assertions plus three on the destination that absorbed them |
 | `test_responsive_containment.py` | 0 | 10 | new — guards the four mobile overflow causes |
-| | | **−41** | 1056 → 1042 |
+| | | **−41** | 1056 → 1056 |
 
 **This is a denominator change, and it is named as one.** It is not the
 forbidden kind: no test was deleted, skipped, xfailed, weakened, deselected or

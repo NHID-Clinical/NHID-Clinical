@@ -191,6 +191,66 @@
         </div>
       </div>
 
+      <h2 style="margin-top:2.5rem" id="control-model">The Five-Control Model</h2>
+      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Four of the five controls act on the call. The fifth does not &mdash; it records what the other four did. That difference is structural, not a matter of emphasis, and it is the distinction this diagram exists to make.</p>
+
+      <figure class="control-model" style="margin:1.75rem 0 0">
+        <svg viewBox="0 0 880 380" role="img" aria-labelledby="cm-title cm-desc" style="width:100%;height:auto;display:block">
+          <title id="cm-title">The NHID-Clinical five-control model</title>
+          <desc id="cm-desc">A single call runs left to right. Four deterministic behavioural controls act on it in sequence: IDG-01 requires the agent to identify itself as automated before any data is exchanged; PDX-01 blocks protected health information until that disclosure is confirmed; DBC-01 checks throughout the call that the agent is not presenting itself as a person; EIT-01 honours a request to reach a human. Beneath them, spanning the whole call, ATR-01 records what each of the four decided. ATR-01 changes no behaviour; it is the audit and evidence control.</desc>
+
+          <line x1="40" y1="118" x2="840" y2="118" class="cm-axis"/>
+          <polygon points="840,118 830,113 830,123" class="cm-arrowhead"/>
+          <text x="40" y="42" class="cm-eyebrow">ONE CALL, LEFT TO RIGHT</text>
+          <text x="840" y="42" class="cm-eyebrow" text-anchor="end">CALL ENDS</text>
+
+          <g class="cm-gate">
+            <rect x="40" y="60" width="180" height="118" rx="10"/>
+            <text x="58" y="88" class="cm-id">IDG-01</text>
+            <text x="58" y="112" class="cm-name">Identity Disclosure</text>
+            <text x="58" y="136" class="cm-act">Identify as automated</text>
+            <text x="58" y="156" class="cm-act">before any data exchange</text>
+          </g>
+          <g class="cm-gate">
+            <rect x="240" y="60" width="180" height="118" rx="10"/>
+            <text x="258" y="88" class="cm-id">PDX-01</text>
+            <text x="258" y="112" class="cm-name">Pre-Data Exchange</text>
+            <text x="258" y="136" class="cm-act">No PHI until that</text>
+            <text x="258" y="156" class="cm-act">disclosure is confirmed</text>
+          </g>
+          <g class="cm-gate">
+            <rect x="440" y="60" width="180" height="118" rx="10"/>
+            <text x="458" y="88" class="cm-id">DBC-01</text>
+            <text x="458" y="112" class="cm-name">Deceptive Behaviour</text>
+            <text x="458" y="136" class="cm-act">Behave like a machine,</text>
+            <text x="458" y="156" class="cm-act">not a person</text>
+          </g>
+          <g class="cm-gate">
+            <rect x="640" y="60" width="180" height="118" rx="10"/>
+            <text x="658" y="88" class="cm-id">EIT-01</text>
+            <text x="658" y="112" class="cm-name">Escalation Integrity</text>
+            <text x="658" y="136" class="cm-act">Honour a request</text>
+            <text x="658" y="156" class="cm-act">to reach a human</text>
+          </g>
+
+          <text x="40" y="204" class="cm-note">Deterministic &middot; evaluated every turn &middot; the engine never guesses</text>
+
+          <g class="cm-audit">
+            <rect x="40" y="228" width="780" height="96" rx="10"/>
+            <text x="58" y="258" class="cm-id">ATR-01</text>
+            <text x="58" y="282" class="cm-name">Audit &amp; Evidence</text>
+            <text x="58" y="308" class="cm-act">Records what the four above decided, and why. Changes no behaviour.</text>
+          </g>
+          <g class="cm-tie">
+            <path d="M130 178 L130 228"/><path d="M330 178 L330 228"/>
+            <path d="M530 178 L530 228"/><path d="M730 178 L730 228"/>
+          </g>
+
+          <text x="40" y="352" class="cm-note">Four behavioural controls act on the call. ATR-01 is the fifth, and it observes.</text>
+        </svg>
+        <figcaption style="margin-top:.85rem;color:var(--body);font-size:.88rem;line-height:1.7">Enforcement is a ladder, not a vote: when more than one control fires on the same turn, the engine returns the most restrictive outcome &mdash; <code>DENY_DATA</code> over <code>ESCALATE_HUMAN</code> over <code>DISCLOSE_IDENTITY</code> over <code>LOG_ONLY</code> over <code>CONTINUE_AI</code>. That ordering is what makes the result deterministic when several conditions are true at once.</figcaption>
+      </figure>
+
       <h2 style="margin-top:2.5rem">Sequence of Interaction</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The following diagram illustrates the disclosure gate in a standard eligibility workflow.</p>
       <div class="mermaid" style="margin:2rem 0;background:white;padding:1.5rem;border-radius:8px;border:1px solid var(--line)">
