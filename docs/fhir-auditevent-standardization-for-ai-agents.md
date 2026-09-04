@@ -99,7 +99,7 @@ The `delegation` block is present only when NHID-Auth v2 (Tier 2) is in use; its
 
 ## 4. Representing AI vs. human participants
 
-FHIR R4's `AuditEvent.agent.type` is an extensible binding, which is exactly the hook NHID-Clinical uses (per the [mapping doc](fhir-auditevent-mapping.md)'s DICOM-coded agent slices) — but DICOM's role codes (`110153` Source Role ID, `110152` Destination Role ID) describe *transport roles*, not *humanness*. They don't, by themselves, say "the source role was filled by software, not a person."
+FHIR R4's `AuditEvent.agent.type` is an extensible binding, which is exactly the hook NHID-Clinical uses (per the [mapping doc](fhir-auditevent-mapping.md)'s DICOM-coded agent slices) — but DICOM's role codes (`110423` Source Role ID, `110422` Destination Role ID) describe *transport roles*, not *humanness*. They don't, by themselves, say "the source role was filled by software, not a person."
 
 **Current approach:** the AI/human distinction lives in the *behavioral* milestones, not the agent slice — `nhid-identity-disclosure`'s `identity_assertion_text` and the underlying `disclosure_timestamp` are the audit-trail proof that the calling party was AI, because that's the exact fact IDG-01 requires to be spoken and logged. `session.counterparty_type` (`human_operator` | `ai_agent` | `ivr_system` | `unknown`) captures the *other* party's nature for the bot-to-bot stricter-enforcement variant of IDG-01, but is not currently surfaced as a first-class FHIR element.
 

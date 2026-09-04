@@ -197,8 +197,8 @@
         <thead>
           <tr>
             <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Capability</th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v1.3 (current)</th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v2 (reference implementation)</th>
+            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v1.3 <span class="maturity maturity-implemented">Implemented</span></th>
+            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v2 <span class="maturity maturity-reference">Reference</span></th>
           </tr>
         </thead>
         <tbody>
@@ -223,12 +223,35 @@
             <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ + Credential ID in every log</td>
           </tr>
           <tr>
-            <td style="padding:.7rem .9rem;color:var(--body)">Maturity</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">Shadow-pilot ready</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">Early testing only</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">Revocation durability</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">&mdash;</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">In&#8209;memory only <span class="maturity maturity-reference">Reference</span></td>
+          </tr>
+          <tr>
+            <td style="padding:.7rem .9rem;color:var(--body)">Key custody, rotation, tenant isolation</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">&mdash;</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">Documented, not built <span class="maturity maturity-conceptual">Conceptual</span></td>
+          </tr>
+          <tr>
+            <td style="padding:.7rem .9rem;color:var(--body)">Registry (NPI &rarr; public key)</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">&mdash;</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">Does not exist <span class="maturity maturity-future">Future</span></td>
+          </tr>
+          <tr>
+            <td style="padding:.7rem .9rem;color:var(--body)">Standing</td>
+            <td style="padding:.7rem .9rem;color:var(--body)">Shadow&#8209;evaluation ready <span class="maturity maturity-implemented">Implemented</span></td>
+            <td style="padding:.7rem .9rem;color:var(--body)">Working primitive, not deployed infrastructure <span class="maturity maturity-reference">Reference</span></td>
           </tr>
         </tbody>
       </table>
+
+      <p class="disclaimer-small" style="margin-top:1rem">A tick in the v2 column
+      means the reference implementation does this and the suite covers it. It
+      does not mean the capability is deployed, operated, or available as a
+      service. The last four rows are the ones that decide whether v2 could be
+      run in production today, and three of them are <span class="maturity maturity-conceptual">Conceptual</span>
+      or <span class="maturity maturity-future">Future</span>. Standings follow
+      <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>.</p>
 
       <!-- Trust stack diagram -->
       <h3 style="margin-top:2.5rem">Where v2 Sits in the Trust Stack</h3>

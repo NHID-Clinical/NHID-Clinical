@@ -874,3 +874,155 @@ caption.visually-hidden {
   overflow: hidden;
   clip-path: inset(50%);
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Maturity language — added 2026-09-05 (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   NHID-Clinical publishes work at six very different standings, and before this
+   the site had no way to say which was which. Status was carried by whatever
+   pill a page happened to use — .primary-pill, .spec-badge, .console-pill,
+   .layer-tag — none of which meant anything in particular, and the words
+   "implemented", "verified" and "future" appeared as labels almost nowhere.
+   A reader could not tell a deterministic engine with a passing test suite from
+   a registry that does not exist.
+
+   The six states are NOT invented here. They are the standings already recorded
+   in docs/claim-boundaries.md §"Maturity boundaries", which is the authoritative
+   claims document, and tests/test_maturity_language.py pins them to it.
+
+     verified     measured evidence exists and is reproducible
+     implemented  code exists, runs, and is covered by the suite
+     reference    a working primitive, deliberately not deployed infrastructure
+     conceptual   a documented production path that is not built
+     research     a research component, explicitly not a product capability
+     future       does not exist; named so it cannot be mistaken for shipped
+
+   Accessibility: state is never carried by colour alone. Each chip renders its
+   own word, and each carries a distinct leading glyph, so the distinction
+   survives greyscale, colour-blindness and a screen reader. The glyph is
+   decorative (aria-hidden via ::before) because the word is already the label. */
+
+.maturity {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  padding: 0.15em 0.6em 0.2em;
+  border: 1px solid var(--maturity-line);
+  border-radius: 2em;
+  background: var(--maturity-bg);
+  color: var(--maturity-ink);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: baseline;
+  min-width: 0;
+}
+
+.maturity::before {
+  content: var(--maturity-glyph);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Evidence exists and can be re-run. The strongest claim the project makes. */
+.maturity-verified {
+  --maturity-ink: #10603f;
+  --maturity-bg: #e8f5ee;
+  --maturity-line: #9ecbb4;
+  --maturity-glyph: "✓";
+}
+
+/* Code exists and the suite covers it. */
+.maturity-implemented {
+  --maturity-ink: #14778f;
+  --maturity-bg: var(--teal-soft);
+  --maturity-line: #9cc5cf;
+  --maturity-glyph: "▪";
+}
+
+/* A working primitive. Deliberately not deployed infrastructure. */
+.maturity-reference {
+  --maturity-ink: #0b6ebc;
+  --maturity-bg: var(--blue-soft);
+  --maturity-line: #a8c6e0;
+  --maturity-glyph: "◆";
+}
+
+/* Documented production path, not built. */
+.maturity-conceptual {
+  --maturity-ink: #6a5330;
+  --maturity-bg: #f7f1e4;
+  --maturity-line: #d6c4a0;
+  --maturity-glyph: "◇";
+}
+
+/* Research component. Not a product capability, not to be sold as one. */
+.maturity-research {
+  --maturity-ink: #6b4a86;
+  --maturity-bg: #f3edf9;
+  --maturity-line: #c9b3dd;
+  --maturity-glyph: "◐";
+}
+
+/* Does not exist. Named so it cannot be mistaken for shipped. */
+.maturity-future {
+  --maturity-ink: #5b6472;
+  --maturity-bg: #eef0f3;
+  --maturity-line: #c3cad3;
+  --maturity-glyph: "○";
+}
+
+/* Dark theme: the same six states, re-grounded rather than inverted, so each
+   keeps its contrast against the dark paper instead of glowing. */
+[data-theme="dark"] .maturity-verified {
+  --maturity-ink: #7fd8ab; --maturity-bg: #0b2a1d; --maturity-line: #1f5c3f;
+}
+[data-theme="dark"] .maturity-implemented {
+  --maturity-ink: #5fd3d3; --maturity-bg: #08222a; --maturity-line: #1d5462;
+}
+[data-theme="dark"] .maturity-reference {
+  --maturity-ink: #7cc2f5; --maturity-bg: #0a2033; --maturity-line: #1e4c72;
+}
+[data-theme="dark"] .maturity-conceptual {
+  --maturity-ink: #d8c191; --maturity-bg: #2a2317; --maturity-line: #5e5031;
+}
+[data-theme="dark"] .maturity-research {
+  --maturity-ink: #c3a6dd; --maturity-bg: #221a2c; --maturity-line: #4d3d61;
+}
+[data-theme="dark"] .maturity-future {
+  --maturity-ink: #9aa5b3; --maturity-bg: #1a1f26; --maturity-line: #39414c;
+}
+
+/* A legend, for the one page that should explain the scale rather than use it. */
+.maturity-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: 0.75rem 1.5rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.maturity-legend > li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  min-width: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--body);
+}
+
+.maturity-legend .maturity {
+  flex: 0 0 auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .maturity {
+    transition: background-color 120ms ease, border-color 120ms ease;
+  }
+}
