@@ -1593,3 +1593,93 @@ caption.visually-hidden {
 @media (prefers-reduced-motion: no-preference) {
   .tg-turn { transition: opacity 140ms ease; }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Journey wayfinder (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   The IA consolidation mapped every destination to a journey, but only inside
+   ia-disposition.md. A reader landing on evidence-pack.html from a search
+   result had no way to see they were partway through an arc, or what came
+   before and after.
+
+   Deliberately quiet. It sits at the foot of the content, after the reader has
+   what they came for, and it is a <nav> with its own label so a screen reader
+   can skip it or seek it. It is not a progress bar: a reader does not owe the
+   site a linear traversal, and half of them will only ever want one page. */
+
+.wayfinder {
+  margin: 3rem 0 0;
+  padding: 1.25rem 1.25rem 1.4rem;
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+
+.wayfinder-here {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  min-width: 0;
+}
+
+.wayfinder-journey {
+  flex: 0 0 auto;
+  padding: 0.14em 0.6em 0.2em;
+  border: 1px solid var(--line);
+  border-radius: 2em;
+  background: var(--mist);
+  color: var(--body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.wayfinder-question {
+  min-width: 0;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.wayfinder-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: 0.9rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.wayfinder-steps li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.wayfinder-steps span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--body);
+  opacity: 0.85;
+}
+
+.wayfinder-steps a {
+  min-width: 0;
+  color: var(--blue);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.wayfinder-steps a:hover { text-decoration: underline; }
+.wayfinder-steps a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+[data-theme="dark"] .wayfinder-journey { background: #12202f; }

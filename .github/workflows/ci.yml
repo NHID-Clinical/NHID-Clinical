@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 1110 passed, 0 skipped, 0 xfailed"
+    name: "Unit invariant: 1145 passed, 0 skipped, 0 xfailed"
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,7 @@ jobs:
 
       # validate_ci.py runs the suite itself, so the API has to be up around
       # it -- otherwise it measures 987 passed / 18 skipped while this job's
-      # own name advertises 1110, which is the mislabelling this change exists
+      # own name advertises 1145, which is the mislabelling this change exists
       # to remove. NHID_REQUIRE_SERVER=1 turns a dead server into an error.
       - name: Validate test invariants against a live API
         env:
@@ -68,3 +68,7 @@ jobs:
       # would only be true of the day the fixture was generated.
       - name: Trust Gateway matches the engine
         run: python scripts/build_gateway_fixture.py --check
+
+      # Nine pages carrying a generated arc cannot be kept in order by hand.
+      - name: Journey wayfinder is current
+        run: python scripts/add_journey_wayfinder.py --check

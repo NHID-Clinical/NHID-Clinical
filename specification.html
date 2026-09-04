@@ -470,7 +470,7 @@ sequenceDiagram
       <div style="display:grid;gap:1.5rem">
       <article class="content-card" id="idg-01" style="padding:2rem">
         <span class="code">IDG-01</span>
-        <h4 style="font-size:1.25rem;margin:.5rem 0 .35rem">Identity Disclosure Gate</h4>
+        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Identity Disclosure Gate</h3>
         <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">Disclose non-human identity before any protected data is exchanged.</p>
         <p style="color:var(--body);line-height:1.75">The agent must identify itself as automated as the first meaningful act of the call — not when challenged, not after pleasantries, and not buried in a closing statement. Disclosure is proactive, unambiguous, and timestamped.</p>
         <div class="pass-fail" style="margin-top:1.25rem">
@@ -486,7 +486,7 @@ sequenceDiagram
       </article>
       <article class="content-card" id="pdx-01" style="padding:2rem">
         <span class="code">PDX-01</span>
-        <h4 style="font-size:1.25rem;margin:.5rem 0 .35rem">Pre-Data Exchange Gate</h4>
+        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Pre-Data Exchange Gate</h3>
         <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">No protected data moves until identity is disclosed.</p>
         <p style="color:var(--body);line-height:1.75">The complement to IDG-01: rather than checking that disclosure happened, PDX-01 blocks the data path until it has. Every turn is evaluated — late disclosure still blocks protected health information on the turns that preceded it.</p>
         <div class="pass-fail" style="margin-top:1.25rem">
@@ -502,7 +502,7 @@ sequenceDiagram
       </article>
       <article class="content-card" id="dbc-01" style="padding:2rem">
         <span class="code">DBC-01</span>
-        <h4 style="font-size:1.25rem;margin:.5rem 0 .35rem">Deceptive Behavior Check</h4>
+        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Deceptive Behavior Check</h3>
         <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">No synthetic human-presence cues or false human-status claims.</p>
         <p style="color:var(--body);line-height:1.75">The agent behaves like a machine. No fabricated breathing, typing, or background office noise; no filler designed to imply a person is thinking; no direct or implied claim of being human when asked.</p>
         <div class="pass-fail" style="margin-top:1.25rem">
@@ -518,7 +518,7 @@ sequenceDiagram
       </article>
       <article class="content-card" id="eit-01" style="padding:2rem">
         <span class="code">EIT-01</span>
-        <h4 style="font-size:1.25rem;margin:.5rem 0 .35rem">Escalation Implementation Test</h4>
+        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Escalation Implementation Test</h3>
         <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">A clear human handoff, honored on request.</p>
         <p style="color:var(--body);line-height:1.75">When the person on the other end asks for a human, the transition happens — immediately, unambiguously, and without requiring a specific phrase. The escalation and its outcome are recorded.</p>
         <div class="pass-fail" style="margin-top:1.25rem">
@@ -534,7 +534,7 @@ sequenceDiagram
       </article>
       <article class="content-card" id="atr-01" style="padding:2rem">
         <span class="code">ATR-01</span>
-        <h4 style="font-size:1.25rem;margin:.5rem 0 .35rem">Audit Trail Requirements</h4>
+        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Audit Trail Requirements</h3>
         <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">Every call produces a complete, replayable machine-readable trace.</p>
         <p style="color:var(--body);line-height:1.75">Each event carries a full audit envelope — actor, timestamps, state transitions, and execution context — so the call can be reconstructed after the fact. Missing envelope fields are treated as critical findings, not warnings.</p>
         <div class="pass-fail" style="margin-top:1.25rem">
@@ -582,6 +582,16 @@ sequenceDiagram
       <p class="disclaimer-small" style="margin:0">Going further: <a href="/specs/NHID-Clinical-Playbook.pdf" download><strong>Part II of the NHID-Clinical Playbook</strong></a> covers the control model, enforcement ladder and per-control detail.</p>
     </div>
   </section>
+<!-- BEGIN GENERATED journey-wayfinder -->
+      <nav class="wayfinder" aria-label="Where this page sits in the journey">
+        <p class="wayfinder-here"><span class="wayfinder-journey">Understand</span><span class="wayfinder-question">What does it control?</span></p>
+        <ul class="wayfinder-steps">
+          <li class="wayfinder-prev"><span>Before this</span><a href="/">What is this?</a></li>
+          <li class="wayfinder-next"><span>Next</span><a href="/shadow-evaluation-guide.html">How do I evaluate it?</a></li>
+          <li class="wayfinder-source"><span>Where is the source?</span><a href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer">The repository &#8599;</a></li>
+        </ul>
+      </nav>
+      <!-- END GENERATED journey-wayfinder -->
 </main>
 
 

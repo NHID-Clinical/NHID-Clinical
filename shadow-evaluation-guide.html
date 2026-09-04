@@ -478,25 +478,25 @@
       <p style="color:var(--body);margin-bottom:2rem;line-height:1.75">These openings work because the AI identifies itself immediately — before asking for anything. The representative knows what they're dealing with from the first sentence.</p>
 
       <div class="script-example-block">
-        <h5>General payer operations inquiry</h5>
+        <h4>General payer operations inquiry</h4>
         <div class="script-quote script-quote-pass">"Hello, this is an automated AI voice agent from Acme Health Plan. I am not a human. I'm calling regarding a claim. Do I have permission to continue?"</div>
         <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Automated nature disclosed immediately. No data exchanged before identification.</p>
       </div>
 
       <div class="script-example-block">
-        <h5>Dental payer — claim status</h5>
+        <h4>Dental payer — claim status</h4>
         <div class="script-quote script-quote-pass">"This is the AI claims assistant for Delta Dental. I am a non-human system. May I have your NPI to check a claim status?"</div>
         <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Non-human status disclosed before any data is requested.</p>
       </div>
 
       <div class="script-example-block">
-        <h5>Prior authorization follow-up</h5>
+        <h4>Prior authorization follow-up</h4>
         <div class="script-quote script-quote-pass">"Good morning. This is an automated system calling on behalf of Riverside Medical Group to follow up on a prior authorization request. I am not a person — I'm an AI agent. Are you available to continue?"</div>
         <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Clear, early, unambiguous. The representative can make an informed decision about how to proceed.</p>
       </div>
 
       <div class="script-example-block">
-        <h5>Eligibility verification</h5>
+        <h4>Eligibility verification</h4>
         <div class="script-quote script-quote-pass">"Hi, this is an automated voice agent — not a human — calling from Valley Provider Services to verify eligibility for a patient visit. Before I give you any details, do I have your permission to proceed?"</div>
         <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Discloses first, then asks permission. Gives the representative control.</p>
       </div>
@@ -599,7 +599,7 @@
   <section class="page-section">
     <div class="container" style="max-width:860px">
       <div class="card" style="margin-bottom:1.5rem">
-        <h4>1. Call the Live Demo Line (Beacon)</h4>
+        <h3>1. Call the Live Demo Line (Beacon)</h3>
         <p class="sub">Dial <a class="demo-line-phone" href="tel:+17176706772"><strong id="demo-phone-number">+1 (717) 670-6772</strong></a> from any phone.</p>
         <div class="callout" role="note">
           This is the public <strong>Grok Voice / Beacon</strong> inbound demo line — a website demo feature, not a personal contact number.
@@ -609,7 +609,7 @@
       </div>
 
       <div class="card" style="margin-bottom:1.5rem">
-        <h4>2. Or get a call directly from Beacon</h4>
+        <h3>2. Or get a call directly from Beacon</h3>
         <p class="sub">Beacon — our outbound demo agent — calls your phone and the conversation is evaluated against the same five controls once the call ends. This costs us real calling minutes per request, so it's CAPTCHA- and rate-limited.</p>
         <div class="call-demo-form" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
           <input type="tel" id="demo-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your phone number" style="flex:1;min-width:200px"/>
@@ -621,7 +621,7 @@
       </div>
 
       <div class="card">
-        <h4>3. Watch it evaluated live</h4>
+        <h3>3. Watch it evaluated live</h3>
         <p class="sub">Every turn of the call — disclosure, PHI requests, escalation — is run through <code>adapters/call_progress_adapter.py</code> + <code>src/nhid_policy_engine_v1.py</code> exactly like a real vendor webhook, and shown below as it happens.</p>
         <div id="nhid-demo-status-container"></div>
       </div>
@@ -646,6 +646,16 @@
       <p class="disclaimer-small" style="margin:0">Going further: <a href="/specs/NHID-Clinical-Playbook.pdf" download><strong>Part III of the NHID-Clinical Playbook</strong></a> covers the full evaluation method, governance and data-handling considerations, and what it cannot establish.</p>
     </div>
   </section>
+<!-- BEGIN GENERATED journey-wayfinder -->
+      <nav class="wayfinder" aria-label="Where this page sits in the journey">
+        <p class="wayfinder-here"><span class="wayfinder-journey">Evaluate</span><span class="wayfinder-question">How do I evaluate it?</span></p>
+        <ul class="wayfinder-steps">
+          <li class="wayfinder-prev"><span>Before this</span><a href="/specification.html">What does it control?</a></li>
+          <li class="wayfinder-next"><span>Next</span><a href="/developers.html">How do I implement it?</a></li>
+          <li class="wayfinder-source"><span>Where is the source?</span><a href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer">The repository &#8599;</a></li>
+        </ul>
+      </nav>
+      <!-- END GENERATED journey-wayfinder -->
 </main>
 
 <section class="page-cta">
