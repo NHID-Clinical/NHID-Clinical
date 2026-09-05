@@ -76,6 +76,11 @@ jobs:
       - name: Trust Gateway matches the engine
         run: python scripts/build_gateway_fixture.py --check
 
+      # The Front-Desk Walkthrough plays back recorded engine output. This is
+      # what stops the scene quietly becoming an illustration again.
+      - name: Front-Desk Walkthrough matches the engine
+        run: python scripts/build_walkthrough_fixture.py --check
+
       # Nine pages carrying a generated arc cannot be kept in order by hand.
       - name: Journey wayfinder is current
         run: python scripts/add_journey_wayfinder.py --check
