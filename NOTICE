@@ -1,0 +1,30 @@
+NHID-Clinical
+Copyright 2026 Brianna Nicole Baynard-Malone
+
+This repository is licensed in two parts, because it contains two different
+kinds of work.
+
+  1. SOFTWARE — Apache License 2.0 (see LICENSE)
+
+     The policy engine, adapters, conformance runner, scripts, tests,
+     API and CLI. Concretely: src/, adapters/, scripts/, tests/, tools/,
+     functions/, middleware/, simulator/, and the top-level Python modules.
+
+     Apache-2.0 is used here rather than a Creative Commons licence because
+     Creative Commons advises against applying CC licences to software: they
+     carry no patent grant and no warranty disclaimer written for code, which
+     makes them difficult for an organisation's counsel to clear for use.
+
+  2. SPECIFICATION AND DOCUMENTATION — CC BY 4.0 (see LICENSE-DOCS)
+
+     The normative control text and the prose around it: docs/, specs/,
+     schema/, conformance/ suite definitions, content/, and the website
+     pages. This is the part intended to be quoted, adapted and cited, and
+     CC BY 4.0 remains the right licence for it.
+
+Where a single file mixes both — for example a Python module whose docstring
+quotes normative control text — the code is Apache-2.0 and the quoted
+specification text remains CC BY 4.0.
+
+NHID-Clinical is a voluntary open proposal. It is not an accredited standard,
+not a certification, and not a regulatory requirement.

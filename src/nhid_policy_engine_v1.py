@@ -10,7 +10,9 @@ Design constraints:
   - Not a certification system. Not a compliance program.
     Use "NHID-Clinical conformant" language only.
 
-NHID-Clinical is a voluntary open proposal. CC BY 4.0.
+NHID-Clinical is a voluntary open proposal. This module is licensed
+Apache-2.0 (see LICENSE); the normative control text it implements is
+CC BY 4.0 (see LICENSE-DOCS).
 See nhid-clinical.org. Not an accredited standard.
 """
 

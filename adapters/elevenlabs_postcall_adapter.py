@@ -21,7 +21,9 @@ Webhook payload format (ElevenLabs):
     ]
   }
 
-NHID-Clinical is a voluntary open proposal. CC BY 4.0.
+NHID-Clinical is a voluntary open proposal. This module is licensed
+Apache-2.0 (see LICENSE); the normative control text it implements is
+CC BY 4.0 (see LICENSE-DOCS).
 Not an accredited standard. Not a regulatory requirement.
 """
 
