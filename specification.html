@@ -13,10 +13,8 @@
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
-  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <!-- Mermaid CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>mermaid.initialize({ startOnLoad: true, theme: 'default' });</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
 </head>
@@ -367,19 +365,193 @@
 
       <h2 style="margin-top:2.5rem">Sequence of Interaction</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The following diagram illustrates the disclosure gate in a standard eligibility workflow.</p>
-      <div class="mermaid" style="margin:2rem 0;background:white;padding:1.5rem;border-radius:8px;border:1px solid var(--line)">
-sequenceDiagram
-    participant A as AI Voice Agent
-    participant P as Payer Representative
-    participant E as NHID Policy Engine
+      <figure class="sequence-model">
+        <svg viewBox="0 0 880 430" role="img" aria-labelledby="sq-title sq-desc" style="width:100%;height:auto;display:block">
+          <title id="sq-title">The disclosure gate in a standard eligibility workflow</title>
+          <desc id="sq-desc">A sequence across four lanes. The AI voice agent opens the call by stating that it is an automated system. The payer representative acknowledges and asks for the NPI. The agent submits the turn to the NHID-Clinical policy engine, which evaluates IDG-01 and returns CONTINUE_AI with the reason code IDG01_DISCLOSURE_CONFIRMED. Only after that decision does the interaction cross the disclosure gate into the operational workflow, where the NPI is supplied and the administrative exchange proceeds. Every turn, before and after the gate, is written to the ATR-01 audit trail.</desc>
 
-    A->>P: "Hello, I am an automated system calling from..."
-    P->>A: "Understood. Please provide NPI."
-    A->>E: evaluate_idg01(session, event)
-    E-->>A: CONTINUE_AI (Disclosure Confirmed)
-    A->>P: "NPI is 1234567890."
-    Note over A,P: Operational data exchange proceeds
-      </div>
+          <!-- Lanes -->
+          <g class="sq-lane">
+            <rect x="8" y="14" width="196" height="46" rx="8"/>
+            <rect x="228" y="14" width="196" height="46" rx="8"/>
+            <rect x="448" y="14" width="196" height="46" rx="8"/>
+            <rect x="668" y="14" width="204" height="46" rx="8"/>
+          </g>
+          <text x="106" y="35" text-anchor="middle" class="sq-lane-name">AI voice agent</text>
+          <text x="106" y="50" text-anchor="middle" class="sq-lane-role">Calling on behalf of a provider</text>
+          <text x="326" y="35" text-anchor="middle" class="sq-lane-name">Payer representative</text>
+          <text x="326" y="50" text-anchor="middle" class="sq-lane-role">Human, receiving organization</text>
+          <text x="546" y="35" text-anchor="middle" class="sq-lane-name">NHID-Clinical policy engine</text>
+          <text x="546" y="50" text-anchor="middle" class="sq-lane-role">evaluate_all, deterministic</text>
+          <text x="770" y="35" text-anchor="middle" class="sq-lane-name">Operational workflow</text>
+          <text x="770" y="50" text-anchor="middle" class="sq-lane-role">Eligibility, claims, prior auth</text>
+
+          <!-- Lifelines -->
+          <line x1="106" y1="60" x2="106" y2="412" class="sq-life"/>
+          <line x1="326" y1="60" x2="326" y2="412" class="sq-life"/>
+          <line x1="546" y1="60" x2="546" y2="412" class="sq-life"/>
+          <line x1="770" y1="60" x2="770" y2="412" class="sq-life"/>
+
+          <!-- 1. Disclosure -->
+          <text x="16" y="86" class="sq-step">1</text>
+          <line x1="106" y1="98" x2="318" y2="98" class="sq-msg"/>
+          <polygon points="326,98 314,93 314,103" class="sq-msg-head"/>
+          <text x="216" y="92" text-anchor="middle" class="sq-label">&#8220;I am an automated system calling from&#8230;&#8221;</text>
+
+          <!-- 2. Acknowledgement -->
+          <text x="16" y="134" class="sq-step">2</text>
+          <line x1="326" y1="146" x2="114" y2="146" class="sq-msg"/>
+          <polygon points="106,146 118,141 118,151" class="sq-msg-head"/>
+          <text x="216" y="140" text-anchor="middle" class="sq-label">&#8220;Understood. Please provide the NPI.&#8221;</text>
+
+          <!-- 3. Evaluation -->
+          <text x="16" y="182" class="sq-step">3</text>
+          <line x1="106" y1="194" x2="538" y2="194" class="sq-msg"/>
+          <polygon points="546,194 534,189 534,199" class="sq-msg-head"/>
+          <text x="326" y="188" text-anchor="middle" class="sq-call">evaluate_all(session, event)</text>
+
+          <!-- 4. Decision returned -->
+          <text x="16" y="230" class="sq-step">4</text>
+          <line x1="546" y1="242" x2="114" y2="242" class="sq-return"/>
+          <polygon points="106,242 118,237 118,247" class="sq-return-head"/>
+          <text x="326" y="236" text-anchor="middle" class="sq-call">PolicyDecision</text>
+
+          <!-- Engine output, verbatim -->
+          <g class="sq-out">
+            <rect x="452" y="256" width="234" height="60" rx="6"/>
+          </g>
+          <text x="466" y="274" class="sq-out-key">action:</text>
+          <text x="540" y="274" class="sq-out-val">CONTINUE_AI</text>
+          <text x="466" y="290" class="sq-out-key">reason_code:</text>
+          <text x="466" y="306" class="sq-out-val">IDG01_DISCLOSURE_CONFIRMED</text>
+
+          <!-- The gate -->
+          <g class="sq-gate">
+            <line x1="8" y1="338" x2="872" y2="338"/>
+          </g>
+          <text x="8" y="332" class="sq-gate-label">DISCLOSURE GATE &#183; IDG-01 MUST CLEAR BEFORE OPERATIONAL EXCHANGE</text>
+
+          <!-- 5. Operational exchange -->
+          <text x="16" y="368" class="sq-step">5</text>
+          <line x1="106" y1="380" x2="318" y2="380" class="sq-msg"/>
+          <polygon points="326,380 314,375 314,385" class="sq-msg-head"/>
+          <text x="216" y="374" text-anchor="middle" class="sq-label">&#8220;The NPI is 1234567890.&#8221;</text>
+          <line x1="326" y1="380" x2="762" y2="380" class="sq-msg"/>
+          <polygon points="770,380 758,375 758,385" class="sq-msg-head"/>
+          <text x="548" y="374" text-anchor="middle" class="sq-label">Administrative exchange proceeds</text>
+        </svg>
+      </figure>
+
+      <ol class="sequence-steps">
+        <li>The agent opens the call by stating that it is an automated system. This is the utterance IDG&#8209;01 evaluates.</li>
+        <li>The representative acknowledges and asks for the NPI.</li>
+        <li>The turn is submitted to the policy engine as <code>evaluate_all(session, event)</code>.</li>
+        <li>The engine returns a <code>PolicyDecision</code>: <code>CONTINUE_AI</code>, reason code <code>IDG01_DISCLOSURE_CONFIRMED</code>.</li>
+        <li>Only then does the interaction cross the disclosure gate. The NPI is supplied and the administrative exchange proceeds.</li>
+      </ol>
+
+      <p class="disclaimer-small" style="margin-top:.85rem"><span class="maturity-reference">Reference</span> Conceptual model of the control in a standard workflow, drawn in the site&#8217;s own diagram system. It is not a recording of a specific call &mdash; for engine output replayed from real corpus scenarios, see the Trust Gateway above.</p>
+
+      <h2 style="margin-top:2.5rem">How Five Decisions Become One</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.8;margin:.75rem 0 0">The five controls do not run as a chain of gates. Every one of them evaluates the same turn independently, and the composite decision is whichever result is most restrictive. The figure below is generated by replaying the governance evaluation corpus through the engine, so the counts beside each rung are measured rather than asserted.</p>
+      <!-- BEGIN GENERATED enforcement-ladder -->
+      <figure class="evidence-model enforcement-ladder">
+        <svg viewBox="0 0 880 440" role="img" aria-labelledby="el2-title el2-desc" style="width:100%;height:auto;display:block">
+          <title id="el2-title">How five control decisions resolve into one</title>
+          <desc id="el2-desc">One turn event fans out to all five controls, which evaluate independently against the same session and event. Each returns its own PolicyDecision. The composite decision is the most restrictive of the five by priority: DENY_DATA at 5, ESCALATE_HUMAN at 4, DISCLOSE_IDENTITY at 3, LOG_ONLY at 2, CONTINUE_AI at 1. This is not a serial gate chain: on 18 of the corpus's 55 turns more than one control tied at the top. The left column counts how often each action was the composite across the corpus; the right column counts how often each control was at the winning priority.</desc>
+
+          <text x="24" y="22" class="el-zone">ONE TURN, FIVE INDEPENDENT EVALUATIONS</text>
+
+          <g class="el-node"><rect x="24" y="40" width="150" height="52" rx="8"/></g>
+          <text x="99" y="63" text-anchor="middle" class="el-title">Turn event</text>
+          <text x="99" y="80" text-anchor="middle" class="el-sub">session + event</text>
+
+          <path d="M174 66 H214" class="el-flow"/><polygon points="218,66 208,61 208,71" class="el-flow-head"/>
+
+          <g class="el-ctlbox">
+            <rect x="218" y="34" width="128" height="26" rx="5"/>
+            <rect x="218" y="64" width="128" height="26" rx="5"/>
+            <rect x="218" y="94" width="128" height="26" rx="5"/>
+            <rect x="218" y="124" width="128" height="26" rx="5"/>
+          </g>
+          <g class="el-auditbox"><rect x="218" y="154" width="128" height="26" rx="5"/></g>
+          <text x="282" y="51" text-anchor="middle" class="el-ctlname">IDG-01</text>
+          <text x="282" y="81" text-anchor="middle" class="el-ctlname">PDX-01</text>
+          <text x="282" y="111" text-anchor="middle" class="el-ctlname">DBC-01</text>
+          <text x="282" y="141" text-anchor="middle" class="el-ctlname">EIT-01</text>
+          <text x="282" y="171" text-anchor="middle" class="el-ctlname">ATR-01</text>
+
+          <path d="M346 47 H392 V100" class="el-flow"/>
+          <path d="M346 77 H392" class="el-flow"/>
+          <path d="M346 107 H392 V100" class="el-flow"/>
+          <path d="M346 137 H392 V100" class="el-flow"/>
+          <path d="M346 167 H392 V100" class="el-flow"/>
+          <polygon points="424,100 414,95 414,105" class="el-flow-head"/>
+          <path d="M392 100 H418" class="el-flow"/>
+
+          <g class="el-node"><rect x="428" y="60" width="196" height="80" rx="8"/></g>
+          <text x="526" y="86" text-anchor="middle" class="el-title">Most restrictive wins</text>
+          <text x="526" y="104" text-anchor="middle" class="el-sub">max(decisions, key=priority)</text>
+          <text x="526" y="124" text-anchor="middle" class="el-sub">ties are common, not exceptional</text>
+
+          <path d="M624 100 H664" class="el-flow"/><polygon points="668,100 658,95 658,105" class="el-flow-head"/>
+          <g class="el-node"><rect x="672" y="60" width="184" height="80" rx="8"/></g>
+          <text x="764" y="86" text-anchor="middle" class="el-title">PolicyDecision</text>
+          <text x="764" y="104" text-anchor="middle" class="el-sub">action · reason_code</text>
+          <text x="764" y="124" text-anchor="middle" class="el-sub">violations · audit trail</text>
+
+          <line x1="24" y1="200" x2="856" y2="200" class="el-divider"/>
+          <text x="24" y="228" class="el-zone">MEASURED OVER 25 SCENARIOS · 55 TURNS</text>
+
+          <text x="24" y="244" class="el-colhead">Priority ladder — how often each action was the composite</text>
+          <rect x="24" y="250" width="300" height="26" rx="4" class="el-rung"/>
+          <text x="40" y="267" class="el-pri">5</text>
+          <text x="70" y="267" class="el-action">DENY_DATA</text>
+          <text x="316" y="267" text-anchor="end" class="el-count">10 turns</text>
+          <rect x="24" y="282" width="300" height="26" rx="4" class="el-rung"/>
+          <text x="40" y="299" class="el-pri">4</text>
+          <text x="70" y="299" class="el-action">ESCALATE_HUMAN</text>
+          <text x="316" y="299" text-anchor="end" class="el-count">18 turns</text>
+          <rect x="24" y="314" width="300" height="26" rx="4" class="el-rung"/>
+          <text x="40" y="331" class="el-pri">3</text>
+          <text x="70" y="331" class="el-action">DISCLOSE_IDENTITY</text>
+          <text x="316" y="331" text-anchor="end" class="el-count">8 turns</text>
+          <rect x="24" y="346" width="300" height="26" rx="4" class="el-rung"/>
+          <text x="40" y="363" class="el-pri">2</text>
+          <text x="70" y="363" class="el-action">LOG_ONLY</text>
+          <text x="316" y="363" text-anchor="end" class="el-count">1 turn</text>
+          <rect x="24" y="378" width="300" height="26" rx="4" class="el-rung"/>
+          <text x="40" y="395" class="el-pri">1</text>
+          <text x="70" y="395" class="el-action">CONTINUE_AI</text>
+          <text x="316" y="395" text-anchor="end" class="el-count">18 turns</text>
+
+          <text x="482" y="244" class="el-colhead">How often each control was at the winning priority</text>
+          <text x="470" y="267" text-anchor="end" class="el-ctl">IDG-01</text>
+          <rect x="482" y="254" width="158.9" height="18" rx="3" class="el-winbar"/>
+          <text x="649.9" y="267" class="el-count">26</text>
+          <text x="470" y="299" text-anchor="end" class="el-ctl">PDX-01</text>
+          <rect x="482" y="286" width="171.1" height="18" rx="3" class="el-winbar"/>
+          <text x="662.1" y="299" class="el-count">28</text>
+          <text x="470" y="331" text-anchor="end" class="el-ctl">DBC-01</text>
+          <rect x="482" y="318" width="116.1" height="18" rx="3" class="el-winbar"/>
+          <text x="607.1" y="331" class="el-count">19</text>
+          <text x="470" y="363" text-anchor="end" class="el-ctl">EIT-01</text>
+          <rect x="482" y="350" width="220.0" height="18" rx="3" class="el-winbar"/>
+          <text x="711.0" y="363" class="el-count">36</text>
+          <text x="470" y="395" text-anchor="end" class="el-ctl">ATR-01</text>
+          <rect x="482" y="382" width="110.0" height="18" rx="3" class="el-winbar"/>
+          <text x="601.0" y="395" class="el-count">18</text>
+
+          <text x="482" y="424" class="el-note">18 of 55 turns had two or more controls tied at the top.</text>
+        </svg>
+      </figure>
+
+      <aside class="visual-provenance">
+        <p><strong>Evidence basis:</strong> <code>tests/evaluation_corpus_v1.json</code> — 25 scenarios, 55 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI)</p>
+        <p><strong>Version:</strong> policy engine v1.3 · commit <code>2e5fffd</code></p>
+      </aside>
+      <!-- END GENERATED enforcement-ladder -->
 
       <h2 style="margin-top:2.5rem">Why These Five</h2>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">These controls address the specific operational friction that motivated this proposal. They are observable, testable in context, and achievable without significant architectural changes in most systems.</p>

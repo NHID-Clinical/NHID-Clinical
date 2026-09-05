@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
-  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <style>
     /* De-blued to brand teal; step-num circles teal in light mode too */
     .step-num { background: var(--teal-bright); color: #fff; }
@@ -237,6 +237,43 @@
           <p>Compile findings into a short written assessment. Share the anonymized results with the community to help inform the next version of the proposal.</p>
         </div>
       </div>
+
+      <h2 style="margin-top:2.5rem">What an Observe-Only Run Actually Returns</h2>
+      <p style="color:var(--body);font-size:.95rem;line-height:1.8;margin:.75rem 0 0">Shadow evaluation is a proposition about volume: you find out how often the controls would have acted before anything is allowed to act. This is that measurement over a committed corpus &mdash; the decisions the engine returned, with nothing routed, blocked or escalated to produce them.</p>
+      <!-- BEGIN GENERATED shadow-outcomes -->
+      <figure class="evidence-model shadow-outcomes">
+        <svg viewBox="0 0 880 220" role="img" aria-labelledby="so-title so-desc" style="width:100%;height:auto;display:block">
+          <title id="so-title">What an observe-only run returns over the shadow-pilot corpus</title>
+          <desc id="so-desc">A horizontal bar chart of composite decisions across 301 turns in 60 conversations: DENY_DATA on 22 turns, ESCALATE_HUMAN on 19 turns, DISCLOSE_IDENTITY on 78 turns, CONTINUE_AI on 182 turns. 119 turns — 39.5 percent — returned something other than CONTINUE_AI, which is the share a deployment would have to act on if it moved from observing to enforcing. No call routing was changed to produce this: the engine was run over a committed corpus.</desc>
+
+          <text x="24" y="22" class="ev-zone">COMPOSITE DECISION PER TURN · 60 CONVERSATIONS · 301 TURNS</text>
+          <text x="24" y="40" class="ev-sub">Observe-only replay. Nothing was routed, blocked or escalated to produce this.</text>
+
+          <text x="198.0" y="67" text-anchor="end" class="ev-cat">DENY_DATA</text>
+          <rect x="210.0" y="54" width="67.7" height="20" rx="3" class="ev-bar" data-tone="enforce"/>
+          <text x="287.7" y="68" class="ev-val">22 <tspan class="ev-pct">(7.3%)</tspan></text>
+          <text x="198.0" y="97" text-anchor="end" class="ev-cat">ESCALATE_HUMAN</text>
+          <rect x="210.0" y="84" width="58.5" height="20" rx="3" class="ev-bar" data-tone="enforce"/>
+          <text x="278.5" y="98" class="ev-val">19 <tspan class="ev-pct">(6.3%)</tspan></text>
+          <text x="198.0" y="127" text-anchor="end" class="ev-cat">DISCLOSE_IDENTITY</text>
+          <rect x="210.0" y="114" width="240.0" height="20" rx="3" class="ev-bar" data-tone="enforce"/>
+          <text x="460.0" y="128" class="ev-val">78 <tspan class="ev-pct">(25.9%)</tspan></text>
+          <text x="198.0" y="157" text-anchor="end" class="ev-cat">CONTINUE_AI</text>
+          <rect x="210.0" y="144" width="560.0" height="20" rx="3" class="ev-bar" data-tone="continue"/>
+          <text x="780.0" y="158" class="ev-val">182 <tspan class="ev-pct">(60.5%)</tspan></text>
+
+          <line x1="24" y1="180" x2="856" y2="180" class="ev-divider"/>
+          <text x="24" y="202" class="ev-headline">119 of 301 turns (39.5%) would have drawn an enforcement action.</text>
+        </svg>
+      </figure>
+
+      <aside class="visual-provenance">
+        <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/shadow_pilot.jsonl</code> — 60 conversations, 301 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
+        <p><strong>Classification:</strong> <span class="maturity-research">Research</span> Reference corpus results, not operational performance. This is a committed synthetic corpus, not production call data, and it says nothing about how any deployment would behave.</p>
+        <p><strong>Known limitation:</strong> The shadow-pilot fixture carries no deceptive_artifact_flags field, which is the structured signal DBC-01 reads. Over this corpus DBC-01 runs on its lexical path only, so its count here is a floor, not a measurement of how much deception the corpus contains.</p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>2e5fffd</code></p>
+      </aside>
+      <!-- END GENERATED shadow-outcomes -->
 
       <h2 style="margin-top:2.5rem">The Controls You Are Observing</h2>
       <table class="premium-metrics controls-table">

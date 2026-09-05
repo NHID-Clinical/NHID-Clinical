@@ -81,6 +81,11 @@ jobs:
       - name: Front-Desk Walkthrough matches the engine
         run: python scripts/build_walkthrough_fixture.py --check
 
+      # Three figures computed by replaying committed corpora through the
+      # engine. Without this they would be true only on the day they were made.
+      - name: Evidence figures match the engine
+        run: python scripts/build_evidence_visuals.py --check
+
       # Nine pages carrying a generated arc cannot be kept in order by hand.
       - name: Journey wayfinder is current
         run: python scripts/add_journey_wayfinder.py --check
