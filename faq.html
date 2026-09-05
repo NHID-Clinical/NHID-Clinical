@@ -122,26 +122,26 @@
     <div class="container" style="max-width:860px">
       <div class="faq-list">
         <div class="faq-item">
-          <h3>What is NHID-Clinical?</h3>
+          <h2 class="faq-q">What is NHID-Clinical?</h2>
           <p>NHID-Clinical is a voluntary, practitioner-led open framework (v1.3) that addresses a specific problem in healthcare payer–provider voice workflows: AI voice agents that interact with payer staff without disclosing they are automated systems.</p>
           <p>It is <strong>not</strong> an official standard, certification program, or regulatory requirement. It is an independent, practitioner-led effort to name the problem and define a testable baseline for shared expectations.</p>
           <p>It also does <strong>not</strong> evaluate model fairness, clinical safety, or output quality — those remain separate governance responsibilities. See the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/scope-boundary-fairness-clinical.md">scope boundary note</a> for what stays out of scope and how NHID-Clinical integrates underneath those programs.</p>
         </div>
         <div class="faq-item">
-          <h3>What problem does it address?</h3>
+          <h2 class="faq-q">What problem does it address?</h2>
           <p><strong>Impersonation latency</strong> — the gap between when an AI voice agent begins a call and when the person on the other end realizes they are not speaking to a human.</p>
           <p>An AI calls as "Sarah from Dr. Smith's office," handles several minutes of normal workflow conversation, and only admits "I'm an automated system" when challenged. By then, sensitive operational data has already been exchanged — without clear consent or accountability.</p>
         </div>
         <div class="faq-item">
-          <h3>Who created this?</h3>
+          <h2 class="faq-q">Who created this?</h2>
           <p><strong>Brianna Baynard</strong>, after working in healthcare payer operations and personally experiencing these calls from AI systems that presented as human. It is an individual volunteer effort, not backed by any organization or standards body.</p>
         </div>
         <div class="faq-item">
-          <h3>Is this mandatory?</h3>
+          <h2 class="faq-q">Is this mandatory?</h2>
           <p>No. Completely voluntary. Payers, providers, and vendors can choose to reference it, adapt it, or ignore it entirely.</p>
         </div>
         <div class="faq-item">
-          <h3>What does the proposal actually suggest?</h3>
+          <h2 class="faq-q">What does the proposal actually suggest?</h2>
           <p>Four behaviors for AI voice agents in B2B healthcare administrative calls:</p>
           <ul style="padding-left:1.4rem;color:var(--body);font-size:.95rem;line-height:2;margin-top:.5rem">
             <li>Identify as an automated system before any operational data is exchanged</li>
@@ -152,7 +152,7 @@
           <p style="margin-top:.75rem">The full proposal document has detailed discussion of each. <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download style="color:var(--teal-bright);font-weight:600">Download the PDF →</a></p>
         </div>
         <div class="faq-item">
-          <h3>Who is this for?</h3>
+          <h2 class="faq-q">Who is this for?</h2>
           <ul style="padding-left:1.4rem;color:var(--body);line-height:2;margin-top:.25rem">
             <li>Payers receiving AI calls from providers or vendors</li>
             <li>Providers and vendors building AI voice agents</li>
@@ -161,25 +161,25 @@
           <p>It does <strong>not</strong> apply to patient-facing calls, internal tools, or clinical decision AI.</p>
         </div>
         <div class="faq-item">
-          <h3>How is this different from HIPAA or TCPA?</h3>
+          <h2 class="faq-q">How is this different from HIPAA or TCPA?</h2>
           <p>Those regulations cover patient data privacy and consumer call consent. Neither specifically addresses the B2B scenario where an AI agent calls a payer office on behalf of a provider — which is where the impersonation latency problem actually occurs.</p>
           <p>This proposal is designed to address a gap, not replace existing rules.</p>
         </div>
         <div class="faq-item">
-          <h3>Why are NPIs a security risk in voice calls?</h3>
+          <h2 class="faq-q">Why are NPIs a security risk in voice calls?</h2>
           <p>NPIs are public identifiers. Anyone can find a provider's NPI in the NPPES registry and use it when calling a payer. Without a real-time authorization check, a caller can claim to be from that practice and request operational data — claim status, eligibility, authorization details — and the payer's system has no mechanism to refuse.</p>
-          <p>NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just <em>that</em> they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes <strong>1056 passing tests</strong> to ensure deterministic policy evaluation.</p>
+          <p>NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just <em>that</em> they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes <strong>1148 passing tests</strong> to ensure deterministic policy evaluation.</p>
         </div>
         <div class="faq-item">
-          <h3>Can I get feedback on my implementation?</h3>
+          <h2 class="faq-q">Can I get feedback on my implementation?</h2>
           <p>Informal peer feedback is available on a limited basis. Email <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright);font-weight:600">contact@nhid-clinical.org</a> with your context. This is not certification or formal assessment.</p>
         </div>
         <div class="faq-item">
-          <h3>What is the NIST connection?</h3>
+          <h2 class="faq-q">What is the NIST connection?</h2>
           <p>NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security) in January 2026. Comment ID: <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a>. This is a public comment — it does not imply NIST endorsement or recognition.</p>
         </div>
         <div class="faq-item">
-          <h3>How can I give feedback or get involved?</h3>
+          <h2 class="faq-q">How can I give feedback or get involved?</h2>
           <pre class="faq-code">Email:   contact@nhid-clinical.org
 GitHub:  github.com/NHID-Clinical/NHID-Clinical/discussions</pre>
           <p>Real-world experience from payers and implementers is what this proposal most needs.</p>
@@ -243,11 +243,33 @@ GitHub:  github.com/NHID-Clinical/NHID-Clinical/discussions</pre>
 
       <div class="callout" style="margin-top:2rem;border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;background:var(--paper)">
         <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75"><b>Honest status.</b> NHID-Clinical is a practitioner-led open proposal under CC BY 4.0. It is not an accredited standard, a certification program, or a regulatory requirement, and there is no external certification authority. Conformance testing is self-administered.</p>
+
+        <h3 style="margin:1.75rem 0 .25rem;font-size:1rem">How to read a status label</h3>
+        <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Not everything here stands in the same place. A deterministic engine with a passing test suite and a registry that does not yet exist are both described on this site, and the difference matters more than any feature list. Six labels are used, and they mean exactly this:</p>
+        <ul class="maturity-legend">
+          <li><span class="maturity maturity-verified">Verified</span> <span>Measured evidence exists and the measurement can be re-run.</span></li>
+          <li><span class="maturity maturity-implemented">Implemented</span> <span>Code exists, runs, and the conformance suite covers it.</span></li>
+          <li><span class="maturity maturity-reference">Reference</span> <span>A working primitive, deliberately not deployed infrastructure.</span></li>
+          <li><span class="maturity maturity-conceptual">Conceptual</span> <span>A documented production path that has not been built.</span></li>
+          <li><span class="maturity maturity-research">Research</span> <span>A research component, explicitly not a product capability.</span></li>
+          <li><span class="maturity maturity-future">Future</span> <span>Does not exist. Named so it cannot be mistaken for shipped.</span></li>
+        </ul>
+        <p style="margin:.5rem 0 0;color:var(--body);font-size:.88rem;line-height:1.7">The labels are not marketing tiers. Each one corresponds to a standing recorded in <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>, and a test fails if the two ever disagree.</p>
       </div>
 
     </div>
   </section>
 
+<!-- BEGIN GENERATED journey-wayfinder -->
+      <nav class="wayfinder" aria-label="Where this page sits in the journey">
+        <p class="wayfinder-here"><span class="wayfinder-journey">Understand</span><span class="wayfinder-question">What is still open?</span></p>
+        <ul class="wayfinder-steps">
+          <li class="wayfinder-prev"><span>Before this</span><a href="/framework/nhid-auth.html">What comes after v1.3?</a></li>
+          <li class="wayfinder-next"><span>Next</span><a href="/specs/">Where do I download it?</a></li>
+          <li class="wayfinder-source"><span>Where is the source?</span><a href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer">The repository &#8599;</a></li>
+        </ul>
+      </nav>
+      <!-- END GENERATED journey-wayfinder -->
 </main>
 
 <section class="page-cta">

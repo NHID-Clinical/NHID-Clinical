@@ -51,7 +51,7 @@ Start with the [Tier 0 Shadow Pilot Kit](pilot-kit/README.md).
 
 ## Current maturity (honest)
 
-- **Available today:** deterministic policy engine with 1056 passing tests,
+- **Available today:** deterministic policy engine with 1148 passing tests,
   pilot-ready infrastructure (cryptographic audit signing, persistent storage, Docker
   deployment, security monitoring), a live v1.3 conformance API, the Tier 0 Shadow Pilot Kit,
   and the NHID-Auth v2 cryptographic authorization layer as public reference code.
@@ -62,7 +62,7 @@ Start with the [Tier 0 Shadow Pilot Kit](pilot-kit/README.md).
 ## Contact
 
 - Website: <https://nhid-clinical.org>
-- For payers and evaluation teams: <https://nhid-clinical.org/for-payers.html>
+- For payers and evaluation teams: <https://nhid-clinical.org/shadow-evaluation-guide.html>
 - Email: <contact@nhid-clinical.org>
 
 CC BY 4.0 · Submitted as public comment to NIST (NIST-2025-0035-0026) — a public

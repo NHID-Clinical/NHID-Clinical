@@ -31,3 +31,13 @@ platform/enterprise.html	/
 gov-sim.html	/
 pilot.html	/shadow-evaluation-guide.html
 conformance.html	/evidence-pack.html
+
+# Added 2026-09-05 (Phase B execution). These five were excluded from the build
+# by RETIRED_PAGES but had no redirect, so an inbound link to any of them 404'd
+# rather than landing anywhere. A retired route without a redirect is the exact
+# failure this file exists to prevent.
+docs.html	/developers.html
+simulator.html	/shadow-evaluation-guide.html
+simulator/index.html	/shadow-evaluation-guide.html
+svg-preview.html	/
+vendor/dashboard.html	/evidence-pack.html

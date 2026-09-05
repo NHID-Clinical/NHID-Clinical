@@ -31,7 +31,7 @@ A corpus result of 100% describes a 150-session synthetic dataset with two seede
 
 Independent commentary on Impersonation Latency and the five NHID-Clinical controls, mapped to NIST AI RMF, ISO/IEC 42001, and HIPAA.
 
-[Read the commentary](/identity-layer.html)
+[Read the commentary](https://gamma.app/embed/pxtip0mjdj59tv6) — hosted on Gamma. It was previously reachable at `/identity-layer.html`, a route whose only content was an iframe around this same deck; the route was retired in the Phase B consolidation and the link now points at the source.
 
 ## DBC-01 Coverage Expanded from Real-Corpus Mining
 *June 2026 · Release*

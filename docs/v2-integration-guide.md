@@ -99,7 +99,7 @@ python -m pytest tests/test_identity.py -v   # 26 tests
 ```
 
 The full concept reference (delegation chains, revocation, nonce binding) is at
-[nhid-clinical.org/roadmap.html](https://nhid-clinical.org/roadmap.html).
+[nhid-clinical.org/framework/nhid-auth.html](https://nhid-clinical.org/framework/nhid-auth.html).
 
 ---
 

@@ -21,17 +21,17 @@
 suite_metadata:
   schema_version: "2.0.0"
   unit_tests:
-    count: 1056
+    count: 1148
     skipped_allowed: false
-    meaning: "Deterministic policy engine correctness. Unit invariant preserved: 1056 passed, 0 skipped, 0 xfailed."
+    meaning: "Deterministic policy engine correctness. Unit invariant preserved: 1148 passed, 0 skipped, 0 xfailed."
     command: "pytest tests/ -q"
-    expected_output: "Unit invariant preserved: 1056 passed, 0 skipped, 0 xfailed"
+    expected_output: "Unit invariant preserved: 1148 passed, 0 skipped, 0 xfailed"
   integration_tests:
     count: 18
     skippable: true
     meaning: "Optional system validation against a live server. Skipping is expected when no server is present."
     trigger: "Requires live server at http://127.0.0.1:8000"
-  invariant: "Unit invariant preserved: 1056 passed, 0 skipped, 0 xfailed"
+  invariant: "Unit invariant preserved: 1148 passed, 0 skipped, 0 xfailed"
   integration_label: "Integration suite: 18 tests, may pass or skip (expected)"
 
 ---

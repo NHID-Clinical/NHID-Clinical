@@ -8,28 +8,51 @@ def page_path(r): return os.path.join(REPO_ROOT,r)
 def page_content(r):
     with open(page_path(r),encoding="utf-8") as f: return f.read()
 @pytest.mark.parametrize("page",ALIGNMENT_PAGES)
-def test_alignment_page_exists(page): assert os.path.exists(page_path(page)),f"Missing: {page}"
-@pytest.mark.parametrize("page",ALIGNMENT_PAGES)
-def test_alignment_page_has_disclaimer(page):
-    c=page_content(page)
-    assert "early-stage" in c or "not an accredited" in c or "open proposal" in c
-@pytest.mark.parametrize("page",ALIGNMENT_PAGES)
-def test_alignment_page_links_to_spec(page):
-    c=page_content(page)
-    assert "specification.html" in c or "nhid-clinical.org/spec" in c
-def test_alignment_pages_link_to_nhid_controls_not_external_projects():
+def test_alignment_route_still_resolves(page):
     """
-    These pages used to end by sending the reader to the AI Governance Map, a
-    separate project on its own deployment. NHID-Clinical's alignment pages
-    should resolve into NHID-Clinical's own control text instead — a visitor
-    reading about STIR/SHAKEN scope should land on the controls, not on another
-    project's site.
+    The four alignment routes were retired into regulatory-alignment.html by the
+    Phase B consolidation (2026-09-05). They were 195 words across four routes,
+    all four orphaned -- nothing on the site linked them -- and each was a stub
+    that sent the reader onward rather than answering anything. That is content,
+    not a destination.
+
+    The files stay, as redirect stubs, so existing links and search results
+    resolve instead of 404ing. These tests moved with the content: they used to
+    assert each stub carried a disclaimer and a route into the controls, and
+    they now assert the reader still arrives somewhere that does.
     """
-    for page in ALIGNMENT_PAGES:
-        c = page_content(page)
-        assert "specification.html" in c or "controls.html" in c, (
-            f"{page} offers the reader no route into the NHID-Clinical controls"
-        )
+    assert os.path.exists(page_path(page)), f"Missing: {page}"
+    c = page_content(page)
+    assert 'http-equiv="refresh"' in c, f"{page} should be a redirect stub"
+    assert "/regulatory-alignment.html" in c, (
+        f"{page} must send the reader to the page that now holds its content"
+    )
+    assert 'rel="canonical"' in c, f"{page} needs a canonical link for search"
+
+
+def test_the_destination_carries_what_the_stubs_used_to():
+    """
+    What the retired stubs each asserted individually, the destination must now
+    assert once: the honest-status disclaimer, and a route into the controls.
+    Without this, retiring the stubs would have quietly dropped both.
+    """
+    c = page_content("regulatory-alignment.html")
+    assert "early-stage" in c or "not an accredited" in c or "open proposal" in c, (
+        "regulatory-alignment.html lost the disclaimer the alignment stubs carried"
+    )
+    assert "specification.html" in c, (
+        "regulatory-alignment.html offers no route into the NHID-Clinical controls"
+    )
+
+
+def test_the_four_subjects_survived_the_merge():
+    """
+    Retiring a route must not retire its subject. Each stub's topic has to be
+    findable on the destination, or the consolidation lost content.
+    """
+    c = page_content("regulatory-alignment.html").lower()
+    for subject in ("stir/shaken", "cms-0057", "nist", "evidence pack"):
+        assert subject in c, f"regulatory-alignment.html no longer covers {subject!r}"
 
 
 # ── External projects must stay out of the NHID-Clinical site ──────────────

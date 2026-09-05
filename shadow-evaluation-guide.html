@@ -166,6 +166,58 @@
         <li>Willingness to share anonymized findings if you choose to.</li>
       </ul>
 
+      <h2 style="margin-top:2.5rem" id="shadow-model">Where a shadow evaluation sits</h2>
+      <p style="color:var(--body);line-height:1.8;margin-top:.6rem">The word that does the work is <em>observe-only</em>. An evaluation reads call traces you already hold; nothing it produces re-enters the call. The diagram is one-way on purpose &mdash; there is no arrow back into the live path, because there is no mechanism for one.</p>
+
+      <figure class="shadow-model">
+        <svg viewBox="0 0 880 320" role="img" aria-labelledby="sm-title sm-desc" style="width:100%;height:auto;display:block">
+          <title id="sm-title">Where a shadow evaluation sits relative to the live call</title>
+          <desc id="sm-desc">The live call runs across the top of the diagram, from an AI voice agent to a payer representative, and is unchanged by the evaluation. Below it, separated by a divider, sits the evaluation path: call traces the payer already records flow one way into the policy engine, which produces a behavioural baseline report. A single downward arrow connects the call to the traces, representing recording that already happens. No arrow returns upward: the evaluation cannot alter, delay, block or intercept the call, because nothing connects it back.</desc>
+
+          <text x="20" y="26" class="sm-zone">THE LIVE CALL &mdash; UNCHANGED</text>
+          <g class="sm-live">
+            <rect x="20" y="40" width="220" height="52" rx="8"/>
+            <text x="36" y="72" class="sm-label">AI voice agent</text>
+            <rect x="620" y="40" width="240" height="52" rx="8"/>
+            <text x="636" y="72" class="sm-label">Payer representative</text>
+          </g>
+          <line x1="240" y1="66" x2="616" y2="66" class="sm-call"/>
+          <polygon points="620,66 610,61 610,71" class="sm-call-head"/>
+          <text x="428" y="56" class="sm-note" text-anchor="middle">the call proceeds exactly as it would without any of this</text>
+
+          <line x1="20" y1="120" x2="860" y2="120" class="sm-divider"/>
+          <text x="20" y="142" class="sm-zone">THE EVALUATION &mdash; OBSERVE ONLY</text>
+
+          <line x1="440" y1="92" x2="440" y2="164" class="sm-tap"/>
+          <polygon points="440,168 435,158 445,158" class="sm-tap-head"/>
+          <text x="452" y="150" class="sm-note">recording you already do</text>
+
+          <g class="sm-eval">
+            <rect x="20" y="176" width="250" height="76" rx="8"/>
+            <text x="36" y="204" class="sm-label">Call traces you hold</text>
+            <text x="36" y="228" class="sm-sub">Your systems, your retention,</text>
+            <text x="36" y="244" class="sm-sub">your existing obligations</text>
+
+            <rect x="315" y="176" width="250" height="76" rx="8"/>
+            <text x="331" y="204" class="sm-label">Policy engine</text>
+            <text x="331" y="228" class="sm-sub">Five controls, evaluated</text>
+            <text x="331" y="244" class="sm-sub">deterministically, offline</text>
+
+            <rect x="610" y="176" width="250" height="76" rx="8"/>
+            <text x="626" y="204" class="sm-label">Behavioural baseline</text>
+            <text x="626" y="228" class="sm-sub">What was disclosed, when,</text>
+            <text x="626" y="244" class="sm-sub">and what evidence exists</text>
+          </g>
+          <line x1="270" y1="214" x2="311" y2="214" class="sm-flow"/>
+          <polygon points="315,214 305,209 305,219" class="sm-flow-head"/>
+          <line x1="565" y1="214" x2="606" y2="214" class="sm-flow"/>
+          <polygon points="610,214 600,209 600,219" class="sm-flow-head"/>
+
+          <text x="20" y="292" class="sm-note">No arrow returns to the call. The evaluation cannot alter, delay, block or intercept it.</text>
+          <text x="20" y="312" class="sm-note">Requires no vendor change, and adds no component to the call path.</text>
+        </svg>
+      </figure>
+
       <h2 style="margin-top:2.5rem">How an evaluation unfolds</h2>
         <p style="color:var(--body);line-height:1.8;margin-top:.6rem">A sequence, not a schedule. The stages run in this order because each depends on the one before it; how long each takes is yours to decide, and an evaluation can stop after any of them.</p>
       <div class="feature-grid" style="margin-top:1.25rem">
@@ -426,25 +478,25 @@
       <p style="color:var(--body);margin-bottom:2rem;line-height:1.75">These openings work because the AI identifies itself immediately — before asking for anything. The representative knows what they're dealing with from the first sentence.</p>
 
       <div class="script-example-block">
-        <h5>General payer operations inquiry</h5>
+        <h4>General payer operations inquiry</h4>
         <div class="script-quote script-quote-pass">"Hello, this is an automated AI voice agent from Acme Health Plan. I am not a human. I'm calling regarding a claim. Do I have permission to continue?"</div>
         <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Automated nature disclosed immediately. No data exchanged before identification.</p>
       </div>
 
       <div class="script-example-block">
-        <h5>Dental payer — claim status</h5>
+        <h4>Dental payer — claim status</h4>
         <div class="script-quote script-quote-pass">"This is the AI claims assistant for Delta Dental. I am a non-human system. May I have your NPI to check a claim status?"</div>
         <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Non-human status disclosed before any data is requested.</p>
       </div>
 
       <div class="script-example-block">
-        <h5>Prior authorization follow-up</h5>
+        <h4>Prior authorization follow-up</h4>
         <div class="script-quote script-quote-pass">"Good morning. This is an automated system calling on behalf of Riverside Medical Group to follow up on a prior authorization request. I am not a person — I'm an AI agent. Are you available to continue?"</div>
         <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Clear, early, unambiguous. The representative can make an informed decision about how to proceed.</p>
       </div>
 
       <div class="script-example-block">
-        <h5>Eligibility verification</h5>
+        <h4>Eligibility verification</h4>
         <div class="script-quote script-quote-pass">"Hi, this is an automated voice agent — not a human — calling from Valley Provider Services to verify eligibility for a patient visit. Before I give you any details, do I have your permission to proceed?"</div>
         <p style="font-size:.85rem;color:var(--body);margin-top:.5rem">Discloses first, then asks permission. Gives the representative control.</p>
       </div>
@@ -547,7 +599,7 @@
   <section class="page-section">
     <div class="container" style="max-width:860px">
       <div class="card" style="margin-bottom:1.5rem">
-        <h4>1. Call the Live Demo Line (Beacon)</h4>
+        <h3>1. Call the Live Demo Line (Beacon)</h3>
         <p class="sub">Dial <a class="demo-line-phone" href="tel:+17176706772"><strong id="demo-phone-number">+1 (717) 670-6772</strong></a> from any phone.</p>
         <div class="callout" role="note">
           This is the public <strong>Grok Voice / Beacon</strong> inbound demo line — a website demo feature, not a personal contact number.
@@ -557,7 +609,7 @@
       </div>
 
       <div class="card" style="margin-bottom:1.5rem">
-        <h4>2. Or get a call directly from Beacon</h4>
+        <h3>2. Or get a call directly from Beacon</h3>
         <p class="sub">Beacon — our outbound demo agent — calls your phone and the conversation is evaluated against the same five controls once the call ends. This costs us real calling minutes per request, so it's CAPTCHA- and rate-limited.</p>
         <div class="call-demo-form" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
           <input type="tel" id="demo-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your phone number" style="flex:1;min-width:200px"/>
@@ -569,7 +621,7 @@
       </div>
 
       <div class="card">
-        <h4>3. Watch it evaluated live</h4>
+        <h3>3. Watch it evaluated live</h3>
         <p class="sub">Every turn of the call — disclosure, PHI requests, escalation — is run through <code>adapters/call_progress_adapter.py</code> + <code>src/nhid_policy_engine_v1.py</code> exactly like a real vendor webhook, and shown below as it happens.</p>
         <div id="nhid-demo-status-container"></div>
       </div>
@@ -594,6 +646,16 @@
       <p class="disclaimer-small" style="margin:0">Going further: <a href="/specs/NHID-Clinical-Playbook.pdf" download><strong>Part III of the NHID-Clinical Playbook</strong></a> covers the full evaluation method, governance and data-handling considerations, and what it cannot establish.</p>
     </div>
   </section>
+<!-- BEGIN GENERATED journey-wayfinder -->
+      <nav class="wayfinder" aria-label="Where this page sits in the journey">
+        <p class="wayfinder-here"><span class="wayfinder-journey">Evaluate</span><span class="wayfinder-question">How do I evaluate it?</span></p>
+        <ul class="wayfinder-steps">
+          <li class="wayfinder-prev"><span>Before this</span><a href="/specification.html">What does it control?</a></li>
+          <li class="wayfinder-next"><span>Next</span><a href="/developers.html">How do I implement it?</a></li>
+          <li class="wayfinder-source"><span>Where is the source?</span><a href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer">The repository &#8599;</a></li>
+        </ul>
+      </nav>
+      <!-- END GENERATED journey-wayfinder -->
 </main>
 
 <section class="page-cta">

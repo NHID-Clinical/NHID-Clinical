@@ -120,9 +120,9 @@
         <p class="lede-text reveal" style="margin-top:1.15rem">NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.</p>
         <div class="hero-band-actions reveal">
           <a class="action-button action-button-primary" href="/shadow-evaluation-guide.html">Run an observe-only shadow evaluation</a>
-          <a class="action-button action-button-secondary" href="/framework/">Explore the framework</a>
+          <a class="action-button action-button-secondary" href="/specification.html">Read the specification</a>
         </div>
-        <p class="proof-line reveal">5 controls &middot; 1056 passing tests &middot; machine-readable traces &middot; open implementation</p>
+        <p class="proof-line reveal">5 controls &middot; 1148 passing tests &middot; machine-readable traces &middot; open implementation</p>
         <p class="lede-text reveal" style="margin-top:1rem;font-size:1rem;opacity:.9">A shadow evaluation runs against call traces you already hold. Observe-only and non-intercepting: it does not sit in the call path and requires no vendor changes. It is time-bounded, and it produces a baseline showing where identity was disclosed, where protected data moved, where calls escalated to a human, and what audit evidence exists today. Handling those traces still carries your existing privacy, security and contractual obligations.</p>
         <p class="boundary-note reveal">
           <span aria-hidden="true">&#9679;</span>
@@ -141,6 +141,67 @@
     </div>
   </section>
 
+
+<!-- ── The interaction boundary: the thesis, drawn ───────────────────────── -->
+  <section class="page-section" id="interaction-boundary" aria-labelledby="ib-h" style="background:var(--bg-alt)">
+    <div class="container" style="max-width:62rem">
+      <p class="section-kicker reveal">What this governs</p>
+      <h2 id="ib-h" class="reveal" style="margin-bottom:.6rem">The moment a non-human actor crosses an organizational boundary</h2>
+      <p class="reveal" style="color:var(--body);line-height:1.8;max-width:64ch">NHID-Clinical does not govern the AI model &mdash; not its training, not its clinical reasoning, not its outputs. It governs one specific moment: when an automated caller acting for one organization reaches a person at another, and asks them for something.</p>
+
+      <figure class="boundary-model reveal">
+        <svg viewBox="0 0 880 330" role="img" aria-labelledby="ib-title ib-desc" style="width:100%;height:auto;display:block">
+          <title id="ib-title">The organizational boundary NHID-Clinical governs</title>
+          <desc id="ib-desc">Two organizations sit side by side. On the left, a provider organization runs an AI voice agent; the model behind that agent, its training and its clinical reasoning sit inside that organization and are explicitly outside NHID-Clinical's scope. On the right, a payer organization is represented by a person answering the call. Between them runs the organizational boundary. NHID-Clinical applies at that boundary only, and asks five questions of the crossing: who is this agent, who authorized it, what scope does it hold, did it disclose that it is automated, and what record exists of what happened.</desc>
+
+          <g class="ib-org">
+            <rect x="20" y="52" width="300" height="196" rx="12"/>
+            <text x="40" y="80" class="ib-org-label">PROVIDER ORGANIZATION</text>
+          </g>
+          <g class="ib-outside">
+            <rect x="40" y="96" width="260" height="80" rx="8"/>
+            <text x="56" y="122" class="ib-outside-title">The model itself</text>
+            <text x="56" y="144" class="ib-outside-note">Training, clinical reasoning, outputs</text>
+            <text x="56" y="163" class="ib-outside-note">Not governed here</text>
+          </g>
+          <g class="ib-actor">
+            <rect x="40" y="192" width="260" height="40" rx="8"/>
+            <text x="56" y="218" class="ib-actor-label">AI voice agent &mdash; acting for the provider</text>
+          </g>
+
+          <g class="ib-org">
+            <rect x="560" y="52" width="300" height="196" rx="12"/>
+            <text x="580" y="80" class="ib-org-label">PAYER ORGANIZATION</text>
+          </g>
+          <g class="ib-actor">
+            <rect x="580" y="192" width="260" height="40" rx="8"/>
+            <text x="596" y="218" class="ib-actor-label">A person, answering the phone</text>
+          </g>
+
+          <line x1="440" y1="24" x2="440" y2="306" class="ib-boundary"/>
+          <text x="440" y="18" class="ib-boundary-label" text-anchor="middle">ORGANIZATIONAL BOUNDARY</text>
+
+          <line x1="300" y1="212" x2="576" y2="212" class="ib-call"/>
+          <polygon points="580,212 570,207 570,217" class="ib-call-head"/>
+
+          <g class="ib-gate">
+            <rect x="336" y="96" width="208" height="136" rx="10"/>
+            <text x="440" y="122" class="ib-gate-title" text-anchor="middle">NHID-Clinical</text>
+            <text x="352" y="146" class="ib-gate-q">Who is this agent?</text>
+            <text x="352" y="166" class="ib-gate-q">Who authorized it?</text>
+            <text x="352" y="186" class="ib-gate-q">What scope does it hold?</text>
+            <text x="352" y="206" class="ib-gate-q">Did it say it is automated?</text>
+            <text x="352" y="226" class="ib-gate-q">What record exists?</text>
+          </g>
+
+          <text x="20" y="292" class="ib-note">Applies at the crossing only. Everything either organization does internally is out of scope.</text>
+          <text x="20" y="316" class="ib-note">The five questions map to the five controls: IDG&#8209;01, PDX&#8209;01, DBC&#8209;01, EIT&#8209;01 and ATR&#8209;01.</text>
+        </svg>
+      </figure>
+
+      <p class="reveal" style="color:var(--body);line-height:1.8;max-width:64ch;margin-top:1.25rem">This is why the framework is small. A boundary crossing is observable from a call recording either side already holds, which is what makes the controls testable without changing anyone&rsquo;s systems &mdash; and what keeps the scope honest about everything it does not reach.</p>
+    </div>
+  </section>
 
 <!-- ── Regulatory pressure: an evidence index, not a badge wall ──────────── -->
   <section class="page-section" id="regulatory-pressure" aria-labelledby="reg-h">
@@ -308,7 +369,7 @@
     <div class="container">
       <h2 id="built-open" class="section-kicker reveal" style="margin-bottom:.9rem">Built in the open &mdash; every claim below is checkable</h2>
       <ul class="reveal" style="list-style:none;padding:0;margin:0;display:grid;gap:.75rem 2rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));font-size:.95rem;line-height:1.55">
-        <li><strong>1056 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
+        <li><strong>1148 automated tests</strong><br><span style="color:var(--ink-soft)">Conformance and invariant suite, run on every change &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span></li>
         <li><strong>Versioned specification</strong><br><span style="color:var(--ink-soft)">v1.3, five named controls &mdash; <a href="/specification.html">read it</a></span></li>
         <li><strong>Deterministic engine</strong><br><span style="color:var(--ink-soft)">Same inputs produce the same decision, every time &mdash; <a href="/developers.html#reference-implementation">how it works</a></span></li>
         <li><strong>FHIR R4 AuditEvent</strong><br><span style="color:var(--ink-soft)">Audit records in a standard healthcare schema &mdash; <a href="/evidence-pack.html">see an example</a></span></li>
@@ -321,7 +382,7 @@
   <section class="page-section" style="padding-block:1rem 2.5rem">
     <div class="scope-note metric-rail reveal">
       <div class="metric">
-        <span class="metric-value">1056</span>
+        <span class="metric-value">1148</span>
         <span class="metric-label">Passing tests</span>
         <span style="font-size:.8125rem;color:var(--panel-text-muted)">every collected test executed, in the open repo</span>
       </div>
@@ -701,7 +762,7 @@ violations
       <p style="color:var(--body);font-size:1rem;line-height:1.8;margin-top:.75rem">For a one-page overview aimed at leadership and procurement teams, see the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md" style="color:var(--teal-bright);font-weight:600">Executive Brief</a>.</p>
 
       <div class="reveal" style="border-top:1px solid var(--border);padding-top:2rem;margin-top:2rem">
-        <h4 style="font-size:1.1rem">Other work by the maintainer</h4>
+        <h3 style="font-size:1.1rem">Other work by the maintainer</h3>
         <p style="font-size:0.95rem;line-height:1.6;color:var(--body)">
           The maintainer has also created the AI Governance Map, a separate project with its own
           repository and deployment. It is not part of NHID-Clinical, and nothing on this site
@@ -872,6 +933,15 @@ violations
     </div>
   </section>
 
+<!-- BEGIN GENERATED journey-wayfinder -->
+      <nav class="wayfinder" aria-label="Where this page sits in the journey">
+        <p class="wayfinder-here"><span class="wayfinder-journey">Understand</span><span class="wayfinder-question">What is this?</span></p>
+        <ul class="wayfinder-steps">
+          <li class="wayfinder-next"><span>Next</span><a href="/specification.html">What does it control?</a></li>
+          <li class="wayfinder-source"><span>Where is the source?</span><a href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer">The repository &#8599;</a></li>
+        </ul>
+      </nav>
+      <!-- END GENERATED journey-wayfinder -->
 </main>
 
 

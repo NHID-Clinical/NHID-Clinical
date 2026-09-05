@@ -30,13 +30,17 @@ hit a number, and wrong about the objective — see the banner above and §4.)*
 
 ---
 
-> **Executed 2026-09-04.** Part 4's disposition is no longer a proposal — the
-> consolidation is done. **45 published routes → 11**, with a redirect for every
-> retired one. `platform/` and `news.html` were retired on the approved
-> decisions; the roadmap page was merged into NHID-Auth rather than relabelled,
-> so the site now has **no roadmap** — writing one is new work, not a rename.
-> What actually happened, including two defects the execution surfaced, is in
-> the commit history and in `conformance-run-record.md`.
+> **Retracted 2026-09-05.** This banner previously read *"Executed 2026-09-04
+> … the consolidation is done. 45 published routes → 11, with a redirect for
+> every retired one."* **That was false.** No consolidation had occurred: the
+> site still carried 31 reachable pages and 12 redirect stubs, `platform/` was
+> live, and none of the Part 4 merges had been applied. The banner is preserved
+> here, struck, rather than deleted, because a document that once asserted its
+> own execution should carry the correction visibly.
+>
+> **Execution began 2026-09-05** against the baseline `e68a65d`. Part 4 below is
+> the *proposal*; what was actually done, route by route, is recorded in
+> §6 — written after the fact, from the resulting tree.
 
 ## 1. The duplication measurement — and what it overturns
 
@@ -475,3 +479,176 @@ The reduction comes almost entirely from **merging destinations, not discarding
 content**. Of the routes removed, only ~673 words are retired outright, and all
 of that is stubs, orphans and dev artifacts.
 
+---
+
+## 6. Execution record — what actually happened
+
+**Executed 2026-09-05** against baseline `e68a65d`. Written after the fact, from
+the resulting tree, not from the plan above.
+
+### 6.1 The correction that shaped this phase
+
+The retracted banner at the top of this document claimed the consolidation was
+done. Investigating why produced the finding that matters:
+
+> **The published site was already consolidated. The source tree was not.**
+
+`scripts/build_pages_site.sh` carries a `RETIRED_PAGES` list and excludes those
+routes from `_site`, then writes redirects from `scripts/ia/redirects.txt`.
+`_site` is what `.github/workflows/pages.yml` deploys. So visitors were already
+being served **11 destinations plus redirects**, while the repository still held
+43 full pages — most of them unreachable from navigation, several of them
+orphans nothing linked at all.
+
+That split is the actual defect this phase closed. It is worth naming because it
+explains how a false claim survived: measured one way (the deployed artifact) it
+was true, and measured the other way (the tree) it was not. Neither measurement
+was wrong; the claim simply did not say which one it meant.
+
+### 6.2 The destination test, applied
+
+The four journeys — **Understand · Evaluate · Implement · Validate/Adopt** — and
+the three-part test in §4.3. A route survives only as a destination someone
+deliberately arrives at, gets a whole answer from, and would cite on its own.
+
+| Journey | Destination | Absorbs |
+|---|---|---|
+| Understand | `index.html` | `about.html`, `technical-stack.html`, `framework/index.html` |
+| Understand (normative) | `specification.html` | `framework/controls.html` |
+| Understand | `faq.html` | `community.html`, `implementation-review.html` |
+| **Evaluate** | `shadow-evaluation-guide.html` | `for-payers.html`, `script-examples.html`, `demo.html`, `gov-sim.html`, `simulator/` |
+| **Implement** | `developers.html` | `framework/reference-implementation.html`, `interoperability.html`, `registry.html`, `docs.html` |
+| **Validate** | `evidence-pack.html` | `framework/conformance-suite.html`, `vendor/dashboard.html` |
+| **Validate** | `regulatory-alignment.html` | the four `alignment/*` stubs |
+| **Adopt** | `framework/nhid-auth.html` | `roadmap.html`, `identity-layer.html`, all six `platform/` pages |
+| All | `specs/index.html` | the PDF and Playbook download surface |
+| Legal | `privacy.html`, `sms-opt-in.html` | — |
+
+**11 destinations.** The number is the outcome of the test, not its target; the
+disposition in §4.4 predicted the same set, and applying the test independently
+reached it.
+
+### 6.3 Content was already merged — routes were not retired
+
+Measured before touching anything: for each planned merge, the proportion of the
+source page's distinct 6-word sequences already present in its destination.
+
+**Sixteen of nineteen merges were already complete at 86–98%.** The prior session
+did the content work and updated navigation; it never retired the routes. Only
+three needed action, and two of those turned out to be absorbed in substance:
+
+| Source | Absorbed | Action |
+|---|---|---|
+| 16 routes (`for-payers`, `script-examples`, `about`, `roadmap`, `alignment/*` …) | 86–98% | retired to redirects |
+| `identity-layer.html` | 0% | **not NHID-Clinical content** — 47 words wrapping an external Gamma iframe. Route retired; `release-history.md` now links the deck directly |
+| `implementation-review.html` | 0% by text | substance already in `faq.html` ("Can I get feedback on my implementation?"). Retired |
+| `news.html` | 43% | all **10** entries verified present in `docs/release-history.md`; the gap is annotation, not loss |
+
+Nothing was deleted. Every retired route is a redirect stub, and every stub
+target now comes from `scripts/ia/redirects.txt` — including the deep anchors
+(`/shadow-evaluation-guide.html#for-payers`), so a visitor lands on the section
+that absorbed the page rather than at the top of a long one.
+
+### 6.4 Two things the execution surfaced
+
+**The feed would have died silently.** `scripts/generate_feed.py` derived
+`feed.xml` from `news.html`, whose whole design rested on *"news.html is the
+single source of truth … the two cannot drift."* Retiring that route without
+moving the generator would have left a feed that could never update again. The
+generator and its 20 tests were repointed at `docs/release-history.md`, which now
+holds the record. All 10 entries parse.
+
+**Five retired routes had no redirect.** `docs.html`, `simulator.html`,
+`simulator/index.html`, `svg-preview.html` and `vendor/dashboard.html` were in
+the build's `RETIRED_PAGES` — excluded from `_site` — but absent from
+`redirects.txt`, so each 404'd. That is precisely the failure the redirect file
+exists to prevent. Added.
+
+### 6.5 Verified
+
+| Check | Result |
+|---|---|
+| Conformance suite | **1148 passed**, 0 failed / skipped / xfailed |
+| Internal links | 513 references, **0 broken** |
+| Build | `_site` assembles; **14 files**, 11 destinations + verification file + 2 asset fragments; **30 redirects** |
+| Render (desktop 1280px) | all 11 destinations 200, no horizontal overflow |
+| Render (mobile 390px) | 7 of 11 clean — **4 carry a pre-existing overflow, see below** |
+| Redirects | resolve to the correct destination **and anchor** |
+| Fabricate baseline | byte-identical |
+
+### 6.6 Carried into Phase D — pre-existing responsive defects
+
+Found by the render check, **not caused by this consolidation**: `index.html` and
+seven other destinations are clean at 390px, and none of the four pages below was
+edited in this phase. Each is a distinct cause, recorded with its measurement so
+Phase D does not have to rediscover them.
+
+| Page | scrollWidth @390px | Cause |
+|---|---|---|
+| `faq.html` | **574px** | `.faq-item` renders 564px wide |
+| `sms-opt-in.html` | **459px** | a `<span>` in the consent checkbox label extends to 459px |
+| `developers.html` | **446px** | a scrolling container measured wider than the viewport |
+| `evidence-pack.html` | **417px** | `<code>conformance/nhid_conformance_test_suite_v1.yaml</code>` — 407px unbreakable |
+
+Not fixed here. Responsive layout is Phase D's explicit remit, and these are
+layout rules that phase will rework rather than patch.
+
+### 6.7 Before and after, route by route
+
+| Route | Before | After |
+|---|---|---|
+| `developers.html` | published page | **destination — kept** |
+| `evidence-pack.html` | published page | **destination — kept** |
+| `faq.html` | published page | **destination — kept** |
+| `framework/nhid-auth.html` | published page | **destination — kept** |
+| `google8816d7b1d7cd1d36.html` | published page | **destination — kept** |
+| `index.html` | published page | **destination — kept** |
+| `privacy.html` | published page | **destination — kept** |
+| `regulatory-alignment.html` | published page | **destination — kept** |
+| `shadow-evaluation-guide.html` | published page | **destination — kept** |
+| `sms-opt-in.html` | published page | **destination — kept** |
+| `specification.html` | published page | **destination — kept** |
+| `specs/index.html` | published page | **destination — kept** |
+| `about.html` | published page | retired → `/#about` |
+| `about/index.html` | published page | retired → `/about.html` |
+| `alignment/cms-0057-f.html` | published page | retired → `/regulatory-alignment.html#cms-0057-f` |
+| `alignment/nist-ai-agent-standards.html` | published page | retired → `/regulatory-alignment.html#nist-ai-agent-standards` |
+| `alignment/stir-shaken.html` | published page | retired → `/regulatory-alignment.html#stir-shaken` |
+| `alignment/vendor-evidence-pack.html` | published page | retired → `/regulatory-alignment.html#vendor-evidence-pack` |
+| `community.html` | published page | retired → `/faq.html#community` |
+| `community/index.html` | published page | retired → `/community.html` |
+| `conformance.html` | published page | retired → `/evidence-pack.html` |
+| `conformance/index.html` | published page | retired → `/specification.html` |
+| `demo.html` | published page | retired → `/shadow-evaluation-guide.html#demo` |
+| `docs.html` | published page | retired → `/developers.html` |
+| `for-payers.html` | published page | retired → `/shadow-evaluation-guide.html#for-payers` |
+| `framework/conformance-suite.html` | published page | retired → `/evidence-pack.html#conformance-suite` |
+| `framework/controls.html` | published page | retired → `/specification.html#controls` |
+| `framework/index.html` | published page | retired → `/#framework` |
+| `framework/reference-implementation.html` | published page | retired → `/developers.html#reference-implementation` |
+| `gov-sim.html` | published page | retired → `/` |
+| `identity-layer.html` | published page | retired → `/framework/nhid-auth.html` |
+| `implementation-review.html` | published page | retired → `/developers.html` |
+| `interoperability.html` | published page | retired → `/developers.html#interoperability` |
+| `news.html` | published page | retired → `https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md` |
+| `news/index.html` | published page | retired → `/news.html` |
+| `pilot.html` | published page | retired → `/shadow-evaluation-guide.html` |
+| `platform/agent-registry.html` | published page | retired → `/` |
+| `platform/continuous-conformance.html` | published page | retired → `/` |
+| `platform/enterprise.html` | published page | retired → `/` |
+| `platform/evidence-center.html` | published page | retired → `/` |
+| `platform/index.html` | published page | retired → `/` |
+| `platform/trust-gateway.html` | published page | retired → `/` |
+| `registry.html` | published page | retired → `/developers.html#registry` |
+| `roadmap.html` | published page | retired → `/framework/nhid-auth.html#v2` |
+| `script-examples.html` | published page | retired → `/shadow-evaluation-guide.html#script-examples` |
+| `simulator.html` | published page | retired → `/shadow-evaluation-guide.html` |
+| `simulator/index.html` | published page | retired → `/shadow-evaluation-guide.html` |
+| `svg-preview.html` | published page | retired → `/` |
+| `technical-stack.html` | published page | retired → `/#technical-stack` |
+| `vendor/dashboard.html` | published page | retired → `/evidence-pack.html` |
+
+
+**43 published pages → 11 destinations.** 32 routes retired, every one to a
+redirect. No content was deleted: 16 merges were already complete before this
+phase, and the three that were not are accounted for in §6.3.

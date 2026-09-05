@@ -8,11 +8,18 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 1056 passed, 0 skipped, 0 xfailed"
+    name: "Unit invariant: 1148 passed, 0 skipped, 0 xfailed"
     runs-on: ubuntu-latest
 
     steps:
+      # Full history, not the default shallow clone. The control-set guard's
+      # regression proof compares its committed fixture against
+      # ba93e21:specification.html, and on a shallow checkout that comparison
+      # cannot run. It used to skip there while passing locally, which is how
+      # this job reported "1144 passed, 1 skipped" under a name promising zero.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -24,7 +31,7 @@ jobs:
 
       # validate_ci.py runs the suite itself, so the API has to be up around
       # it -- otherwise it measures 987 passed / 18 skipped while this job's
-      # own name advertises 1056, which is the mislabelling this change exists
+      # own name advertises 1148, which is the mislabelling this change exists
       # to remove. NHID_REQUIRE_SERVER=1 turns a dead server into an error.
       - name: Validate test invariants against a live API
         env:
@@ -63,3 +70,12 @@ jobs:
 
       - name: Control-set completeness guard
         run: python scripts/check_control_set.py
+
+      # The Trust Gateway renders real engine output. Without this the claim
+      # would only be true of the day the fixture was generated.
+      - name: Trust Gateway matches the engine
+        run: python scripts/build_gateway_fixture.py --check
+
+      # Nine pages carrying a generated arc cannot be kept in order by hand.
+      - name: Journey wayfinder is current
+        run: python scripts/add_journey_wayfinder.py --check

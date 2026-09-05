@@ -1095,6 +1095,23 @@ input, select, textarea {
 input:focus, select:focus, textarea:focus { border-color: var(--blue); }
 textarea { resize: vertical; min-height: 120px; }
 
+/* Checkboxes and radios are not text fields. The rule above sets
+   `width: 100%` for inputs generally, which is right for a phone or email
+   field and wrong for a checkbox: on sms-opt-in.html the consent checkbox
+   computed to 320px, consumed the entire flex row at `flex-shrink: 0`, and
+   left its label text zero width to overflow into a horizontal scrollbar at
+   390px. The padding and border are dropped for the same reason — a control
+   the browser draws at its own intrinsic size should not be re-boxed. */
+input[type="checkbox"],
+input[type="radio"] {
+  width: auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  flex: 0 0 auto;
+}
+
 /* ── FAQ ─────────────────────────────────────────────────────────────────── */
 .faq-list {
   display: grid;
@@ -1110,7 +1127,8 @@ textarea { resize: vertical; min-height: 120px; }
   box-shadow: 0 12px 40px rgba(20, 74, 105, 0.06);
 }
 
-.faq-item h3 {
+.faq-item h3,
+.faq-item .faq-q {
   color: var(--ink);
   font-family: var(--display);
   font-size: 1.2rem;

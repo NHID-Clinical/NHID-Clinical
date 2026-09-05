@@ -121,12 +121,12 @@
   <section class="page-section">
     <div class="container" style="max-width:640px">
       <div class="card">
-        <h3>Text me the starter pack</h3>
-        <div style="display:flex;flex-direction:column;gap:.75rem;margin:1rem 0">
+        <h2>Text me the starter pack</h2>
+        <div class="consent-form">
           <input type="tel" id="sms-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your mobile phone number" style="width:100%"/>
-          <label style="display:flex;gap:.6rem;align-items:flex-start;font-size:.9rem;line-height:1.5">
-            <input type="checkbox" id="sms-consent" style="margin-top:.25rem;flex-shrink:0"/>
-            <span id="sms-consent-text">
+          <label class="consent-row">
+            <input type="checkbox" id="sms-consent"/>
+            <span class="consent-copy" id="sms-consent-text">
               By checking this box, I agree to receive a one-time text message from NHID-Clinical
               with my starter-pack link at the number provided. Msg &amp; data rates may apply.
               Message frequency: one message per request. Reply STOP to opt out, HELP for help.

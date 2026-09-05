@@ -3,7 +3,7 @@
   <title>NHID-Clinical</title>
   <subtitle>Release notes and updates from NHID-Clinical — an open policy-and-evidence layer for healthcare administrative AI voice interactions.</subtitle>
   <link href="https://nhid-clinical.org/feed.xml" rel="self" type="application/atom+xml"/>
-  <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+  <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
   <id>tag:nhid-clinical.org,2026:news</id>
   <updated>2026-08-01T00:00:00Z</updated>
   <author><name>NHID-Clinical</name><uri>https://nhid-clinical.org</uri></author>
@@ -11,7 +11,7 @@
   <generator uri="https://nhid-clinical.org">scripts/generate_feed.py</generator>
   <entry>
     <title>Corpus Evaluation Path Corrected — IDG-01 and EIT-01</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-08:corpus-evaluation-path-corrected-idg-01-and-eit-01</id>
     <updated>2026-08-01T00:00:00Z</updated>
     <published>2026-08-01T00:00:00Z</published>
@@ -20,7 +20,7 @@
   </entry>
   <entry>
     <title>Why Identity Is the Missing Layer of Responsible AI</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-07:why-identity-is-the-missing-layer-of-responsible-ai</id>
     <updated>2026-07-01T00:00:00Z</updated>
     <published>2026-07-01T00:00:00Z</published>
@@ -29,7 +29,7 @@
   </entry>
   <entry>
     <title>DBC-01 Coverage Expanded from Real-Corpus Mining</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-06:dbc-01-coverage-expanded-from-real-corpus-mining</id>
     <updated>2026-06-01T00:00:00Z</updated>
     <published>2026-06-01T00:00:00Z</published>
@@ -38,7 +38,7 @@
   </entry>
   <entry>
     <title>Community Channels Consolidated to GitHub</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-06:community-channels-consolidated-to-github</id>
     <updated>2026-06-01T00:00:00Z</updated>
     <published>2026-06-01T00:00:00Z</published>
@@ -47,7 +47,7 @@
   </entry>
   <entry>
     <title>v1.3 Final — Milestone Closeout</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-06:v1-3-final-milestone-closeout</id>
     <updated>2026-06-01T00:00:00Z</updated>
     <published>2026-06-01T00:00:00Z</published>
@@ -56,7 +56,7 @@
   </entry>
   <entry>
     <title>v1.3 Reference Implementation Live</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-06:v1-3-reference-implementation-live</id>
     <updated>2026-06-01T00:00:00Z</updated>
     <published>2026-06-01T00:00:00Z</published>
@@ -65,7 +65,7 @@
   </entry>
   <entry>
     <title>NHID-Clinical v1.3 Published</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-05:nhid-clinical-v1-3-published</id>
     <updated>2026-05-01T00:00:00Z</updated>
     <published>2026-05-01T00:00:00Z</published>
@@ -74,16 +74,16 @@
   </entry>
   <entry>
     <title>Pilot Partners Sought</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-05:pilot-partners-sought</id>
     <updated>2026-05-01T00:00:00Z</updated>
     <published>2026-05-01T00:00:00Z</published>
     <category term="Open Proposal"/>
-    <summary>We are actively seeking payer and provider organizations to run a shadow evaluation — observe-only, non-intercepting, no vendor changes. Observe incoming AI voice calls against the v1.3 behavioral baseline and help shape the standard before v2 ships.</summary>
+    <summary>We are actively seeking payer and provider organizations to run a 90-day shadow evaluation — observe-only, non-intercepting, no vendor changes. Observe incoming AI voice calls against the v1.3 behavioral baseline and help shape the standard before v2 ships.</summary>
   </entry>
   <entry>
     <title>Submitted to NIST</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-01:submitted-to-nist</id>
     <updated>2026-01-01T00:00:00Z</updated>
     <published>2026-01-01T00:00:00Z</published>
@@ -92,7 +92,7 @@
   </entry>
   <entry>
     <title>Community Channels Open</title>
-    <link href="https://nhid-clinical.org/news.html" rel="alternate" type="text/html"/>
+    <link href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/release-history.md" rel="alternate" type="text/html"/>
     <id>tag:nhid-clinical.org,2026:news:2026-05:community-channels-open</id>
     <updated>2026-05-01T00:00:00Z</updated>
     <published>2026-05-01T00:00:00Z</published>

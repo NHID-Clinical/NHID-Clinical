@@ -147,6 +147,94 @@
 
       <!-- ── Artifacts ──────────────────────────────────────────────────── -->
 
+      <h2 style="margin-bottom:1rem" id="reference-architecture">What the Reference Implementation Actually Is</h2>
+      <p style="color:var(--body);line-height:1.8;margin-bottom:.5rem">One path, drawn end to end, with each part labelled by what it actually is today. Three of the pieces a production deployment would need are not in this picture as built components, because they are not built &mdash; they are shown where they would go.</p>
+
+      <figure class="arch-model">
+        <svg viewBox="0 0 880 400" role="img" aria-labelledby="ra-title ra-desc" style="width:100%;height:auto;display:block">
+          <title id="ra-title">The NHID-Clinical reference implementation, end to end</title>
+          <desc id="ra-desc">A vendor platform sends a call event to one of eight adapter modules, five of which are wired to hosted routes. The adapter normalises the event and passes it to the policy engine, which evaluates the five controls deterministically and returns a policy decision carrying a reason code and any violations. The decision is written to an append-only event store and emitted as a FHIR R4 AuditEvent. The conformance test suite replays recorded events through the same engine, which is what makes the published figures reproducible. Three further components a production deployment would require are shown separately as not built: durable key custody and rotation, an NPI-to-public-key registry, and multi-hop federation. Their absence is the difference between a reference implementation and deployable infrastructure.</desc>
+
+          <text x="20" y="24" class="ra-zone">BUILT, AND COVERED BY THE SUITE</text>
+
+          <g class="ra-box">
+            <rect x="20" y="40" width="180" height="72" rx="9"/>
+            <text x="36" y="66" class="ra-title">Vendor platform</text>
+            <text x="36" y="88" class="ra-sub">Twilio, VAPI, Vonage,</text>
+            <text x="36" y="104" class="ra-sub">Retell, Amazon Connect</text>
+          </g>
+          <line x1="200" y1="76" x2="236" y2="76" class="ra-flow"/><polygon points="240,76 230,71 230,81" class="ra-flow-head"/>
+
+          <g class="ra-box">
+            <rect x="240" y="40" width="180" height="72" rx="9"/>
+            <text x="256" y="66" class="ra-title">Adapter</text>
+            <text x="256" y="88" class="ra-sub">8 modules; 5 wired to</text>
+            <text x="256" y="104" class="ra-sub">hosted routes</text>
+          </g>
+          <line x1="420" y1="76" x2="456" y2="76" class="ra-flow"/><polygon points="460,76 450,71 450,81" class="ra-flow-head"/>
+
+          <g class="ra-box ra-core">
+            <rect x="460" y="40" width="180" height="72" rx="9"/>
+            <text x="476" y="66" class="ra-title">Policy engine</text>
+            <text x="476" y="88" class="ra-sub">Five controls, evaluated</text>
+            <text x="476" y="104" class="ra-sub">deterministically</text>
+          </g>
+          <line x1="640" y1="76" x2="676" y2="76" class="ra-flow"/><polygon points="680,76 670,71 670,81" class="ra-flow-head"/>
+
+          <g class="ra-box">
+            <rect x="680" y="40" width="180" height="72" rx="9"/>
+            <text x="696" y="66" class="ra-title">PolicyDecision</text>
+            <text x="696" y="88" class="ra-sub">Action, reason code,</text>
+            <text x="696" y="104" class="ra-sub">violations</text>
+          </g>
+
+          <line x1="770" y1="112" x2="770" y2="148" class="ra-flow"/><polygon points="770,152 765,142 775,142" class="ra-flow-head"/>
+
+          <g class="ra-box">
+            <rect x="460" y="160" width="180" height="72" rx="9"/>
+            <text x="476" y="186" class="ra-title">Event store</text>
+            <text x="476" y="208" class="ra-sub">Append-only,</text>
+            <text x="476" y="224" class="ra-sub">hash-chained</text>
+          </g>
+          <g class="ra-box">
+            <rect x="680" y="160" width="180" height="72" rx="9"/>
+            <text x="696" y="186" class="ra-title">FHIR AuditEvent</text>
+            <text x="696" y="208" class="ra-sub">R4, CI-validated</text>
+          </g>
+          <line x1="680" y1="196" x2="644" y2="196" class="ra-flow"/><polygon points="640,196 650,191 650,201" class="ra-flow-head"/>
+
+          <g class="ra-box">
+            <rect x="20" y="160" width="400" height="72" rx="9"/>
+            <text x="36" y="186" class="ra-title">Conformance test suite</text>
+            <text x="36" y="208" class="ra-sub">Replays recorded events through the same engine.</text>
+            <text x="36" y="224" class="ra-sub">This is what makes the published figures reproducible.</text>
+          </g>
+          <line x1="460" y1="196" x2="424" y2="196" class="ra-flow"/><polygon points="420,196 430,191 430,201" class="ra-flow-head"/>
+
+          <line x1="20" y1="262" x2="860" y2="262" class="ra-divider"/>
+          <text x="20" y="288" class="ra-zone ra-zone-absent">NOT BUILT &mdash; WHERE THEY WOULD GO</text>
+
+          <g class="ra-absent">
+            <rect x="20" y="300" width="270" height="66" rx="9"/>
+            <text x="36" y="326" class="ra-title-absent">Key custody &amp; rotation</text>
+            <text x="36" y="348" class="ra-sub-absent">Documented production path</text>
+
+            <rect x="305" y="300" width="270" height="66" rx="9"/>
+            <text x="321" y="326" class="ra-title-absent">Registry: NPI &rarr; public key</text>
+            <text x="321" y="348" class="ra-sub-absent">Requires a neutral operator</text>
+
+            <rect x="590" y="300" width="270" height="66" rx="9"/>
+            <text x="606" y="326" class="ra-title-absent">Multi-hop federation</text>
+            <text x="606" y="348" class="ra-sub-absent">Open problem, not a shipped capability</text>
+          </g>
+
+          <text x="20" y="390" class="ra-note">The gap between the two halves is the difference between a reference implementation and deployable infrastructure.</text>
+        </svg>
+        <figcaption style="margin-top:.85rem;color:var(--body);font-size:.88rem;line-height:1.7">
+          Standings: the built path is <span class="maturity maturity-implemented">Implemented</span> and its figures are <span class="maturity maturity-verified">Verified</span>. Key custody is <span class="maturity maturity-conceptual">Conceptual</span>; the registry and federation are <span class="maturity maturity-future">Future</span>. Each follows <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>.
+        </figcaption>
+      </figure>
+
       <h2 style="margin-bottom:1.5rem">Reference Artifacts</h2>
 
       <!-- Artifact 1 -->
@@ -628,6 +716,16 @@ python -m pytest tests/ -v</pre>
       <p class="disclaimer-small" style="margin:0">Going further: <a href="/specs/NHID-Clinical-Playbook.pdf" download><strong>Part IV of the NHID-Clinical Playbook</strong></a> covers reference architecture, maturity labels, security boundaries and the implementation checklist.</p>
     </div>
   </section>
+<!-- BEGIN GENERATED journey-wayfinder -->
+      <nav class="wayfinder" aria-label="Where this page sits in the journey">
+        <p class="wayfinder-here"><span class="wayfinder-journey">Implement</span><span class="wayfinder-question">How do I implement it?</span></p>
+        <ul class="wayfinder-steps">
+          <li class="wayfinder-prev"><span>Before this</span><a href="/shadow-evaluation-guide.html">How do I evaluate it?</a></li>
+          <li class="wayfinder-next"><span>Next</span><a href="/evidence-pack.html">Where is the evidence?</a></li>
+          <li class="wayfinder-source"><span>Where is the source?</span><a href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer">The repository &#8599;</a></li>
+        </ul>
+      </nav>
+      <!-- END GENERATED journey-wayfinder -->
 </main>
 
 

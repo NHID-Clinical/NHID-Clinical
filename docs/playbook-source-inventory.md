@@ -86,7 +86,7 @@ reason to fold one subject into another.
 | Source | Contributes |
 |---|---|
 | `docs/conformance-run-record.md` | The conformance figure and how it was produced |
-| `docs/governance-corpus-remediation.md` | Governance detection, false-positive methodology, the 8 unexpected detections, G1–G4 |
+| `docs/governance-corpus-remediation.md` | Governance detection, false-positive methodology, the 12 unexpected detections, G1–G4 |
 | `docs/claims-register.md` | Claims taxonomy, regulatory verdicts D1–D3b, prohibited vocabulary |
 | `docs/skipped-test-audit.md` | Why the suite executes everything it collects |
 | `docs/safety/adversarial-testing-report.md` | Adversarial corpus, case taxonomy, mutation strategies |
@@ -113,7 +113,7 @@ Re-derived at `7c6c89d`, not copied from prose.
 
 | Figure | Value | Source |
 |---|---|---|
-| Conformance | 1056 collected / executed / passed; 0 failed, skipped, xfailed, xpassed | `conformance-run-record.md`, clean-clone run |
+| Conformance | 1148 collected / executed / passed; 0 failed, skipped, xfailed, xpassed | `conformance-run-record.md`, clean-clone run |
 | Governance detection | 30/32 = 93.8% | `scripts/eval_corpus.py` |
 | False positives | 0 of 5 compliant scenarios | `scripts/eval_corpus.py` |
 | Unexpected detections | 8, on violation scenarios, reported separately | `scripts/eval_corpus.py` |

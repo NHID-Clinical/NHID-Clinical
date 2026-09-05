@@ -53,8 +53,8 @@ _DCM_APPLICATION_ACTIVITY = ("110100", "Application Activity")
 _DCM_SECURITY_ALERT       = ("110113", "Security Alert")
 _DCM_USER_AUTHENTICATION  = ("110114", "User Authentication")
 _DCM_PATIENT_RECORD       = ("110110", "Patient Record")
-_DCM_SOURCE_ROLE_ID       = ("110153", "Source Role ID")
-_DCM_DEST_ROLE_ID         = ("110152", "Destination Role ID")
+_DCM_SOURCE_ROLE_ID       = ("110563", "Source Role ID")
+_DCM_DEST_ROLE_ID         = ("110562", "Destination Role ID")
 
 
 # ── Primitive builders ─────────────────────────────────────────────────────

@@ -31,9 +31,9 @@ Emitted: always, once per call session.
 | `action` | `E` (Execute) |
 | `outcome` | `0` (Success) |
 | `agent[0].requestor` | `true` (AI voice agent) |
-| `agent[0].type` | `DCM#110153` Source Role ID |
+| `agent[0].type` | `DCM#110563` Source Role ID |
 | `agent[1].requestor` | `false` (Payer system) |
-| `agent[1].type` | `DCM#110152` Destination Role ID |
+| `agent[1].type` | `DCM#110562` Destination Role ID |
 | `agent[2].requestor` | `false` (Provider org, on-behalf-of) — _present only when `provider_npi` supplied_ |
 | `source.observer` | NHID-Clinical Policy Engine v1 |
 | `entity[0].type` | `audit-entity-type#2` System Object |
@@ -177,7 +177,7 @@ Every AuditEvent in the Bundle carries the same three agent slices (two when no 
   "type": {
     "coding": [{
       "system": "http://dicom.nema.org/resources/ontology/DCM",
-      "code": "110153",
+      "code": "110563",
       "display": "Source Role ID"
     }]
   },
@@ -199,7 +199,7 @@ Every AuditEvent in the Bundle carries the same three agent slices (two when no 
   "type": {
     "coding": [{
       "system": "http://dicom.nema.org/resources/ontology/DCM",
-      "code": "110152",
+      "code": "110562",
       "display": "Destination Role ID"
     }]
   },

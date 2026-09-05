@@ -790,3 +790,896 @@ button.action-button:focus-visible,
     -webkit-overflow-scrolling:touch;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Layout containment — added 2026-09-05 (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   Four destinations scrolled horizontally at a 390px viewport: faq.html to
+   574px, sms-opt-in.html to 459px, developers.html to 446px, evidence-pack.html
+   to 417px. Measured with Playwright at 390x900; index.html and the other seven
+   destinations were already clean, which is why this is containment rather than
+   a layout rewrite.
+
+   Three distinct causes, and the first two are the same bug wearing different
+   clothes: a flex or grid item defaults to `min-width: auto`, so it refuses to
+   shrink below the max-content width of the prose inside it. `.faq-item` is a
+   grid child and the SMS consent copy is a flex child; both sized to their
+   longest line and pushed the page wider than the screen.
+
+   Scoped deliberately. A blanket `* { min-width: 0 }` would also flatten the
+   intrinsic sizing that data tables and code blocks rely on to stay readable,
+   so each rule names what it contains. */
+
+/* 1. Prose inside a flex or grid container must be allowed to wrap. */
+.faq-item,
+.faq-list > * {
+  min-width: 0;
+}
+
+/* The consent row is a checkbox beside a paragraph of required disclosure
+   copy. It was an inline `display:flex` with no min-width on either the label
+   or its text, so both sized to the copy's longest line — 424px of content in
+   a 320px column. Named here so the containment travels with the component
+   instead of living in a page's style attribute. */
+.consent-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  min-width: 0;
+}
+
+.consent-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  min-width: 0;
+}
+
+.consent-row > input[type="checkbox"] {
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.consent-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 2. A long unbreakable token — an import path, a URL, a file path — is the
+      only thing on the line that cannot wrap, so it alone gets to break.
+      `<pre>` is excluded: it scrolls inside its own box on purpose, and
+      breaking it would corrupt copy-pasted commands. */
+code {
+  overflow-wrap: anywhere;
+}
+
+pre code {
+  overflow-wrap: normal;
+}
+
+/* 3. A visually-hidden <caption> still participates in table layout: the
+      `position: absolute` in .visually-hidden does not take a caption out of
+      flow the way it does a div, so its `white-space: nowrap` text — 663px on
+      the evidence-pack conformance table — set the table's minimum width. The
+      caption stays in the accessibility tree; only its layout contribution
+      goes. */
+caption.visually-hidden {
+  display: block;
+  white-space: normal;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Maturity language — added 2026-09-05 (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   NHID-Clinical publishes work at six very different standings, and before this
+   the site had no way to say which was which. Status was carried by whatever
+   pill a page happened to use — .primary-pill, .spec-badge, .console-pill,
+   .layer-tag — none of which meant anything in particular, and the words
+   "implemented", "verified" and "future" appeared as labels almost nowhere.
+   A reader could not tell a deterministic engine with a passing test suite from
+   a registry that does not exist.
+
+   The six states are NOT invented here. They are the standings already recorded
+   in docs/claim-boundaries.md §"Maturity boundaries", which is the authoritative
+   claims document, and tests/test_maturity_language.py pins them to it.
+
+     verified     measured evidence exists and is reproducible
+     implemented  code exists, runs, and is covered by the suite
+     reference    a working primitive, deliberately not deployed infrastructure
+     conceptual   a documented production path that is not built
+     research     a research component, explicitly not a product capability
+     future       does not exist; named so it cannot be mistaken for shipped
+
+   Accessibility: state is never carried by colour alone. Each chip renders its
+   own word, and each carries a distinct leading glyph, so the distinction
+   survives greyscale, colour-blindness and a screen reader. The glyph is
+   decorative (aria-hidden via ::before) because the word is already the label. */
+
+.maturity {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  padding: 0.15em 0.6em 0.2em;
+  border: 1px solid var(--maturity-line);
+  border-radius: 2em;
+  background: var(--maturity-bg);
+  color: var(--maturity-ink);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: baseline;
+  min-width: 0;
+}
+
+.maturity::before {
+  content: var(--maturity-glyph);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Evidence exists and can be re-run. The strongest claim the project makes. */
+.maturity-verified {
+  --maturity-ink: #10603f;
+  --maturity-bg: #e8f5ee;
+  --maturity-line: #9ecbb4;
+  --maturity-glyph: "✓";
+}
+
+/* Code exists and the suite covers it. */
+.maturity-implemented {
+  --maturity-ink: #14778f;
+  --maturity-bg: var(--teal-soft);
+  --maturity-line: #9cc5cf;
+  --maturity-glyph: "▪";
+}
+
+/* A working primitive. Deliberately not deployed infrastructure. */
+.maturity-reference {
+  --maturity-ink: #0b6ebc;
+  --maturity-bg: var(--blue-soft);
+  --maturity-line: #a8c6e0;
+  --maturity-glyph: "◆";
+}
+
+/* Documented production path, not built. */
+.maturity-conceptual {
+  --maturity-ink: #6a5330;
+  --maturity-bg: #f7f1e4;
+  --maturity-line: #d6c4a0;
+  --maturity-glyph: "◇";
+}
+
+/* Research component. Not a product capability, not to be sold as one. */
+.maturity-research {
+  --maturity-ink: #6b4a86;
+  --maturity-bg: #f3edf9;
+  --maturity-line: #c9b3dd;
+  --maturity-glyph: "◐";
+}
+
+/* Does not exist. Named so it cannot be mistaken for shipped. */
+.maturity-future {
+  --maturity-ink: #5b6472;
+  --maturity-bg: #eef0f3;
+  --maturity-line: #c3cad3;
+  --maturity-glyph: "○";
+}
+
+/* Dark theme: the same six states, re-grounded rather than inverted, so each
+   keeps its contrast against the dark paper instead of glowing. */
+[data-theme="dark"] .maturity-verified {
+  --maturity-ink: #7fd8ab; --maturity-bg: #0b2a1d; --maturity-line: #1f5c3f;
+}
+[data-theme="dark"] .maturity-implemented {
+  --maturity-ink: #5fd3d3; --maturity-bg: #08222a; --maturity-line: #1d5462;
+}
+[data-theme="dark"] .maturity-reference {
+  --maturity-ink: #7cc2f5; --maturity-bg: #0a2033; --maturity-line: #1e4c72;
+}
+[data-theme="dark"] .maturity-conceptual {
+  --maturity-ink: #d8c191; --maturity-bg: #2a2317; --maturity-line: #5e5031;
+}
+[data-theme="dark"] .maturity-research {
+  --maturity-ink: #c3a6dd; --maturity-bg: #221a2c; --maturity-line: #4d3d61;
+}
+[data-theme="dark"] .maturity-future {
+  --maturity-ink: #9aa5b3; --maturity-bg: #1a1f26; --maturity-line: #39414c;
+}
+
+/* A legend, for the one page that should explain the scale rather than use it. */
+.maturity-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: 0.75rem 1.5rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.maturity-legend > li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  min-width: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--body);
+}
+
+.maturity-legend .maturity {
+  flex: 0 0 auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .maturity {
+    transition: background-color 120ms ease, border-color 120ms ease;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Canonical visual model — the five controls (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   The framework is five controls, and four of them are not like the fifth.
+   IDG-01, PDX-01, DBC-01 and EIT-01 act on the call; ATR-01 records what they
+   decided and changes no behaviour. That distinction has been misstated
+   repeatedly — the site and its PDFs have each at some point described "four
+   controls" — so the diagram encodes it structurally: the four sit on the call
+   timeline, ATR-01 sits beneath it, spanning the whole call, tied upward to
+   each gate. A reader who never gets past the picture still gets the shape.
+
+   Scales with the container via the viewBox; every colour comes from the theme
+   tokens so it re-grounds in dark rather than glowing. */
+
+.control-model {
+  margin: 1.75rem 0 0;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.control-model svg {
+  min-width: 34rem;    /* below this the labels collide; the figure scrolls instead */
+}
+
+.cm-axis {
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.cm-arrowhead {
+  fill: var(--line);
+}
+
+/* The four behavioural gates. */
+.cm-gate rect {
+  fill: var(--teal-soft);
+  stroke: #9cc5cf;
+  stroke-width: 1.5;
+}
+
+/* ATR-01. Deliberately not a gate: no fill from the gate palette, a dashed
+   edge, and it spans the full width rather than occupying a slot. */
+.cm-audit rect {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+  opacity: 0.85;
+}
+
+.cm-tie path {
+  stroke: var(--line);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+  fill: none;
+}
+
+.cm-id {
+  fill: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.cm-name {
+  fill: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cm-act {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 12.5px;
+}
+
+.cm-eyebrow,
+.cm-note {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.cm-note {
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-weight: 400;
+  font-size: 12.5px;
+}
+
+[data-theme="dark"] .cm-gate rect {
+  fill: #08222a;
+  stroke: #1d5462;
+}
+
+[data-theme="dark"] .cm-audit rect {
+  stroke: #58b4f0;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Canonical visual model — the interaction boundary (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   positioning.md states the thesis in one sentence: NHID-Clinical "does not
+   govern the AI model. It governs the moment a non-human actor crosses an
+   organizational boundary." The most common misreading of this project is that
+   it is healthcare AI governance broadly, so the diagram draws the scope
+   line rather than asserting it — the model sits inside the provider
+   organization, greyed and dashed and labelled "Not governed here", while
+   NHID-Clinical sits on the boundary itself and nowhere else.
+
+   The out-of-scope block is deliberately the visually quietest thing in the
+   figure. It is there to be excluded, not to compete. */
+
+.boundary-model {
+  margin: 1.75rem 0 0;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.boundary-model svg {
+  min-width: 36rem;
+}
+
+.ib-org rect {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.ib-org-label {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* Out of scope: quiet, dashed, and stated. */
+.ib-outside rect {
+  fill: var(--mist);
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.ib-outside-title {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ib-outside-note {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.ib-actor rect {
+  fill: var(--teal-soft);
+  stroke: #9cc5cf;
+  stroke-width: 1.25;
+}
+
+.ib-actor-label {
+  fill: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.ib-boundary {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-dasharray: 8 5;
+  opacity: 0.55;
+}
+
+.ib-boundary-label {
+  fill: var(--ink);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  opacity: 0.75;
+}
+
+.ib-call {
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+.ib-call-head {
+  fill: var(--blue);
+}
+
+/* The only filled, emphasised element: what this project actually governs. */
+.ib-gate rect {
+  fill: var(--blue-soft);
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+.ib-gate-title {
+  fill: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ib-gate-q {
+  fill: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: 12.5px;
+}
+
+.ib-note {
+  fill: var(--body);
+  font-family: var(--sans);
+  font-size: 12.5px;
+}
+
+[data-theme="dark"] .ib-outside rect { fill: #12202f; }
+[data-theme="dark"] .ib-actor rect   { fill: #08222a; stroke: #1d5462; }
+[data-theme="dark"] .ib-gate rect    { fill: #0a2033; stroke: #58b4f0; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Canonical visual model — shadow evaluation (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   The property readers most often get wrong is that a shadow evaluation
+   intercepts the call. It does not: it reads traces the adopter already holds.
+   Prose has said "observe-only, non-intercepting" on this page for a long time
+   and it kept being misread, so the diagram makes it structural — the live call
+   sits above a divider, the evaluation below it, and exactly one arrow crosses,
+   downward, representing recording that already happens. There is deliberately
+   no upward arrow anywhere in the figure, because there is no mechanism for
+   one. */
+
+.shadow-model {
+  margin: 1.5rem 0 0;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.shadow-model svg { min-width: 36rem; }
+
+.sm-live rect {
+  fill: var(--mist);
+  stroke: var(--line);
+  stroke-width: 1.25;
+}
+
+.sm-eval rect {
+  fill: var(--teal-soft);
+  stroke: #9cc5cf;
+  stroke-width: 1.25;
+}
+
+.sm-call, .sm-flow { stroke: var(--body); stroke-width: 2; }
+.sm-call-head, .sm-flow-head { fill: var(--body); }
+
+/* The one crossing. Dashed, because it is a recording that already exists
+   rather than a connection this framework installs. */
+.sm-tap { stroke: var(--blue); stroke-width: 1.75; stroke-dasharray: 5 4; }
+.sm-tap-head { fill: var(--blue); }
+
+.sm-divider { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 3 4; }
+
+.sm-zone {
+  fill: var(--body); font-family: var(--sans); font-size: 11.5px;
+  font-weight: 700; letter-spacing: 0.11em;
+}
+
+.sm-label { fill: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 600; }
+.sm-sub   { fill: var(--body); font-family: var(--sans); font-size: 11.5px; }
+.sm-note  { fill: var(--body); font-family: var(--sans); font-size: 12px; }
+
+[data-theme="dark"] .sm-live rect { fill: #12202f; }
+[data-theme="dark"] .sm-eval rect { fill: #08222a; stroke: #1d5462; }
+[data-theme="dark"] .sm-tap       { stroke: #58b4f0; }
+[data-theme="dark"] .sm-tap-head  { fill: #58b4f0; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Canonical visual model — reference architecture (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   An architecture diagram that draws only what works is a sales diagram. This
+   one is split: everything above the divider is built and covered by the
+   suite, everything below it is not built and is drawn where it would go.
+   claim-boundaries.md records key custody as a documented path that is not
+   built, the registry as future work requiring a neutral operator, and
+   federation as an open problem — so those three appear as hollow, dashed
+   placeholders rather than as components.
+
+   The gap between the halves is the point of the figure: it is the difference
+   between a reference implementation and deployable infrastructure. */
+
+.arch-model {
+  margin: 1.25rem 0 2rem;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.arch-model svg { min-width: 38rem; }
+
+.ra-box rect {
+  fill: var(--teal-soft);
+  stroke: #9cc5cf;
+  stroke-width: 1.25;
+}
+
+/* The engine is the one component everything else exists to serve. */
+.ra-core rect {
+  fill: var(--blue-soft);
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+/* Not built. Hollow and dashed, so it cannot be mistaken for a component. */
+.ra-absent rect {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.25;
+  stroke-dasharray: 5 4;
+}
+
+.ra-flow { stroke: var(--body); stroke-width: 1.75; }
+.ra-flow-head { fill: var(--body); }
+.ra-divider { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 3 4; }
+
+.ra-zone {
+  fill: var(--body); font-family: var(--sans); font-size: 11.5px;
+  font-weight: 700; letter-spacing: 0.11em;
+}
+
+.ra-zone-absent { opacity: 0.75; }
+
+.ra-title  { fill: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 600; }
+.ra-sub    { fill: var(--body); font-family: var(--sans); font-size: 11.5px; }
+.ra-title-absent { fill: var(--body); font-family: var(--sans); font-size: 14px; font-weight: 600; opacity: 0.9; }
+.ra-sub-absent   { fill: var(--body); font-family: var(--sans); font-size: 11.5px; opacity: 0.8; }
+.ra-note   { fill: var(--body); font-family: var(--sans); font-size: 12.5px; }
+
+[data-theme="dark"] .ra-box rect  { fill: #08222a; stroke: #1d5462; }
+[data-theme="dark"] .ra-core rect { fill: #0a2033; stroke: #58b4f0; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Canonical visual model — evidence lifecycle (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   project-state.md §5 opens "Evidence — four distinct bodies, never to be
+   merged", and the repository has had to restate that repeatedly, because a
+   reader looking at four percentages naturally wants to average them. The
+   figure makes the rule structural: one path across the top produces every
+   measurement, and below the divider the four bodies sit side by side as peers
+   with no arrow between them and no total beneath them. There is nowhere for a
+   combined number to go. */
+
+.evidence-model {
+  margin: 1.25rem 0 2rem;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.evidence-model svg { min-width: 38rem; }
+
+.ev-box rect  { fill: var(--mist); stroke: var(--line); stroke-width: 1.25; }
+.ev-core rect { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 2; }
+.ev-body rect { fill: var(--teal-soft); stroke: #9cc5cf; stroke-width: 1.25; }
+
+.ev-flow { stroke: var(--body); stroke-width: 1.75; }
+.ev-flow-head { fill: var(--body); }
+.ev-divider { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 3 4; }
+
+.ev-zone {
+  fill: var(--body); font-family: var(--sans); font-size: 11.5px;
+  font-weight: 700; letter-spacing: 0.11em;
+}
+.ev-title { fill: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 600; }
+.ev-sub   { fill: var(--body); font-family: var(--sans); font-size: 11.5px; }
+.ev-note  { fill: var(--body); font-family: var(--sans); font-size: 12px; }
+.ev-warn  { fill: var(--ink-soft); font-family: var(--sans); font-size: 12.5px; font-weight: 600; }
+
+[data-theme="dark"] .ev-box rect  { fill: #12202f; }
+[data-theme="dark"] .ev-core rect { fill: #0a2033; stroke: #58b4f0; }
+[data-theme="dark"] .ev-body rect { fill: #08222a; stroke: #1d5462; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   The Trust Gateway (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   This replaces an illustration. The component it supersedes carried the
+   disclaimer "Illustrative — dialogue, mock config payloads, and artwork are
+   for explanation only", which is the correct disclaimer for a mock and the
+   wrong artifact for a page arguing that the controls are checkable.
+
+   Every action, reason code and violation rendered here came out of
+   `evaluate_all`, recorded by scripts/build_gateway_fixture.py replaying real
+   corpus scenarios. The markup is generated and committed, so:
+
+     - it reads correctly with JavaScript disabled — the stepper is an
+       enhancement over content that is already complete;
+     - it needs no network, no server, and no API key;
+     - a test regenerates it, so "real engine output" stays true rather than
+       becoming a claim about the past.
+
+   The action colours reuse the maturity palette's logic (semantic, not
+   decorative) but are their own scale: an enforcement outcome is not a
+   maturity standing, and conflating them would make both meaningless. */
+
+.trust-gateway {
+  margin: 1.5rem 0 0;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+}
+
+.tg-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+
+.tg-step {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--mist);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tg-step:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); }
+.tg-step:disabled { opacity: 0.45; cursor: default; }
+.tg-step:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.tg-step-quiet { margin-left: auto; }
+
+.tg-position {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--body);
+}
+
+.tg-scenario + .tg-scenario {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.tg-scenario-title { margin: 0 0 0.25rem; font-size: 1.02rem; }
+.tg-scenario-note  { margin: 0 0 1rem; color: var(--body); font-size: 0.9rem; line-height: 1.65; }
+
+.tg-turns { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.9rem; min-width: 0; }
+
+.tg-turn {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--mist);
+  min-width: 0;
+}
+
+.tg-said { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.55rem; min-width: 0; }
+
+.tg-turn-no {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--body);
+}
+
+.tg-said q { min-width: 0; color: var(--ink-soft); font-size: 0.94rem; line-height: 1.6; }
+
+.tg-verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+  min-width: 0;
+}
+
+.tg-action {
+  padding: 0.15em 0.6em 0.2em;
+  border: 1px solid currentColor;
+  border-radius: 2em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* The enforcement ladder, most restrictive first. */
+.tg-action-deny     { color: #9b2c2c; background: #fdeaea; }
+.tg-action-escalate { color: #8a5a12; background: #fdf2e0; }
+.tg-action-disclose { color: #0b6ebc; background: var(--blue-soft); }
+.tg-action-log      { color: #6b4a86; background: #f3edf9; }
+.tg-action-continue { color: #10603f; background: #e8f5ee; }
+
+.tg-reason {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.8rem;
+  color: var(--body);
+}
+
+.tg-violations { margin: 0.7rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; min-width: 0; }
+.tg-violations li { color: var(--body); font-size: 0.86rem; line-height: 1.6; }
+
+.tg-sev {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.tg-clean { margin: 0.7rem 0 0; color: var(--body); font-size: 0.86rem; opacity: 0.8; }
+
+[data-theme="dark"] .tg-turn { background: #12202f; }
+[data-theme="dark"] .tg-step { background: #12202f; }
+[data-theme="dark"] .tg-action-deny     { color: #f2a2a2; background: #2c1414; }
+[data-theme="dark"] .tg-action-escalate { color: #e0bd7c; background: #2a2114; }
+[data-theme="dark"] .tg-action-disclose { color: #7cc2f5; background: #0a2033; }
+[data-theme="dark"] .tg-action-log      { color: #c3a6dd; background: #221a2c; }
+[data-theme="dark"] .tg-action-continue { color: #7fd8ab; background: #0b2a1d; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .tg-turn { transition: opacity 140ms ease; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Journey wayfinder (Phase D)
+   ──────────────────────────────────────────────────────────────────────────
+   The IA consolidation mapped every destination to a journey, but only inside
+   ia-disposition.md. A reader landing on evidence-pack.html from a search
+   result had no way to see they were partway through an arc, or what came
+   before and after.
+
+   Deliberately quiet. It sits at the foot of the content, after the reader has
+   what they came for, and it is a <nav> with its own label so a screen reader
+   can skip it or seek it. It is not a progress bar: a reader does not owe the
+   site a linear traversal, and half of them will only ever want one page. */
+
+.wayfinder {
+  margin: 3rem 0 0;
+  padding: 1.25rem 1.25rem 1.4rem;
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+
+.wayfinder-here {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  min-width: 0;
+}
+
+.wayfinder-journey {
+  flex: 0 0 auto;
+  padding: 0.14em 0.6em 0.2em;
+  border: 1px solid var(--line);
+  border-radius: 2em;
+  background: var(--mist);
+  color: var(--body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.wayfinder-question {
+  min-width: 0;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.wayfinder-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: 0.9rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.wayfinder-steps li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.wayfinder-steps span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--body);
+  opacity: 0.85;
+}
+
+.wayfinder-steps a {
+  min-width: 0;
+  color: var(--blue);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.wayfinder-steps a:hover { text-decoration: underline; }
+.wayfinder-steps a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+[data-theme="dark"] .wayfinder-journey { background: #12202f; }

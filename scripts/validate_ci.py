@@ -23,7 +23,7 @@ rather than marked:
   * /debug/replay is settled as an inspection contract, on the repository's own
     evidence, rather than a replay engine being built to satisfy a test.
 
-The suite now reports 1056 passed, 0 skipped, 0 xfailed, 0 xpassed against a
+The suite now reports 1148 passed, 0 skipped, 0 xfailed, 0 xpassed against a
 live API. Run it without one and 18 tests skip, which is why a nonzero skip
 count is worth warning about: it means the integration tests did not run.
 """
@@ -43,7 +43,7 @@ XFAIL_EXPECTED = 0
 # without failing the build. It exists so scripts/check_number_drift.py has a
 # canonical number to compare published claims against. Update it in the same
 # commit as any change to the published count.
-UNIT_PUBLISHED = 1056
+UNIT_PUBLISHED = 1148
 
 def run_pytest():
     result = subprocess.run([sys.executable,"-m","pytest","tests/","-q","--tb=short","--no-header"],capture_output=True,text=True)
@@ -72,11 +72,19 @@ def validate(counts):
     if counts["error"]>0: v.append(f"FAIL: {counts['error']} collection error(s)")
     # Warn on unexpected skips. A skip here almost always means "no API running",
     # which silently removes the 18 integration tests from the run.
+    # A gate, not a warning. The CI job is named "Unit invariant: N passed,
+    # 0 skipped, 0 xfailed"; if an unexpected skip only warns, that name is a
+    # claim nothing enforces. It is not hypothetical — the control-set guard's
+    # regression proof skipped on CI's shallow clone for as long as this was a
+    # warning, so the job reported "1144 passed, 1 skipped" and went green under
+    # a name promising zero.
     if counts["skipped"] != SKIP_EXPECTED:
-        print(
-            f"WARNING: expected {SKIP_EXPECTED} skipped tests, got {counts['skipped']}. "
+        v.append(
+            f"expected {SKIP_EXPECTED} skipped tests, got {counts['skipped']}. "
             f"If this is 18, the API was not running and the integration tests did "
-            f"not execute — start it with: python -m uvicorn app:app --port 8000"
+            f"not execute — start it with: python -m uvicorn app:app --port 8000. "
+            f"Otherwise a test is skipping in this environment and not another, "
+            f"which means it is not guarding anything here."
         )
     # Warn when the recorded divergences change shape.
     if counts["xfailed"] != XFAIL_EXPECTED:
@@ -84,18 +92,22 @@ def validate(counts):
             f"WARNING: expected {XFAIL_EXPECTED} xfailed tests, got {counts['xfailed']}. "
             f"See docs/skipped-test-audit.md §8 — a deferred failure has reappeared."
         )
-    # Warn (but don't fail) when the published count no longer matches reality.
-    # check_number_drift.py only enforces that published surfaces agree with
-    # UNIT_PUBLISHED — they can all be consistently wrong, which is how a
-    # superseded count survived across the whole repository once already.
-    # Deliberately a warning, not a gate: the suite is allowed to grow without
-    # breaking the build, but the staleness must not be silent.
+    # Also a gate now. check_number_drift.py only enforces that published
+    # surfaces agree with UNIT_PUBLISHED — they can all be consistently wrong,
+    # which is how a superseded count survived across the whole repository once
+    # already. This is the only check that compares the published number against
+    # a suite that actually ran, so warning was leaving the last line of defence
+    # advisory.
+    #
+    # The cost is that adding a test now requires updating UNIT_PUBLISHED in the
+    # same commit. That is the intended cost: the count is published on the site,
+    # in the README and in eight PDFs, and letting it drift for a run is how it
+    # drifted for a month.
     if counts["passed"] != UNIT_PUBLISHED:
-        print(
-            f"WARNING: suite now reports {counts['passed']} passing but "
-            f"UNIT_PUBLISHED is {UNIT_PUBLISHED}. Published surfaces are stale — "
-            f"update UNIT_PUBLISHED and every surface in the same commit, then "
-            f"re-run scripts/check_number_drift.py."
+        v.append(
+            f"suite reports {counts['passed']} passing but UNIT_PUBLISHED is "
+            f"{UNIT_PUBLISHED}. Update UNIT_PUBLISHED and every published surface "
+            f"in the same commit, then re-run scripts/check_number_drift.py."
         )
     # Pass condition: tests executed, no failures, no errors
     return v
