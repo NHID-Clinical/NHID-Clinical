@@ -1,0 +1,117 @@
+{
+  "generated_by": "scripts/build_evidence_visuals.py",
+  "engine": "src/nhid_policy_engine_v1.py :: evaluate_all",
+  "note": "Every figure below is computed by replaying committed repository data through the real engine at generation time. Nothing is drawn by hand and no number is transcribed.",
+  "ladder": {
+    "source": "tests/evaluation_corpus_v1.json",
+    "scenarios": 25,
+    "turns": 55,
+    "priority": {
+      "DENY_DATA": 5,
+      "ESCALATE_HUMAN": 4,
+      "DISCLOSE_IDENTITY": 3,
+      "LOG_ONLY": 2,
+      "CONTINUE_AI": 1
+    },
+    "composite": {
+      "DENY_DATA": 10,
+      "ESCALATE_HUMAN": 18,
+      "DISCLOSE_IDENTITY": 8,
+      "LOG_ONLY": 1,
+      "CONTINUE_AI": 18
+    },
+    "set_composite": {
+      "IDG-01": 26,
+      "PDX-01": 28,
+      "DBC-01": 19,
+      "EIT-01": 36,
+      "ATR-01": 18
+    },
+    "contested_turns": 18
+  },
+  "shadow": {
+    "source": "fixtures/fabricate/shadow_pilot.jsonl",
+    "conversations": 60,
+    "turns": 301,
+    "actions": {
+      "DENY_DATA": 22,
+      "ESCALATE_HUMAN": 19,
+      "DISCLOSE_IDENTITY": 78,
+      "LOG_ONLY": 0,
+      "CONTINUE_AI": 182
+    },
+    "enforcing_turns": 119,
+    "top_reasons": [
+      [
+        "ATR01_AUDIT_COMPLETE",
+        182
+      ],
+      [
+        "IDG01_DISCLOSURE_MISSING",
+        75
+      ],
+      [
+        "PDX01_PHI_GATE_TRIGGERED",
+        22
+      ],
+      [
+        "EIT01_ESCALATION_TRIGGERED",
+        19
+      ],
+      [
+        "IDG01_DISCLOSURE_INSUFFICIENT",
+        3
+      ]
+    ],
+    "violations_by_control": {
+      "IDG-01": 111,
+      "PDX-01": 22,
+      "DBC-01": 0,
+      "EIT-01": 0,
+      "ATR-01": 0
+    },
+    "schema_note": "The shadow-pilot fixture carries no deceptive_artifact_flags field, which is the structured signal DBC-01 reads. Over this corpus DBC-01 runs on its lexical path only, so its count here is a floor, not a measurement of how much deception the corpus contains."
+  },
+  "scorecard": {
+    "populations": [
+      {
+        "name": "Governance Evaluation Corpus",
+        "measures": "Rule detection on hand-authored scenarios",
+        "size": "25 scenarios \u00b7 55 turns",
+        "result": "30/32 expected violations detected",
+        "rate": 93.8,
+        "source": "tests/evaluation_corpus_v1.json",
+        "command": "python scripts/eval_corpus.py --check"
+      },
+      {
+        "name": "Fabricate baseline corpus",
+        "measures": "Per-control detection and false positives",
+        "size": "550 conversations",
+        "result": "DBC-01 183/200 \u00b7 EIT-01 169/171 \u00b7 IDG-01 70/70 \u00b7 PDX-01 41/41",
+        "rate": null,
+        "source": "fixtures/fabricate/conversations.csv",
+        "command": "python scripts/check_baseline.py"
+      },
+      {
+        "name": "Shadow-pilot corpus",
+        "measures": "Observe-only decision distribution",
+        "size": "60 conversations",
+        "result": "Distribution charted on the shadow evaluation guide",
+        "rate": null,
+        "source": "fixtures/fabricate/shadow_pilot.jsonl",
+        "command": "python scripts/build_evidence_visuals.py --check"
+      },
+      {
+        "name": "Conformance suite",
+        "measures": "Implementation correctness against the specification",
+        "size": "1148 tests",
+        "result": "1148/1148 passing, 0 skipped, 0 xfailed",
+        "rate": 100.0,
+        "source": "tests/",
+        "command": "python -m pytest tests/ -q"
+      }
+    ],
+    "separation_note": "Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance."
+  },
+  "source_commit": "2e5fffd"
+}

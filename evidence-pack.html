@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
-  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}</script>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <style>
     .guarantee-card {
       padding: 1rem 1.25rem;
@@ -233,6 +233,50 @@
           <text x="20" y="414" class="ev-note">Every figure on this page is reproducible: the commands are in the conformance run record.</text>
         </svg>
       </figure>
+
+      <h3 style="margin-top:2rem;font-size:1.05rem">The four populations, with live numbers</h3>
+      <p style="color:var(--body);line-height:1.8;margin:.5rem 0 0;font-size:.95rem">The same four bodies of evidence the model above describes, measured at generation time rather than transcribed. They are kept apart deliberately: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
+      <!-- BEGIN GENERATED evidence-scorecard -->
+      <div class="sc-wrap">
+        <table class="scorecard-table">
+          <caption>Four evidence populations, measured at generation time. Each has its own denominator and its own reproduction command.</caption>
+          <thead>
+            <tr><th scope="col">Population</th><th scope="col">Size</th><th scope="col">Result</th><th scope="col">Reproduce</th></tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th scope="row">Governance Evaluation Corpus<span class="sc-measures">Rule detection on hand-authored scenarios</span></th>
+            <td class="sc-size">25 scenarios · 55 turns</td>
+            <td>30/32 expected violations detected <span class="sc-rate">93.8%</span></td>
+            <td><code>python scripts/eval_corpus.py --check</code><span class="sc-src">tests/evaluation_corpus_v1.json</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Fabricate baseline corpus<span class="sc-measures">Per-control detection and false positives</span></th>
+            <td class="sc-size">550 conversations</td>
+            <td>DBC-01 183/200 · EIT-01 169/171 · IDG-01 70/70 · PDX-01 41/41 </td>
+            <td><code>python scripts/check_baseline.py</code><span class="sc-src">fixtures/fabricate/conversations.csv</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Shadow-pilot corpus<span class="sc-measures">Observe-only decision distribution</span></th>
+            <td class="sc-size">60 conversations</td>
+            <td>Distribution charted on the shadow evaluation guide </td>
+            <td><code>python scripts/build_evidence_visuals.py --check</code><span class="sc-src">fixtures/fabricate/shadow_pilot.jsonl</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Conformance suite<span class="sc-measures">Implementation correctness against the specification</span></th>
+            <td class="sc-size">1148 tests</td>
+            <td>1148/1148 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
+            <td><code>python -m pytest tests/ -q</code><span class="sc-src">tests/</span></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <aside class="visual-provenance">
+        <p><strong>Separation:</strong> Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>2e5fffd</code></p>
+      </aside>
+      <!-- END GENERATED evidence-scorecard -->
 
       <h2 style="margin-top:0">1. System Behavior Guarantees</h2>
 

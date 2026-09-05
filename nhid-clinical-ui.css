@@ -1731,11 +1731,21 @@ h2 { font-weight: 700; }
 /* Airier rhythm */
 .page-section { padding-block: clamp(3rem, 6vw, 5.5rem); }
 
-/* Scroll-entrance motion (fade + slight rise), reduced-motion safe */
-.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
-.reveal.in { opacity: 1; transform: none; }
+/* Scroll-entrance motion (fade + slight rise) — progressively enhanced.
+   The default state is VISIBLE. The hidden start state applies only under
+   `html.js`, which the inline head script sets before any body content is
+   parsed, so there is no flash and no dependency on site.js loading.
+
+   This used to be the other way round: `.reveal { opacity: 0 }` unconditionally,
+   with site.js adding `.in`. That left 51 of 52 revealed elements on the home
+   page — including all five canonical diagrams — invisible to any visitor
+   without JavaScript, unless they happened to have reduced motion enabled.
+   Entrance animation is decoration; the content is not. */
+.reveal { opacity: 1; transform: none; }
+html.js .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+html.js .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  html.js .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
 
 /* Soft hover bloom on cards */
