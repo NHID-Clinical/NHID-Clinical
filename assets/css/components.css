@@ -1816,6 +1816,20 @@ caption.visually-hidden {
    work with no per-theme asset.
    -------------------------------------------------------------------------- */
 
+/* The generic figure frame. `.evidence-model` is NOT this — it is one of the
+   five canonical model classes and means the evidence lifecycle model on
+   evidence-pack.html specifically. Any new figure uses this instead, so it
+   never shadows a named model that other code looks for by class. */
+.figure-frame {
+  margin: 1.75rem 0 0;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-x: auto;
+}
+
 /* Shared: the provenance block every generated figure carries. The visual
    audit found that no image asset on the site recorded where it came from,
    while the framework's whole discipline is that a claim carries its source.
@@ -1972,4 +1986,169 @@ caption.visually-hidden {
   font-weight: 500;
   color: var(--teal);
   white-space: nowrap;
+}
+
+/* ── Latency distribution (shadow-evaluation-guide.html) ────────────────────
+   Replaces a glossy 3D "with/without a standard" illustration. That figure
+   asserted a contrast; this one shows the recorded distribution of the field
+   the corpus actually carries, and separates what was measured from what the
+   corpus was authored to contain.
+   -------------------------------------------------------------------------- */
+.latency-distribution svg { min-width: 36rem; }
+
+.lt-grid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 4; }
+.lt-tick {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 9.5px; fill: var(--body);
+}
+.lt-cat {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 11px; fill: var(--ink);
+}
+.lt-n {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 9px; fill: var(--body);
+}
+/* The span between p50 and p95 is the point of the figure: the spread, not a
+   single headline number. */
+.lt-span { stroke: var(--blue); stroke-width: 5; stroke-linecap: round; opacity: 0.32; }
+.lt-p50 { fill: var(--teal-bright, #14b8a6); }
+.lt-p95 { fill: var(--blue); }
+.lt-val {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 9.5px; fill: var(--body);
+}
+
+/* ── Trust-stack cross-section ──────────────────────────────────────────────
+   One canonical figure on three pages, replacing a glossy isometric SVG and a
+   raster render whose provenance was a bare UUID. Flat, tokenised, and it
+   distinguishes what NHID-Clinical actually is (layer 2) from its optional
+   extension (layer 3) and from the standards it merely emits into.
+   -------------------------------------------------------------------------- */
+.trust-stack-model svg, 
+
+.ts-zone, .ob-zone {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 9.5px; letter-spacing: .11em; text-transform: uppercase; fill: var(--body);
+}
+.ts-layer rect { stroke-width: 1.5; }
+.ts-layer[data-kind="core"] rect     { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 2.5; }
+.ts-layer[data-kind="extension"] rect{ fill: var(--blue-soft); stroke: var(--blue); }
+.ts-layer[data-kind="external"] rect { fill: var(--paper); stroke: var(--line); }
+.ts-num {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 12px; font-weight: 500; fill: var(--body);
+}
+.ts-name { font-family: var(--sans); font-size: 12.5px; font-weight: 650; fill: var(--ink); }
+.ts-purpose { font-family: var(--sans); font-size: 10.5px; fill: var(--body); }
+.ts-evidence {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 10px; fill: var(--body);
+}
+/* Layer 0 is the absence the stack exists to address, so it is drawn as a gap
+   rather than as a sixth layer. */
+.ts-gap rect { fill: none; stroke: var(--line); stroke-width: 1.4; stroke-dasharray: 6 4; }
+.ts-gapname { font-family: var(--sans); font-size: 11px; font-style: italic; fill: var(--body); }
+.ts-key { font-family: var(--sans); font-size: 10px; fill: var(--body); }
+.ts-key-core { fill: var(--teal); }
+.ts-key-ext { fill: var(--blue); }
+.ts-key-ext-o { fill: var(--line); }
+
+/* ── Obligation-to-control map ─────────────────────────────────────────────
+   Replaces a decorative lattice. The vocabulary was worth keeping; what it
+   lacked was any statement of which obligation is carried by which control,
+   and which two are not carried by a v1.3 control at all.
+   -------------------------------------------------------------------------- */
+.ob-row rect { stroke-width: 1.5; }
+.ob-row[data-kind="control"] rect  { fill: var(--teal-soft); stroke: var(--teal); }
+.ob-row[data-kind="adjacent"] rect { fill: none; stroke: var(--line); stroke-dasharray: 5 3; }
+.ob-name {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 11.5px; font-weight: 500; fill: var(--ink); letter-spacing: .04em;
+}
+.ob-meaning { font-family: var(--sans); font-size: 11.5px; fill: var(--ink-soft); }
+.ob-flow { stroke: var(--line); stroke-width: 1.6; fill: none; }
+.ob-flow-head { fill: var(--line); }
+.ob-control {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 11px; font-weight: 500;
+}
+.ob-control[data-kind="control"]  { fill: var(--teal); }
+.ob-control[data-kind="adjacent"] { fill: var(--body); }
+
+/* The cross-section is the overview and the tab list beside it is the
+   drill-down, so the figure spans the grid rather than being squeezed into one
+   column. The layer tabs and their detail panel are unchanged and still work. */
+.stack-wrap > .stack-figure { grid-column: 1 / -1; }
+
+/* ── Framework relationship map ─────────────────────────────────────────────
+   Replaces a 19-colour mind map that carried its own typography. Colour here
+   marks the ROLE a destination plays, not the destination — four accents, not
+   nineteen — and the branches are the site's own four journeys.
+   -------------------------------------------------------------------------- */
+.framework-map svg { min-width: 40rem; }
+.fm-root rect { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 2.5; }
+.fm-roottitle { font-family: var(--display); font-size: 15px; font-weight: 700; fill: var(--ink); }
+.fm-rootsub { font-family: var(--sans); font-size: 10.5px; fill: var(--body); }
+.fm-head rect { fill: none; stroke: var(--line); stroke-width: 1.4; }
+.fm-journey {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 10px; letter-spacing: .1em; fill: var(--body);
+}
+.fm-spine { stroke: var(--line); stroke-width: 1.4; fill: none; }
+.fm-node rect { stroke-width: 1.4; }
+.fm-node[data-kind="framework"] rect { fill: var(--teal-soft); stroke: var(--teal); }
+.fm-node[data-kind="measure"] rect   { fill: var(--blue-soft); stroke: var(--blue); }
+.fm-node[data-kind="build"] rect     { fill: var(--paper); stroke: var(--ink-soft); }
+.fm-node[data-kind="context"] rect   { fill: var(--paper); stroke: var(--line); }
+.fm-label { font-family: var(--sans); font-size: 11.5px; fill: var(--ink); }
+.framework-map a { text-decoration: none; }
+.framework-map a:hover .fm-label { text-decoration: underline; }
+.framework-map a:focus-visible rect { outline: 2px solid var(--teal-bright); outline-offset: 2px; }
+.fm-key { font-family: var(--sans); font-size: 10px; fill: var(--body); }
+.fm-k1 { fill: var(--teal); } .fm-k2 { fill: var(--blue); }
+.fm-k3 { fill: var(--ink-soft); } .fm-k4 { fill: var(--line); }
+
+/* ── Integration ladder ─────────────────────────────────────────────────────
+   The concept was sound; what it never showed was the evidence each rung
+   produces, which is the reason to climb one.
+   -------------------------------------------------------------------------- */
+.integration-ladder-model svg { min-width: 42rem; }
+.il-tier rect { fill: var(--paper); stroke: var(--line); stroke-width: 1.5; }
+.il-num {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 22px; font-weight: 500; fill: var(--teal);
+}
+.il-name { font-family: var(--sans); font-size: 13px; font-weight: 650; fill: var(--ink); }
+.il-work { font-family: var(--sans); font-size: 11.5px; fill: var(--body); }
+.il-meta {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 10px; fill: var(--ink-soft);
+}
+.il-key { fill: var(--body); letter-spacing: .08em; }
+
+/* ── NHID-Auth credential chain ─────────────────────────────────────────────
+   Four ordered steps ending in the six checks the payer side actually runs.
+   -------------------------------------------------------------------------- */
+.credential-chain svg { min-width: 42rem; }
+.cc-zone {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 9.5px; letter-spacing: .11em; fill: var(--body);
+}
+.cc-step rect { fill: var(--paper); stroke: var(--line); stroke-width: 1.5; }
+.cc-num {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 16px; font-weight: 500; fill: var(--teal);
+}
+.cc-title { font-family: var(--sans); font-size: 11.5px; font-weight: 650; fill: var(--ink); }
+.cc-body {
+  font-family: var(--sans); font-size: 10px; line-height: 1.35; color: var(--body);
+  display: block;
+}
+.cc-flow { stroke: var(--line); stroke-width: 1.6; fill: none; }
+.cc-flow-head { fill: var(--line); }
+.cc-check rect { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.2; }
+.cc-checktext {
+  font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 9px; fill: var(--ink);
 }

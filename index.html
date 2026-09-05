@@ -130,9 +130,35 @@
         </p>
       </div>
       <div class="reveal">
-        <img src="/assets/diagrams/trust-lattice.svg" class="diagram-layers"
-             alt="Conceptual diagram: five stacked trust layers labelled Disclose, Authorize, Scope, Audit and Observe, with a single request descending through them in order."
-             width="520" height="420" loading="eager"/>
+        <figure class="figure-frame obligation-map">
+        <svg viewBox="0 0 468 280" role="img" aria-labelledby="ob-title ob-desc" style="width:100%;height:auto;display:block">
+          <title id="ob-title">The five trust obligations, and what carries each</title>
+          <desc id="ob-desc">Five obligations mapped to what actually carries each one. DISCLOSE — State non-human identity before operational exchange — is carried by IDG-01. AUTHORIZE — Prove the caller was permitted to act — is carried by NHID-Auth v2. SCOPE — Keep protected data inside what was disclosed and granted — is carried by PDX-01 · DBC-01. AUDIT — Record every turn, whatever the outcome — is carried by ATR-01. OBSERVE — Measure before enforcing — is carried by Shadow evaluation. Three map to controls in this specification, drawn solid. Two do not: AUTHORIZE is addressed by NHID-Auth v2, a separate optional document, and OBSERVE is a deployment practice rather than a control. Both are drawn with a dashed edge so the gap between the vocabulary and the implemented control set is visible rather than implied.</desc>
+          <text x="14" y="24" class="ob-zone">OBLIGATION</text>
+          <text x="196" y="24" class="ob-zone">CARRIED BY</text>
+          <g class="ob-row" data-kind="control"><rect x="14" y="44" width="140" height="34" rx="6"/></g>
+          <text x="84" y="66" text-anchor="middle" class="ob-name">DISCLOSE</text>
+          <path d="M160 61 H184" class="ob-flow"/><polygon points="188,61 178,56 178,66" class="ob-flow-head"/>
+          <text x="196" y="66" class="ob-control" data-kind="control">IDG-01</text>
+          <g class="ob-row" data-kind="adjacent"><rect x="14" y="88" width="140" height="34" rx="6"/></g>
+          <text x="84" y="110" text-anchor="middle" class="ob-name">AUTHORIZE</text>
+          <path d="M160 105 H184" class="ob-flow"/><polygon points="188,105 178,100 178,110" class="ob-flow-head"/>
+          <text x="196" y="110" class="ob-control" data-kind="adjacent">NHID-Auth v2</text>
+          <g class="ob-row" data-kind="control"><rect x="14" y="132" width="140" height="34" rx="6"/></g>
+          <text x="84" y="154" text-anchor="middle" class="ob-name">SCOPE</text>
+          <path d="M160 149 H184" class="ob-flow"/><polygon points="188,149 178,144 178,154" class="ob-flow-head"/>
+          <text x="196" y="154" class="ob-control" data-kind="control">PDX-01 · DBC-01</text>
+          <g class="ob-row" data-kind="control"><rect x="14" y="176" width="140" height="34" rx="6"/></g>
+          <text x="84" y="198" text-anchor="middle" class="ob-name">AUDIT</text>
+          <path d="M160 193 H184" class="ob-flow"/><polygon points="188,193 178,188 178,198" class="ob-flow-head"/>
+          <text x="196" y="198" class="ob-control" data-kind="control">ATR-01</text>
+          <g class="ob-row" data-kind="adjacent"><rect x="14" y="220" width="140" height="34" rx="6"/></g>
+          <text x="84" y="242" text-anchor="middle" class="ob-name">OBSERVE</text>
+          <path d="M160 237 H184" class="ob-flow"/><polygon points="188,237 178,232 178,242" class="ob-flow-head"/>
+          <text x="196" y="242" class="ob-control" data-kind="adjacent">Shadow evaluation</text>
+        </svg>
+      </figure>
+      <p class="disclaimer-small" style="margin-top:.6rem;font-size:.78rem"><span class="maturity-reference">Reference</span> Solid rows are v1.3 controls. Dashed rows are not: AUTHORIZE is <a href="/framework/nhid-auth.html">NHID-Auth v2</a>, a separate document, and OBSERVE is a deployment practice.</p>
         <ul class="diagram-layers-alt">
           <li>1 · Disclose</li><li>2 · Authorize</li><li>3 · Scope</li><li>4 · Audit</li><li>5 · Observe</li>
         </ul>
@@ -558,9 +584,48 @@ violations
       <h2>Visualizing the Five-Layer Trust Stack</h2>
       <p class="lead">The architecture in one picture: each layer is testable on its own, and together they turn "trust me" into a verifiable pathway. Click a layer to see what it does and where to try it.</p>
       <div class="stack-wrap">
-        <div>
-          <img src="/assets/images/3d-svg/trust-stack.svg" class="premium-3d" style="max-width:38rem"
-               alt="Diagram of the NHID-Clinical five-layer trust stack: STIR/SHAKEN carrier authentication, NHID-Clinical v1.3 behavioral disclosure, NHID-Auth v2 cryptographic authorization, FHIR AuditEvent R4 audit logging, OpenTelemetry observability."/>
+        <div class="stack-figure">
+          <figure class="figure-frame trust-stack-model">
+        <svg viewBox="0 0 880 366" role="img" aria-labelledby="ts-title ts-desc" style="width:100%;height:auto;display:block">
+          <title id="ts-title">The five-layer trust stack, in cross-section</title>
+          <desc id="ts-desc">Five layers, drawn bottom to top. Layer 1, STIR/SHAKEN, authenticates the carrier number and emits an attestation on the call leg. Layer 2, NHID-Clinical v1.3, is this framework: it establishes the behavioural disclosure baseline and emits a PolicyDecision with a reason code. Layer 3, NHID-Auth v2, is an optional extension adding cryptographic authorization through a signed agent passport. Layer 4, FHIR AuditEvent R4, emits an audit bundle per turn. Layer 5, OpenTelemetry, carries traces, spans and latency. Beneath all five sits layer 0, the NPI gap: no cross-organization authorization exists for AI agents today, which is the problem the stack is assembled to address. Only layer 2 is NHID-Clinical itself; layer 3 is its optional extension and the rest are existing standards it emits into.</desc>
+
+          <text x="24" y="24" class="ts-zone">CONTROL PURPOSE</text>
+          <text x="640" y="24" class="ts-zone">EVIDENCE EMITTED</text>
+          <g class="ts-layer" data-kind="external"><rect x="150" y="54" width="470" height="42" rx="6"/></g>
+          <text x="128" y="80" text-anchor="end" class="ts-num">5</text>
+          <text x="168" y="74" class="ts-name">OpenTelemetry</text>
+          <text x="168" y="88" class="ts-purpose">Observability &amp; metrics</text>
+          <text x="640" y="80" class="ts-evidence">Traces, spans, latency</text>
+          <g class="ts-layer" data-kind="external"><rect x="150" y="104" width="470" height="42" rx="6"/></g>
+          <text x="128" y="130" text-anchor="end" class="ts-num">4</text>
+          <text x="168" y="124" class="ts-name">FHIR AuditEvent R4</text>
+          <text x="168" y="138" class="ts-purpose">Audit logging</text>
+          <text x="640" y="130" class="ts-evidence">AuditEvent bundle per turn</text>
+          <g class="ts-layer" data-kind="extension"><rect x="150" y="154" width="470" height="42" rx="6"/></g>
+          <text x="128" y="180" text-anchor="end" class="ts-num">3</text>
+          <text x="168" y="174" class="ts-name">NHID-Auth v2</text>
+          <text x="168" y="188" class="ts-purpose">Cryptographic authorization</text>
+          <text x="640" y="180" class="ts-evidence">Signed agent passport</text>
+          <g class="ts-layer" data-kind="core"><rect x="150" y="204" width="470" height="42" rx="6"/></g>
+          <text x="128" y="230" text-anchor="end" class="ts-num">2</text>
+          <text x="168" y="224" class="ts-name">NHID-Clinical v1.3</text>
+          <text x="168" y="238" class="ts-purpose">Behavioural disclosure baseline</text>
+          <text x="640" y="230" class="ts-evidence">PolicyDecision + reason code</text>
+          <g class="ts-layer" data-kind="external"><rect x="150" y="254" width="470" height="42" rx="6"/></g>
+          <text x="128" y="280" text-anchor="end" class="ts-num">1</text>
+          <text x="168" y="274" class="ts-name">STIR/SHAKEN</text>
+          <text x="168" y="288" class="ts-purpose">Carrier number authentication</text>
+          <text x="640" y="280" class="ts-evidence">Attestation on the call leg</text>
+
+          <g class="ts-gap"><rect x="150" y="310" width="470" height="34" rx="6"/></g>
+          <text x="128" y="332" text-anchor="end" class="ts-num">0</text>
+          <text x="168" y="332" class="ts-gapname">The NPI gap &#8212; no cross-organization authorization for AI agents</text>
+
+          <text x="24" y="362" class="ts-key"><tspan class="ts-key-core">&#9632;</tspan> NHID-Clinical v1.3 &#183; <tspan class="ts-key-ext">&#9632;</tspan> NHID-Auth v2, optional extension &#183; <tspan class="ts-key-ext-o">&#9632;</tspan> existing standards this stack emits into</text>
+        </svg>
+      </figure>
+      <p class="disclaimer-small" style="margin-top:.7rem"><span class="maturity-reference">Reference</span> Architectural model of how the layers relate. Layer 2 is specified and implemented in this repository; layer 3 is released as a separate document; layers 1, 4 and 5 are existing standards and are not provided by NHID-Clinical.</p>
           <p class="visual-caption">The authoritative definitions live in the specification.</p>
         </div>
         <div>
@@ -841,7 +906,39 @@ violations
     <div class="container" style="max-width:62rem">
       <h3>The Framework at a Glance</h3>
       <p style="margin-bottom:1.5rem;color:var(--body)">Every component of NHID-Clinical on one map — the proposal, the v1.3 controls, the technical stack, pilot tooling, regulatory alignment, and the v2 authorization layer (NHID-Auth).</p>
-      <img src="/assets/diagrams/framework-mindmap.svg" alt="Mind map of the NHID-Clinical framework: the proposal, v1.3 core controls (IDG-01, PDX-01, DBC-01, EIT-01), technical stack, pilot and evaluation tooling, regulatory alignment, v2 identity layer, and community governance" style="width:100%;height:auto;border-radius:14px;border:1px solid var(--border)" loading="lazy"/>
+      <figure class="figure-frame framework-map">
+        <svg viewBox="0 0 880 296" role="img" aria-labelledby="fm-title fm-desc" style="width:100%;height:auto;display:block">
+          <title id="fm-title">The framework, arranged on the four reader journeys</title>
+          <desc id="fm-desc">NHID-Clinical v1.3 at the top, branching into the site's four journeys. Understand covers the scope boundary, the five controls and regulatory alignment. Evaluate covers shadow evaluation, the evidence pack and the conformance suite. Implement covers the reference implementation, the integration ladder and NHID-Auth v2. Validate and adopt covers the front-desk walkthrough, the Trust Gateway and the FAQ. Colour marks the role a destination plays — framework, measurement, implementation, or surrounding context — not the destination itself. Every node links to the page it names.</desc>
+
+          <g class="fm-root"><rect x="330" y="24" width="220" height="50" rx="8"/></g>
+          <text x="440" y="46" text-anchor="middle" class="fm-roottitle">NHID-Clinical v1.3</text>
+          <text x="440" y="63" text-anchor="middle" class="fm-rootsub">Voluntary behavioural baseline</text>
+          <path d="M440 74 V86 H122 V96 M440 86 H334 V96 M440 86 H546 V96 M440 86 H758 V96" class="fm-spine"/>
+          <g class="fm-head"><rect x="24" y="96" width="196" height="30" rx="6"/></g>
+          <text x="122" y="116" text-anchor="middle" class="fm-journey">UNDERSTAND</text>
+          <a href="/#boundary"><g class="fm-node" data-kind="framework"><rect x="24" y="138" width="196" height="34" rx="6"/></g><text x="38" y="160" class="fm-label">Scope boundary</text></a>
+          <a href="/specification.html"><g class="fm-node" data-kind="framework"><rect x="24" y="180" width="196" height="34" rx="6"/></g><text x="38" y="202" class="fm-label">Five controls</text></a>
+          <a href="/regulatory-alignment.html"><g class="fm-node" data-kind="context"><rect x="24" y="222" width="196" height="34" rx="6"/></g><text x="38" y="244" class="fm-label">Regulatory alignment</text></a>
+          <g class="fm-head"><rect x="236" y="96" width="196" height="30" rx="6"/></g>
+          <text x="334" y="116" text-anchor="middle" class="fm-journey">EVALUATE</text>
+          <a href="/shadow-evaluation-guide.html"><g class="fm-node" data-kind="measure"><rect x="236" y="138" width="196" height="34" rx="6"/></g><text x="250" y="160" class="fm-label">Shadow evaluation</text></a>
+          <a href="/evidence-pack.html"><g class="fm-node" data-kind="measure"><rect x="236" y="180" width="196" height="34" rx="6"/></g><text x="250" y="202" class="fm-label">Evidence pack</text></a>
+          <a href="/developers.html"><g class="fm-node" data-kind="measure"><rect x="236" y="222" width="196" height="34" rx="6"/></g><text x="250" y="244" class="fm-label">Conformance suite</text></a>
+          <g class="fm-head"><rect x="448" y="96" width="196" height="30" rx="6"/></g>
+          <text x="546" y="116" text-anchor="middle" class="fm-journey">IMPLEMENT</text>
+          <a href="/developers.html"><g class="fm-node" data-kind="build"><rect x="448" y="138" width="196" height="34" rx="6"/></g><text x="462" y="160" class="fm-label">Reference implementation</text></a>
+          <a href="/developers.html"><g class="fm-node" data-kind="build"><rect x="448" y="180" width="196" height="34" rx="6"/></g><text x="462" y="202" class="fm-label">Integration ladder</text></a>
+          <a href="/framework/nhid-auth.html"><g class="fm-node" data-kind="build"><rect x="448" y="222" width="196" height="34" rx="6"/></g><text x="462" y="244" class="fm-label">NHID-Auth v2</text></a>
+          <g class="fm-head"><rect x="660" y="96" width="196" height="30" rx="6"/></g>
+          <text x="758" y="116" text-anchor="middle" class="fm-journey">VALIDATE &amp; ADOPT</text>
+          <a href="/developers.html"><g class="fm-node" data-kind="measure"><rect x="660" y="138" width="196" height="34" rx="6"/></g><text x="674" y="160" class="fm-label">Front-desk walkthrough</text></a>
+          <a href="/specification.html"><g class="fm-node" data-kind="measure"><rect x="660" y="180" width="196" height="34" rx="6"/></g><text x="674" y="202" class="fm-label">Trust Gateway</text></a>
+          <a href="/faq.html"><g class="fm-node" data-kind="context"><rect x="660" y="222" width="196" height="34" rx="6"/></g><text x="674" y="244" class="fm-label">FAQ</text></a>
+          <text x="24" y="288" class="fm-key"><tspan class="fm-k1">&#9632;</tspan> framework &#183; <tspan class="fm-k2">&#9632;</tspan> measurement &#183; <tspan class="fm-k3">&#9632;</tspan> implementation &#183; <tspan class="fm-k4">&#9632;</tspan> context</text>
+        </svg>
+      </figure>
+      <p class="disclaimer-small" style="margin-top:.7rem"><span class="maturity-reference">Reference</span> A map of this site, arranged on its four journeys. Each node links to the destination it names.</p>
     </div>
   </section>
 
