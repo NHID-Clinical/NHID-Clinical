@@ -171,14 +171,31 @@ def test_the_page_states_the_output_is_real_and_how_to_reproduce_it():
     assert "build_gateway_fixture.py --check" in SPEC
 
 
-def test_the_superseded_mock_is_still_labelled_as_a_mock():
+def test_the_other_control_component_also_states_its_provenance():
     """
-    The front-desk walkthrough on developers.html remains, and remains an
-    illustration. Two components showing control behaviour is fine; one of them
-    quietly losing its disclaimer is not.
+    The front-desk walkthrough on developers.html is the site's other component
+    showing control behaviour. It used to be an illustration, and this test
+    required it to say so.
+
+    It is no longer an illustration: scripts/build_walkthrough_fixture.py
+    replays real corpus scenarios through evaluate_all and the scene plays back
+    the recording, guarded by --check in CI exactly as the Trust Gateway is. So
+    the requirement is now the stronger one the disclaimer stood in for — a
+    component showing control behaviour must state where its output came from —
+    and it is checked in full by tests/test_walkthrough_fixture.py.
+
+    What must never happen is either component going unlabelled.
     """
     dev = (ROOT / "developers.html").read_text(encoding="utf-8")
-    assert "Illustrative" in dev, (
-        "the front-desk walkthrough lost the disclaimer that distinguishes it "
-        "from the Trust Gateway's real output"
+    assert "src/nhid_policy_engine_v1.py :: evaluate_all" in dev, (
+        "the front-desk walkthrough no longer names the engine its output "
+        "comes from"
+    )
+    assert "scripts/build_walkthrough_fixture.py" in dev, (
+        "the front-desk walkthrough no longer names the script that recorded "
+        "its output"
+    )
+    assert "the verdicts are not" in dev, (
+        "the front-desk walkthrough no longer separates what is staging from "
+        "what is engine output"
     )
