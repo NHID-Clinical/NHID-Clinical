@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Generate the site's three evidence-backed visuals from repository data.
+Generate the site's four evidence-backed visuals from repository data.
 
 The visual audit found that the Trust Gateway was the only visual on the site
 whose content was the output of executing something, rather than a drawing of
 what executing it would look like. Everything quantitative — corpus results,
 detection rates, conformance counts — reached the reader as prose.
 
-This script adds three more, on the same terms scripts/build_gateway_fixture.py
+This script adds four more, on the same terms scripts/build_gateway_fixture.py
 established:
 
     repository data -> replay through the real engine -> generated visual
@@ -23,6 +23,11 @@ established:
   3. Evidence scorecard      evidence-pack.html
      The four evidence populations, kept separate, each with its own
      denominator and its own reproduction command.
+
+  4. Latency distribution    shadow-evaluation-guide.html
+     The recorded impersonation_latency_ms field, as percentiles. The one
+     quantity the framework is explicitly trying to change, which the site
+     previously described only in prose.
 
 Nothing here is drawn by hand. Every number is computed at generation time and
 re-computed by --check, which is wired into CI.
