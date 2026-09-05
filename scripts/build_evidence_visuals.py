@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Generate the site's three evidence-backed visuals from repository data.
+Generate the site's four evidence-backed visuals from repository data.
 
 The visual audit found that the Trust Gateway was the only visual on the site
 whose content was the output of executing something, rather than a drawing of
 what executing it would look like. Everything quantitative — corpus results,
 detection rates, conformance counts — reached the reader as prose.
 
-This script adds three more, on the same terms scripts/build_gateway_fixture.py
+This script adds four more, on the same terms scripts/build_gateway_fixture.py
 established:
 
     repository data -> replay through the real engine -> generated visual
@@ -23,6 +23,11 @@ established:
   3. Evidence scorecard      evidence-pack.html
      The four evidence populations, kept separate, each with its own
      denominator and its own reproduction command.
+
+  4. Latency distribution    shadow-evaluation-guide.html
+     The recorded impersonation_latency_ms field, as percentiles. The one
+     quantity the framework is explicitly trying to change, which the site
+     previously described only in prose.
 
 Nothing here is drawn by hand. Every number is computed at generation time and
 re-computed by --check, which is wired into CI.
@@ -88,6 +93,7 @@ TARGETS = {
     "enforcement-ladder": ROOT / "specification.html",
     "shadow-outcomes": ROOT / "shadow-evaluation-guide.html",
     "evidence-scorecard": ROOT / "evidence-pack.html",
+    "latency-distribution": ROOT / "shadow-evaluation-guide.html",
 }
 
 PRIORITY_PATTERN = re.compile(r"PolicyAction\.(?P<action>[A-Z_]+)\s*:\s*(?P<priority>\d+)")
@@ -346,6 +352,71 @@ def measure_scorecard() -> dict[str, Any]:
     }
 
 
+# ── Measurement 4: impersonation latency, as the corpus actually records it ──
+
+def _percentile(values: list[int], p: float) -> int:
+    """Nearest-rank percentile. No interpolation — these are recorded values."""
+    if not values:
+        return 0
+    index = max(1, min(len(values), int(round(p / 100.0 * len(values)))))
+    return values[index - 1]
+
+
+def measure_latency() -> dict[str, Any]:
+    """Read impersonation_latency_ms straight out of the Fabricate corpus.
+
+    This is the one quantity the framework is explicitly trying to change, and
+    until now the site described it only in prose.
+
+    An important restraint on how this may be read: `expected_outcome` is a
+    label the corpus was authored with, not something the engine decided. The
+    split below therefore describes how this corpus was written. It is NOT
+    evidence that conformance shortens the interval, and the figure says so.
+    """
+    values: list[int] = []
+    by_label: dict[str, list[int]] = {}
+
+    with FABRICATE_CSV.open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            raw = (row.get("impersonation_latency_ms") or "").strip()
+            if not raw.isdigit():
+                continue
+            value = int(raw)
+            values.append(value)
+            by_label.setdefault(row.get("expected_outcome") or "UNLABELLED", []).append(value)
+
+    values.sort()
+    for bucket in by_label.values():
+        bucket.sort()
+
+    return {
+        "source": "fixtures/fabricate/conversations.csv",
+        "field": "impersonation_latency_ms",
+        "conversations_with_a_value": len(values),
+        "overall": {
+            "min": values[0] if values else 0,
+            "p50": _percentile(values, 50),
+            "p90": _percentile(values, 90),
+            "p95": _percentile(values, 95),
+            "p99": _percentile(values, 99),
+            "max": values[-1] if values else 0,
+        },
+        "by_label": {
+            label: {
+                "n": len(bucket),
+                "p50": _percentile(bucket, 50),
+                "p95": _percentile(bucket, 95),
+            }
+            for label, bucket in sorted(by_label.items(), key=lambda kv: -len(kv[1]))
+        },
+        "reading_note": (
+            "expected_outcome is a label the corpus was authored with, not an "
+            "engine decision. The split describes how this corpus was written; "
+            "it is not evidence that conformance shortens the interval."
+        ),
+    }
+
+
 # ── Rendering ──────────────────────────────────────────────────────────────
 
 def _bar_chart(actions: dict[str, int], total: int) -> str:
@@ -403,7 +474,7 @@ def render_ladder(data: dict[str, Any]) -> str:
         wy += 32
     win_svg = "\n".join(wins)
 
-    return f"""<figure class="evidence-model enforcement-ladder">
+    return f"""<figure class="figure-frame enforcement-ladder">
         <svg viewBox="0 0 880 440" role="img" aria-labelledby="el2-title el2-desc" style="width:100%;height:auto;display:block">
           <title id="el2-title">How five control decisions resolve into one</title>
           <desc id="el2-desc">One turn event fans out to all five controls, which evaluate independently against the same session and event. Each returns its own PolicyDecision. The composite decision is the most restrictive of the five by priority: DENY_DATA at {priority['DENY_DATA']}, ESCALATE_HUMAN at {priority['ESCALATE_HUMAN']}, DISCLOSE_IDENTITY at {priority['DISCLOSE_IDENTITY']}, LOG_ONLY at {priority['LOG_ONLY']}, CONTINUE_AI at {priority['CONTINUE_AI']}. This is not a serial gate chain: on {d['contested_turns']} of the corpus's {d['turns']} turns more than one control tied at the top. The left column counts how often each action was the composite across the corpus; the right column counts how often each control was at the winning priority.</desc>
@@ -477,7 +548,7 @@ def render_shadow(data: dict[str, Any]) -> str:
         f"{a} on {n} turns" for a, n in d["actions"].items() if n
     )
 
-    return f"""<figure class="evidence-model shadow-outcomes">
+    return f"""<figure class="figure-frame shadow-outcomes">
         <svg viewBox="0 0 880 {height}" role="img" aria-labelledby="so-title so-desc" style="width:100%;height:auto;display:block">
           <title id="so-title">What an observe-only run returns over the shadow-pilot corpus</title>
           <desc id="so-desc">A horizontal bar chart of composite decisions across {d['turns']} turns in {d['conversations']} conversations: {action_desc}. {d['enforcing_turns']} turns — {enforcing_pct:.1f} percent — returned something other than CONTINUE_AI, which is the share a deployment would have to act on if it moved from observing to enforcing. No call routing was changed to produce this: the engine was run over a committed corpus.</desc>
@@ -541,10 +612,91 @@ def render_scorecard(data: dict[str, Any]) -> str:
       </aside>"""
 
 
+def render_latency(data: dict[str, Any]) -> str:
+    d = data["latency"]
+    o = d["overall"]
+    # Axis stops at the whole-population p95. The tail beyond it is real and is
+    # stated in words rather than compressed into a misleading bar.
+    axis_max = max(o["p95"], 1)
+    x0, width = 176.0, 620.0
+
+    def x(value: int) -> float:
+        return x0 + width * min(value, axis_max) / axis_max
+
+    rows = []
+    y = 66
+    for label, stats in d["by_label"].items():
+        p50, p95 = stats["p50"], stats["p95"]
+        clipped = p95 > axis_max
+        rows.append(
+            f'          <text x="{x0 - 12}" y="{y + 12}" text-anchor="end" class="lt-cat">'
+            f"{_esc(label)}</text>\n"
+            f'          <text x="{x0 - 12}" y="{y + 24}" text-anchor="end" class="lt-n">'
+            f'n={stats["n"]}</text>\n'
+            f'          <line x1="{x(p50):.1f}" y1="{y + 9}" x2="{x(p95):.1f}" y2="{y + 9}" class="lt-span"/>\n'
+            f'          <circle cx="{x(p50):.1f}" cy="{y + 9}" r="4.5" class="lt-p50"/>\n'
+            f'          <circle cx="{x(p95):.1f}" cy="{y + 9}" r="4.5" class="lt-p95"/>\n'
+            f'          <text x="{x(p50):.1f}" y="{y - 2}" text-anchor="middle" class="lt-val">'
+            f"{p50:,}</text>\n"
+            f'          <text x="{x(p95):.1f}" y="{y - 2}" text-anchor="middle" class="lt-val">'
+            f'{p95:,}{"+" if clipped else ""}</text>'
+        )
+        y += 40
+    row_svg = "\n".join(rows)
+
+    # Grid and ticks are laid out against the finished row block, so adding or
+    # removing a label class can never push the axis into the headline.
+    grid_bottom = y - 18
+    tick_y = y + 2
+    divider_y = y + 18
+    headline_y = y + 40
+    height = y + 58
+
+    ticks = []
+    for frac in (0, 0.25, 0.5, 0.75, 1.0):
+        value = int(axis_max * frac)
+        px = x0 + width * frac
+        ticks.append(
+            f'          <line x1="{px:.1f}" y1="52" x2="{px:.1f}" y2="{grid_bottom}" class="lt-grid"/>\n'
+            f'          <text x="{px:.1f}" y="{tick_y}" text-anchor="middle" class="lt-tick">'
+            f"{value:,} ms</text>"
+        )
+    tick_svg = "\n".join(ticks)
+
+    label_desc = "; ".join(
+        f'{k} p50 {v["p50"]} milliseconds and p95 {v["p95"]} milliseconds over {v["n"]} conversations'
+        for k, v in d["by_label"].items()
+    )
+
+    return f"""<figure class="figure-frame latency-distribution">
+        <svg viewBox="0 0 880 {height}" role="img" aria-labelledby="lt-title lt-desc" style="width:100%;height:auto;display:block">
+          <title id="lt-title">Recorded impersonation latency across the Fabricate corpus</title>
+          <desc id="lt-desc">A percentile strip per corpus label. Across {d['conversations_with_a_value']} conversations carrying a value, impersonation latency runs from {o['min']} milliseconds at minimum through {o['p50']} at the median, {o['p90']} at p90, {o['p95']} at p95 and {o['p99']} at p99, to {o['max']} at maximum. By label: {label_desc}. The axis stops at the whole-population p95; longer values exist and are stated in the note beneath. The label is how each conversation was authored, not a decision the engine made.</desc>
+
+          <text x="24" y="22" class="ev-zone">RECORDED IMPERSONATION LATENCY &#183; {d['conversations_with_a_value']} CONVERSATIONS</text>
+          <text x="24" y="40" class="ev-sub">Dots mark p50 and p95. Axis stops at the whole-population p95.</text>
+
+{tick_svg}
+{row_svg}
+
+          <line x1="24" y1="{divider_y}" x2="856" y2="{divider_y}" class="ev-divider"/>
+          <text x="24" y="{headline_y}" class="ev-headline">Whole population: p50 {o['p50']:,} ms &#183; p90 {o['p90']:,} ms &#183; p95 {o['p95']:,} ms &#183; p99 {o['p99']:,} ms &#183; max {o['max']:,} ms</text>
+        </svg>
+      </figure>
+
+      <aside class="visual-provenance">
+        <p><strong>Evidence basis:</strong> <code>{_esc(d['source'])}</code> field <code>{_esc(d['field'])}</code> &mdash; {d['conversations_with_a_value']} conversations carrying a recorded value</p>
+        <p><strong>Classification:</strong> <span class="maturity-research">Research</span> A synthetic corpus as authored. These are not measurements of production calls.</p>
+        <p><strong>How to read the split:</strong> {_esc(d['reading_note'])}</p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>{_esc(data['source_commit'])}</code></p>
+      </aside>"""
+
+
 RENDERERS = {
     "enforcement-ladder": render_ladder,
     "shadow-outcomes": render_shadow,
     "evidence-scorecard": render_scorecard,
+    "latency-distribution": render_latency,
 }
 
 
@@ -562,6 +714,7 @@ def build() -> dict[str, Any]:
         "ladder": measure_ladder(),
         "shadow": measure_shadow(),
         "scorecard": measure_scorecard(),
+        "latency": measure_latency(),
     }
 
 
@@ -604,7 +757,7 @@ def main(argv: list[str] | None = None) -> int:
                   "Run scripts/build_evidence_visuals.py.", file=sys.stderr)
             return 1
         committed = json.loads(OUT.read_text(encoding="utf-8"))
-        for key in ("ladder", "shadow", "scorecard"):
+        for key in ("ladder", "shadow", "scorecard", "latency"):
             if committed.get(key) != fresh[key]:
                 print(f"EVIDENCE FAIL: {OUT.relative_to(ROOT)} no longer matches what "
                       f"the engine produces (`{key}` differs). Re-run "
@@ -631,9 +784,10 @@ def main(argv: list[str] | None = None) -> int:
                 return 1
 
         print(
-            "EVIDENCE PASS: all three figures match the engine "
+            f"EVIDENCE PASS: all {len(TARGETS)} figures match their sources "
             f"(ladder {fresh['ladder']['turns']} turns, "
             f"shadow {fresh['shadow']['turns']} turns, "
+            f"latency {fresh['latency']['conversations_with_a_value']} conversations, "
             f"{len(fresh['scorecard']['populations'])} populations kept separate)"
         )
         return 0

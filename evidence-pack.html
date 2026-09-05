@@ -136,9 +136,47 @@
       <h1 class="reveal page-heading">Evidence Pack</h1>
       <p class="lede reveal lede-text">System behavior guarantees, a worked failure trace, and the audit readiness model — <strong>for teams evaluating adoption.</strong> Self-attested, open for community review.</p>
       <div class="payer-hero-visual" style="margin-top:1.25rem">
-        <picture class="premium-3d">
-          <img src="/assets/images/3d-svg/trust-stack.svg" alt="Diagram of the five-layer NHID-Clinical trust stack: STIR/SHAKEN, NHID-Clinical v1.3, NHID-Auth v2, FHIR AuditEvent R4, and OpenTelemetry, over the Layer 0 NPI gap."/>
-        </picture>
+        <figure class="figure-frame trust-stack-model">
+        <svg viewBox="0 0 880 366" role="img" aria-labelledby="ts-title ts-desc" style="width:100%;height:auto;display:block">
+          <title id="ts-title">The five-layer trust stack, in cross-section</title>
+          <desc id="ts-desc">Five layers, drawn bottom to top. Layer 1, STIR/SHAKEN, authenticates the carrier number and emits an attestation on the call leg. Layer 2, NHID-Clinical v1.3, is this framework: it establishes the behavioural disclosure baseline and emits a PolicyDecision with a reason code. Layer 3, NHID-Auth v2, is an optional extension adding cryptographic authorization through a signed agent passport. Layer 4, FHIR AuditEvent R4, emits an audit bundle per turn. Layer 5, OpenTelemetry, carries traces, spans and latency. Beneath all five sits layer 0, the NPI gap: no cross-organization authorization exists for AI agents today, which is the problem the stack is assembled to address. Only layer 2 is NHID-Clinical itself; layer 3 is its optional extension and the rest are existing standards it emits into.</desc>
+
+          <text x="24" y="24" class="ts-zone">CONTROL PURPOSE</text>
+          <text x="640" y="24" class="ts-zone">EVIDENCE EMITTED</text>
+          <g class="ts-layer" data-kind="external"><rect x="150" y="54" width="470" height="42" rx="6"/></g>
+          <text x="128" y="80" text-anchor="end" class="ts-num">5</text>
+          <text x="168" y="74" class="ts-name">OpenTelemetry</text>
+          <text x="168" y="88" class="ts-purpose">Observability &amp; metrics</text>
+          <text x="640" y="80" class="ts-evidence">Traces, spans, latency</text>
+          <g class="ts-layer" data-kind="external"><rect x="150" y="104" width="470" height="42" rx="6"/></g>
+          <text x="128" y="130" text-anchor="end" class="ts-num">4</text>
+          <text x="168" y="124" class="ts-name">FHIR AuditEvent R4</text>
+          <text x="168" y="138" class="ts-purpose">Audit logging</text>
+          <text x="640" y="130" class="ts-evidence">AuditEvent bundle per turn</text>
+          <g class="ts-layer" data-kind="extension"><rect x="150" y="154" width="470" height="42" rx="6"/></g>
+          <text x="128" y="180" text-anchor="end" class="ts-num">3</text>
+          <text x="168" y="174" class="ts-name">NHID-Auth v2</text>
+          <text x="168" y="188" class="ts-purpose">Cryptographic authorization</text>
+          <text x="640" y="180" class="ts-evidence">Signed agent passport</text>
+          <g class="ts-layer" data-kind="core"><rect x="150" y="204" width="470" height="42" rx="6"/></g>
+          <text x="128" y="230" text-anchor="end" class="ts-num">2</text>
+          <text x="168" y="224" class="ts-name">NHID-Clinical v1.3</text>
+          <text x="168" y="238" class="ts-purpose">Behavioural disclosure baseline</text>
+          <text x="640" y="230" class="ts-evidence">PolicyDecision + reason code</text>
+          <g class="ts-layer" data-kind="external"><rect x="150" y="254" width="470" height="42" rx="6"/></g>
+          <text x="128" y="280" text-anchor="end" class="ts-num">1</text>
+          <text x="168" y="274" class="ts-name">STIR/SHAKEN</text>
+          <text x="168" y="288" class="ts-purpose">Carrier number authentication</text>
+          <text x="640" y="280" class="ts-evidence">Attestation on the call leg</text>
+
+          <g class="ts-gap"><rect x="150" y="310" width="470" height="34" rx="6"/></g>
+          <text x="128" y="332" text-anchor="end" class="ts-num">0</text>
+          <text x="168" y="332" class="ts-gapname">The NPI gap &#8212; no cross-organization authorization for AI agents</text>
+
+          <text x="24" y="362" class="ts-key"><tspan class="ts-key-core">&#9632;</tspan> NHID-Clinical v1.3 &#183; <tspan class="ts-key-ext">&#9632;</tspan> NHID-Auth v2, optional extension &#183; <tspan class="ts-key-ext-o">&#9632;</tspan> existing standards this stack emits into</text>
+        </svg>
+      </figure>
+      <p class="disclaimer-small" style="margin-top:.7rem"><span class="maturity-reference">Reference</span> Architectural model of how the layers relate. Layer 2 is specified and implemented in this repository; layer 3 is released as a separate document; layers 1, 4 and 5 are existing standards and are not provided by NHID-Clinical.</p>
         <p class="visual-caption">Five testable layers that turn trust claims into evidence</p>
       </div>
       <div style="margin-top:1.25rem">
@@ -274,7 +312,7 @@
 
       <aside class="visual-provenance">
         <p><strong>Separation:</strong> Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>2e5fffd</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>aecb5c3</code></p>
       </aside>
       <!-- END GENERATED evidence-scorecard -->
 

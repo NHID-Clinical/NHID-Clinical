@@ -134,7 +134,28 @@
 
       <h2 style="margin-bottom:1rem">Staged Integration — Stop at Any Rung</h2>
       <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Integration is a ladder, not an all-or-nothing commitment. Tier 0 needs nothing but <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">curl</code>; Tier 2's cryptographic identity layer (NHID-Auth v2) is optional. Full walkthrough: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/v2-integration-guide.md" style="color:var(--teal-bright)">v2-integration-guide.md</a>.</p>
-      <img src="/assets/diagrams/integration-ladder.svg" alt="Staged integration ladder: Tier 0 paste a payload to the hosted demo endpoint in 15 minutes with no keys; Tier 1 wire one HTTP call into your end-of-call webhook in about 2 hours for continuous CAS monitoring; Tier 2 adds cryptographic agent identity via NHID-Auth v2 in about a day, with NPI-bound passports and scoped delegation" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:2.5rem" loading="lazy"/>
+      <figure class="figure-frame integration-ladder-model">
+        <svg viewBox="0 0 880 344" role="img" aria-labelledby="il-title il-desc" style="width:100%;height:auto;display:block">
+          <title id="il-title">The integration ladder, and what each rung produces</title>
+          <desc id="il-desc">Three tiers, each stating the work, the capability gained and the evidence produced. Tier 0, paste a payload, takes about fifteen minutes: POST a transcript to the hosted demo endpoint or a vendor payload to an adapter route. It changes nothing in the call path and produces a conformance verdict and CAS score per call. Tier 1, wire into the call pipeline, takes about two hours: one HTTP call from your existing end-of-call handler, storing the score and alerting on non-conformance. It gives continuous monitoring and produces a stored, alertable CAS score per call. Tier 2, cryptographic agent identity, takes about a day: add NHID-Auth v2 with NPI-bound agent passports and scoped, short-lived delegation. It gives verified authorization and produces a signed passport and verification record. Each rung is a stopping point; none requires the next.</desc>
+          <g class="il-tier"><rect x="24" y="48" width="832" height="86" rx="8"/></g>
+          <text x="48" y="82" class="il-num">0</text>
+          <text x="82" y="76" class="il-name">Tier 0 &#183; Paste a payload</text>
+          <text x="82" y="94" class="il-work">POST a transcript to the hosted demo endpoint, or a vendor payload to an adapter route.</text>
+          <text x="82" y="118" class="il-meta"><tspan class="il-key">effort</tspan> ~15 minutes  &#183;  <tspan class="il-key">capability</tspan> No call-path change  &#183;  <tspan class="il-key">evidence</tspan> Conformance verdict + CAS score per call</text>
+          <g class="il-tier"><rect x="24" y="144" width="832" height="86" rx="8"/></g>
+          <text x="48" y="178" class="il-num">1</text>
+          <text x="82" y="172" class="il-name">Tier 1 &#183; Wire into the call pipeline</text>
+          <text x="82" y="190" class="il-work">One HTTP call from your existing end-of-call handler; store the score, alert on non-conformance.</text>
+          <text x="82" y="214" class="il-meta"><tspan class="il-key">effort</tspan> ~2 hours  &#183;  <tspan class="il-key">capability</tspan> Continuous monitoring  &#183;  <tspan class="il-key">evidence</tspan> Stored CAS score per call, alertable</text>
+          <g class="il-tier"><rect x="24" y="240" width="832" height="86" rx="8"/></g>
+          <text x="48" y="274" class="il-num">2</text>
+          <text x="82" y="268" class="il-name">Tier 2 &#183; Cryptographic agent identity</text>
+          <text x="82" y="286" class="il-work">Add NHID-Auth v2: NPI-bound agent passports with scoped, short-lived delegation.</text>
+          <text x="82" y="310" class="il-meta"><tspan class="il-key">effort</tspan> ~1 day  &#183;  <tspan class="il-key">capability</tspan> Verified authorization  &#183;  <tspan class="il-key">evidence</tspan> Signed passport + verification record</text>
+        </svg>
+      </figure>
+      <p class="disclaimer-small" style="margin-top:.7rem"><span class="maturity-reference">Reference</span> Each rung is a stopping point. Nothing above Tier 0 is required to get a conformance verdict, and Tier 2 is optional. Full walkthrough: <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/v2-integration-guide.md">v2-integration-guide.md</a>.</p>
 
       <!-- ── Front Desk Walkthrough ────────────────────────────────────── -->
 

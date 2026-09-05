@@ -256,7 +256,47 @@
       <!-- Trust stack diagram -->
       <h3 style="margin-top:2.5rem">Where v2 Sits in the Trust Stack</h3>
       <p class="lede" style="font-size:.93rem;margin-top:.5rem">v2 is one layer in a stack that starts at a real gap (no cross-org NPI authorization exists today) and ends at a healthcare-native audit trail. Layers 2–4 are NHID-Clinical's contribution; Layer 3 (this page) is optional.</p>
-      <img src="/assets/diagrams/trust-stack-3d.jpg" alt="Five-layer trust stack: STIR/SHAKEN carrier certification at top, NHID-Clinical disclosure layer, NHID-Auth with Ed25519 signatures and NPI Passports, FHIR R4 Audit logging, and OpenTelemetry metrics and traces at the base" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-top:1rem" loading="lazy"/>
+      <figure class="figure-frame trust-stack-model">
+        <svg viewBox="0 0 880 366" role="img" aria-labelledby="ts-title ts-desc" style="width:100%;height:auto;display:block">
+          <title id="ts-title">The five-layer trust stack, in cross-section</title>
+          <desc id="ts-desc">Five layers, drawn bottom to top. Layer 1, STIR/SHAKEN, authenticates the carrier number and emits an attestation on the call leg. Layer 2, NHID-Clinical v1.3, is this framework: it establishes the behavioural disclosure baseline and emits a PolicyDecision with a reason code. Layer 3, NHID-Auth v2, is an optional extension adding cryptographic authorization through a signed agent passport. Layer 4, FHIR AuditEvent R4, emits an audit bundle per turn. Layer 5, OpenTelemetry, carries traces, spans and latency. Beneath all five sits layer 0, the NPI gap: no cross-organization authorization exists for AI agents today, which is the problem the stack is assembled to address. Only layer 2 is NHID-Clinical itself; layer 3 is its optional extension and the rest are existing standards it emits into.</desc>
+
+          <text x="24" y="24" class="ts-zone">CONTROL PURPOSE</text>
+          <text x="640" y="24" class="ts-zone">EVIDENCE EMITTED</text>
+          <g class="ts-layer" data-kind="external"><rect x="150" y="54" width="470" height="42" rx="6"/></g>
+          <text x="128" y="80" text-anchor="end" class="ts-num">5</text>
+          <text x="168" y="74" class="ts-name">OpenTelemetry</text>
+          <text x="168" y="88" class="ts-purpose">Observability &amp; metrics</text>
+          <text x="640" y="80" class="ts-evidence">Traces, spans, latency</text>
+          <g class="ts-layer" data-kind="external"><rect x="150" y="104" width="470" height="42" rx="6"/></g>
+          <text x="128" y="130" text-anchor="end" class="ts-num">4</text>
+          <text x="168" y="124" class="ts-name">FHIR AuditEvent R4</text>
+          <text x="168" y="138" class="ts-purpose">Audit logging</text>
+          <text x="640" y="130" class="ts-evidence">AuditEvent bundle per turn</text>
+          <g class="ts-layer" data-kind="extension"><rect x="150" y="154" width="470" height="42" rx="6"/></g>
+          <text x="128" y="180" text-anchor="end" class="ts-num">3</text>
+          <text x="168" y="174" class="ts-name">NHID-Auth v2</text>
+          <text x="168" y="188" class="ts-purpose">Cryptographic authorization</text>
+          <text x="640" y="180" class="ts-evidence">Signed agent passport</text>
+          <g class="ts-layer" data-kind="core"><rect x="150" y="204" width="470" height="42" rx="6"/></g>
+          <text x="128" y="230" text-anchor="end" class="ts-num">2</text>
+          <text x="168" y="224" class="ts-name">NHID-Clinical v1.3</text>
+          <text x="168" y="238" class="ts-purpose">Behavioural disclosure baseline</text>
+          <text x="640" y="230" class="ts-evidence">PolicyDecision + reason code</text>
+          <g class="ts-layer" data-kind="external"><rect x="150" y="254" width="470" height="42" rx="6"/></g>
+          <text x="128" y="280" text-anchor="end" class="ts-num">1</text>
+          <text x="168" y="274" class="ts-name">STIR/SHAKEN</text>
+          <text x="168" y="288" class="ts-purpose">Carrier number authentication</text>
+          <text x="640" y="280" class="ts-evidence">Attestation on the call leg</text>
+
+          <g class="ts-gap"><rect x="150" y="310" width="470" height="34" rx="6"/></g>
+          <text x="128" y="332" text-anchor="end" class="ts-num">0</text>
+          <text x="168" y="332" class="ts-gapname">The NPI gap &#8212; no cross-organization authorization for AI agents</text>
+
+          <text x="24" y="362" class="ts-key"><tspan class="ts-key-core">&#9632;</tspan> NHID-Clinical v1.3 &#183; <tspan class="ts-key-ext">&#9632;</tspan> NHID-Auth v2, optional extension &#183; <tspan class="ts-key-ext-o">&#9632;</tspan> existing standards this stack emits into</text>
+        </svg>
+      </figure>
+      <p class="disclaimer-small" style="margin-top:.7rem"><span class="maturity-reference">Reference</span> Architectural model of how the layers relate. Layer 2 is specified and implemented in this repository; layer 3 is released as a separate document; layers 1, 4 and 5 are existing standards and are not provided by NHID-Clinical.</p>
 
       <!-- What the reference implementation contains -->
       <h3 style="margin-top:2.5rem">What the Reference Implementation Contains</h3>
@@ -286,7 +326,46 @@
 
       <!-- Credential flow diagram -->
       <h3 style="margin-top:2.5rem">How the Credential Flow Works</h3>
-      <img src="/assets/diagrams/v2-identity-flow.svg" alt="NHID-Auth v2 credential flow: a provider organization issues an Ed25519-signed agent passport with NPI binding, scopes, and expiry; optional scoped delegation narrows scope across at most 3 hops; the passport is presented out of band with a call-bound nonce; the payer runs six ordered checks (signature, NPI, expiry, revocation, scope narrowing, nonce) and returns ALLOW or a typed DENY error code" style="width:100%;height:auto;border-radius:10px;border:1px solid var(--border);margin-top:1rem" loading="lazy"/>
+      <figure class="figure-frame credential-chain">
+        <svg viewBox="0 0 880 272" role="img" aria-labelledby="cc-title cc-desc" style="width:100%;height:auto;display:block">
+          <title id="cc-title">The NHID-Auth v2 credential chain, end to end</title>
+          <desc id="cc-desc">Four ordered steps. One: the provider organization signs the agent&#8217;s public key with its Ed25519 issuing key, binding its NPI, the granted scopes and a short expiry into the credential. Two, optional: the credential may be delegated down a chain of at most three hops, and scope can only narrow — any attempt to widen it is rejected at verification. Three: the agent presents its passport out of band via API, with a nonce bound to the specific call SID so it cannot be replayed across calls, adding no latency to the voice channel. Four: the payer side runs six ordered checks — provider signature by Ed25519, NPI binding, expiry, revocation, nonce and call-SID match, and scope containment — and then writes an audit record.</desc>
+          <text x="24" y="26" class="cc-zone">CREDENTIAL CHAIN</text>
+          <g class="cc-step"><rect x="24" y="46" width="188" height="112" rx="8"/></g>
+          <text x="40" y="72" class="cc-num">1</text>
+          <text x="40" y="94" class="cc-title">Provider issues</text>
+          <foreignObject x="39" y="102" width="158" height="52"><span xmlns="http://www.w3.org/1999/xhtml" class="cc-body">Signs the agent&#8217;s public key with its Ed25519 issuing key, binding NPI, scopes and a short expiry.</span></foreignObject>
+          <path d="M212 102 H232" class="cc-flow"/><polygon points="236,102 226,97 226,107" class="cc-flow-head"/>
+          <g class="cc-step"><rect x="236" y="46" width="188" height="112" rx="8"/></g>
+          <text x="252" y="72" class="cc-num">2</text>
+          <text x="252" y="94" class="cc-title">Scoped delegation</text>
+          <foreignObject x="251" y="102" width="158" height="52"><span xmlns="http://www.w3.org/1999/xhtml" class="cc-body">Optional. At most 3 hops, and scope can only narrow &#8212; widening is rejected at verification.</span></foreignObject>
+          <path d="M424 102 H444" class="cc-flow"/><polygon points="448,102 438,97 438,107" class="cc-flow-head"/>
+          <g class="cc-step"><rect x="448" y="46" width="188" height="112" rx="8"/></g>
+          <text x="464" y="72" class="cc-num">3</text>
+          <text x="464" y="94" class="cc-title">Passport presented</text>
+          <foreignObject x="463" y="102" width="158" height="52"><span xmlns="http://www.w3.org/1999/xhtml" class="cc-body">Out of band via API, with a nonce bound to the call SID. No latency added to the voice channel.</span></foreignObject>
+          <path d="M636 102 H656" class="cc-flow"/><polygon points="660,102 650,97 650,107" class="cc-flow-head"/>
+          <g class="cc-step"><rect x="660" y="46" width="188" height="112" rx="8"/></g>
+          <text x="676" y="72" class="cc-num">4</text>
+          <text x="676" y="94" class="cc-title">Payer-side verification</text>
+          <foreignObject x="675" y="102" width="158" height="52"><span xmlns="http://www.w3.org/1999/xhtml" class="cc-body">Six ordered checks below, then an audit record is written.</span></foreignObject>
+          <text x="24" y="184" class="cc-zone">STEP 4 &#183; SIX ORDERED CHECKS, THEN AN AUDIT RECORD</text>
+          <g class="cc-check"><rect x="24" y="196" width="272" height="26" rx="13"/></g>
+          <text x="40" y="213" class="cc-checktext">1. Provider signature (Ed25519)</text>
+          <g class="cc-check"><rect x="308" y="196" width="272" height="26" rx="13"/></g>
+          <text x="324" y="213" class="cc-checktext">2. NPI binding</text>
+          <g class="cc-check"><rect x="592" y="196" width="272" height="26" rx="13"/></g>
+          <text x="608" y="213" class="cc-checktext">3. Expiry</text>
+          <g class="cc-check"><rect x="24" y="230" width="272" height="26" rx="13"/></g>
+          <text x="40" y="247" class="cc-checktext">4. Revocation</text>
+          <g class="cc-check"><rect x="308" y="230" width="272" height="26" rx="13"/></g>
+          <text x="324" y="247" class="cc-checktext">5. Nonce / call-SID match</text>
+          <g class="cc-check"><rect x="592" y="230" width="272" height="26" rx="13"/></g>
+          <text x="608" y="247" class="cc-checktext">6. Scope containment</text>
+        </svg>
+      </figure>
+      <p class="disclaimer-small" style="margin-top:.7rem"><span class="maturity-reference">Reference</span> Protocol model from the NHID-Auth v2 document. NHID-Auth v2 is a separate release from the v1.3 behavioural baseline, and is optional.</p>
 
       <!-- Run it -->
       <h3 style="margin-top:2.5rem">Run It</h3>

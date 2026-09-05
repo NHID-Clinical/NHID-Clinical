@@ -121,6 +121,12 @@ canonical heights: 320, 330, 380, 400, 430, 440.
   `rem` — below that the labels collide, so the figure scrolls inside its own
   box rather than shrinking into illegibility. This is deliberate: a diagram
   the reader must scroll is better than one they cannot read.
+- **Wrapper class:** a new figure uses `.figure-frame` for the shared border,
+  padding and `overflow-x`, plus its own specific class. It must **not** reuse
+  one of the five canonical model class names (`.control-model`,
+  `.boundary-model`, `.shadow-model`, `.arch-model`, `.evidence-model`) as a
+  generic wrapper — those name particular figures, and `tests/` looks them up by
+  class. Borrowing one silently shadows the figure it names.
 - 8px grid for box positions; 4px for internal padding.
 - Corner radius 8–9px on primary boxes, 5–7px on secondary, 2–4px on chips.
 
@@ -244,6 +250,10 @@ Read these before building a new figure.
 
 | Figure | File | Why it is the reference |
 | :--- | :--- | :--- |
+| Trust-stack cross-section | `index.html`, `evidence-pack.html`, `framework/nhid-auth.html` | One canonical figure on three pages; distinguishes this framework from its optional extension and from standards it merely emits into |
+| Obligation-to-control map | `index.html` | Compact hero form; shows which obligations are *not* v1.3 controls |
+| Framework relationship map | `index.html` | One accent per semantic role, not per node; branches are the site's own journeys |
+| Latency distribution | `shadow-evaluation-guide.html` | Generated from a recorded field; separates measurement from how the corpus was authored |
 | Interaction boundary | `index.html` | Simplest canonical model; the grammar at its plainest |
 | Five-control model | `specification.html` | Gate vs. audit treatment; ATR-01 drawn correctly |
 | Disclosure-gate sequence | `specification.html` | Lane geometry, prose fallback, replaced a CDN dependency |
@@ -259,17 +269,21 @@ Read these before building a new figure.
 
 Recorded so the direction is not re-litigated per figure.
 
-| Asset | Why |
-| :--- | :--- |
-| `mermaid@10` from jsDelivr | Runtime third-party dependency; failed to raw source text; foreign visual language. **Removed.** |
-| `3d-svg/trust-stack.svg` | 22 colours, 5 gradients, 2 filters, hardcoded hex, no dark mode |
-| `3d-svg/latency-split.svg` | 5 gradients, 3 filters; sat beside a flat model on the same page |
-| `framework-mindmap.svg` | 19 colours and separate typography |
-| `trust-lattice.svg` | Gradient treatment; vocabulary worth keeping, execution not |
-| `integration-ladder.svg` | Gradients and no internal `<title>`/`<desc>` |
-| `v2-identity-flow.svg` | No internal `<title>`/`<desc>` |
-| `trust-stack-3d.jpg` | Provenance is a bare UUID and an unattributed signature — governance decision, not design |
+| Asset | Status | Why |
+| :--- | :--- | :--- |
+| `mermaid@10` from jsDelivr | **Removed** | Runtime third-party dependency; failed to raw source text; foreign visual language |
+| `3d-svg/trust-stack.svg` | **Replaced** | 22 colours, 5 gradients, 2 filters, hardcoded hex, no dark mode → trust-stack cross-section |
+| `trust-stack-3d.jpg` | **Replaced** | Provenance was a bare UUID and an unattributed signature → same cross-section |
+| `3d-svg/latency-split.svg` | **Replaced** | Asserted a contrast → latency distribution, generated from the recorded field |
+| `framework-mindmap.svg` | **Replaced** | 19 colours and separate typography → framework relationship map |
+| `trust-lattice.svg` | **Replaced** | Gradient treatment; vocabulary kept, execution not → obligation-to-control map |
+| `integration-ladder.svg` | **Replaced** | Gradients, no internal `<title>`/`<desc>` → ladder stating the evidence each rung produces |
+| `v2-identity-flow.svg` | **Replaced** | No internal `<title>`/`<desc>` → credential chain with the six verification checks |
 
-Replacement is sequenced, not simultaneous. Nothing is deleted until its
-replacement is published and a human has made a retention decision on the
-original.
+Every replacement is inline SVG on tokens, so all of them follow the theme.
+The retired files remain in the repository and in git history; they are simply
+no longer referenced by any live destination. Deleting them is a separate
+retention decision, deliberately not bundled with replacing them.
+
+No live destination now references a gradient-bearing external SVG, a raster
+illustration, or a runtime diagram dependency.

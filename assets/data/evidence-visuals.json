@@ -113,5 +113,36 @@
     ],
     "separation_note": "Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance."
   },
-  "source_commit": "2e5fffd"
+  "latency": {
+    "source": "fixtures/fabricate/conversations.csv",
+    "field": "impersonation_latency_ms",
+    "conversations_with_a_value": 527,
+    "overall": {
+      "min": 205,
+      "p50": 988,
+      "p90": 5592,
+      "p95": 13680,
+      "p99": 21541,
+      "max": 46122
+    },
+    "by_label": {
+      "REVIEW": {
+        "n": 271,
+        "p50": 935,
+        "p95": 11987
+      },
+      "FAIL": {
+        "n": 129,
+        "p50": 1482,
+        "p95": 15481
+      },
+      "PASS": {
+        "n": 127,
+        "p50": 835,
+        "p95": 1639
+      }
+    },
+    "reading_note": "expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval."
+  },
+  "source_commit": "aecb5c3"
 }
