@@ -44,7 +44,8 @@
   <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-1148%20passing-brightgreen?style=flat-square">
   <img alt="Middleware Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
-  <img alt="License" src="https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey?style=flat-square">
+  <img alt="Code license" src="https://img.shields.io/badge/code-Apache--2.0-lightgrey?style=flat-square">
+  <img alt="Spec license" src="https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey?style=flat-square">
   <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026"><img alt="NIST" src="https://img.shields.io/badge/NIST-2025--0035--0026-0b6ebc?style=flat-square"></a>
 </p>
 
@@ -462,6 +463,25 @@ Creator and project lead for NHID-Clinical. Background in healthcare payer opera
 
 ---
 
+## License
+
+This repository is licensed in two parts, because it holds two kinds of work.
+
+| Part | License | What it covers |
+|---|---|---|
+| **Software** | [Apache-2.0](LICENSE) | `src/`, `adapters/`, `scripts/`, `tests/`, `tools/`, `functions/`, `middleware/`, `simulator/`, top-level Python modules |
+| **Specification & docs** | [CC BY 4.0](LICENSE-DOCS) | `docs/`, `specs/`, `schema/`, conformance suite definitions, `content/`, website pages |
+
+The code is Apache-2.0 rather than Creative Commons because Creative Commons
+advises against applying CC licenses to software — they carry no patent grant
+and no warranty disclaimer written for code, which makes them hard for an
+organization's counsel to clear. The specification prose stays CC BY 4.0, which
+is the right license for text meant to be quoted, adapted and cited.
+
+See [NOTICE](NOTICE) for the full statement.
+
+---
+
 <div align="center">
-  <sub>CC BY 4.0 · Brianna Baynard · <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a> · <a href="https://nhid-clinical.org">nhid-clinical.org</a></sub>
+  <sub>Code Apache-2.0 · Spec &amp; docs CC BY 4.0 · Brianna Baynard · <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a> · <a href="https://nhid-clinical.org">nhid-clinical.org</a></sub>
 </div>

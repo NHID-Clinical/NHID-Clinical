@@ -18,7 +18,16 @@ jobs:
     name: "Test + baseline + drift invariants"
     runs-on: ubuntu-latest
     steps:
+      # Full history, for the same reason ci.yml needs it: the control-set
+      # guard's regression proof compares its committed fixture against
+      # ba93e21:specification.html, which a shallow clone cannot reach. The
+      # test then skips instead of failing, and validate_ci.py reports
+      # "1147 passing, 1 skipped" against a published invariant of 1148 --
+      # which is exactly how this job failed on 2026-09-05 (issue #385)
+      # while the identical step in ci.yml passed.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:

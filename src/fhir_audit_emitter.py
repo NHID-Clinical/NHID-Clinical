@@ -19,7 +19,9 @@ Validation:
   Validated against HL7 FHIR R4 base specification (version 4.0.1).
   Does NOT claim conformance to any HL7 Implementation Guide.
 
-NHID-Clinical is a voluntary open proposal. CC BY 4.0.
+NHID-Clinical is a voluntary open proposal. This module is licensed
+Apache-2.0 (see LICENSE); the normative control text it implements is
+CC BY 4.0 (see LICENSE-DOCS).
 Not a certified standard. Not a regulatory requirement.
 See nhid-clinical.org.
 """
