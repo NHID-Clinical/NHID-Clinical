@@ -1,7 +1,8 @@
 # NHID-CLINICAL MASTER KNOWLEDGE ARCHIVE
 
-**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-09-01
-**Author:** Brianna Baynard · **License:** CC BY 4.0
+**Version:** 1.3 · **Spec Baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-09-06
+**Author:** Brianna Baynard · **License:** CC BY 4.0 (this document is documentation prose; the
+repository's *code* is Apache-2.0 — see `LICENSE`, `LICENSE-DOCS` and `NOTICE`)
 
 > This document is the single authoritative reference for all NHID-Clinical knowledge: technical
 > specification, governance architecture, implementation guide, regulatory alignment, marketing
@@ -18,6 +19,49 @@
 > constant `UNIT_EXPECTED` no longer exists — it is `UNIT_PUBLISHED`, and it is **not** a CI gate.
 > Sections 6, 7, 8, 19 and 20 are current as of this commit; sections written before it may still
 > describe the pre-DLG-01 engine.
+
+> **Update 2026-09-06 — visual system, dual licence, nightly fix (`ed342b3`; PRs #383, #384, #386).**
+> The repository is now **dual-licensed**: Apache-2.0 for code, CC BY 4.0 for specification and
+> documentation prose. The visual layer was rebuilt on generated, engine-derived figures
+> (`docs/visual-system.md`) and the legacy asset set retired. `docs/payer-brief.md` was added.
+> A shallow-clone bug in `nightly-verify.yml` was fixed — it had been failing *and* silently
+> skipping three guards beneath the failure.
+>
+> **This document's scattered test-count restatements were replaced by the single block below.**
+> Nine sections independently asserted `987` long after the suite reached 1148, because
+> `scripts/check_number_drift.py` did not cover this file. It does now. Do not reintroduce a
+> current-state count anywhere else in this document — cite the block instead.
+
+---
+
+## Current state — single source of truth
+
+**Measured at `ed342b3`, 2026-09-06.** Every current-state figure in this document lives here and
+nowhere else. `scripts/check_number_drift.py` enforces it.
+
+Figures quoted elsewhere in this archive sit **inside dated entries** and are deliberately preserved
+as written, including where those entries use the present tense of their own moment ("the suite is
+987", in the 2026-09-03 entry). They describe the repository as it stood on the date in their
+heading, not as it stands now. Rewriting a dated record falsifies it; if one contradicts this block,
+this block is current and the entry is history.
+
+| Fact | Value | Source of truth |
+|---|---|---|
+| `UNIT_PUBLISHED` | **1148** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
+| `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
+| Suite, API running | **1148 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, no API | **1127 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
+| Collected | **1148** across **64** files | `pytest --collect-only -q` |
+| TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED` |
+| Spec version | `1.3` | `src/nhid_policy_engine_v1.py` |
+| Engine version | `1.0.0` | `src/nhid_policy_engine_v1.py` |
+| Code licence | **Apache-2.0** | `LICENSE` |
+| Spec/docs licence | **CC BY 4.0** | `LICENSE-DOCS`, split stated in `NOTICE` |
+| Controls | `IDG-01` `PDX-01` `DBC-01` `EIT-01` `ATR-01` canonical; `DLG-01` opt-in | `src/nhid_policy_engine_v1.py` |
+
+For the fuller measured record — adapters, corpora, reproduce commands — see
+`docs/project-state.md`, which is measured at the same commit and covered by the same guard.
 
 ---
 
@@ -77,7 +121,9 @@ implementation. It is:
 - **Not a standard** — it is a voluntary proposal, not an accredited standard body output
 - **Not a certification** — it does not issue formal certifications; it provides conformance scores
 - **Not a regulatory requirement** — it aligns with regulatory direction but has no legal force
-- **CC BY 4.0** — freely usable, modifiable, and redistributable with attribution
+- **Open in two parts** — code under Apache-2.0, specification and documentation prose under
+  CC BY 4.0. Freely usable, modifiable and redistributable with attribution; the code additionally
+  carries a patent grant and a warranty disclaimer written for software
 
 ### 1.3 The Problem NHID-Clinical Solves
 
@@ -488,11 +534,11 @@ adapter wiring bugs and label leakage; kept for history):
 | IDG-01 | 100.0% |
 | EIT-01 | 94.7% |
 | PDX-01 | 58.6% |
-| DBC-01 | 0.5% |
+| DBC-01 | 0.5% | <!-- drift-ok: pre-phrase-expansion DBC-01 rate, superseded in this same section -->
 | ATR-01 | 0.0% |
 
 **Findings, not papered over:**
-- **DBC-01 (0.5%, later improved to 2.5% — see below)** is a genuine engine phrase-matching
+- **DBC-01 (0.5%, later improved to 2.5% — see below)** is a genuine engine phrase-matching <!-- drift-ok: pre-phrase-expansion DBC-01 rate, superseded in this same section -->
   gap: the corpus's naturalistic evasive/false-reassurance language mostly doesn't match
   `_DBC_IMPERSONATION_PHRASES` / `_assertion_implies_human()` verbatim. This is a
   detection-coverage limitation in `nhid_policy_engine_v1.py`, not an adapter bug.
@@ -532,7 +578,7 @@ real-corpus eval afterward:
 
 | Rule | Before | After |
 | :--- | :--- | :--- |
-| DBC-01 | 0.5% (1/200) | **2.5% (5/200)** |
+| DBC-01 | 0.5% (1/200) | **2.5% (5/200)** | <!-- drift-ok: before/after table for the phrase-expansion fix; the left column is the old rate -->
 | IDG-01 / EIT-01 / PDX-01 / ATR-01 | unchanged | unchanged (confirms no regressions) |
 
 This is a modest, honest improvement — most DBC-01 violations in this corpus are implicit
@@ -592,14 +638,15 @@ its own "Operational tooling" section. This is additive, DB-backed state — it 
 ### 2.5.1 v1.1 Eval Repair (July 2026) — supersedes the per-rule rates in §2.5
 
 **Spec baseline unchanged:** NHID-Clinical v1.3 / NHID-Auth v2, `POLICY_ENGINE_VERSION = 1.0.0`
-(v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0
-failed**. **Superseded 2026-08-29** (count refreshed 2026-09-02): the suite is now **987 passed /
-18 skipped / 1,005 total**, and
+(v1.1 is a patch-set label, not a release). Suite at that time: **446 passed / 18 skipped / 0 <!-- drift-ok: suite total 'at that time', explicitly scoped to the v1.1 patch set -->
+failed**. **Superseded 2026-08-29:** for the current suite figures see **Current state** at the top
+of this document — they are not restated here, because a count repeated in nine places is a count
+that drifts in nine places. At that supersession
 `UNIT_EXPECTED` was replaced by `UNIT_PUBLISHED` — which is a *published-number* reference for
 `scripts/check_number_drift.py`, deliberately **not** a CI gate. The suite is allowed to grow
 without failing the build; `scripts/validate_ci.py` warns when the two diverge.
 
-The detection rates reported in §2.5 (DBC-01 0.5→2.5%, EIT-01 94.7%, PDX-01 58.6%) were
+The detection rates reported in §2.5 (DBC-01 0.5→2.5%, EIT-01 94.7%, PDX-01 58.6%) were <!-- drift-ok: quotes the superseded 2.5 rates it is in the act of correcting -->
 re-measured after a full replay of `src/nhid_policy_engine_v1.py` via
 `adapters/fabricate_adapter.py` + `src/synthetic_eval_loop.py` against four Fabricate
 battle-test corpora (CSV 550 convs / 127 compliant; `nhid_v2_iso_corpus` 175/35;
@@ -1093,7 +1140,7 @@ NHID-Clinical/
 │   │   ├── vapi_compliant.json
 │   │   ├── twilio_compliant.json
 │   │   └── twilio_noncompliant.json
-│   └── test_*.py                      # 987 passing unit tests across 55 files
+│   └── test_*.py                      # Python conformance + invariant tests (see Current state)
 ├── traces/                            # 10 pre-generated failure traces
 ├── agents/
 │   └── beacon_system_prompt.md        # Reference voice agent
@@ -1303,7 +1350,7 @@ All items from the original 7-gap enterprise production readiness plan:
 ~~- Total conversations: 52 (TONIC Fabricate)~~
 ~~- Expected violations: 52 conversation-level labels across 5 rules~~
 ~~- Detected violations: 42 (81.2% overall detection rate)~~
-~~  - IDG-01: 14/16 (87.5%) · PDX-01: 14/16 (87.5%) · DBC-01: 8/10 (80.0%) · EIT-01: 8/11 (72.7%) · ATR-01: 0/10~~
+~~  - IDG-01: 14/16 (87.5%) · PDX-01: 14/16 (87.5%) · DBC-01: 8/10 (80.0%) · EIT-01: 8/11 (72.7%) · ATR-01: 0/10~~ <!-- drift-ok: struck-through text, already retracted in place -->
 
 ### 7.2 Test Count Progression
 
@@ -1332,11 +1379,15 @@ All items from the original 7-gap enterprise production readiness plan:
 | + Phase 5: ATR-01 audit trail implementation | **355** | `test_atr01_audit_trail.py` (+12) — immutable event sourcing, identity capture, compliance reporting |
 | + Phase 6A: Cryptographic signing, persistent storage, Docker deployment, configuration, monitoring | **446** | `test_audit_integrity.py` (+11), `test_audit_store.py` (+14), `test_docker_smoke.py` (+9), `test_config.py` (+34), `test_audit_metrics.py` (+23) — pilot-ready infrastructure |
 
-**Current:** `UNIT_PUBLISHED = 987` in `scripts/validate_ci.py`. This is not an invariant and not
-a gate — it is the number published on README badges, the website and the PDFs, which
+**Current:** `UNIT_PUBLISHED` lives in `scripts/validate_ci.py`; its value is recorded once, in
+**Current state** at the top of this document. It is not an invariant and not a gate — it is the
+number published on README badges, the website and the PDFs, which
 `scripts/check_number_drift.py` compares those surfaces against.
 
-**Total suite:** 1,053 passing (987 Python + 66 TypeScript middleware)
+**TypeScript middleware:** a separate Jest suite under `middleware/tests/` — **66 passed, 4 suites**,
+re-derived 2026-09-06 via `npm ci && npx jest --runInBand`. It is not part of `UNIT_PUBLISHED` and
+not run by `validate_ci.py`; quote it separately or as a stated combination (**1148 Python + 66
+TypeScript = 1214**), never folded silently into the Python figure.
 
 ### 7.3 Near-Term Roadmap
 
@@ -1376,12 +1427,13 @@ production-ready; not yet a turnkey plug-in.
 - **Zero completed pilots.** "Actively seeking pilot partners" is accurate
   and already stated truthfully on the public site (`index.html`,
   `for-payers.html`, `about.html`).
-- **Single maintainer, CC BY 4.0 license, no commercial support entity.**
+- **Single maintainer, no commercial support entity.** (Licensing is no longer a barrier: code is
+  Apache-2.0 as of 2026-09-05. It previously was not, and that was a real obstacle — see §19.)
 - **FHIR scope is base R4 only** — correctly never claims HL7 IG
   conformance.
 - **Real-corpus detection rates** (Fabricate Battle-Test Corpus, 550
   conversations / 4,839 turns — see §2.5): IDG-01 100%, EIT-01 94.7%,
-  PDX-01 58.6%, DBC-01 2.5% (post phrase-expansion; was 0.5%), ATR-01 0.0%
+  PDX-01 58.6%, DBC-01 2.5% (post phrase-expansion; was 0.5%), ATR-01 0.0% <!-- drift-ok: records the 0.5 -> 2.5 DBC-01 improvement, both figures historical -->
   (corpus/adapter structural limitation, not yet a heuristic gap). The
   headline controls (IDG-01, EIT-01) hold up against real conversational
   phrasing; DBC-01 and ATR-01 do not yet.
@@ -1407,7 +1459,8 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 987 passed (18 skipped when no server running = integration tests)
+# Expected: 1148 passed, 0 skipped, 0 xfailed — with the API running.
+# Without a server on :8000, 1127 pass and 21 skip (the integration tests).
 ```
 
 ### 8.2 Key Dependencies
@@ -1432,9 +1485,10 @@ count — that was the old `UNIT_EXPECTED` behavior and it was removed because a
 legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked for drift:
 
 ```python
-# scripts/validate_ci.py
-UNIT_PUBLISHED = 987
-INTEGRATION_EXPECTED = 18  # acceptable skip count (integration tests)
+# scripts/validate_ci.py — values as of ed342b3; the file is the authority
+UNIT_PUBLISHED = 1148
+SKIP_EXPECTED = 0      # CI starts the API, so a skip means it did not come up
+XFAIL_EXPECTED = 0
 ```
 
 **When adding tests:**
@@ -1571,9 +1625,9 @@ git push -u origin claude/my-feature-branch
 
 When Claude Code or any LLM is working on this repository:
 
-1. **All existing tests must pass.** The full suite (currently **987 passed / 18 skipped**) must
-   stay green after
-   every change. Run `python scripts/validate_ci.py` before committing.
+1. **All existing tests must pass.** The full suite (see **Current state**) must stay green after
+   every change. Run `python scripts/validate_ci.py` before committing, with the API up — a skip
+   means the server did not start, not that a test was inapplicable.
 
 2. **"Impersonation Latency" is the permanent canonical term.** It must never be renamed,
    rephrased, or replaced. It appears in documentation, traces, and marketing.
@@ -1605,7 +1659,7 @@ When Claude Code or any LLM is working on this repository:
 4. Update CI job name in .github/workflows/ci.yml:
    name: "Unit invariant: <total> total (<new count> passed + 18 skipped)"
 5. Update README.md badge: [![Tests](https://img.shields.io/badge/tests-<N>%20passing-brightgreen)]
-6. Update README.md description: "372 passing across the Python test suite (306) and TypeScript..."
+6. Update README.md description: "372 passing across the Python test suite (306) and TypeScript..." <!-- drift-ok: a completed task instruction quoting the README wording of its day -->
    → adjust both numbers
 7. Update .github/CONTRIBUTING.md expected count
 8. Stage all changed files explicitly and commit atomically
@@ -1695,7 +1749,8 @@ Expected response:
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
 [![Tests](https://img.shields.io/badge/tests-350%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
-[![License: CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey)](...)
+[![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
+[![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
 [![NIST](https://img.shields.io/badge/NIST-2025--0035--0026-blue)](...)
 [![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?logo=github&logoColor=white)](...)
 ```
@@ -1759,7 +1814,7 @@ and cross-org authorization, relevant to the work of NIST's Center for AI Standa
 (CAISI). Key positions:
 - Gap: No existing framework addresses AI agent cross-org NPI authorization
 - Proposal: Layer 2 (behavioral) + Layer 3 (cryptographic) as complementary to STIR/SHAKEN
-- Evidence: Reference implementation with 350 passing tests, live public API
+- Evidence: Reference implementation with a passing conformance suite (count in **Current state** — do not restate it here), live public API
 - Ask: Recognition of voluntary behavioral baselines as complementary to formal standards
 
 The RFI itself ("Request for Information Regarding Security Considerations for Artificial
@@ -1961,7 +2016,7 @@ NHID-Clinical aligns with the NIST AI RMF's GOVERN, MAP, MEASURE, and MANAGE fun
 
 | NIST AI RMF Function | NHID-Clinical Mechanism |
 | :--- | :--- |
-| **GOVERN** | CC BY 4.0 open governance; voluntary adoption model |
+| **GOVERN** | Open governance — Apache-2.0 code, CC BY 4.0 specification; voluntary adoption model |
 | **MAP** | Regulatory alignment matrix; risk categorization by control |
 | **MEASURE** | CAS score (0.0–1.0); tier classification; per-control pass rates |
 | **MANAGE** | DENY_DATA and ESCALATE_HUMAN actions; real-time call-progress webhook |
@@ -2113,15 +2168,24 @@ Badge tiers: L2 (Verified Trust, CAS ≥ 0.90), L1 (Conditional Trust, CAS ≥ 0
 
 #### Quaternary: Regulators and Standards Bodies
 - **Problem they have:** No testable reference implementation for AI voice agent behavioral standards
-- **What NHID-Clinical offers:** 350-test open-source reference, live API, NIST comment on record
+- **What NHID-Clinical offers:** open-source reference implementation with a conformance suite
+  (count in **Current state**), live API, NIST comment on record
 - **Call to action:** Use as input to NIST CAISI and future rulemakings
 
 ### 18.2 Core Value Propositions
 
-1. **"Zero to CAS score in 30 seconds."** One curl command, no signup, real compliance verdict.
+1. **"Zero to a policy decision in one curl."** No signup, no key on the demo routes, a real
+   `PolicyDecision` back.
+   > **Corrected 2026-09-06.** This previously read *"Zero to CAS score in 30 seconds… real
+   > compliance verdict."* CAS was demoted to a research component on 2026-08-22 and
+   > `docs/claim-boundaries.md` prohibits surfacing it publicly — nothing in the repository
+   > produces its inputs, so no real call can be scored. "Compliance verdict" is also barred:
+   > the engine returns a policy decision, and this project issues no compliance judgement about
+   > anyone's product.
 
-2. **"The only open reference implementation of behavioral AI disclosure for healthcare."**
-   CC BY 4.0, 350 tests, deterministic engine, live API.
+2. **"An open reference implementation of behavioral AI disclosure for healthcare."**
+   Apache-2.0 engine, CC BY 4.0 specification, deterministic, with a conformance suite (count in
+   **Current state**) and a live API. Not *the only* one — that is unverifiable and unnecessary.
 
 3. **"Built by someone who watched it fail in production."** Former payer operations. Not an
    academic exercise. These are the specific failure modes observed on live calls.
@@ -2289,14 +2353,63 @@ Recorded because each is a live constraint or a recurrence risk, not a closed ti
 | `AuditStore.__init__` creates its database file, so a collector that opened the store changed what a later collector observed. | Fixed in `export_evidence_pack.py` by resolving existence once up front. The underlying constructor behavior is unchanged. |
 | `write_event` accepts `evidence_hash=None`, silently producing a chain that can never verify. | **Open.** Not fixed; a writer must sign explicitly. |
 | **Two copies of the conformance suite exist.** `run_cts()` reads `tests/nhid_conformance_test_suite_v1.yaml`; the copy published to reviewers is `conformance/…`. Semantically identical, with nothing enforcing it. | Pinned by `tests/test_cli_and_packaging.py::test_published_and_executed_suites_are_semantically_identical`. |
-| The published suite's `suite_metadata` claimed **"173 passed"** long after the suite outgrew it, invisible because that file was not watched. | Fixed and added to the drift guard's watch list, plus a test comparing it to `UNIT_PUBLISHED`. |
+| The published suite's `suite_metadata` claimed **"173 passed"** long after the suite outgrew it, invisible because that file was not watched. | Fixed and added to the drift guard's watch list, plus a test comparing it to `UNIT_PUBLISHED`. | <!-- drift-ok: catalogues a claim that was wrong; it is the defect, not an assertion -->
 | **The drift guard was narrower than the claim surface.** It reported PASS while six files carried a superseded count, and nothing compared `UNIT_PUBLISHED` to reality — so every surface could be *consistently wrong*. | Guard widened by 7 files; `validate_ci.py` now warns on divergence (a warning, not a gate, preserving the documented decision that the suite may grow). |
 | `docs/csa-ai-caiq-summary.md` claimed a "CI-enforced 284-test baseline". | Fixed. |
 | `pilot_evidence_bundle/EXECUTIVE_SUMMARY.md` says "evidence-based assurance" and is signed "NHID-Clinical Safety Assurance Team". | **Open — maintainer's call.** Assurance language the project should not use. A dated historical artifact, not published by the site build, so flagged rather than silently rewritten. |
 | Packaging installs top-level `src`, `adapters`, `scripts`. | **Open — pre-publication blocker**, recorded in `pyproject.toml`. Fine for an editable install; unacceptable on a public index. The rename to a single `nhid_clinical` package touches every import. |
 
 
+### 19.8 Dual licence — 2026-09-05 (PR #386)
+
+**Decision: code moves to Apache-2.0; specification and documentation prose stay CC BY 4.0.**
+
+The repository was CC BY 4.0 throughout, including every Python file. Creative Commons advises
+against applying CC licences to software: no patent grant, and no warranty disclaimer written for
+code. For the audience this project exists to reach — a payer or vendor whose counsel must clear the
+reference implementation before an engineer may run it — that is a licence review with one outcome,
+for reasons unrelated to the work.
+
+`LICENSE` is Apache-2.0, `LICENSE-DOCS` carries the unchanged CC BY 4.0 text, and `NOTICE` states
+which tree each covers. Thirteen module docstrings that asserted CC BY 4.0 over code were updated.
+Generators that emit licence text into the spec PDF, the badge SVG and `feed.xml` were deliberately
+**not** touched: what they emit describes the specification, which is still CC BY 4.0.
+
+### 19.9 No hosted scoring endpoint — 2026-09-06
+
+**Decision: NHID-Clinical will not operate a public API that accepts call audio or transcripts.**
+
+A hosted "submit a recording, get a score" service is the obvious way to lower the barrier to
+trying this, and it is the wrong thing to build. Real call audio is PHI. A public scorer would
+manufacture the exposure the control set exists to measure, and would make this project a business
+associate to every organisation that used it, before a single one had agreed to be a partner.
+
+The offer in `docs/payer-brief.md` is therefore an **offline batch on de-identified transcripts, run
+in the adopter's own environment**. Safe Harbor de-identification is sufficient for what is being
+measured; if an organisation prefers to send PHI, a BAA comes first and that is their decision to
+initiate, not something to design around.
+
+### 19.10 Build freeze — 2026-09-06
+
+**Decision: no further feature work until one external organisation has run this on its own data.**
+
+At `ed342b3` the engine, the five controls, the conformance suite, six vendor adapters, the evidence
+export and the full cryptographic delegation layer all exist and pass. Adoption is zero: no forks,
+no external issues, no outside contributor since the repository was created on 2026-01-04. The
+binding constraint is not a missing capability.
+
+The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
+not a technical item.
+
+---
+
 ## 20. Future Work
+
+### 20.0 The only thing that actually gates this
+
+| Item | Notes |
+| :--- | :--- |
+| **One external organisation runs NHID-Clinical against its own call data** | Not a star, not a fork, not a citation — one outside party, their own transcripts, a result. Everything in §20.1 below is subordinate to this. If it has not happened after sustained outreach, the commercial thesis is disproven and the project is a portfolio and publication asset, which is a legitimate outcome and should be stated as one rather than avoided. |
 
 ### 20.1 High Priority
 
@@ -2318,7 +2431,7 @@ Recorded because each is a live constraint or a recurrence risk, not a closed ti
 | **TypeScript policy engine port** | For Node.js-native vendors |
 | **Vonage/Retell webhook templates** | Pre-built webhook configs for these platforms |
 | **Attestation registry** | Persistent public ledger of active delegations (read-only) |
-| **CAS trend API** | `/v1/vendor/metrics/cas-history` (30-day sparkline) |
+| ~~**CAS trend API**~~ | **Withdrawn 2026-09-06.** `/v1/vendor/metrics/cas-history` would surface CAS as a product capability, which §19.6 demoted and `docs/claim-boundaries.md` prohibits. Nothing in the repository produces CAS's inputs, so the endpoint would have nothing truthful to plot. |
 | **Live implementation registry** | ~~Static page listing certified/self-attested implementations~~ — delivered in v1.3 final as `registry.html` + `content/registry_entries.json` (seeded empty, `[]`). Self-attestation only — NHID-Clinical does not certify vendors. Each entry (once added) links the live badge endpoint and shows `cas_avg`/`pass_rate` via `get_vendor_metrics()` (`nhid_event_store.py`). |
 
 ### 20.3 Low Priority
@@ -2547,7 +2660,8 @@ accredited by any standards body. It is designed to be input to future standards
 to replace formal standards processes.
 
 **Q: Has NHID-Clinical been validated by healthcare organizations?**
-A: NHID-Clinical has a live public API with 350 passing tests and a NIST public comment on
+A: NHID-Clinical has a live public API with a passing conformance suite (count in **Current
+state**; do not restate it in answer copy, which is how it went stale here) and a NIST public comment on
 record (NIST-2025-0035-0026). Formal healthcare organization validation (payer shadow pilots)
 is ongoing.
 
@@ -2619,7 +2733,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_PUBLISHED = 987  # scripts/validate_ci.py (published count, not a CI gate)
+UNIT_PUBLISHED = 1148  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
@@ -2666,7 +2780,7 @@ NPI_PATTERN = r"^\d{10}$"
 | `test_atr01_audit_trail.py` | 12 | ATR-01 audit trail — trail creation, identity capture, field validation, evaluate_all integration, compliance reporting |
 | `test_site_navigation.py` | 76 |
 | `test_svg_assets_render.py` | 60 | Every published SVG parses as XML and declares an intrinsic size; sprite sheets exempt | Site navigation — the drawer toggle binding across every published page, and the two stylesheet rules that reveal it |
-| **Total** | **987 passed, 18 skipped** | All Python unit tests (446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard) |
+| **Total** | see **Current state** | All Python unit tests. Growth to date: 446→669 through v1.3 hardening; 669→779 with DLG-01, trust anchor, evidence export, CLI/packaging; 779→790 with the corpus-metrics fix; 790→851 with the IDG-01/PDX-01/EIT-01 hardening; 851→920 with the navigation regression guard; 920→1148 through the subsequent hardening and site-guard work |
 
 ### 23.4 Pre-Generated Failure Traces
 
@@ -2743,6 +2857,16 @@ assert len(decision.violations) == 0
 ---
 
 ## Changelog
+
+<!-- drift-ok-from-here: every entry below is dated and quotes the metrics of its own day.
+     Those figures are the record. The current count lives once, in "Current state" at the
+     top of this document, and only that block is checked by scripts/check_number_drift.py. -->
+
+> **These entries are historical.** Each records the repository as it stood on the date in its
+> heading, including test counts, corpus rates and captured command output. Where an entry
+> contradicts **Current state** at the top of this document, Current state is correct and the
+> entry is a record of an earlier moment. Nothing here is edited to match today's figures —
+> rewriting a dated record falsifies it.
 
 ### 2026-09-03 · Eighteen tests that had never run, and what they were hiding
 
@@ -3352,7 +3476,7 @@ they record what was true when written, and the earlier §2.5.1 supersession not
 with the date its count was refreshed rather than silently restated.
 
 **Metrics:** engine and corpora untouched by design — this is presentation only. Suite
-851 → 920 passed / 18 skipped (+69, all of them the navigation guard; no existing test
+851 → 920 passed / 18 skipped (+69, all of them the navigation guard; no existing test <!-- drift-ok: transition record from that change, not a current total -->
 was changed). Fabricate baseline byte-identical. Governance
 Evaluation Corpus 90.6% detection (29/32), 0% false positives. Adversarial corpus 23/23
 attacks withstood, 0 bypasses, 0/17 false positives. These are the same figures as the
@@ -3448,7 +3572,7 @@ was checking any of them.
 | Published | Measured | Cause |
 | :--- | :--- | :--- |
 | IDG-01 71.4% | 62.5% (5/8) | `d458bad` (2026-07-30) added scenario `nhid_ec_idg01_003`, moving IDG-01 expectations 7→8 with detections unchanged at 5. That commit updated the aggregate in `README.md` and wrote the correct 62.5% into `docs/EVALUATION_CORPUS_REPORT_v1.md`, but left README's per-rule line at the pre-`idg01_003` value. `6aa5f4f` (PR #365) then deleted that report — the only surface carrying the correct number. |
-| 25 scenarios, 99 turns | 55 turns | Never true at any revision: 55 at `d458bad`, 54 at `d458bad^`. |
+| 25 scenarios, 99 turns | 55 turns | Never true at any revision: 55 at `d458bad`, 54 at `d458bad^`. <!-- drift-ok: this row catalogues a known-false claim; it is the error under correction, not an assertion --> |
 | 0% false-positive rate | 20% (1 of 5 compliant scenarios) | `scripts/eval_corpus.py` computed no false-positive rate at all — it iterated `expected_violations` only, so compliant scenarios contributed to no denominator. |
 
 Causes ruled out for the IDG-01 change, each verified by command: the corpus file is
@@ -3549,7 +3673,7 @@ Governance Evaluation Corpus (25 scenarios, 55 turns), `scripts/eval_corpus.py`:
 Newly detected: `nhid_ec_combo_002` (IDG-01), `nhid_ec_pdx01_002` and
 `nhid_ec_combo_006` (PDX-01).
 
-Conformance suite: **779 → 851 passing**, 18 skipped, 0 failed (869 collected), 61 test
+Conformance suite: **779 → 851 passing**, 18 skipped, 0 failed (869 collected), 61 test <!-- drift-ok: transition record from that change, not a current total -->
 files. CTS unchanged at 16 pass / 2 skip / 0 fail (18 cases).
 
 Fabricate (CI-gated regression floor): **byte-identical throughout** — IDG-01 70/70
@@ -3654,7 +3778,7 @@ Fabricate (CI-gated regression floor): **byte-identical throughout** — IDG-01 
 - §8.3 "CI Invariant" — updated to UNIT_PUBLISHED = 851
 - §23.1 "Primary Source Files" — added `src/nhid_audit_trail.py` (257 lines) and updated `src/nhid_policy_engine_v1.py` description
 - §23.1 — added three governance artifacts: ATR-01-IMPLEMENTATION.md, ATR-01-EVIDENCE-VALIDATION-REPORT.html, ATR-01-TRACEABILITY-MATRIX.html
-- §23.3 "Test File Index" — added `test_atr01_audit_trail.py` (12 tests); total changed to "355 passed"
+- §23.3 "Test File Index" — added `test_atr01_audit_trail.py` (12 tests); total changed to "355 passed" <!-- drift-ok: dated Phase 5 entry, records the total as of that change -->
 - Changelog section updated with this entry
 
 **Evaluation corpus final state:** *(retracted 2026-08-29 — see the retraction
@@ -3662,6 +3786,7 @@ note in §7.1a; these figures do not reconcile and no artifact reproduces them)*
 
 ---
 
-*End of NHID-Clinical Master Knowledge Archive · v1.3 · 2026-09-01*
+*End of NHID-Clinical Master Knowledge Archive · v1.3 · 2026-09-06*
 
-*CC BY 4.0 · Brianna Baynard · NIST-2025-0035-0026 · nhid-clinical.org · Phase 5 Complete*
+*This document CC BY 4.0 · repository code Apache-2.0 · Brianna Baynard · NIST-2025-0035-0026 ·
+nhid-clinical.org*

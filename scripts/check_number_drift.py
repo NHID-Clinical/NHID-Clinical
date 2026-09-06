@@ -63,6 +63,13 @@ WATCHED = [
     "docs/SYSTEM_ARCHITECTURE.md",
     "docs/executive-brief.md",
     "docs/ops/inbound-knowledge-base.md",
+    # Added 2026-09-06. Both were outside this list, which is why the archive
+    # carried a stale 987 through four reconciliations while every watched
+    # surface was corrected. The archive states the count once, in its
+    # "Current state" block; its dated entries quote historical figures on
+    # purpose and are written so they cannot be mistaken for current claims.
+    "docs/MASTER-KNOWLEDGE-ARCHIVE.md",
+    "docs/project-state.md",
     "conformance/nhid_conformance_test_suite_v1.yaml",
     *sorted(glob.glob("webplatform/templates/*.html")),
 ]
@@ -79,17 +86,81 @@ DBC_RATE_EXEMPT = frozenset({
 })
 
 # Patterns whose captured number is a claim about the unit-test count.
+#
+# These were written as `\d{3}` when the suite was in the hundreds. When it
+# crossed 1000 every one of them except the badge silently stopped matching, and
+# this guard went on printing "DRIFT PASS: watched surfaces consistent with 1148
+# passed" while README carried four claims it was no longer reading. Verified by
+# corrupting them: the guard passed. `\d{3,4}` restores coverage.
+#
+# This is the third instance of the same failure in this repository — a check
+# that narrowed until it verified less than its output claimed (the PDFs outside
+# WATCHED, 2026-09-03; the nightly's shallow checkout, issue #385). Whenever the
+# published count changes magnitude, re-run the corruption test below rather than
+# trusting a PASS:
+#
+#   sed -i 's/\*\*1148 passing\*\*/**1147 passing**/' README.md
+#   python scripts/check_number_drift.py   # must FAIL, then: git checkout README.md
 COUNT_CLAIMS = [
     re.compile(r"python%20tests-(\d+)%20passing"),  # shields.io badge (the middleware badge has its own count)
-    re.compile(r"\b(\d{3})\b (?:Python )?tests? passing"),
-    re.compile(r"\*\*(\d{3})\*\* (?:passing|passed|Python tests)"),
-    re.compile(r"\b(\d{3})\b passing\b"),
-    re.compile(r"\b(\d{3})\b passed\b"),
-    re.compile(r"\((\d{3}) expected\)"),
+    re.compile(r"\b(\d{3,4})\b (?:Python )?tests? passing"),
+    re.compile(r"\*\*(\d{3,4})\*\* (?:passing|passed|Python tests)"),
+    re.compile(r"\*\*(\d{3,4}) (?:passing|passed)\b"),
+    re.compile(r"\b(\d{3,4})\b passing\b"),
+    re.compile(r"\b(\d{3,4})\b passed\b"),
+    re.compile(r"\((\d{3,4}) expected\)"),
+    # A bare bolded value in a table cell declaring the constant, e.g.
+    #   | `UNIT_PUBLISHED` | **1148** | scripts/validate_ci.py |
+    # None of the prose patterns above match a cell like this. Found by
+    # corrupting the archive's "Current state" block and watching the guard pass
+    # — the canonical block would have been the one place not covered.
+    # Delimiters vary by document: the archive bolds the value, project-state
+    # backticks it. Both were tested by corruption; the bold-only version of
+    # this pattern silently missed project-state.
+    re.compile(r"UNIT_PUBLISHED`?\s*\|\s*[`*]{0,2}(\d{3,4})[`*]{0,2}\s*\|"),
 ]
 
 # "DBC-01 ... 91.5%" style rate claims within one line.
 DBC_RATE_CLAIM = re.compile(r"DBC-01[^%\n]{0,80}?(\d{1,3}\.\d)%")
+
+# Per-line opt-out. A line carrying this marker is skipped by the count, corpus
+# and DBC-rate checks.
+#
+# It exists because two watched documents are *records* as well as references:
+# MASTER-KNOWLEDGE-ARCHIVE.md and project-state.md carry dated entries quoting
+# the figures of their moment, a no-API measurement that is legitimately not the
+# published count, and — in one table — claims catalogued precisely because they
+# were wrong ("25 scenarios, 99 turns … never true at any revision"). Rewriting
+# those to match today's invariant would falsify the record the documents exist
+# to keep.
+#
+# Every use must state a reason on the same line. This is not a way to silence
+# the guard on a surface that makes a live claim: if the number is what a reader
+# would take as current, fix the number instead. Audit them with
+#   grep -rn 'drift-ok' -- README.md docs/
+DRIFT_OK = re.compile(r"drift-ok:")
+
+# This guard's own output, pasted into a document as a record of a past run, is
+# not a claim about the current count. Without this, transcripts of earlier runs
+# in the archive's changelog fail the very check that produced them — and the
+# only ways to satisfy it would be to edit captured output (falsifying a record)
+# or to stop quoting runs at all. Deliberately anchored: no prose sentence a
+# reader would take as a live claim begins "DRIFT PASS:".
+GUARD_ECHO = re.compile(r"^\s*DRIFT (?:PASS|FAIL|WARN):")
+
+# Whole-remainder opt-out, for a file that ends in a dated changelog. Every line
+# from this marker to end-of-file is exempt from the count, corpus and DBC-rate
+# checks.
+#
+# The archive's changelog is ~900 lines of dated entries, each quoting the
+# metrics of its own day ("851 → 920 passed", "unchanged at 987"). Those are the
+# point of the section. Marking thirty-odd lines individually would be noise
+# that obscures the handful of genuine per-line exemptions above, so the section
+# is declared once, at its heading, where a reader can see the scope.
+#
+# Use this ONLY where everything below really is a historical record. Anything
+# above the marker is still checked, which is where live claims belong.
+DRIFT_OK_REST_OF_FILE = re.compile(r"drift-ok-from-here:")
 
 
 def _module_constant(path: str, name: str):
@@ -154,6 +225,10 @@ def _check_corpus_claims(corpus, failures):
         if not p.exists():
             continue
         for lineno, line in enumerate(p.read_text(errors="replace").splitlines(), 1):
+            if DRIFT_OK_REST_OF_FILE.search(line):
+                break
+            if DRIFT_OK.search(line) or GUARD_ECHO.search(line):
+                continue
             for m in CORPUS_TURNS_CLAIM.finditer(line):
                 if int(m.group(1)) != corpus["scenarios"]:
                     continue  # a different corpus's scenario count
@@ -254,6 +329,10 @@ def main() -> int:
         if not p.exists():
             continue
         for lineno, line in enumerate(p.read_text(errors="replace").splitlines(), 1):
+            if DRIFT_OK_REST_OF_FILE.search(line):
+                break
+            if DRIFT_OK.search(line) or GUARD_ECHO.search(line):
+                continue
             for pat in COUNT_CLAIMS:
                 for m in pat.finditer(line):
                     if int(m.group(1)) != unit_expected:
