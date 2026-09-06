@@ -11,10 +11,11 @@ rather than inferring.
 
 | | |
 |---|---|
-| **Commit** | `aaad25a3d9b9005502470faaa4d05af3d6b7722d` (`aaad25a`) |
-| **Measured** | 2026-09-03T09:37:59Z |
+| **Commit** | `ed342b3919b94e6259317829fc5103a088955fd8` (`ed342b3`) |
+| **Measured** | 2026-09-06 |
 | **Method** | Commands in the "How to reproduce" section, run against a clean checkout |
-| **Branch** | `claude/nhid-clinical-july-deadline-che6r8` |
+| **Branch** | `main` |
+| **Licence** | Apache-2.0 for code (`LICENSE`), CC BY 4.0 for specification and documentation prose (`LICENSE-DOCS`); split stated in `NOTICE` |
 
 ---
 
@@ -24,22 +25,25 @@ rather than inferring.
 |---|---|---|
 | `NHID_SPEC_VERSION` | `1.3` | `src/nhid_policy_engine_v1.py` |
 | `POLICY_ENGINE_VERSION` | `1.0.0` | `src/nhid_policy_engine_v1.py` |
-| `UNIT_PUBLISHED` | `998` | `scripts/validate_ci.py` — published-number reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | `1148` | `scripts/validate_ci.py` — published-number reference, **not** a CI gate |
 | `SKIP_EXPECTED` | `0` | `scripts/validate_ci.py` — CI starts the API, so a skip means it did not come up |
-| `XFAIL_EXPECTED` | `7` | `scripts/validate_ci.py` — recorded divergences, see `skipped-test-audit.md` §8 |
+| `XFAIL_EXPECTED` | `0` | `scripts/validate_ci.py` — recorded divergences, see `skipped-test-audit.md` §8 |
 
 ## 2. Test suite
 
 ```
 1148 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
-1002 passed, 18 skipped             # ...the same command with no API listening
-1005 collected                # python -m pytest tests/ --collect-only -q
-55 files                      # files under tests/ that pytest collects from
+1127 passed, 21 skipped             # ...the same command with no API listening (drift-ok: no-API measurement, not the published count)
+1148 collected                # python -m pytest tests/ --collect-only -q
+64 files                      # files under tests/ that pytest collects from
 ```
 
 1148 collected, 1148 passed. Every published surface stating these numbers must
 satisfy that arithmetic; `scripts/check_number_drift.py` enforces the passed
-count, and as of `aaad25a` also reads the text of every `specs/*.pdf`.
+count, reads the text of every `specs/*.pdf`, and — as of `ed342b3` — also
+covers this file and `MASTER-KNOWLEDGE-ARCHIVE.md`. Those two were outside its
+surface list until then, which is why the archive carried a stale `987` through
+four separate reconciliations: the guard was never looking at them.
 
 **The skip count means one thing:** integration tests that need a live server.
 It is not a general "not applicable" bucket. Checks that do not apply to a file
@@ -186,9 +190,9 @@ Recorded because they change what a session can verify:
 
 ```bash
 git rev-parse HEAD
-python -m uvicorn app:app --port 8000 &         # required, or 18 tests skip
+python -m uvicorn app:app --port 8000 &         # required, or 21 tests skip
 python -m pytest tests/ -q                      # 1148 passed, 0 skipped, 0 xfailed
-python -m pytest tests/ --collect-only -q       # 1005 collected
+python -m pytest tests/ --collect-only -q       # 1148 collected
 python scripts/validate_ci.py                   # CI PASS
 python scripts/check_baseline.py                # Fabricate baseline
 python scripts/check_number_drift.py            # drift + corpus + PDFs
@@ -244,6 +248,40 @@ recorded as **UNKNOWN in origin** rather than adopted, averaged, or quietly
 replaced. The measured figure is 998 of 1005 (99.3%), and 99.3% is not published
 either — a percentage invites reading the remaining 0.7% as flaw rather than as
 two documented open decisions.
+
+---
+
+## 12. State change — 2026-09-06 (`ed342b3`)
+
+Three pull requests merged since §11 was written. None changed the engine, the
+controls, the corpora, or any published count.
+
+| PR | Change | Verifiable by |
+|---|---|---|
+| **#383** | Evidence Diagram System adopted; four generated figures replacing asserted ones; `.reveal` inverted so nothing depends on JavaScript to be visible | `docs/visual-system.md`; `python scripts/build_evidence_visuals.py --check` |
+| **#384** | Legacy visual layer retired — five models replacing seven external asset references; generated latency figure added | `docs/visual-system.md` §9 records each retired file's status |
+| **#386** | Repository dual-licensed; nightly-verify shallow-clone bug fixed; `docs/payer-brief.md` added | `LICENSE`, `LICENSE-DOCS`, `NOTICE`; `.github/workflows/nightly-verify.yml` |
+
+**Licence split.** Code is Apache-2.0; specification and documentation prose stay
+CC BY 4.0. The repository was previously CC BY 4.0 throughout, including every
+Python file — a licence Creative Commons advises against applying to software,
+carrying no patent grant and no warranty disclaimer written for code. That is a
+review an adopting organisation's counsel can only end one way, for reasons
+unrelated to the work.
+
+**Nightly-verify was failing, and for longer than the failure suggested.** Issue
+#385 reported `1147 passing` against a published `1148`. <!-- drift-ok: quotes the failure figure from issue #385 --> The API was healthy; the
+cause was the default shallow clone, under which
+`tests/test_control_set_completeness.py` cannot reach `ba93e21` and skips. The
+same bug had already been fixed in `ci.yml` — `nightly-verify.yml` never received
+`fetch-depth: 0`. The failing step was also short-circuiting the three guards
+below it, so the nightly had been verifying **less than it claimed**, not merely
+reporting red. Proven fixed by `workflow_dispatch` before merge (run
+`33994318931`): all four steps green where three had been silently skipped.
+
+**Retired visual assets are not deleted.** They remain in the repository and in
+git history, unreferenced by any live destination. Deletion is a retention
+decision recorded as open in `docs/visual-system.md` §9.
 
 ---
 

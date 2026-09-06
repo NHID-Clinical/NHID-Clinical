@@ -128,6 +128,8 @@ An honest maturity snapshot. NHID-Clinical is a working reference implementation
 - Conformance Test Suite, plus an evidence pack export a vendor can hand to a reviewer
 - Documented **[Enforcement Profile](docs/enforcement-profile.md)** — how each control's `PolicyDecision` maps to a receiver action (a documented layer over the five controls, **not a sixth control**)
 - NHID-Auth v2 cryptographic authorization layer, published as public reference code
+- Figures generated from the engine and the committed corpora, not drawn by hand — the [visual system](docs/visual-system.md) is normative, and CI fails if a published figure stops matching its source
+- **Dual-licensed:** Apache-2.0 code, CC BY 4.0 specification — your counsel can clear the reference implementation without a Creative Commons licence sitting on software
 
 **In progress**
 - First shadow-evaluation partners (observe-only, no vendor changes)
@@ -445,6 +447,10 @@ python examples/issue_and_verify.py
 ## Contributing & Pilot Partners
 
 We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required. Start small: the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) produces usable impersonation-latency data from your own call logs in 2–4 weeks.
+
+**If you are on the payer side**, the two-page [payer brief](docs/payer-brief.md) says what a representative can and cannot verify on an automated call today, and offers the measurement at no cost. The analysis is an **offline batch on de-identified transcripts, run in your environment** — there is no hosted endpoint and no request for your call audio, because a public scorer would create the exposure it exists to measure.
+
+**No design partners, pilot partners, customers or deployments exist today**, and none are represented as existing.
 
 [**For Payers →**](https://nhid-clinical.org/shadow-evaluation-guide.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
