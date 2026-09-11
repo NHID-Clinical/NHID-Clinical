@@ -150,6 +150,91 @@
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This creates a window of ambiguity — what this proposal calls <strong>impersonation latency</strong> — where sensitive information changes hands without informed consent or clear accountability.</p>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The problem is not that AI is making these calls. It is that AI is making these calls while appearing to be human.</p>
 
+      <figure class="figure-frame imp-model reveal">
+        <svg viewBox="0 0 880 440" role="img" aria-labelledby="imp-title imp-desc" style="width:100%;height:auto;display:block">
+          <title id="imp-title">Impersonation latency, and the exposure inside it</title>
+          <desc id="imp-desc">A definition figure in two tracks over a shared turn axis running from turn 0 to turn 5. The formula at the top reads: IL equals t of disclosure minus t of connect. The upper track shows a non-conformant call: the call connects at turn 0, protected health information is requested at turn 2 while the receiving party still has no way to know the caller is automated, and the agent discloses that it is automated at turn 3. The interval between connect and disclosure is the impersonation latency, marked as three turns. Because one PHI field was requested inside that interval, PDX-01 fires and returns DENY_DATA. The lower track shows the conformant target: disclosure happens in the first message at turn 0, so IL in turns equals 0, no PHI is requested before disclosure, and PDX-01 does not fire. The ordered list following the figure states the remaining conditions, including that if no valid disclosure ever occurs, IL is right-censored at call end and reported as IL greater than or equal to call duration.</desc>
+
+          <!-- Formula -->
+          <text x="0" y="22" class="imp-zone">DEFINITION</text>
+          <text x="0" y="48" class="imp-formula">IL = t(disclosure) &#8722; t(connect)</text>
+          <text x="286" y="48" class="imp-sub">measured in seconds, and in completed conversational turns</text>
+
+          <!-- ── Track A: non-conformant ── -->
+          <text x="0" y="96" class="imp-label">Disclosure at turn 3</text>
+          <text x="0" y="112" class="imp-sub">non-conformant</text>
+
+          <!-- interval band: connect (x=150) to disclosure (x=534) -->
+          <rect x="150" y="128" width="384" height="54" rx="8" class="imp-window"/>
+          <text x="342" y="150" text-anchor="middle" class="imp-zone">IMPERSONATION LATENCY</text>
+          <text x="342" y="168" text-anchor="middle" class="imp-mono">IL(turns) = 3</text>
+
+          <!-- axis -->
+          <line x1="150" y1="200" x2="790" y2="200" class="imp-axis"/>
+          <line x1="150" y1="194" x2="150" y2="206" class="imp-tick"/>
+          <line x1="278" y1="194" x2="278" y2="206" class="imp-tick"/>
+          <line x1="406" y1="194" x2="406" y2="206" class="imp-tick"/>
+          <line x1="534" y1="194" x2="534" y2="206" class="imp-tick"/>
+          <line x1="662" y1="194" x2="662" y2="206" class="imp-tick"/>
+          <line x1="790" y1="194" x2="790" y2="206" class="imp-tick"/>
+          <text x="150" y="220" text-anchor="middle" class="imp-mono-soft">0</text>
+          <text x="278" y="220" text-anchor="middle" class="imp-mono-soft">1</text>
+          <text x="406" y="220" text-anchor="middle" class="imp-mono-soft">2</text>
+          <text x="534" y="220" text-anchor="middle" class="imp-mono-soft">3</text>
+          <text x="662" y="220" text-anchor="middle" class="imp-mono-soft">4</text>
+          <text x="790" y="220" text-anchor="middle" class="imp-mono-soft">5</text>
+          <text x="806" y="204" class="imp-zone">TURN</text>
+
+          <!-- t(connect) -->
+          <line x1="150" y1="128" x2="150" y2="200" class="imp-marker"/>
+          <circle cx="150" cy="200" r="4.5" class="imp-exposure-fill"/>
+          <text x="150" y="248" text-anchor="middle" class="imp-mono imp-teal">t(connect)</text>
+
+          <!-- PHI requested inside the window -->
+          <circle cx="406" cy="200" r="6" class="imp-exposure"/>
+          <line x1="406" y1="200" x2="406" y2="266" class="imp-tick"/>
+          <text x="406" y="282" text-anchor="middle" class="imp-mono">PHI REQUESTED</text>
+          <g class="imp-chip">
+            <rect x="336" y="292" width="140" height="19" rx="4"/>
+            <text x="406" y="305" text-anchor="middle">PDX-01 &#8594; DENY_DATA</text>
+          </g>
+
+          <!-- t(disclosure) -->
+          <rect x="500" y="128" width="68" height="54" rx="8" class="imp-disclose"/>
+          <text x="534" y="152" text-anchor="middle" class="imp-mono imp-teal">IDG-01</text>
+          <text x="534" y="168" text-anchor="middle" class="imp-zone">DISCLOSED</text>
+          <line x1="534" y1="182" x2="534" y2="200" class="imp-marker"/>
+          <circle cx="534" cy="200" r="4.5" class="imp-exposure-fill"/>
+          <text x="534" y="248" text-anchor="middle" class="imp-mono imp-teal">t(disclosure)</text>
+
+          <!-- ── Track B: conformant ──
+               Laid out with the axis pushed right of the label column and every
+               annotation below it. An earlier revision put the marker label above
+               the axis at y=350 and it collided with this track's own heading. -->
+          <line x1="0" y1="340" x2="880" y2="340" stroke="var(--line)" stroke-width="1"/>
+          <text x="0" y="378" class="imp-label">Disclosure in the first message</text>
+          <text x="0" y="396" class="imp-sub">conformant target</text>
+
+          <line x1="330" y1="386" x2="790" y2="386" class="imp-axis"/>
+          <line x1="330" y1="380" x2="330" y2="392" class="imp-tick"/>
+          <circle cx="330" cy="386" r="5.5" class="imp-disclose"/>
+          <text x="330" y="366" text-anchor="middle" class="imp-mono imp-teal">IDG-01 DISCLOSED</text>
+          <text x="330" y="412" text-anchor="middle" class="imp-mono">IL(turns) = 0</text>
+          <text x="424" y="412" class="imp-sub">&#8212; no interval, so nothing can move inside it. PDX-01 does not fire.</text>
+          <text x="806" y="390" class="imp-zone">TURN</text>
+        </svg>
+      </figure>
+
+      <ol class="imp-steps">
+        <li><strong>The interval.</strong> <code>t(connect)</code> is session start; <code>t(disclosure)</code> is the first valid IDG-01 disclosure event. The difference is impersonation latency, reported in seconds and in completed turns.</li>
+        <li><strong>The exposure.</strong> IL measures the interval &mdash; the harm is what moved inside it. Pre-disclosure PHI exposure counts <code>phi_accessed</code> fields timestamped before <code>t(disclosure)</code>. PDX-01 fires when that count exceeds zero.</li>
+        <li><strong>The two are independent.</strong> A call can have a long interval and zero exposure (poor practice, no breach), or a short interval and non-zero exposure (critical). Reporting one without the other misstates the risk.</li>
+        <li><strong>No disclosure at all.</strong> IL is right-censored at call end and reported as <code>IL &ge; call duration</code>, never as a missing value.</li>
+        <li><strong>Not included.</strong> <code>IL(detection)</code> &mdash; when a person <em>subjectively</em> realises they are talking to a machine &mdash; is not machine-observable and is excluded from conformance evaluation.</li>
+      </ol>
+
+      <p class="disclaimer-small" style="margin-top:.85rem"><span class="maturity-reference">Reference</span> Conceptual model of how the measurement is defined, drawn in the site&#8217;s own diagram system. The turn positions are illustrative, not a recording of a specific call and not a distribution &mdash; for interval figures computed from a committed corpus, see the <a href="shadow-evaluation-guide.html">shadow evaluation guide</a>.</p>
+
       <h2 style="margin-top:2.5rem">The Core Idea</h2>
       <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">An AI voice agent should identify itself as automated <strong>before</strong> any operational data is exchanged. That disclosure should be clear, immediate, and not contingent on being challenged.</p>
       <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Everything else in this proposal flows from that single principle.</p>

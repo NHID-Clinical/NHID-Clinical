@@ -422,9 +422,24 @@ exchanges PHI while the counterparty believes they are speaking with a human.
 
 **Anatomy of a typical violation:**
 
-![Impersonation Latency — turn-by-turn anatomy](assets/archive/fig2-impersonation-latency.svg)
+> **Figure moved, 2026-09-11.** This referenced `assets/archive/fig2-impersonation-latency.svg`,
+> which has never existed in the repository — `docs/assets/archive/` contains only
+> `fig1-trust-stack.png` and the legacy `build_diagrams.py` that would have produced it. The
+> broken reference stood in two places. It is **not** regenerated: that generator predates the
+> Evidence Diagram System and emits external SVGs referenced by `<img>`, the asset class
+> `docs/visual-system.md` §9 retired, and it also emits CAS diagrams that `claim-boundaries.md`
+> prohibits surfacing.
+>
+> The figure now lives on `specification.html`, inline, in the current diagram system — two
+> tracks over a shared turn axis, showing the interval and, separately, the exposure inside it.
+> See also §2.4.1 below for the formal definition it draws.
 
-**Policy engine response:** IDG-01 CRITICAL + PDX-01 CRITICAL → action: DENY_DATA, CAS → 0.0
+**Policy engine response:** IDG-01 CRITICAL + PDX-01 CRITICAL → action: `DENY_DATA`.
+
+> **Corrected 2026-09-11.** This line previously ended `, CAS → 0.0`. CAS was demoted to a
+> research component on 2026-08-22 (§19.6) and `docs/claim-boundaries.md` prohibits surfacing it:
+> nothing in the repository produces its inputs, so no real call can be scored. The engine's
+> response to this failure is the enforcement action, and that is the whole of it.
 
 #### 2.4.1 — Formal Measurement Definition
 
@@ -1747,7 +1762,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/tests-350%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-1148%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -1837,9 +1852,19 @@ for comment-volume and discoverability context.
 
 ![Five-Layer Trust Stack](assets/archive/fig1-trust-stack.svg)
 
-### 12.2 Impersonation Latency Anatomy
+### 12.2 Impersonation Latency Anatomy — relocated, not regenerated
 
-![Impersonation Latency — turn-by-turn anatomy](assets/archive/fig2-impersonation-latency.svg)
+**Live figure:** `specification.html`, inline, in the Evidence Diagram System — two tracks over a
+shared turn axis showing the interval (`IL = t(disclosure) − t(connect)`) and, separately, the
+pre-disclosure exposure sitting inside it. Classified **Reference**: the turn positions are
+illustrative, not a recording and not a distribution.
+
+**Why it was not regenerated.** This section referenced
+`assets/archive/fig2-impersonation-latency.svg`, which has never existed —
+`docs/assets/archive/` holds only `fig1-trust-stack.png` and `build_diagrams.py`. That generator
+predates the Evidence Diagram System: it emits external SVGs referenced by `<img>` (the asset class
+retired in `docs/visual-system.md` §9) and `d3_cas_tier_ladder()`, which §12.3 below explicitly
+forbids producing. Running it to fix a broken link would have reinstated both problems.
 
 ### 12.3 CAS Tier Ladder — withdrawn
 
