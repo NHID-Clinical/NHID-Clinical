@@ -255,6 +255,7 @@ Read these before building a new figure.
 | Framework relationship map | `index.html` | One accent per semantic role, not per node; branches are the site's own journeys |
 | Latency distribution | `shadow-evaluation-guide.html` | Generated from a recorded field; separates measurement from how the corpus was authored |
 | Interaction boundary | `index.html` | Simplest canonical model; the grammar at its plainest |
+| Impersonation latency | `specification.html` | Draws a *definition*. Separates the interval from the exposure inside it, so neither can be read as the other; the conformant case is drawn beside the failing one rather than described |
 | Five-control model | `specification.html` | Gate vs. audit treatment; ATR-01 drawn correctly |
 | Disclosure-gate sequence | `specification.html` | Lane geometry, prose fallback, replaced a CDN dependency |
 | Enforcement ladder | `specification.html` | Generated; renders true precedence, not a convenient serial chain |

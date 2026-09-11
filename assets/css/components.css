@@ -2152,3 +2152,52 @@ caption.visually-hidden {
   font-family: var(--mono, "IBM Plex Mono", ui-monospace, monospace);
   font-size: 9px; fill: var(--ink);
 }
+
+/* ── Impersonation latency, measured ────────────────────────────────────────
+   The definitional figure for IL = t(disclosure) - t(connect). A model, not a
+   measurement: it carries a maturity chip, never a provenance block.
+
+   Two tracks, because the definition is only half the point. The interval is
+   what IL names; the harm is what moved inside it. A call can have a long
+   interval and no exposure, or a short one and a breach -- so the figure draws
+   the exposure marker separately from the interval it sits in, and labels the
+   control that fires on it. Colour never carries that alone: every state here
+   also carries a word. */
+.imp-model svg { min-width: 44rem; }
+
+.imp-axis      { stroke: var(--line); stroke-width: 1.5; }
+.imp-tick      { stroke: var(--line); stroke-width: 1.2; }
+
+/* The interval itself: a recessed ground with a dashed boundary. Deliberately
+   not a hue -- IL is a duration, not a verdict, and giving it an accent would
+   read as a judgement the figure has not made. */
+.imp-window    { fill: var(--mist); stroke: var(--line); stroke-width: 1.2; stroke-dasharray: 4 3; }
+
+/* Teal is the control family: the gate firing, and the interval once closed. */
+.imp-disclose  { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 1.6; }
+.imp-marker    { stroke: var(--teal); stroke-width: 1.8; }
+
+/* Pre-disclosure exposure. Outlined in structural ink rather than a warning
+   hue, because the word next to it does that work and the palette has no
+   third semantic tone. */
+.imp-exposure  { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+.imp-exposure-fill { fill: var(--ink); }
+
+.imp-label     { font-family: var(--sans); font-size: 12.5px; font-weight: 650; fill: var(--ink); }
+.imp-sub       { font-family: var(--sans); font-size: 10.5px; fill: var(--body); }
+.imp-zone      { font-family: var(--sans); font-size: 9.5px; fill: var(--body); letter-spacing: .07em; }
+.imp-mono      { font-family: var(--mono); font-size: 10.5px; fill: var(--ink); }
+.imp-mono-soft { font-family: var(--mono); font-size: 10px; fill: var(--body); }
+.imp-formula   { font-family: var(--mono); font-size: 15px; font-weight: 500; fill: var(--ink); }
+.imp-teal      { fill: var(--teal); }
+.imp-blue      { fill: var(--blue); }
+
+.imp-chip rect { fill: var(--blue-soft); stroke: var(--blue); stroke-width: 1.1; }
+.imp-chip text { font-family: var(--mono); font-size: 9.5px; fill: var(--blue); }
+
+.imp-steps {
+  margin: 1.1rem 0 0; padding-left: 1.15rem;
+  color: var(--body); font-size: .92rem; line-height: 1.7;
+}
+.imp-steps li { margin-bottom: .4rem; }
+.imp-steps code { font-family: var(--mono); font-size: .85em; }
