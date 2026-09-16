@@ -1410,7 +1410,7 @@ TypeScript = 1214**), never folded silently into the Python figure.
 | :--- | :--- | :--- |
 | STIR/SHAKEN Layer 1 integration | High | RFC 8224 A/B/C attestation correlation |
 | NPPES live NPI lookup | Medium | Currently format-only validation |
-| Production revocation store | Medium | Replace in-memory revocation in AgentIdentityManager |
+| ~~Production revocation store~~ | — | **Delivered in v1.3 final** — durable SQLite `revoked_delegations` in `nhid_event_store.py`, wired to the identity endpoints; see §20.1. What remains open is *cross-organizational* propagation, which is a different problem. This row contradicted §20.1 until 2026-09-15. |
 | Persistent multi-tenant event DB | Medium | SQLite (dev) → RDS/DynamoDB (prod) |
 | WebSocket streaming evaluation | Low | True turn-by-turn vs. current stateless webhook |
 | TypeScript/Node.js policy engine port | Low | For vendors preferring JS-native integration |

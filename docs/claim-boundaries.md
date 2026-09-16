@@ -81,7 +81,7 @@ question.
 | "A healthcare-specific delegation scheme aligned with emerging authenticated-delegation approaches, composable with SPIFFE/OAuth-style stacks." | "A profile of authenticated delegation" (implies an adopted base standard) · "We invented delegated authority / agent identity / scope attenuation." |
 | "Mapped to NIST AI RMF and ISO/IEC 42001; designed to support the disclosure obligation described in EU AI Act Article 50(1)." | "Compliant with / certified against" any of them. |
 | "A voluntary open proposal with standards-oriented artifacts." | "An emerging standard." / "The standard for AI agents in healthcare." / "A standards candidate" (implies a formal standards process has started). |
-| "Reference implementation; revocation is in-memory; key custody and federation are documented but not built." | "Production-ready." / "Enterprise infrastructure." |
+| "Reference implementation; revocation is durable **within a deployment** but does not propagate across organizations; key custody, rotation and federation are documented but not built." | "Production-ready." / "Enterprise infrastructure." |
 | "Disclosure latency is measured on recorded traffic; the framework does not detect covert agents." | "Detects unauthorized/rogue AI callers." |
 | "Delegation makes compromise scoped and revocable rather than unbounded." | "Prevents impersonation / fraud." |
 
@@ -94,10 +94,11 @@ this writing; adopt by version from current materials.
 | :-- | :-- |
 | Governance-layer controls (IDG/PDX/DBC/EIT/ATR-01) + CTS | Reference implementation; deterministic engine with a passing test suite. Checkable today from recorded interactions. |
 | Call Authorization Score | **Research component, not a product capability.** Nothing in the repository produces its inputs, so no real call can be scored. Not to be surfaced publicly. |
-| NHID-Auth v2 (delegation, scope, passports, per-call binding) | Working reference *primitive*, not deployed *infrastructure*. |
-| Revocation | In-memory in the reference implementation — explicitly not production-grade. |
+| NHID-Auth v2 (delegation, scope, passports, per-call binding) | Working reference *primitive*, not deployed *infrastructure*. Demonstrable end-to-end today: Ed25519 keypairs, an `AgentPassport` carrying a **dual-signed** delegation (provider signature *and* agent signature, both verified), NPI-bound authority, scope with monotonic narrowing across hops, TTL expiry, and `call_sid` nonce binding — `python examples/issue_and_verify.py` runs the issue-and-verify path, and `tests/test_dlg01_delegated_authority.py` holds it to 28 cases including forged signatures, expiry, revocation, unknown NPI, wrong call binding and scope widening. |
+| Revocation | **Durable within a deployment, not across organizations.** `POST /v1/identity/revoke-passport` writes to a persistent SQLite `revoked_delegations` table (`nhid_event_store.record_revocation`), and `POST /v1/identity/verify-passport` checks it (`nhid_event_store.is_delegation_revoked`), so a revocation survives restarts and stateless invocations. Two limits are load-bearing and must be stated with it: (a) the **policy engine performs no I/O**, so `evaluate_dlg01` consults only the in-memory `AgentIdentityManager` lists its caller supplies — an embedding deployment wires the durable store in itself; (b) the hosted verify path **falls back to the library-only check** if the store is unreachable. Not production-grade, and **no cross-organizational propagation**. |
 | Key custody / rotation / per-tenant isolation | Documented production path; not built. |
-| Registry (NPI → public key resolution) | Future work; does not exist. Requires a neutral operator. |
+| Trust-anchor resolution (NPI → public key) | **Local static resolution exists**: `src/trust_anchor.py` ships the `TrustAnchorResolver` Protocol and `StaticTrustAnchorResolver`, an in-memory mapping the deploying organization populates itself; an unresolvable NPI returns `None` and the caller must treat that as a verification failure. The engine makes **no network calls**, by design. |
+| Registry / dynamic trust-anchor discovery | Future work; **does not exist**. No JWKS-backed or discovery resolver is implemented, and a shared registry would require a neutral operator. Static local resolution (row above) is not a registry and must not be described as one. |
 | Federation / multi-hop authorization propagation automation | Open problem; documented direction, not a shipped capability. |
 | Second independent implementation | Does not exist. This is the gating deficiency for standards-track credibility. |
 | Large-scale production validation | Limited public evidence. The recommended first step remains a shadow pilot on the adopter's own traffic. |
@@ -128,8 +129,9 @@ this writing; adopt by version from current materials.
   layer is immature and deferrable).
 - **Security engineers:** lead with the delegation *protocol*, acknowledge
   SPIFFE-delegation and general authenticated-delegation work as prior/
-  parallel art, and disclose the gaps first (in-memory revocation, no
-  federation, no second implementation, key lifecycle unspecified). Disclosed
+  parallel art, and disclose the gaps first (revocation durable per deployment
+  but with no cross-organizational propagation, static trust anchors with no
+  discovery, no second implementation, key lifecycle unspecified). Disclosed
   immaturity is forgiven; immaturity dressed as "infrastructure" is not.
 
 ---
@@ -178,7 +180,8 @@ policy decision and `evaluate_all()` structurally cannot read it.
 | "**Mapped to** NIST AI RMF and ISO/IEC 42001; **designed to support** the EU AI Act Art. 50(1) disclosure obligation." | `regulatory-alignment.html` — mapping only |
 | "Addresses an **underserved operational gap** in cross-organizational healthcare AI voice workflows." | Narrow scope; conservative, hedged |
 | "A **voluntary open proposal with standards-oriented artifacts**; submitted a **public comment** to NIST (NIST-2025-0035-0026)." | Public comment ≠ endorsement or an opened standards process |
-| "Revocation is **checked at verification and in-memory** in the reference implementation." | `src/agent_identity.py` — not live / not cross-org |
+| "Revocation is **checked at verification**, and is **durable within a deployment** — a revoked delegation stays revoked across restarts and stateless invocations." | `nhid_event_store.record_revocation` / `is_delegation_revoked` (SQLite `revoked_delegations`), wired to `POST /v1/identity/revoke-passport` and checked by `POST /v1/identity/verify-passport` in `functions/handler.py`. **Always pair with:** it does **not** propagate across organizations; the policy engine does no I/O, so `evaluate_dlg01` sees only the in-memory lists its caller supplies; and the hosted verify path degrades to the library-only check if the store is unreachable. |
+| "The agent passport is **dual-signed** — the provider signs the delegation and the agent counter-signs it, and verification requires both." | `src/agent_identity.py` — `signature_b64` and `agent_signature_b64` are both verified over the same payload (`verify_passport`); `tests/test_dlg01_delegated_authority.py::test_invalid_provider_signature_denies` and `::test_invalid_agent_signature_denies`. This proves the holder possesses the agent key; it is **not** a claim that impersonation is prevented. |
 | "**Delegated authority is verified in the policy path (DLG-01) when a deployment opts in**, and the verified scope constrains the data boundary." | `evaluate_dlg01` + `evaluate_pdx01` in `src/nhid_policy_engine_v1.py`; `tests/test_dlg01_delegated_authority.py`. Always pair with the four limits stated in the in-scope section above. |
 | "The **evidence pack is reproducible** and marks anything it could not generate as unavailable." | `scripts/export_evidence_pack.py` + `tests/test_export_evidence_pack.py`. It is not an attestation, audit opinion, or assurance engagement. |
 | "A **bot-to-bot disclosure gate** exists for agent-to-agent contexts." | `evaluate_bot_to_bot()` — disclosure only, not mutual authorization |
@@ -191,7 +194,7 @@ policy decision and `evaluate_all()` structurally cannot read it.
 | "**Provides authentication of AI agents.**" | Conflates identity declaration, credential verification, authorization, and enforcement. **Use instead:** *"NHID evaluates declared identity, authorization context, and interaction policy. It does not replace an underlying identity provider or cryptographic identity infrastructure."* |
 | "**Nobody** is solving receiver-side enforcement." | False — runtime enforcement is actively researched. Say *"no widely adopted, standardized receiver-side model exists."* |
 | "**Solved agent identity** / **prevents impersonation or fraud.**" | Too broad; NHID makes compromise scoped and revocable, it does not prevent it. |
-| "**Production-ready** / enterprise infrastructure / a trust or control plane." | Reference primitive; in-memory revocation, no registry, no federation, no key lifecycle. |
+| "**Production-ready** / enterprise infrastructure / a trust or control plane." | Reference primitive. Revocation does not cross organizational boundaries, trust anchors are static with no discovery, there is no registry, no federation, no key lifecycle, and no second implementation. |
 | "**Compliant with / certified against** NIST / ISO / EU AI Act." | Mapping ≠ compliance ≠ certification. |
 | "**Detects** unauthorized / rogue / covert AI callers." | Measures disclosure on recorded traffic; does not detect covert agents. |
 | "A **universal identity layer** / a **healthcare AI governance framework.**" | Implies the model/bias/clinical scope NHID explicitly excludes. |

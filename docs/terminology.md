@@ -18,7 +18,7 @@
 | **non-human-actor identity and delegated-authorization protocol** (for the lower layer) | identity layer (unqualified), trust infrastructure, control plane | The lower layer is a protocol with prior art, not general identity infrastructure. "Trust infrastructure" / "control plane" imply production-grade federation and enforcement not yet built. |
 | **mapped to** / **aligns with** / **can support** (standards) | compliant with, certified, required by | NHID-Clinical maps to external frameworks; it is not certified against any and mandated by none. Reproduce the framework's existing "mapped, not certified" discipline. |
 | **standards candidate** / **input to a work item** | emerging standard, the standard | "Emerging standard" implies multi-stakeholder convergence and competing implementations already underway. Not yet true. |
-| **reference implementation** | production system, deployed infrastructure | The engine and NHID-Auth v2 are reference code; revocation is in-memory, key custody is demo-grade. |
+| **reference implementation** | production system, deployed infrastructure | The engine and NHID-Auth v2 are reference code. Revocation is durable within a deployment but does not propagate across organizations; trust anchors are static with no discovery; key custody is demo-grade. |
 | **cross-organizational** | cross-domain (alone) | "Cross-organizational" names the actual boundary — between two organizations that do not jointly control a trust domain. |
 
 ## The two layers
