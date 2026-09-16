@@ -103,7 +103,9 @@ This is an appropriate simplification **today**, while NHID-Clinical is a refere
 
 ### 1.9 Revocation list strategy
 
-**Reference implementation:** in-memory revocation set inside `AgentIdentityManager`; `revoke_agent()` and `revoke_delegation()` are permanent and irreversible by design, but state does not survive a process restart.
+**Reference implementation, two layers.** The `AgentIdentityManager` primitive keeps an in-memory revocation set — `revoke_agent()` and `revoke_delegation()` are permanent and irreversible by design, but that state does not survive a process restart. **Durability is supplied above it:** `nhid_event_store.record_revocation()` writes to a persistent SQLite `revoked_delegations` table and `is_delegation_revoked()` reads it, wired to `POST /v1/identity/revoke-passport` and checked by `POST /v1/identity/verify-passport` (`functions/handler.py`). So a revocation made through the hosted API survives restarts and stateless invocations.
+
+Two limits belong with that statement. The policy engine performs no I/O, so `evaluate_dlg01` consults only the in-memory lists its caller supplies — an embedding deployment wires the durable store in itself. And the hosted verify path falls back to the library-only check if the store is unreachable. Revocation still does **not** propagate across organizations.
 
 **Production recommendation:**
 

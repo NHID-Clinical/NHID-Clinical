@@ -84,7 +84,7 @@ instead.
 
 | Layer | What it is | Native category | Audience that owns it |
 | :-- | :-- | :-- | :-- |
-| **Governance layer** — IDG-01, PDX-01, DBC-01, EIT-01, ATR-01, CAS, CTS | Transparency, accountability, and audit rules on the interaction | Operational AI governance / agent governance | NIST AI RMF, ISO/IEC 42001, compliance |
+| **Governance layer** — IDG-01, PDX-01, DBC-01, EIT-01, ATR-01, CTS | Transparency, accountability, and audit rules on the interaction | Operational AI governance / agent governance | NIST AI RMF, ISO/IEC 42001, compliance |
 | **Identity / security layer** — NHID-Auth v2 | Non-human actor identity and scoped delegation | Non-human identity governance / AI security (authorization) | Security engineering, the SPIFFE/OAuth world |
 
 Consequences for how the project talks about itself:
@@ -113,12 +113,16 @@ never be implied away by the tidy diagram:
 - **They are at different maturity levels.** The **governance layer** is an
   *implementable reference framework* today (deterministic engine, passing
   conformance suite, checkable from recorded interactions). The **identity /
-  delegation layer** is a *reference design that still requires federation,
-  a trust registry, and key-lifecycle validation* before it is production
-  infrastructure — its revocation is in-memory in the reference
-  implementation. Present them as two rungs of a ladder, not one finished
-  platform. See [claim-boundaries.md](claim-boundaries.md) for the full
-  maturity table.
+  delegation layer** is further along than "design" suggests and still short
+  of infrastructure. Demonstrable today: Ed25519 agent identity, a dual-signed
+  NPI-bound delegation, scope with monotonic narrowing across hops, TTL expiry,
+  `call_sid` binding, boundary verification inside the policy path (DLG-01),
+  and revocation that is **durable within a deployment**. Still required before
+  it is production infrastructure: dynamic trust-anchor discovery,
+  cross-organizational revocation propagation, key custody and rotation,
+  per-tenant isolation, and a second independent implementation. Present them
+  as two rungs of a ladder, not one finished platform. See
+  [claim-boundaries.md](claim-boundaries.md) for the full maturity table.
 
 ## What NHID-Clinical governs — and does not
 
@@ -276,8 +280,9 @@ Never self-describe with: **autonomous** (implies independent
 goal-pursuit/planning the deployments do not have), **emerging standard**,
 **universal / general identity layer**, **control plane** or **trust
 infrastructure** (imply production-grade federation, lifecycle automation,
-and live enforcement not yet built — the reference implementation's
-revocation is in-memory), or **general healthcare AI governance** (implies
+and live enforcement not yet built — revocation does not cross organizational
+boundaries and trust anchors are static), or **general healthcare AI
+governance** (implies
 model safety, bias, and clinical validation, all out of scope). Full list
 and rationale in [terminology](terminology.md) and
 [claim-boundaries](claim-boundaries.md).

@@ -91,7 +91,8 @@ datacenter, endpoint fleet, workforce, or AI model of its own to assess, and the
 column consistently pushes those controls to whichever organization actually deploys the
 reference implementation. The `Yes` count is deliberately small (6/320) because almost every real
 control NHID-Clinical has is capped at `Partial` by an acknowledged, documented limitation — most
-visibly, NHID-Auth v2's in-memory revocation and demo-grade key generation, which the project's
+visibly, NHID-Auth v2's lack of cross-organizational revocation propagation, its static trust
+anchors, and demo-grade key generation, which the project's
 own production-roadmap-gaps table (`docs/nhid-clinical-technical-specification.md` §14) already
 flags as not production-ready. The fair summary for a reader deciding whether to trust this
 project: the behavioral and cryptographic-identity *design* is unusually well thought through and
