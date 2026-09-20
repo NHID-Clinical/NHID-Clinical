@@ -1,6 +1,8 @@
-from fastapi import FastAPI, Security, HTTPException
-from fastapi.security.api_key import APIKeyHeader
-import os
+from fastapi import FastAPI, Security
+
+# Authentication lives in its own module so it can be imported without the
+# voice pipeline (and therefore without `openai`), which makes it testable.
+from nhid_api_auth import get_api_key
 
 # Import all modules
 import nhid_api_endpoints
@@ -18,20 +20,14 @@ app = FastAPI(
     contact={"name": "Brianna Baynard", "url": "https://nhid-clinical.org"},
 )
 
-_api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
-
-def get_api_key(api_key: str = Security(_api_key_header)):
-    expected = os.getenv("NHID_API_KEY")
-    if expected and api_key != expected:
-        raise HTTPException(status_code=403, detail="Invalid API key")
-    return api_key
-
 # Mount the voice pipeline (this fixes /voice/process 404s for tests)
 app.mount("/voice", voice_app, name="voice_pipeline")
 
 # Include other routers
 app.include_router(nhid_api_endpoints.router, dependencies=[Security(get_api_key)])
-app.include_router(nhid_attest.router)
+# The attestation router mints credentials, so it is protected like every
+# other router here. It was previously included with no dependency at all.
+app.include_router(nhid_attest.router, dependencies=[Security(get_api_key)])
 app.include_router(nhid_payer.router, dependencies=[Security(get_api_key)])
 app.include_router(nhid_audit_export.router, dependencies=[Security(get_api_key)])
 

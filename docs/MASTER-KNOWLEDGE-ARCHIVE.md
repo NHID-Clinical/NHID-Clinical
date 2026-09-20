@@ -47,12 +47,12 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **1148** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **1160** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **1148 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **1160 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1127 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
-| Collected | **1148** across **64** files | `pytest --collect-only -q` |
+| Collected | **1160** across **64** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED` |
 | Spec version | `1.3` | `src/nhid_policy_engine_v1.py` |
 | Engine version | `1.0.0` | `src/nhid_policy_engine_v1.py` |
@@ -1401,7 +1401,7 @@ number published on README badges, the website and the PDFs, which
 
 **TypeScript middleware:** a separate Jest suite under `middleware/tests/` — **66 passed, 4 suites**,
 re-derived 2026-09-06 via `npm ci && npx jest --runInBand`. It is not part of `UNIT_PUBLISHED` and
-not run by `validate_ci.py`; quote it separately or as a stated combination (**1148 Python + 66
+not run by `validate_ci.py`; quote it separately or as a stated combination (**1160 Python + 66
 TypeScript = 1214**), never folded silently into the Python figure.
 
 ### 7.3 Near-Term Roadmap
@@ -1474,7 +1474,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 1148 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 1160 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1127 pass and 21 skip (the integration tests).
 ```
 
@@ -1501,7 +1501,7 @@ legitimate. `UNIT_PUBLISHED` exists only so published surfaces can be checked fo
 
 ```python
 # scripts/validate_ci.py — values as of ed342b3; the file is the authority
-UNIT_PUBLISHED = 1148
+UNIT_PUBLISHED = 1160
 SKIP_EXPECTED = 0      # CI starts the API, so a skip means it did not come up
 XFAIL_EXPECTED = 0
 ```
@@ -1762,7 +1762,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-1148%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-1160%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2758,7 +2758,7 @@ It addresses the disclosure and audit trail aspects of AI voice interactions.
 # From src/nhid_policy_engine_v1.py
 POLICY_ENGINE_VERSION = "1.0.0"
 NHID_SPEC_VERSION = "1.3"
-UNIT_PUBLISHED = 1148  # scripts/validate_ci.py (published count, not a CI gate)
+UNIT_PUBLISHED = 1160  # scripts/validate_ci.py (published count, not a CI gate)
 
 # Live API
 API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"

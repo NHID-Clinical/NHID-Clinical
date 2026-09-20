@@ -324,10 +324,10 @@ live responses rather than a response against a trace — **passes**.
 
 ## 9. The public reporting metric
 
-**Published figure: 1148 passing.** Derived by running the suite against a live
+**Published figure: 1160 passing.** Derived by running the suite against a live
 API, which is now what CI does in both the `test` and `security_gates` jobs.
 
-> **1148 automated tests pass on every change**, covering the five controls, the
+> **1160 automated tests pass on every change**, covering the five controls, the
 > policy engine, the conformance suite, and — since 2026-09-03 — the hosted HTTP
 > API, including end-to-end proof that the API applies the engine and writes a
 > complete audit record.
@@ -340,7 +340,7 @@ API, which is now what CI does in both the `test` and `security_gates` jobs.
 **Rules this follows:**
 
 - **The number that runs is the number published.** 998 is measured, not derived.
-- **Never present a collected total as a passing total.** They happen to be equal now (1148) only because nothing is skipped or deferred; if they ever diverge, publish the passing figure.
+- **Never present a collected total as a passing total.** They happen to be equal now (1160) only because nothing is skipped or deferred; if they ever diverge, publish the passing figure.
 - **Do not report 100%, and do not report zero skips as an achievement.** The
   skips became visible failures. That is an improvement in what is *known*, not
   in what works.
