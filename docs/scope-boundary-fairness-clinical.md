@@ -16,14 +16,53 @@ These areas are intentionally out of scope. NHID-Clinical assumes that organizat
 already have (or will establish) separate processes for clinical validation, fairness
 auditing, and broader AI risk management.
 
+## Dependency declaration: automatic speech recognition
+
+A scope exclusion is incomplete without saying what the excluded thing is still needed
+for. This is that statement.
+
+**NHID-Clinical evaluates transcript and event data. It does not perform speech
+recognition, and it does not establish the accuracy of the transcription path that feeds
+it.** The policy engine reads text: IDG-01 matches disclosure and persona phrases against
+`identity_assertion_text`, PDX-01 detects protected-data requests in `speech_text`, and
+EIT-01 detects an escalation request in what the **human** recipient said. All three are
+downstream of an ASR system this framework neither supplies nor measures.
+
+The consequences are concrete, and deployments must plan for them:
+
+- A disclosure that was spoken but mis-transcribed is recorded as a **missing disclosure
+  that did not happen**.
+- An escalation request that was spoken but mis-transcribed produces **no escalation
+  finding**, and the audit record then attests to a compliant interaction. This is the
+  failure mode the evidence cannot reveal on its own.
+- Word error rates are not uniform across speakers. Published measurements report
+  materially higher error rates for some speaker groups than others, and error in
+  conversational, multi-speaker audio is substantially worse than in dictation. Whatever
+  that distribution is in a given deployment, NHID-Clinical's findings inherit it.
+
+**Therefore:** every conformance figure produced by this framework is valid only to the
+precision of the transcription path beneath it. The event schema carries an optional
+`transcription_attestation` for exactly this reason, with three honest states —
+`measured`, `attested` and `unattested`. Where it is absent or `unattested`, a report
+must say so rather than imply a precision it cannot support.
+
+Assuring ASR quality, including across speaker groups, is the deploying organization's
+responsibility. NHID-Clinical's contribution is to make the dependency explicit and to
+carry the attestation alongside the finding.
+
 ## Integration approach (not expansion)
 
 NHID-Clinical is designed to work *underneath* fairness and clinical governance programs,
 not replace them:
 
-- **CAS and Impersonation Latency** metrics can be stratified by workflow or population
-  segment when a separate fairness program requires it — they are per-call measurements
-  with no protected-attribute inputs of their own.
+- **Stratification is not implemented.** An earlier version of this note said
+  Impersonation Latency "can be stratified by workflow or population segment when a
+  separate fairness program requires it." That described an intention, not a capability:
+  nothing in `src/`, `schema/`, `tests/` or `scripts/` performs stratification, and no
+  protected-attribute or segment input exists. What the schema now carries is an optional
+  `language` and `interpreter_present` pair on the event — enough for a deploying
+  organization to stratify **its own** reporting, and nothing more. NHID-Clinical does not
+  compute, store or report a subgroup comparison.
 - Organizations should pair NHID-Clinical with their chosen fairness and clinical
   governance frameworks (e.g. NIST AI RMF, internal review boards, or vendor fairness
   programs). NHID-Clinical provides the identity and audit foundation; it does not perform

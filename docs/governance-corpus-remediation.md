@@ -206,7 +206,11 @@ None was taken.
 
 **Measured result at this record: 90.6% detection · 0.0% false positives on
 compliant scenarios · 8 unexpected detections, reported separately.**
-**Current measured result after the G1–G4 decisions: 30/32 = 93.8% detection ·
+> **v1.3.2 — the rate fell from 93.8% to 71.9%** on the withdrawal of DBC-01's self-reported artifact path in v1.3.2 (7 corpus violations had been 'detected' only because the fixture declared them). The engine was not
+> weakened; a measurement that was never the engine's was removed from it. The
+> figures above this line are the historical record and stay as written.
+
+**Current measured result: 23/32 = 71.9% detection ·
 0/5 false positives · 12 unexpected detections.**
 
 ## 5. G1–G4 — all four decided 2026-09-04

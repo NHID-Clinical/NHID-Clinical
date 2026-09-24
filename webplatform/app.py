@@ -102,8 +102,6 @@ def api_dashboard():
     return {
         "counts": bridge.store_counts(),
         "detection": _snapshot(),
-        "cas_tiers": bridge.cas_tier_distribution(),
-        "cas_thresholds": bridge.CAS_THRESHOLDS,
         "versions": bridge.VERSIONS,
     }
 

@@ -41,7 +41,7 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-1160%20passing-brightgreen?style=flat-square">
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-1116%20passing-brightgreen?style=flat-square">
   <img alt="Middleware Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
   <img alt="Code license" src="https://img.shields.io/badge/code-Apache--2.0-lightgrey?style=flat-square">
@@ -67,7 +67,7 @@ Pick your path — each is runnable today:
 
 **🔍 Reviewers & security teams** — read the boundaries, then run the tests.
 1. Skim [what it is / is not](#what-nhid-clinical-is--is-not) and the [claim boundaries](docs/claim-boundaries.md)
-2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **1160 passing** (0 skipped, 0 xfailed)
+2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **1116 passing** (0 skipped, 0 xfailed)
 3. Inspect the five controls in [`src/nhid_policy_engine_v1.py`](src/nhid_policy_engine_v1.py) and the [Enforcement Profile](docs/enforcement-profile.md)
 4. Read the [Conformance Test Suite](conformance/nhid_conformance_test_suite_v1.yaml) — each case asserts an expected policy action
 
@@ -122,7 +122,7 @@ For a one-page overview aimed at hospital, payer, compliance, and procurement le
 An honest maturity snapshot. NHID-Clinical is a working reference implementation, not a production-scale product.
 
 **Available today**
-- Deterministic policy engine with 1160 tests, all passing, across all phases
+- Deterministic policy engine with 1116 tests, all passing, across all phases
 - Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
 - Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
 - Conformance Test Suite, plus an evidence pack export a vendor can hand to a reviewer
@@ -193,7 +193,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 | Item | Deliverable | Status | Purpose |
 |------|---|---|---|
 | **1** | **Governance Evaluation Corpus v1.0** | ✅ Complete | 25 healthcare scenarios (5 compliant + 10 single-rule + 10 multi-rule), 55 turns; demonstrates rule-combination coverage |
-| **2** | **Detection Rate Report** | ✅ Complete | 93.8% aggregate detection (30/32 violations); 0% false-positive rate (0 of 5 compliant scenarios); per-rule accuracy breakdown |
+| **2** | **Detection Rate Report** | ✅ Complete | 71.9% aggregate detection (23/32 violations); 0% false-positive rate (0 of 5 compliant scenarios); per-rule accuracy breakdown |
 | **3** | **NHID Audit Event Spec v1.0** | ✅ Complete | Formal audit trail schema, immutability requirements (append-only + hash chain options), 7-year retention, compliance mappings (HIPAA §164.312b) |
 | **4** | **Metrics & Observability v1.0** | ✅ Complete | 6 metric categories, CloudWatch integration, pilot dashboard layout, alert thresholds, weekly reporting template |
 | **5** | **Architecture Overview (Pilot-Ready)** | ✅ Complete | 10-minute executive brief for security architects; governance statement for portfolio; pilot success criteria and go/no-go recommendation |
@@ -201,8 +201,8 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 ### Evidence Summary
 
 **Engine Validation**:
-- ✅ **1160 passing tests** (comprehensive rule coverage across all phases)
-- ✅ **25-scenario evaluation corpus** (93.8% detection; 0% false positives across 5 compliant scenarios; 12 unexpected detections on violation scenarios, reported separately)
+- ✅ **1116 passing tests** (comprehensive rule coverage across all phases)
+- ✅ **25-scenario evaluation corpus** (71.9% detection; 0% false positives across 5 compliant scenarios; 12 unexpected detections on violation scenarios, reported separately)
 - ✅ **Live endpoint tested** against noncompliant VAPI payload
 - ✅ **Deterministic** — same input always produces same output
 
@@ -246,7 +246,7 @@ Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evide
 | **EIT-01** | Escalation Implementation Test | Clear human handoff path, honored on request |
 
 Plus **ATR-01** (audit trail) — every call must produce a machine-readable trace.  
-Comprehensive test suite · same inputs → identical output · **1160 passing**, every collected test executed
+Comprehensive test suite · same inputs → identical output · **1116 passing**, every collected test executed
 
 [**Try the Governance Simulator →**](https://nhid-clinical.org/developers.html)
 
@@ -382,7 +382,7 @@ pip install -r requirements.txt
 python -m pytest tests/ -v
 ```
 
-Expected: **1160 passing** in ~3.0s, with no skips and no xfails. Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
+Expected: **1116 passing** in ~3.0s, with no skips and no xfails. Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
 
 <details>
 <summary><b>Repository structure</b></summary>
@@ -438,7 +438,7 @@ python examples/issue_and_verify.py
 | `src/` | Packaged Python modules used by the engine and tests (e.g. agent identity). |
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio). |
 | `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (1160 passing, all phases: foundations, adversarial, synthetic, hardening). |
+| `tests/` | The Python conformance and invariant tests (1116 passing, all phases: foundations, adversarial, synthetic, hardening). |
 | `scripts/` | CI guards — `validate_ci.py`, `check_baseline.py`, `check_number_drift.py` — and tooling. |
 | `schema/` | Event and audit-trace schemas. |
 | `docs/` | Specification docs, the [Executive Brief](docs/executive-brief.md), the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md), and the knowledge archive. |

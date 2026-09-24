@@ -25,20 +25,20 @@ rather than inferring.
 |---|---|---|
 | `NHID_SPEC_VERSION` | `1.3` | `src/nhid_policy_engine_v1.py` |
 | `POLICY_ENGINE_VERSION` | `1.0.0` | `src/nhid_policy_engine_v1.py` |
-| `UNIT_PUBLISHED` | `1160` | `scripts/validate_ci.py` — published-number reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | `1116` | `scripts/validate_ci.py` — published-number reference, **not** a CI gate |
 | `SKIP_EXPECTED` | `0` | `scripts/validate_ci.py` — CI starts the API, so a skip means it did not come up |
 | `XFAIL_EXPECTED` | `0` | `scripts/validate_ci.py` — recorded divergences, see `skipped-test-audit.md` §8 |
 
 ## 2. Test suite
 
 ```
-1160 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
+1116 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
 1127 passed, 21 skipped             # ...the same command with no API listening (drift-ok: no-API measurement, not the published count)
-1160 collected                # python -m pytest tests/ --collect-only -q
+1116 collected                # python -m pytest tests/ --collect-only -q
 64 files                      # files under tests/ that pytest collects from
 ```
 
-1160 collected, 1160 passed. Every published surface stating these numbers must
+1116 collected, 1116 passed. Every published surface stating these numbers must
 satisfy that arithmetic; `scripts/check_number_drift.py` enforces the passed
 count, reads the text of every `specs/*.pdf`, and — as of `ed342b3` — also
 covers this file and `MASTER-KNOWLEDGE-ARCHIVE.md`. Those two were outside its
@@ -102,7 +102,7 @@ Source of truth: `EXPECTED` in `scripts/check_baseline.py`, gated in CI.
 
 ### 5.2 Governance Evaluation Corpus — research measurement
 25 scenarios (5 compliant, 20 violation), 55 turns, 32 expected violations.
-**30/32 detected = 93.8%. 0/5 compliant scenarios produced a false positive. 12 unexpected detections on violation scenarios — a separate quantity, see `governance-corpus-remediation.md`.**
+**23/32 detected = 71.9%. 0/5 compliant scenarios produced a false positive. 12 unexpected detections on violation scenarios — a separate quantity, see `governance-corpus-remediation.md`.**
 Derived by *running* the corpus (`scripts/eval_corpus.py`), not from a constant.
 Small and hand-authored: a research measurement, not a conformance claim,
 certification, assurance score, or independent validation.
@@ -191,8 +191,8 @@ Recorded because they change what a session can verify:
 ```bash
 git rev-parse HEAD
 python -m uvicorn app:app --port 8000 &         # required, or 21 tests skip
-python -m pytest tests/ -q                      # 1160 passed, 0 skipped, 0 xfailed
-python -m pytest tests/ --collect-only -q       # 1160 collected
+python -m pytest tests/ -q                      # 1116 passed, 0 skipped, 0 xfailed
+python -m pytest tests/ --collect-only -q       # 1116 collected
 python scripts/validate_ci.py                   # CI PASS
 python scripts/check_baseline.py                # Fabricate baseline
 python scripts/check_number_drift.py            # drift + corpus + PDFs
@@ -215,10 +215,10 @@ that introduced no net change.
 
 | Figure | Value | Derived by |
 |---|---|---|
-| Suite passing | **1160** | `python -m pytest tests/ -q` with the API running |
+| Suite passing | **1116** | `python -m pytest tests/ -q` with the API running |
 | Recorded divergences | **0** | both contracts resolved; see `skipped-test-audit.md` §8 |
 | Skipped | **0** | same run |
-| Collected | **1160** | `--collect-only -q`; equals the passing count |
+| Collected | **1116** | `--collect-only -q`; equals the passing count |
 | IDG-01 | 70/70, 0 FP | `scripts/check_baseline.py` |
 | PDX-01 | 41/41, 0 FP | `scripts/check_baseline.py` |
 | DBC-01 | 183/200 = 91.5%, 5 FP | `scripts/check_baseline.py` |
@@ -226,7 +226,7 @@ that introduced no net change.
 | Fabricate corpus | **550** conversations, 4838 turns | row count of `fixtures/fabricate/conversations.csv` / `turns.csv` |
 | Fabricate compliant | **127** | conversations with `0` on all five `*_violation` columns |
 | Governance corpus | **25** scenarios, **55** turns | `scripts/eval_corpus.py` |
-| Governance detection | **30/32 = 93.8%** | `scripts/eval_corpus.py` |
+| Governance detection | **23/32 = 71.9%** | `scripts/eval_corpus.py` |
 | Governance false positives | 0 of 5 compliant scenarios | `scripts/eval_corpus.py` |
 | Adversarial corpus | **40** scenarios | length of `tests/adversarial_corpus_v1.json` |
 

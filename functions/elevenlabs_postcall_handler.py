@@ -21,7 +21,7 @@ import json
 from typing import Any
 
 from adapters.call_progress_adapter import to_nhid_event
-from adapters.elevenlabs_postcall_adapter import iter_turns
+from adapters.archive.elevenlabs_postcall_adapter import iter_turns
 from functions import demo_status_store
 from functions.twilio_demo_handler import _DEMO_GATE_RULE_IDS, _decision_summary
 from src.nhid_policy_engine_v1 import evaluate_all

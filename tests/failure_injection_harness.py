@@ -722,21 +722,31 @@ class TestPolicyEngineUnit:
         assert decision.action == self.engine.PolicyAction.CONTINUE_AI
         assert not decision.violations
 
-    def test_dbc01_fail_fake_breathing(self) -> None:
+
+    def test_dbc01_fail_license_claim(self) -> None:
+        """A licensed-professional claim is caught from what the agent said.
+
+        This previously asserted on a caller-supplied deceptive_artifact_flags
+        value. That path is withdrawn (v1.3.2) because the flag was self-reported
+        by the agent under evaluation, so the control now reads the assertion
+        text — which is the only evidence the recipient actually has.
+        """
+        event = self._base_event({
+            "healthcare_governance.identity_assertion_text":
+                "As a licensed nurse on our team, I can confirm the criteria.",
+        })
+        decision = self.engine.evaluate_dbc01(self._base_session(), event)
+        assert decision.action == self.engine.PolicyAction.LOG_ONLY
+        assert any("implies human status" in v.description for v in decision.violations)
+
+    def test_dbc01_ignores_self_reported_artifact_flags(self) -> None:
+        """Regression: a caller-supplied artifact flag must produce no finding."""
         event = self._base_event({
             "healthcare_governance.deceptive_artifact_flags": ["fake_breathing"],
         })
         decision = self.engine.evaluate_dbc01(self._base_session(), event)
-        assert decision.action == self.engine.PolicyAction.LOG_ONLY
-        assert any(v.rule_id == "DBC-01" for v in decision.violations)
-
-    def test_dbc01_fail_license_claim(self) -> None:
-        event = self._base_event({
-            "healthcare_governance.deceptive_artifact_flags": ["license_claim"],
-        })
-        decision = self.engine.evaluate_dbc01(self._base_session(), event)
-        assert decision.action == self.engine.PolicyAction.LOG_ONLY
-        assert any("license_claim" in v.description for v in decision.violations)
+        assert decision.action == self.engine.PolicyAction.CONTINUE_AI
+        assert not decision.violations
 
     # EIT-01 unit tests
 

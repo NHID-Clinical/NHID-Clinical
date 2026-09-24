@@ -78,8 +78,8 @@
         "name": "Governance Evaluation Corpus",
         "measures": "Rule detection on hand-authored scenarios",
         "size": "25 scenarios \u00b7 55 turns",
-        "result": "30/32 expected violations detected",
-        "rate": 93.8,
+        "result": "23/32 expected violations detected",
+        "rate": 71.9,
         "source": "tests/evaluation_corpus_v1.json",
         "command": "python scripts/eval_corpus.py --check"
       },
@@ -104,8 +104,8 @@
       {
         "name": "Conformance suite",
         "measures": "Implementation correctness against the specification",
-        "size": "1160 tests",
-        "result": "1160/1160 passing, 0 skipped, 0 xfailed",
+        "size": "1116 tests",
+        "result": "1116/1116 passing, 0 skipped, 0 xfailed",
         "rate": 100.0,
         "source": "tests/",
         "command": "python -m pytest tests/ -q"

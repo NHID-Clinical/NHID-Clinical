@@ -125,4 +125,4 @@ class TestCallProgressPolicyEvaluation:
         assert resp["statusCode"] == 200
         result = json.loads(resp["body"])
         assert result["turn_index"] == 7
-        assert "cas" in result
+        assert "evidence_completeness" in result

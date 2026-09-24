@@ -21,7 +21,7 @@ label was left in place and the consequence is reported — as a miss that is
 known to be a mislabel, or as an unexpected detection — rather than corrected in
 a way that would move a published figure. §5 lists every one.
 
-Measured after the decisions: **30/32 = 93.8% detection · 0/5 false positives ·
+Measured after the decisions: **23/32 = 71.9% detection · 0/5 false positives ·
 12 unexpected detections.** Fabricate baseline byte-identical.
 
 ---
@@ -333,7 +333,7 @@ Two of the corpus's three remaining misses are therefore known mislabels
 ## 6. Reproduce
 
 ```bash
-python scripts/eval_corpus.py       # 30/32 = 93.8%, 0/5 FP, 12 unexpected
+python scripts/eval_corpus.py       # 23/32 = 71.9%, 0/5 FP, 12 unexpected
 python scripts/check_baseline.py    # Fabricate baseline, unchanged
 python scripts/check_number_drift.py
 git diff --stat tests/evaluation_corpus_v1.json   # empty

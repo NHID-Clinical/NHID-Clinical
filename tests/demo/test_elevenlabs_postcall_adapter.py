@@ -15,7 +15,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from adapters.elevenlabs_postcall_adapter import iter_turns  # noqa: E402
+from adapters.archive.elevenlabs_postcall_adapter import iter_turns  # noqa: E402
 
 
 def test_maps_agent_and_user_roles_to_speaker():

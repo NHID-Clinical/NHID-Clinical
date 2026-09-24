@@ -8,23 +8,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from functions.handler import lambda_handler
 
 
-class TestBadgeEndpoint:
-    def test_badge_returns_svg(self):
-        resp = lambda_handler({
-            "httpMethod": "GET",
-            "path": "/v1/public/vendor/vendor_test/badge",
-        }, None)
-        assert resp["statusCode"] == 200
-        assert resp["headers"]["Content-Type"] == "image/svg+xml"
-        assert resp["body"].startswith("<svg")
-
-    def test_badge_has_cache_header(self):
-        resp = lambda_handler({
-            "httpMethod": "GET",
-            "path": "/v1/public/vendor/vendor_test/badge",
-        }, None)
-        assert "max-age" in resp["headers"].get("Cache-Control", "")
-
 
 class TestMetricsSummaryEndpoint:
     def test_missing_vendor_id_returns_400(self):
