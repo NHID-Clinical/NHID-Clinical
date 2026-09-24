@@ -160,13 +160,13 @@ all four.
 
 | Evidence body | What it measures | Result | Date |
 |---|---|---|---|
-| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1160 collected · 1160 executed · 1160 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `e68a65d` |
+| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1116 collected · 1116 executed · 1116 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `e68a65d` |
 | **Fabricate Battle-Test Corpus** | Detection against 550 real-world voice AI conversations, 127 of them compliant | IDG-01 70/70 · PDX-01 41/41 · DBC-01 183/200 (91.5%) · EIT-01 169/171 (98.8%). False positives on clean conversations: 0, 0, 5, 5 of 127 | CI-gated, unchanged |
-| **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **30 of 32 = 93.8%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
+| **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **23 of 32 = 71.9%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
 
-**These are four different denominators.** 1160/1160 is a *test pass rate*, not
-a detection rate. 93.8% is a *detection rate*, not a test pass rate. Neither is
+**These are four different denominators.** 1116/1116 is a *test pass rate*, not
+a detection rate. 71.9% is a *detection rate*, not a test pass rate. Neither is
 an accuracy figure for the framework as a whole.
 
 **On the 12 unexpected detections.** The published false-positive figure is
@@ -748,7 +748,7 @@ produce a number that describes nothing.
 
 | Body | Population | Question it answers |
 |---|---|---|
-| **Conformance suite** | 1160 tests | Does the implementation behave as specified? |
+| **Conformance suite** | 1116 tests | Does the implementation behave as specified? |
 | **Fabricate Battle-Test Corpus** | 550 real conversations, 127 compliant | Does it detect violations in real-world phrasing? |
 | **Governance Evaluation Corpus** | 25 scenarios, 55 turns | Does it detect labelled governance conditions? |
 | **Adversarial corpus** | 40 hostile scenarios | Does it survive deliberate evasion? |
@@ -778,9 +778,9 @@ detection rate and not an accuracy figure.
 
 | | |
 |---|---|
-| **Collected** | 1160 |
-| **Executed** | 1160 |
-| **Passed** | 1160 |
+| **Collected** | 1116 |
+| **Executed** | 1116 |
+| **Passed** | 1116 |
 | **Failed / skipped / xfailed / xpassed** | 0 / 0 / 0 / 0 |
 | **Verified** | fresh clone at `e68a65d`, fresh virtualenv, `requirements.txt` only, live API |
 
@@ -800,7 +800,7 @@ rate.
 
 | | |
 |---|---|
-| **Detection** | **30 of 32 = 93.8%** |
+| **Detection** | **23 of 32 = 71.9%** |
 | **Transcript-observable layer** | **30 of 31 = 96.8%** (IDG-01, PDX-01, DBC-01, EIT-01) |
 | **Audit/evidence layer** | **0 of 1** — ATR-01 is not transcript-observable (G3); retained in the denominator |
 | **False positives** | **0 of 5** compliant scenarios |
@@ -819,7 +819,7 @@ under-declared scenarios — but confirming that is a human judgment, so the
 tooling reports and does not interpret.
 
 **On the 98–99% figure.** It is an aspiration, not a result. **The measured
-figure is 93.8%.** No scenario has been added, removed, relabelled, reworded,
+figure is 71.9%.** No scenario has been added, removed, relabelled, reworded,
 excluded, or had its expectations edited, and no control has been relaxed, to
 move it. The rise from 90.6% came entirely from the G2 specification decision
 implemented in the engine — five corpus labels are now known to be wrong and

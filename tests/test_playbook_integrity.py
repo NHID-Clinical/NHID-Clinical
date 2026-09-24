@@ -71,8 +71,8 @@ def _unit_published() -> str:
 
 @pytest.mark.parametrize("figure,why", [
     (None, "conformance count"),          # resolved from UNIT_PUBLISHED
-    ("93.8", "governance detection rate"),
-    ("30 of 32", "governance detection ratio"),
+    ("71.9", "governance detection rate"),
+    ("23 of 32", "governance detection ratio"),
     ("0 of 5", "false positives over compliant scenarios"),
 ])
 def test_verified_figures_appear(md, figure, why):
@@ -178,5 +178,5 @@ def test_pdf_carries_the_same_figures():
     pytest.importorskip("pdfminer.high_level")
     from pdfminer.high_level import extract_text
     text = extract_text(str(PDF))
-    for figure in (_unit_published(), "93.8"):
+    for figure in (_unit_published(), "71.9"):
         assert figure in text, f"the rendered PDF is missing {figure!r}"

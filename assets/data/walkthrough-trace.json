@@ -478,21 +478,6 @@
               },
               {
                 "rule_id": "DBC-01",
-                "severity": "CRITICAL",
-                "description": "Deceptive artifact detected: human_name"
-              },
-              {
-                "rule_id": "DBC-01",
-                "severity": "CRITICAL",
-                "description": "Deceptive artifact detected: false_role"
-              },
-              {
-                "rule_id": "DBC-01",
-                "severity": "CRITICAL",
-                "description": "Deceptive artifact detected: false_personal_processing"
-              },
-              {
-                "rule_id": "DBC-01",
                 "severity": "MAJOR",
                 "description": "Agent speech implies human status via ownership framing or scripted disfluencies: [\"i'll personally\"]"
               }
@@ -517,23 +502,8 @@
             },
             "DBC-01": {
               "action": "LOG_ONLY",
-              "reason_code": "DBC01_ARTIFACT_DETECTED",
+              "reason_code": "DBC01_IMPERSONATION_PHRASE_DETECTED",
               "violations": [
-                {
-                  "rule_id": "DBC-01",
-                  "severity": "CRITICAL",
-                  "description": "Deceptive artifact detected: human_name"
-                },
-                {
-                  "rule_id": "DBC-01",
-                  "severity": "CRITICAL",
-                  "description": "Deceptive artifact detected: false_role"
-                },
-                {
-                  "rule_id": "DBC-01",
-                  "severity": "CRITICAL",
-                  "description": "Deceptive artifact detected: false_personal_processing"
-                },
                 {
                   "rule_id": "DBC-01",
                   "severity": "MAJOR",
@@ -686,5 +656,5 @@
       ]
     }
   ],
-  "source_commit": "3c9ebc6"
+  "source_commit": "8588fe9"
 }

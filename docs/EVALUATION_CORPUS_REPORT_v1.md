@@ -22,15 +22,16 @@ scenario surfaces it.
 | Rule | Expected | Detected | Rate |
 | :--- | ---: | ---: | ---: |
 | ATR-01 | 1 | 0 | 0.0% |
-| DBC-01 | 9 | 9 | 100.0% |
+| DBC-01 | 9 | 2 | 22.2% |
 | EIT-01 | 8 | 8 | 100.0% |
 | IDG-01 | 8 | 7 | 87.5% |
 | PDX-01 | 6 | 6 | 100.0% |
-| **OVERALL** | **32** | **30** | **93.8%** |
+| **OVERALL** | **32** | **23** | **71.9%** |
 
 ### Not detected
 
 - **ATR-01** — `nhid_ec_atr01_001`
+- **DBC-01** — `nhid_ec_combo_003`, `nhid_ec_combo_004`, `nhid_ec_combo_007`, `nhid_ec_combo_008`, `nhid_ec_combo_009`, `nhid_ec_combo_010`, `nhid_ec_dbc01_002`
 - **IDG-01** — `nhid_ec_idg01_003`
 
 ## False positives

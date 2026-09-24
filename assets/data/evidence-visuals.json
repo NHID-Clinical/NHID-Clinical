@@ -17,17 +17,17 @@
       "DENY_DATA": 10,
       "ESCALATE_HUMAN": 18,
       "DISCLOSE_IDENTITY": 8,
-      "LOG_ONLY": 1,
-      "CONTINUE_AI": 18
+      "LOG_ONLY": 0,
+      "CONTINUE_AI": 19
     },
     "set_composite": {
-      "IDG-01": 26,
-      "PDX-01": 28,
+      "IDG-01": 27,
+      "PDX-01": 29,
       "DBC-01": 19,
-      "EIT-01": 36,
-      "ATR-01": 18
+      "EIT-01": 37,
+      "ATR-01": 19
     },
-    "contested_turns": 18
+    "contested_turns": 19
   },
   "shadow": {
     "source": "fixtures/fabricate/shadow_pilot.jsonl",
@@ -78,8 +78,8 @@
         "name": "Governance Evaluation Corpus",
         "measures": "Rule detection on hand-authored scenarios",
         "size": "25 scenarios \u00b7 55 turns",
-        "result": "30/32 expected violations detected",
-        "rate": 93.8,
+        "result": "23/32 expected violations detected",
+        "rate": 71.9,
         "source": "tests/evaluation_corpus_v1.json",
         "command": "python scripts/eval_corpus.py --check"
       },
@@ -104,8 +104,8 @@
       {
         "name": "Conformance suite",
         "measures": "Implementation correctness against the specification",
-        "size": "1160 tests",
-        "result": "1160/1160 passing, 0 skipped, 0 xfailed",
+        "size": "1116 tests",
+        "result": "1116/1116 passing, 0 skipped, 0 xfailed",
         "rate": 100.0,
         "source": "tests/",
         "command": "python -m pytest tests/ -q"
@@ -144,5 +144,5 @@
     },
     "reading_note": "expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval."
   },
-  "source_commit": "aecb5c3"
+  "source_commit": "8588fe9"
 }

@@ -178,7 +178,7 @@
         <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/conversations.csv</code> field <code>impersonation_latency_ms</code> &mdash; 527 conversations carrying a recorded value</p>
         <p><strong>Classification:</strong> <span class="maturity-research">Research</span> A synthetic corpus as authored. These are not measurements of production calls.</p>
         <p><strong>How to read the split:</strong> expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>aecb5c3</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>8588fe9</code></p>
       </aside>
       <!-- END GENERATED latency-distribution -->
         <div style="margin-top:1.25rem">
@@ -318,7 +318,7 @@
         <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/shadow_pilot.jsonl</code> — 60 conversations, 301 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Classification:</strong> <span class="maturity-research">Research</span> Reference corpus results, not operational performance. This is a committed synthetic corpus, not production call data, and it says nothing about how any deployment would behave.</p>
         <p><strong>Known limitation:</strong> The shadow-pilot fixture carries no deceptive_artifact_flags field, which is the structured signal DBC-01 reads. Over this corpus DBC-01 runs on its lexical path only, so its count here is a floor, not a measurement of how much deception the corpus contains.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>aecb5c3</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>8588fe9</code></p>
       </aside>
       <!-- END GENERATED shadow-outcomes -->
 

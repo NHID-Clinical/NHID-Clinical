@@ -285,7 +285,7 @@
           <tr>
             <th scope="row">Governance Evaluation Corpus<span class="sc-measures">Rule detection on hand-authored scenarios</span></th>
             <td class="sc-size">25 scenarios · 55 turns</td>
-            <td>30/32 expected violations detected <span class="sc-rate">93.8%</span></td>
+            <td>23/32 expected violations detected <span class="sc-rate">71.9%</span></td>
             <td><code>python scripts/eval_corpus.py --check</code><span class="sc-src">tests/evaluation_corpus_v1.json</span></td>
           </tr>
           <tr>
@@ -302,8 +302,8 @@
           </tr>
           <tr>
             <th scope="row">Conformance suite<span class="sc-measures">Implementation correctness against the specification</span></th>
-            <td class="sc-size">1160 tests</td>
-            <td>1160/1160 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
+            <td class="sc-size">1116 tests</td>
+            <td>1116/1116 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
             <td><code>python -m pytest tests/ -q</code><span class="sc-src">tests/</span></td>
           </tr>
           </tbody>
@@ -312,7 +312,7 @@
 
       <aside class="visual-provenance">
         <p><strong>Separation:</strong> Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>aecb5c3</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>8588fe9</code></p>
       </aside>
       <!-- END GENERATED evidence-scorecard -->
 

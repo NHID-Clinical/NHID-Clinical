@@ -28,9 +28,9 @@ from several partial runs.
 
 | Outcome | Count |
 |---|---|
-| **Collected** | **1160** |
-| **Executed** | **1160** |
-| **Passed** | **1160** |
+| **Collected** | **1116** |
+| **Executed** | **1116** |
+| **Passed** | **1116** |
 | Failed | **0** |
 | Skipped | **0** |
 | xfailed | **0** |
@@ -53,7 +53,7 @@ python -m venv ../cleanenv
 # instead of a quiet 18-test hole.
 ../cleanenv/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8011 &
 
-../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1160 collected
+../cleanenv/bin/python -m pytest tests/ --collect-only -q      # 1116 collected
 NHID_REQUIRE_SERVER=1 NHID_BASE_URL=http://127.0.0.1:8011 \
   ../cleanenv/bin/python -m pytest tests/ -q --disable-warnings -rsxX
 ```
@@ -124,7 +124,7 @@ because tests were added and previously-unrun ones were made to run.
 
 ## What this number is not
 
-- **Not a governance detection rate.** That is 30/32 = 93.8% on the Governance
+- **Not a governance detection rate.** That is 23/32 = 71.9% on the Governance
   Evaluation Corpus, a separate research measurement — see
   `governance-corpus-remediation.md`.
 - **Not a false-positive rate.** That is 0/5 compliant scenarios, with 12

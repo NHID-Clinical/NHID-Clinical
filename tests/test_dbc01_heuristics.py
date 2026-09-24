@@ -74,22 +74,7 @@ class TestDBC01Heuristics:
         d = evaluate_dbc01(session, event)
         assert d.reason_code == "DBC01_IMPERSONATION_PHRASE_DETECTED"
 
-    def test_artifact_flag_still_triggers_critical(self):
-        session, event = _make_event("Automated system.", flags=["synthetic_breathing"])
-        d = evaluate_dbc01(session, event)
-        criticals = [v for v in d.violations if v.severity == ViolationSeverity.CRITICAL]
-        assert len(criticals) == 1
-        assert d.reason_code == "DBC01_ARTIFACT_DETECTED"
 
-    def test_both_flag_and_phrase_captured(self):
-        session, event = _make_event(
-            "I am a human calling you.", flags=["voice_clone_detected"]
-        )
-        d = evaluate_dbc01(session, event)
-        assert len(d.violations) == 2
-        severities = {v.severity for v in d.violations}
-        assert ViolationSeverity.CRITICAL in severities
-        assert ViolationSeverity.MAJOR in severities
 
     def test_assertion_implies_human_helper_case_insensitive(self):
         assert _assertion_implies_human("I AM A HUMAN") is not None

@@ -25,7 +25,6 @@ from src.nhid_policy_engine_v1 import (
     PolicyDecision,
     evaluate_all,
 )
-from src.nhid_cas import compute_cas, compute_nocf, NOCFInputs
 
 EXPECTED_VOCABULARY = {
     "DISCLOSE_IDENTITY",
@@ -150,7 +149,7 @@ def test_composite_action_is_one_of_the_vocabulary():
     assert decision.action in set(PolicyAction)
 
 
-# ── 4. CAS cannot override a PolicyDecision ────────────────────────────────
+# ── 4. No score can override a PolicyDecision ──────────────────────────────
 
 def test_evaluate_all_does_not_consume_cas():
     """Structural proof: the decision authority cannot read CAS, so CAS can
@@ -163,6 +162,7 @@ def test_evaluate_all_does_not_consume_cas():
     params = set(inspect.signature(evaluate_all).parameters)
     assert params == {"session", "event", "delegation"}
     assert not any("cas" in p.lower() for p in params)
+    assert not any("score" in p.lower() for p in params)
 
 
 def test_evaluate_all_delegation_parameter_defaults_to_disabled():
@@ -170,39 +170,7 @@ def test_evaluate_all_delegation_parameter_defaults_to_disabled():
     assert inspect.signature(evaluate_all).parameters["delegation"].default is None
 
 
-def test_cas_result_is_score_only_and_carries_no_action():
-    nocf = compute_nocf(NOCFInputs(
-        entity_match_rate=0.9, intent_accuracy=0.9, domain_hit_rate=0.9,
-        successful_actions=8, attempted_actions=10,
-        call_drop_rate=0.0, audio_corruption_rate=0.0, tool_failure_rate=0.0,
-        latency_ms=800.0,
-        hallucination_risk=0.1, pii_leakage_risk=0.1, identity_ambiguity_risk=0.1,
-    ))
-    cas = compute_cas(iaf=True, nocf_result=nocf, trace={})
-    assert "cas" in cas and "tier" in cas
-    # CAS is a measurement: it must not carry any enforcement action.
-    assert "action" not in cas
-    assert not any(str(v) in EXPECTED_VOCABULARY for v in cas.values())
 
-
-def test_low_cas_does_not_downgrade_a_deny_decision():
-    """A DENY_DATA decision stays DENY_DATA regardless of any CAS value — the
-    decision is computed by the controls, not by the score."""
-    gov = {"disclosure_timestamp": None, "phi_accessed": ["member_id"]}
-    ev = _event(governance=gov, speech="member id please")
-    decision = evaluate_all({"turn_count": 1}, ev)
-    assert decision.action == PolicyAction.DENY_DATA
-    # A deliberately low CAS exists independently and does not touch the action.
-    low_nocf = compute_nocf(NOCFInputs(
-        entity_match_rate=0.1, intent_accuracy=0.1, domain_hit_rate=0.1,
-        successful_actions=1, attempted_actions=10,
-        call_drop_rate=0.5, audio_corruption_rate=0.3, tool_failure_rate=0.3,
-        latency_ms=2400.0,
-        hallucination_risk=0.9, pii_leakage_risk=0.9, identity_ambiguity_risk=0.9,
-    ))
-    low_cas = compute_cas(iaf=False, nocf_result=low_nocf, trace={})
-    assert low_cas["cas"] < 0.5  # low, review/deny tier
-    assert decision.action == PolicyAction.DENY_DATA  # unchanged
 
 
 # ── 5. PolicyDecision serialization contract ───────────────────────────────

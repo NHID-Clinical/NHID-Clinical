@@ -4,7 +4,7 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from adapters.amazon_connect_adapter import to_nhid_event
+from adapters.archive.amazon_connect_adapter import to_nhid_event
 from src.nhid_policy_engine_v1 import evaluate_all, PolicyAction
 
 

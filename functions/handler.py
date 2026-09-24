@@ -13,7 +13,6 @@ from src.nhid_policy_engine_v1 import (  # noqa: E402
     NHID_SPEC_VERSION,
     evaluate_all,
 )
-from src.nhid_cas import _tier_for_cas  # noqa: E402
 from src.nhid_network_resilience import retry_with_backoff  # noqa: E402
 from src.dbc01_review_routing import should_route_to_review  # noqa: E402
 
@@ -48,7 +47,6 @@ def lambda_handler(event: dict, context) -> dict:
       POST /v1/adapters/retell/check         — accepts native Retell AI payload, no API key
       POST /v1/adapters/connect/check        — accepts Amazon Connect Contact Lens payload
       POST /v1/webhooks/call-progress        — turn-by-turn evaluation, no API key required
-      GET  /v1/public/vendor/{id}/badge      — public CAS badge SVG, no API key required
       GET  /v1/vendor/metrics/summary        — per-vendor metrics, API key required
       POST /v1/pilot/enroll                  — pilot enrollment, no API key required
       POST /v1/cts/evaluate                  — run conformance test suite, no API key required
@@ -64,8 +62,6 @@ def lambda_handler(event: dict, context) -> dict:
     path = event.get("path", "")
 
     if method == "GET":
-        if "/public/vendor/" in path and path.endswith("/badge"):
-            return _handle_badge(event, path)
         if "/vendor/metrics/summary" in path:
             return _handle_metrics_summary(event)
         if "/demo/call-status" in path:
@@ -167,13 +163,13 @@ def _handle_vendor(event: dict, vendor: str) -> dict:
             from adapters.twilio_adapter import to_nhid_event as _twilio_to_nhid
             session, policy_event = _twilio_to_nhid(payload)
         elif vendor == "vonage":
-            from adapters.vonage_adapter import to_nhid_event as _vonage_to_nhid
+            from adapters.archive.vonage_adapter import to_nhid_event as _vonage_to_nhid
             session, policy_event = _vonage_to_nhid(payload)
         elif vendor == "retell":
-            from adapters.retell_adapter import to_nhid_event as _retell_to_nhid
+            from adapters.archive.retell_adapter import to_nhid_event as _retell_to_nhid
             session, policy_event = _retell_to_nhid(payload)
         elif vendor == "connect":
-            from adapters.amazon_connect_adapter import to_nhid_event as _connect_to_nhid
+            from adapters.archive.amazon_connect_adapter import to_nhid_event as _connect_to_nhid
             session, policy_event = _connect_to_nhid(payload)
         else:
             return _error(400, f"Unknown vendor: {vendor}")
@@ -218,40 +214,6 @@ def _handle_call_progress(event: dict) -> dict:
     result["turn_index"] = body.get("turn_index", 0)
     result["session_id"] = body.get("session_id", "")
     return _ok(result)
-
-
-def _handle_badge(event: dict, path: str) -> dict:
-    """Public CAS badge SVG for a vendor. No auth — read-only, score only."""
-    # Path shape: /v1/public/vendor/{vendor_id}/badge
-    parts = [p for p in path.split("/") if p]
-    try:
-        vendor_id = parts[parts.index("vendor") + 1]
-    except (ValueError, IndexError):
-        return _error(400, "Invalid badge path")
-
-    from src.nhid_badge_generator import generate_badge_svg
-
-    score = 0.0
-    tier = "No Data"
-    try:
-        import nhid_event_store as store
-        metrics = store.get_vendor_metrics(vendor_id)
-        if metrics["calls_total"] > 0:
-            score = metrics["cas_avg"]
-            tier = None  # derive from score
-    except Exception:  # noqa: BLE001 — read-only FS or no DB: keep "No Data" badge
-        pass
-
-    svg = generate_badge_svg(vendor_id, score, tier)
-    return {
-        "statusCode": 200,
-        "headers": {
-            "Content-Type": "image/svg+xml",
-            "Cache-Control": "max-age=3600",
-            **_CORS,
-        },
-        "body": svg,
-    }
 
 
 def _handle_metrics_summary(event: dict) -> dict:
@@ -614,52 +576,37 @@ def _handle_revoke_passport(event: dict) -> dict:
     return _ok({"delegation_id": delegation_id, "revoked": True})
 
 
-def _policy_cas(decision, event: dict) -> dict:
-    """Disclosure-level CAS derived from policy violations and event audit fields.
+_EVIDENCE_FIELDS = ("event_id", "timestamp", "session_id", "event_type")
 
-    F_IAF: 1.0 if no IDG-01/PDX-01 violations (identity gates clear)
-    F_NOCF: approximated from violation severity pattern
-    ECF: fraction of core NHID event audit fields present in the event
 
-    Note: this is a disclosure-focused CAS. For the full NOCF telemetry-based
-    CAS, use src/nhid_cas.compute_cas() with operational metrics.
+def _evidence_completeness(event: dict) -> dict:
+    """How much of the core NHID audit record this event actually carries.
+
+    This replaces the former composite CAS score, which blended an identity
+    factor, an approximated operational factor and this completeness fraction
+    into one number, then mapped it to a "Verified Trust" / "Conditional Trust"
+    tier. That score is withdrawn: it mixed heterogeneous denominators, and the
+    tier vocabulary read as a certification this project does not issue.
+
+    What survives is the one component with independent meaning and a denominator
+    that can be stated out loud: the fraction of core audit fields present. It is
+    reported as a fraction with its denominator, never as a grade.
     """
-    violations = decision.violations
-    critical_ids = {v.rule_id for v in violations if v.severity.value == "critical"}
-
-    F_IAF = 0.0 if ("IDG-01" in critical_ids or "PDX-01" in critical_ids) else 1.0
-
-    critical_count = sum(1 for v in violations if v.severity.value == "critical")
-    if critical_count == 0:
-        F_NOCF = 0.90
-    elif critical_count == 1:
-        F_NOCF = 0.50
-    else:
-        F_NOCF = 0.25
-
-    _CORE_FIELDS = ("event_id", "timestamp", "session_id", "event_type")
-    present = sum(1 for f in _CORE_FIELDS if event.get(f) is not None)
-    ECF = round(present / len(_CORE_FIELDS), 4)
-
-    cas = round(F_IAF * F_NOCF * ECF, 4)
-    tier, badge = _tier_for_cas(cas)
-
+    present = sum(1 for f in _EVIDENCE_FIELDS if event.get(f) is not None)
     return {
-        "score": cas,
-        "tier": tier,
-        "badge_eligible": badge,
-        "F_IAF": F_IAF,
-        "F_NOCF": round(F_NOCF, 4),
-        "ECF": ECF,
+        "present": present,
+        "expected": len(_EVIDENCE_FIELDS),
+        "fraction": round(present / len(_EVIDENCE_FIELDS), 4),
+        "fields": list(_EVIDENCE_FIELDS),
     }
 
 
-def _route_for_human_review(decision, cas: dict, event: dict) -> dict:
+def _route_for_human_review(decision, event: dict) -> dict:
     """Queue the session for human review per docs/dbc01-human-review-sop.md
-    if it meets either routing criterion. Never raises — a queueing failure
+    if it meets the routing criterion. Never raises — a queueing failure
     (e.g. read-only FS, no DB available) must not break the conformance
     response itself."""
-    routing = should_route_to_review(decision, cas)
+    routing = should_route_to_review(decision)
     if not routing.route:
         return {"queued": False, "trigger_reason": None, "queue_id": None}
 
@@ -674,8 +621,8 @@ def _route_for_human_review(decision, cas: dict, event: dict) -> dict:
             trigger_reason=routing.trigger_reason,
             severity=routing.severity,
             identity_assertion_text=governance.get("identity_assertion_text"),
-            cas_score=cas.get("score"),
-            cas_tier=cas.get("tier"),
+            cas_score=None,
+            cas_tier=None,
         )
         queue_id = row.get("id")
     except Exception:  # noqa: BLE001 — read-only FS or no DB: still report the routing decision
@@ -686,7 +633,6 @@ def _route_for_human_review(decision, cas: dict, event: dict) -> dict:
 
 def _decision_to_dict(decision, event: dict | None = None) -> dict:
     event = event or {}
-    cas = _policy_cas(decision, event)
     result = {
         "conformant": len(decision.violations) == 0,
         "action": decision.action.value,
@@ -703,8 +649,8 @@ def _decision_to_dict(decision, event: dict | None = None) -> dict:
         "next_state": decision.next_state,
         "twiml_fallback": decision.twiml_fallback,
         "gather_speech": decision.gather_speech,
-        "cas": cas,
-        "human_review": _route_for_human_review(decision, cas, event),
+        "evidence_completeness": _evidence_completeness(event),
+        "human_review": _route_for_human_review(decision, event),
     }
     return result
 

@@ -80,15 +80,6 @@ class TestDBC01TriggersReview:
         assert result["human_review"]["trigger_reason"] is None
         assert store.list_pending_dbc01_reviews() == []
 
-    def test_low_cas_without_dbc01_violation_queues_review(self):
-        body = _base_body()
-        del body["event"]["request_id"]  # trips ATR-01 CRITICAL -> CAS < 0.75
-        resp = lambda_handler(_make_event(body), None)
-        result = json.loads(resp["body"])
-
-        assert result["human_review"]["queued"] is True
-        assert result["human_review"]["trigger_reason"] == "CAS_REVIEW_REQUIRED"
-        assert result["human_review"]["queue_id"] is not None
 
     def test_enqueue_failure_does_not_report_queued(self, monkeypatch):
         def _raise(**kwargs):

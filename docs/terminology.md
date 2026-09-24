@@ -36,13 +36,34 @@
 
 ## Core concepts
 
-- **Impersonation latency** — the measurable trust delay between a non-human
-  actor initiating an interaction and the receiving organization verifying
-  that the actor is authorized to represent the claimed provider
-  organization. Measured operationally as disclosure latency,
-  `Δt(interaction_start → identity_resolution)`, in time and in conversational
-  turns. The named problem is the full window; the measured metric today is
-  the disclosure component.
+- **Impersonation Latency** — the elapsed time between interaction start and the
+  point at which a non-human actor discloses its non-human identity to the human
+  recipient. Reported in seconds and in conversational turns, with turns as the
+  normative unit (`IL = 0` turns means disclosure preceded any data request).
+
+  The term is deliberate and retained: the window it names is the interval during
+  which a human recipient may reasonably believe they are talking to another
+  human. Naming that window is the point.
+
+  What the metric **does not** establish, stated explicitly because the name
+  invites the opposite reading:
+
+  - It does **not** determine that impersonation occurred.
+  - It does **not** establish intent, malicious or otherwise.
+  - It does **not** detect an impersonator, and NHID-Clinical performs no
+    voice, acoustic or signal analysis of any kind.
+  - It does **not** prevent impersonation.
+  - It does **not** establish authentication or authorization. A disclosed
+    agent may still be unauthorized; an undisclosed one may be perfectly
+    authorized.
+
+  Impersonation Latency measures disclosure timing. Everything else about the
+  caller is a separate question answered — or not answered — by other controls.
+
+  **Measurement validity:** disclosure is observed through a transcript, so a
+  reported Impersonation Latency is only as accurate as the transcription path
+  that produced it. See the ASR dependency in
+  [scope-boundary-fairness-clinical.md](scope-boundary-fairness-clinical.md).
 - **Delegated authority / delegation** — a provider organization granting a
   non-human actor scoped authority to act on its behalf, expressed as a
   signed, NPI-anchored, expiring, revocable object.
