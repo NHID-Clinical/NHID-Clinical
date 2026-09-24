@@ -541,7 +541,7 @@
       <figure class="figure-frame enforcement-ladder">
         <svg viewBox="0 0 880 440" role="img" aria-labelledby="el2-title el2-desc" style="width:100%;height:auto;display:block">
           <title id="el2-title">How five control decisions resolve into one</title>
-          <desc id="el2-desc">One turn event fans out to all five controls, which evaluate independently against the same session and event. Each returns its own PolicyDecision. The composite decision is the most restrictive of the five by priority: DENY_DATA at 5, ESCALATE_HUMAN at 4, DISCLOSE_IDENTITY at 3, LOG_ONLY at 2, CONTINUE_AI at 1. This is not a serial gate chain: on 18 of the corpus's 55 turns more than one control tied at the top. The left column counts how often each action was the composite across the corpus; the right column counts how often each control was at the winning priority.</desc>
+          <desc id="el2-desc">One turn event fans out to all five controls, which evaluate independently against the same session and event. Each returns its own PolicyDecision. The composite decision is the most restrictive of the five by priority: DENY_DATA at 5, ESCALATE_HUMAN at 4, DISCLOSE_IDENTITY at 3, LOG_ONLY at 2, CONTINUE_AI at 1. This is not a serial gate chain: on 19 of the corpus's 55 turns more than one control tied at the top. The left column counts how often each action was the composite across the corpus; the right column counts how often each control was at the winning priority.</desc>
 
           <text x="24" y="22" class="el-zone">ONE TURN, FIVE INDEPENDENT EVALUATIONS</text>
 
@@ -602,37 +602,37 @@
           <rect x="24" y="346" width="300" height="26" rx="4" class="el-rung"/>
           <text x="40" y="363" class="el-pri">2</text>
           <text x="70" y="363" class="el-action">LOG_ONLY</text>
-          <text x="316" y="363" text-anchor="end" class="el-count">1 turn</text>
+          <text x="316" y="363" text-anchor="end" class="el-count">0 turns</text>
           <rect x="24" y="378" width="300" height="26" rx="4" class="el-rung"/>
           <text x="40" y="395" class="el-pri">1</text>
           <text x="70" y="395" class="el-action">CONTINUE_AI</text>
-          <text x="316" y="395" text-anchor="end" class="el-count">18 turns</text>
+          <text x="316" y="395" text-anchor="end" class="el-count">19 turns</text>
 
           <text x="482" y="244" class="el-colhead">How often each control was at the winning priority</text>
           <text x="470" y="267" text-anchor="end" class="el-ctl">IDG-01</text>
-          <rect x="482" y="254" width="158.9" height="18" rx="3" class="el-winbar"/>
-          <text x="649.9" y="267" class="el-count">26</text>
+          <rect x="482" y="254" width="160.5" height="18" rx="3" class="el-winbar"/>
+          <text x="651.5" y="267" class="el-count">27</text>
           <text x="470" y="299" text-anchor="end" class="el-ctl">PDX-01</text>
-          <rect x="482" y="286" width="171.1" height="18" rx="3" class="el-winbar"/>
-          <text x="662.1" y="299" class="el-count">28</text>
+          <rect x="482" y="286" width="172.4" height="18" rx="3" class="el-winbar"/>
+          <text x="663.4" y="299" class="el-count">29</text>
           <text x="470" y="331" text-anchor="end" class="el-ctl">DBC-01</text>
-          <rect x="482" y="318" width="116.1" height="18" rx="3" class="el-winbar"/>
-          <text x="607.1" y="331" class="el-count">19</text>
+          <rect x="482" y="318" width="113.0" height="18" rx="3" class="el-winbar"/>
+          <text x="604.0" y="331" class="el-count">19</text>
           <text x="470" y="363" text-anchor="end" class="el-ctl">EIT-01</text>
           <rect x="482" y="350" width="220.0" height="18" rx="3" class="el-winbar"/>
-          <text x="711.0" y="363" class="el-count">36</text>
+          <text x="711.0" y="363" class="el-count">37</text>
           <text x="470" y="395" text-anchor="end" class="el-ctl">ATR-01</text>
-          <rect x="482" y="382" width="110.0" height="18" rx="3" class="el-winbar"/>
-          <text x="601.0" y="395" class="el-count">18</text>
+          <rect x="482" y="382" width="113.0" height="18" rx="3" class="el-winbar"/>
+          <text x="604.0" y="395" class="el-count">19</text>
 
-          <text x="482" y="424" class="el-note">18 of 55 turns had two or more controls tied at the top.</text>
+          <text x="482" y="424" class="el-note">19 of 55 turns had two or more controls tied at the top.</text>
         </svg>
       </figure>
 
       <aside class="visual-provenance">
         <p><strong>Evidence basis:</strong> <code>tests/evaluation_corpus_v1.json</code> — 25 scenarios, 55 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI)</p>
-        <p><strong>Version:</strong> policy engine v1.3 · commit <code>aecb5c3</code></p>
+        <p><strong>Version:</strong> policy engine v1.3 · commit <code>8588fe9</code></p>
       </aside>
       <!-- END GENERATED enforcement-ladder -->
 
