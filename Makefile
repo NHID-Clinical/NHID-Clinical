@@ -26,7 +26,7 @@ ifneq ($(strip $(ELEVENLABS_PHONE_NUMBER_ID)),)
   PARAM_OVERRIDES += ElevenLabsPhoneNumberId=$(ELEVENLABS_PHONE_NUMBER_ID)
 endif
 
-.PHONY: build deploy destroy get-key get-url test-api test-demo logs help
+.PHONY: build deploy destroy get-key get-url test-api test-demo logs help verify
 
 help:
 	@echo "Targets:"
@@ -35,6 +35,9 @@ help:
 	@echo "  get-key     print the live API key value"
 	@echo "  get-url     print the conformance endpoint URL"
 	@echo "  test-api    curl the live endpoint with tests/sample_request.json"
+	@echo "  verify      run the complete pre-push verification (scripts/verify_all.py):"
+	@echo "              suite against a live API, drift, control set, the four fixture"
+	@echo "              generators, integrity, and published-artifact tracking"
 	@echo "  test-demo   run the website demo-feature tests (tests/demo/) — separate from"
 	@echo "              the framework's conformance baseline (python -m pytest tests/)"
 	@echo "  logs        tail Lambda CloudWatch logs"
@@ -42,6 +45,12 @@ help:
 	@echo ""
 	@echo "Overrides:  STACK_NAME, REGION, PROFILE, CLOUDFLARE_TURNSTILE_SECRET,"
 	@echo "            ELEVENLABS_API_KEY, ELEVENLABS_PHONE_NUMBER_ID (for /v1/demo/call)"
+
+# Everything CI checks, in one command. Run this before pushing: a green
+# `pytest` cannot see a stale generated fixture or a published PDF that is on
+# disk but missing from the index, and both have turned CI red.
+verify:
+	python scripts/verify_all.py
 
 test-demo:
 	python -m pytest tests/demo/ -v
