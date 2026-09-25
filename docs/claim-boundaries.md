@@ -152,19 +152,23 @@ allowed row below (or a close paraphrase). If a claim matches a prohibited row,
 or matches nothing here, **cut it or rewrite it to the nearest allowed form.**
 When unsure, default to the weaker claim.
 
-### Not allowed — CAS is a research component
+### Not allowed — the composite score is withdrawn
 
-`src/nhid_cas.py` computes a 0–1 score with tiers named "Verified Trust" and
-"Conditional Trust" plus a `badge_eligible` L1/L2 value. Nothing in this
-repository produces its inputs (`hallucination_risk`, `deepfake_risk_score`,
-`sip_attestation`, `oig_exclusion_match`, `entity_match_rate`), so no real call
-can be scored, and its tier names read as a trust rating this project does not
-issue.
+There is no Call Authorization Score. `src/nhid_cas.py`, the badge generator and
+their tests were **deleted**. Nothing in this repository ever produced the
+inputs a meaningful score would need (`hallucination_risk`,
+`deepfake_risk_score`, `sip_attestation`, `oig_exclusion_match`,
+`entity_match_rate`), so no real call could be scored, and the tier names
+"Verified Trust" and "Conditional Trust" asserted a trust rating this project
+does not issue.
 
-Do not present CAS, a CAS tier, or a conformance badge as a product capability,
-on any public page, in any published artifact, or in procurement material. The
-module and its 38 tests are retained for research; the score never influences a
-policy decision and `evaluate_all()` structurally cannot read it.
+Do not present a CAS score, a tier, a `badge_eligible` value, a conformance
+badge, or **any successor composite score under another name**, on any public
+page, in any published artifact, or in procurement material. A per-control
+result stands on its own evidence or it does not stand; blending controls with
+unlike denominators into one number is the thing that was withdrawn, not the
+label on it. `tests/test_v132_scope_corrections.py` scans `src/` and fails if
+the tier strings reappear.
 
 ### Allowed — with verifiable basis
 

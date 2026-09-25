@@ -582,7 +582,7 @@ holds — including two that are *not* clean passes:
 |---|---|
 | `nhid-trace-04-late-disclosure-idg01-pdx01.md` | Disclosure after PHI — the core failure the framework exists for |
 | `nhid-trace-05-escalation-path-missing-eit01.md` | Escalation requested, no path |
-| `nhid-trace-06-deceptive-artifact-dbc01.md` | Deceptive artifact detected |
+| `nhid-trace-06-deceptive-artifact-dbc01.md` | **Superseded.** Records DBC-01's withdrawn acoustic-artifact tier, kept as a historical trace |
 | `nhid-trace-07-audit-field-missing-atr01.md` | Audit gap — replay integrity **degraded**, not passed |
 | `nhid-trace-09-replay-divergence-determinism.md` | Replay divergence, the most dangerous failure mode: a silent divergence that looks like success |
 

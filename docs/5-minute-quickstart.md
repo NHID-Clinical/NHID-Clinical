@@ -22,15 +22,24 @@ You get back the conformance verdict and the violated controls:
     { "rule_id": "IDG-01", "severity": "critical" },
     { "rule_id": "PDX-01", "severity": "critical" }
   ],
-  "cas": { "score": 0.0, "tier": "Denied / Degraded", "badge_eligible": null }
+  "evidence_completeness": {
+    "present": 4, "expected": 4, "fraction": 1.0,
+    "fields": ["event_id", "timestamp", "session_id", "event_type"]
+  }
 }
 ```
 
-The `cas` block is a **research component**, not part of the product surface.
-The hosted endpoint still returns it, so it is shown here as-is rather than
-edited out — but nothing in the repository produces the inputs a meaningful
-score would need, and its tier names are not a trust rating NHID-Clinical
-issues. Read `action` and `violations`; ignore `cas`. See `src/nhid_cas.py`.
+Read `action` and `violations`: they are the verdict. `evidence_completeness`
+says how much of the evidence the controls needed was actually present — it is
+a statement about the record, not a rating of the caller.
+
+**There is no score.** Earlier responses carried a `cas` block with a numeric
+score, a "Verified Trust" / "Conditional Trust" tier and a badge field. All of
+it was withdrawn: nothing in this repository ever produced the inputs a
+meaningful score would need, and the tier names asserted a trust rating
+NHID-Clinical does not issue. Nothing replaces it. If a deployed endpoint you
+are calling still returns `cas`, it is running code that predates the
+withdrawal.
 
 ## Step 2 — Send your own call (2 minutes)
 
@@ -63,7 +72,7 @@ def on_call_analyzed(retell_payload):
     ).json()
     if not result["conformant"]:
         alert_compliance_team(result["violations"])
-    log_cas_score(result["cas"]["score"])
+    log_evidence_completeness(result["evidence_completeness"])
 ```
 
 ## Step 4 — Optional: turn-by-turn evaluation during the call

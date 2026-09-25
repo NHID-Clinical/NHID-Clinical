@@ -316,7 +316,10 @@ def step_published_artifacts() -> Result:
     if watched:
         dirty = _git("diff", "--name-only", "--", *watched).stdout.split()
         for path in sorted(set(dirty)):
-            problems.append(f"{path} — tracked but modified and not staged")
+            problems.append(
+                f"{path} — tracked, but the working copy differs from the "
+                "last commit; commit it before pushing"
+            )
 
     if problems:
         return Result(
@@ -328,7 +331,9 @@ def step_published_artifacts() -> Result:
                 "    (plain `git add` and `git add -A` will not work — .gitignore "
                 "ignores *.pdf repository-wide.)\n"
                 "    For a modified one: commit it, or `git checkout --` it if the "
-                "change was not intended."
+                "change was not intended.\n"
+    "    This step is a pre-PUSH check, so it expects a clean tree. "
+    "Mid-change, use --fast."
             ),
             lines=problems,
         )

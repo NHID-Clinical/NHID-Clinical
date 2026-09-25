@@ -70,7 +70,7 @@
       "EIT-01": 0,
       "ATR-01": 0
     },
-    "schema_note": "The shadow-pilot fixture carries no deceptive_artifact_flags field, which is the structured signal DBC-01 reads. Over this corpus DBC-01 runs on its lexical path only, so its count here is a floor, not a measurement of how much deception the corpus contains."
+    "schema_note": "DBC-01 evaluates the agent's own identity assertion text: claims of human status or licensed-professional standing. Its former artifact tier, which read a deceptive_artifact_flags field the agent supplied about itself, is withdrawn. This count is therefore what the transcript says, not a measurement of how much deception the corpus contains."
   },
   "scorecard": {
     "populations": [
@@ -144,5 +144,5 @@
     },
     "reading_note": "expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval."
   },
-  "source_commit": "8588fe9"
+  "source_commit": "78dfc31"
 }

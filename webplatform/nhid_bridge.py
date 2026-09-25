@@ -77,15 +77,22 @@ def analyze_turns(conversation_id: str, turns: list[dict[str, Any]],
 
     Each turn is converted to the canonical (session, event) shape via the
     existing `build_session`/`build_event`, then run through the production
-    `/v1/demo/check` route (i.e. `evaluate_all` + CAS + human-review routing).
+    `/v1/demo/check` route (i.e. `evaluate_all` + human-review routing).
 
     Returns an aggregate plus per-turn detail. Optionally persists every event
     to the durable store so it appears in the audit log.
     """
     per_turn: list[dict[str, Any]] = []
     all_violations: list[dict[str, Any]] = []
-    min_cas = 1.0
-    worst_tier = "Verified Trust"
+    # Was: a running minimum CAS and a "worst tier", defaulting to "Verified
+    # Trust". Both are withdrawn. The tier strings asserted a trust rating this
+    # project does not issue, and the score's inputs were never produced here —
+    # so an absent `cas` key silently left every conversation reading as
+    # "Verified Trust", which is worse than showing nothing.
+    #
+    # Evidence completeness replaces it. It is not a score: it reports how much
+    # of the evidence the controls needed was present in the record.
+    min_completeness = 1.0
     any_queued = False
 
     for i, turn in enumerate(turns):
@@ -93,11 +100,9 @@ def analyze_turns(conversation_id: str, turns: list[dict[str, Any]],
         event = build_event(conversation_id, i, turn)
         result = _invoke("/v1/demo/check", {"session": session, "event": event})
 
-        cas = result.get("cas", {}) or {}
-        score = float(cas.get("score", 1.0))
-        if score < min_cas:
-            min_cas = score
-            worst_tier = cas.get("tier", worst_tier)
+        completeness = result.get("evidence_completeness", {}) or {}
+        fraction = float(completeness.get("fraction", 1.0))
+        min_completeness = min(min_completeness, fraction)
         hr = result.get("human_review", {}) or {}
         if hr.get("queued"):
             any_queued = True
@@ -116,7 +121,7 @@ def analyze_turns(conversation_id: str, turns: list[dict[str, Any]],
             "action": result.get("action"),
             "reason_code": result.get("reason_code"),
             "violations": violations,
-            "cas": cas,
+            "evidence_completeness": completeness,
             "human_review": hr,
         })
 
@@ -140,10 +145,15 @@ def analyze_turns(conversation_id: str, turns: list[dict[str, Any]],
                 store.record_conformance_result(
                     vendor_id=conversation_id,
                     session_id=event["session_id"],
-                    cas_score=score,
+                    # The column name predates the withdrawal of the composite
+                    # score and is kept so existing rows stay readable. The value
+                    # is now evidence completeness, which is what
+                    # control_results records it as.
+                    cas_score=fraction,
                     conformant=result.get("conformant", True),
                     control_results={
-                        "tier": cas.get("tier", ""),
+                        "metric": "evidence_completeness",
+                        "evidence_completeness": fraction,
                         "reason_code": result.get("reason_code", ""),
                     },
                 )
@@ -157,8 +167,7 @@ def analyze_turns(conversation_id: str, turns: list[dict[str, Any]],
         "turn_count": len(per_turn),
         "violations": all_violations,
         "violation_count": len(all_violations),
-        "min_cas": round(min_cas, 4),
-        "worst_tier": worst_tier,
+        "min_evidence_completeness": round(min_completeness, 4),
         "queued_for_review": any_queued,
         "turns": per_turn,
         "versions": VERSIONS,
