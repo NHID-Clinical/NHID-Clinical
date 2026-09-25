@@ -23,7 +23,11 @@ from add_journey_wayfinder import ARC, BEGIN, END  # noqa: E402
 
 
 def _page(path: str) -> str:
-    return (ROOT / path).read_text(encoding="utf-8")
+    # Prefer the site/ copy: the static site moved there so the repository root
+    # reads as the framework. Page names here stay the published routes.
+    candidate = ROOT / "site" / path
+    target = candidate if candidate.exists() else ROOT / path
+    return target.read_text(encoding="utf-8")
 
 
 def test_the_generated_blocks_are_current():

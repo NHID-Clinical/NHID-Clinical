@@ -20,7 +20,7 @@ import re
 from src.nhid_policy_engine_v1 import evaluate_all
 from src.synthetic_eval_loop import build_event, build_session
 
-INDEX = pathlib.Path(__file__).resolve().parent.parent / "index.html"
+INDEX = pathlib.Path(__file__).resolve().parent.parent / "site" / "index.html"
 
 # The exact turn the homepage describes.
 TURN = {

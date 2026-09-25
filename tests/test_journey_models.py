@@ -25,8 +25,10 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-INDEX = (ROOT / "index.html").read_text(encoding="utf-8")
-GUIDE = (ROOT / "shadow-evaluation-guide.html").read_text(encoding="utf-8")
+# The static site lives under site/; the framework sits at the repository root.
+SITE = ROOT / "site"
+INDEX = (SITE / "index.html").read_text(encoding="utf-8")
+GUIDE = (SITE / "shadow-evaluation-guide.html").read_text(encoding="utf-8")
 CSS = (ROOT / "assets" / "css" / "components.css").read_text(encoding="utf-8")
 POSITIONING = (ROOT / "docs" / "positioning.md").read_text(encoding="utf-8")
 

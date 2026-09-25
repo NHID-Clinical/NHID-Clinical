@@ -87,7 +87,10 @@ def _slot(html: str) -> tuple[int, int] | None:
 def apply(check: bool) -> int:
     changed, missing = [], []
     for position, (path, *_rest) in enumerate(ARC):
-        page = ROOT / path
+        # The site moved under site/, but specs/ stayed at the repository
+        # root, so resolve instead of assuming one location.
+        candidate = ROOT / "site" / path
+        page = candidate if candidate.exists() else ROOT / path
         if not page.exists():
             missing.append(path)
             continue

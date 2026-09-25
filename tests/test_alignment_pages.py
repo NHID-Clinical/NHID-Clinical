@@ -4,7 +4,9 @@ NHID-Clinical Alignment Pages Tests (14 tests)
 import pytest, os
 ALIGNMENT_PAGES=["alignment/stir-shaken.html","alignment/cms-0057-f.html","alignment/nist-ai-agent-standards.html","alignment/vendor-evidence-pack.html"]
 REPO_ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-def page_path(r): return os.path.join(REPO_ROOT,r)
+# The static site moved under site/; these routes live there now.
+SITE_ROOT=os.path.join(REPO_ROOT,"site")
+def page_path(r): return os.path.join(SITE_ROOT,r)
 def page_content(r):
     with open(page_path(r),encoding="utf-8") as f: return f.read()
 @pytest.mark.parametrize("page",ALIGNMENT_PAGES)
@@ -69,7 +71,7 @@ def test_no_external_project_links_in_published_pages():
     added back deliberately, but not by a template that puts it on all 35 pages.
     """
     import pathlib
-    root = pathlib.Path(__file__).resolve().parent.parent
+    root = pathlib.Path(__file__).resolve().parent.parent / "site"
     skip = {"_site", ".git", "node_modules", "docs", "vendor"}
     offenders = []
     for path in root.rglob("*.html"):

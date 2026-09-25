@@ -57,6 +57,8 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
+# The static site lives under site/; the framework sits at the repository root.
+SITE = ROOT / "site"
 sys.path.insert(0, str(ROOT))
 
 from src.nhid_policy_engine_v1 import (  # noqa: E402
@@ -90,10 +92,10 @@ CONTROLS = ("IDG-01", "PDX-01", "DBC-01", "EIT-01", "ATR-01")
 ACTION_ORDER = ("DENY_DATA", "ESCALATE_HUMAN", "DISCLOSE_IDENTITY", "LOG_ONLY", "CONTINUE_AI")
 
 TARGETS = {
-    "enforcement-ladder": ROOT / "specification.html",
-    "shadow-outcomes": ROOT / "shadow-evaluation-guide.html",
-    "evidence-scorecard": ROOT / "evidence-pack.html",
-    "latency-distribution": ROOT / "shadow-evaluation-guide.html",
+    "enforcement-ladder": SITE / "specification.html",
+    "shadow-outcomes": SITE / "shadow-evaluation-guide.html",
+    "evidence-scorecard": SITE / "evidence-pack.html",
+    "latency-distribution": SITE / "shadow-evaluation-guide.html",
 }
 
 PRIORITY_PATTERN = re.compile(r"PolicyAction\.(?P<action>[A-Z_]+)\s*:\s*(?P<priority>\d+)")
