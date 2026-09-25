@@ -1,7 +1,7 @@
 # NHID-Clinical Tier 0 Shadow Pilot Kit
 
 Run a meaningful shadow pilot in 2–4 weeks with minimal integration and produce
-usable data: Impersonation Latency, CAS distribution, and top control violations
+usable data: Impersonation Latency, per-control violations, and transcription attestation
 from your own call traffic. Observe-only — no vendor changes, no live enforcement.
 
 > NHID-Clinical is a voluntary open baseline (CC BY 4.0). Pilot numbers are
@@ -52,18 +52,32 @@ form.
 - **Per-control violations** — IDG-01 (Identity Disclosure Gate), PDX-01
   (Pre-Data Exchange Gate), DBC-01 (Deceptive Behavior Check), EIT-01
   (Escalation Implementation Test)
-- **CAS distribution** — the disclosure-level Call Authorization Score per call,
-  bucketed by trust tier (≥0.90 Verified Trust · ≥0.75 Conditional Trust ·
-  ≥0.50 Review Required · ≥0.20 Denied/Degraded · below: Hard Denial)
+- **Transcription attestation** — for each call, whether transcription quality
+  was `measured`, `attested` or `unattested`. This is not a quality score; it
+  records what is known about the transcript every other figure rests on.
 
-Two honest limitations to keep in mind:
+> **Withdrawn.** Earlier versions of this kit asked you to report a *CAS
+> distribution* bucketed by trust tier (Verified Trust / Conditional Trust /
+> Review Required / Denied-Degraded / Hard Denial). The composite score, its
+> tiers and its badges are withdrawn and there is no successor. Report the
+> per-control figures above, each with its own denominator; do not blend them
+> into one number.
+
+Three honest limitations to keep in mind:
 - **ATR-01** (Audit Trail Requirements) cannot be exercised from transcript
   replay — the kit synthesizes complete audit envelopes by construction. Audit
   completeness is assessed at Tier 1+ against your real event pipeline.
-- **DBC-01 voice artifacts** (Tier A) require voice-forensics flags your stack
-  may not produce; text heuristics (Tier B) still run on transcripts. Residual
-  implicit-impersonation cases are a known human-review area, not a solved
-  detection problem.
+- **DBC-01 reads text, not audio.** It evaluates the agent's own identity
+  assertion for claims of human or licensed-professional status. Its former
+  acoustic-artifact tier was withdrawn — it read a flag the agent supplied about
+  itself, and it implied a voice-forensics capability this framework has never
+  had. Residual implicit-impersonation cases are a known human-review area, not
+  a solved detection problem.
+- **Every figure depends on your transcription.** A disclosure that was spoken
+  but mis-transcribed reads as a missing disclosure; a mis-transcribed
+  escalation request produces no finding at all. NHID-Clinical does not
+  establish ASR accuracy — record the attestation and treat it as a limit on
+  everything else in the report.
 
 ## How the capture schema maps to the engine (important)
 

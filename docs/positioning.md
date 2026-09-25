@@ -147,8 +147,8 @@ boundary):
 The boundary is precise: NHID-Clinical scores **observable conduct on the
 interaction**, never model internals and never model outputs. DBC-01 (the
 deceptive-behavior check) is the control that sits closest to the line — it
-evaluates whether the agent performed human-presence artifacts or denied
-being AI *on the wire*, not the model that produced that behavior. Keep this
+evaluates whether the agent claimed human or licensed-professional status
+*on the wire*, not the model that produced that behavior. Keep this
 distinction sharp; blurring it re-enters model-governance territory and
 forfeits the boundary that makes the project defensible.
 

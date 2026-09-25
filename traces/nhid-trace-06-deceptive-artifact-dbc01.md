@@ -1,3 +1,12 @@
+> **SUPERSEDED — historical trace.** This trace records DBC-01's acoustic-artifact
+> tier, which was **withdrawn in v1.3.2**. That tier read `deceptive_artifact_flags`
+> out of the event payload, i.e. it was self-reported by the agent under evaluation,
+> and the "STT classifier" shown below never existed in this repository. The reason
+> code `DBC01_ARTIFACT_DETECTED` is retired. DBC-01 now evaluates the agent's own
+> identity assertion text for claims of human or licensed-professional status, and
+> the flags field is ignored if present. Kept as a record of what the control used
+> to do; do not read it as current behaviour.
+
 NHID-Clinical • POLICY → EXEC → deception-violation
 
 session: NHID-TRACE-06-6820605E

@@ -6,7 +6,7 @@ at any rung.
 
 | Tier | Time | What you get | What you need |
 | :--- | :--- | :--- | :--- |
-| **0** | 15 min | Conformance verdict + CAS score per call | A transcript and `curl` |
+| **0** | 15 min | Conformance verdict + per-control results per call | A transcript and `curl` |
 | **1** | ~2 hr | Automated per-call checks in your pipeline | An end-of-call webhook |
 | **2** | ~1 day | Cryptographic agent identity (NPI-bound) | `pip install cryptography` |
 

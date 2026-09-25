@@ -93,9 +93,10 @@ this writing; adopt by version from current materials.
 | Element | Standing |
 | :-- | :-- |
 | Governance-layer controls (IDG/PDX/DBC/EIT/ATR-01) + CTS | Reference implementation; deterministic engine with a passing test suite. Checkable today from recorded interactions. |
-| Call Authorization Score | **Research component, not a product capability.** Nothing in the repository produces its inputs, so no real call can be scored. Not to be surfaced publicly. |
+| Call Authorization Score | **Withdrawn.** The module, the badge generator and their tests are deleted. No successor score under any name. See below. |
 | NHID-Auth v2 (delegation, scope, passports, per-call binding) | Working reference *primitive*, not deployed *infrastructure*. Demonstrable end-to-end today: Ed25519 keypairs, an `AgentPassport` carrying a **dual-signed** delegation (provider signature *and* agent signature, both verified), NPI-bound authority, scope with monotonic narrowing across hops, TTL expiry, and `call_sid` nonce binding — `python examples/issue_and_verify.py` runs the issue-and-verify path, and `tests/test_dlg01_delegated_authority.py` holds it to 28 cases including forged signatures, expiry, revocation, unknown NPI, wrong call binding and scope widening. |
 | Revocation | **Durable within a deployment, not across organizations.** `POST /v1/identity/revoke-passport` writes to a persistent SQLite `revoked_delegations` table (`nhid_event_store.record_revocation`), and `POST /v1/identity/verify-passport` checks it (`nhid_event_store.is_delegation_revoked`), so a revocation survives restarts and stateless invocations. Two limits are load-bearing and must be stated with it: (a) the **policy engine performs no I/O**, so `evaluate_dlg01` consults only the in-memory `AgentIdentityManager` lists its caller supplies — an embedding deployment wires the durable store in itself; (b) the hosted verify path **falls back to the library-only check** if the store is unreachable. Not production-grade, and **no cross-organizational propagation**. |
+| Synthetic evaluation corpora and the figures replayed from them | **Research component**, not a product capability and not operational performance. The Fabricate and Tonic corpora are authored, not observed; a detection rate measured over them says what the engine does to those files, not how any deployment behaves. Report them with the corpus named and the denominator attached. |
 | Key custody / rotation / per-tenant isolation | Documented production path; not built. |
 | Trust-anchor resolution (NPI → public key) | **Local static resolution exists**: `src/trust_anchor.py` ships the `TrustAnchorResolver` Protocol and `StaticTrustAnchorResolver`, an in-memory mapping the deploying organization populates itself; an unresolvable NPI returns `None` and the caller must treat that as a verification failure. The engine makes **no network calls**, by design. |
 | Registry / dynamic trust-anchor discovery | Future work; **does not exist**. No JWKS-backed or discovery resolver is implemented, and a shared registry would require a neutral operator. Static local resolution (row above) is not a registry and must not be described as one. |
@@ -152,19 +153,23 @@ allowed row below (or a close paraphrase). If a claim matches a prohibited row,
 or matches nothing here, **cut it or rewrite it to the nearest allowed form.**
 When unsure, default to the weaker claim.
 
-### Not allowed — CAS is a research component
+### Not allowed — the composite score is withdrawn
 
-`src/nhid_cas.py` computes a 0–1 score with tiers named "Verified Trust" and
-"Conditional Trust" plus a `badge_eligible` L1/L2 value. Nothing in this
-repository produces its inputs (`hallucination_risk`, `deepfake_risk_score`,
-`sip_attestation`, `oig_exclusion_match`, `entity_match_rate`), so no real call
-can be scored, and its tier names read as a trust rating this project does not
-issue.
+There is no Call Authorization Score. `src/nhid_cas.py`, the badge generator and
+their tests were **deleted**. Nothing in this repository ever produced the
+inputs a meaningful score would need (`hallucination_risk`,
+`deepfake_risk_score`, `sip_attestation`, `oig_exclusion_match`,
+`entity_match_rate`), so no real call could be scored, and the tier names
+"Verified Trust" and "Conditional Trust" asserted a trust rating this project
+does not issue.
 
-Do not present CAS, a CAS tier, or a conformance badge as a product capability,
-on any public page, in any published artifact, or in procurement material. The
-module and its 38 tests are retained for research; the score never influences a
-policy decision and `evaluate_all()` structurally cannot read it.
+Do not present a CAS score, a tier, a `badge_eligible` value, a conformance
+badge, or **any successor composite score under another name**, on any public
+page, in any published artifact, or in procurement material. A per-control
+result stands on its own evidence or it does not stand; blending controls with
+unlike denominators into one number is the thing that was withdrawn, not the
+label on it. `tests/test_v132_scope_corrections.py` scans `src/` and fails if
+the tier strings reappear.
 
 ### Allowed — with verifiable basis
 

@@ -31,7 +31,7 @@ exists to let you answer with evidence rather than a vendor's word.
 2. [Behavioral controls](#2-behavioral-controls)
 3. [ATR-01 audit structure](#3-atr-01-audit-structure)
 4. [CTS and determinism](#4-cts-and-determinism)
-5. [CAS summary](#5-cas-summary)
+5. [The composite score is withdrawn](#5-the-composite-score-is-withdrawn)
 6. [Policy engine action model](#6-policy-engine-action-model)
 7. [Cryptographic authorization model (NHID-Auth v2)](#7-cryptographic-authorization-model-nhid-auth-v2)
 8. [Delegation chain rules](#8-delegation-chain-rules)
@@ -142,46 +142,41 @@ changelog and §7 (Implementation Roadmap) — see the
 
 **Determinism guarantee:** the policy engine produces identical output for identical input on
 every run — no randomness, no LLM calls, no external I/O inside `evaluate_all()`. This is what
-lets CAS and IL function as reproducible, auditable, dispute-resolvable scores rather than
-one-off judgments. Vendors whose own *compliance behavior* depends on a live LLM's in-context
+lets Impersonation Latency function as a reproducible, auditable, dispute-resolvable
+measurement rather than a one-off judgment. Vendors whose own *compliance behavior* depends on a live LLM's in-context
 judgment (rather than a structural gate) are weaker integration candidates for this reason — see
 [vendor trust questionnaire](vendor-trust-questionnaire.md) §10.2.
 
-## 5. CAS summary
+## 5. The composite score is withdrawn
 
-The Call Authorization Score (CAS) — not "Compliance/Conformance Assurance Score," a name fixed
-in the policy engine — is a continuous 0.0–1.0 compliance signal per call:
+Revisions of this specification before the v1.3 scope corrections defined a
+**Call Authorization Score (CAS)**: a continuous 0.0–1.0 signal per call,
+`CAS = F_IAF × F_NOCF × ECF`, mapped to a tier ladder of Verified Trust (L2),
+Conditional Trust (L1), Review Required, Denied/Degraded and Hard Denial, with
+an accompanying badge.
 
-```
-CAS = F_IAF × F_NOCF × ECF
-```
+**All of it is withdrawn.** `src/nhid_cas.py`, the badge generator and their
+tests were deleted. Three reasons, any one disqualifying:
 
-| Factor | Definition | Range |
-| :-- | :-- | :-- |
-| F_IAF | Identity Assurance Factor — 1.0 unless an IDG-01/PDX-01 critical violation occurred, else 0.0 | {0.0, 1.0} |
-| F_NOCF | Operational Conformance Factor (see formula below) | 0.0–1.0 |
-| ECF | Evidence Completeness Factor — fraction of required ATR-01 fields present | 0.0–1.0 |
+1. **It blended unlike denominators.** An identity factor, an approximated
+   operational factor and an evidence-completeness fraction are not commensurable,
+   and multiplying them produces a number whose movement cannot be attributed to
+   anything.
+2. **Nothing produced its inputs.** `hallucination_risk`, `deepfake_risk_score`,
+   `sip_attestation`, `oig_exclusion_match` and `entity_match_rate` were measured
+   by no component in this repository, so no real call could be scored.
+3. **The tier names asserted a rating this project does not issue.** "Verified
+   Trust" and a `badge_eligible` L1/L2 value read as certification, which
+   [`claim-boundaries.md`](claim-boundaries.md) forbids claiming.
 
-**NOCF formula** (`src/nhid_cas.py`):
+**There is no successor score, under this or any other name.** Each control
+returns its own result against its own denominator. Where a single figure about
+the record is useful, `evidence_completeness` reports the fraction of required
+audit fields present, with its denominator and field list attached — it is a
+statement about the evidence, not a rating of the caller.
 
-```
-C (coherence)  = (entity_match_rate + intent_accuracy + domain_hit_rate) / 3
-E (execution)  = successful_actions / attempted_actions
-S (stability)  = 1 − (call_drop_rate + audio_corruption_rate + tool_failure_rate) / 3
-L_hat          = max(0, 1 − latency_ms / l_max_ms)
-R (risk)       = w_H × hallucination_risk + w_P × pii_leakage_risk + w_I × identity_ambiguity_risk
-A_nocf         = C × E × S × L_hat × (1 − R)
-```
-
-Weights `w_H=0.40, w_P=0.35, w_I=0.25` apply **only** inside `R`; `l_max_ms` defaults to 2500ms
-(floor 1500ms, ceiling 5000ms). The weights-spread-across-C/E/S variant, or a formula using `R`
-as a direct multiplier instead of `(1 − R)`, is the old, incorrect version — flagged where found
-in the PDF review.
-
-**Tier ladder:** ≥0.90 Verified Trust (L2) · ≥0.75 Conditional Trust (L1) · ≥0.50 Review Required
-· ≥0.20 Denied/Degraded · <0.20 Hard Denial. See the
-[CAS distribution visual recommendation](visuals-and-graph-recommendations.md#5-cas-distribution-visual)
-for how to render this against real call volume once available.
+`tests/test_v132_scope_corrections.py` scans `src/` and fails if the tier strings
+reappear.
 
 ## 6. Policy engine action model
 

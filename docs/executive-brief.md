@@ -30,10 +30,9 @@ and checkable against a machine-readable trace.
 | :-- | :-- |
 | **IDG-01** — Identity Disclosure Gate | Disclose non-human identity before any PHI is exchanged. |
 | **PDX-01** — Pre-Data Exchange Gate | No protected data until identity is disclosed. |
-| **DBC-01** — Deceptive Behavior Check | No synthetic human-presence cues or false human-status claims. |
+| **DBC-01** — Deceptive Behavior Check | No claim of human status or licensed-professional standing, read from the agent's own identity assertion. |
 | **EIT-01** — Escalation Implementation Test | A clear human handoff path, honored on request. |
 | **ATR-01** — Audit Trail | Every call produces a machine-readable trace. |
-| **CAS** — Call Authorization Score | A per-call score summarizing conformance across the controls. |
 
 ## What a pilot involves
 

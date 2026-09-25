@@ -89,7 +89,10 @@ def test_generate_returns_real_rates():
 def test_dashboard_metrics():
     body = client.get("/api/dashboard").json()
     assert "counts" in body and "detection" in body
-    assert body["cas_thresholds"]["conditional_trust"] == 0.75
+    # The endpoint never returned cas_thresholds; this asserted a key that was
+    # not there, and the assertion survived only because this directory is not
+    # collected by `pytest tests/`. The composite score is withdrawn either way.
+    assert "cas_thresholds" not in body
 
 
 def test_passport_valid_and_tampered():

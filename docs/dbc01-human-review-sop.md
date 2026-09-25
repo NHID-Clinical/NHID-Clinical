@@ -53,8 +53,8 @@ true:
 - `CONTINUE_AI` decisions with no violations. Re-flagging every clean call
   for review defeats the purpose and trains reviewers to ignore the queue.
 - Conversational mentions of "human"/"person"/"real" that don't match a
-  known phrase and don't depress the CAS score — per the measurements above,
-  treating every such mention as suspect produces more noise than signal.
+  known phrase — per the measurements above, treating every such mention as
+  suspect produces more noise than signal.
 
 ## Reviewer procedure
 

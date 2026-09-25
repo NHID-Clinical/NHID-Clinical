@@ -6,7 +6,7 @@ engine, Lambda handler, event store, synthetic eval loop, adapters, and
 identity manager. No policy logic is reimplemented here.
 
 Pages:
-  /            Dashboard          — CAS + detection + audit KPIs (payer/exec view)
+  /            Dashboard          — detection + audit KPIs (payer/exec view)
   /analyzer    Transcript Analyzer— run a transcript through the real engine
   /generator   Synthetic Generator— run the real eval loop over the corpus
   /vendors     Vendor Verification— adapter checks + NHID-Auth v2 passport verify

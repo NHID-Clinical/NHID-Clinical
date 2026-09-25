@@ -249,7 +249,7 @@ This is precisely the gap NHID-Auth's call-SID nonce binding closes. An OAuth be
 ### 2.10 Reference integration patterns
 
 **Tier 1 — Behavioral integration using OAuth2-protected API calls only.**
-The vendor's backend authenticates to the NHID-aware API/webhook via OAuth2 client credentials. No agent keypairs, no delegations. Call transcripts/events are POSTed and evaluated against the behavioral controls (IDG-01/PDX-01/DBC-01/EIT-01/ATR-01) for a conformance verdict and CAS score. This is the integration tier most vendors should start at — see the [staged integration guide](v2-integration-guide.md), Tiers 0–1.
+The vendor's backend authenticates to the NHID-aware API/webhook via OAuth2 client credentials. No agent keypairs, no delegations. Call transcripts/events are POSTed and evaluated against the behavioral controls (IDG-01/PDX-01/DBC-01/EIT-01/ATR-01) for a conformance verdict and per-control results. This is the integration tier most vendors should start at — see the [staged integration guide](v2-integration-guide.md), Tiers 0–1.
 
 **Tier 2 — Full cryptographic integration: OAuth2 for transport, NHID-Auth for call-bound delegation.**
 Same OAuth2 transport layer as Tier 1, plus: the provider has issued a signed `Delegation` to the vendor's agent keypair; every call event POST includes (or references) the corresponding `AgentPassport`; the receiving side runs `verify_passport` against the provider's known public key (via static exchange or JWKS, §1.8) before trusting the `provider_npi` the request claims to represent. See the [staged integration guide](v2-integration-guide.md), Tier 2, and `examples/issue_and_verify.py` for the full code example.

@@ -20,7 +20,7 @@
 <script>
 async function loadReviews() {
   const d = await api("/api/audit/reviews");
-  if (!d.reviews.length) { el("reviews").innerHTML = '<p class="mut">No pending reviews. Analyze a DBC-01 or low-CAS transcript to populate this queue.</p>'; return; }
+  if (!d.reviews.length) { el("reviews").innerHTML = '<p class="mut">No pending reviews. Analyze a transcript that trips a control to populate this queue.</p>'; return; }
   el("reviews").innerHTML = `<table><tr><th>ID</th><th>Session</th><th>Trigger</th><th></th></tr>` +
     d.reviews.map(r => `<tr>
       <td class="mono">${r.id}</td>

@@ -61,16 +61,20 @@ Two parallel lanes feeding into the same policy engine + FHIR audit emitter: (1)
 
 A timeline/swimlane diagram: the 7 call-lifecycle milestones along the x-axis (session-start → identity-disclosure → auth-verification → phi-gate → phi-exchange → escalation → call-end), each annotated with its DICOM/HL7 type code and which NHID field(s) populate it, plus call-out boxes at the `nhid-identity-disclosure` and `nhid-phi-gate` milestones showing the recommended (not-yet-implemented) `nhid-participant-kind` extension point.
 
-### 5. CAS Distribution Visual
+### 5. CAS Distribution Visual — WITHDRAWN
 
-| | |
-| :-- | :-- |
-| **Audience** | Payer call-center operations leadership deciding whether/how to use CAS as a procurement or monitoring signal; vendors wanting to see where their calls land |
-| **Decision it supports** | "What does a 'normal' distribution of CAS scores actually look like across real call volume, and where's the cutoff worth acting on?" |
-| **Draws from** | Master Knowledge Archive §3.3 (CAS formula and tier ladder: Verified Trust ≥0.90, Conditional Trust ≥0.75, Review Required ≥0.50, Denied/Degraded ≥0.20, Hard Denial <0.20) |
-| **Belongs in** | Shadow evaluation guide, `for-payers.html`, technical specification (CAS summary section) |
-
-A histogram of CAS scores (x-axis: score bucket 0.0–1.0, y-axis: call count) overlaid with the five tier-ladder bands as shaded background regions, so a payer running a shadow pilot can drop their own real call-volume data into the same chart shape. **Data source note:** this requires real or pilot-sample call data to populate — until a shadow pilot produces real numbers, render this with the existing example Bundle's score plus clearly-labeled synthetic/illustrative data, not fabricated "real" production statistics.
+> **Do not build this.** It rendered a histogram of Call Authorization Scores
+> banded by the tier ladder (Verified Trust ≥0.90 … Hard Denial <0.20). The
+> composite score, its tiers and its badges are withdrawn: the score blended
+> unlike denominators, nothing in the repository produced its inputs, and the
+> tier names read as a trust rating this project does not issue. There is no
+> successor visual, because the problem was the single blended number, not the
+> chart type.
+>
+> If a per-call distribution is wanted, chart **Impersonation Latency** — one
+> measurement, one denominator, stated units — and state alongside it that it
+> measures disclosure timing only. See
+> [`terminology.md`](terminology.md).
 
 ### 6. Shadow Pilot Trend Graphs
 
@@ -81,7 +85,7 @@ A histogram of CAS scores (x-axis: score bucket 0.0–1.0, y-axis: call count) o
 | **Draws from** | The 90-day pilot structure (Month 1 baseline, Month 2 gap analysis, Month 3 report) |
 | **Belongs in** | Shadow evaluation guide, pilot report template (a new artifact the pilot's "Month 3 — Report" step would produce) |
 
-Four line charts sharing a common time axis (the pilot's 90 days, or whatever window a given deployment observes): violation counts over time (stacked by control: IDG-01/PDX-01/DBC-01/EIT-01/ATR-01), disclosure compliance trend (% of calls with `IL(turns) = 0`), escalation compliance trend (% of escalation requests honored), CAS percentile trend (median + 10th percentile CAS per week), and impersonation latency trend (median `IL` in turns/seconds per week). **Data source note:** same caveat as #5 — these are templates to populate with a pilot's actual data, not pre-filled with invented numbers, since "No organizations have adopted or piloted it yet" is the accurate current project status.
+Four line charts sharing a common time axis (the pilot's 90 days, or whatever window a given deployment observes): violation counts over time (stacked by control: IDG-01/PDX-01/DBC-01/EIT-01/ATR-01), disclosure compliance trend (% of calls with `IL(turns) = 0`), escalation compliance trend (% of escalation requests honored), and impersonation latency trend (median `IL` in turns/seconds per week). **Data source note:** same caveat as #5 — these are templates to populate with a pilot's actual data, not pre-filled with invented numbers, since "No organizations have adopted or piloted it yet" is the accurate current project status.
 
 ### 7. Vendor Maturity Matrix
 
@@ -104,7 +108,7 @@ A matrix with vendors as rows and four capability columns — **Behavioral confo
 | 2 | Trust & key management diagram | Compliance officers, security architects | PKI guide, vendor questionnaire |
 | 3 | OAuth2 + NHID-Auth overlay diagram | Vendor backend engineers | OAuth2/OIDC guide, technical spec |
 | 4 | FHIR AuditEvent mapping diagram | FHIR/interoperability engineers | FHIR standardization doc, technical spec |
-| 5 | CAS distribution visual | Payer ops leadership, vendors | Shadow eval guide, for-payers.html |
+| 5 | ~~CAS distribution visual~~ **withdrawn** | — | — |
 | 6 | Shadow pilot trend graphs (4) | Pilot compliance teams, community | Shadow eval guide, pilot report template |
 | 7 | Vendor maturity matrix | Payers comparing vendors | Vendor questionnaire, for-payers.html |
 

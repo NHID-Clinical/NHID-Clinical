@@ -203,10 +203,11 @@ def _shadow_turns(conversation: dict[str, Any]) -> list[dict[str, Any]]:
       * `contains_phi` is a flag, not a field list, so it becomes a single
         neutral marker. The engine also detects protected-data requests
         lexically from speech, so this supplements that signal.
-      * The fixture has no `deceptive_artifact_flags`, which is the field
-        DBC-01 actually reads. DBC-01 therefore runs on its lexical path only
-        over this corpus, and the figure says so — otherwise a low DBC-01 count
-        would read as "no deception found" when it means "the field is absent".
+      * DBC-01 evaluates the agent's own identity assertion text. It has no
+        other input here and needs none: the `deceptive_artifact_flags` tier it
+        once had was withdrawn, because that field was supplied by the agent
+        under evaluation about itself. The figure says what the count covers,
+        so a low DBC-01 count is not read as "no deception found".
       * `escalation_path_available` is not carried, so build_session's default
         (True) applies, exactly as it does for every other replay path.
     """
@@ -260,10 +261,12 @@ def measure_shadow() -> dict[str, Any]:
         "top_reasons": [[code, count] for code, count in reasons.most_common(5)],
         "violations_by_control": {c: by_control.get(c, 0) for c in CONTROLS},
         "schema_note": (
-            "The shadow-pilot fixture carries no deceptive_artifact_flags field, "
-            "which is the structured signal DBC-01 reads. Over this corpus DBC-01 "
-            "runs on its lexical path only, so its count here is a floor, not a "
-            "measurement of how much deception the corpus contains."
+            "DBC-01 evaluates the agent's own identity assertion text: claims of "
+            "human status or licensed-professional standing. Its former "
+            "artifact tier, which read a deceptive_artifact_flags field the "
+            "agent supplied about itself, is withdrawn. This count is therefore "
+            "what the transcript says, not a measurement of how much deception "
+            "the corpus contains."
         ),
     }
 

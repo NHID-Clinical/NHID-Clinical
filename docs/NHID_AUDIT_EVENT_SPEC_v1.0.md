@@ -55,10 +55,11 @@ Audit events enable:
         "trigger_field": "string (which input triggered the rule)"
       }
     ],
-    "cas_score": {
-      "score": "float (0.0–1.0, Call Authorization Score)",
-      "tier": "enum (Denied/Degraded, Authorized, Priority)",
-      "badge_eligible": "boolean or null"
+    "evidence_completeness": {
+      "present": "integer (required evidence fields actually present)",
+      "expected": "integer (required evidence fields)",
+      "fraction": "float (0.0-1.0)",
+      "fields": ["array of the field names checked"]
     }
   },
   
@@ -101,7 +102,14 @@ Audit events enable:
 - `action`: ALLOW_DATA | DENY_DATA | ESCALATE
 - `conformant`: boolean
 - `violations_detected`: array of rule violations (empty if conformant)
-- `cas_score`: authorization tier
+- `evidence_completeness`: how much of the evidence the controls needed was
+  present in the record. A statement about the record, **not** a rating of the
+  caller.
+
+> **Withdrawn.** Revisions of this spec before the v1.3 scope corrections
+> defined a `cas_score` object carrying a 0-1 Call Authorization Score, a tier
+> and a `badge_eligible` value. The score is withdrawn and nothing replaces it;
+> emitters must not write that object and consumers must not require it.
 
 **Example**:
 ```json
@@ -359,10 +367,9 @@ Generate compliance report or incident timeline
     "conformant": true,
     "rules_evaluated": ["IDG-01", "PDX-01", "DBC-01", "EIT-01", "ATR-01"],
     "violations_detected": [],
-    "cas_score": {
-      "score": 1.0,
-      "tier": "Authorized",
-      "badge_eligible": true
+    "evidence_completeness": {
+      "present": 4, "expected": 4, "fraction": 1.0,
+      "fields": ["event_id", "timestamp", "session_id", "event_type"]
     }
   },
   "phi_access_log": {
@@ -415,10 +422,9 @@ Generate compliance report or incident timeline
         "trigger_field": "phi_accessed"
       }
     ],
-    "cas_score": {
-      "score": 0.0,
-      "tier": "Denied/Degraded",
-      "badge_eligible": null
+    "evidence_completeness": {
+      "present": 4, "expected": 4, "fraction": 1.0,
+      "fields": ["event_id", "timestamp", "session_id", "event_type"]
     }
   },
   "phi_access_log": {

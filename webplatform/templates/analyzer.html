@@ -2,7 +2,7 @@
 {% block title %}Transcript Analyzer{% endblock %}
 {% block content %}
 <h1>Transcript Analyzer</h1>
-<p class="sub">Run a call transcript through the live NHID policy engine. Each turn is evaluated by <code>evaluate_all</code>; you get the real decision, CAS score, violations, and human-review routing.</p>
+<p class="sub">Run a call transcript through the live NHID policy engine. Each turn is evaluated by <code>evaluate_all</code>; you get the real decision, evidence completeness, violations, and human-review routing.</p>
 
 <div class="grid cols-2">
   <div class="card">
@@ -46,8 +46,7 @@ function render(res) {
   el("summary").innerHTML = `
     <div class="row" style="gap:14px">
       ${pill(res.conformant, "Conformant", "Non-conformant")}
-      ${tierPill(res.worst_tier)}
-      <span class="chip">min CAS ${res.min_cas}</span>
+      <span class="chip">evidence ${Math.round(res.min_evidence_completeness * 100)}% complete</span>
       ${res.queued_for_review ? '<span class="pill warn">Queued for human review</span>' : ''}
     </div>
     <p style="margin:12px 0 4px" class="mut">Conversation <code>${esc(res.conversation_id)}</code> · ${res.turn_count} turn(s) · violations: ${codes.length ? codes.map(c=>`<span class="chip">${c}</span>`).join(" ") : "<span class='pill ok'>none</span>"}</p>`;
@@ -60,7 +59,7 @@ function render(res) {
       <div class="row" style="gap:8px">
         <span class="chip">action: ${esc(t.action)}</span>
         <span class="chip">reason: ${esc(t.reason_code)}</span>
-        <span class="chip">CAS ${t.cas.score} · ${esc(t.cas.tier)}</span>
+        <span class="chip">evidence ${t.evidence_completeness.present}/${t.evidence_completeness.expected}</span>
       </div>
       ${t.violations.length ? `<p class="mut" style="margin:8px 0 0">${t.violations.map(v=>`<span class="pill bad" title="${esc(v.description||'')}">${v.rule_id} · ${esc(v.severity)}</span>`).join(" ")}</p>` : ""}
     </div>`).join("");

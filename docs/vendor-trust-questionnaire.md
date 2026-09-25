@@ -51,7 +51,7 @@ Each section lists the question, why it matters, and what a credible answer look
 
 | # | Question | Why it matters | Credible answer |
 | :-- | :-- | :-- | :-- |
-| 4.1 | Does the voice agent use synthetic breathing, hesitation sounds, filler words, or other artifacts designed to imply human presence? | This is the deceptive-behavior control. Some commercial TTS stacks add these by default for "naturalism." | "No" with a description of the TTS configuration, or a documented opt-out from vendor defaults. |
+| 4.1 | Does the voice agent use synthetic breathing, hesitation sounds, filler words, or other artifacts designed to imply human presence? | **Beyond what DBC-01 evaluates.** NHID-Clinical reads transcript text and performs no acoustic or signal analysis, so this cannot be verified from the evidence it produces — ask the vendor, because nothing here will tell you. Some commercial TTS stacks add these by default for "naturalism." | "No" with a description of the TTS configuration, or a documented opt-out from vendor defaults. |
 | 4.2 | Will the agent ever explicitly claim to be a human or a "real person" if asked directly? | Direct deception is a hard fail regardless of voice naturalism settings. | "Never — the agent is instructed to acknowledge automation if asked, even mid-call." |
 | 4.3 | Do you run or can you run a text-heuristic check against transcripts for impersonation phrases ("I am a human", "you're speaking with a live agent", etc.)? | A concrete, automatable test a vendor can run today against their own logs. | Willingness to run `nhid_policy_engine_v1.evaluate_all` (or equivalent) against a transcript sample. |
 
@@ -109,9 +109,11 @@ Each section lists the question, why it matters, and what a credible answer look
 
 ## Scoring guidance (informal — not a certification score)
 
-This questionnaire does not produce a CAS (Call Authorization Score) by itself — CAS is computed
-per-call from actual transcript/event data by the policy engine, not from questionnaire answers.
-Use the questionnaire to triage:
+This questionnaire does not produce a score, and neither does the framework: the
+composite Call Authorization Score, its tiers and its badges are withdrawn, with
+no successor. The engine returns a per-control result computed per call from
+actual transcript/event data, never from questionnaire answers. Use the
+questionnaire to triage:
 
 - **Hard fail / do not proceed:** "No" or evasive answers to Sections 2, 3, or 5 (disclosure, PHI gating, escalation). These are the load-bearing behavioral controls.
 - **Proceed with monitoring:** Solid Tier 0/1 answers, weak or "not yet" Tier 2 answers. Reasonable starting point for a shadow pilot (see `roadmap.html`).

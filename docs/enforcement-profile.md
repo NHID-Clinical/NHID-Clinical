@@ -91,20 +91,23 @@ attaches to an **existing** control — there is no standalone enforcement contr
 
 ---
 
-## 10.4 CAS Authority Boundary
+## 10.4 Human-review routing
 
-The Call Authorization Score (CAS) is a **downstream assessment and routing** mechanism. It is
-derived **after**, and **from**, the `PolicyDecision` (and audit-field completeness). It is not an
-evaluator and not an enforcer.
+Routing a call to a human is **downstream** of the `PolicyDecision`. It is derived
+after, and from, that decision. It is not an evaluator and not an enforcer:
+routing MUST NOT override or modify a `PolicyDecision`, MUST NOT convert
+`DENY_DATA` (or any restrictive action) into allowed access, and MUST NOT
+independently determine control compliance.
 
-**CAS MAY:**
-- trigger human review (reference threshold: CAS below Conditional Trust, `0.75`);
-- influence review priority and queueing.
+`src/dbc01_review_routing.py` is the reference implementation.
 
-**CAS MUST NOT:**
-- override or modify a `PolicyDecision`;
-- convert `DENY_DATA` (or any restrictive action) into allowed access;
-- independently determine control compliance.
+> **Withdrawn.** This section previously defined a *Call Authorization Score*
+> (CAS) as the routing signal, with a reference threshold of "below Conditional
+> Trust, `0.75`". The composite score, its tiers and its badges are withdrawn:
+> it blended heterogeneous denominators, its tier names read as a trust rating
+> this project does not issue, and nothing in the repository produced the inputs
+> a meaningful score would need. Routing is driven by the decision and its
+> reason code; there is no successor score.
 
 ### Governing invariant (normative)
 

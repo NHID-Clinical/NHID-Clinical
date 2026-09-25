@@ -10,14 +10,6 @@ function pill(ok, txtOk, txtBad) {
   const cls = ok ? "ok" : "bad";
   return `<span class="pill ${cls}">${ok ? txtOk : txtBad}</span>`;
 }
-function tierPill(tier) {
-  const t = (tier || "").toLowerCase();
-  let cls = "warn";
-  if (t.includes("verified")) cls = "ok";
-  else if (t.includes("denied") || t.includes("hard")) cls = "bad";
-  else if (t.includes("conditional")) cls = "ok";
-  return `<span class="pill ${cls}">${tier || "—"}</span>`;
-}
 function esc(s) {
   return String(s == null ? "" : s).replace(/[&<>"]/g,
     c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
