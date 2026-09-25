@@ -26,8 +26,7 @@
 - **Governance layer** — the transparency and accountability controls on the
   interaction: identity disclosure (IDG-01), pre-data-exchange sequencing
   (PDX-01), deceptive-behavior check (DBC-01), escalation (EIT-01), audit
-  trail (ATR-01), the Call Authorization Score (CAS), and the Conformance
-  Test Suite (CTS). Native category: operational AI governance / agent
+  trail (ATR-01), and the Conformance Test Suite (CTS). Native category: operational AI governance / agent
   governance. Present with governance/compliance vocabulary.
 - **Identity / security layer** — NHID-Auth v2: the cryptographic
   non-human-actor identity and scoped-delegation mechanism. Native category:
@@ -80,9 +79,12 @@
 - **Per-interaction binding** — binding a delegation to a specific call
   (call-SID nonce), so a valid credential replayed from a different
   interaction fails verification.
-- **Call Authorization Score (CAS)** — a per-interaction score summarizing
-  governance-layer conformance, bucketed into trust tiers. A triage
-  instrument, not an acquittal of model quality.
+- **Call Authorization Score (CAS)** — **withdrawn.** A per-interaction
+  composite score bucketed into "Verified Trust" / "Conditional Trust" tiers.
+  Removed in the v1.3 scope corrections: it blended unlike denominators, nothing
+  in the repository produced its inputs, and the tier names asserted a rating
+  this project does not issue. **There is no successor score under any name.**
+  Do not reintroduce the term except to say it is withdrawn.
 - **Conformance / conformance testing** — evaluation of an interaction
   against the controls by a deterministic engine (same inputs → identical
   outputs), which is what makes a conformance claim checkable rather than

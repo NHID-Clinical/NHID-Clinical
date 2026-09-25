@@ -216,7 +216,7 @@ Multi-rule combinations: 10 scenarios (45%)
 | **8.1 Operational Planning** | IDG-01 | Document disclosure procedures in agent design |
 
 **Conformance Approach**:
-- Synthetic workflows provide **evidence of control effectiveness** (CAS score, violations detected, coverage per rule)
+- Synthetic workflows provide **evidence of control effectiveness** (violations detected, coverage per rule) — no composite score is computed
 - Shadow mode execution ensures **non-disruptive assessment** (observation-only, no production changes)
 - Deterministic scenarios enable **repeatable evaluation** (same workflow, same outcome)
 - Remediation recommendations support **continuous improvement** (gap identification, fix prioritization)

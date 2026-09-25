@@ -116,14 +116,31 @@ def test_the_standings_the_scale_names_appear_in_the_claims_document(standing, s
     )
 
 
-def test_cas_is_still_recorded_as_a_research_component():
+def test_cas_is_recorded_as_withdrawn_not_merely_research():
     """
-    The Call Authorization Score is the sharpest case the scale exists for: the
-    claims document calls it a research component and says it is not to be
-    surfaced publicly. If that ever softens, the research state is doing work
-    the document no longer backs.
+    The Call Authorization Score used to sit in the claims document as a
+    "research component". It is now withdrawn outright -- the module, the badge
+    generator and their tests are deleted -- and this asserts the document says
+    so rather than softening back to the weaker standing.
+
+    The weaker wording mattered once: "research component, not a product
+    capability" still left the score in the repository, which is how it kept
+    turning up on public surfaces. Demoting is not the same as removing, and
+    this test exists to stop the distinction being lost again.
     """
-    assert re.search(r"Call Authorization Score.*Research component", CLAIMS, re.S | re.I)
+    row = re.search(r"\| Call Authorization Score \|([^|]*)\|", CLAIMS)
+    assert row, "claim-boundaries.md no longer has a Call Authorization Score row"
+    standing = row.group(1)
+    assert re.search(r"withdrawn", standing, re.I), (
+        f"the Call Authorization Score row no longer says it is withdrawn: {standing!r}"
+    )
+    assert not re.search(r"research component", standing, re.I), (
+        "the Call Authorization Score is withdrawn, not a research component"
+    )
+    assert re.search(r"no successor", standing, re.I), (
+        "the row must say there is no successor score, or the withdrawal invites "
+        "the same thing back under another name"
+    )
 
 
 # ── Containment, since chips sit inside flex and grid rows ─────────────────

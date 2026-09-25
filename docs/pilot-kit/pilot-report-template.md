@@ -35,15 +35,20 @@ Bands are a reporting convention, not an enforcement threshold — the normative
 `IL(turns) = 0`. Use this table to separate agents that disclose slowly from agents that do not
 disclose at all; they warrant different conversations with the vendor.
 
-## CAS trust-tier distribution
+## Transcription attestation
 
-| Tier | Threshold | Calls | % |
-| :--- | :--- | ---: | ---: |
-| Verified Trust | ≥ 0.90 | | |
-| Conditional Trust | ≥ 0.75 | | |
-| Review Required | ≥ 0.50 | | |
-| Denied / Degraded | ≥ 0.20 | | |
-| Hard Denial | < 0.20 | | |
+Every figure in this report is bounded by the transcripts it was computed over.
+NHID-Clinical does not establish ASR accuracy; record what is known.
+
+| Attestation | Calls | % |
+| :--- | ---: | ---: |
+| `measured` (WER measured on this corpus) | | |
+| `attested` (a figure asserted, not measured here) | | |
+| `unattested` (nothing known) | | |
+
+> A previous version of this template asked for a *CAS trust-tier distribution*.
+> The composite score, its tiers and its badges are withdrawn, and nothing
+> replaces them: report each control's result with its own denominator.
 
 ## Top violations
 

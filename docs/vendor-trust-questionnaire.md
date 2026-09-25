@@ -109,9 +109,11 @@ Each section lists the question, why it matters, and what a credible answer look
 
 ## Scoring guidance (informal — not a certification score)
 
-This questionnaire does not produce a CAS (Call Authorization Score) by itself — CAS is computed
-per-call from actual transcript/event data by the policy engine, not from questionnaire answers.
-Use the questionnaire to triage:
+This questionnaire does not produce a score, and neither does the framework: the
+composite Call Authorization Score, its tiers and its badges are withdrawn, with
+no successor. The engine returns a per-control result computed per call from
+actual transcript/event data, never from questionnaire answers. Use the
+questionnaire to triage:
 
 - **Hard fail / do not proceed:** "No" or evasive answers to Sections 2, 3, or 5 (disclosure, PHI gating, escalation). These are the load-bearing behavioral controls.
 - **Proceed with monitoring:** Solid Tier 0/1 answers, weak or "not yet" Tier 2 answers. Reasonable starting point for a shadow pilot (see `roadmap.html`).

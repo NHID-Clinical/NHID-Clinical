@@ -230,7 +230,6 @@ wherever they bear on a control.
 | **Control** | One of the five canonical governance checks |
 | **Violation** | A `BoundaryViolation` — `rule_id`, `description`, `severity` |
 | **PolicyDecision** | The single output of evaluating all controls against one turn |
-| **CAS** | Call Authorization Score — a downstream routing signal, **not** an evaluator |
 | **Tier 0** | Observe-only shadow evaluation. Decisions recorded, never enforced |
 
 Full list: `docs/terminology.md`.
@@ -258,7 +257,8 @@ same inputs always produce the same decision and the same reason code.
 | `next_state` | Advisory workflow state label |
 | `policy_version` | Engine version that produced the decision |
 
-**A `PolicyDecision` carries no score.** CAS is computed separately, downstream.
+**A `PolicyDecision` carries no score,** and nothing downstream computes one. The
+composite score is withdrawn.
 
 ### 3.2 `PolicyAction` — exactly five
 
@@ -287,21 +287,23 @@ The ladder **selects an action; it does not suppress findings.** Every control
 still evaluates independently and contributes its violations. The ladder never
 re-decides conformance.
 
-### 3.4 The CAS authority boundary
+### 3.4 The human-review routing boundary
 
-The Call Authorization Score is a downstream assessment and routing mechanism,
-derived after and from the `PolicyDecision`.
+Routing a call to a human is a downstream mechanism, derived after and from the
+`PolicyDecision`.
 
-**CAS may** trigger human review and influence queue priority.
-**CAS must not** override a `PolicyDecision`, convert a restrictive action into
+**Routing may** trigger human review and influence queue priority.
+**Routing must not** override a `PolicyDecision`, convert a restrictive action into
 allowed access, or independently determine conformance.
 
 > **Normative invariant.** The Enforcement Profile SHALL consume `PolicyDecision`
-> outputs and SHALL NOT independently evaluate control conformance. CAS SHALL be
-> derived from, and downstream of, the `PolicyDecision`. The five controls remain
-> the sole source of conformance decisions.
+> outputs and SHALL NOT independently evaluate control conformance. Any routing
+> decision SHALL be derived from, and downstream of, the `PolicyDecision`. The
+> five controls remain the sole source of conformance decisions.
 
-CAS is a **research component**. It must not be presented as a compliance score.
+**There is no composite score.** The Call Authorization Score, its "Verified
+Trust" / "Conditional Trust" tiers and its badges are withdrawn, and nothing
+replaces them under another name.
 
 ## 4. The five controls in detail
 
@@ -539,10 +541,11 @@ disclosure is not flattened into the same bucket as never disclosing:
 
 Measured alongside: first-turn disclosure rate, never-disclosed rate,
 pre-disclosure PHI exposure, escalation honour rate, per-control violations, and
-the CAS distribution by trust tier (≥0.90 Verified · ≥0.75 Conditional · ≥0.50
-Review Required · ≥0.20 Denied/Degraded · below that, Hard Denial).
+the transcription attestation (`measured` / `attested` / `unattested`) that every
+other figure depends on.
 
-**CAS is a routing signal, not a compliance score** (Part II §3.4).
+**No figure is blended into a score** (Part II §3.4). Each control is reported
+against its own denominator.
 
 ### Stage 6 — Gap analysis
 
@@ -556,8 +559,9 @@ a clean result.
 ### Stage 7 — Review
 
 Route findings to human review. `critical` band and any `DENY_DATA` action
-warrant it; CAS below Conditional Trust (0.75) is the reference routing
-threshold.
+warrant it. There is no score-based threshold: the composite score and its tiers
+are withdrawn, and routing is driven by the decision and its reason code
+(`src/dbc01_review_routing.py`).
 
 **Human review is where judgment belongs.** The engine produces deterministic
 findings; whether a finding matters to your organisation is not a question it
@@ -614,7 +618,7 @@ intent. It is a baseline, not an assurance.
 | HTTP API (`/voice/process`, `/debug/replay`) | **Reference implementation** |
 | Shadow pilot kit | **Reference implementation** |
 | NHID-Auth v2 / DLG-01 delegated authority | **Reference implementation**, opt-in |
-| CAS (Call Authorization Score) | **Research component** — must not be presented as a compliance score |
+| ~~CAS (Call Authorization Score)~~ | **Withdrawn.** The composite score, its "Verified Trust" / "Conditional Trust" tiers and its badges are removed, with no successor under any name |
 | TrustLayer / hosted operational platform | **Conceptual.** No public product route, no deployments, no design partners |
 | Load and scale behaviour | **Unknown** — not load-tested |
 
@@ -635,7 +639,7 @@ intent. It is a baseline, not an assurance.
                  │
                  └──►  AuditTrail  ──►  append-only store  ──►  FHIR R4 AuditEvent
                                               │
-                                              └──►  CAS (downstream routing only)
+                                              └──►  human review (routing only)
 ```
 
 Full detail: `SYSTEM_ARCHITECTURE.md`.
@@ -647,7 +651,7 @@ What the engine does **not** do, by design:
 - **No I/O.** `evaluate_all()` performs none. Metrics and persistence are emitted by the caller
 - **No persistence.** It emits an audit trail; storing it is the integrator's job
 - **No enforcement.** It returns an action; executing it is the receiver's job
-- **No scoring.** CAS is downstream
+- **No scoring.** It returns per-control results, never a blended number
 - **No network calls, no clock dependence, no randomness** — this is what makes it deterministic
 
 Determinism is not incidental. It is what makes a conformance suite meaningful
@@ -681,7 +685,7 @@ named vendor.
 4. Violations merge into one `PolicyDecision`
 5. The enforcement ladder selects one action
 6. The audit trail is emitted
-7. CAS is computed downstream, for routing only
+7. Findings may be routed downstream for human review
 
 ## 7. Audit, evidence and provenance
 
@@ -734,7 +738,7 @@ deferred — see `skipped-test-audit.md` for why that is stated explicitly.
 - [ ] Audit trail persisted to an append-only store; persistence failure is detectable **by you**
 - [ ] Upstream call identifier preserved verbatim, or recorded as absent — never a shared placeholder
 - [ ] FHIR AuditEvent emission validated if you export to a payer
-- [ ] CAS used for routing only; never as a compliance verdict
+- [ ] No composite score computed or displayed anywhere in your integration
 - [ ] Conformance suite run against your integration
 
 ---
@@ -971,7 +975,7 @@ committee, working group, or member organisation, and none is implied.
 | Appendix | Contents | Source |
 |---|---|---|
 | **A — Control decision table** | Per-control trigger, pass, fail, evidence, limitation, test coverage, corpus status | `CONTROL_DECISION_TABLE.md` |
-| **B — Enforcement profile** | `PolicyDecision` contract, `PolicyAction` vocabulary, enforcement ladder, consequence matrix, CAS boundary, normative vs reference-implementation split | `enforcement-profile.md` |
+| **B — Enforcement profile** | `PolicyDecision` contract, `PolicyAction` vocabulary, enforcement ladder, consequence matrix, human-review routing boundary, normative vs reference-implementation split | `enforcement-profile.md` |
 | **C — Audit event specification** | Event schema, four event classes, append-only and tamper-evidence requirements, retention, lifecycle | `NHID_AUDIT_EVENT_SPEC_v1.0.md` |
 | **D — FHIR R4 AuditEvent mapping** | Milestone mapping, agent slices, source element, entity slice, required vs optional, code systems, validation, known acceptable warnings, payer ingestion | `fhir-auditevent-mapping.md` |
 | **E — Conformance test suite** | 18 CTS cases | `conformance/nhid_conformance_test_suite_v1.yaml` |

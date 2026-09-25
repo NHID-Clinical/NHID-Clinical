@@ -95,7 +95,7 @@ Three faces, already loaded by the site:
 
 The monospace rule is load-bearing: anything a reader could paste into a
 terminal or grep for in the repository is set in mono. `IDG-01`,
-`IDG01_DISCLOSURE_CONFIRMED`, `nhid_ec_comp_001`, `evaluate_all`, `30/32` — all
+`IDG01_DISCLOSURE_CONFIRMED`, `nhid_ec_comp_001`, `evaluate_all`, `23/32` — all
 mono. Prose describing them is not.
 
 Sizes inside an 880-wide `viewBox`:

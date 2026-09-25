@@ -103,7 +103,7 @@ FHIR R4's `AuditEvent.agent.type` is an extensible binding, which is exactly the
 
 **Current approach:** the AI/human distinction lives in the *behavioral* milestones, not the agent slice — `nhid-identity-disclosure`'s `identity_assertion_text` and the underlying `disclosure_timestamp` are the audit-trail proof that the calling party was AI, because that's the exact fact IDG-01 requires to be spoken and logged. `session.counterparty_type` (`human_operator` | `ai_agent` | `ivr_system` | `unknown`) captures the *other* party's nature for the bot-to-bot stricter-enforcement variant of IDG-01, but is not currently surfaced as a first-class FHIR element.
 
-**Recommended extension (not yet implemented):** an `nhid-participant-kind` extension on `AuditEvent.agent`, bound to a small fixed code set (`human`, `ai-agent`, `ivr-system`, `unknown`), applied to *both* agent slices (the requestor and the destination), so a downstream FHIR consumer can answer "which side(s) of this call were automated?" without parsing `entity.description` free text. This is the single highest-value addition recommended in this document — see the [visuals and graph recommendations](visuals-and-graph-recommendations.md) memo for how this would feed a CAS distribution / bot-to-bot violation dashboard.
+**Recommended extension (not yet implemented):** an `nhid-participant-kind` extension on `AuditEvent.agent`, bound to a small fixed code set (`human`, `ai-agent`, `ivr-system`, `unknown`), applied to *both* agent slices (the requestor and the destination), so a downstream FHIR consumer can answer "which side(s) of this call were automated?" without parsing `entity.description` free text. This is the single highest-value addition recommended in this document — see the [visuals and graph recommendations](visuals-and-graph-recommendations.md) memo for how this would feed a bot-to-bot violation dashboard.
 
 ## 5. NHID extension profile concept (without claiming formal IG conformance)
 
@@ -115,7 +115,6 @@ Candidate extensions for a future `nhid-fhir-extensions` profile bundle:
 | :-- | :-- | :-- |
 | `nhid-participant-kind` | `AuditEvent.agent` | `human` \| `ai-agent` \| `ivr-system` \| `unknown` (§4) |
 | `nhid-execution-context` | `AuditEvent` (top-level) | `pipeline_version`, `policy_engine_version`, `nhid_schema_version` — currently only in the internal log, not the FHIR Bundle |
-| `nhid-cas-score` | `AuditEvent` (the `nhid-call-end` milestone instance) | The numeric CAS score and tier for the call, so the score travels with the audit bundle rather than requiring a separate API call to retrieve it |
 | `nhid-delegation-chain-depth` | `AuditEvent.agent[2]` (principal slice) | Number of hops in the delegation chain that authorized this call (1–3), for payer-side risk scoring of deep chains |
 
 These are proposals, not shipped behavior — none exist in `src/fhir_audit_emitter.py` today. Treat this table as the starting backlog for a `v1.1` extension profile, gated on real downstream-consumer demand rather than speculative completeness.

@@ -51,7 +51,7 @@ EIT-01: 169/171 (98.8%) — Escalation honor verification
 - 26.7% compliant baseline mirrors realistic payer call data
 - Average 5.0 turns/conversation (tighter scenarios)
 - Includes language switching (English/Spanish mid-call)
-- CAS scores (0-100) and risk bands included for each call
+- Carries vendor-supplied `cas_score` / `cas_band` fields. **NHID-Clinical ignores them**: the composite score is withdrawn, and these are the corpus author's values, not a measurement by this framework
 - Metadata: caller_role, agent_type, emotional_state, scenario_type, impersonation_latency_ms
 
 **Validation Status**: ✅ 100% schema-compatible, zero transformation required
@@ -118,7 +118,7 @@ See `staging/README.md` for detailed explanation:
 | Task | Corpus | Why |
 |------|--------|-----|
 | Verify baseline unchanged | CSV (550 convs) | Frozen baseline via check_baseline.py |
-| Run Tier 0 shadow pilot | Shadow Pilot (60 convs) | Fully compatible, includes CAS scores |
+| Run Tier 0 shadow pilot | Shadow Pilot (60 convs) | Fully compatible; its `cas_score` fields are ignored |
 | Combined regression suite | CSV + Shadow (610 convs) | Current production-ready evaluation |
 | Stress test edge cases (future) | Adversarial (staging) | Awaiting schema alignment |
 
