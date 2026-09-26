@@ -22,8 +22,21 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKIP_DIRS = {"_site", "node_modules", ".git", "simulator", "webplatform"}
 
 
+SITE_DIR = os.path.join(REPO_ROOT, "site")
+
+
 def read(rel):
-    with open(os.path.join(REPO_ROOT, rel), encoding="utf-8") as f:
+    """Read a repository file, preferring the site/ copy.
+
+    The static site moved under site/ so the repository root reads as the
+    framework it is (src/, tests/, specs/, conformance/, adapters/). Resolving
+    here rather than at every call site keeps the page names in this file the
+    same as the routes they are published at: "index.html", not
+    "site/index.html".
+    """
+    site_path = os.path.join(SITE_DIR, rel)
+    path = site_path if os.path.exists(site_path) else os.path.join(REPO_ROOT, rel)
+    with open(path, encoding="utf-8") as f:
         return f.read()
 
 
@@ -226,7 +239,11 @@ RETIRED_ROUTES = (
 
 def test_the_published_set_is_what_the_build_emits():
     """Guards the list below against drifting away from the real site."""
-    missing = [p for p in PUBLISHED if not os.path.exists(os.path.join(REPO_ROOT, p))]
+    missing = [
+        p for p in PUBLISHED
+        if not os.path.exists(os.path.join(SITE_DIR, p))
+        and not os.path.exists(os.path.join(REPO_ROOT, p))
+    ]
     assert not missing, f"published pages missing from the repository: {missing}"
 
 

@@ -25,8 +25,10 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-DEV = (ROOT / "developers.html").read_text(encoding="utf-8")
-EVID = (ROOT / "evidence-pack.html").read_text(encoding="utf-8")
+# The static site lives under site/; the framework sits at the repository root.
+SITE = ROOT / "site"
+DEV = (SITE / "developers.html").read_text(encoding="utf-8")
+EVID = (SITE / "evidence-pack.html").read_text(encoding="utf-8")
 CSS = (ROOT / "assets" / "css" / "components.css").read_text(encoding="utf-8")
 CLAIMS = (ROOT / "docs" / "claim-boundaries.md").read_text(encoding="utf-8")
 STATE = (ROOT / "docs" / "project-state.md").read_text(encoding="utf-8")

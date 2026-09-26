@@ -43,3 +43,6 @@ _internal/
 *.egg-info/
 build/
 dist/
+
+# Agent tooling: local prompts and settings, not part of the framework
+.claude/

@@ -30,6 +30,8 @@ from scripts.generate_feed import (
 
 ATOM = {"a": "http://www.w3.org/2005/Atom"}
 REPO_ROOT = Path(__file__).resolve().parent.parent
+# The static site lives under site/; the framework sits at the repository root.
+SITE = REPO_ROOT / "site"
 
 
 @pytest.fixture(scope="module")
@@ -166,14 +168,14 @@ def test_check_mode_returns_zero_when_current():
 
 def test_the_retired_news_route_still_redirects():
     """news.html is a stub now; it must still resolve rather than 404."""
-    stub = (REPO_ROOT / "news.html").read_text(encoding="utf-8")
+    stub = (SITE / "news.html").read_text(encoding="utf-8")
     assert 'http-equiv="refresh"' in stub, "news.html should be a redirect stub"
     assert 'rel="canonical"' in stub
 
 
 def test_key_pages_carry_the_discovery_link():
     for page in ("index.html", "faq.html", "developers.html"):
-        s = (REPO_ROOT / page).read_text(encoding="utf-8")
+        s = (SITE / page).read_text(encoding="utf-8")
         assert 'type="application/atom+xml"' in s, f"{page} lacks feed discovery"
 
 

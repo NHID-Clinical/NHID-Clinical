@@ -146,7 +146,12 @@ def _visible_text(path: Path) -> str:
 
 
 def _load(surface: str) -> str | None:
-    p = Path(surface)
+    # Site pages live under site/; specs/ and docs/ stayed at the repository
+    # root. Resolve rather than assume, so AUTHORITATIVE keeps naming surfaces
+    # by the route a reader reaches them at.
+    p = Path("site") / surface
+    if not p.exists():
+        p = Path(surface)
     if not p.exists():
         return None
     if p.suffix == ".pdf":
