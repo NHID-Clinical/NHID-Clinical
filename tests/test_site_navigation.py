@@ -190,6 +190,7 @@ def test_stylesheet_is_structurally_intact(sheet):
 # Everything else either redirects or is not built at all.
 PUBLISHED = (
     "index.html",
+    "about.html",
     "specification.html",
     "shadow-evaluation-guide.html",
     "developers.html",
@@ -212,7 +213,10 @@ PUBLISHED = (
 # retired, which would have made the guard silently useless.
 RETIRED_ROUTES = (
     "/simulator.html", "/docs.html",
-    "/about.html", "/technical-stack.html",
+    # /about.html is deliberately absent: it was un-retired and is a real,
+    # published page again. The redirect to the /#about fragment left the
+    # project with no indexable page about itself or its author.
+    "/technical-stack.html",
     "/for-payers.html", "/script-examples.html", "/demo.html",
     "/interoperability.html", "/registry.html",
     "/roadmap.html", "/news.html", "/community.html",

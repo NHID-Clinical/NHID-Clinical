@@ -160,12 +160,12 @@ all four.
 
 | Evidence body | What it measures | Result | Date |
 |---|---|---|---|
-| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1116 collected · 1116 executed · 1116 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `e68a65d` |
+| **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1119 collected · 1119 executed · 1119 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `e68a65d` |
 | **Fabricate Battle-Test Corpus** | Detection against 550 real-world voice AI conversations, 127 of them compliant | IDG-01 70/70 · PDX-01 41/41 · DBC-01 183/200 (91.5%) · EIT-01 169/171 (98.8%). False positives on clean conversations: 0, 0, 5, 5 of 127 | CI-gated, unchanged |
 | **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **23 of 32 = 71.9%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
 
-**These are four different denominators.** 1116/1116 is a *test pass rate*, not
+**These are four different denominators.** 1119/1119 is a *test pass rate*, not
 a detection rate. 71.9% is a *detection rate*, not a test pass rate. Neither is
 an accuracy figure for the framework as a whole.
 
@@ -752,7 +752,7 @@ produce a number that describes nothing.
 
 | Body | Population | Question it answers |
 |---|---|---|
-| **Conformance suite** | 1116 tests | Does the implementation behave as specified? |
+| **Conformance suite** | 1119 tests | Does the implementation behave as specified? |
 | **Fabricate Battle-Test Corpus** | 550 real conversations, 127 compliant | Does it detect violations in real-world phrasing? |
 | **Governance Evaluation Corpus** | 25 scenarios, 55 turns | Does it detect labelled governance conditions? |
 | **Adversarial corpus** | 40 hostile scenarios | Does it survive deliberate evasion? |
@@ -782,9 +782,9 @@ detection rate and not an accuracy figure.
 
 | | |
 |---|---|
-| **Collected** | 1116 |
-| **Executed** | 1116 |
-| **Passed** | 1116 |
+| **Collected** | 1119 |
+| **Executed** | 1119 |
+| **Passed** | 1119 |
 | **Failed / skipped / xfailed / xpassed** | 0 / 0 / 0 / 0 |
 | **Verified** | fresh clone at `e68a65d`, fresh virtualenv, `requirements.txt` only, live API |
 

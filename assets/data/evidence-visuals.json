@@ -104,8 +104,8 @@
       {
         "name": "Conformance suite",
         "measures": "Implementation correctness against the specification",
-        "size": "1116 tests",
-        "result": "1116/1116 passing, 0 skipped, 0 xfailed",
+        "size": "1119 tests",
+        "result": "1119/1119 passing, 0 skipped, 0 xfailed",
         "rate": 100.0,
         "source": "tests/",
         "command": "python -m pytest tests/ -q"
@@ -144,5 +144,5 @@
     },
     "reading_note": "expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval."
   },
-  "source_commit": "78dfc31"
+  "source_commit": "72f1058"
 }

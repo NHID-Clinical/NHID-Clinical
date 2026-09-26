@@ -1,14 +1,349 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta http-equiv="refresh" content="0; url=/#about">
-  <link rel="canonical" href="https://nhid-clinical.org/#about">
-  <title>Redirecting…</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="NHID-Clinical — Non-Human Identity Disclosure — is an independent, open AI governance framework for non-human actors operating under delegated authority across healthcare organizational boundaries. Created and maintained by Brianna Baynard."/>
+  <title>About NHID-Clinical | Non-Human Identity Disclosure for Healthcare Voice AI</title>
+  <link rel="canonical" href="https://nhid-clinical.org/about.html"/>
+  <meta name="author" content="Brianna Baynard"/>
+  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
+
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="NHID-Clinical"/>
+  <meta property="og:url" content="https://nhid-clinical.org/about.html"/>
+  <meta property="og:title" content="About NHID-Clinical — Non-Human Identity Disclosure for Healthcare Voice AI"/>
+  <meta property="og:description" content="An independent, open governance framework for non-human actors operating under delegated authority across healthcare organizational boundaries. Created by Brianna Baynard."/>
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:title" content="About NHID-Clinical — Non-Human Identity Disclosure for Healthcare Voice AI"/>
+  <meta name="twitter:description" content="An independent, open governance framework for non-human actors operating under delegated authority across healthcare organizational boundaries."/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/components.css"/>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
+
+  <!--
+    Structured data. The point of this block is to state relationships that a
+    reader infers from prose but a machine cannot: that Brianna Baynard created
+    NHID-Clinical, that NHID-Clinical is about non-human identity and delegated
+    authority for healthcare voice AI, and that "Impersonation Latency" is this
+    project's own term rather than an established one.
+
+    Deliberate choices:
+      * SoftwareSourceCode, not SoftwareApplication. This is a reference
+        implementation, not a deployable product with users.
+      * Person, not Organization. There is no legal entity to describe; the work
+        belongs to an individual, and binding it to her is both accurate and the
+        stronger signal.
+      * No hasCredential, no worksFor, no alumniOf. Not asserting what is not
+        needed here.
+      * DefinedTerm carries the non-claims in its own description, so the term
+        cannot be lifted out of context as a broader claim than it is.
+  -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://nhid-clinical.org/about.html#brianna-baynard",
+        "name": "Brianna Baynard",
+        "alternateName": "Brianna Nicole Baynard-Malone",
+        "jobTitle": "AI Governance and Security Researcher",
+        "description": "Creator and maintainer of NHID-Clinical, an independent governance framework for non-human identity, disclosure and delegated authority for AI voice agents operating across healthcare organizational boundaries. Background in healthcare payer operations.",
+        "knowsAbout": [
+          "Non-human identity",
+          "AI agent disclosure",
+          "Delegated authority",
+          "AI agent authorization",
+          "Healthcare voice AI governance",
+          "Healthcare payer operations"
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/in/brianna-baynard",
+          "https://github.com/NHID-Clinical"
+        ]
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://nhid-clinical.org/#framework",
+        "name": "NHID-Clinical",
+        "alternateName": "Non-Human Identity Disclosure — Clinical",
+        "description": "An independent, open AI governance framework for disclosed non-human actors operating under delegated authority across healthcare organizational boundaries. A voluntary proposal, not a standard or certification.",
+        "codeRepository": "https://github.com/NHID-Clinical/NHID-Clinical",
+        "programmingLanguage": "Python",
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "version": "1.3",
+        "url": "https://nhid-clinical.org/",
+        "author": { "@id": "https://nhid-clinical.org/about.html#brianna-baynard" },
+        "maintainer": { "@id": "https://nhid-clinical.org/about.html#brianna-baynard" },
+        "about": [
+          { "@type": "Thing", "name": "Non-human identity" },
+          { "@type": "Thing", "name": "AI agent disclosure" },
+          { "@type": "Thing", "name": "Delegated authority" },
+          { "@type": "Thing", "name": "AI agent authorization" },
+          { "@type": "Thing", "name": "Healthcare voice AI" }
+        ]
+      },
+      {
+        "@type": "DefinedTerm",
+        "@id": "https://nhid-clinical.org/about.html#impersonation-latency",
+        "name": "Impersonation Latency",
+        "description": "The elapsed interval between interaction start and the point at which a non-human actor discloses its non-human identity to the human recipient. Measures disclosure timing only. It does not establish that impersonation occurred, determine intent, detect an impersonator, prevent impersonation, establish authentication, or establish authorization. Terminology originating with NHID-Clinical; not an established industry term.",
+        "inDefinedTermSet": {
+          "@type": "DefinedTermSet",
+          "name": "NHID-Clinical terminology",
+          "url": "https://nhid-clinical.org/about.html#terminology"
+        },
+        "creator": { "@id": "https://nhid-clinical.org/about.html#brianna-baynard" }
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": "https://nhid-clinical.org/about.html",
+        "url": "https://nhid-clinical.org/about.html",
+        "name": "About NHID-Clinical",
+        "mainEntity": { "@id": "https://nhid-clinical.org/about.html#brianna-baynard" },
+        "about": { "@id": "https://nhid-clinical.org/#framework" },
+        "isPartOf": { "@id": "https://nhid-clinical.org/#website" }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://nhid-clinical.org/#website",
+        "url": "https://nhid-clinical.org/",
+        "name": "NHID-Clinical",
+        "publisher": { "@id": "https://nhid-clinical.org/about.html#brianna-baynard" }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
-  <script>window.location.replace("/#about");</script>
-  <p>This page has moved to <a href="/#about">NHID-Clinical</a>.</p>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="status-strip">
+  <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · not an accredited standard, certification, or regulatory requirement · seeking shadow-evaluation partners</span>
+</div>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+        <small>A Behavioral Baseline for Healthcare Voice AI</small>
+      </span>
+    </a>
+    <div class="nav-links">
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Framework <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/specification.html">Specification (v1.3)</a>
+          <a href="/regulatory-alignment.html">Regulatory alignment</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">Evidence <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/evidence-pack.html">Evidence pack</a>
+          <a href="/shadow-evaluation-guide.html">Shadow evaluation guide</a>
+        </div>
+      </div>
+      <a href="/developers.html">Developers</a>
+      <a href="/specs/">Downloads</a>
+      <a href="/about.html">About</a>
+      <a href="/faq.html">FAQ</a>
+      <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+      <a class="primary-pill" href="/shadow-evaluation-guide.html">Run a shadow evaluation</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <strong class="mobile-nav-group">Framework</strong>
+  <a href="/specification.html">Specification (v1.3)</a>
+  <a href="/regulatory-alignment.html">Regulatory alignment</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
+  <strong class="mobile-nav-group">Evidence</strong>
+  <a href="/evidence-pack.html">Evidence pack</a>
+  <a href="/shadow-evaluation-guide.html">Shadow evaluation guide</a>
+  <strong class="mobile-nav-group">Build</strong>
+  <a href="/developers.html">Developers</a>
+  <a href="/specs/">Downloads</a>
+  <strong class="mobile-nav-group">More</strong>
+  <a href="/about.html">About</a>
+  <a href="/faq.html">FAQ</a>
+  <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
+  <div class="mobile-nav-footer">
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main id="main" class="scope-note">
+  <section class="inner-hero hero-band" style="position:relative;overflow:clip">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container" style="position:relative;z-index:1">
+      <div class="crumbs"><a href="/">Home</a><span>/</span><span>About</span></div>
+      <h1 class="reveal page-heading">About NHID-Clinical</h1>
+      <p class="lede reveal lede-text">An independent, open AI governance framework for disclosed non-human actors
+        operating under delegated authority across healthcare organizational boundaries.</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container" style="max-width:820px">
+
+      <div class="card" style="line-height:1.7">
+        <h2>What NHID-Clinical is</h2>
+        <p><strong>NHID stands for Non-Human Identity Disclosure.</strong> NHID-Clinical is an
+          independent, open governance framework for non-human actors — AI voice agents — that
+          operate under delegated authority and cross the boundary between healthcare
+          organizations.</p>
+        <p>It applies at one specific moment: when an AI voice agent acting for one healthcare
+          organization contacts another. A provider's agent calling a payer about eligibility,
+          claim status, or prior authorization. The model behind that agent, its training and its
+          clinical reasoning sit inside the organization that runs it, and are explicitly outside
+          this framework's scope. NHID-Clinical applies at the crossing.</p>
+      </div>
+
+      <div class="card" style="line-height:1.7;margin-top:1.25rem">
+        <h2 id="five-questions">The five questions at the boundary</h2>
+        <p>At that crossing, the framework asks five questions of the interaction:</p>
+        <ol>
+          <li><strong>Who is this agent?</strong> — identity of the non-human actor</li>
+          <li><strong>Who authorized it?</strong> — the delegating organization, and the authority it granted</li>
+          <li><strong>What scope does it hold?</strong> — the bounds of that authority, and whether they narrow across hops</li>
+          <li><strong>Did it disclose that it is automated?</strong> — and before or after protected data was exchanged</li>
+          <li><strong>What record exists of what happened?</strong> — an auditable trail the receiving organization can review</li>
+        </ol>
+        <p><em>Who authorized the agent?</em> is the question the framework is organized around. A
+          disclosed agent may still be unauthorized; an undisclosed one may be perfectly
+          authorized. The two are separate properties, and the framework keeps them separate.</p>
+      </div>
+
+      <div class="card" style="line-height:1.7;margin-top:1.25rem">
+        <h2>Who created it</h2>
+        <p>NHID-Clinical was created and is maintained by <strong>Brianna Baynard</strong>, an
+          independent AI governance and security researcher (AIGP, ISC² CC).</p>
+        <p>It grew out of healthcare payer operations. She worked live eligibility, claims and
+          prior-authorization phone lines, and was on the receiving end of hundreds of calls from
+          AI voice agents acting for provider offices — including agents that disclosed their
+          automated status only after protected health information had been exchanged, or not at
+          all. NHID-Clinical documents those failure patterns and defines a testable baseline for
+          addressing them.</p>
+        <p><a href="https://www.linkedin.com/in/brianna-baynard" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          · <a href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub</a>
+          · <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a></p>
+      </div>
+
+      <div class="card" style="line-height:1.7;margin-top:1.25rem">
+        <h2 id="terminology">Terminology: what is ours and what is not</h2>
+        <p>Some of the vocabulary here originates with this project. Some is established work this
+          project composes with. The distinction matters, so it is stated rather than blurred.</p>
+        <h3>Originating with NHID-Clinical</h3>
+        <p><strong>Impersonation Latency</strong> — the elapsed interval between interaction start
+          and the point at which a non-human actor discloses its non-human identity to the human
+          recipient. Reported in seconds and in conversational turns, with turns as the normative
+          unit.</p>
+        <p>It measures <em>disclosure timing only</em>. It does not establish that impersonation
+          occurred, determine intent, detect an impersonator, prevent impersonation, establish
+          authentication, or establish authorization. Disclosure is observed through a transcript,
+          so a reported figure is only as accurate as the transcription path that produced it.</p>
+        <p><strong>This is not an established industry term.</strong> It is this project's name for
+          a specific measurable interval, and it should not be presented as standard vocabulary.</p>
+        <h3>Established work, not ours</h3>
+        <p>Delegated authority, agent identity, and scope attenuation are prior art. This project
+          did not invent them; it applies them to a healthcare-specific case and is designed to
+          compose with authenticated-delegation approaches and with SPIFFE/OAuth-style stacks.</p>
+      </div>
+
+      <div class="card" style="line-height:1.7;margin-top:1.25rem">
+        <h2 id="what-it-is-not">What NHID-Clinical is not</h2>
+        <p>Stated plainly, because governance work attracts the assumption of authority it has not
+          earned:</p>
+        <ul>
+          <li>It is <strong>not a standard</strong>. No standards body has adopted it and no formal standards process has started.</li>
+          <li>It is <strong>not a certification</strong>, a badge, a licence or a credential. It certifies nothing and no one.</li>
+          <li>It is <strong>not a regulatory requirement</strong>, and not an officially endorsed framework of any agency.</li>
+          <li>It is <strong>not HIPAA-compliant software</strong> and confers no compliance status. It is mapped to NIST AI RMF and ISO/IEC 42001, and designed to support the disclosure obligation described in EU AI Act Article 50(1) — <strong>mapped, not certified</strong>.</li>
+          <li>It is <strong>not production-ready infrastructure</strong>. It is a reference implementation.</li>
+          <li>It has <strong>no adopters, customers, pilots or completed audits</strong>. Shadow-evaluation partners are being sought; none is claimed.</li>
+          <li>It is <strong>not a clinical safety system</strong> and does not govern models, bias, or clinical reasoning.</li>
+        </ul>
+        <p>NHID-Clinical was submitted as a <strong>public comment</strong> to NIST
+          (<a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a>).
+          A public comment is a submission to a docket. It is not adoption, endorsement, or
+          approval by NIST, and should not be read as any of those.</p>
+        <p>The project's own boundary on what may and may not be claimed is kept in the repository
+          as <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>,
+          and a test fails if the documentation and that file ever disagree.</p>
+      </div>
+
+      <div class="card" style="line-height:1.7;margin-top:1.25rem">
+        <h2>Licensing</h2>
+        <p>Code is Apache-2.0. The specification and documentation are CC BY 4.0. Both are
+          published openly, and criticism of the framework is more useful to it than adoption of
+          it.</p>
+        <p><a href="/specification.html">Read the specification (v1.3)</a> ·
+          <a href="/developers.html">Technical reference</a> ·
+          <a href="/faq.html">What is still open</a></p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
+    <div>
+      <a href="/about.html">About</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://nhid-clinical.org">nhid-clinical.org</a>
+      <a href="https://www.linkedin.com/in/brianna-baynard" target="_blank" rel="noopener noreferrer">Maintainer on LinkedIn</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
 </body>
 </html>
