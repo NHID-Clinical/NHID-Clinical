@@ -1,15 +1,8 @@
 #!/usr/bin/env bash
 # Assemble a slim GitHub Pages artifact — static site files only, no Python/tests/fixtures.
-#
-# The site sources live under site/. The repository root holds the framework
-# (src/, tests/, specs/, conformance/, adapters/), so the two are not
-# interleaved. assets/, content/ and specs/ stay at the root because they are
-# repository artifacts the site merely publishes, and their published URLs
-# (/assets/..., /specs/...) are unchanged by that.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-SITE="$ROOT/site"
 OUT="$ROOT/_site"
 
 rm -rf "$OUT"
@@ -50,7 +43,7 @@ RETIRED_PAGES=(
 )
 
 shopt -s nullglob
-for f in "$SITE"/*.html; do
+for f in "$ROOT"/*.html; do
   skip=""
   for r in "${RETIRED_PAGES[@]}"; do
     [[ "$(basename "$f")" == "$r" ]] && skip=1
@@ -61,8 +54,8 @@ done
 shopt -u nullglob
 
 for f in site.js nhid-clinical-ui.css CNAME .nojekyll robots.txt sitemap.xml feed.xml; do
-  if [[ -f "$SITE/$f" ]]; then
-    cp "$SITE/$f" "$OUT/"
+  if [[ -f "$ROOT/$f" ]]; then
+    cp "$ROOT/$f" "$OUT/"
   fi
 done
 
@@ -84,23 +77,16 @@ copy_tree "$ROOT/assets" "$OUT/assets" \
 # alignment/ retired: four stubs totalling 195 words across four routes, now
 # sections of regulatory-alignment.html.
 
-copy_tree "$SITE/conformance" "$OUT/conformance" \
+copy_tree "$ROOT/conformance" "$OUT/conformance" \
   --exclude='*.pdf' \
   --exclude='*.zip' \
   --exclude='__pycache__' \
   --exclude='.DS_Store'
 
-# The test suite itself stays in conformance/ at the repository root, with the
-# engine it tests -- but it was already published at
-# /conformance/nhid_conformance_test_suite_v1.yaml, and evidence-pack.html cites
-# that path. Keep publishing it so the URL does not start 404ing.
-mkdir -p "$OUT/conformance"
-cp "$ROOT/conformance/nhid_conformance_test_suite_v1.yaml" "$OUT/conformance/"
-
 # framework/: index, controls, conformance-suite and reference-implementation
 # are merged into index.html, specification.html, evidence-pack.html and
 # developers.html respectively. Only nhid-auth.html remains a route.
-copy_tree "$SITE/framework" "$OUT/framework" \
+copy_tree "$ROOT/framework" "$OUT/framework" \
   --exclude='index.html' \
   --exclude='controls.html' \
   --exclude='conformance-suite.html' \

@@ -18,9 +18,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-# The static site lives under site/; the framework sits at the repository root.
-SITE = ROOT / "site"
-SPEC = (SITE / "specification.html").read_text(encoding="utf-8")
+SPEC = (ROOT / "specification.html").read_text(encoding="utf-8")
 CSS = (ROOT / "assets" / "css" / "components.css").read_text(encoding="utf-8")
 
 BEHAVIOURAL = ("IDG-01", "PDX-01", "DBC-01", "EIT-01")
