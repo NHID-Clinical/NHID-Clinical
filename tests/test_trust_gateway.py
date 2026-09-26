@@ -24,11 +24,9 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-# The static site lives under site/; the framework sits at the repository root.
-SITE = ROOT / "site"
-SPEC = (SITE / "specification.html").read_text(encoding="utf-8")
+SPEC = (ROOT / "specification.html").read_text(encoding="utf-8")
 CSS = (ROOT / "assets" / "css" / "components.css").read_text(encoding="utf-8")
-JS = (SITE / "site.js").read_text(encoding="utf-8")
+JS = (ROOT / "site.js").read_text(encoding="utf-8")
 FIXTURE = ROOT / "assets" / "data" / "gateway-trace.json"
 
 BEGIN = "<!-- BEGIN GENERATED trust-gateway -->"
@@ -188,7 +186,7 @@ def test_the_other_control_component_also_states_its_provenance():
 
     What must never happen is either component going unlabelled.
     """
-    dev = (SITE / "developers.html").read_text(encoding="utf-8")
+    dev = (ROOT / "developers.html").read_text(encoding="utf-8")
     assert "src/nhid_policy_engine_v1.py :: evaluate_all" in dev, (
         "the front-desk walkthrough no longer names the engine its output "
         "comes from"

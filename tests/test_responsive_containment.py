@@ -18,9 +18,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-# The static site lives under site/; the framework sits at the repository root.
-SITE = ROOT / "site"
-UI_CSS = (SITE / "nhid-clinical-ui.css").read_text(encoding="utf-8")
+UI_CSS = (ROOT / "nhid-clinical-ui.css").read_text(encoding="utf-8")
 COMPONENTS_CSS = (ROOT / "assets" / "css" / "components.css").read_text(encoding="utf-8")
 
 
@@ -117,7 +115,7 @@ def test_the_consent_row_uses_the_named_component():
     the label or its text. Naming it moved the fix into the design system, where
     the next page to use a checkbox-plus-copy row inherits it.
     """
-    page = (SITE / "sms-opt-in.html").read_text(encoding="utf-8")
+    page = (ROOT / "sms-opt-in.html").read_text(encoding="utf-8")
     assert 'class="consent-row"' in page
     assert 'class="consent-copy"' in page
     assert "display:flex;gap:.6rem;align-items:flex-start" not in page, (

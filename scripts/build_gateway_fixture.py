@@ -37,8 +37,6 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-# The static site lives under site/; the framework sits at the repository root.
-SITE = ROOT / "site"
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -52,7 +50,7 @@ from synthetic_eval_loop import (  # noqa: E402
 
 CORPUS = ROOT / "tests" / "evaluation_corpus_v1.json"
 OUT = ROOT / "assets" / "data" / "gateway-trace.json"
-PAGE = SITE / "specification.html"
+PAGE = ROOT / "specification.html"
 BEGIN = "<!-- BEGIN GENERATED trust-gateway -->"
 END = "<!-- END GENERATED trust-gateway -->"
 

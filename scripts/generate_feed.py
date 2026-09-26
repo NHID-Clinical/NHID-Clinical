@@ -45,11 +45,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-# The static site lives under site/; the framework sits at the repository root.
-# Named SITE_DIR because SITE below is the public base URL, not a path.
-SITE_DIR = ROOT / "site"
 RELEASE_HISTORY = ROOT / "docs" / "release-history.md"
-FEED_XML = SITE_DIR / "feed.xml"
+FEED_XML = ROOT / "feed.xml"
 
 SITE = "https://nhid-clinical.org"
 FEED_URL = f"{SITE}/feed.xml"
