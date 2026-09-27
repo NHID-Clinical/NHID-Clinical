@@ -679,6 +679,21 @@ p { margin: 0; }
   border-bottom-color: rgba(30, 60, 100, 0.7);
 }
 
+/* The mark needs two files where the old PNG needed one.
+   That PNG was a glass render whose rim light carried it against any ground.
+   Its SVG equivalent, logo-mark-rich.svg, fills the left slab and the signal
+   dot with near-black navy (#0a1a30) — within a few points of this header's
+   own background, so both shapes all but vanish in dark mode.
+   logo-mark-dark.svg is the same geometry with those tones lifted, which is
+   exactly what it was drawn for. */
+[data-theme="dark"] .brand-mark {
+  background-image: url("/assets/brand/logo-mark-dark.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+[data-theme="dark"] .brand-mark img { display: none; }
+
 [data-theme="dark"] .brand strong { color: var(--ink); }
 [data-theme="dark"] .brand small  { color: #5a7a96; }
 
