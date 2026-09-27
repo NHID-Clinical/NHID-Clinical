@@ -6,7 +6,6 @@
   <meta name="description" content="NHID-Clinical Evidence Pack — system behavior guarantees, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
   <title>Evidence Pack | NHID-Clinical</title>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
-  <link rel="icon" href="/assets/brand-icon.png" type="image/png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -46,7 +45,7 @@
 <header class="site-header">
   <nav class="container nav" aria-label="Primary navigation">
     <a class="brand" href="/" aria-label="NHID-Clinical home">
-      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand-icon.png" alt="NHID-Clinical" /></span>
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand/logo-mark-rich.svg" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
         <small>A Behavioral Baseline for Healthcare Voice AI</small>
@@ -302,8 +301,8 @@
           </tr>
           <tr>
             <th scope="row">Conformance suite<span class="sc-measures">Implementation correctness against the specification</span></th>
-            <td class="sc-size">1116 tests</td>
-            <td>1116/1116 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
+            <td class="sc-size">1119 tests</td>
+            <td>1119/1119 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
             <td><code>python -m pytest tests/ -q</code><span class="sc-src">tests/</span></td>
           </tr>
           </tbody>
@@ -312,7 +311,7 @@
 
       <aside class="visual-provenance">
         <p><strong>Separation:</strong> Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>78dfc31</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>72f1058</code></p>
       </aside>
       <!-- END GENERATED evidence-scorecard -->
 

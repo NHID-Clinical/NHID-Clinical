@@ -29,12 +29,17 @@ copy_tree() {
 #                              framework for attention, and a Swagger page whose
 #                              bundle loads from a CDN and renders nothing when
 #                              that fails.
+#
+# about.html is no longer retired: it is a real page again. It was a redirect
+# to the /#about fragment, which is not an indexable document, so the project
+# had no page whose subject is the project and its author.
+#
 #   the rest                   merged into canonical destinations by the IA
 #                              consolidation (docs/ia-disposition.md Part 4).
 #                              Their content moved; only the routes are gone.
 RETIRED_PAGES=(
   simulator.html docs.html
-  about.html technical-stack.html
+  technical-stack.html
   for-payers.html script-examples.html demo.html
   interoperability.html registry.html
   roadmap.html news.html community.html
