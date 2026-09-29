@@ -183,121 +183,29 @@ An honest maturity snapshot. NHID-Clinical is a working reference implementation
 
 This is a voluntary framework — **not an accredited standard, certification, or regulatory requirement.**
 
-## Phase 5 & Architecture Review Findings
+> **Earlier review.** A dated architecture review and evidence-hardening sprint from
+> July 2026 — detection rates, readiness gaps, and the corpus work — is preserved in
+> [`docs/review-2026-07-30.md`](docs/review-2026-07-30.md). Its figures were measured
+> against a control tier since withdrawn, so it is history rather than current state.
 
-> **Historical record — July 30, 2026.** This section and the Phase 6 section
-> below are preserved as dated findings from that review. They are *not* a
-> current description of the engine. DBC-01's acoustic-artifact tier, which the
-> detection figures below were measured against, was **withdrawn** in the v1.3
-> scope corrections: it read a `deceptive_artifact_flags` field out of the event
-> payload, which the agent under evaluation supplied about itself. The control
-> now evaluates the agent's own identity assertion text. For current figures see
-> [Status](#status) above and the [corpus remediation
-> record](docs/governance-corpus-remediation.md).
+## The five controls (v1.3)
 
-**Date**: July 30, 2026 | **Status**: Reference implementation validated; production readiness assessment complete
+| | Control | Requirement |
+| :--: | :--- | :--- |
+| 🪪 | **IDG-01** · Identity Disclosure Gate | Disclose non-human identity **before** any PHI exchange |
+| 🔒 | **PDX-01** · Pre-Data Exchange Gate | No protected data until identity is disclosed |
+| 🎭 | **DBC-01** · Deceptive Behavior Check | No claim of human status or licensed-professional standing, judged on the agent's own identity assertion |
+| 🙋 | **EIT-01** · Escalation Implementation Test | A human handoff path that exists and is honored on request |
+| 📜 | **ATR-01** · Audit Trail | Every call produces a machine-readable trace |
 
-### Validation Results
+Plus **DLG-01**, opt-in: verifies a cryptographically signed, scoped delegation and
+constrains what protected data an agent may request.
 
-Phase 5 targeted-edge-case testing (15 healthcare scenarios) confirmed heuristic boundaries of the v1.3 engine:
+Each returns one of four results — `pass`, `exception`, `unknown`, `not_assessable`.
+The last two exist because forcing a binary verdict onto an interaction that cannot
+support one is how a governance record becomes fiction.
 
-| Control | Detection Rate | Status | Finding |
-|---------|---|---|---|
-| **IDG-01** (identity disclosure) | 87.5% baseline → 20% on vague disclosures | ⚠️ Acceptable for v1.3 | Engine validates presence not quality; "authorization system" passes as valid disclosure. Semantic validation deferred to Phase 2. |
-| **PDX-01** (PHI timing) | 100% (within scope) | ✅ Solid | Timing gate working correctly. v1.3 design intentionally excludes turn-0 post-disclosure probes. |
-| **DBC-01** (deception detection) | 80% baseline → 40% on subtle patterns | ⚠️ Heuristic ceiling | Keyword-only heuristics catch explicit role claims ("specialist") but miss pragmatic contradictions (promise→deflect) and implicit patterns (deliberate pauses). Multi-turn analysis deferred to Phase 2. |
-| **EIT-01** (escalation path) | 100% | ✅ Solid | Phase 4 engine fix stable; escalation outcome checks fire independent of current-turn speech. |
-
-**Conclusion**: v1.3 engine is **internally consistent and deterministic**. Baseline capabilities (IDG-01 presence, PDX-01 timing, EIT-01 escalation) are production-ready. DBC-01 and IDG-01 quality gaps are documented and scoped to Phase 2 ML/NLP enhancement.
-
-### Production Readiness Assessment
-
-**Current maturity level**: Internal Tool / Proof of Concept with Live Infrastructure  
-**Not yet**: Limited Pilot (operational readiness required)
-
-**Critical gaps blocking release** (4–6 weeks remediation required):
-1. 🔒 **Security assessment** — Input validation, encryption, attack surface untested
-2. ⏱️ **Load testing** — Scalability and latency under concurrent requests unknown
-3. 👁️ **Monitoring & observability** — Production visibility, alerting, incident runbook missing
-4. 🏥 **HIPAA compliance** — Business Associate Agreement, Data Processing Agreement not drafted
-5. 📋 **Audit trail specification** — Format, retention, immutability, access control undefined
-6. 🔑 **Authentication & authorization** — API key rotation, rate limiting, per-customer isolation untested
-
-**Known limitations (documented)**: DBC-01 @ 40% on subtle deception, IDG-01 @ 20% on vague disclosure. Both deferred to Phase 2 ML/NLP work. IDG-01 and PDX-01 baseline (presence + timing gate) remain stable and suitable for pilot.
-
-**Recommendation**: Do not release to GA. See the [**Enforcement Profile**](docs/enforcement-profile.md) for detailed control decision criteria and receiver actions.
-
-<sub>The July 2026 review also carried a customer count and a week-by-week timeline to general availability. Both were projections, neither was met, and no pilot, customer or deployment exists today — so they are not restated here.</sub>
-
-See **[NHID Audit Event Spec](docs/NHID_AUDIT_EVENT_SPEC_v1.0.md)** and **[Metrics & Observability](docs/NHID_METRICS_AND_OBSERVABILITY_v1.md)** for full technical specifications.
-
----
-
-## Phase 6: Evidence Hardening Sprint (Complete)
-
-**Date**: July 30, 2026 | **Status**: Evidence package complete (2–3 week sprint, ~57 hours)
-
-### Deliverables
-
-Instead of 4–6 week enterprise hardening, Phase 6 focused on credibility evidence for pilot evaluation and portfolio demonstration:
-
-| Item | Deliverable | Status | Purpose |
-|------|---|---|---|
-| **1** | **Governance Evaluation Corpus v1.0** | ✅ Complete | 25 healthcare scenarios (5 compliant + 10 single-rule + 10 multi-rule), 55 turns; demonstrates rule-combination coverage |
-| **2** | **Detection Rate Report** | ✅ Complete | 71.9% aggregate detection (23/32 violations); 0% false-positive rate (0 of 5 compliant scenarios); per-rule accuracy breakdown |
-| **3** | **NHID Audit Event Spec v1.0** | ✅ Complete | Formal audit trail schema, immutability requirements (append-only + hash chain options), 7-year retention, compliance mappings (HIPAA §164.312b) |
-| **4** | **Metrics & Observability v1.0** | ✅ Complete | 6 metric categories, CloudWatch integration, pilot dashboard layout, alert thresholds, weekly reporting template |
-| **5** | **Architecture Overview (Pilot-Ready)** | ✅ Complete | 10-minute executive brief for security architects; governance statement for portfolio; pilot success criteria and go/no-go recommendation |
-
-### Evidence Summary
-
-**Engine Validation**:
-- ✅ **1119 passing tests** (comprehensive rule coverage across all phases)
-- ✅ **25-scenario evaluation corpus** (71.9% detection; 0% false positives across 5 compliant scenarios; 12 unexpected detections on violation scenarios, reported separately)
-- ✅ **Live endpoint tested** against noncompliant VAPI payload
-- ✅ **Deterministic** — same input always produces same output
-
-**Governance Readiness**:
-- ✅ **Strong rules**: DBC-01 (100%), EIT-01 (100%), PDX-01 (100%)
-- ⚠️ **Weaker rule**: IDG-01 (75.0%) — the engine rejects a disclosure that asserts a human persona, but does not judge whether a bare organisational name ("claims system") is adequate. See the [Evaluation Corpus Report](docs/EVALUATION_CORPUS_REPORT_v1.md) for why that boundary is deliberate
-- ✅ **Audit trail spec**: Format, retention, immutability, HIPAA compliance complete
-- ✅ **Monitoring spec**: Pilot dashboard, alert thresholds, weekly reporting
-
-**Portfolio Positioning**:
-- ✅ **Not an enterprise product**: Minimal surrounding infrastructure
-- ✅ **Deterministic engine**: Same inputs produce identical outputs; no production deployments to date
-- ✅ **Pilot-ready**: Suitable for shadow evaluation; no pilots are running
-- ✅ **Evidence-backed**: Test results, corpus, detection rates, governance statement
-
-### Artifacts
-
-- [`tests/evaluation_corpus_v1.json`](tests/evaluation_corpus_v1.json) — 25 scenarios, 55 turns
-- **[Evaluation Corpus Report](docs/EVALUATION_CORPUS_REPORT_v1.md)** — detection and false-positive rates for this corpus, generated by `scripts/eval_corpus.py`
-- **[Corpus Evaluation Summary](docs/CORPUS_EVALUATION_SUMMARY.md)** — the *Tonic* corpus (150 sessions). A different dataset; its figures are not interchangeable with the above
-- [`docs/NHID_AUDIT_EVENT_SPEC_v1.0.md`](docs/NHID_AUDIT_EVENT_SPEC_v1.0.md) — Formal spec (schema, retention, compliance)
-- [`docs/NHID_METRICS_AND_OBSERVABILITY_v1.md`](docs/NHID_METRICS_AND_OBSERVABILITY_v1.md) — Pilot monitoring & alerting
-
-### Next Steps
-
-**v1.1 Engine**: ✅ **Frozen** — no further policy engine changes planned  
-**v1.2 Infrastructure** (Phase 2, if pilot opportunity appears):
-- Implement ATR-01 (audit trail enforcement)
-- Add NLP semantic scoring for IDG-01/DBC-01
-- Enterprise monitoring + SLA + HIPAA BAA signing
-
-**v2.0 Identity Layer**: NHID-Auth v2 (reference code in `src/agent_identity.py`, 60+ passing tests)
-
-## The Four Behavioral Controls (v1.3)
-
-| Control | Name | Requirement |
-| :--- | :--- | :--- |
-| **IDG-01** | Identity Disclosure Gate | Disclose non-human identity **before** any PHI exchange |
-| **PDX-01** | Pre-Data Exchange Gate | No protected data until identity is disclosed |
-| **DBC-01** | Deceptive Behavior Check | No claim of human status or licensed-professional standing. Evaluated on the agent's own identity assertion text |
-| **EIT-01** | Escalation Implementation Test | Clear human handoff path, honored on request |
-
-Plus **ATR-01** (audit trail) — every call must produce a machine-readable trace.  
-Comprehensive test suite · same inputs → identical output · **1119 passing**, every collected test executed
+Deterministic · same inputs → identical output · **1119 passing**, every collected test executed
 
 [**Try the Governance Simulator →**](https://nhid-clinical.org/developers.html)
 
