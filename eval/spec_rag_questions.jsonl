@@ -1,0 +1,5 @@
+{"question":"What does PDX-01 require before protected data is exchanged?","expected_source":"docs/CONTROL_DECISION_TABLE.md","expect_refusal":false}
+{"question":"What is impersonation latency?","expected_source":"docs/terminology.md","expect_refusal":false}
+{"question":"Is NHID-Clinical an accredited certification?","expected_source":"docs/claim-boundaries.md","expect_refusal":false}
+{"question":"What does the enforcement profile map a policy decision to?","expected_source":"docs/enforcement-profile.md","expect_refusal":false}
+{"question":"What is the capital of France?","expected_source":"","expect_refusal":true}
