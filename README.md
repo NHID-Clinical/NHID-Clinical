@@ -385,6 +385,31 @@ python examples/issue_and_verify.py
 
 [Details →](https://nhid-clinical.org/framework/nhid-auth.html#v2)
 
+## Specification reading aid (`/spec`)
+
+A retrieval index over `docs/*.md` that answers "where does the specification
+say this?" by quoting the passage back with its file path. **It is not the
+policy engine.** It returns no control decision, no conformance result and no
+certification — `src/nhid_policy_engine_v1.py` decides whether an interaction
+passed, against the five controls. An answer here is a quotation carrying
+exactly the authority of the document it came from. When the retrieved
+excerpts do not contain the answer, it says so rather than approximating.
+
+```bash
+python -m src.nhid_spec_rag                       # build the index (44 files, 834 chunks)
+python -m src.nhid_spec_rag --ask "What is the pass condition for PDX-01?"
+python -m pytest eval/ -v                         # the reading aid's own tests
+```
+
+Two routes, mounted in `main.py` behind the same API-key dependency as every
+other router: `GET /spec/health` (chunk count, backend, skipped files) and
+`POST /spec/ask` (`{"question": "..."}` → answer, citations, refused). Files
+over 200 KB are skipped whole and named by `/spec/health`. Without
+`OPENAI_API_KEY` it falls back to a deterministic local hash and states that
+the score is not the `text-embedding-3-small` score.
+
+[Measured hit rate, refusal count and both known misses →](docs/spec-rag.md)
+
 ## Repository layout
 
 | Path | What's there |
@@ -395,6 +420,7 @@ python examples/issue_and_verify.py
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio). |
 | `middleware/` | TypeScript middleware and its test suite. |
 | `tests/` | The Python conformance and invariant tests (1119 passing, all phases: foundations, adversarial, synthetic, hardening). |
+| `eval/` | The specification reading aid's question set, its scorer and its tests — deliberately outside `tests/`, which is the conformance suite the published count describes. |
 | `scripts/` | CI guards — `validate_ci.py`, `check_baseline.py`, `check_number_drift.py` — and tooling. |
 | `schema/` | Event and audit-trace schemas. |
 | `docs/` | Specification docs, the [Executive Brief](docs/executive-brief.md), the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md), and the knowledge archive. |

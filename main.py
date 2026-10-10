@@ -10,6 +10,9 @@ import nhid_attest
 import nhid_payer
 import nhid_audit_export
 
+# Reading aid for the docs/ corpus. Not the policy engine.
+from src import nhid_spec_rag
+
 # Critical: Import the full voice policy + Twilio/VAPI proxy app
 from app import app as voice_app
 
@@ -30,6 +33,12 @@ app.include_router(nhid_api_endpoints.router, dependencies=[Security(get_api_key
 app.include_router(nhid_attest.router, dependencies=[Security(get_api_key)])
 app.include_router(nhid_payer.router, dependencies=[Security(get_api_key)])
 app.include_router(nhid_audit_export.router, dependencies=[Security(get_api_key)])
+# The specification reading aid answers only from docs/, which is public —
+# but it is mounted behind the same dependency as every other router here.
+# An unauthenticated route would reintroduce exactly the gap the attest
+# comment above records closing, and /spec/ask is a free-text endpoint that
+# writes a log line per call.
+app.include_router(nhid_spec_rag.router, dependencies=[Security(get_api_key)])
 
 @app.get("/health")
 def health():
