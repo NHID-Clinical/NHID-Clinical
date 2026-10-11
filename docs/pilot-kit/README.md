@@ -121,7 +121,7 @@ gather them is yours to determine.
 **Stage 2 — analyse**
 - Re-run with `--results-dir out/` and generate the report:
   `python tools/pilot_report_generator.py out/ pilot_report.md`
-- Read the CAS tier distribution and the top-3 violations per workflow
+- Read the per-control violation counts and the top-3 violations per workflow
 - Spot-check 10–20 flagged calls by hand — confirm the violations are real
   before drawing conclusions
 

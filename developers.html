@@ -385,7 +385,7 @@ python tests/trace_generator.py --offline</pre>
   -H "x-api-key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"session":{"turn_count":1,"escalation_path_available":true},"event":{...}}'</pre>
-        <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:.85rem 0 0">Returns: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">{"conformant": true/false, "action": "...", "violations": [...], "next_state": "...", "cas": {"score": ..., "tier": ...}}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json" style="color:var(--teal-bright)">sample_request.json</a> for a complete example.</p>
+        <p style="color:var(--body);font-size:.85rem;line-height:1.75;margin:.85rem 0 0">Returns: <code style="font-size:.82rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">{"conformant": true/false, "action": "...", "violations": [...], "next_state": "...", "evidence_completeness": {"present": ..., "expected": ..., ...}, ...}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json" style="color:var(--teal-bright)">sample_request.json</a> for a complete example.</p>
       </div>
 
       <!-- ── Delegated authority (DLG-01) ───────────────────────────────────── -->
@@ -568,7 +568,7 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
   <section class="page-cta">
     <div class="container">
       <h3>Build on it</h3>
-      <p>Everything here is CC BY 4.0. Fork it, vendor it, or replace it with your own engine and test against the same suite.</p>
+      <p>The code is Apache-2.0 and the specification is CC BY 4.0. Fork it, vendor it, or replace it with your own engine and test against the same suite.</p>
       <div class="page-cta-grid">
         <a class="page-cta-card" href="/evidence-pack.html#conformance-suite"><b>Conformance suite <span class="arr">&rarr;</span></b><span>Prove your engine agrees.</span></a>
         <a class="page-cta-card" href="#interoperability"><b>Interoperability <span class="arr">&rarr;</span></b><span>Working with existing telephony.</span></a>

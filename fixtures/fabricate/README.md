@@ -25,7 +25,7 @@ EIT-01: 169/171 (98.8%) — Escalation honor verification
 **File**: `shadow_pilot.jsonl`  
 **Format**: JSONL (newline-delimited JSON, minimal-event-schema)  
 **Size**: 60 conversations, 301 turns  
-**Purpose**: Tier 0 internal shadow pilot data extraction and CAS measurement  
+**Purpose**: Tier 0 internal shadow pilot data extraction and per-control measurement  
 **Status**: ✅ Production-ready (Phase 6A+)
 
 **Schema Compatibility**: ✅ FULLY COMPATIBLE

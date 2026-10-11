@@ -19,7 +19,6 @@
 | Never-disclosed rate | XX% |
 | Calls with pre-disclosure PHI | XX% |
 | Escalation honor rate | XX% |
-| Average CAS | 0.XX |
 | Disclosure bands (pass / delayed / late / critical) | X / X / X / X |
 
 ## Disclosure timeliness
