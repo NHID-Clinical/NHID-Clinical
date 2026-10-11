@@ -65,6 +65,11 @@
       "type": "array",
       "items": { "type": "string" },
       "description": "Voice-forensics flags, when available (synthetic_breathing, hesitation_sounds, ...). Leave empty if your stack cannot detect these — DBC-01 text heuristics still run on speech_text."
+    },
+    "transcription_attestation": {
+      "type": ["string", "null"],
+      "enum": ["measured", "attested", "unattested", null],
+      "description": "What is known about the transcript this record was derived from: 'measured' (word error rate measured on this corpus), 'attested' (a WER figure asserted by the vendor but not measured here), 'unattested' (nothing known). Optional and call-level — set it on any turn of a call and the whole call takes that value. NHID-Clinical does NOT establish ASR accuracy; this field records the limit every other figure in the pilot rests on, and omitting it is reported as 'not recorded', never as a quality score."
     }
   }
 }

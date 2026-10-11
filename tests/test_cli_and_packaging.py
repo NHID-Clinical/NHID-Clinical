@@ -105,10 +105,26 @@ def test_pytest_config_is_not_duplicated(pyproject):
 
 # ── CLI dispatch ───────────────────────────────────────────────────────────
 
-def test_parser_exposes_the_two_documented_subcommands():
+def test_parser_exposes_the_documented_subcommands():
+    """An exact set, not a subset: a subcommand that appears without being
+    documented is how a CLI surface drifts from what the docs promise."""
     parser = build_parser()
     actions = [a for a in parser._actions if a.dest == "command"]
-    assert set(actions[0].choices) == {"conformance", "export-evidence"}
+    assert set(actions[0].choices) == {"conformance", "export-evidence", "pilot"}
+
+
+def test_pilot_subcommand_marks_its_unobservable_context_optional():
+    """`nhid pilot` takes the pilot's organization, workflow, date range and
+    author because the kit cannot observe them. They must stay optional — the
+    report marks whatever is omitted rather than refusing to run or, worse,
+    defaulting it to a value nobody asserted."""
+    parser = build_parser()
+    args = parser.parse_args(["pilot", "--demo"])
+    assert args.organization is None
+    assert args.workflow is None
+    assert args.date_range is None
+    assert args.prepared_by is None
+    assert args.out == "pilot-evidence"
 
 
 def test_conformance_subcommand_reports_real_results(capsys):

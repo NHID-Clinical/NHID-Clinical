@@ -359,7 +359,13 @@ class TitleBanner(Flowable):
         c.roundRect(96, 12, 110, 20, 4, fill=1, stroke=0)
         c.setFillColor(colors.HexColor("#b0bcd4"))
         c.setFont(FONT_REGULAR, 9)
-        c.drawCentredString(151, 18, "June 2026 · CC BY 4.0")
+        # `self.date`, not a literal. CoverPage has always accepted a `date`
+        # argument and this line ignored it, so every PDF the project shipped
+        # said "June 2026" whatever the caller passed — a published date that
+        # no caller could correct. The default is unchanged, so the existing
+        # documents render exactly as before; a document generated per-run
+        # (the Tier 0 pilot pack) can now carry its real date.
+        c.drawCentredString(151, 18, f"{self.date} · CC BY 4.0")
         # logo mark, top-right
         if os.path.exists(self.logo_path):
             try:
@@ -750,11 +756,11 @@ class ExecutiveSummary(Flowable):
 
 
 def _key_metrics(width=6.5 * inch):
-    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 1119 Tests · 6 Adapters."""
+    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 1157 Tests · 6 Adapters."""
     return _stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("1119", "Tests"),
+        ("1157", "Tests"),
         ("6", "Adapters"),
     ])
 
@@ -804,9 +810,17 @@ def _corpus_detection_rates():
             "n_compliant": res["n_compliant"]}
 
 
-def _cover(story, title, subtitle, version, audience, logo_path=None):
-    """Append a full cover page + page break — the shared suite masthead."""
-    story.append(CoverPage(title, subtitle, version, audience, logo_path=logo_path))
+def _cover(story, title, subtitle, version, audience, logo_path=None, date=None):
+    """Append a full cover page + page break — the shared suite masthead.
+
+    `date` defaults to CoverPage's own default, so callers that do not pass one
+    keep the suite's released-on date. A document generated per run passes its
+    generation date instead of inheriting a fixed one.
+    """
+    kwargs = {"logo_path": logo_path}
+    if date:
+        kwargs["date"] = date
+    story.append(CoverPage(title, subtitle, version, audience, **kwargs))
     story.append(PageBreak())
 
 
@@ -1100,7 +1114,7 @@ def make_core_spec():
     story.append(_stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("1119", "Unit Tests"),
+        ("1157", "Unit Tests"),
         ("6", "Adapters"),
     ]))
     story.append(Spacer(1, 0.12 * inch))
@@ -1897,7 +1911,7 @@ def make_v13_overview():
         "A deterministic policy engine that produces stable trace output under identical input "
         "conditions (modulo timestamps and non-deterministic IDs).",
         "An 18-case conformance test suite (CTS) in machine-readable YAML plus a pytest failure "
-        "injection harness (1119 passing unit tests in the reference implementation).",
+        "injection harness (1157 passing unit tests in the reference implementation).",
         "10 canonical trace files in traces/ demonstrating real-world scenarios (eligibility, "
         "prior auth, claims status, bot-to-bot, audit gaps, and more).",
         "Six vendor adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress) "

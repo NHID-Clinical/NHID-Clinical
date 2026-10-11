@@ -158,10 +158,10 @@
 
       <!-- ── Front Desk Walkthrough ────────────────────────────────────── -->
 
-      <h2 style="margin-bottom:1rem">See the Controls Run: The Front-Desk Walkthrough</h2>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Before the schemas and YAML below, here's what IDG&#8209;01, PDX&#8209;01, DBC&#8209;01, and EIT&#8209;01 actually enforce on a call, staged as a doctor's-office check-in desk. Run the conformant pass, then the failure and escalation scenarios; open any brass plaque for that control's <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">rule_engine.config</code>. ATR&#8209;01 is the ledger on the right — it is not a checkpoint anyone walks through.</p>
+      <h2 style="margin-bottom:1rem">See the Controls Run: The Readout</h2>
+      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin:0 0 1rem">Before the schemas and YAML below, here is what the engine returns on a call, turn by turn. All five controls are evaluated on <em>every</em> turn and resolved by priority, so the screen shows five rows every time &mdash; there is no pipeline and no sequence of gates. Watch the IDG&#8209;01 failure in particular: IDG&#8209;01 returns <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">DISCLOSE_IDENTITY</code> while the composite is <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">DENY_DATA</code>, because PDX&#8209;01 outranks it. Open any row for that control's <code style="font-size:.84rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">rule_engine.config</code>. ATR&#8209;01 sits below the rule &mdash; it gates nothing, and is written on every turn whatever the other four returned.</p>
       <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1rem;background:var(--paper)">
-        <iframe id="walkthrough-frame" src="/assets/media/front-desk-walkthrough.html" title="Interactive walkthrough of NHID-Clinical's five v1.3 controls at a simulated clinic front desk" loading="lazy" style="display:block;width:100%;height:820px;border:0" sandbox="allow-scripts"></iframe>
+        <iframe id="walkthrough-frame" src="/assets/media/front-desk-walkthrough.html" title="Interactive readout of what NHID-Clinical's five v1.3 controls return, turn by turn, on five real corpus scenarios" loading="lazy" style="display:block;width:100%;height:820px;border:0" sandbox="allow-scripts"></iframe>
       </div>
       <script>
         /* The scene reports its own height, so the frame is never a fixed box with
@@ -171,15 +171,38 @@
         (function () {
           var frame = document.getElementById('walkthrough-frame');
           if (!frame) return;
+
+          /* The frame is sandboxed without allow-same-origin, so it has an
+             opaque origin and cannot read this page's theme — localStorage
+             throws in there. Hand it over on the channel we already have, so
+             it opens matching the site instead of arguing with it. A choice
+             made inside the frame wins from then on; that is the frame's
+             rule, not ours. */
+          function sendTheme() {
+            var t = document.documentElement.getAttribute('data-theme') || 'system';
+            try {
+              frame.contentWindow.postMessage(
+                { type: 'nhid:walkthrough:theme', theme: t }, '*');
+            } catch (e) {}
+          }
+
           window.addEventListener('message', function (e) {
-            if (!e.data || e.data.type !== 'nhid:walkthrough:height') return;
-            if (e.source !== frame.contentWindow) return;
+            if (!e.data || e.source !== frame.contentWindow) return;
+            if (e.data.type === 'nhid:walkthrough:ready') { sendTheme(); return; }
+            if (e.data.type !== 'nhid:walkthrough:height') return;
             var h = parseInt(e.data.height, 10);
             if (h > 200 && h < 5000) frame.style.height = h + 'px';
           });
+          frame.addEventListener('load', sendTheme);
+
+          /* Follow the site's own theme toggle while the page is open. */
+          if (window.MutationObserver) {
+            new MutationObserver(sendTheme).observe(document.documentElement,
+              { attributes: true, attributeFilter: ['data-theme'] });
+          }
         })();
       </script>
-      <p style="color:var(--ink-soft);font-size:.82rem;line-height:1.6;margin:0 0 2.5rem">Every action, reason code and violation in the scene is the output of <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/nhid_policy_engine_v1.py :: evaluate_all</code>, recorded by <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">scripts/build_walkthrough_fixture.py</code> replaying five real scenarios from <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">tests/evaluation_corpus_v1.json</code>; the same script's <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">--check</code> mode runs in CI, so the scene cannot drift from the engine. The room, the walking order and the artwork are staging — the verdicts are not.</p>
+      <p style="color:var(--ink-soft);font-size:.82rem;line-height:1.6;margin:0 0 2.5rem">Every action, reason code and violation in the scene is the output of <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">src/nhid_policy_engine_v1.py :: evaluate_all</code>, recorded by <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">scripts/build_walkthrough_fixture.py</code> replaying five real scenarios from <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">tests/evaluation_corpus_v1.json</code>; the same script's <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">--check</code> mode runs in CI, so the readout cannot drift from the engine. The machine is drawn; the readout is read — <code style="font-size:.8rem;background:var(--bg-alt);padding:.1rem .3rem;border-radius:3px">--check</code> fails the build if an action or a reason code is ever typed into the markup.</p>
 
       <!-- ── Artifacts ──────────────────────────────────────────────────── -->
 

@@ -3,37 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NHID-Clinical — Front Desk Walkthrough</title>
+<title>NHID-Clinical — The Controls, Running</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* ===========================================================================
-   Front Desk Walkthrough — an engine-driven scene, not an illustration.
+   The Controls, Running — an engine-driven readout, not an illustration.
 
-   Every verdict this page shows is read out of the generated trace block at
-   the bottom of the document, which scripts/build_walkthrough_fixture.py
-   produced by replaying real corpus scenarios through the real Python engine.
-   Nothing in this stylesheet or its script decides whether a control passed.
+   WHAT THIS PAGE IS
+   -----------------
+   An isometric early-80s desktop machine whose screen shows what
+   src/nhid_policy_engine_v1.py actually returned, turn by turn, for five real
+   corpus scenarios.
 
-   Palette is the site's own tokens (nhid-clinical-ui.css): navy ink, teal,
-   cyan, warm paper. Brass appears only on station plaques, as a material
-   accent, never as a UI colour.
+   WHY THE MACHINE IS DRAWN AND THE SCREEN IS NOT
+   ----------------------------------------------
+   This page replaced an earlier one that held literal "IDG-01 PASS" /
+   "PDX-01 FAIL" strings nothing computed. The fix then was to generate the
+   verdicts; the fix has to survive a redesign. So the chassis below is
+   artwork and the glass is empty: every control id, action, reason code,
+   severity and violation on the screen is written at runtime from the
+   generated trace block near the end of this document, which
+   scripts/build_walkthrough_fixture.py produced by replaying the real engine.
 
-   Fonts are the same three faces the rest of the site loads, requested from
-   the same stylesheet; every rule carries a real fallback stack, so a blocked
-   font CDN degrades to system faces rather than breaking the layout.
+   Draw the readout into the SVG and you have rebuilt the original defect in a
+   prettier shape. scripts/build_walkthrough_fixture.py --check fails the build
+   if any action name or reason code appears in the authored markup.
 
-   Character asset: /assets/media/walkthrough-agent.png is derived from
-   public/agent/stand.png in the Grok Build workspace supplied with this task
-   (cropped to content, resampled to 640px tall, quantised to a 256-colour
-   palette: 408 KB -> 40 KB). The tool that originally produced that artwork is
-   not recorded anywhere in that workspace, so its generator is UNKNOWN. It is
-   decoration: it carries no verdict, and alt="" keeps it out of the
-   accessibility tree, where the transcript and the readout carry the meaning.
+   WHAT THE SCREEN SHOWS, AND WHY IT IS SHAPED THIS WAY
+   ---------------------------------------------------
+   Five rows, every turn. The engine evaluates all five controls on every turn
+   and resolves them by priority — there is no pipeline and no sequence of
+   gates, which is what the previous staging (a corridor of arches walked left
+   to right) quietly got wrong. ATR-01 is drawn apart from the other four
+   because it gates nothing: it is written on every turn whatever happened.
+
+   THEME
+   -----
+   Dark / Light / System, System by default. Tokens are declared once on :root
+   in the light values, redefined for dark under prefers-color-scheme (guarded
+   so an explicit Light choice wins), and again under [data-theme="dark"] for
+   an explicit choice. Status colours carry meaning, so they are re-picked per
+   mode for contrast rather than reused.
+
+   Fonts are the same three faces the rest of the site loads; every rule
+   carries a real fallback stack, so a blocked font CDN degrades to system
+   faces rather than breaking the layout.
    =========================================================================== */
 :root {
-  /* Site tokens */
+  color-scheme: light dark;
+
+  /* Surfaces and ink — light */
   --ink:        #0d2846;
   --ink-soft:   #1f2730;
   --body:       #3a424b;
@@ -42,37 +63,99 @@
   --line:       rgba(28, 32, 38, 0.14);
   --teal:       #14778f;
   --teal-bright:#14b8a6;
-  --cyan:       #67e8f9;
+  --cyan:       #0e7f8f;
 
-  /* Room materials — derived from --ink, not a new colour system */
-  --room-far:   #071b30;
-  --room-mid:   #0b2440;
-  --room-near:  #0d2846;
-  --floor-hi:   #12314f;
-  --glass:      rgba(103, 232, 249, 0.07);
-  --glass-edge: rgba(103, 232, 249, 0.34);
-  --brass:      #b79a62;
-  --brass-deep: #7d6434;
+  /* The machine. Beige is a material, not a UI colour. */
+  --case:       #d8cdb8;
+  --case-top:   #e6ddcc;
+  --case-side:  #bfb49e;
+  --case-edge:  rgba(62, 52, 36, 0.38);
+  --vent:       rgba(62, 52, 36, 0.26);
+  --bezel:      #c3b89f;
+  --key:        #e3dac7;
+  --key-edge:   rgba(62, 52, 36, 0.3);
+  --cable:      #9d9382;
 
-  /* Semantic control states. Meaning-bound, and deliberately distinct from
-     the teal/cyan used for illumination so a lit station is never mistaken
-     for a passing one. */
-  --st-pass:    #16a394;
-  --st-deny:    #d1544b;
-  --st-disclose:#d8912f;
-  --st-escal:   #67e8f9;
-  --st-log:     #8fa2bd;
-  --st-idle:    #4a6480;
+  /* The glass. Dark in both modes — a CRT is not a sheet of paper. */
+  --glass:      #0a1a24;
+  --glass-top:  #102834;
+  --phosphor:   #7fe3d0;
+  --glass-dim:  #4e8e8b;
+  --scan:       rgba(127, 227, 208, 0.05);
+
+  /* Semantic control states. Meaning-bound: a lit row is never mistaken for
+     a passing one, because illumination is not in this palette. */
+  --st-pass:    #39c9a7;
+  --st-deny:    #ff7d72;
+  --st-disclose:#f0b254;
+  --st-escal:   #6fd8ec;
+  --st-log:     #9db4c9;
+  --st-idle:    #41616f;
 
   --display: "Raleway", "Segoe UI", system-ui, sans-serif;
   --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-
   --ease: cubic-bezier(.22,.61,.36,1);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* System dark. Guarded so an explicit Light choice is not overridden by the
+   operating system. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink:        #e8eef5;
+    --ink-soft:   #dbe4ee;
+    --body:       #a8b6c6;
+    --paper:      #121a22;
+    --mist:       #0c1218;
+    --line:       rgba(168, 182, 198, 0.2);
+    --teal:       #5ec9c0;
+    --teal-bright:#2dd4bf;
+    --cyan:       #67e8f9;
 
+    --case:       #6c6456;
+    --case-top:   #837a69;
+    --case-side:  #544d42;
+    --case-edge:  rgba(0, 0, 0, 0.5);
+    --vent:       rgba(0, 0, 0, 0.4);
+    --bezel:      #5b5448;
+    --key:        #7b7364;
+    --key-edge:   rgba(0, 0, 0, 0.42);
+    --cable:      #4a443a;
+
+    --glass:      #05121a;
+    --glass-top:  #0a1f29;
+  }
+}
+
+/* Explicit dark. Same values; duplicated rather than @applied because a
+   custom-property set cannot be shared across a media query and an attribute
+   selector without a preprocessor. */
+:root[data-theme="dark"] {
+  --ink:        #e8eef5;
+  --ink-soft:   #dbe4ee;
+  --body:       #a8b6c6;
+  --paper:      #121a22;
+  --mist:       #0c1218;
+  --line:       rgba(168, 182, 198, 0.2);
+  --teal:       #5ec9c0;
+  --teal-bright:#2dd4bf;
+  --cyan:       #67e8f9;
+
+  --case:       #6c6456;
+  --case-top:   #837a69;
+  --case-side:  #544d42;
+  --case-edge:  rgba(0, 0, 0, 0.5);
+  --vent:       rgba(0, 0, 0, 0.4);
+  --bezel:      #5b5448;
+  --key:        #7b7364;
+  --key-edge:   rgba(0, 0, 0, 0.42);
+  --cable:      #4a443a;
+
+  --glass:      #05121a;
+  --glass-top:  #0a1f29;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; }
 
 body {
@@ -91,530 +174,362 @@ button:focus-visible,
 [tabindex]:focus-visible { outline: 2px solid var(--teal-bright); outline-offset: 2px; border-radius: 6px; }
 
 /* ── Head ─────────────────────────────────────────────────────────────── */
-.masthead { display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline;
+.masthead { display: flex; flex-wrap: wrap; gap: 6px 20px; align-items: baseline;
   justify-content: space-between; margin-bottom: 6px; }
 .masthead h1 {
   font-family: var(--display);
   font-size: clamp(1.05rem, 2.4vw, 1.3rem);
   font-weight: 700; letter-spacing: -0.01em; color: var(--ink);
 }
+.mast-right { display: flex; align-items: center; gap: 14px; }
 .masthead .stamp {
   font-family: var(--mono); font-size: .66rem; letter-spacing: .1em;
   text-transform: uppercase; color: var(--teal);
 }
-.masthead p { font-size: .875rem; color: var(--body); max-width: 62ch; }
+.lede { font-size: .875rem; color: var(--body); max-width: 68ch; }
+
+/* ── Theme control ────────────────────────────────────────────────────────
+   Three states, not a binary. "System" is a real option and the default,
+   because the honest answer to "which theme?" on first load is "whichever one
+   you already told your computer you wanted". */
+.theme { display: inline-flex; align-items: center; gap: 2px;
+  border: 1px solid var(--line); border-radius: 999px; padding: 2px;
+  background: var(--paper); }
+.theme button {
+  border: 0; background: none; color: var(--body);
+  font-size: .68rem; letter-spacing: .04em; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 999px; line-height: 1.2;
+  transition: background .16s, color .16s;
+}
+.theme button:hover { color: var(--ink); }
+.theme button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--teal-bright) 20%, transparent);
+  color: var(--ink); font-weight: 600;
+}
 
 /* ── Scenario deck ────────────────────────────────────────────────────── */
-.deck {
-  display: flex; flex-wrap: wrap; gap: 7px;
-  margin: 16px 0 10px;
-}
+.deck { display: flex; flex-wrap: wrap; gap: 7px; margin: 16px 0 10px; }
 .scn {
   display: inline-flex; align-items: baseline; gap: 7px;
   border: 1px solid var(--line); background: var(--paper);
   border-radius: 999px; padding: 7px 14px;
   color: var(--ink-soft); transition: background .18s, border-color .18s, color .18s;
 }
-.scn:hover { border-color: rgba(20,184,166,.55); }
+.scn:hover { border-color: color-mix(in srgb, var(--teal-bright) 55%, transparent); }
 .scn b { font-weight: 650; font-size: .82rem; }
 .scn span { font-size: .74rem; color: var(--body); }
-.scn[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.scn[aria-pressed="true"] span { color: rgba(255,255,255,.62); }
+.scn[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--teal-bright) 16%, var(--paper));
+  border-color: color-mix(in srgb, var(--teal-bright) 60%, transparent);
+}
 
 /* ── Transport ────────────────────────────────────────────────────────── */
-.transport { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.transport { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 2px 0 12px; }
 .tbtn {
-  display: inline-flex; align-items: center; gap: 7px;
+  display: inline-flex; align-items: center; gap: 6px;
   border: 1px solid var(--line); background: var(--paper); color: var(--ink-soft);
-  border-radius: 999px; padding: 8px 15px; font-size: .8rem; font-weight: 600;
-  transition: background .18s, border-color .18s;
+  border-radius: 7px; padding: 6px 12px; font-size: .8rem; font-weight: 550;
+  transition: border-color .16s, background .16s;
 }
-.tbtn:hover { border-color: rgba(20,184,166,.55); }
-.tbtn.primary { background: var(--teal-bright); border-color: var(--teal-bright); color: #05221f; }
-.tbtn svg { width: 13px; height: 13px; flex: 0 0 auto; }
-.speed { display: inline-flex; align-items: center; gap: 7px; font-size: .76rem; color: var(--body); margin-left: 2px; }
+.tbtn:hover { border-color: color-mix(in srgb, var(--teal-bright) 55%, transparent); }
+.tbtn svg { width: 13px; height: 13px; }
+.tbtn.primary {
+  background: var(--teal); border-color: var(--teal); color: #fff;
+}
+.tbtn.primary:hover { background: color-mix(in srgb, var(--teal) 86%, #000); }
+.speed { font-size: .74rem; color: var(--body); display: inline-flex; align-items: center; gap: 5px; }
 .speed select {
-  font: inherit; font-size: .76rem; padding: 5px 8px; border-radius: 8px;
+  font: inherit; font-size: .74rem; padding: 3px 6px; border-radius: 5px;
   border: 1px solid var(--line); background: var(--paper); color: var(--ink-soft);
 }
 
-/* ── Beat rail ────────────────────────────────────────────────────────── */
-.beats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-.beat {
-  font-family: var(--mono); font-size: .63rem; letter-spacing: .09em;
-  text-transform: uppercase; padding: 5px 10px; border-radius: 999px;
-  background: var(--paper); border: 1px solid var(--line); color: #7a8593;
-  transition: background .3s, color .3s, border-color .3s;
+/* ── Turn strip ───────────────────────────────────────────────────────────
+   Turns, not stages. The engine has no stages; a call has turns, and they
+   really are sequential, so this is the one thing on the page that is
+   allowed to look like a sequence. */
+.turnstrip { display: flex; flex-wrap: wrap; gap: 5px; margin: 0 0 14px;
+  font-family: var(--mono); font-size: .66rem; }
+.tchip {
+  border: 1px solid var(--line); border-radius: 4px; padding: 2px 8px;
+  color: var(--body); background: var(--paper); letter-spacing: .04em;
 }
-.beat.done { color: var(--teal); border-color: rgba(20,119,143,.3); }
-.beat.now { background: var(--ink); border-color: var(--ink); color: var(--cyan); }
-
-/* ── Stage: room + ledger ─────────────────────────────────────────────── */
-.stage { display: grid; grid-template-columns: minmax(0,1fr) 268px; gap: 14px; align-items: stretch; }
-.stage-main { min-width: 0; display: flex; flex-direction: column; }
-
-/* The room. Geometry is expressed against these two lines so the floor, the
-   vitrines and the agent can never drift apart at a breakpoint:
-     --floor  where the back wall meets the floor
-     --walk   the band the agent actually stands on, nearer than the vitrines */
-.room {
-  --floor: 46%;
-  --walk: 13%;
-  --exit: 88;
-  position: relative; overflow: hidden;
-  border-radius: 16px; border: 1px solid rgba(8,22,38,.65);
-  aspect-ratio: 16 / 9;
-  background: linear-gradient(180deg, #0a2137 0%, #0b2540 40%, #071b30 100%);
-  box-shadow: 0 26px 64px -32px rgba(6,18,32,.8), inset 0 1px 0 rgba(255,255,255,.07);
-  isolation: isolate;
-  contain: paint;
+.tchip.done { color: var(--teal); border-color: color-mix(in srgb, var(--teal) 45%, transparent); }
+.tchip.now {
+  color: var(--ink); font-weight: 600;
+  background: color-mix(in srgb, var(--teal-bright) 18%, var(--paper));
+  border-color: color-mix(in srgb, var(--teal-bright) 60%, transparent);
 }
 
-/* Ceiling cove — one soft light trough; hue shifts with the composite action. */
-.cove {
-  position: absolute; left: 6%; right: 6%; top: -6%; height: 34%;
-  border-radius: 0 0 50% 50%;
-  background: radial-gradient(ellipse at 50% 0%, var(--cove, rgba(103,232,249,.4)) 0%, transparent 72%);
-  filter: blur(18px); transition: background .7s var(--ease);
-  pointer-events: none;
-}
-.cove-bar {
-  position: absolute; left: 14%; right: 14%; top: 4%; height: 2px; border-radius: 2px;
-  background: linear-gradient(90deg, transparent, var(--cove-line, rgba(103,232,249,.85)), transparent);
-  box-shadow: 0 0 22px 3px var(--cove, rgba(103,232,249,.32));
-  transition: background .7s var(--ease), box-shadow .7s var(--ease);
-  pointer-events: none;
-}
+/* ── Stage ────────────────────────────────────────────────────────────── */
+.stage { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(250px, .85fr);
+  gap: 18px; align-items: start; }
+@media (max-width: 860px) { .stage { grid-template-columns: 1fr; } }
 
-/* Back wall: quiet vertical panelling plus a faint glazed bay at the far end. */
-.backwall {
-  position: absolute; left: 0; right: 0; top: 8%; bottom: calc(100% - var(--floor));
-  background-image: repeating-linear-gradient(90deg,
-    rgba(255,255,255,.05) 0 1px, transparent 1px 96px);
-  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 88%, rgba(0,0,0,.35));
-  pointer-events: none;
-}
-.backwall::after {
-  content: ""; position: absolute; right: 4%; top: 22%; width: 22%; bottom: 6%;
-  border: 1px solid rgba(103,232,249,.14);
-  background: linear-gradient(180deg, rgba(103,232,249,.07), transparent);
-}
+/* ── The machine ──────────────────────────────────────────────────────────
+   An isometric desktop computer of the early 1980s: generic period hardware,
+   not a reproduction of any manufacturer's industrial design, and carrying no
+   badge but this project's own. The chassis is the only part of this page
+   that is drawn rather than read. */
+.machine { position: relative; width: 100%; }
+.machine svg.chassis { display: block; width: 100%; height: auto; }
 
-/* Floor: a lit plane with a soft specular band under the vitrine line. */
-.floor {
-  position: absolute; left: 0; right: 0; top: var(--floor); bottom: 0;
-  background:
-    linear-gradient(180deg, rgba(103,232,249,.16) 0 1px, transparent 1px),
-    linear-gradient(180deg, #123554 0%, #0c2743 38%, #06172a 100%);
-  pointer-events: none;
-}
-/* Receding floor lines, converging toward the room's vanishing point. */
-.floor::before {
-  content: ""; position: absolute; inset: 0;
-  background-image: repeating-linear-gradient(90deg,
-    rgba(255,255,255,.045) 0 1px, transparent 1px 8%);
-  transform: perspective(560px) rotateX(62deg); transform-origin: 50% 0%;
-  mask-image: linear-gradient(180deg, #000, transparent 78%);
-}
-/* Wet-floor reflection of the ceiling cove. */
-.floor::after {
-  content: ""; position: absolute; left: 12%; right: 12%; top: 0; height: 46%;
-  background: linear-gradient(180deg, var(--cove, rgba(103,232,249,.24)), transparent 78%);
-  filter: blur(11px); opacity: .55;
-  transition: background .7s var(--ease);
-}
+/* The glass. Positioned as a percentage of the chassis so it tracks every
+   viewport.
 
-/* Where the caller side ends and the receiving organization begins. */
-.boundary {
-  position: absolute; left: 15%; top: 12%; bottom: 4%; width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(103,232,249,.55) 30%, rgba(103,232,249,.2));
-  pointer-events: none; z-index: 2;
-}
-.boundary::after {
-  content: "INTERACTION BOUNDARY";
-  position: absolute; top: 44%; left: 7px;
-  transform: rotate(90deg); transform-origin: 0 0;
-  font-family: var(--mono); font-size: .5rem; letter-spacing: .17em;
-  color: rgba(103,232,249,.55); white-space: nowrap;
-}
+   The readout is NOT sheared to the bezel's angle, and that is a correction
+   rather than an oversight. Shearing it looked right in the abstract and was
+   wrong on the page: skewY lifts content as a function of x, so across a
+   four-column row the right-hand cells climbed about 38px while a row is only
+   about 27px tall — every row stair-stepped into the one above it, and the
+   first row collided with the session header. Found by rendering it and
+   looking.
 
-.zone {
-  position: absolute; bottom: 3.5%; z-index: 2;
-  font-family: var(--mono); font-size: .52rem; letter-spacing: .15em;
-  text-transform: uppercase; color: rgba(180,205,225,.4); white-space: nowrap;
-}
-.zone.caller { left: 2.5%; }
-.zone.desk { left: 56%; transform: translateX(-50%); }
+   So the case and keyboard carry the isometric angle and the glass is read
+   head-on, which is how an isometric illustration normally treats a screen.
+   The box is the largest upright rectangle that fits inside the slanted
+   aperture, so the text can never cross a slanted edge:
 
-/* ── Stations: glass vitrines standing on the floor line ───────────────── */
-/* The station box IS the vitrine. Everything it has to say lives inside the
-   glass — glyph, control name, verdict — so the agent can walk in front of
-   the base without ever covering a label. The brass plaque is the lintel. */
-.station {
+     aperture  (77,99) (523,74.47) (523,308.47) (77,333)
+     upright   x 77..523, y 99..308.47   ->  74.33% x 43.64%
+
+   Those numbers were not chosen by eye. The first attempt clipped the
+   composite line — the single most important row — at every viewport: 234px
+   of content in a 183px box. The aperture was enlarged and the slope eased
+   from 0.09 to 0.055 until the content fit with room to spare, measured in a
+   browser rather than estimated. */
+.screen {
   position: absolute;
-  bottom: 26%; height: 44%; width: 15.5%; min-width: 92px;
-  transform: translateX(-50%);
-  background: none; border: 0; padding: 0; color: inherit; text-align: center;
-  z-index: 3;
-}
-.arch {
-  position: absolute; inset: 0;
-  border-radius: 46% 46% 5px 5px / 20% 20% 5px 5px;
-  border: 1px solid rgba(140,205,235,.42);
-  border-bottom: 0;
-  background:
-    linear-gradient(180deg,
-      rgba(190,230,250,.13) 0%,
-      rgba(103,232,249,.05) 26%,
-      rgba(103,232,249,.06) 72%,
-      rgba(103,232,249,.16) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.4),
-    inset 0 0 30px rgba(103,232,249,.11),
-    0 14px 34px -18px rgba(0,0,0,.85);
-  transition: box-shadow .5s var(--ease), border-color .5s var(--ease), background .5s var(--ease);
+  left: 12.83%; top: 20.63%; width: 74.33%; height: 43.64%;
+  padding: 1.5% 2.2%;
+  font-family: var(--mono);
+  color: var(--phosphor);
   overflow: hidden;
-  backdrop-filter: blur(1px);
+  display: flex; flex-direction: column; gap: .28em;
+  container-type: inline-size;
 }
-/* Specular streak down the glass — what makes it read as a surface. */
-.arch::before {
-  content: ""; position: absolute; left: 9%; top: 4%; width: 16%; bottom: 12%;
-  border-radius: 40%;
-  background: linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,.02));
-  filter: blur(2px); pointer-events: none;
-}
-/* Base illumination bar — the lamp that carries the control's verdict. */
-.arch::after {
-  content: ""; position: absolute; left: 8%; right: 8%; bottom: 0; height: 3px;
-  border-radius: 3px; background: var(--st, var(--st-idle));
-  box-shadow: 0 0 16px 2px color-mix(in srgb, var(--st, var(--st-idle)) 62%, transparent);
-  transition: background .45s var(--ease), box-shadow .45s var(--ease);
-}
-.glyph {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: 42%; max-width: 46px; color: rgba(178,215,238,.6);
-  transition: color .45s var(--ease);
-}
-.glyph svg { width: 100%; height: auto; display: block; }
+/* Everything on the glass scales with the glass, so the readout stays
+   proportionate instead of overflowing a narrow frame. */
+.screen { font-size: clamp(5.6px, 1.48cqw, 12px); }
 
-/* Every readable label lives ABOVE the glass. The agent walks in front of the
-   vitrines — which is correct, she is nearer the camera — so nothing legible
-   may sit where she can stand over it. */
-.st-label {
-  position: absolute; left: var(--label-bleed, -14%); right: var(--label-bleed, -14%); bottom: calc(100% + 5px);
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  pointer-events: none;
+.scr-head {
+  display: flex; justify-content: space-between; gap: 1em;
+  color: var(--glass-dim); font-size: .86em; letter-spacing: .06em;
+  border-bottom: 1px solid color-mix(in srgb, var(--phosphor) 22%, transparent);
+  padding-bottom: .3em;
 }
-.plaque {
-  padding: 3px 10px; border-radius: 2px; white-space: nowrap;
-  font-family: var(--mono); font-size: .58rem; letter-spacing: .11em; font-weight: 500;
-  color: #221b0b;
-  background: linear-gradient(168deg, #e2cd9d 0%, var(--brass) 46%, var(--brass-deep) 100%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 4px 10px -4px rgba(0,0,0,.85);
-  transition: box-shadow .3s var(--ease);
-}
-.st-name { font-size: .58rem; line-height: 1.25; color: rgba(196,219,236,.72); }
-.verdict {
-  font-family: var(--mono); font-size: .52rem; letter-spacing: .07em;
-  text-transform: uppercase; color: var(--st, var(--st-idle)); line-height: 1.25;
-  opacity: 0; transform: translateY(-3px); min-height: 1em;
-  transition: opacity .35s var(--ease), transform .35s var(--ease), color .35s var(--ease);
-}
-.station.engaged .verdict { opacity: 1; transform: none; }
+.scr-head .sh-id { color: var(--phosphor); }
 
-/* Pool of light the vitrine casts on the floor. */
-.station::after {
-  content: ""; position: absolute; left: 50%; bottom: -7%; transform: translateX(-50%);
-  width: 116%; height: 12%; border-radius: 50%;
-  background: radial-gradient(ellipse at center,
-    color-mix(in srgb, var(--st, var(--st-idle)) 45%, transparent), transparent 70%);
-  filter: blur(5px); opacity: .8;
-  transition: background .45s var(--ease);
-  pointer-events: none;
+/* Control rows. Five of them, every turn. */
+.rows { display: flex; flex-direction: column; gap: .12em; }
+.srow {
+  display: grid;
+  grid-template-columns: 4.6em minmax(0, 1.15fr) 7.6em minmax(0, 1.1fr);
+  gap: .6em; align-items: baseline;
+  border: 0; background: none; text-align: left;
+  font: inherit; color: var(--glass-dim);
+  padding: .16em .3em; border-radius: 2px;
+  border-left: 2px solid transparent;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.srow:hover { background: color-mix(in srgb, var(--phosphor) 9%, transparent); }
+.srow .s-id { color: var(--phosphor); letter-spacing: .04em; }
+.srow .s-name { color: var(--glass-dim); overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }
+.srow .s-act { font-weight: 500; letter-spacing: .02em; }
+.srow .s-code { color: var(--glass-dim); overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; font-size: .94em; }
+
+.srow[data-tone="pass"]     { border-left-color: var(--st-pass); }
+.srow[data-tone="pass"]     .s-act { color: var(--st-pass); }
+.srow[data-tone="deny"]     { border-left-color: var(--st-deny); }
+.srow[data-tone="deny"]     .s-act { color: var(--st-deny); }
+.srow[data-tone="disclose"] { border-left-color: var(--st-disclose); }
+.srow[data-tone="disclose"] .s-act { color: var(--st-disclose); }
+.srow[data-tone="escalate"] { border-left-color: var(--st-escal); }
+.srow[data-tone="escalate"] .s-act { color: var(--st-escal); }
+.srow[data-tone="log"]      { border-left-color: var(--st-log); }
+.srow[data-tone="log"]      .s-act { color: var(--st-log); }
+.srow[data-tone="idle"]     { border-left-color: var(--st-idle); }
+.srow[data-tone="idle"]     .s-act { color: var(--st-idle); }
+.srow[aria-expanded="true"] { background: color-mix(in srgb, var(--phosphor) 13%, transparent); }
+
+/* ATR-01 sits apart, under a rule, because it is not a gate: it gates
+   nothing and is written on every turn whatever the other four returned. */
+.srow[data-ledger="true"] {
+  margin-top: .2em; padding-top: .34em;
+  border-top: 1px dashed color-mix(in srgb, var(--phosphor) 26%, transparent);
+  border-left-color: transparent;
+}
+.srow[data-ledger="true"] .s-act { color: var(--glass-dim); font-style: italic; }
+
+/* The composite line — which action won, and which control it came from. */
+.scr-comp {
+  margin-top: auto; padding-top: .34em;
+  border-top: 1px solid color-mix(in srgb, var(--phosphor) 26%, transparent);
+  display: flex; flex-wrap: wrap; gap: .2em 1em; align-items: baseline;
+  font-size: .96em;
+}
+.scr-comp .c-label { color: var(--glass-dim); letter-spacing: .08em; }
+.scr-comp .c-act { font-weight: 600; letter-spacing: .02em; }
+.scr-comp .c-why { color: var(--glass-dim); font-size: .92em; }
+.scr-comp[data-tone="pass"]     .c-act { color: var(--st-pass); }
+.scr-comp[data-tone="deny"]     .c-act { color: var(--st-deny); }
+.scr-comp[data-tone="disclose"] .c-act { color: var(--st-disclose); }
+.scr-comp[data-tone="escalate"] .c-act { color: var(--st-escal); }
+.scr-comp[data-tone="log"]      .c-act { color: var(--st-log); }
+.scr-comp[data-tone=""]         .c-act { color: var(--st-idle); }
+
+.scr-idle { color: var(--glass-dim); font-size: .96em; }
+
+/* On a phone the machine stops helping. Scaled to fit a 390px viewport the
+   readout lands at under 6px, which is a picture of a readout rather than one
+   anybody can read. Below 640px the chassis is dropped and the glass becomes a
+   plain panel at a legible size: the content is identical, and the thing a
+   reader came for survives. */
+@media (max-width: 640px) {
+  .machine svg.chassis { display: none; }
+  .screen {
+    position: static;
+    width: auto; height: auto;
+    padding: 13px 14px;
+    font-size: 11px;
+    border: 1px solid color-mix(in srgb, var(--phosphor) 22%, transparent);
+    border-radius: 9px;
+    background: var(--glass);
+  }
+  .srow { grid-template-columns: 4.6em minmax(0, 1fr); row-gap: 0; }
+  .srow .s-name { display: none; }
+  .srow .s-act { grid-column: 2; }
+  .srow .s-code { grid-column: 2; font-size: .88em; }
 }
 
-/* Per-state colouring, set by JS from each control's own engine verdict. */
-.station[data-state="pass"]     { --st: var(--st-pass); }
-.station[data-state="deny"]     { --st: var(--st-deny); }
-.station[data-state="disclose"] { --st: var(--st-disclose); }
-.station[data-state="escalate"] { --st: var(--st-escal); }
-.station[data-state="log"]      { --st: var(--st-log); }
-.station[data-state="idle"]     { --st: var(--st-idle); }
-.station:not([data-state="idle"]) .arch {
-  border-color: color-mix(in srgb, var(--st) 62%, transparent);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.42),
-    inset 0 0 46px color-mix(in srgb, var(--st) 26%, transparent),
-    0 14px 40px -16px color-mix(in srgb, var(--st) 40%, transparent);
+/* Scanlines and a faint corner vignette: a CRT reads as a CRT because of the
+   light it fails to emit evenly, not because of a border radius. */
+.scanlines {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom, var(--scan) 0 1px, transparent 1px 3px);
+  mix-blend-mode: screen;
 }
-.station:not([data-state="idle"]) .glyph { color: color-mix(in srgb, var(--st) 72%, white); }
-.station.here .arch { border-color: color-mix(in srgb, var(--st) 90%, white); }
-.station[aria-expanded="true"] .plaque { box-shadow: 0 0 0 2px var(--cyan), 0 4px 10px -4px rgba(0,0,0,.85); }
+@media (prefers-reduced-motion: reduce) { .scanlines { display: none; } }
 
-/* Records drawer beneath PDX-01 — the chart that stays shut until cleared. */
-.drawer {
-  position: absolute; bottom: 15%; left: 42%; width: 7%; min-width: 44px;
-  transform: translateX(-50%); z-index: 2; pointer-events: none; text-align: center;
-}
-.drawer-box {
-  position: relative; height: 0; padding-bottom: 66%;
-  border-radius: 3px; border: 1px solid rgba(150,190,220,.34);
-  background: linear-gradient(180deg, #1b3e59, #0d2740);
-  box-shadow: 0 6px 16px -8px rgba(0,0,0,.9);
-  overflow: hidden; transition: border-color .4s var(--ease);
-}
-.drawer-face {
-  position: absolute; inset: 14% 9% 14% 9%;
-  border-radius: 2px; background: linear-gradient(180deg, #2b5c7d, #17394f);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.2);
-  transition: transform .55s var(--ease);
-}
-.drawer-face::after {
-  content: ""; position: absolute; left: 32%; right: 32%; top: 42%; height: 2px;
-  border-radius: 2px; background: rgba(255,255,255,.28);
-}
-.drawer[data-open="true"] .drawer-face { transform: translateY(42%); }
-.drawer[data-open="true"] .drawer-box { border-color: color-mix(in srgb, var(--st-pass) 75%, transparent); }
-.drawer[data-open="blocked"] .drawer-box { border-color: color-mix(in srgb, var(--st-deny) 78%, transparent); }
-.drawer-tag {
-  display: block; margin-top: 4px;
-  font-family: var(--mono); font-size: .48rem; letter-spacing: .1em;
-  color: rgba(186,209,229,.5); white-space: nowrap;
-  transition: color .4s var(--ease);
-}
-.drawer[data-open="true"] .drawer-tag { color: var(--st-pass); }
-.drawer[data-open="blocked"] .drawer-tag { color: var(--st-deny); }
-
-/* Handoff alcove at the right end — EIT-01's authorized-staff lane. */
-.alcove {
-  position: absolute; right: 2.5%; bottom: 24%; width: 12%; min-width: 76px;
-  z-index: 2; text-align: center; pointer-events: none;
-}
-.alcove-door {
-  position: relative; height: 0; padding-bottom: 148%;
-  border-radius: 7px 7px 2px 2px;
-  border: 1px solid rgba(150,190,220,.24);
-  background: linear-gradient(180deg, rgba(103,232,249,.05), rgba(8,26,44,.5));
-  overflow: hidden;
-  transition: border-color .5s var(--ease), background .5s var(--ease), box-shadow .5s var(--ease);
-}
-.alcove[data-live="true"] .alcove-door {
-  border-color: color-mix(in srgb, var(--st-escal) 70%, transparent);
-  background: linear-gradient(180deg, rgba(103,232,249,.26), rgba(103,232,249,.05));
-  box-shadow: inset 0 0 34px rgba(103,232,249,.3), 0 0 34px -8px rgba(103,232,249,.62);
-}
-.staff {
-  position: absolute; left: 50%; bottom: 5%; transform: translateX(-50%) translateY(16%);
-  width: 44%; opacity: .22; color: #9fc6dd;
-  transition: opacity .5s var(--ease), transform .5s var(--ease), color .5s var(--ease);
-}
-.alcove[data-live="true"] .staff { opacity: 1; transform: translateX(-50%); color: var(--cyan); }
-.staff svg { width: 100%; height: auto; display: block; }
-.alcove-tag {
-  position: absolute; left: -18%; right: -18%; bottom: calc(100% + 5px);
-  font-family: var(--mono); font-size: .48rem; letter-spacing: .09em; line-height: 1.3;
-  color: rgba(186,209,229,.45);
-  transition: color .5s var(--ease);
-}
-.alcove[data-live="true"] .alcove-tag { color: var(--st-escal); }
-
-/* ── The agent ────────────────────────────────────────────────────────── */
-/* She stands on the walk band, nearer to the viewer than the vitrines, so
-   she passes in front of their bases and never occludes a label. */
-.agent {
-  position: absolute; bottom: var(--walk); left: 6%;
-  height: 52%; z-index: 5;
-  transform: translateX(-50%);
-  transition: left var(--walk-ms, 1150ms) var(--ease), height .5s var(--ease);
-  will-change: left;
-}
-.agent img {
-  height: 100%; width: auto; display: block;
-  filter: drop-shadow(0 12px 20px rgba(0,0,0,.6));
-}
-.agent.moving img { animation: bob 540ms var(--ease) infinite; }
-@keyframes bob {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-2.2%) rotate(.45deg); }
-}
-.agent::after {
-  content: ""; position: absolute; left: 50%; bottom: -2.5%;
-  width: 82%; height: 6%; transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,.7), transparent 70%);
-  filter: blur(3px);
-}
-/* What she actually said, as a transcript line under the room rather than a
-   bubble inside it: always legible, never colliding with the scene, and it
-   survives being read by a screen reader in order. */
+/* ── Utterance ────────────────────────────────────────────────────────── */
 .utterance {
-  display: flex; gap: 10px; align-items: flex-start;
-  margin-top: 10px; padding: 10px 13px;
-  border: 1px solid var(--line); border-left: 3px solid var(--teal-bright);
-  border-radius: 10px; background: var(--paper);
-  min-height: 3.1em;
+  margin: 12px 0 0; padding: 10px 14px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--paper);
+  font-size: .86rem; color: var(--ink-soft); line-height: 1.6;
 }
 .utterance .who {
-  font-family: var(--mono); font-size: .58rem; letter-spacing: .09em;
-  text-transform: uppercase; color: #8a939f; white-space: nowrap; padding-top: 2px;
+  display: block; font-family: var(--mono); font-size: .66rem;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--teal);
+  margin-bottom: 2px;
 }
-.utterance .line { font-size: .82rem; line-height: 1.5; color: var(--ink-soft); }
-.utterance .line em { font-style: normal; color: #8a939f; }
+.utterance .line em { color: var(--body); }
 
 /* ── ATR-01 evidence ledger ───────────────────────────────────────────── */
-.ledger {
-  display: flex; flex-direction: column; min-height: 0;
-  border-radius: 16px; border: 1px solid var(--line);
-  background: var(--paper);
-  box-shadow: 0 20px 50px -34px rgba(15,23,42,.5);
-  overflow: hidden;
-}
-.ledger-head {
-  padding: 11px 14px 10px; border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--ink), #0a2138); color: var(--paper);
-}
+.ledger { border: 1px solid var(--line); border-radius: 10px; background: var(--paper);
+  overflow: hidden; }
+.ledger-head { padding: 12px 14px 10px; border-bottom: 1px solid var(--line); }
 .ledger-head .lid {
-  display: flex; align-items: center; gap: 7px;
-  font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; color: var(--cyan);
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: .64rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--teal);
 }
-.ledger-head h2 { font-family: var(--display); font-size: .84rem; font-weight: 700; margin-top: 3px; }
-.ledger-head p { font-size: .68rem; color: rgba(255,255,255,.6); margin-top: 2px; line-height: 1.45; }
-.ledger-rows { flex: 1 1 auto; overflow-y: auto; padding: 8px; min-height: 130px; }
+.ledger-head h2 {
+  font-family: var(--display); font-size: .96rem; font-weight: 700;
+  color: var(--ink); margin: 3px 0 4px;
+}
+.ledger-head p { font-size: .76rem; color: var(--body); line-height: 1.55; }
+.ledger-rows { max-height: 290px; overflow-y: auto; padding: 8px 10px; display: flex;
+  flex-direction: column; gap: 6px; }
+.ledger-empty { font-size: .76rem; color: var(--body); font-style: italic; padding: 6px 4px; }
 .lrow {
-  border: 1px solid var(--line); border-left-width: 3px; border-radius: 7px;
-  padding: 7px 9px; margin-bottom: 6px; background: var(--mist);
-  animation: seal .4s var(--ease) both;
+  border: 1px solid var(--line); border-left-width: 3px; border-radius: 5px;
+  padding: 6px 9px; background: var(--mist);
 }
-@keyframes seal { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
-.lrow-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-.lrow-turn { font-family: var(--mono); font-size: .58rem; color: #7a8593; letter-spacing: .06em; }
-.lrow-act { font-family: var(--mono); font-size: .6rem; font-weight: 500; letter-spacing: .04em; }
-.lrow-reason { font-family: var(--mono); font-size: .58rem; color: var(--body); margin-top: 2px; word-break: break-all; }
+.lrow-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.lrow-turn { font-family: var(--mono); font-size: .64rem; color: var(--body); letter-spacing: .06em; }
+.lrow-act { font-family: var(--mono); font-size: .68rem; font-weight: 500; }
+.lrow-reason { font-family: var(--mono); font-size: .63rem; color: var(--body);
+  margin-top: 2px; word-break: break-all; }
 .lrow[data-tone="pass"]     { border-left-color: var(--st-pass); }
-.lrow[data-tone="pass"] .lrow-act { color: #0e7f74; }
+.lrow[data-tone="pass"] .lrow-act { color: color-mix(in srgb, var(--st-pass) 80%, var(--ink)); }
 .lrow[data-tone="deny"]     { border-left-color: var(--st-deny); }
-.lrow[data-tone="deny"] .lrow-act { color: #a8352d; }
+.lrow[data-tone="deny"] .lrow-act { color: color-mix(in srgb, var(--st-deny) 80%, var(--ink)); }
 .lrow[data-tone="disclose"] { border-left-color: var(--st-disclose); }
-.lrow[data-tone="disclose"] .lrow-act { color: #9c6516; }
-.lrow[data-tone="escalate"] { border-left-color: #2a8f9c; }
-.lrow[data-tone="escalate"] .lrow-act { color: #1c6f7a; }
+.lrow[data-tone="disclose"] .lrow-act { color: color-mix(in srgb, var(--st-disclose) 80%, var(--ink)); }
+.lrow[data-tone="escalate"] { border-left-color: var(--st-escal); }
+.lrow[data-tone="escalate"] .lrow-act { color: color-mix(in srgb, var(--st-escal) 72%, var(--ink)); }
 .lrow[data-tone="log"]      { border-left-color: var(--st-log); }
-.lrow[data-tone="log"] .lrow-act { color: #5c6b80; }
+.lrow[data-tone="log"] .lrow-act { color: color-mix(in srgb, var(--st-log) 80%, var(--ink)); }
 .ledger-foot {
-  border-top: 1px solid var(--line); padding: 8px 12px;
-  font-size: .66rem; color: var(--body); background: var(--mist);
+  padding: 8px 14px; border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: .64rem; color: var(--body); letter-spacing: .04em;
 }
-.ledger-empty { font-size: .7rem; color: #8a939f; padding: 10px 4px; }
 
 /* ── Readout ──────────────────────────────────────────────────────────── */
-.readout { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; margin-top: 14px; align-items: start; }
-.card {
-  border: 1px solid var(--line); border-radius: 14px; background: var(--paper);
-  padding: 13px 15px; min-width: 0;
-}
-.card h3 {
-  font-family: var(--mono); font-size: .6rem; letter-spacing: .11em;
-  text-transform: uppercase; color: #7a8593; margin-bottom: 8px;
-}
-.outcome { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
-.outcome-act {
-  font-family: var(--mono); font-size: .95rem; font-weight: 500; letter-spacing: .02em;
-  color: var(--ink);
-}
-.pri {
-  font-family: var(--mono); font-size: .58rem; letter-spacing: .07em;
-  padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--body);
-}
-.outcome-reason { font-family: var(--mono); font-size: .7rem; color: var(--body); margin-top: 5px; word-break: break-all; }
-.viol { margin-top: 9px; display: flex; flex-direction: column; gap: 5px; }
-.viol-item {
-  font-size: .72rem; line-height: 1.5; color: var(--body);
-  border-left: 3px solid var(--st-deny); padding-left: 8px;
-}
-.viol-item b { font-family: var(--mono); font-size: .68rem; color: var(--ink); font-weight: 500; }
-.no-viol { font-size: .74rem; color: #8a939f; }
-.viol-item i { font-style: normal; font-family: var(--mono); font-size: .6rem; color: #8a939f; }
-.card[data-tone="pass"]     { border-color: rgba(22,163,148,.4); }
-.card[data-tone="deny"]     { border-color: rgba(209,84,75,.45); }
-.card[data-tone="disclose"] { border-color: rgba(216,145,47,.45); }
-.card[data-tone="escalate"] { border-color: rgba(42,143,156,.45); }
+.readout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 14px; margin-top: 16px; }
+@media (max-width: 860px) { .readout { grid-template-columns: 1fr; } }
 
-.cfg-name { font-family: var(--display); font-size: .9rem; font-weight: 700; color: var(--ink); }
-.cfg-staging { font-size: .72rem; color: var(--body); margin: 3px 0 9px; line-height: 1.5; }
-.cfg-block {
-  font-family: var(--mono); font-size: .66rem; line-height: 1.65;
-  background: #0b2138; color: #cfe4f2; border-radius: 9px; padding: 10px 12px;
-  overflow-x: auto; white-space: pre;
+.card { border: 1px solid var(--line); border-radius: 10px; background: var(--paper);
+  padding: 13px 15px; }
+.card[data-tone="pass"]     { border-color: color-mix(in srgb, var(--st-pass) 45%, transparent); }
+.card[data-tone="deny"]     { border-color: color-mix(in srgb, var(--st-deny) 50%, transparent); }
+.card[data-tone="disclose"] { border-color: color-mix(in srgb, var(--st-disclose) 50%, transparent); }
+.card[data-tone="escalate"] { border-color: color-mix(in srgb, var(--st-escal) 50%, transparent); }
+.card[data-tone="log"]      { border-color: color-mix(in srgb, var(--st-log) 45%, transparent); }
+.card h3 {
+  font-family: var(--mono); font-size: .64rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--teal); font-weight: 500; margin-bottom: 7px;
 }
-.cfg-block .k { color: #8fb8d4; }
-.cfg-block .v { color: var(--cyan); }
-.cfg-block .c { color: #6b8299; }
-.cfg-hint { font-size: .68rem; color: #8a939f; margin-top: 7px; }
+.out-action { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+.out-action b { font-family: var(--mono); font-size: 1.02rem; color: var(--ink); font-weight: 600; }
+.out-action i { font-family: var(--mono); font-size: .66rem; color: var(--body); font-style: normal; }
+.out-reason { font-family: var(--mono); font-size: .72rem; color: var(--body);
+  margin-top: 4px; word-break: break-all; }
+.out-viol { margin-top: 9px; display: flex; flex-direction: column; gap: 7px; }
+.viol-item {
+  font-size: .76rem; color: var(--ink-soft); line-height: 1.5;
+  border-left: 2px solid var(--st-deny); padding-left: 9px;
+}
+.viol-item b { font-family: var(--mono); font-size: .7rem; }
+.viol-item i { font-family: var(--mono); font-size: .62rem; color: var(--body);
+  font-style: normal; letter-spacing: .06em; }
+.no-viol { font-size: .76rem; color: var(--body); font-style: italic; }
+
+.cfg h3 span { color: var(--body); text-transform: none; letter-spacing: 0; }
+.cfg-staging { font-size: .76rem; color: var(--body); margin-bottom: 8px; line-height: 1.55; }
+.cfg-block {
+  font-family: var(--mono); font-size: .68rem; line-height: 1.75;
+  background: var(--mist); border: 1px solid var(--line); border-radius: 6px;
+  padding: 9px 11px; overflow-x: auto; white-space: pre; color: var(--ink-soft);
+}
+.cfg-block .k { color: var(--teal); }
+.cfg-block .v { color: var(--ink); }
+.cfg-block .c { color: var(--body); font-style: italic; }
+.cfg-hint { font-size: .7rem; color: var(--body); margin-top: 7px; line-height: 1.5; }
 
 /* ── Provenance ───────────────────────────────────────────────────────── */
 .prov {
-  margin-top: 14px; padding-top: 11px; border-top: 1px solid var(--line);
-  font-size: .7rem; line-height: 1.6; color: #7a8593;
+  margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line);
+  font-size: .72rem; color: var(--body); line-height: 1.65;
 }
-.prov code { font-family: var(--mono); font-size: .66rem; color: var(--body); }
+.prov code { font-family: var(--mono); font-size: .92em; color: var(--ink-soft);
+  background: var(--mist); padding: .08em .3em; border-radius: 3px; }
 
-.sr {
+.sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
-/* ── Responsive ───────────────────────────────────────────────────────── */
-@media (max-width: 1000px) {
-  .stage { grid-template-columns: minmax(0,1fr); }
-  .ledger-rows { max-height: 240px; }
-  .room { --exit: 84; }
-  /* Labels must stay inside their own bay once the concourse narrows. */
-  .station { --label-bleed: -2%; }
-}
-@media (max-width: 760px) {
-  body { font-size: 14px; }
-  .wrap { padding: 16px 12px 22px; }
-  /* Taller room rather than a shrunken one: the vitrines and the agent keep
-     their real height, and the concourse simply gets less horizontal run. */
-  .room { --floor: 50%; --walk: 12%; --exit: 80; aspect-ratio: 5 / 4; }
-  .station { --label-bleed: -6%; }
-  .readout { grid-template-columns: minmax(0,1fr); }
-  .station { width: 17%; min-width: 0; bottom: 28%; height: 40%; }
-  .st-name { display: none; }              /* plaque + verdict carry it */
-  .glyph { top: 24%; width: 46%; }
-  .verdict { top: 62%; font-size: .47rem; }
-  .agent { height: 44%; }
-  .boundary::after { display: none; }
-  .drawer { display: none; }               /* PDX state is on its own lamp */
-  .alcove { width: 13%; bottom: 27%; }
-  .alcove-tag { left: -30%; right: -30%; font-size: .44rem; }
-  .say { left: 58%; width: 54vw; max-width: 230px; font-size: .66rem; }
-  .scn span { display: none; }
-  .zone.desk { left: 58%; }
-}
-@media (max-width: 430px) {
-  .room { aspect-ratio: 1 / 1; --floor: 52%; --exit: 72; }
-  .station { --label-bleed: 0%; }
-  .st-label { gap: 2px; }
-  .beat { font-size: .53rem; padding: 4px 7px; }
-  .plaque { font-size: .48rem; padding: 2px 6px; letter-spacing: .06em; }
-  .verdict { font-size: .44rem; letter-spacing: .04em; }
-  .zone { font-size: .44rem; }
-  .agent { height: 40%; }
-  .say { width: 60vw; }
-}
-
-/* ── Reduced motion ───────────────────────────────────────────────────────
-   Every state change still happens and every row still lands. What goes is
-   travel, bob and the scale/fade choreography — the information, not the
-   animation, is what this page is for. */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .001ms !important;
-  }
-  .agent.moving img { animation: none; }
+/* Forced-colours: hand the whole thing back to the user's palette rather than
+   fighting it. Status meaning then rests on the action text, which is why the
+   action is always spelled out and never colour-only. */
+@media (forced-colors: active) {
+  .srow, .lrow, .card, .scr-comp { border-color: CanvasText; }
+  .screen { color: CanvasText; }
+  .scanlines { display: none; }
 }
 </style>
 </head>
@@ -622,14 +537,22 @@ button:focus-visible,
 <div class="wrap">
 
   <div class="masthead">
-    <h1>The Front Desk</h1>
-    <span class="stamp" id="engineStamp">policy engine v1.3</span>
+    <h1>The Controls, Running</h1>
+    <div class="mast-right">
+      <span class="stamp" id="engineStamp">policy engine v1.3</span>
+      <div class="theme" role="group" aria-label="Colour theme">
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+      </div>
+    </div>
   </div>
-  <p style="font-size:.875rem;color:var(--body);max-width:64ch">
-    An AI voice agent crosses into a provider organization and works its way down the desk.
-    Each arch is one of the four behavioural controls; the panel on the right is ATR-01, where
-    every turn is sealed whatever the outcome. Pick a scenario, then open any plaque for that
-    control's <code style="font-family:var(--mono);font-size:.8em">rule_engine.config</code>.
+  <p class="lede">
+    What the policy engine returns on a healthcare voice call, turn by turn. All
+    five controls are evaluated on <em>every</em> turn and resolved by priority &mdash;
+    there is no pipeline and nothing to walk through. Pick a scenario, then open any
+    row for that control's
+    <code style="font-family:var(--mono);font-size:.84em">rule_engine.config</code>.
   </p>
 
   <!-- Scenario deck — labels describe what each scenario demonstrates; the
@@ -658,41 +581,104 @@ button:focus-visible,
     </label>
   </div>
 
-  <div class="beats" id="beats" aria-hidden="true"></div>
+  <div class="turnstrip" id="turnstrip" aria-hidden="true"></div>
 
   <div class="stage">
     <div class="stage-main">
-    <div class="room" id="room">
-      <div class="cove" id="cove"></div>
-      <div class="cove-bar" id="coveBar"></div>
-      <div class="backwall"></div>
-      <div class="floor"></div>
-      <div class="boundary"></div>
-      <span class="zone caller">Caller &middot; provider side</span>
-      <span class="zone desk">Receiving organization</span>
 
-      <div class="drawer" id="drawer" data-open="false">
-        <div class="drawer-box"><div class="drawer-face"></div></div>
-        <span class="drawer-tag" id="drawerTag">CHART</span>
-      </div>
+      <div class="machine" id="machine">
+        <!-- Chassis: artwork. Decorative, hence aria-hidden — the readout it
+             frames is real content and carries the meaning. -->
+        <svg class="chassis" viewBox="0 0 600 480" aria-hidden="true" focusable="false">
+          <!-- keyboard cable, drawn first so the keyboard sits over its end -->
+          <path d="M214 372 C 214 388, 192 381, 192 394 C 192 407, 170 400, 170 411
+                   C 170 420, 155 416, 146 412"
+                fill="none" stroke="var(--cable)" stroke-width="5"
+                stroke-linecap="round" opacity=".95"/>
 
-      <div class="alcove" id="alcove" data-live="false">
-        <div class="alcove-door">
-          <div class="staff">
-            <svg viewBox="0 0 32 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-              <circle cx="16" cy="10" r="6.5"/>
-              <path d="M4 46v-8a12 12 0 0 1 24 0v8"/>
-              <path d="M20 26v7" stroke-width="1.6"/>
-            </svg>
+          <!-- ── monitor case ───────────────────────────────────────────── -->
+          <!-- top face -->
+          <polygon points="55,80 545,53.05 583,31.05 93,58"
+                   fill="var(--case-top)" stroke="var(--case-edge)" stroke-width="1.2"/>
+          <!-- right side face -->
+          <polygon points="545,53.05 583,31.05 583,306.05 545,328.05"
+                   fill="var(--case-side)" stroke="var(--case-edge)" stroke-width="1.2"/>
+          <!-- front face -->
+          <polygon points="55,80 545,53.05 545,328.05 55,355"
+                   fill="var(--case)" stroke="var(--case-edge)" stroke-width="1.2"/>
+
+          <!-- vents on the top face -->
+          <g stroke="var(--vent)" stroke-width="2.4" stroke-linecap="round">
+            <line x1="430" y1="57"   x2="460" y2="40"/>
+            <line x1="446" y1="58.2" x2="476" y2="41.2"/>
+            <line x1="462" y1="59.4" x2="492" y2="42.4"/>
+            <line x1="478" y1="60.6" x2="508" y2="43.6"/>
+            <line x1="494" y1="61.8" x2="524" y2="44.8"/>
+          </g>
+
+          <!-- screen recess: bezel lip, then the glass itself -->
+          <polygon points="71,93 529,67.81 529,314.81 71,340"
+                   fill="var(--bezel)" stroke="var(--case-edge)" stroke-width="1"/>
+          <polygon points="77,99 523,74.47 523,308.47 77,333" fill="var(--glass)"/>
+          <!-- a cathode tube is brightest where the gun points, dimmest at the
+               corners; this is that falloff, not a decorative gradient -->
+          <defs>
+            <radialGradient id="crtGlow" cx="42%" cy="38%" r="72%">
+              <stop offset="0%"   stop-color="var(--glass-top)" stop-opacity=".95"/>
+              <stop offset="100%" stop-color="var(--glass)"     stop-opacity="1"/>
+            </radialGradient>
+          </defs>
+          <polygon points="77,99 523,74.47 523,308.47 77,333" fill="url(#crtGlow)"/>
+
+          <!-- bezel furniture: this project's own wordmark, and a power lamp -->
+          <text x="83" y="350" font-family="Raleway, Segoe UI, system-ui, sans-serif"
+                font-size="13" font-weight="700" letter-spacing="1.4"
+                fill="var(--case-edge)" transform="rotate(-3.15 83 350)">NHID&#8209;CLINICAL</text>
+          <circle id="powerLamp" cx="507" cy="320" r="4.4"
+                  fill="var(--st-idle)" stroke="var(--case-edge)" stroke-width=".8"/>
+
+          <!-- ── pedestal ───────────────────────────────────────────────── -->
+          <polygon points="205,357 415,345 447,361 237,373"
+                   fill="var(--case-top)" stroke="var(--case-edge)" stroke-width="1.1"/>
+          <polygon points="237,373 447,361 447,375 237,387"
+                   fill="var(--case-side)" stroke="var(--case-edge)" stroke-width="1.1"/>
+          <polygon points="205,357 237,373 237,387 205,371"
+                   fill="var(--case)" stroke="var(--case-edge)" stroke-width="1.1"/>
+
+          <!-- ── keyboard ───────────────────────────────────────────────── -->
+          <polygon points="80,408 340,385 410,410 150,433"
+                   fill="var(--key)" stroke="var(--key-edge)" stroke-width="1.2"/>
+          <polygon points="150,433 410,410 410,422 150,445"
+                   fill="var(--case-side)" stroke="var(--key-edge)" stroke-width="1.2"/>
+          <polygon points="80,408 150,433 150,445 80,420"
+                   fill="var(--case)" stroke="var(--key-edge)" stroke-width="1.2"/>
+          <!-- key field: four rows of caps, sheared to the keyboard's own plane -->
+          <g stroke="var(--key-edge)" stroke-width="1" fill="none" opacity=".8">
+            <polygon points="106,410 310,392 326,398 122,416"/>
+            <polygon points="114,419 318,401 334,407 130,425"/>
+            <polygon points="122,428 326,410 342,416 138,434"/>
+            <polygon points="138,437 310,422 326,428 154,443"/>
+          </g>
+        </svg>
+
+        <!-- ── the glass ─────────────────────────────────────────────────────
+             Ships empty on purpose. Every string below arrives at runtime from
+             the generated trace; nothing here is authored. -->
+        <div class="screen" id="screen">
+          <div class="scr-head">
+            <span class="sh-id" id="scrSession">&mdash;</span>
+            <span id="scrTurn">&mdash;</span>
           </div>
+          <div class="rows" id="screenRows" role="group" aria-label="Per-control evaluation"></div>
+          <p class="scr-idle" id="scrIdle">Awaiting a scenario.</p>
+          <div class="scr-comp" id="screenComposite" data-tone="" hidden>
+            <span class="c-label">COMPOSITE</span>
+            <span class="c-act" id="compAction"></span>
+            <span class="c-why" id="compWhy"></span>
+          </div>
+          <div class="scanlines" aria-hidden="true"></div>
         </div>
-        <span class="alcove-tag" id="alcoveTag">AUTHORIZED STAFF</span>
-      </div>
-
-      <div class="agent" id="agent">
-        <img src="/assets/media/walkthrough-agent.png" alt="" width="250" height="640" decoding="async">
-      </div>
-      </div><!-- /.room -->
+      </div><!-- /.machine -->
 
       <p class="utterance" id="utterance">
         <span class="who" id="utterWho">Turn &mdash;</span>
@@ -707,7 +693,7 @@ button:focus-visible,
           ATR-01
         </span>
         <h2>Evidence ledger</h2>
-        <p>Not a checkpoint on the floor. Every turn is written here — the passes as well as the failures.</p>
+        <p>Not a gate. Every turn is written here &mdash; the passes as well as the failures.</p>
       </div>
       <div class="ledger-rows" id="ledgerRows" role="log" aria-live="polite" aria-label="Audit trail">
         <p class="ledger-empty">Nothing sealed yet.</p>
@@ -718,28 +704,26 @@ button:focus-visible,
 
   <div class="readout">
     <div class="card" id="outcomeCard" data-tone="">
-      <h3>Composite decision — this turn</h3>
-      <div aria-live="polite">
-        <div class="outcome">
-          <span class="outcome-act" id="outAction">&mdash;</span>
-          <span class="pri" id="outPriority"></span>
-        </div>
-        <div class="outcome-reason" id="outReason"></div>
-        <div class="viol" id="outViolations"></div>
+      <h3>Composite decision</h3>
+      <div class="out-action">
+        <b id="outAction">&mdash;</b>
+        <i id="outPriority"></i>
       </div>
+      <div class="out-reason" id="outReason"></div>
+      <div class="out-viol" id="outViolations"></div>
     </div>
 
-    <div class="card">
-      <h3>rule_engine.config</h3>
-      <div class="cfg-name" id="cfgName">Select a station</div>
-      <div class="cfg-staging" id="cfgStaging">Open a brass plaque in the scene to read that control's configuration.</div>
-      <div class="cfg-block" id="cfgBlock" aria-live="polite"></div>
+    <div class="card cfg">
+      <h3 id="cfgName">rule_engine.config</h3>
+      <p class="cfg-staging" id="cfgStaging"></p>
+      <pre class="cfg-block" id="cfgBlock"></pre>
       <p class="cfg-hint" id="cfgHint"></p>
     </div>
   </div>
 
   <p class="prov" id="prov"></p>
-  <p class="sr" id="srStatus" role="status" aria-live="polite"></p>
+  <p class="sr-only" id="srStatus" role="status" aria-live="polite"></p>
+
 </div>
 
 <!-- BEGIN GENERATED walkthrough-trace -->
@@ -767,7 +751,7 @@ button:focus-visible,
     "IDG-01": {
       "control_id": "IDG-01",
       "name": "Identity Disclosure Gate",
-      "staging": "Reception arch \u2014 the agent states what she is before the doors open",
+      "staging": "Has the agent disclosed that it is not human, and does its own identity assertion still say so?",
       "is_station": true,
       "reason_codes": [
         "IDG01_ASSERTION_TEXT_MISSING",
@@ -780,7 +764,7 @@ button:focus-visible,
     "PDX-01": {
       "control_id": "PDX-01",
       "name": "Pre-Data Exchange Gate",
-      "staging": "Records window \u2014 the chart drawer stays shut until disclosure is on record",
+      "staging": "Is protected health information being exchanged, and was disclosure on record before it was?",
       "is_station": true,
       "reason_codes": [
         "PDX01_DISCLOSURE_NOT_SEQUENCED",
@@ -793,7 +777,7 @@ button:focus-visible,
     "DBC-01": {
       "control_id": "DBC-01",
       "name": "Deceptive Behavior Check",
-      "staging": "Voice bench \u2014 the utterance is checked for impersonation artifacts",
+      "staging": "Does the agent's speech claim human or licensed-professional status? Text only \u2014 this control does not analyse audio.",
       "is_station": true,
       "reason_codes": [
         "DBC01_ARTIFACT_DETECTED",
@@ -804,7 +788,7 @@ button:focus-visible,
     "EIT-01": {
       "control_id": "EIT-01",
       "name": "Escalation Implementation Test",
-      "staging": "Handoff desk \u2014 the lane to an authorized human staff member",
+      "staging": "Was a human handoff asked for, and did one actually happen?",
       "is_station": true,
       "reason_codes": [
         "EIT01_ESCALATION_HONORED",
@@ -817,7 +801,7 @@ button:focus-visible,
     "ATR-01": {
       "control_id": "ATR-01",
       "name": "Audit Trail",
-      "staging": "Evidence ledger \u2014 every turn is sealed here, whatever the outcome",
+      "staging": "Is the turn's audit envelope complete? Written on every turn, pass or fail; it gates nothing.",
       "is_station": false,
       "reason_codes": [
         "ATR01_AUDIT_COMPLETE",
@@ -1402,7 +1386,7 @@ button:focus-visible,
       ]
     }
   ],
-  "source_commit": "8588fe9"
+  "source_commit": "966a8b5"
 }
 </script>
 <!-- END GENERATED walkthrough-trace -->
@@ -1412,10 +1396,14 @@ button:focus-visible,
   "use strict";
 
   /* =========================================================================
-     This script is a PLAYER. It reads the generated trace above and animates
+     This script is a PLAYER. It reads the generated trace above and renders
      it. It contains no policy logic: there is no place in this file where a
      control's verdict is decided, because every verdict already arrived from
      scripts/build_walkthrough_fixture.py, which got it from the real engine.
+
+     The one thing it computes is which control the composite action came
+     from, and it computes that from the fixture's own action_priority map
+     rather than asserting it. See compositeSource().
      ====================================================================== */
 
   var TRACE;
@@ -1424,21 +1412,20 @@ button:focus-visible,
   } catch (e) { TRACE = null; }
   if (!TRACE || !TRACE.scenarios || !TRACE.scenarios.length) return;
 
-  var STAGES = TRACE.stage_order;                 // IDG-01 -> PDX-01 -> DBC-01 -> EIT-01
   var PRIORITY = TRACE.action_priority || {};
   var CONTROLS = TRACE.controls || {};
 
-  /* A control is "engaged" on a turn when its reason code is something other
-     than its resting one. These are the engine's own resting codes, listed so
-     the scene knows when a station has nothing to say — not a verdict table. */
-  var RESTING = {
-    "IDG-01": [],                                  // identity is always in play
-    "PDX-01": ["PDX01_NO_PHI_REQUESTED"],
-    "DBC-01": ["DBC01_NO_ARTIFACTS"],
-    "EIT-01": ["EIT01_NO_ESCALATION_REQUESTED"]
-  };
+  /* Display order: the four behavioural controls as the fixture lists them,
+     then whatever it marks as not a station. Derived, not typed, so a control
+     cannot appear on the glass that the fixture does not carry — and ATR-01
+     cannot quietly become a gate by being moved up here. */
+  var GATES = (TRACE.stage_order || []).slice();
+  var LEDGERS = Object.keys(CONTROLS).filter(function (id) {
+    return !CONTROLS[id].is_station;
+  });
+  var ORDER = GATES.concat(LEDGERS);
 
-  /* Map an engine PolicyAction onto a scene state. One-to-one with the
+  /* Map an engine PolicyAction onto a display tone. One-to-one with the
      enforcement ladder — no verdict is invented here, only recoloured. */
   function tone(action) {
     switch (action) {
@@ -1451,26 +1438,20 @@ button:focus-visible,
     }
   }
 
-  var GLYPHS = {
-    "IDG-01": '<path d="M24 6 8 12v10c0 9 7 16 16 20 9-4 16-11 16-20V12L24 6z"/><circle cx="24" cy="21" r="4.5"/><path d="M16 33c1.9-4.6 14.1-4.6 16 0"/>',
-    "PDX-01": '<rect x="10" y="9" width="28" height="30" rx="3"/><path d="M17 18h14M17 24h11"/><circle cx="31" cy="31" r="6"/><path d="M31 28.2v5.6M28.2 31h5.6"/>',
-    "DBC-01": '<path d="M8 24h4l3-9 4 20 4-15 3 8h4"/><circle cx="34" cy="24" r="7"/><path d="M39 29l4 4"/>',
-    "EIT-01": '<circle cx="18" cy="16" r="5"/><path d="M8 38v-4a10 10 0 0 1 20 0v4"/><path d="M31 20h9M36 15l5 5-5 5"/>'
-  };
-
   var els = {
     deck: document.getElementById("deck"),
-    beats: document.getElementById("beats"),
-    room: document.getElementById("room"),
-    agent: document.getElementById("agent"),
+    turnstrip: document.getElementById("turnstrip"),
+    machine: document.getElementById("machine"),
+    screenRows: document.getElementById("screenRows"),
+    scrIdle: document.getElementById("scrIdle"),
+    scrSession: document.getElementById("scrSession"),
+    scrTurn: document.getElementById("scrTurn"),
+    screenComposite: document.getElementById("screenComposite"),
+    compAction: document.getElementById("compAction"),
+    compWhy: document.getElementById("compWhy"),
+    powerLamp: document.getElementById("powerLamp"),
     utterWho: document.getElementById("utterWho"),
     utterLine: document.getElementById("utterLine"),
-    cove: document.getElementById("cove"),
-    coveBar: document.getElementById("coveBar"),
-    drawer: document.getElementById("drawer"),
-    drawerTag: document.getElementById("drawerTag"),
-    alcove: document.getElementById("alcove"),
-    alcoveTag: document.getElementById("alcoveTag"),
     ledgerRows: document.getElementById("ledgerRows"),
     ledgerFoot: document.getElementById("ledgerFoot"),
     outCard: document.getElementById("outcomeCard"),
@@ -1492,87 +1473,75 @@ button:focus-visible,
     engineStamp: document.getElementById("engineStamp")
   };
 
-  var reduceMotion = window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* Floor positions, in percent of room width. Fixed, ascending, and never
-     derived from evaluation order — this is the room's layout, not the
-     engine's. ATR-01 is absent by design: it is the ledger, not a stop. */
-  var DOOR = 6;
-  // Where she leaves the floor. Read from the room so a narrow viewport can
-  // stop her short of the handoff alcove instead of clipping her at the edge.
-  function exitX() {
-    var v = parseFloat(getComputedStyle(els.room).getPropertyValue("--exit"));
-    return isNaN(v) ? 88 : v;
-  }
-  var STATION_X = { "IDG-01": 24, "PDX-01": 42, "DBC-01": 60, "EIT-01": 77 };
-  // She walks the near band and stops beside each vitrine, not on top of it,
-  // so the glass and its labels are never behind her.
-  var AGENT_OFFSET = -7.5;
-
   var state = {
     scenarioIndex: 0,
     turnIndex: -1,
-    stage: -1,          // monotonic: only ever increases within a run
     playing: false,
     timer: null,
     token: 0,
-    openControl: null,
-    // Each control's last non-resting verdict this run. A control that cleared
-    // on turn 2 should still read as cleared on turn 3 — the call is the unit a
-    // reader thinks in, not the turn. Values are engine output, never derived.
-    held: {}
+    openControl: null
   };
 
   function speed() { return parseFloat(els.speedSel.value) || 1; }
   function esc(s) {
     return String(s == null ? "" : s)
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
+  function scenario() { return TRACE.scenarios[state.scenarioIndex]; }
 
-  /* ── Build the room ───────────────────────────────────────────────────── */
-  var stationEls = {};
-  STAGES.forEach(function (id) {
-    var meta = CONTROLS[id] || {};
-    var btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "station";
-    btn.dataset.control = id;
-    btn.dataset.state = "idle";
-    btn.style.left = STATION_X[id] + "%";
-    btn.setAttribute("aria-expanded", "false");
-    btn.innerHTML =
-      '<span class="st-label">' +
-        '<span class="plaque">' + esc(id) + '</span>' +
-        '<span class="st-name">' + esc(meta.name || "") + '</span>' +
-        '<span class="verdict" data-verdict></span>' +
-      '</span>' +
-      '<span class="arch"><span class="glyph">' +
-        '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.1" ' +
-        'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + GLYPHS[id] + '</svg>' +
-      '</span></span>';
-    btn.setAttribute("aria-label", id + " — " + (meta.name || "") + ". Show rule_engine.config.");
-    btn.addEventListener("click", function () { openConfig(id); });
-    els.room.appendChild(btn);
-    stationEls[id] = btn;
-  });
+  /* ── Theme: Dark / Light / System ─────────────────────────────────────────
+     Three states. "System" is the default and is a real state, not the
+     absence of a choice: it removes data-theme so the prefers-color-scheme
+     block in the stylesheet decides.
 
-  /* ── Beat rail ────────────────────────────────────────────────────────── */
-  var BEATS = ["Call start", "Identity disclosure", "Data exchange",
-               "Deceptive behavior", "Escalation", "Evidence"];
-  BEATS.forEach(function (label) {
-    var s = document.createElement("span");
-    s.className = "beat";
-    s.textContent = label;
-    els.beats.appendChild(s);
-  });
-  function setBeat(index) {
-    var kids = els.beats.children;
-    for (var i = 0; i < kids.length; i++) {
-      kids[i].className = "beat" + (i < index ? " done" : i === index ? " now" : "");
+     Storage is wrapped because this page is normally embedded in a
+     sandbox="allow-scripts" iframe, which gives it an opaque origin — reading
+     localStorage there THROWS rather than returning null. Everything works
+     without it; persistence is a nicety for the standalone page. */
+  var THEME_KEY = "nhid-theme";
+  var themeChoice = "system";
+  var themePickedHere = false;
+
+  function applyTheme(choice, fromUser) {
+    themeChoice = (choice === "dark" || choice === "light") ? choice : "system";
+    if (fromUser) themePickedHere = true;
+    var root = document.documentElement;
+    if (themeChoice === "system") root.removeAttribute("data-theme");
+    else root.setAttribute("data-theme", themeChoice);
+
+    var btns = document.querySelectorAll("[data-theme-choice]");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].setAttribute("aria-pressed",
+        btns[i].getAttribute("data-theme-choice") === themeChoice ? "true" : "false");
+    }
+    if (fromUser) {
+      try { localStorage.setItem(THEME_KEY, themeChoice); } catch (e) {}
+      els.srStatus.textContent = "Theme set to " + themeChoice + ".";
     }
   }
+
+  (function wireTheme() {
+    var btns = document.querySelectorAll("[data-theme-choice]");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function () {
+        applyTheme(this.getAttribute("data-theme-choice"), true);
+      });
+    }
+    var saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+    applyTheme(saved === "dark" || saved === "light" ? saved : "system", false);
+  })();
+
+  /* The embedding page already talks to this frame to report height. It uses
+     the same channel to hand over its own theme, so an embedded readout opens
+     matching the site instead of arguing with it. A choice made in here wins
+     from then on. */
+  window.addEventListener("message", function (e) {
+    if (!e.data || e.data.type !== "nhid:walkthrough:theme") return;
+    if (themePickedHere) return;
+    applyTheme(e.data.theme, false);
+  });
 
   /* ── Scenario deck ────────────────────────────────────────────────────── */
   TRACE.scenarios.forEach(function (sc, i) {
@@ -1594,123 +1563,108 @@ button:focus-visible,
     if (autoplay) play();
   }
 
-  /* ── Reset ────────────────────────────────────────────────────────────── */
-  function reset() {
-    state.token++;
-    clearTimeout(state.timer);
-    state.playing = false;
-    state.turnIndex = -1;
-    state.stage = -1;
-    state.held = {};
-    setPlayLabel("Run");
-    els.agent.style.left = DOOR + "%";
-    els.agent.classList.remove("moving");
-    els.utterWho.innerHTML = "Turn &mdash;";
-    els.utterLine.innerHTML = "<em>Run a scenario to hear the call.</em>";
-    STAGES.forEach(function (id) {
-      var el = stationEls[id];
-      el.dataset.state = "idle";
-      el.classList.remove("engaged", "here");
-      el.querySelector("[data-verdict]").textContent = "";
-    });
-    els.drawer.dataset.open = "false";
-    els.drawerTag.textContent = "CHART";
-    els.alcove.dataset.live = "false";
-    els.alcoveTag.textContent = "AUTHORIZED STAFF";
-    els.ledgerRows.innerHTML = '<p class="ledger-empty">Nothing sealed yet.</p>';
-    els.ledgerFoot.textContent = "0 turns sealed";
-    els.outCard.dataset.tone = "";
-    els.outAction.textContent = "—";
-    els.outPriority.textContent = "";
-    els.outReason.textContent = "";
-    els.outViolations.innerHTML = "";
-    setCove(null);
-    setBeat(0);
-  }
+  /* ── Screen rows ──────────────────────────────────────────────────────────
+     One row per control, built once from the fixture's control list. The
+     action and reason-code cells are created EMPTY and only ever written by
+     paintRow() from engine output. */
+  var rowEls = {};
+  ORDER.forEach(function (id) {
+    var meta = CONTROLS[id] || {};
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "srow";
+    btn.dataset.control = id;
+    btn.dataset.tone = "idle";
+    if (!meta.is_station) btn.dataset.ledger = "true";
+    btn.setAttribute("aria-expanded", "false");
+    btn.innerHTML =
+      '<span class="s-id">' + esc(id) + '</span>' +
+      '<span class="s-name">' + esc(meta.name || "") + '</span>' +
+      '<span class="s-act" data-act></span>' +
+      '<span class="s-code" data-code></span>';
+    btn.setAttribute("aria-label",
+      id + " — " + (meta.name || "") + ". Show rule_engine.config.");
+    btn.addEventListener("click", function () { openConfig(id); });
+    els.screenRows.appendChild(btn);
+    rowEls[id] = btn;
+  });
 
-  function setCove(t) {
-    var map = {
-      pass: "rgba(22,163,148,.34)", deny: "rgba(209,84,75,.36)",
-      disclose: "rgba(216,145,47,.34)", escalate: "rgba(103,232,249,.44)",
-      log: "rgba(143,162,189,.3)"
-    };
-    var c = map[t] || "rgba(103,232,249,.3)";
-    els.cove.style.setProperty("--cove", c);
-    els.coveBar.style.setProperty("--cove", c.replace(/[\d.]+\)$/, "0.8)"));
-  }
-
-  /* ── Which station has she reached? ───────────────────────────────────────
-     Furthest engaged station this turn, floored at IDG-01 and clamped so it
-     can only ever increase. This is the rule that keeps her walking forward:
-     a turn that lights a control she has already passed updates that lamp in
-     place instead of sending her back to it. */
-  function stageForTurn(turn) {
-    var furthest = 0;
-    STAGES.forEach(function (id, i) {
-      var code = (turn.controls[id] || {}).reason_code;
-      var resting = RESTING[id] || [];
-      if (code && resting.indexOf(code) === -1 && i > furthest) furthest = i;
-    });
-    return Math.max(state.stage, furthest);
-  }
-
-  /* Paint one station from a control's own engine decision. `held` wins when
-     the control has already said something substantive during this run. */
-  function paintStation(id, i, live) {
-    var el = stationEls[id];
-    var reached = i <= state.stage;
-    var d = state.held[id] || live;
-    if (!reached || !d) {
-      el.dataset.state = "idle";
-      el.classList.remove("engaged", "here");
-      el.querySelector("[data-verdict]").textContent = "";
+  function paintRow(id, decision) {
+    var el = rowEls[id];
+    if (!el) return;
+    var act = el.querySelector("[data-act]");
+    var code = el.querySelector("[data-code]");
+    if (!decision) {
+      el.dataset.tone = "idle";
+      act.textContent = "";
+      code.textContent = "";
       return;
     }
-    var resting = (RESTING[id] || []).indexOf(d.reason_code) !== -1;
-    el.dataset.state = resting ? "idle" : tone(d.action);
-    el.classList.toggle("engaged", true);
-    el.classList.toggle("here", i === state.stage);
-    // Resting codes are shown too — "no artifacts" is the engine reporting that
-    // it looked, which is the whole point of a control that passed quietly.
-    el.querySelector("[data-verdict]").textContent = shortCode(d.reason_code);
+    el.dataset.tone = tone(decision.action);
+    act.textContent = decision.action;
+    code.textContent = decision.reason_code;
+  }
+
+  /* Which control did the composite action come from? Derived from the
+     fixture's action_priority: the composite is the highest-priority action
+     any control returned, so the source is whichever control(s) returned that
+     action. Nothing here asserts an attribution the fixture does not support —
+     when more than one control returned it, all of them are named. */
+  function compositeSource(turn) {
+    var names = [];
+    ORDER.forEach(function (id) {
+      var d = turn.controls[id];
+      if (d && d.action === turn.composite.action) names.push(id);
+    });
+    return names;
+  }
+
+  /* ── Turn strip ───────────────────────────────────────────────────────────
+     Turns, not stages. A call's turns really are sequential; the controls are
+     not, which is why there is no control strip. */
+  function buildTurnStrip() {
+    els.turnstrip.innerHTML = "";
+    scenario().turns.forEach(function (t) {
+      var s = document.createElement("span");
+      s.className = "tchip";
+      s.textContent = "turn " + t.index;
+      els.turnstrip.appendChild(s);
+    });
+  }
+  function markTurnStrip(i) {
+    var kids = els.turnstrip.children;
+    for (var k = 0; k < kids.length; k++) {
+      kids[k].className = "tchip" + (k < i ? " done" : k === i ? " now" : "");
+    }
   }
 
   /* ── Render one turn ──────────────────────────────────────────────────── */
-  function renderTurn(turn, scenario) {
+  function renderTurn(turn, sc) {
     var composite = turn.composite;
     var t = tone(composite.action);
 
-    // Stations: each lamp shows that control's own decision, not the composite.
-    STAGES.forEach(function (id, i) {
-      var d = turn.controls[id];
-      if (!d) return;
-      if ((RESTING[id] || []).indexOf(d.reason_code) === -1) state.held[id] = d;
-      paintStation(id, i, d);
-    });
+    els.scrIdle.hidden = true;
+    els.scrSession.textContent = sc.id;
+    els.scrTurn.textContent = "turn " + turn.index;
 
-    // Records drawer — PDX-01's physical consequence.
-    var pdx = turn.controls["PDX-01"];
-    if (pdx) {
-      if (pdx.reason_code === "PDX01_GATE_CLEARED") {
-        els.drawer.dataset.open = "true"; els.drawerTag.textContent = "CHART OPEN";
-      } else if (pdx.action === "DENY_DATA") {
-        els.drawer.dataset.open = "blocked"; els.drawerTag.textContent = "CHART SEALED";
-      } else {
-        els.drawer.dataset.open = "false"; els.drawerTag.textContent = "CHART";
-      }
-    }
+    // Every control, every turn. There is no partial state to show.
+    ORDER.forEach(function (id) { paintRow(id, turn.controls[id]); });
 
-    // Handoff alcove — EIT-01's physical consequence.
-    var eit = turn.controls["EIT-01"];
-    if (eit) {
-      var live = eit.reason_code === "EIT01_ESCALATION_TRIGGERED" ||
-                 eit.reason_code === "EIT01_ESCALATION_HONORED";
-      els.alcove.dataset.live = live ? "true" : "false";
-      els.alcoveTag.textContent =
-        eit.reason_code === "EIT01_ESCALATION_HONORED" ? "HANDOFF COMPLETE" :
-        eit.reason_code === "EIT01_ESCALATION_TRIGGERED" ? "HANDOFF OPEN" :
-        eit.reason_code === "EIT01_NO_ESCALATION_PATH" ? "NO PATH" : "AUTHORIZED STAFF";
-    }
+    els.screenComposite.hidden = false;
+    els.screenComposite.dataset.tone = t;
+    els.compAction.textContent = composite.action;
+    var p = PRIORITY[composite.action];
+    var from = compositeSource(turn);
+    // When every control returned the same action, naming all five says
+    // nothing a reader cannot already see in the rows above. Naming the one
+    // or two that outranked the rest is the whole point of this line.
+    var fromText = !from.length ? ""
+      : from.length === ORDER.length ? "  · all controls agree"
+      : "  · from " + from.join(", ");
+    els.compWhy.textContent = (p ? "priority " + p : "") + fromText;
+
+    els.powerLamp.style.fill = "var(--st-" +
+      (t === "escalate" ? "escal" : t) + ")";
 
     // Utterance — the turn's own speech text, straight from the corpus.
     var line = turn.speech || turn.assertion;
@@ -1721,10 +1675,9 @@ button:focus-visible,
       els.utterLine.innerHTML = "<em>No utterance recorded on this turn.</em>";
     }
 
-    // Composite readout.
+    // Composite readout card.
     els.outCard.dataset.tone = t;
     els.outAction.textContent = composite.action;
-    var p = PRIORITY[composite.action];
     els.outPriority.textContent = p ? "priority " + p : "";
     els.outReason.textContent = composite.reason_code;
     els.outViolations.innerHTML = composite.violations.length
@@ -1734,8 +1687,7 @@ button:focus-visible,
         }).join("")
       : '<p class="no-viol">No boundary violation recorded on this turn.</p>';
 
-    setCove(t);
-    setBeat(Math.min(state.stage + 1, BEATS.length - 2));
+    markTurnStrip(turn.index);
 
     // Ledger row — ATR-01 seals every turn, pass or fail.
     if (els.ledgerRows.querySelector(".ledger-empty")) els.ledgerRows.innerHTML = "";
@@ -1750,7 +1702,7 @@ button:focus-visible,
     els.ledgerRows.scrollTop = els.ledgerRows.scrollHeight;
     var sealed = els.ledgerRows.querySelectorAll(".lrow").length;
     els.ledgerFoot.textContent = sealed + (sealed === 1 ? " turn sealed" : " turns sealed") +
-      " · " + esc(scenario.id);
+      " · " + esc(sc.id);
 
     els.srStatus.textContent =
       "Turn " + turn.index + ": " + composite.action + ", " + composite.reason_code + ".";
@@ -1758,68 +1710,56 @@ button:focus-visible,
     if (state.openControl) openConfig(state.openControl, true);
   }
 
-  function shortCode(code) {
-    // IDG01_DISCLOSURE_CONFIRMED -> DISCLOSURE CONFIRMED
-    return String(code).replace(/^[A-Z]+\d+_/, "").replace(/_/g, " ");
+  /* ── Reset ────────────────────────────────────────────────────────────── */
+  function reset() {
+    state.token++;
+    clearTimeout(state.timer);
+    state.playing = false;
+    state.turnIndex = -1;
+    setPlayLabel("Run");
+    buildTurnStrip();
+    markTurnStrip(-1);
+    ORDER.forEach(function (id) { paintRow(id, null); });
+    els.scrIdle.hidden = false;
+    els.scrSession.textContent = scenario().id;
+    els.scrTurn.textContent = "ready";
+    els.screenComposite.hidden = true;
+    els.screenComposite.dataset.tone = "";
+    els.compAction.textContent = "";
+    els.compWhy.textContent = "";
+    els.powerLamp.style.fill = "var(--st-idle)";
+    els.utterWho.innerHTML = "Turn &mdash;";
+    els.utterLine.innerHTML = "<em>Run a scenario to hear the call.</em>";
+    els.ledgerRows.innerHTML = '<p class="ledger-empty">Nothing sealed yet.</p>';
+    els.ledgerFoot.textContent = "0 turns sealed";
+    els.outCard.dataset.tone = "";
+    els.outAction.textContent = "—";
+    els.outPriority.textContent = "";
+    els.outReason.textContent = "";
+    els.outViolations.innerHTML = "";
   }
 
-  /* ── Movement ─────────────────────────────────────────────────────────── */
-  function moveTo(percent, done) {
-    var travel = Math.abs(parseFloat(els.agent.style.left || DOOR) - percent);
-    els.agent.style.left = percent + "%";
-    if (reduceMotion || travel < 0.5) { done(); return; }
-    els.agent.classList.add("moving");
-    var ms = Math.max(420, Math.min(1400, travel * 26)) * speed();
-    els.agent.style.setProperty("--walk-ms", ms + "ms");
-    setTimeout(function () { els.agent.classList.remove("moving"); done(); }, ms);
-  }
-
-  /* ── Playback ─────────────────────────────────────────────────────────── */
-  function scenario() { return TRACE.scenarios[state.scenarioIndex]; }
-
+  /* ── Transport ────────────────────────────────────────────────────────── */
   function advance(auto) {
     var sc = scenario();
     var next = state.turnIndex + 1;
     if (next >= sc.turns.length) { finish(); return; }
     state.turnIndex = next;
-    var turn = sc.turns[next];
-    state.stage = stageForTurn(turn);
-
     var token = state.token;
-    moveTo(STATION_X[STAGES[state.stage]] + AGENT_OFFSET, function () {
-      if (token !== state.token) return;
-      renderTurn(turn, sc);
-      if (auto && state.playing) {
-        state.timer = setTimeout(function () {
-          if (token === state.token && state.playing) advance(true);
-        }, 1500 * speed());
-      }
-    });
+    renderTurn(sc.turns[next], sc);
+    if (auto && state.playing) {
+      state.timer = setTimeout(function () {
+        if (token === state.token && state.playing) advance(true);
+      }, 1500 * speed());
+    }
   }
 
   function finish() {
-    var token = state.token;
     state.playing = false;
     setPlayLabel("Replay");
-    setBeat(BEATS.length - 1);
-
-    // The call is over, so the whole concourse is settled: the engine evaluated
-    // all four controls on every turn, and each lamp now shows what its own
-    // control finally said. She walks the rest of the floor and leaves.
-    var last = scenario().turns[scenario().turns.length - 1];
-    state.stage = STAGES.length - 1;
-    STAGES.forEach(function (id, i) {
-      paintStation(id, i, last ? last.controls[id] : null);
-      stationEls[id].classList.remove("here");
-    });
-
-    // She leaves the concourse. This is an exit, not a sixth control.
-    moveTo(exitX(), function () {
-      if (token !== state.token) return;
-      STAGES.forEach(function (id) { stationEls[id].classList.remove("here"); });
-    });
     els.srStatus.textContent = "Scenario complete. " +
-      els.ledgerRows.querySelectorAll(".lrow").length + " turns sealed in the ATR-01 ledger.";
+      els.ledgerRows.querySelectorAll(".lrow").length +
+      " turns sealed in the ATR-01 ledger.";
   }
 
   function setPlayLabel(text) {
@@ -1845,8 +1785,6 @@ button:focus-visible,
     if (state.playing) pause(); else play();
   });
   els.stepBtn.addEventListener("click", function () {
-    // Stepping past the last turn settles the scene; it does not silently
-    // restart, which would make the agent appear to jump back to the door.
     clearTimeout(state.timer);
     state.playing = false;
     advance(false);
@@ -1858,8 +1796,8 @@ button:focus-visible,
     var meta = CONTROLS[id];
     if (!meta) return;
     state.openControl = id;
-    Object.keys(stationEls).forEach(function (k) {
-      stationEls[k].setAttribute("aria-expanded", k === id ? "true" : "false");
+    Object.keys(rowEls).forEach(function (k) {
+      rowEls[k].setAttribute("aria-expanded", k === id ? "true" : "false");
     });
     els.cfgName.textContent = id + " — " + meta.name;
     els.cfgStaging.textContent = meta.staging;
@@ -1871,8 +1809,8 @@ button:focus-visible,
     var lines = [];
     lines.push('<span class="c">rule_engine.config:</span>');
     lines.push('  <span class="k">control_id</span>: <span class="v">"' + esc(id) + '"</span>');
-    lines.push('  <span class="k">station</span>: <span class="v">' +
-               (meta.is_station ? "concourse" : "evidence_layer") + "</span>");
+    lines.push('  <span class="k">role</span>: <span class="v">' +
+               (meta.is_station ? "behavioural_gate" : "evidence_layer") + "</span>");
     lines.push('  <span class="k">reason_codes</span>:');
     meta.reason_codes.forEach(function (code) {
       var mark = live && live.reason_code === code ? '  <span class="c"># ← this turn</span>' : "";
@@ -1894,11 +1832,12 @@ button:focus-visible,
 
   /* ── Provenance line ──────────────────────────────────────────────────── */
   els.prov.innerHTML =
-    "Every action, reason code and violation above is the output of <code>" +
+    "Every action, reason code and violation on the screen is the output of <code>" +
     esc(TRACE.engine) + "</code>, recorded by <code>" + esc(TRACE.generated_by) +
     "</code> replaying real scenarios from <code>" + esc(TRACE.source_corpus) +
     "</code>" + (TRACE.source_commit ? " at <code>" + esc(TRACE.source_commit) + "</code>" : "") +
-    ". The room, the walking order and the artwork are staging; the verdicts are not. " +
+    ". The machine is drawn; the readout is read. Which control the composite came " +
+    "from is derived from <code>action_priority</code> in that same trace. " +
     "Reproduce: <code>python scripts/build_walkthrough_fixture.py --check</code>";
 
   /* ── Height reporting ─────────────────────────────────────────────────────
@@ -1914,15 +1853,17 @@ button:focus-visible,
     window.addEventListener("resize", reportHeight);
   }
   window.addEventListener("load", reportHeight);
+  // Tell the embedder we are listening, so it can hand over its theme.
+  try { parent.postMessage({ type: "nhid:walkthrough:ready" }, "*"); } catch (e) {}
 
   /* ── Start ────────────────────────────────────────────────────────────── */
   if (TRACE.engine) els.engineStamp.textContent = "policy engine v1.3 · live trace";
   reset();
-  openConfig(STAGES[0], true);
+  openConfig(ORDER[0], true);
   reportHeight();
 
-  // Run once when the scene is actually on screen, so a reader arriving at it
-  // sees it move rather than finding it already finished.
+  // Run once when the machine is actually on screen, so a reader arriving at
+  // it sees it move rather than finding it already finished.
   if ("IntersectionObserver" in window) {
     var seen = false;
     var io = new IntersectionObserver(function (entries) {
@@ -1930,7 +1871,7 @@ button:focus-visible,
         if (e.isIntersecting && !seen) { seen = true; io.disconnect(); play(); }
       });
     }, { threshold: 0.25 });
-    io.observe(els.room);
+    io.observe(els.machine);
   } else {
     play();
   }
