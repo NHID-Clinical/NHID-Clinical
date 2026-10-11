@@ -357,3 +357,90 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+# ── Voice-stress corpus (v1.0-frozen-baseline, 300 scenarios) ─────────────────
+#
+# A later Tonic Fabricate export with a different column vocabulary. It is
+# converted here rather than in a second adapter because every hard-won
+# decision in this module applies to it unchanged: the escalation outcome is
+# still derived from the transcript rather than the label, ATR-01 is still
+# untestable in replay, and PDX-01 is still dropped when disclosure happens at
+# turn 0. A parallel adapter would be a second place for those three rules to
+# drift out of agreement.
+#
+# What differs is only naming, so only naming is handled here:
+#   conversation_id -> scenario_id        (grouping key)
+#   *_violation     -> expected_*_violation  (expectation columns)
+#   id              -> scenario_id        (conversation identity)
+#
+# This export supplies `is_identity_disclosure`, `is_escalation_request` and
+# `contains_phi` directly, so nothing has to be inferred from a violation
+# label. That removes the leakage class v1.1 of this module had to repair.
+
+VOICE_STRESS_VIOLATION_COLUMNS = {
+    "expected_idg01_violation": "IDG-01",
+    "expected_pdx01_violation": "PDX-01",
+    "expected_dbc01_violation": "DBC-01",
+    "expected_eit01_violation": "EIT-01",
+    "expected_atr01_violation": "ATR-01",
+}
+
+
+def load_voice_stress_turns(turns_csv_path: str) -> dict[str, list[dict[str, Any]]]:
+    """Group voice-stress turns by scenario_id, preserving turn_index order."""
+    turns_by_scenario: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    with open(turns_csv_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            turns_by_scenario[row["scenario_id"]].append(row)
+    for turns in turns_by_scenario.values():
+        turns.sort(key=lambda r: int(r["turn_index"]))
+    return turns_by_scenario
+
+
+def _voice_stress_row_to_legacy(row: dict[str, Any]) -> dict[str, Any]:
+    """Rename voice-stress columns onto the vocabulary this module already uses.
+
+    Translating the row is deliberately preferred over parameterising
+    `fabricate_conversation_to_eval_shape`: the exclusion rules stay written
+    once, and a third export shape later needs another translator rather than
+    another branch inside the logic that must not vary.
+    """
+    translated = dict(row)
+    translated["id"] = row.get("id") or row.get("scenario_id")
+    translated["conversation_ref"] = (row.get("scenario_id")
+                                      or row.get("scenario_label"))
+    translated["scenario_type"] = row.get("category")
+    translated["target_control"] = row.get("expected_control")
+    for new_col, rule_id in VOICE_STRESS_VIOLATION_COLUMNS.items():
+        legacy = next(c for c, r in VIOLATION_COLUMN_TO_RULE_ID.items() if r == rule_id)
+        translated[legacy] = row.get(new_col, "0")
+    return translated
+
+
+def convert_voice_stress(scenarios_csv_path: str,
+                         turns_csv_path: str) -> list[dict[str, Any]]:
+    """Convert the voice-stress two-table export to the eval-loop shape."""
+    exclusion_counts: dict[str, int] = defaultdict(int)
+    turns_by_scenario = load_voice_stress_turns(turns_csv_path)
+
+    conversations: list[dict[str, Any]] = []
+    with open(scenarios_csv_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            # The join key is scenarios.`id`, not scenarios.`scenario_id`.
+            # In this export's CSVs `id` holds the NHID-VSTRESS identifier and
+            # `scenario_id` holds a human label -- the opposite of the JSONL
+            # export of the same corpus, which calls the identifier
+            # `scenario_id` and the label `scenario_label`. Joining on the
+            # intuitive name yields zero rows silently, which is how this was
+            # found.
+            raw_turns = turns_by_scenario.get(row["id"], [])
+            if not raw_turns:
+                exclusion_counts["scenario with no turns"] += 1
+                continue
+            conversations.append(
+                fabricate_conversation_to_eval_shape(
+                    _voice_stress_row_to_legacy(row), raw_turns, exclusion_counts)
+            )
+    _print_exclusions(exclusion_counts)
+    return conversations
