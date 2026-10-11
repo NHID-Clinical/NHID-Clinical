@@ -11,13 +11,13 @@ policy engine, and reports the Tier 0 pilot metrics:
   - Pre-disclosure PHI exposure
   - Escalation honor rate
   - Per-control violation counts (IDG-01 / PDX-01 / DBC-01 / EIT-01)
-  - CAS distribution across trust tiers
 
 Nothing here reimplements policy logic: turns are mapped through the same
 `build_session` / `build_event` wiring the synthetic eval loop uses (so
 governance fields land in the nested `healthcare_governance` block the engine
-actually reads), decisions come from `evaluate_all`, and the per-call CAS is
-the handler's disclosure-level `_policy_cas`.
+actually reads), and decisions come from `evaluate_all`. No composite score is
+computed: the former CAS and its trust tiers are withdrawn, and each figure
+below is reported with its own denominator.
 
 Usage:
   python docs/pilot-kit/measure_pilot.py calls.jsonl
@@ -29,7 +29,9 @@ format `tools/pilot_report_generator.py` consumes, so a markdown pilot report
 is one more command:
   python tools/pilot_report_generator.py out/ pilot_report.md
 
-NHID-Clinical is a voluntary open proposal. CC BY 4.0.
+NHID-Clinical is a voluntary open proposal. This script is licensed
+Apache-2.0 (see LICENSE); the control text it measures against is CC BY 4.0
+(see LICENSE-DOCS).
 Metrics are measurements, not conformance certifications.
 """
 
@@ -47,7 +49,6 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from functions.handler import _policy_cas  # noqa: E402
 from src.nhid_policy_engine_v1 import evaluate_all  # noqa: E402
 from src.synthetic_eval_loop import build_event, build_session  # noqa: E402
 
@@ -153,17 +154,13 @@ def measure_call(session_id: str, records: list[dict]) -> dict:
     escalations_requested = sum(1 for r in records if r.get("escalation_requested") is True)
     escalations_honored = sum(1 for r in records if r.get("escalation_honored") is True)
 
-    # Replay through the real engine: worst decision drives the call verdict.
+    # Replay through the real engine; any violation on any turn makes the call non-conformant.
     violations: list[dict] = []
     seen: set[tuple] = set()
-    worst = None  # (critical_count, decision, event)
     for i, turn in enumerate(turns):
         session = build_session(turn)
         event = build_event(session_id, i, turn)
         decision = evaluate_all(session, event)
-        crit = sum(1 for v in decision.violations if v.severity.value == "critical")
-        if worst is None or crit > worst[0] or (crit == worst[0] and decision.violations and not worst[1].violations):
-            worst = (crit, decision, event)
         for v in decision.violations:
             key = (v.rule_id, v.severity.value, i)
             if key not in seen:
@@ -172,8 +169,6 @@ def measure_call(session_id: str, records: list[dict]) -> dict:
                     {"rule_id": v.rule_id, "severity": v.severity.value, "description": v.description}
                 )
 
-    _, worst_decision, worst_event = worst
-    cas = _policy_cas(worst_decision, worst_event)
     violated_rules = sorted({v["rule_id"] for v in violations})
 
     return {
@@ -192,7 +187,6 @@ def measure_call(session_id: str, records: list[dict]) -> dict:
         "violations": violations,
         "violated_rules": violated_rules,
         "conformant": not violated_rules,
-        "cas": cas,
     }
 
 
@@ -266,7 +260,6 @@ def aggregate(calls: list[dict]) -> dict:
         for rule in c["violated_rules"]:
             violation_counts[rule] += 1
 
-    tier_counts: Counter = Counter(c["cas"]["tier"] for c in calls)
     band_counts: Counter = Counter(c["disclosure_band"] for c in calls)
     requested = sum(c["escalations_requested"] for c in calls)
     honored = sum(c["escalations_honored"] for c in calls)
@@ -286,10 +279,6 @@ def aggregate(calls: list[dict]) -> dict:
             sum(1 for c in calls if c["pre_disclosure_phi_fields"] > 0) / total if total else 0.0
         ),
         "escalation_honor_rate": (honored / requested) if requested else None,
-        "average_cas": (
-            round(sum(c["cas"]["score"] for c in calls) / total, 4) if total else 0.0
-        ),
-        "cas_tier_distribution": dict(tier_counts),
         "violations_by_control": dict(violation_counts),
         "top_violations": violation_counts.most_common(3),
     }
@@ -310,9 +299,6 @@ def print_summary(summary: dict) -> None:
     print(f"Escalation honor rate:         {f'{ehr:.1%}' if ehr is not None else 'n/a (none requested)'}")
     print("Disclosure bands:              "
           + ", ".join(f"{b}: {n}" for b, n in summary["disclosure_bands"].items()))
-    print(f"Average CAS:                   {summary['average_cas']:.4f}")
-    print("CAS tiers:                     "
-          + ", ".join(f"{t}: {n}" for t, n in sorted(summary["cas_tier_distribution"].items())))
     if summary["top_violations"]:
         print("Top violations:                "
               + ", ".join(f"{r} ({n})" for r, n in summary["top_violations"]))
@@ -410,7 +396,6 @@ def main() -> int:
             result = {
                 "session_id": call["session_id"],
                 "conformant": call["conformant"],
-                "cas": call["cas"],
                 "violations": call["violations"],
             }
             (out / f"{call['session_id']}.json").write_text(json.dumps(result, indent=2))

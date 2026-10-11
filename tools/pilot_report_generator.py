@@ -12,10 +12,13 @@ extended with "session_id" and "timestamp":
     "session_id": "call_001",
     "timestamp": "2026-06-01T10:00:00Z",
     "conformant": true,
-    "action": "ALLOW",
-    "cas": {"score": 0.9, "tier": "Verified Trust", ...},
+    "action": "CONTINUE_AI",
     "violations": []
   }
+
+Any other fields are ignored, including a "cas" block from results produced
+before the composite score was withdrawn: the report never blends per-control
+results into one number.
 
 Usage:
   python tools/pilot_report_generator.py <results_dir> [output.md]
@@ -62,12 +65,6 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     total = len(results)
     passed = sum(1 for r in results if r.get("conformant"))
 
-    cas_scores = [
-        r["cas"]["score"]
-        for r in results
-        if isinstance(r.get("cas"), dict) and isinstance(r["cas"].get("score"), (int, float))
-    ]
-
     violation_counts: Counter = Counter()
     for r in results:
         for v in r.get("violations", []):
@@ -78,9 +75,6 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
         "calls_total": total,
         "calls_passed": passed,
         "pass_rate": round(passed / total, 4) if total else 0.0,
-        "cas_avg": round(sum(cas_scores) / len(cas_scores), 4) if cas_scores else 0.0,
-        "cas_min": round(min(cas_scores), 4) if cas_scores else 0.0,
-        "cas_max": round(max(cas_scores), 4) if cas_scores else 0.0,
         "violations_by_rule": dict(violation_counts),
     }
 
@@ -102,8 +96,6 @@ def generate_report(results: list[dict[str, Any]], org_name: str = "Pilot Organi
         f"| Total calls evaluated | {s['calls_total']} |",
         f"| Conformant calls | {s['calls_passed']} |",
         f"| Pass rate | {s['pass_rate']:.1%} |",
-        f"| Average CAS | {s['cas_avg']:.4f} |",
-        f"| CAS range | {s['cas_min']:.4f} – {s['cas_max']:.4f} |",
         "",
         "## Violations by Control",
         "",
@@ -121,15 +113,13 @@ def generate_report(results: list[dict[str, Any]], org_name: str = "Pilot Organi
         "",
         "## Per-Call Results",
         "",
-        "| Session | Conformant | CAS | Violations |",
-        "| :--- | :--- | ---: | :--- |",
+        "| Session | Conformant | Violations |",
+        "| :--- | :--- | :--- |",
     ]
     for r in results:
-        cas = r.get("cas", {})
-        score = cas.get("score", "—") if isinstance(cas, dict) else "—"
         rules = ", ".join(v.get("rule_id", "?") for v in r.get("violations", [])) or "—"
         lines.append(
-            f"| {r.get('session_id', '?')} | {'✅' if r.get('conformant') else '❌'} | {score} | {rules} |"
+            f"| {r.get('session_id', '?')} | {'✅' if r.get('conformant') else '❌'} | {rules} |"
         )
 
     lines += [
