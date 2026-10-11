@@ -46,3 +46,8 @@ dist/
 
 # Agent tooling: local prompts and settings, not part of the framework
 .claude/
+
+# Specification reading aid: generated artefacts, both rebuildable.
+# The index is an 834-chunk embedding dump; the log accumulates one line per ask.
+.spec_rag_index.json
+logs/
