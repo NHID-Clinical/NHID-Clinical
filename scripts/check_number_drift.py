@@ -71,6 +71,16 @@ WATCHED = [
     "docs/MASTER-KNOWLEDGE-ARCHIVE.md",
     "docs/project-state.md",
     "conformance/nhid_conformance_test_suite_v1.yaml",
+    # Added 2026-10-11. The Tier 0 kit is DOWNLOADED, so a stale number in it
+    # travels out of this repository and keeps being read long after the
+    # surfaces above are corrected. `docs/pilot-kit/pilot_evidence.json` was
+    # sitting in it asserting 621 passing tests and a 0.0 ATR-01 detection
+    # rate from a corpus run that predated the composite-score withdrawal —
+    # referenced by nothing, produced by nothing, and shipped to anyone who
+    # took the kit. It was deleted rather than refreshed; this glob is here so
+    # the next one cannot sit there unnoticed.
+    *sorted(glob.glob("docs/pilot-kit/*.md")),
+    *sorted(glob.glob("docs/pilot-kit/*.json")),
     *sorted(glob.glob("webplatform/templates/*.html")),
 ]
 
@@ -118,6 +128,13 @@ COUNT_CLAIMS = [
     # backticks it. Both were tested by corruption; the bold-only version of
     # this pattern silently missed project-state.
     re.compile(r"UNIT_PUBLISHED`?\s*\|\s*[`*]{0,2}(\d{3,4})[`*]{0,2}\s*\|"),
+    # A JSON key/value claim, e.g. `"total_tests": 621` in an evidence file.
+    # Added 2026-10-11 with the docs/pilot-kit globs above. Adding the globs
+    # alone was the same mistake this file's docstring warns about twice: the
+    # guard listed the kit, printed PASS, and read nothing in it, because every
+    # pattern above matches prose and the kit's stale claim was a JSON field.
+    # Found by restoring the deleted file and watching the guard pass.
+    re.compile(r'"(?:total_tests|passing|passed|tests_passing)"\s*:\s*(\d{3,4})'),
 ]
 
 # "DBC-01 ... 91.5%" style rate claims within one line.

@@ -43,6 +43,14 @@ dev = [
     "pytest-asyncio>=0.23.0",
     "jsonschema>=4.21.0",
 ]
+# PDF rendering for the Tier 0 evidence pack (`nhid pilot`) and the Playbook.
+# Deliberately an extra, not a base dependency: a vendor embedding the policy
+# engine in a live call path should not inherit a document toolchain. The
+# pilot command writes its markdown and metrics either way and tells the user
+# how to install this if the PDF is wanted.
+pdf = [
+    "reportlab>=4.0.0",
+]
 
 [project.urls]
 Homepage = "https://nhid-clinical.org"

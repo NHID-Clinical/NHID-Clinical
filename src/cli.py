@@ -64,6 +64,89 @@ def _cmd_export_evidence(args: argparse.Namespace) -> int:
     return export_main(argv)
 
 
+def _cmd_pilot(args: argparse.Namespace) -> int:
+    from datetime import datetime, timezone
+    from pathlib import Path
+
+    from src.pilot_measure import (
+        demo_records, dropped_record_count, load_jsonl, measure_records,
+        print_summary, write_per_call_results,
+    )
+    from src.pilot_report import generate_report
+
+    if args.demo:
+        records = demo_records()
+        source = "built-in demo records (synthetic, fictional)"
+    elif args.jsonl:
+        records = load_jsonl(args.jsonl)
+        source = Path(args.jsonl).name
+    else:
+        print("nhid pilot: provide a capture JSONL file or --demo", file=sys.stderr)
+        return 2
+
+    if not records:
+        print(f"nhid pilot: no usable records in {source}. Nothing was measured, so "
+              f"no report was written — an empty pack would read as a clean result.",
+              file=sys.stderr)
+        return 1
+
+    calls, summary = measure_records(records)
+    if not calls:
+        print("nhid pilot: no record carried a session_id, so no call could be "
+              "assembled. Check the capture mapping against "
+              "docs/pilot-kit/minimal-event-schema.json.", file=sys.stderr)
+        return 1
+
+    now = datetime.now(timezone.utc)
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    report_md = generate_report(
+        calls, summary,
+        organization=args.organization,
+        workflow=args.workflow,
+        date_range=args.date_range,
+        prepared_by=args.prepared_by,
+        source_label=source,
+        dropped_records=dropped_record_count(records),
+        generated_at=now,
+    )
+    (out / "pilot_report.md").write_text(report_md, encoding="utf-8")
+    (out / "metrics.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    write_per_call_results(calls, out / "per-call")
+
+    print_summary(summary)
+    print(f"\nEvidence pack written to {out}/")
+    print(f"  pilot_report.md   the report, with every unmeasured field marked")
+    print(f"  metrics.json      the same figures, machine-readable")
+    print(f"  per-call/         one conformance result per call, no transcripts")
+
+    # The PDF is the artifact that circulates, but reportlab is an optional
+    # extra. A missing extra must not cost the user the report they just
+    # computed, so the markdown is already on disk before we try.
+    try:
+        from src.pilot_pdf import render_markdown_pdf
+    except ImportError as exc:
+        print(f"\n  pilot_report.pdf  NOT written — {exc.name or exc} is not installed.")
+        print("  The report and metrics above are complete. For the PDF:")
+        print("      pip install 'nhid-clinical[pdf]'")
+        return 0
+
+    subtitle = " — ".join(p for p in (args.organization, args.workflow) if p)
+    render_markdown_pdf(
+        report_md, out / "pilot_report.pdf",
+        title="Tier 0 Shadow Pilot Report",
+        subtitle=subtitle or "NHID-Clinical Tier 0 measurement",
+        version="v1.3 Tier 0",
+        footer_note="Measurements against this organization's own traffic — "
+                    "not a conformance certification",
+        author=args.prepared_by or "NHID-Clinical Tier 0 kit",
+        cover_date=now.strftime("%B %Y"),
+    )
+    print(f"  pilot_report.pdf  the same report, for circulation")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="nhid",
@@ -94,6 +177,35 @@ def build_parser() -> argparse.ArgumentParser:
     )
     exp.add_argument("--no-conformance", action="store_true", help="skip the suite run")
     exp.set_defaults(func=_cmd_export_evidence)
+
+    pilot = sub.add_parser(
+        "pilot",
+        help="measure a Tier 0 shadow pilot and write an evidence pack",
+        description=(
+            "Replay captured call turns through the policy engine and write the "
+            "Tier 0 evidence pack: the report, a PDF of it, the metrics as JSON, "
+            "and one result file per call. Runs entirely locally and transmits "
+            "nothing."
+        ),
+    )
+    pilot.add_argument(
+        "jsonl", nargs="?",
+        help="capture-schema JSONL file (one record per turn); see "
+             "docs/pilot-kit/minimal-event-schema.json",
+    )
+    pilot.add_argument("--demo", action="store_true",
+                       help="run against the built-in synthetic demo calls")
+    pilot.add_argument("--out", default="pilot-evidence",
+                       help="directory for the evidence pack (default: pilot-evidence/)")
+    # Context the kit cannot observe. Anything omitted is marked unrecorded in
+    # the report rather than guessed or defaulted to zero.
+    pilot.add_argument("--organization", default=None, help="organization running the pilot")
+    pilot.add_argument("--workflow", default=None,
+                       help="workflow sampled, e.g. prior auth / claims status / billing")
+    pilot.add_argument("--date-range", default=None,
+                       help="date range of the sampled traffic")
+    pilot.add_argument("--prepared-by", default=None, help="who prepared the report")
+    pilot.set_defaults(func=_cmd_pilot)
 
     return parser
 

@@ -25,6 +25,16 @@ SURFACES = [
     "docs/executive-brief.md", "docs/CONTROL_DECISION_TABLE.md",
     "docs/SYSTEM_ARCHITECTURE.md", "docs/ATR-01-IMPLEMENTATION.md",
     "docs/CORPUS_EVALUATION_SUMMARY.md",
+    # Added 2026-10-11. All four are in check_number_drift's WATCHED list but
+    # were missing here, so a bump passed, the drift guard then failed, and the
+    # remaining surfaces were fixed one round trip at a time — six extra passes
+    # for the 1119 -> 1156 bump. This script exists to avoid exactly that.
+    # The archive and the Playbook carry historical figures too; the guard
+    # below only rewrites a whole-number match, and the archive's dated
+    # entries were checked by hand on that bump. Re-read the diff rather than
+    # trusting this list blindly.
+    "docs/project-state.md", "docs/MASTER-KNOWLEDGE-ARCHIVE.md",
+    "docs/NHID-Clinical-Playbook.md", "evidence-pack.html",
 ]
 
 

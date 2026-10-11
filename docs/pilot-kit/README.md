@@ -12,16 +12,81 @@ from your own call traffic. Observe-only — no vendor changes, no live enforcem
 | Artifact | Purpose |
 | :--- | :--- |
 | [`minimal-event-schema.json`](minimal-event-schema.json) | The per-turn capture record to extract from your existing call logs |
-| [`measure_pilot.py`](measure_pilot.py) | Replays captured turns through the real policy engine and computes all Tier 0 metrics |
-| [`pilot-report-template.md`](pilot-report-template.md) | The short internal report you fill in (or generate) at the end |
-| [`../../tools/pilot_report_generator.py`](../../tools/pilot_report_generator.py) | Turns per-call results into a markdown report automatically |
+| `nhid pilot` | One command: replays your captured turns through the real policy engine and writes the whole evidence pack |
+| [`measure_pilot.py`](measure_pilot.py) | The same measurement, runnable by path from a checkout without installing anything |
+| [`pilot-report-template.md`](pilot-report-template.md) | The report's structure, for reference — `nhid pilot` fills it in for you |
+| [`../../tools/pilot_report_generator.py`](../../tools/pilot_report_generator.py) | Turns per-call results into a markdown report (the older two-step route) |
+
+## Run it
+
+```bash
+pip install -e .                       # from a checkout of this repository
+nhid pilot calls.jsonl --out pilot-evidence/
+```
+
+That writes four things into `pilot-evidence/`:
+
+| File | Contents |
+| :--- | :--- |
+| `pilot_report.md` | The filled report, with every field the kit cannot measure explicitly marked |
+| `pilot_report.pdf` | The same report, rendered for circulation |
+| `metrics.json` | The same figures, machine-readable |
+| `per-call/<session_id>.json` | One conformance result per call — verdict and violations, no transcripts |
+
+Add `--organization`, `--workflow`, `--date-range` and `--prepared-by` to fill
+the report's header. Anything you leave out is marked *not recorded* rather
+than guessed — see [below](#what-the-kit-will-not-fill-in-for-you).
+
+The PDF needs reportlab, which is an optional extra so that a vendor embedding
+the policy engine in a live call path does not inherit a document toolchain. If
+it is missing, the report and metrics are still written and the command tells
+you to `pip install 'nhid-clinical[pdf]'`.
 
 Quick sanity check that everything runs (no data needed):
+
+```bash
+nhid pilot --demo --out pilot-evidence/
+```
+
+Or, without installing anything, straight from a checkout:
 
 ```bash
 pip install -r requirements.txt
 python docs/pilot-kit/measure_pilot.py --demo
 ```
+
+Both go through the same measurement code, so they cannot report different
+numbers — `tests/test_pilot_kit_packaging.py` asserts it.
+
+> **Not on PyPI.** `pip install -e .` from a checkout, or
+> `pip install git+https://github.com/NHID-Clinical/NHID-Clinical`. The
+> distribution still installs top-level packages named `src`, `adapters` and
+> `scripts`, which are too generic to claim in a shared `site-packages`; that
+> rename is a prerequisite for any index release and has not happened yet.
+
+## What the kit will not fill in for you
+
+The report asks for several things transcripts cannot answer: who ran the
+pilot, over which workflow and dates, how many calls were dropped as
+unmappable, how many flagged calls a person actually re-read, and how many of
+those turned out to be false positives.
+
+Those are emitted as `not recorded — fill in`, never as `0`. A zero in the
+hand-review row reads as *reviewed, none false* — a clean finding nobody
+issued, in the direction that flatters the vendor. Fill them in from your own
+review log, or leave them marked and say so.
+
+## Nothing leaves your network
+
+The kit makes no network calls. Not telemetry, not a version check, not an
+anonymous ping. That is why its security review is short and why Tier 0 needs
+no BAA, and it is enforced rather than promised: `scripts/check_offline_kit.py`
+parses every module the kit imports — the measurement, the report, the PDF
+renderer, the CLI entry point, the policy engine, and the engine's own imports
+— and fails the build on any import or call that could reach out.
+
+If you want your results compared against the published corpus, the kit prints
+an address you can email them to. You send it; nothing sends it for you.
 
 ## Disclosure timeliness bands
 
@@ -53,8 +118,12 @@ form.
   (Pre-Data Exchange Gate), DBC-01 (Deceptive Behavior Check), EIT-01
   (Escalation Implementation Test)
 - **Transcription attestation** — for each call, whether transcription quality
-  was `measured`, `attested` or `unattested`. This is not a quality score; it
-  records what is known about the transcript every other figure rests on.
+  was `measured`, `attested` or `unattested`. This is not a quality score, and
+  the kit does not derive it: you record it on the capture record (the
+  `transcription_attestation` field) and the kit reports the split. It is
+  optional, and a call without it is reported as *not recorded* rather than as
+  `unattested` — "nothing is known" is a statement you make, not one the kit
+  makes for you.
 
 > **Withdrawn.** Earlier versions of this kit asked you to report a *CAS
 > distribution* bucketed by trust tier (Verified Trust / Conditional Trust /
@@ -113,14 +182,16 @@ gather them is yours to determine.
   (prior auth, claims status, or billing)
 - Map each call's turns to `minimal-event-schema.json` records (one JSONL line
   per turn); validate a sample against the schema
-- Run `measure_pilot.py calls.jsonl` for the baseline Impersonation Latency and
-  violation rates
+- Record a `transcription_attestation` on each call if you know one — it bounds
+  every other figure, and leaving it out is reported as *not recorded*
+- Run `nhid pilot calls.jsonl --out pilot-evidence/` for the baseline
+  Impersonation Latency, the violation rates and the report in one pass
 
 *Stop condition:* a sample replays cleanly and the baseline numbers are produced.
 
 **Stage 2 — analyse**
-- Re-run with `--results-dir out/` and generate the report:
-  `python tools/pilot_report_generator.py out/ pilot_report.md`
+- Read `pilot-evidence/pilot_report.md` — the per-control violation counts and
+  the disclosure-band split are already in it
 - Read the per-control violation counts and the top-3 violations per workflow
 - Spot-check 10–20 flagged calls by hand — confirm the violations are real
   before drawing conclusions
