@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 1156 passed, 0 skipped, 0 xfailed"
+    name: "Unit invariant: 1157 passed, 0 skipped, 0 xfailed"
     runs-on: ubuntu-latest
 
     steps:
@@ -72,8 +72,16 @@ jobs:
         run: python scripts/check_control_set.py
 
       # Tier 0 is deliberately offline: prevent accidental phone-home code.
+      # This ran scripts/check_pilot_offline.py, which inspected only
+      # docs/pilot-kit/measure_pilot.py. That file is now a shim over
+      # src/pilot_measure.py, so the step would have kept passing while
+      # guarding almost nothing. check_offline_kit.py covers the kit's whole
+      # import closure and is a strict superset of the retired guard's module
+      # and call lists; the retired script is deleted rather than left beside
+      # it, because two guards for one promise can disagree and one passing
+      # masks the other.
       - name: Tier 0 pilot kit remains offline
-        run: python scripts/check_pilot_offline.py
+        run: python scripts/check_offline_kit.py
 
       # The Trust Gateway renders real engine output. Without this the claim
       # would only be true of the day the fixture was generated.

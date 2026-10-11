@@ -299,6 +299,21 @@ def test_guard_covers_the_kits_whole_import_closure():
         assert expected in GUARDED, f"{expected} is not guarded"
 
 
+def test_ci_runs_the_guard_that_covers_the_closure():
+    """CI used to run `scripts/check_pilot_offline.py`, which inspected only
+    `docs/pilot-kit/measure_pilot.py`. Once that file became a shim, the step
+    would have gone on passing while guarding almost nothing — the enforced
+    check has to be the one that covers the closure, and there must be only
+    one of it."""
+    ci = (REPO_ROOT / ".github" / "workflows" / "ci.yml").read_text()
+    assert "python scripts/check_offline_kit.py" in ci
+    assert "check_pilot_offline" not in ci.replace(
+        "scripts/check_pilot_offline.py, which inspected only", "")
+    assert not (REPO_ROOT / "scripts" / "check_pilot_offline.py").exists(), (
+        "two guards for one promise can disagree, and one passing masks the other"
+    )
+
+
 def test_guard_passes_over_the_kit_as_shipped():
     r = _run([str(REPO_ROOT / "scripts" / "check_offline_kit.py")])
     assert r.returncode == 0, r.stdout + r.stderr

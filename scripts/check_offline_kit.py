@@ -109,8 +109,16 @@ FORBIDDEN_MODULES = {
 
 # Attribute calls that reach out even without an obvious import.
 FORBIDDEN_CALLS = {
-    "urlopen", "urlretrieve", "getaddrinfo", "create_connection",
+    "urlopen", "urlretrieve", "getaddrinfo", "create_connection", "connect_ex",
     "check_output", "check_call", "Popen", "run", "system", "popen",
+}
+
+# Of those, the ones that are unambiguous enough to flag as a BARE call --
+# `urlopen(url)` after a `from ... import urlopen`. The import itself is
+# already caught, so this is belt-and-braces; it is restricted to names that
+# cannot plausibly be a local helper, which is why `run` and `Popen` are absent.
+FORBIDDEN_BARE_CALLS = {
+    "urlopen", "urlretrieve", "getaddrinfo", "create_connection", "connect_ex",
 }
 # `run` and `system` are common words. Only flag them on a module that could
 # actually execute something.
@@ -148,6 +156,8 @@ class NetworkReachVisitor(ast.NodeVisitor):
             if required is None or (owner in required):
                 where = f"{owner}.{func.attr}" if owner else func.attr
                 self.findings.append((node.lineno, f"calls {where}()"))
+        if isinstance(func, ast.Name) and func.id in FORBIDDEN_BARE_CALLS:
+            self.findings.append((node.lineno, f"calls {func.id}()"))
         # A bare __import__("requests") is dynamic, but the literal form is
         # common enough in a careless patch to be worth catching.
         if isinstance(func, ast.Name) and func.id == "__import__":
