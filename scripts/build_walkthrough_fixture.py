@@ -82,20 +82,24 @@ SCENARIOS: tuple[tuple[str, str, str], ...] = (
     ("nhid_ec_comp_002", "EIT-01 escalation", "Human handoff honored"),
 )
 
-# ── Choreography, not engine order ──────────────────────────────────────────
+# ── Reading order, not engine order ─────────────────────────────────────────
 # The engine evaluates every control on every turn and resolves them by
 # priority (DENY_DATA 5 > ESCALATE_HUMAN 4 > DISCLOSE_IDENTITY 3 > LOG_ONLY 2 >
-# CONTINUE_AI 1). That order is not a floor plan, and animating it directly is
-# what made the earlier scene look like the agent was walking backwards.
+# CONTINUE_AI 1). This tuple is neither of those things: it is the order the
+# four behavioural controls are *listed* in, top to bottom, so a reader meets
+# them in the order the specification introduces them.
 #
-# So the physical route is fixed here and never derived from evaluation order:
-# the agent enters at the door and advances monotonically through four stations.
-# A turn that lights a control she has already passed updates that station's
-# lamp in place; she does not walk back to it.
+# An earlier version of the page staged these four as a corridor of arches and
+# walked a figure through them left to right. That read as a pipeline, which is
+# the one thing the control set is not — all five are evaluated on every turn,
+# and none of them waits for the one before it. The readout now shows five rows
+# every turn precisely so that cannot be misread.
 #
-# ATR-01 is deliberately absent. It is not a floor stop — it is the evidence
-# ledger the whole interaction is written into, and it renders as a panel that
-# accumulates sealed rows, not a booth anyone walks into.
+# ATR-01 is deliberately absent from this tuple. It gates nothing: it is the
+# evidence layer every turn is written into whatever the other four returned,
+# and the page draws it apart from them for that reason. The page derives its
+# own display order from this tuple plus whatever `is_station` marks as not a
+# gate, so ATR-01 cannot be promoted into the gate list by editing the page.
 STAGE_ORDER: tuple[str, ...] = ("IDG-01", "PDX-01", "DBC-01", "EIT-01")
 
 CONTROL_NAMES = {
@@ -106,14 +110,23 @@ CONTROL_NAMES = {
     "ATR-01": "Audit Trail",
 }
 
-# Where each control sits in the room, and what the object physically is.
-# Wording describes the staging; it makes no claim about engine behaviour.
+# What each control is for, in one line, for the config panel. These describe
+# the control's job — not where it sits, because it no longer sits anywhere.
+# They make no claim about what the engine returned on any given turn.
+#
+# The previous set described furniture ("Reception arch", "Records window",
+# "Voice bench", "Handoff desk"). That was staging language for a room that no
+# longer exists, and while the room stood it was also doing the explaining.
 CONTROL_STAGING = {
-    "IDG-01": "Reception arch — the agent states what she is before the doors open",
-    "PDX-01": "Records window — the chart drawer stays shut until disclosure is on record",
-    "DBC-01": "Voice bench — the utterance is checked for impersonation artifacts",
-    "EIT-01": "Handoff desk — the lane to an authorized human staff member",
-    "ATR-01": "Evidence ledger — every turn is sealed here, whatever the outcome",
+    "IDG-01": "Has the agent disclosed that it is not human, and does its own "
+              "identity assertion still say so?",
+    "PDX-01": "Is protected health information being exchanged, and was "
+              "disclosure on record before it was?",
+    "DBC-01": "Does the agent's speech claim human or licensed-professional "
+              "status? Text only — this control does not analyse audio.",
+    "EIT-01": "Was a human handoff asked for, and did one actually happen?",
+    "ATR-01": "Is the turn's audit envelope complete? Written on every turn, "
+              "pass or fail; it gates nothing.",
 }
 
 # The engine's own priority ladder, read from the source rather than retyped.
@@ -308,6 +321,21 @@ def inject(data: dict[str, Any]) -> bool:
     return True
 
 
+def _strip_comments(src: str) -> str:
+    """Remove HTML, CSS/JS block and JS line comments.
+
+    The invariants below grep the page for engine output that has been typed in
+    by hand. Comments must not count: this file's own rules are explained in
+    comments *inside* that page, and a check that fires on the explanation is a
+    check that gets the explanation deleted. Nothing in a comment reaches a
+    reader's screen, so nothing in a comment can mislead one.
+    """
+    src = re.sub(r"<!--.*?-->", " ", src, flags=re.S)      # HTML
+    src = re.sub(r"/\*.*?\*/", " ", src, flags=re.S)       # CSS and JS block
+    src = re.sub(r"(?m)^\s*//.*$", " ", src)               # JS line, own line
+    return src
+
+
 def _authored_invariants(data: dict[str, Any]) -> list[str]:
     """Properties of the scene that the engine cannot state for itself.
 
@@ -327,35 +355,70 @@ def _authored_invariants(data: dict[str, Any]) -> list[str]:
     if data["controls"]["ATR-01"]["is_station"]:
         problems.append("ATR-01 is marked as a station.")
 
-    # 2. The floor coordinates the scene animates must ascend left to right.
-    #    This is the invariant that keeps the agent from appearing to reverse
-    #    because the engine evaluates controls in priority order, not floor order.
-    match = re.search(r"var STATION_X = \{([^}]*)\}", page)
-    if not match:
-        problems.append("STATION_X is no longer declared in the scene.")
-    else:
-        found = [(m.group(1), float(m.group(2)))
-                 for m in re.finditer(r'"([A-Z]{3}-\d{2})":\s*([\d.]+)', match.group(1))]
-        if [f[0] for f in found] != list(STAGE_ORDER):
+    # 2. The readout must build itself from this trace, not from a list typed
+    #    into the page.
+    #
+    #    This replaces an invariant that asserted a set of floor coordinates
+    #    (STATION_X) ascended left to right, which kept the walking figure from
+    #    appearing to reverse. There is no floor any more, so that check had
+    #    nothing left to protect. What needs protecting now is the property the
+    #    redesign rests on: the page derives its five rows and its composite
+    #    line from the fixture, so a control cannot appear on the glass that
+    #    the engine did not evaluate, and ATR-01 cannot be promoted into the
+    #    gate list by editing markup.
+    #    Searched in the AUTHORED region only. Searching the whole page passes
+    #    vacuously: the generated block below is JSON that contains every one of
+    #    these keys, so the check could never fail however the script was
+    #    rewritten. Caught by replacing the lookup with a hardcoded map and
+    #    watching this check pass anyway.
+    authored_for_keys = _strip_comments(
+        page[page.index("<body"):page.index(BEGIN)] + page[page.index(END):]
+    )
+    for needle, why in (
+        ("TRACE.stage_order", "derive the behavioural rows from the trace"),
+        ("is_station", "tell a gate from the evidence layer"),
+        ("TRACE.action_priority", "resolve the composite action"),
+    ):
+        if needle not in authored_for_keys:
             problems.append(
-                f"STATION_X names {[f[0] for f in found]} but STAGE_ORDER is "
-                f"{list(STAGE_ORDER)}."
+                f"the readout no longer reads `{needle}`; it must, to {why}."
             )
-        xs = [f[1] for f in found]
-        if xs != sorted(xs):
-            problems.append(f"station positions do not run left to right: {found}")
 
-    # 3. No verdict may be typed into the scene by hand. This is the exact
-    #    defect the rebuild removed: the old walkthrough carried literal
-    #    "IDG-01 PASS" / "PDX-01 FAIL" strings that nothing computed.
+    # 3. No verdict may be typed into the page by hand. This is the exact defect
+    #    the first rebuild removed, and a redesign is the likeliest moment to
+    #    reintroduce it — drawing the readout into the artwork would look fine
+    #    and be just as wrong.
+    #
+    #    Comments are stripped before any of this runs. A guard that fires on
+    #    prose describing the rule teaches the next person to delete the prose,
+    #    and a verdict inside a comment renders to nobody, so it cannot mislead
+    #    a reader. The same reasoning is written up in scripts/check_offline_kit.py.
     start = page.index(BEGIN)
     stop = page.index(END)
-    authored = page[:start] + page[stop:]
+    authored = _strip_comments(page[:start] + page[stop:])
+
     hand_written = re.findall(
         r"(?:IDG|PDX|DBC|EIT|ATR)-01\s+(?:PASS|FAIL|PASSED|FAILED)", authored, re.I
     )
     if hand_written:
         problems.append(f"hand-written verdicts found in the scene: {hand_written}")
+
+    #    The markup region is held to a stricter rule than the script. The
+    #    script legitimately names every action once, to map it to a colour;
+    #    the markup has no business naming one at all, because every cell that
+    #    shows an action or a reason code is written at runtime. An action name
+    #    or reason code appearing here means someone has drawn the output.
+    body_start = page.index("<body")
+    markup = _strip_comments(page[body_start:start])
+    drawn = sorted(set(
+        re.findall(r"\b(?:CONTINUE_AI|DENY_DATA|ESCALATE_HUMAN|DISCLOSE_IDENTITY|LOG_ONLY)\b", markup)
+        + re.findall(r"\b(?:IDG|PDX|DBC|EIT|ATR)01_[A-Z_]+\b", markup)
+    ))
+    if drawn:
+        problems.append(
+            f"engine output is drawn into the markup: {drawn}. Every action and "
+            f"reason code on the screen must be written at runtime from the trace."
+        )
 
     # 4. Every reason code the config panels advertise must exist in the engine.
     engine = ENGINE.read_text(encoding="utf-8")
@@ -415,9 +478,9 @@ def main(argv: list[str] | None = None) -> int:
             return 1
 
         turns = sum(len(s["turns"]) for s in fresh["scenarios"])
-        print(f"WALKTHROUGH PASS: fixture and scene match the engine "
+        print(f"WALKTHROUGH PASS: fixture and readout match the engine "
               f"({len(fresh['scenarios'])} scenarios, {turns} turns); "
-              f"route is left-to-right and ATR-01 is not a station")
+              f"five controls render from the trace and ATR-01 is not a gate")
         return 0
 
     fresh["source_commit"] = _commit()

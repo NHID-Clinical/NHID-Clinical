@@ -21,7 +21,7 @@
     "IDG-01": {
       "control_id": "IDG-01",
       "name": "Identity Disclosure Gate",
-      "staging": "Reception arch \u2014 the agent states what she is before the doors open",
+      "staging": "Has the agent disclosed that it is not human, and does its own identity assertion still say so?",
       "is_station": true,
       "reason_codes": [
         "IDG01_ASSERTION_TEXT_MISSING",
@@ -34,7 +34,7 @@
     "PDX-01": {
       "control_id": "PDX-01",
       "name": "Pre-Data Exchange Gate",
-      "staging": "Records window \u2014 the chart drawer stays shut until disclosure is on record",
+      "staging": "Is protected health information being exchanged, and was disclosure on record before it was?",
       "is_station": true,
       "reason_codes": [
         "PDX01_DISCLOSURE_NOT_SEQUENCED",
@@ -47,7 +47,7 @@
     "DBC-01": {
       "control_id": "DBC-01",
       "name": "Deceptive Behavior Check",
-      "staging": "Voice bench \u2014 the utterance is checked for impersonation artifacts",
+      "staging": "Does the agent's speech claim human or licensed-professional status? Text only \u2014 this control does not analyse audio.",
       "is_station": true,
       "reason_codes": [
         "DBC01_ARTIFACT_DETECTED",
@@ -58,7 +58,7 @@
     "EIT-01": {
       "control_id": "EIT-01",
       "name": "Escalation Implementation Test",
-      "staging": "Handoff desk \u2014 the lane to an authorized human staff member",
+      "staging": "Was a human handoff asked for, and did one actually happen?",
       "is_station": true,
       "reason_codes": [
         "EIT01_ESCALATION_HONORED",
@@ -71,7 +71,7 @@
     "ATR-01": {
       "control_id": "ATR-01",
       "name": "Audit Trail",
-      "staging": "Evidence ledger \u2014 every turn is sealed here, whatever the outcome",
+      "staging": "Is the turn's audit envelope complete? Written on every turn, pass or fail; it gates nothing.",
       "is_station": false,
       "reason_codes": [
         "ATR01_AUDIT_COMPLETE",
@@ -656,5 +656,5 @@
       ]
     }
   ],
-  "source_commit": "8588fe9"
+  "source_commit": "966a8b5"
 }

@@ -195,7 +195,17 @@ def test_the_other_control_component_also_states_its_provenance():
         "the front-desk walkthrough no longer names the script that recorded "
         "its output"
     )
-    assert "the verdicts are not" in dev, (
-        "the front-desk walkthrough no longer separates what is staging from "
+    assert "The machine is drawn; the readout is read" in dev, (
+        "the walkthrough caption no longer separates what is artwork from "
         "what is engine output"
+    )
+    # The wording moved when the scene was restaged from a clinic front desk to
+    # a readout on a screen: "the verdicts are not" described a room that no
+    # longer exists. The requirement did not move. If this line is edited
+    # again, replace it with whatever sentence does the same job — do not
+    # delete it, because the sentence is the only thing telling a reader which
+    # half of the picture they are allowed to believe.
+    assert "typed into the markup" in dev, (
+        "the walkthrough caption no longer tells the reader that a drawn-in "
+        "verdict fails the build"
     )
