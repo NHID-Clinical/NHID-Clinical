@@ -71,6 +71,10 @@ jobs:
       - name: Control-set completeness guard
         run: python scripts/check_control_set.py
 
+      # Tier 0 is deliberately offline: prevent accidental phone-home code.
+      - name: Tier 0 pilot kit remains offline
+        run: python scripts/check_pilot_offline.py
+
       # The Trust Gateway renders real engine output. Without this the claim
       # would only be true of the day the fixture was generated.
       - name: Trust Gateway matches the engine

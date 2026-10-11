@@ -304,6 +304,9 @@ def print_summary(summary: dict) -> None:
               + ", ".join(f"{r} ({n})" for r, n in summary["top_violations"]))
     else:
         print("Top violations:                none detected")
+    print("")
+    print("Optional: compare your baseline with the published corpus by emailing your report to")
+    print("contact@nhid-clinical.org. Do not send PHI or identifiable call data.")
 
 
 # ──────────────────────────────────────────────────────────────────────────
