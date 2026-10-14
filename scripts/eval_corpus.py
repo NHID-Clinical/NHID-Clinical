@@ -26,6 +26,11 @@ Usage:
     python scripts/eval_corpus.py [corpus.json]
     python scripts/eval_corpus.py --write-report    # regenerate the report
     python scripts/eval_corpus.py --check           # fail if the report is stale
+
+A second corpus gets its own report via --report; the default corpus/report
+pair reproduces the v1 report byte-for-byte:
+    python scripts/eval_corpus.py tests/evaluation_corpus_v2.json \\
+        --report docs/EVALUATION_CORPUS_REPORT_v2.md --write-report
 """
 import argparse
 import json
@@ -256,12 +261,18 @@ def print_false_positives(false_positives):
     print("="*60 + "\n")
 
 
-def build_report(corpus_path, scenarios, stats, false_positives, unexpected):
+def build_report(corpus_path, scenarios, stats, false_positives, unexpected,
+                 regen_cmd="python scripts/eval_corpus.py --write-report",
+                 check_cmd="python scripts/eval_corpus.py --check"):
     """
     Render the corpus report as Markdown.
 
     Deterministic: no build timestamp, so regenerating an unchanged corpus
     produces a byte-identical file and `--check` is meaningful.
+
+    `regen_cmd` / `check_cmd` are embedded verbatim in the header so a report
+    generated for a non-default corpus/report pair documents its own exact
+    regeneration command. Defaults reproduce the v1 report byte-for-byte.
     """
     total_expected = sum(b["expected"] for b in stats.values())
     total_detected = sum(b["detected"] for b in stats.values())
@@ -273,8 +284,8 @@ def build_report(corpus_path, scenarios, stats, false_positives, unexpected):
         "# Governance Evaluation Corpus — Detection Report",
         "",
         "<!-- GENERATED FILE — do not edit by hand.",
-        "     Regenerate with: python scripts/eval_corpus.py --write-report",
-        "     Verified in CI by: python scripts/eval_corpus.py --check -->",
+        f"     Regenerate with: {regen_cmd}",
+        f"     Verified in CI by: {check_cmd} -->",
         "",
         f"**Corpus**: `{corpus_path}`  ",
         f"**Scenarios**: {len(scenarios)} ({len(clean)} compliant, "
@@ -367,15 +378,20 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Evaluate the Governance Evaluation Corpus.")
     ap.add_argument("corpus", nargs="?", default=str(DEFAULT_CORPUS))
     ap.add_argument("--write-report", action="store_true",
-                    help=f"regenerate {REPORT.relative_to(ROOT)}")
+                    help=f"regenerate {REPORT.relative_to(ROOT)} (or --report path)")
     ap.add_argument("--check", action="store_true",
                     help="fail if the report is missing or stale; write nothing")
+    ap.add_argument("--report", default=None,
+                    help=f"report path to write/check (default {REPORT.relative_to(ROOT)}); "
+                         "set it with a non-default corpus so each corpus has its own report")
     args = ap.parse_args(argv)
 
     corpus_path = Path(args.corpus)
     if not corpus_path.exists():
         print(f"Corpus not found: {corpus_path}", file=sys.stderr)
         return 1
+
+    report_path = Path(args.report) if args.report else REPORT
 
     corpus = load_corpus(corpus_path)
     scenarios = collect_scenarios(corpus)
@@ -385,25 +401,44 @@ def main(argv=None):
         rel = corpus_path.resolve().relative_to(ROOT)
     except ValueError:
         rel = corpus_path
-    report = build_report(rel, scenarios, stats, false_positives, unexpected)
+
+    # Embed the exact regeneration/verification commands for *this* corpus and
+    # report, so a non-default report documents how to rebuild itself. Defaults
+    # reproduce the v1 report byte-for-byte (see build_report).
+    default_corpus = corpus_path.resolve() == DEFAULT_CORPUS.resolve()
+    default_report = report_path.resolve() == REPORT.resolve()
+    if default_corpus and default_report:
+        regen_cmd = "python scripts/eval_corpus.py --write-report"
+        check_cmd = "python scripts/eval_corpus.py --check"
+    else:
+        try:
+            report_rel = report_path.resolve().relative_to(ROOT)
+        except ValueError:
+            report_rel = report_path
+        suffix = f"{rel} --report {report_rel}"
+        regen_cmd = f"python scripts/eval_corpus.py {suffix} --write-report"
+        check_cmd = f"python scripts/eval_corpus.py {suffix} --check"
+
+    report = build_report(rel, scenarios, stats, false_positives, unexpected,
+                          regen_cmd=regen_cmd, check_cmd=check_cmd)
 
     if args.check:
-        if not REPORT.exists():
-            print(f"CORPUS REPORT FAIL: {REPORT.relative_to(ROOT)} does not exist. "
-                  "Run scripts/eval_corpus.py --write-report.", file=sys.stderr)
+        if not report_path.exists():
+            print(f"CORPUS REPORT FAIL: {report_path} does not exist. "
+                  f"Run {regen_cmd}.", file=sys.stderr)
             return 1
-        if REPORT.read_text(encoding="utf-8") != report:
-            print(f"CORPUS REPORT FAIL: {REPORT.relative_to(ROOT)} is stale. "
-                  "Run scripts/eval_corpus.py --write-report and commit the result.",
+        if report_path.read_text(encoding="utf-8") != report:
+            print(f"CORPUS REPORT FAIL: {report_path} is stale. "
+                  f"Run {regen_cmd} and commit the result.",
                   file=sys.stderr)
             return 1
-        print(f"CORPUS REPORT PASS: {REPORT.relative_to(ROOT)} matches the measured corpus")
+        print(f"CORPUS REPORT PASS: {report_path} matches the measured corpus")
         return 0
 
     if args.write_report:
-        REPORT.parent.mkdir(parents=True, exist_ok=True)
-        REPORT.write_text(report, encoding="utf-8")
-        print(f"Wrote {REPORT.relative_to(ROOT)}")
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        report_path.write_text(report, encoding="utf-8")
+        print(f"Wrote {report_path}")
 
     print(f"\nCorpus: {rel}")
     print(f"Scenarios: {len(scenarios)}   Turns: "
