@@ -187,15 +187,23 @@ def build_turn(
     assertion alongside the timestamp, and a disclosure made once does not
     expire when the caller speaks.
 
-    DBC-01 deceptive_artifact_flags are extracted from voice/signal artifacts only
-    (e.g., fake breathing, synthetic sounds). Text-based identity checks are handled
-    by the engine's Tier B heuristics (_assertion_implies_human).
+    DBC-01 deceptive_artifact_flags here are derived from TEXT STAGE-DIRECTION
+    MARKERS in the transcript (e.g. the literal token "*inhales*"), NOT from any
+    acoustic or signal analysis. No audio is examined anywhere in this pipeline.
+    The flag names ("synthetic_breathing", "synthetic_typing") describe what the
+    *marker* denotes, not a measured acoustic property — a transcript that never
+    carries such a marker yields no flag, regardless of the underlying audio.
+    Detecting fake breathing or synthetic sounds in actual audio would require a
+    separate audio-analysis mechanism that does not exist in this repository; see
+    docs/validation/DBC-01-SCOPE-AND-LIMITATIONS.md. Text identity claims are
+    handled by the engine's Tier B heuristics (_assertion_implies_human).
     """
     speech_text = raw_turn.get("text", "") or ""
     speaker = raw_turn.get("speaker", "unknown")
     identity_assertion_text = speech_text if speaker == "agent" else disclosure_assertion_text
 
-    # DBC-01: Extract voice/signal artifacts (not text patterns)
+    # DBC-01: match TEXT stage-direction markers in the transcript. This is not
+    # acoustic detection — it fires only on the literal markers below.
     deceptive_flags = []
     if speaker == "agent" and identity_assertion_text:
         text_lower = identity_assertion_text.lower()
