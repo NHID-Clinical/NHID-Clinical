@@ -410,7 +410,19 @@ def _voice_stress_row_to_legacy(row: dict[str, Any]) -> dict[str, Any]:
     translated["id"] = row.get("id") or row.get("scenario_id")
     translated["conversation_ref"] = (row.get("scenario_id")
                                       or row.get("scenario_label"))
-    translated["scenario_type"] = row.get("category")
+    # False positives are measured over conversations whose scenario_type is
+    # exactly "compliant" (confusion_matrix.compute). The CSV-550 export states
+    # that directly; this export instead flags its clean population with
+    # `is_negative_control`. Map that onto "compliant" so the FP denominator is
+    # this corpus's 95 negative controls rather than zero — otherwise the FP
+    # rate reads n/a and a false positive on a clean scenario cannot surface.
+    # This is deliberately scoped to the voice-stress translator: the CSV-550
+    # path (convert_csv) never calls this function, so its pinned baseline in
+    # scripts/check_baseline.py is unaffected.
+    if _is_truthy(row.get("is_negative_control")):
+        translated["scenario_type"] = "compliant"
+    else:
+        translated["scenario_type"] = row.get("category")
     translated["target_control"] = row.get("expected_control")
     for new_col, rule_id in VOICE_STRESS_VIOLATION_COLUMNS.items():
         legacy = next(c for c, r in VIOLATION_COLUMN_TO_RULE_ID.items() if r == rule_id)
