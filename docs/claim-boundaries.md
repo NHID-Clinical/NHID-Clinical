@@ -50,6 +50,35 @@ or none of them:
    database-layer or API-layer authorization control, and it does not prevent
    an agent from obtaining data by some path the interaction does not reveal.
 
+**What the `nhid-agent` authorization extension object does and does not
+establish.** State all four of these together or none of them.
+
+`src/udap_agent_extension.py` builds a sibling object to HL7 UDAP's
+`hl7-b2b`, for the gap where UDAP names a non-human requestor but gives it no
+identifier, no role and no evidence of delegated authority.
+
+1. It is a **carrier, not a control**. It transports a delegation claim into
+   an OAuth token request so the receiving side has something to check. Point
+   4 above still holds without qualification: NHID is **not** a
+   database-layer or API-layer authorization control, and nothing about this
+   object makes it one. A payer's authorization decision stays the payer's.
+2. It is **not trusted on its own**, by construction. `verify_extension`
+   verifies the signed `AgentPassport` first and then requires every field of
+   the object to agree with it; a field that disagrees is a failure, never a
+   fallback. Every field is derived from the delegation, so no field escapes
+   that comparison.
+3. It carries **no UDAP, HL7 or trust-community standing**. UDAP's own text
+   permits additional authorization extension objects, and this uses that
+   permission. It has not been balloted, reviewed, registered or accepted by
+   HL7, UDAP.org, any trust community or any payer. Do not write
+   "UDAP-conformant", "HL7-aligned", "UDAP extension" without "proposed", or
+   anything implying registration.
+4. It has **no adopters, evaluations or pilots**. CMS-0057-F's 1 January 2027
+   Prior Authorization API deadline is a fact about the regulation and may be
+   cited as one. It is not evidence that anyone is looking at this object, and
+   the two must never appear in a sentence that lets a reader infer they are
+   connected.
+
 **Out of scope — what NHID-Clinical does not govern.**
 
 - The **AI model** itself: accuracy, bias, drift, training data.
@@ -75,6 +104,9 @@ question.
 
 | Make (defensible) | Avoid (overclaim) |
 | :-- | :-- |
+| "A proposed authorization extension object for the slot UDAP leaves open for additional objects." | "A UDAP extension" / "UDAP-conformant" / "HL7-aligned" (implies standing nobody granted) |
+| "UDAP's `hl7-b2b` omits `subject_id` for non-human requestors — quoting the IG." | "UDAP has no AI governance" (a broader claim than the quote supports) |
+| "CMS-0057-F requires a Prior Authorization API by 1 Jan 2027." | Any phrasing where that date reads as a deadline *for adopting this* |
 | "An operational AI governance framework for disclosed non-human actors under delegated authority across healthcare organizational boundaries." | "A healthcare AI governance framework." (implies model/bias/clinical governance) |
 | "Governs the moment a non-human actor crosses an organizational boundary." | "Governs healthcare AI." / "Governs autonomous AI." |
 | "A non-human-actor identity and delegated-authorization protocol (reference implementation)." | "A universal identity layer." / "Trust infrastructure." / "A control plane." |
@@ -112,6 +144,19 @@ this writing; adopt by version from current materials.
 - Current honest label: **a voluntary open proposal with standards-oriented
   artifacts / input to a potential work item** — not an emerging standard, and
   not a "standards candidate" in the sense of an opened standards-body process.
+- The `nhid-agent` authorization extension object (§3.3 of
+  [nhid-auth-pki-and-oauth2-integration.md](nhid-auth-pki-and-oauth2-integration.md))
+  sits one rung **below** that label: it is a proposal written against a
+  documented extension point in a published IG, with a reference
+  implementation and tests, and with no submission, ballot, registration or
+  reviewer anywhere. Describe it as "a proposal", never as an extension
+  *of* UDAP.
+- On citing Internet-Drafts: a `draft-<surname>-` prefix means an
+  **individual submission**, not a working-group document, and the IETF's own
+  boilerplate says to cite a draft only as "work in progress". A draft that
+  happens to agree with our architecture is corroboration from an independent
+  party; it is not adoption, endorsement, or a standard.
+
 - Gating step to strengthen the standards argument: a **second, independent
   implementation passing the conformance test suite**, plus published
   designs for registry/trust-resolution, revocation and key lifecycle, and

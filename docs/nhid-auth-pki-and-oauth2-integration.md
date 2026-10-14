@@ -244,7 +244,9 @@ This combination is the recommended steady state, not a transitional hack: OAuth
 
 ### 2.9 Replay prevention when a bearer token spans multiple calls
 
-This is precisely the gap NHID-Auth's call-SID nonce binding closes. An OAuth bearer token is, by design, valid for every request until it expires — it has no concept of "this specific call." If a vendor backend's OAuth token were the *only* authorization check, a leaked token (or a vendor bug that reuses a token across calls it shouldn't) could authorize an unbounded number of calls. The NHID delegation's `call_sid` field means even a leaked, still-valid OAuth token cannot be combined with a *replayed* passport from a different call — the verifier rejects the mismatch with `ERR_NONCE_MISMATCH`. This is the core answer to "why OAuth2 alone does not solve the NPI-bound, call-specific delegation problem": OAuth2 was never designed to express per-call scoping, and retrofitting it (e.g., minting a fresh OAuth token per call) is both non-standard and still wouldn't carry the provider's cryptographic signature over the NPI/scope/call binding the way a `Delegation` object does.
+This is precisely the gap NHID-Auth's call-SID nonce binding closes. An OAuth bearer token is, by design, valid for every request until it expires — it has no concept of "this specific call." If a vendor backend's OAuth token were the *only* authorization check, a leaked token (or a vendor bug that reuses a token across calls it shouldn't) could authorize an unbounded number of calls. The NHID delegation's `call_sid` field means even a leaked, still-valid OAuth token cannot be combined with a *replayed* passport from a different call — the verifier rejects the mismatch with `ERR_NONCE_MISMATCH`. This is the core answer to "why OAuth2 alone does not solve the NPI-bound, call-specific delegation problem": OAuth2 was never designed to express per-call scoping, and retrofitting it by minting a fresh token per request still wouldn't carry the provider's cryptographic signature over the NPI/scope/call binding the way a `Delegation` object does.
+
+**Correction to an earlier version of this section,** which called per-request token minting "non-standard". In the general OAuth2 case it is unusual. In the healthcare B2B case it is *required*: HL7's UDAP Security IG obliges a client to obtain a new access token whenever the authorization context changes — see §3.3. So the objection is not that per-context minting is irregular; it is narrower and it survives intact. A freshly minted bearer token still carries no provider signature over the NPI, the scope and the call, so it cannot answer §2.1's first question no matter how often it is reissued.
 
 ### 2.10 Reference integration patterns
 
@@ -256,6 +258,232 @@ Same OAuth2 transport layer as Tier 1, plus: the provider has issued a signed `D
 
 **Future — OIDC-metadata or registry-based discovery (not yet implemented).**
 An optional future model where a provider publishes an OIDC-style discovery document (or an entry in a shared NHID trust registry) that resolves NPI → current signing key/JWKS URL automatically, removing the need for bilateral static key exchange entirely. This depends on a registry operator existing (§1.8/§1.14) and is explicitly forward-looking — there is no reference implementation of this pattern in the current codebase.
+
+---
+
+## Part 3 — Token exchange, attenuation, and the payer API boundary
+
+> **Status labels for this part.** §3.1 and §3.3 describe behaviour that
+> exists in the repository today (`src/agent_identity.py`,
+> `src/udap_agent_extension.py`). §3.2 is a **forward-looking
+> recommendation** with no implementation in the SaaS control plane at the
+> time of writing.
+
+### 3.1 Why NHID-Auth does not use OAuth 2.0 Token Exchange for delegation
+
+The question arrives in most technical reviews: OAuth has a standard for
+handing out a narrower token — [RFC 8693, OAuth 2.0 Token
+Exchange](https://www.rfc-editor.org/info/rfc8693) (January 2020) — so why
+does NHID-Auth sign its own delegation objects instead?
+
+Because token exchange narrows scope **at a server**, and a delegation hop
+has to narrow scope **at the holder**. In RFC 8693 the client presents a
+token to the authorization server and receives a reduced one; the server
+enforces the reduction. That is a synchronous round-trip per hop, and the
+reduction leaves no artifact a third party can re-check later.
+
+The clearest articulation of this is not ours. `draft-niyikiza-oauth-
+attenuating-agent-tokens-01` (Web Authorization Protocol (OAuth) workgroup
+namespace, published 15 June 2026, intended status Standards Track, expires
+17 December 2026) sets out the limitation in §1.1:
+
+> OAuth 2.0 Token Exchange [RFC8693] enables a principal to obtain a new
+> token with reduced scope by contacting the authorization server. The server
+> enforces the scope reduction. This requires a synchronous round-trip to the
+> authorization server at each delegation hop. In multi-agent chains, this
+> makes the authorization server a participant in every delegation decision,
+> coupling the delegation topology to authorization server (AS) availability.
+> [RFC8693] supports representing prior delegation actors via nested `act`
+> claims, but those claims are informational for access control decisions
+> rather than a cryptographically self-verifiable attenuation chain.
+
+and again in its Appendix A.1:
+
+> RFC 8693 allows a client to exchange one token for another, potentially
+> with reduced scope, by contacting the authorization server. The server
+> enforces scope reduction. This requires network connectivity to the
+> authorization server at each delegation hop and cannot be performed
+> offline.
+
+**Read that status line carefully before citing it.** `draft-niyikiza-…` is
+an **individual submission** — the `draft-niyikiza-` prefix means it has not
+been adopted by the OAuth working group — and an Internet-Draft is, in the
+IETF's own words, to be cited only as "work in progress". Nothing in it
+endorses NHID-Clinical, and NHID-Clinical does not implement it. The honest
+and still useful statement is this: an independent standards-track proposal,
+written for general agent systems with no healthcare framing, identifies the
+same limitation in token exchange and reaches the same architectural
+conclusion we did.
+
+What that conclusion looks like in this repository, property by property:
+
+| Property the draft argues delegation needs | Where NHID-Auth v2 provides it |
+| :-- | :-- |
+| Holder derives the narrower credential, no server call | `AgentIdentityManager.create_delegation` + `sign_delegation` — the holder signs the next hop with its own key |
+| Monotonic attenuation, never widening | `validate_chain`, which rejects a hop whose scope is not a subset of its parent's with `ERR_CHAIN_NARROWING` |
+| A bounded chain | `MAX_CHAIN_DEPTH = 3`, enforced by `validate_chain` with `ERR_CHAIN_TOO_LONG` |
+| Offline verification against the root trust anchor | `verify_passport` — Ed25519 signature checks against a provider public key the verifier already holds; no network call |
+| Lifetime limits carried in the credential | `Delegation.expires_at`, checked with `ERR_EXPIRED` |
+
+**Recommendation: do not move the delegation chain to RFC 8693.** Doing so
+would trade an offline-verifiable chain for an authorization-server
+round-trip on a live voice call. A payer's identity provider being briefly
+unavailable should degrade a reporting pipeline, not an interaction with a
+patient on the line.
+
+### 3.2 Where token exchange does belong *(forward-looking — not implemented)*
+
+The objection above is to using token exchange for the *delegation chain*.
+Its actual job — trade a credential you hold for a differently-scoped one
+from a server you trust — fits a different seam cleanly, and NHID's
+commercial control plane has an unfilled hole exactly its shape.
+
+Organization authentication on the hosted API is a single long-lived
+`X-API-Key` header. For a vendor running a handful of integrations that is
+fine. For a health system whose security review requires every machine
+credential to originate from Okta, Entra ID or its own OIDC provider, a
+static shared key is a finding, not a design.
+
+The recommended shape, when it is built:
+
+1. The enterprise's own IdP issues its backend a token by whatever flow it
+   already uses — nothing NHID-specific.
+2. The backend presents that token to an NHID token endpoint as
+   `grant_type=urn:ietf:params:oauth:grant-type:token-exchange` with the
+   IdP token as `subject_token`.
+3. NHID verifies it against that issuer's JWKS, confirms the issuer is one
+   the organization configured, and returns a short-lived token scoped to
+   that organization.
+4. `X-API-Key` keeps working. An onboarding improvement that breaks existing
+   integrations is not an improvement.
+
+Note which of §2.1's two questions this answers: the second one — "may this
+client call this API?". It is transport authorization and it does not touch
+the delegation chain. A valid exchanged token with a missing or invalid
+passport is still a non-conformant call, exactly as §2.5 says of a bearer
+token.
+
+### 3.3 UDAP B2B and the requestor that is not a person
+
+This is where the boundary between the two questions stops being academic.
+
+HL7's [UDAP Security
+IG](https://hl7.org/fhir/us/udap-security/b2b.html) (v2.0.0, STU 2) defines
+the `hl7-b2b` authorization extension object, which a B2B client puts in the
+`extensions` claim of the authentication JWT it signs for a token request.
+It is **required** for client apps using the `client_credentials` flow —
+which is the flow an automated, "headless" agent uses. The object is how a
+token request states who is asking and why. Three of its rows, verbatim:
+
+| key | req | text |
+| :-- | :-- | :-- |
+| `subject_name` | conditional | "String containing the human readable name of the human **or non-human** requestor; required if known." |
+| `subject_id` | conditional | "…required if known **for human requestors**… **Omit for non-human requestors** and for human requestors who have not been assigned an applicable identifier." |
+| `subject_role` | conditional | "…required if known **for human requestors** when the `subject_name` parameter is present." |
+
+Read together: UDAP already contemplates a non-human requestor and lets it be
+*named*, but gives it **no identifier, no role, and no evidence of whose
+authority it acts under**. An AI voice agent requesting a token appears as a
+free-text string. `organization_id` names the organization; nothing names the
+agent, the provider who authorized it, or the limits of that authorization.
+
+Two things in the same section make this a buildable seam rather than a
+complaint:
+
+- **UDAP supplies the extension point.** "Other implementation guides **MAY**
+  define additional Authorization Extension Objects to use together with
+  this object for B2B client credentials workflows."
+- **UDAP already requires per-context token minting**, at the same
+  granularity a delegation has: "if a client asserted a `subject_id` and
+  `purpose_of_use` in the B2B Authorization Extension Object included in its
+  token request, then the access token granted in response to that request
+  can only be used in that authorization context… it cannot reuse the same
+  access token. Instead, it must obtain a new access token by submitting
+  another token request with an updated B2B Authorization Extension Object."
+
+And the identifier format needs no translation. UDAP, under "Preferred code systems and naming systems for US Realm": "For
+`subject_id`, trust communities **SHALL** constrain the allowed naming system
+or systems, and are **encouraged to require the individual National Provider
+Identifier (NPI)** when known for human requestors". Its worked format is
+`urn:oid:2.16.840.1.113883.4.6#1234567890`. NHID delegations are already
+NPI-anchored.
+
+**`nhid-agent`** (`src/udap_agent_extension.py`) is one proposal for that
+slot: a sibling object travelling beside `hl7-b2b`, carrying the agent id, a
+fingerprint of the agent's signing key, the delegation id, the delegated
+scope, the expiry, the call SID, and the provider NPI in UDAP's own format.
+
+```json
+"extensions": {
+  "hl7-b2b": {
+    "version": "1",
+    "subject_name": "agent-frontdesk-01",
+    "organization_id": "https://clinic.example.org",
+    "purpose_of_use": ["urn:oid:2.16.840.1.113883.5.8#ELIGVER"]
+  },
+  "nhid-agent": {
+    "version": "1",
+    "agent_id": "agent-frontdesk-01",
+    "agent_key_fingerprint": "sha256:13473447cbe5…",
+    "delegation_id": "ba711fff-92be-4ccf-9d37-7b14197e7318",
+    "scope": ["eligibility", "claim_status"],
+    "expires_at": 1792084827,
+    "provider_npi": "urn:oid:2.16.840.1.113883.4.6#1234567890",
+    "call_sid": "CA-SYNTHETIC-0001"
+  }
+}
+```
+
+**Four things this is not**, and all four must be stated whenever the object
+is described:
+
+1. **Not a UDAP or HL7 conformance claim.** Nothing here has been balloted,
+   reviewed or accepted by HL7, UDAP.org, any trust community or any payer.
+   It uses a documented extension point. That is all it does.
+2. **Not an API-layer authorization control.** `docs/claim-boundaries.md`
+   says NHID is not one, and that stays true. The object is a *carrier*: it
+   gets a delegation claim into a token request so the receiving side has
+   something to check. The payer's authorization decision remains the
+   payer's.
+3. **Not trusted on its own** — same caveat as the private JWT claim
+   namespace in §2.4. `verify_extension` verifies the `AgentPassport` first
+   and then requires every field of the object to agree with it. A field
+   that disagrees is a failure, never a fallback.
+4. **Not carrying `purpose_of_use`.** `hl7-b2b` already requires it, and a
+   copy in `nhid-agent` would be the one field no signature covers. Instead
+   `check_purpose_of_use` performs the cross-check nothing in UDAP can do
+   today: a request asserting `COVAUTH` (prior authorization) while carrying
+   a delegation scoped to eligibility alone is claiming a purpose the
+   provider never delegated. A purpose outside the mapping is reported as
+   *not assessable* rather than passed.
+
+**Why now.** CMS-0057-F requires impacted payers to implement a Prior
+Authorization API (Da Vinci CRD → DTR → PAS) by **1 January 2027**. Agent
+traffic will arrive at those endpoints whether or not the token request can
+describe the agent. We have no evidence of any payer, vendor or trust
+community adopting or evaluating `nhid-agent`, and no such claim should be
+made; the deadline is a fact about the regulation, not about our adoption.
+
+One observation on vocabulary, since it sharpens the gap rather than
+decorating it. The HL7 PurposeOfUse value set has *already* been extended for
+AI: `PMTDS` "decision support assisted payment decision" and `TREATDS`
+"decision support assisted treatment decision", both defined as applying
+algorithms "(e.g. AI, CDS)" to reach a decision (HL7 Terminology v7.4.0,
+ValueSet PurposeOfUse v3.1.0). The vocabulary has begun naming AI in the
+*purpose* slot while the *requestor* slot still has nowhere to put one. Those
+codes describe a holder's own AI decisioning, not an AI requestor acting
+under a provider's delegation, so `nhid-agent` maps nothing to them.
+
+### 3.4 Summary — three questions, three mechanisms
+
+| Question | Mechanism | Where it is enforced |
+| :-- | :-- | :-- |
+| May this client call this API at all? | OAuth2 client credentials; optionally RFC 8693 token exchange against an enterprise IdP (§3.2) | API gateway / token endpoint |
+| Is this agent, on this call, authorized for this NPI, within this scope? | NHID-Auth `Delegation` / `AgentPassport`, verified offline (§3.1) | NHID policy path, `verify_passport` |
+| Does the purpose this token request asserts match what the provider delegated? | `hl7-b2b` + `nhid-agent`, cross-checked (§3.3) | The receiving side's token-request validation |
+
+Token exchange answers the first. It cannot answer the second, which is the
+whole content of §3.1. The third did not previously have a place to be asked.
 
 ---
 

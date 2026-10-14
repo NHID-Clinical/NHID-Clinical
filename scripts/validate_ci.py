@@ -23,14 +23,14 @@ rather than marked:
   * /debug/replay is settled as an inspection contract, on the repository's own
     evidence, rather than a replay engine being built to satisfy a test.
 
-The suite now reports 1157 passed, 0 skipped, 0 xfailed, 0 xpassed against a
-live API. Run it without one and 18 tests skip, which is why a nonzero skip
+The suite now reports 1197 passed, 0 skipped, 0 xfailed, 0 xpassed against a
+live API. Run it without one and 21 tests skip, which is why a nonzero skip
 count is worth warning about: it means the integration tests did not run.
 """
 import re, subprocess, sys
 
 # Expected skipped count. Zero is the point: a skip here means the API was not
-# running and 18 tests silently did not execute.
+# running and 21 tests silently did not execute.
 SKIP_EXPECTED = 0
 
 # Zero, and it should stay zero. The seven divergences that briefly lived here
@@ -43,7 +43,7 @@ XFAIL_EXPECTED = 0
 # without failing the build. It exists so scripts/check_number_drift.py has a
 # canonical number to compare published claims against. Update it in the same
 # commit as any change to the published count.
-UNIT_PUBLISHED = 1157
+UNIT_PUBLISHED = 1197
 
 def run_pytest():
     result = subprocess.run([sys.executable,"-m","pytest","tests/","-q","--tb=short","--no-header"],capture_output=True,text=True)
@@ -71,7 +71,7 @@ def validate(counts):
     # Fail on collection errors
     if counts["error"]>0: v.append(f"FAIL: {counts['error']} collection error(s)")
     # Warn on unexpected skips. A skip here almost always means "no API running",
-    # which silently removes the 18 integration tests from the run.
+    # which silently removes the 21 integration tests from the run.
     # A gate, not a warning. The CI job is named "Unit invariant: N passed,
     # 0 skipped, 0 xfailed"; if an unexpected skip only warns, that name is a
     # claim nothing enforces. It is not hypothetical — the control-set guard's
@@ -81,7 +81,7 @@ def validate(counts):
     if counts["skipped"] != SKIP_EXPECTED:
         v.append(
             f"expected {SKIP_EXPECTED} skipped tests, got {counts['skipped']}. "
-            f"If this is 18, the API was not running and the integration tests did "
+            f"If this is 21, the API was not running and the integration tests did "
             f"not execute — start it with: python -m uvicorn app:app --port 8000. "
             f"Otherwise a test is skipping in this environment and not another, "
             f"which means it is not guarding anything here."
