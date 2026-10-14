@@ -331,31 +331,43 @@ round-trip on a live voice call. A payer's identity provider being briefly
 unavailable should degrade a reporting pipeline, not an interaction with a
 patient on the line.
 
-### 3.2 Where token exchange does belong *(forward-looking — not implemented)*
+### 3.2 Where token exchange does belong
 
 The objection above is to using token exchange for the *delegation chain*.
 Its actual job — trade a credential you hold for a differently-scoped one
 from a server you trust — fits a different seam cleanly, and NHID's
-commercial control plane has an unfilled hole exactly its shape.
+commercial control plane had an unfilled hole exactly its shape.
 
-Organization authentication on the hosted API is a single long-lived
+Organization authentication on the hosted API was a single long-lived
 `X-API-Key` header. For a vendor running a handful of integrations that is
 fine. For a health system whose security review requires every machine
 credential to originate from Okta, Entra ID or its own OIDC provider, a
 static shared key is a finding, not a design.
 
-The recommended shape, when it is built:
+The shape, as implemented at `POST /saas/auth/token`:
 
 1. The enterprise's own IdP issues its backend a token by whatever flow it
    already uses — nothing NHID-specific.
-2. The backend presents that token to an NHID token endpoint as
+2. The backend presents that token to the NHID token endpoint as
    `grant_type=urn:ietf:params:oauth:grant-type:token-exchange` with the
    IdP token as `subject_token`.
 3. NHID verifies it against that issuer's JWKS, confirms the issuer is one
-   the organization configured, and returns a short-lived token scoped to
-   that organization.
-4. `X-API-Key` keeps working. An onboarding improvement that breaks existing
-   integrations is not an improvement.
+   the organization configured (an unconfigured issuer is refused, never
+   discovered), and returns a short-lived token scoped to that organization.
+4. `X-API-Key` keeps working, checked first. An onboarding improvement that
+   breaks existing integrations is not an improvement.
+
+**One decision is worth stating because it is the opposite of what "issue a
+token" usually implies: the token NHID hands back is opaque, not a JWT.** It
+is random and stored only as a SHA-256 hash, exactly as the API key and the
+user session already are — so there is no signing key to hold or rotate, and
+no signing secret in the environment, and revocation is a row delete rather
+than a denylist. RFC 8693 permits this: the response carries
+`issued_token_type: urn:ietf:params:oauth:token-type:access_token`, and
+nothing in the RFC requires the issued token to be a JWT. The half that needs
+cryptography is verifying the IdP's JWT, and that uses the IdP's *public*
+JWKS, which is not secret. The net effect is that this feature adds no
+deployment secret at all.
 
 Note which of §2.1's two questions this answers: the second one — "may this
 client call this API?". It is transport authorization and it does not touch
