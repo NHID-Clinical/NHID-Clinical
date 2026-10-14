@@ -195,7 +195,7 @@ def test_the_other_control_component_also_states_its_provenance():
         "the front-desk walkthrough no longer names the script that recorded "
         "its output"
     )
-    assert "The machine is drawn; the readout is read" in dev, (
+    assert "The chrome is drawn; the readout is read" in dev, (
         "the walkthrough caption no longer separates what is artwork from "
         "what is engine output"
     )
