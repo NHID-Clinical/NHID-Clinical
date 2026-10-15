@@ -55,7 +55,7 @@
 
 ---
 
-**Designed to support the disclosure obligation described in EU AI Act Article 50(1); mapped to NIST AI RMF 1.0.**
+**Designed to support the disclosure obligation described in EU AI Act Article 50(1); mapped to NIST AI RMF 1.0 at the subcategory level ([Playbook crosswalk](docs/nist-ai-rmf-playbook-crosswalk.md)) — mapped, not certified.**
 
 NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, an optional delegated-authority gate (DLG-01) that verifies a cryptographically signed, scoped delegation and constrains what protected data an agent may request, and machine-readable audit evidence for what happened. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
 
@@ -150,7 +150,7 @@ The governance gap is well documented; large-scale production evidence is still 
 
 For a one-page overview aimed at hospital, payer, compliance, and procurement leaders, see the [**Executive Brief**](docs/executive-brief.md).
 
-**Standards alignment (mapped, not certified):** Explicitly supports the EU AI Act Article 50(1) obligation to inform people that they are interacting with an AI system. Mapped to NIST AI RMF 1.0 Map and Measure functions for identity disclosure and risk. Aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability.
+**Standards alignment (mapped, not certified):** Explicitly supports the EU AI Act Article 50(1) obligation to inform people that they are interacting with an AI system. Mapped to NIST AI RMF 1.0 at the subcategory level: direct evidence toward MEASURE 2.8 (transparency and accountability) for the voice-call channel, partial evidence toward MAP 3.5, MAP 4.2, MEASURE 1.1, MEASURE 2.3, MEASURE 2.7, MANAGE 2.4 and MANAGE 3.1, and most subcategories left to the deploying organization — see the [Playbook crosswalk](docs/nist-ai-rmf-playbook-crosswalk.md). Aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability.
 
 <p align="center">
   <img alt="NHID-Clinical trust verification pathway: payer and provider bridged by conformance verification" src="assets/images/3d-svg/nexus.svg" width="760">
@@ -368,7 +368,7 @@ NHID-Clinical/
 | NIST CAISI RFI | Cross-org agent identity | NHID-Auth v2 |
 | EU AI Act Art. 50(1) | Informing people they are interacting with an AI system | IDG-01 + DBC-01 |
 | ISO/IEC 42001 | AI management system transparency controls | Full control set + ATR-01 |
-| NIST AI RMF 1.0 | Map & Measure functions for identity risk | Full framework |
+| NIST AI RMF 1.0 | Subcategory outcomes — evidence toward, not certification | IDG-01, DBC-01, EIT-01, ATR-01 + CTS ([crosswalk](docs/nist-ai-rmf-playbook-crosswalk.md)) |
 
 [Full matrix →](https://nhid-clinical.org/regulatory-alignment.html)
 
@@ -396,7 +396,7 @@ exactly the authority of the document it came from. When the retrieved
 excerpts do not contain the answer, it says so rather than approximating.
 
 ```bash
-python -m src.nhid_spec_rag                       # build the index (44 files, 834 chunks)
+python -m src.nhid_spec_rag                       # build the index (45 files, 915 chunks)
 python -m src.nhid_spec_rag --ask "What is the pass condition for PDX-01?"
 python -m pytest eval/ -v                         # the reading aid's own tests
 ```

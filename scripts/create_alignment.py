@@ -74,11 +74,11 @@ R.joinpath("nist-ai-agent-standards.html").write_text('''<!DOCTYPE html>
 <p>This is an open proposal submitted to NIST docket NIST-2025-0035-0026.</p>
 <h2>NIST AI RMF Alignment</h2>
 <table>
-  <thead><tr><th>NIST AI RMF Function</th><th>NHID-Clinical Control</th></tr></thead>
+  <thead><tr><th>NIST AI RMF Subcategory</th><th>NHID-Clinical evidence (mapped, not certified)</th></tr></thead>
   <tbody>
-    <tr><td>GOVERN 1.1</td><td>IDG-01 — AI system status disclosed</td></tr>
-    <tr><td>MANAGE 2.2</td><td>EIT-01 — Human escalation path</td></tr>
-    <tr><td>MEASURE 2.5</td><td>ATR-01 — Auditable trail</td></tr>
+    <tr><td>MEASURE 2.8</td><td>ATR-01 audit trail + IDG-01 / DBC-01 findings (direct, voice-call channel)</td></tr>
+    <tr><td>MAP 3.5</td><td>EIT-01 — human handoff path (partial)</td></tr>
+    <tr><td>MANAGE 2.4</td><td>Enforcement Profile actions (partial)</td></tr>
   </tbody>
 </table>
 <p><a href="../specification.html">specification.html</a></p>

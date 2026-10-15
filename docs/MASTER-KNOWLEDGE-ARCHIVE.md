@@ -2037,14 +2037,16 @@ Sources:
 
 ### 15.2 NIST AI Risk Management Framework (AI RMF)
 
-NHID-Clinical aligns with the NIST AI RMF's GOVERN, MAP, MEASURE, and MANAGE functions:
+NHID-Clinical is mapped to the NIST AI RMF at the subcategory level — mapped, not certified.
+The authoritative mapping is `docs/nist-ai-rmf-playbook-crosswalk.md` (prepared 2026-10-15 against
+the official Playbook); this summary defers to it.
 
-| NIST AI RMF Function | NHID-Clinical Mechanism |
+| NIST AI RMF Function | NHID-Clinical evidence (strongest subcategories) |
 | :--- | :--- |
-| **GOVERN** | Open governance — Apache-2.0 code, CC BY 4.0 specification; voluntary adoption model |
-| **MAP** | Regulatory alignment matrix; risk categorization by control |
-| **MEASURE** | CAS score (0.0–1.0); tier classification; per-control pass rates |
-| **MANAGE** | DENY_DATA and ESCALATE_HUMAN actions; real-time call-progress webhook |
+| **GOVERN** | Supporting only — GOVERN 1.4, 4.3, 6.1, 6.2 (IDG-01 disclosure, CTS, vendor trust questionnaire). Organizational governance stays with the deployer. |
+| **MAP** | MAP 3.5 (EIT-01 human handoff) and MAP 4.2 (documented control set for third-party agents) — partial |
+| **MEASURE** | MEASURE 2.8 (ATR-01 audit trail + IDG-01/DBC-01 findings) — direct for the voice-call channel; per-control results each with its own denominator. The composite score is withdrawn and is not a MEASURE mechanism. |
+| **MANAGE** | MANAGE 2.4 (DENY_DATA and ESCALATE_HUMAN actions; revocation within a deployment) and MANAGE 3.1 (receiver-side evaluation of third-party agents) — partial |
 
 ### 15.3 NIST AI RMF / CAISI
 
