@@ -20,8 +20,8 @@ this repeats the error faithfully.
 | | |
 |---|---|
 | Source | `docs/*.md`, top level only |
-| Indexed | **44 files, 834 chunks** |
-| Skipped | `docs/MASTER-KNOWLEDGE-ARCHIVE.md` — 209,075 bytes, over the 200 KB cap |
+| Indexed | **45 files, 915 chunks** |
+| Skipped | `docs/MASTER-KNOWLEDGE-ARCHIVE.md` — 209,598 bytes, over the 200 KB cap |
 | Skipped | `docs/spec-rag.md` — this file; the aid does not read its own manual |
 | Chunking | 800 characters, 100-character overlap, source path and chunk index stored |
 
@@ -195,11 +195,11 @@ free-text endpoint that writes a log line per call.
 ```json
 {
   "status": "ok",
-  "chunks": 834,
-  "sources": 44,
+  "chunks": 915,
+  "sources": 45,
   "backend": "local",
   "skipped_files": [
-    {"source": "docs/MASTER-KNOWLEDGE-ARCHIVE.md", "bytes": 209075, "reason": "over the size cap"},
+    {"source": "docs/MASTER-KNOWLEDGE-ARCHIVE.md", "bytes": 209598, "reason": "over the size cap"},
     {"source": "docs/spec-rag.md", "bytes": 7622, "reason": "this module's own documentation"}
   ],
   "score_is_openai_score": false,
