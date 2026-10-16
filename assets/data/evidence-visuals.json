@@ -104,8 +104,8 @@
       {
         "name": "Conformance suite",
         "measures": "Implementation correctness against the specification",
-        "size": "1197 tests",
-        "result": "1197/1197 passing, 0 skipped, 0 xfailed",
+        "size": "1213 tests",
+        "result": "1213/1213 passing, 0 skipped, 0 xfailed",
         "rate": 100.0,
         "source": "tests/",
         "command": "python -m pytest tests/ -q"

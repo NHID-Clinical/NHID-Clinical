@@ -187,15 +187,23 @@ def build_turn(
     assertion alongside the timestamp, and a disclosure made once does not
     expire when the caller speaks.
 
-    DBC-01 deceptive_artifact_flags are extracted from voice/signal artifacts only
-    (e.g., fake breathing, synthetic sounds). Text-based identity checks are handled
-    by the engine's Tier B heuristics (_assertion_implies_human).
+    DBC-01 deceptive_artifact_flags here are derived from TEXT STAGE-DIRECTION
+    MARKERS in the transcript (e.g. the literal token "*inhales*"), NOT from any
+    acoustic or signal analysis. No audio is examined anywhere in this pipeline.
+    The flag names ("synthetic_breathing", "synthetic_typing") describe what the
+    *marker* denotes, not a measured acoustic property — a transcript that never
+    carries such a marker yields no flag, regardless of the underlying audio.
+    Detecting fake breathing or synthetic sounds in actual audio would require a
+    separate audio-analysis mechanism that does not exist in this repository; see
+    docs/validation/DBC-01-SCOPE-AND-LIMITATIONS.md. Text identity claims are
+    handled by the engine's Tier B heuristics (_assertion_implies_human).
     """
     speech_text = raw_turn.get("text", "") or ""
     speaker = raw_turn.get("speaker", "unknown")
     identity_assertion_text = speech_text if speaker == "agent" else disclosure_assertion_text
 
-    # DBC-01: Extract voice/signal artifacts (not text patterns)
+    # DBC-01: match TEXT stage-direction markers in the transcript. This is not
+    # acoustic detection — it fires only on the literal markers below.
     deceptive_flags = []
     if speaker == "agent" and identity_assertion_text:
         text_lower = identity_assertion_text.lower()
@@ -410,7 +418,19 @@ def _voice_stress_row_to_legacy(row: dict[str, Any]) -> dict[str, Any]:
     translated["id"] = row.get("id") or row.get("scenario_id")
     translated["conversation_ref"] = (row.get("scenario_id")
                                       or row.get("scenario_label"))
-    translated["scenario_type"] = row.get("category")
+    # False positives are measured over conversations whose scenario_type is
+    # exactly "compliant" (confusion_matrix.compute). The CSV-550 export states
+    # that directly; this export instead flags its clean population with
+    # `is_negative_control`. Map that onto "compliant" so the FP denominator is
+    # this corpus's 95 negative controls rather than zero — otherwise the FP
+    # rate reads n/a and a false positive on a clean scenario cannot surface.
+    # This is deliberately scoped to the voice-stress translator: the CSV-550
+    # path (convert_csv) never calls this function, so its pinned baseline in
+    # scripts/check_baseline.py is unaffected.
+    if _is_truthy(row.get("is_negative_control")):
+        translated["scenario_type"] = "compliant"
+    else:
+        translated["scenario_type"] = row.get("category")
     translated["target_control"] = row.get("expected_control")
     for new_col, rule_id in VOICE_STRESS_VIOLATION_COLUMNS.items():
         legacy = next(c for c, r in VIOLATION_COLUMN_TO_RULE_ID.items() if r == rule_id)

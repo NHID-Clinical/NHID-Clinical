@@ -18,6 +18,13 @@ detection has inherent error on both sides; nothing here is a conformance claim.
 Usage (Windows / PowerShell friendly):
   python confusion_matrix.py <corpus.jsonl>
   python confusion_matrix.py <conversations.csv> <turns.csv>
+  python confusion_matrix.py --voice-stress <scenarios.csv> <turns.csv>
+
+The --voice-stress form routes the later two-table export (expected_*_violation
+columns, scenario_id grouping key) through adapters.fabricate_adapter
+.convert_voice_stress. It is a separate corpus from the pinned CSV-550 baseline
+in scripts/check_baseline.py, which is deliberately left measuring only the
+corpus it was verified against.
 """
 from __future__ import annotations
 
@@ -37,17 +44,31 @@ REPO = next(
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
-from adapters.fabricate_adapter import convert_csv, convert_jsonl  # noqa: E402
+from adapters.fabricate_adapter import (  # noqa: E402
+    convert_csv,
+    convert_jsonl,
+    convert_voice_stress,
+)
 from synthetic_eval_loop import evaluate_conversation  # noqa: E402
 
 ALL_CONTROLS = ["IDG-01", "PDX-01", "DBC-01", "EIT-01"]
 
 
 def load(argv: list[str]) -> list[dict]:
-    if len(argv) == 2 and argv[1].lower().endswith(".jsonl"):
-        return convert_jsonl(argv[1])
-    if len(argv) == 3:
-        return convert_csv(argv[1], argv[2])
+    # --voice-stress routes the later two-table export (scenario_id key,
+    # expected_*_violation columns) through convert_voice_stress. It is handled
+    # as a flag rather than by sniffing columns so a legacy conversations.csv
+    # with an `expected_*` typo can never be silently read as the other shape.
+    args = list(argv[1:])
+    if "--voice-stress" in args:
+        args.remove("--voice-stress")
+        if len(args) != 2:
+            raise SystemExit(__doc__)
+        return convert_voice_stress(args[0], args[1])
+    if len(args) == 1 and args[0].lower().endswith(".jsonl"):
+        return convert_jsonl(args[0])
+    if len(args) == 2:
+        return convert_csv(args[0], args[1])
     raise SystemExit(__doc__)
 
 

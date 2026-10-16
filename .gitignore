@@ -11,6 +11,8 @@ docs/*
 !docs/pilot-kit/*.md
 !docs/pilot-kit/*.py
 !docs/pilot-kit/*.json
+!docs/validation/
+!docs/validation/*.md
 !docs/assets/
 !docs/assets/archive/
 !docs/assets/archive/*.svg
