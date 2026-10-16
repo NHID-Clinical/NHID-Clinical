@@ -219,6 +219,34 @@ code.data-text {
   padding-block: clamp(3.5rem, 8vw, 7rem);
 }
 
+/* Quiet brand depth: two soft brand glows over a faint 42px technical grid,
+   masked so it fades before the content below. Uses the design system's own
+   grid token (theme-aware) — never a loud background. */
+.hero-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 520px at 88% -10%, rgba(20, 119, 143, 0.11), transparent 62%),
+    radial-gradient(760px 420px at -6% 4%, rgba(11, 110, 188, 0.07), transparent 60%),
+    linear-gradient(to right, var(--panel-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--panel-grid-line) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 42px 42px, 42px 42px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+          mask-image: linear-gradient(to bottom, #000 70%, transparent);
+}
+.hero-band > * { position: relative; z-index: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .action-button { transition: background-color var(--motion-duration) var(--motion-ease),
+                               box-shadow var(--motion-duration) var(--motion-ease),
+                               border-color var(--motion-duration) var(--motion-ease),
+                               color var(--motion-duration) var(--motion-ease),
+                               transform var(--motion-duration-fast) var(--motion-ease); }
+}
+
 .hero-band-inner {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
@@ -259,13 +287,14 @@ code.data-text {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  min-height: 44px;                 /* §7 touch target */
-  padding: 0.7rem 1.4rem;
+  min-height: 3rem;                 /* §7 touch target, with more presence */
+  padding: 0.8rem 1.6rem;
   border-radius: var(--radius);
   border: 1px solid transparent;
   font-family: var(--sans);
   font-size: 0.9375rem;
   font-weight: 600;
+  letter-spacing: 0.005em;
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
@@ -275,18 +304,29 @@ code.data-text {
 }
 
 .action-button-primary {
-  background: var(--panel-cobalt);
+  /* Brand gradient, consistent with the nav CTA (.primary-pill) and the brand
+     marks. Fixed deep brand hues (not theme-swapped) so white text keeps AA
+     contrast in both light and dark. */
+  background: linear-gradient(135deg, #0b6ebc 0%, #14778f 100%);
   color: #ffffff;
+  box-shadow: 0 10px 24px rgba(13, 108, 166, 0.22);
 }
-[data-theme="dark"] .action-button-primary { color: #06152b; }
-.action-button-primary:hover { background: var(--panel-cobalt-hover); transform: translateY(-1px); }
+.action-button-primary:hover {
+  box-shadow: 0 16px 34px rgba(13, 108, 166, 0.30);
+  transform: translateY(-2px);
+}
 
+/* Quiet neutral companion to the solid brand primary. */
 .action-button-secondary {
-  background: transparent;
-  color: var(--panel-cobalt);
-  border-color: var(--panel-cobalt);
+  background: var(--panel-paper);
+  color: var(--panel-text-strong);
+  border-color: var(--panel-line);
 }
-.action-button-secondary:hover { background: var(--panel-cobalt-soft); transform: translateY(-1px); }
+.action-button-secondary:hover {
+  border-color: var(--panel-cobalt);
+  color: var(--panel-cobalt);
+  transform: translateY(-2px);
+}
 
 .on-dark .action-button-secondary { color: #a8ccff; border-color: #4f7fc4; }
 .on-dark .action-button-secondary:hover { background: rgba(30, 99, 219, 0.18); }
