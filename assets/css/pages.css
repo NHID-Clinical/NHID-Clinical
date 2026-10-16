@@ -36,6 +36,8 @@
 .page-doc .doc-body > p + p { margin-top: 1rem; }
 .page-doc .act-body ul, .page-doc .act-body ol,
 .page-doc .doc-body ul, .page-doc .doc-body ol { max-width: var(--measure); padding-left: 1.25rem; }
+.page-doc .act-body .steps, .page-doc .act-body .ledger-list, .page-doc .act-body .endpoint-strip,
+.page-doc .doc-body .steps, .page-doc .doc-body .ledger-list { max-width: none; padding-left: 0; }
 .page-doc .act-body li + li, .page-doc .doc-body li + li { margin-top: .35rem; }
 .page-doc li { line-height: 1.7; }
 .page-doc h3 { font-size: 1.05rem; letter-spacing: -.01em; margin: 1.75rem 0 .6rem; }
@@ -408,8 +410,9 @@
 .page-doc .steps > li:first-child { border-top: 0; padding-top: 0; }
 .page-doc .steps > li::before {
   counter-increment: step; content: counter(step, decimal-leading-zero);
-  grid-row: 1 / span 3; font-family: var(--mono); font-size: .8rem; letter-spacing: .06em; color: var(--teal); padding-top: .25rem;
+  grid-column: 1; grid-row: 1; font-family: var(--mono); font-size: .8rem; letter-spacing: .06em; color: var(--teal); padding-top: .25rem;
 }
+.page-doc .steps > li > * { grid-column: 2; }
 .page-doc .steps > li > h3, .page-doc .steps > li > .step-header { margin: 0; font-size: 1.02rem; }
 .page-doc .steps > li > p { margin: 0; color: var(--ink-soft); font-size: .93rem; max-width: var(--measure); }
 .page-doc .steps > li > * { min-width: 0; }
@@ -555,3 +558,59 @@
 .page-doc .control-ledger .content-card > h3 + p { font-size: 1rem; color: var(--ink); font-weight: 500; margin: 0 0 .6rem; }
 .page-doc .control-ledger .content-card > p { max-width: var(--measure); }
 .page-doc .control-ledger .pass-fail { margin-top: 1.1rem; }
+
+/* ── Script examples: two columns, good beside problematic ─────────────────── */
+.page-doc .script-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+.page-doc .script-column { min-width: 0; padding: 1.35rem 1.45rem; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); box-shadow: var(--soft-shadow); }
+.page-doc .script-column > .section-kicker { margin: 0 0 .35rem; font-size: .7rem; letter-spacing: .14em; }
+.page-doc .script-column > h3 { margin: 0 0 .5rem; }
+.page-doc .script-column > p { font-size: .92rem; margin: 0 0 1rem; }
+.page-doc .script-example-block { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.page-doc .script-example-block h4 { margin: 0 0 .5rem; font-family: var(--mono); font-weight: 500; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--body); }
+.page-doc .script-note { font-size: .84rem; color: var(--body); margin: .5rem 0 0; line-height: 1.6; }
+.page-doc .script-quote { border-radius: 10px; }
+@media (max-width: 900px) { .page-doc .script-columns { grid-template-columns: 1fr; } }
+
+/* ── Demo line on ink ──────────────────────────────────────────────────────── */
+.page-doc .demo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+.page-doc .demo-grid > * + * { margin-top: 0; }
+@media (max-width: 1000px) { .page-doc .demo-grid { grid-template-columns: 1fr; } }
+.page-doc .band-ink .card { background: var(--inst-ink-2); border: 1px solid var(--inst-line); border-radius: 14px; padding: 1.35rem 1.45rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); min-width: 0; }
+.page-doc .band-ink .card h3 { margin: 0 0 .5rem; font-size: 1.05rem; color: var(--inst-text-strong); }
+.page-doc .band-ink .card .sub { color: var(--inst-text); font-size: .9rem; margin: 0 0 .9rem; }
+.page-doc .band-ink .card p { color: var(--inst-text); font-size: .9rem; }
+.page-doc .band-ink .card .callout, .page-doc .band-ink .card .note { background: rgba(7,17,31,.6); border-color: var(--inst-line); border-left-color: var(--inst-teal); color: var(--inst-text); margin: .9rem 0; }
+.page-doc .band-ink .card strong { color: var(--inst-text-strong); }
+.page-doc .band-ink .card code { background: rgba(7,17,31,.6); border-color: var(--inst-line-strong); color: #cfe2f7; }
+.page-doc .band-ink .demo-line-phone { color: var(--inst-teal-bright); }
+.page-doc .band-ink input[type="tel"] { background: rgba(7,17,31,.6); border: 1px solid var(--inst-line-strong); color: var(--inst-text-strong); border-radius: 8px; padding: .7rem .9rem; font-family: var(--mono); }
+.page-doc .band-ink input[type="tel"]::placeholder { color: var(--inst-text-muted); }
+.page-doc .band-ink input[type="tel"]:focus-visible { outline: 2px solid var(--inst-teal); outline-offset: 2px; }
+.page-doc .band-ink .cta-button { background: var(--inst-teal); color: #06222b; border: 0; }
+.page-doc .band-ink .cta-button:hover { background: var(--inst-teal-bright); }
+.page-doc .band-ink .nhid-demo-turn { color: var(--inst-text); }
+.page-doc .band-ink .disclaimer-small { color: var(--inst-text-muted); border-top-color: var(--inst-line); margin-top: 1.5rem; }
+.page-doc .band-ink .disclaimer-small a { color: var(--inst-cobalt); }
+
+/* Steps that carry a console */
+.page-doc .steps > li > pre { margin-top: .6rem; }
+.page-doc .steps > li > p + p { margin-top: .4rem; }
+.page-doc .act-body > h3 .sub-index { color: var(--teal); }
+
+/* ── Developers: readout frame, interoperability cases ─────────────────────── */
+.page-doc .readout-frame { border: 1px solid var(--inst-line); border-radius: 12px; overflow: hidden; background: var(--inst-ink-2); box-shadow: var(--soft-shadow); margin-top: 1rem; }
+.page-doc .readout-frame iframe { display: block; width: 100%; border: 0; }
+.page-doc .case-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+.page-doc .case { min-width: 0; }
+.page-doc .case > h3 { margin-top: 0; }
+.page-doc .case > p { font-size: .92rem; }
+.page-doc .case-result { margin-top: .9rem; font-size: .9rem; display: flex; flex-wrap: wrap; gap: .5rem .7rem; align-items: baseline; }
+.page-doc .band-ink .state-chip.is-red { border-color: var(--inst-red); color: var(--inst-red); }
+@media (max-width: 1000px) { .page-doc .case-grid { grid-template-columns: 1fr; } }
+.page-doc .band-ink .console-bar { background: rgba(7,17,31,.75); }
+.page-doc .band-ink pre { background: rgba(7,17,31,.75); }
+.page-doc .ledger-list .ledger-meta code { background: var(--mist); border: 1px solid var(--line); padding: .08em .4em; border-radius: 4px; font-size: .78rem; color: var(--ink); overflow-wrap: anywhere; }
+.page-doc .ledger-list h3 .state-chip { margin-left: .5rem; vertical-align: .15em; font-size: .62rem; }
+.page-doc .module-grid { margin-top: 1rem; }
+.page-doc .module-card { border-radius: 14px; box-shadow: var(--soft-shadow); }
+.page-doc .module-card .module-num { font-family: var(--mono); letter-spacing: .12em; color: var(--teal); }
