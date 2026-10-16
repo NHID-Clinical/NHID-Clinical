@@ -110,19 +110,38 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main id="main" class="scope-note page-doc">
-  <section class="inner-hero hero-band" style="position:relative;overflow:clip">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="container" style="position:relative;z-index:1">
-      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Starter Pack by Text</span></div>
-      <h1 class="reveal page-heading">Get the starter pack by text</h1>
-      <p class="lede reveal lede-text">Enter your mobile number and we'll send you a one-time text with a link to the NHID-Clinical shadow-evaluation guide — the no-cost way to start assessing AI voice-agent transparency.</p>
+  <section class="inner-hero hero-band" aria-labelledby="page-h">
+    <div class="container hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span class="sep">/</span><span>Starter Pack by Text</span></div>
+        <p class="eyebrow meta-label">Starter pack · one-time text</p>
+        <h1 class="reveal page-heading" id="page-h">Get the starter pack by text</h1>
+        <p class="lede reveal lede-text">Enter your mobile number and we'll send you a one-time text with a link to the NHID-Clinical shadow-evaluation guide — the no-cost way to start assessing AI voice-agent transparency.</p>
+        <ul class="hero-meta reveal">
+          <li><b>Messages</b><span>One per request</span></li>
+          <li><b>Rates</b><span>Msg &amp; data rates may apply</span></li>
+          <li><b>Opt out</b><span>Reply STOP</span></li>
+          <li><b>Help</b><span>Reply HELP</span></li>
+        </ul>
+      </div>
+      <aside class="hero-instrument-card reveal" aria-label="What you receive">
+        <div class="card-head"><b>You receive</b><span>One text</span></div>
+        <dl>
+          <dt>Contents</dt><dd>A link to the Shadow Evaluation Guide</dd>
+          <dt>From</dt><dd>NHID-Clinical, once, at the number you give</dd>
+          <dt>Your number</dt><dd>Used only to send the message you requested; never shared or sold</dd>
+          <dt>Terms</dt><dd><a href="/privacy.html#sms">SMS / mobile messaging terms</a></dd>
+        </dl>
+      </aside>
     </div>
   </section>
 
-  <section class="page-section">
-    <div class="container" style="max-width:640px">
-      <div class="card">
+  <section class="page-section band-paper">
+    <div class="container">
+      <div class="instrument-form">
         <h2>Text me the starter pack</h2>
+        <p class="form-note">US mobile numbers · one-time message</p>
+        <label for="sms-phone">Mobile number</label>
         <div class="consent-form">
           <input type="tel" id="sms-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your mobile phone number" style="width:100%"/>
           <label class="consent-row">
@@ -137,13 +156,24 @@
         </div>
         <!-- Cloudflare Turnstile site key (public). Secret is server-side only, verified in handler._verify_turnstile(). -->
         <div class="cf-turnstile" id="sms-turnstile" data-sitekey="0x4AAAAAADoOpjQr1DAbFwwY" data-callback="nhidOnTurnstileSuccess"></div>
-        <button class="cta-button" id="sms-submit-btn" type="button" style="margin-top:1rem">Text me the link</button>
+        <button class="action-button action-button-primary" id="sms-submit-btn" type="button" style="margin-top:1rem">Text me the link</button>
         <p id="sms-status" hidden aria-live="polite" style="margin-top:.75rem"></p>
       </div>
-      <p class="sub" style="margin-top:1rem;font-size:.85rem">
-        We only use your number to send the message you requested. We do not share or sell your
-        mobile opt-in information or consent to third parties. You can opt out any time by replying STOP.
-      </p>
+      <p class="sub" style="margin-top:1rem;font-size:.85rem;max-width:40rem">We only use your number to send the message you requested. We do not share or sell your mobile opt-in information or consent to third parties. You can opt out any time by replying STOP.</p>
+    </div>
+  </section>
+
+  <section class="page-close band-ink" aria-labelledby="close-h">
+    <div class="container">
+      <div class="closing-panel">
+        <div>
+          <p class="section-kicker">Prefer to read it here?</p>
+          <h2 id="close-h">The guide is on this site, in full.</h2>
+          <p>The text is a convenience. Everything it links to is published openly.</p>
+        </div>
+        <a class="closing-button" href="/shadow-evaluation-guide.html">Read the evaluation guide →</a>
+      </div>
+
     </div>
   </section>
 </main>
