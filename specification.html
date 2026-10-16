@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
+  <link rel="stylesheet" href="/assets/css/instrument.css"/>
+  <link rel="stylesheet" href="/assets/css/pages.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <!-- Mermaid CDN -->
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
@@ -108,48 +110,81 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main id="main" class="scope-note">
-  <section class="inner-hero hero-band" style="position:relative;overflow:clip">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="container inner-hero-grid" style="position:relative;z-index:1">
+<main id="main" class="scope-note page-doc">
+  <section class="inner-hero hero-band" aria-labelledby="page-h">
+    <div class="container hero-grid">
       <div>
-        <div class="crumbs"><a href="/">Home</a><span>/</span><span>Proposal</span></div>
-        <p class="eyebrow meta-label">Open Proposal · v1.3</p>
-        <h1 class="reveal page-heading">NHID-Clinical v1.3 Specification</h1>
+        <div class="crumbs"><a href="/">Home</a><span class="sep">/</span><span>Proposal</span></div>
+        <p class="eyebrow meta-label">Open proposal · v1.3 · normative text</p>
+        <h1 class="reveal page-heading" id="page-h">NHID-Clinical v1.3 Specification</h1>
         <p class="lede reveal lede-text">A voluntary framework for naming and addressing impersonation latency in healthcare payer–provider voice workflows.</p>
+        <ul class="hero-meta reveal">
+          <li><b>Version</b><span>v1.3</span></li>
+          <li><b>Licence</b><span>CC BY 4.0</span></li>
+          <li><b>Status</b><span class="is-live">Open proposal</span></li>
+          <li><b>Controls</b><span>5 · IDG · PDX · DBC · EIT · ATR</span></li>
+          <li><b>Language</b><span>RFC 2119, voluntary</span></li>
+        </ul>
       </div>
-      <aside class="hero-summary-card">
-        <div class="spec-badges">
-          <span class="spec-badge">CC BY 4.0</span>
-          <span class="spec-badge">v1.3</span>
-          <span class="spec-badge spec-badge-green">Open Proposal</span>
-        </div>
-        <p style="font-size:.88rem;color:var(--body);line-height:1.65;margin:.75rem 0 1rem"><strong>Author:</strong> Brianna Baynard<br><strong>NIST Comment:</strong> <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a><br><br>Not an official standard or regulatory requirement.</p>
-        <a class="primary-pill" href="/shadow-evaluation-guide.html" download style="width:100%;justify-content:center">Download Full Proposal PDF →</a>
+      <aside class="hero-instrument-card reveal" aria-label="Document provenance">
+        <div class="card-head"><b>Document</b><span>Provenance</span></div>
+        <div class="chip-row"><span class="chip">CC BY 4.0</span><span class="chip">v1.3</span><span class="chip is-on">Open proposal</span></div>
+        <dl>
+          <dt>Author</dt><dd>Brianna Baynard</dd>
+          <dt>NIST comment</dt><dd><a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer" class="mono">NIST-2025-0035-0026</a></dd>
+          <dt>Engine</dt><dd><code>evaluate_all(session, event)</code></dd>
+          <dt>Evidence</dt><dd>Two corpus scenarios replayed on this page, verbatim</dd>
+        </dl>
+        <p>Not an official standard, accredited body, or regulatory requirement.</p>
+        <div class="card-foot"><a class="action-button action-button-primary" href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download>Download the core specification (PDF) &rarr;</a></div>
       </aside>
     </div>
   </section>
 
-  <section class="page-section">
-    <div class="container" style="max-width:52rem">
-      <div class="callout" role="note" style="margin-bottom:1.25rem">
-        <strong>Note on terminology:</strong>
-        This document uses RFC 2119 language (MUST, SHOULD, MAY) to define
-        a voluntary technical baseline for self-imposed conformance.
-        These terms do not imply legal obligation. No organization is
-        required to follow them. NHID-Clinical is not a regulatory body.
-      </div>
+  <section class="page-section band-paper">
+    <div class="container doc">
+      <nav class="doc-rail" aria-label="Sections of this document">
+        <p class="doc-rail-label">On this page</p>
+        <ol>
+          <li><a href="#problem"><span>The problem this addresses</span></a></li>
+          <li><a href="#core-idea"><span>The core idea</span></a></li>
+          <li><a href="#behaviors"><span>Suggested behaviors</span></a></li>
+          <li><a href="#control-model"><span>The five-control model</span></a></li>
+          <li><a href="#trust-gateway"><span>The Trust Gateway, running</span></a></li>
+          <li><a href="#sequence"><span>Sequence of interaction</span></a></li>
+          <li><a href="#decisions"><span>How five decisions become one</span></a></li>
+          <li><a href="#why-five"><span>Why these five</span></a></li>
+          <li><a href="#scope"><span>Scope</span></a></li>
+          <li><a href="#what-this-is-not"><span>What this is not</span></a></li>
+          <li><a href="#known-gaps"><span>Known gaps (v1.3)</span></a></li>
+          <li><a href="#document-family"><span>Document family</span></a></li>
+          <li><a href="#controls"><span>The five controls in detail</span></a></li>
+          <li><a href="#dlg-01"><span>Delegated authority (DLG-01)</span></a></li>
+        </ol>
+      </nav>
+      <div class="doc-body">
+        <div class="note" role="note" data-label="Terminology">
+          <p>This document uses RFC 2119 language (MUST, SHOULD, MAY) to define a voluntary technical baseline for self-imposed conformance. These terms do not imply legal obligation. No organization is required to follow them. NHID-Clinical is not a regulatory body.</p>
+        </div>
+        <div class="note" role="note" data-label="Status" style="margin-top:.75rem">
+          <p>This is a voluntary open proposal by Brianna Baynard. It is <strong>not</strong> an official standard, accredited body, or regulatory requirement.</p>
+        </div>
 
-      <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> This is a voluntary open proposal by Brianna Baynard. It is <strong>not</strong> an official standard, accredited body, or regulatory requirement.
-      </div>
+      <section class="act" id="problem" aria-labelledby="problem-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Problem</p>
+            <h2 id="problem-h">The problem this addresses</h2>
+          <p class="act-lead">Staff share operational data before realizing they are talking to a machine.</p>
+          </div>
+          <span class="act-index">01 / 14</span>
+        </div>
+        <div class="act-body">
 
-      <h2>The Problem This Addresses</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">AI voice agents in healthcare payer–provider administrative calls frequently operate without disclosing their automated nature at the outset of a call. Staff share operational data — provider credentials, claim details, eligibility information — before realizing they are talking to a machine.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This creates a window of ambiguity — what this proposal calls <strong>impersonation latency</strong> — where sensitive information changes hands without informed consent or clear accountability.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The problem is not that AI is making these calls. It is that AI is making these calls while appearing to be human.</p>
-
-      <figure class="figure-frame imp-model reveal">
+          <p>AI voice agents in healthcare payer–provider administrative calls frequently operate without disclosing their automated nature at the outset of a call. Staff share operational data — provider credentials, claim details, eligibility information — before realizing they are talking to a machine.</p>
+          <p>This creates a window of ambiguity — what this proposal calls <strong>impersonation latency</strong> — where sensitive information changes hands without informed consent or clear accountability.</p>
+          <p>The problem is not that AI is making these calls. It is that AI is making these calls while appearing to be human.</p>
+          <figure class="figure-frame imp-model reveal">
         <svg viewBox="0 0 880 440" role="img" aria-labelledby="imp-title imp-desc" style="width:100%;height:auto;display:block">
           <title id="imp-title">Impersonation latency, and the exposure inside it</title>
           <desc id="imp-desc">A definition figure in two tracks over a shared turn axis running from turn 0 to turn 5. The formula at the top reads: IL equals t of disclosure minus t of connect. The upper track shows a non-conformant call: the call connects at turn 0, protected health information is requested at turn 2 while the receiving party still has no way to know the caller is automated, and the agent discloses that it is automated at turn 3. The interval between connect and disclosure is the impersonation latency, marked as three turns. Because one PHI field was requested inside that interval, PDX-01 fires and returns DENY_DATA. The lower track shows the conformant target: disclosure happens in the first message at turn 0, so IL in turns equals 0, no PHI is requested before disclosure, and PDX-01 does not fire. The ordered list following the figure states the remaining conditions, including that if no valid disclosure ever occurs, IL is right-censored at call end and reported as IL greater than or equal to call duration.</desc>
@@ -233,14 +268,37 @@
       </ol>
 
       <p class="disclaimer-small" style="margin-top:.85rem"><span class="maturity-reference">Reference</span> Conceptual model of how the measurement is defined, drawn in the site&#8217;s own diagram system. The turn positions are illustrative, not a recording of a specific call and not a distribution &mdash; for interval figures computed from a committed corpus, see the <a href="shadow-evaluation-guide.html">shadow evaluation guide</a>.</p>
+        </div>
+      </section>
 
-      <h2 style="margin-top:2.5rem">The Core Idea</h2>
-      <p style="color:var(--body);font-size:1.05rem;line-height:1.85;margin-top:.75rem">An AI voice agent should identify itself as automated <strong>before</strong> any operational data is exchanged. That disclosure should be clear, immediate, and not contingent on being challenged.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Everything else in this proposal flows from that single principle.</p>
+      <section class="act" id="core-idea" aria-labelledby="core-idea-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Principle</p>
+            <h2 id="core-idea-h">The core idea</h2>
+          </div>
+          <span class="act-index">02 / 14</span>
+        </div>
+        <div class="act-body">
 
-      <h2 style="margin-top:2.5rem">Suggested Behaviors</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.75;margin-top:.75rem">The proposal defines <strong>five controls</strong> for AI voice agents in these workflows. Four are deterministic <em>behavioral</em> controls governing what the agent does on the call &mdash; IDG-01, PDX-01, DBC-01 and EIT-01. The fifth, ATR-01, is the <em>audit and evidence</em> control: it does not change the agent&rsquo;s behavior, it records what the other four did. These are not mandatory requirements &mdash; they are a starting point for shared expectations.</p>
-      <div class="feature-grid" style="margin-top:1.4rem">
+          <p>An AI voice agent should identify itself as automated <strong>before</strong> any operational data is exchanged. That disclosure should be clear, immediate, and not contingent on being challenged.</p>
+          <p>Everything else in this proposal flows from that single principle.</p>
+        </div>
+      </section>
+
+      <section class="act" id="behaviors" aria-labelledby="behaviors-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Controls</p>
+            <h2 id="behaviors-h">Suggested behaviors</h2>
+          <p class="act-lead">Four deterministic behavioural controls and one audit control.</p>
+          </div>
+          <span class="act-index">03 / 14</span>
+        </div>
+        <div class="act-body">
+
+          <p>The proposal defines <strong>five controls</strong> for AI voice agents in these workflows. Four are deterministic <em>behavioral</em> controls governing what the agent does on the call &mdash; IDG-01, PDX-01, DBC-01 and EIT-01. The fifth, ATR-01, is the <em>audit and evidence</em> control: it does not change the agent&rsquo;s behavior, it records what the other four did. These are not mandatory requirements &mdash; they are a starting point for shared expectations.</p>
+          <div class="feature-grid">
         <div class="feature-card reveal">
           <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3M6 6v11M10 3v18M14 8v7M18 5v13M22 10v3"/></svg></div>
           <span class="code">IDG-01</span>
@@ -272,11 +330,22 @@
           <p>Sufficient logging to establish what happened, and when. <span style="opacity:.75">The audit control &mdash; evidence rather than behavior.</span></p>
         </div>
       </div>
+        </div>
+      </section>
 
-      <h2 style="margin-top:2.5rem" id="control-model">The Five-Control Model</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Four of the five controls act on the call. The fifth does not &mdash; it records what the other four did. That difference is structural, not a matter of emphasis, and it is the distinction this diagram exists to make.</p>
+      <section class="act" id="control-model" aria-labelledby="control-model-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Model</p>
+            <h2 id="control-model-h">The five-control model</h2>
+          <p class="act-lead">Four act on the call. The fifth records what the four decided.</p>
+          </div>
+          <span class="act-index">04 / 14</span>
+        </div>
+        <div class="act-body">
 
-      <figure class="control-model" style="margin:1.75rem 0 0">
+          <p>Four of the five controls act on the call. The fifth does not &mdash; it records what the other four did. That difference is structural, not a matter of emphasis, and it is the distinction this diagram exists to make.</p>
+          <figure class="control-model">
         <svg viewBox="0 0 880 380" role="img" aria-labelledby="cm-title cm-desc" style="width:100%;height:auto;display:block">
           <title id="cm-title">The NHID-Clinical five-control model</title>
           <desc id="cm-desc">A single call runs left to right. Four deterministic behavioural controls act on it in sequence: IDG-01 requires the agent to identify itself as automated before any data is exchanged; PDX-01 blocks protected health information until that disclosure is confirmed; DBC-01 checks throughout the call that the agent is not presenting itself as a person; EIT-01 honours a request to reach a human. Beneath them, spanning the whole call, ATR-01 records what each of the four decided. ATR-01 changes no behaviour; it is the audit and evidence control.</desc>
@@ -332,11 +401,24 @@
         </svg>
         <figcaption style="margin-top:.85rem;color:var(--body);font-size:.88rem;line-height:1.7">Enforcement is a ladder, not a vote: when more than one control fires on the same turn, the engine returns the most restrictive outcome &mdash; <code>DENY_DATA</code> over <code>ESCALATE_HUMAN</code> over <code>DISCLOSE_IDENTITY</code> over <code>LOG_ONLY</code> over <code>CONTINUE_AI</code>. That ordering is what makes the result deterministic when several conditions are true at once.</figcaption>
       </figure>
+        </div>
+      </section>
 
-      <h2 style="margin-top:2.5rem" id="trust-gateway">The Trust Gateway &mdash; the controls, actually running</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">Everything below this paragraph is output. Two real scenarios from the governance evaluation corpus were replayed through <code>evaluate_all</code> &mdash; the same function the conformance suite and the hosted API call &mdash; and the action, reason code and violations recorded verbatim. Nothing here is written by hand, and a test regenerates it and fails if this page and the engine ever disagree.</p>
+      <section class="act" id="trust-gateway" aria-labelledby="trust-gateway-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Evidence</p>
+            <h2 id="trust-gateway-h">The Trust Gateway &mdash; the controls, actually running</h2>
+          <p class="act-lead">Two corpus scenarios, replayed through the engine, recorded verbatim.</p>
+          </div>
+          <span class="act-index">05 / 14</span>
+        </div>
+        <div class="act-body">
 
-      <div class="trust-gateway" data-trust-gateway>
+          <p>Everything below this paragraph is output. Two real scenarios from the governance evaluation corpus were replayed through <code>evaluate_all</code> &mdash; the same function the conformance suite and the hosted API call &mdash; and the action, reason code and violations recorded verbatim. Nothing here is written by hand, and a test regenerates it and fails if this page and the engine ever disagree.</p>
+          <div class="ink-panel">
+            <div class="panel-bar"><span><b>Trust Gateway</b> · engine output</span><span class="panel-live">Regenerated by <code>scripts/build_gateway_fixture.py</code></span></div>
+            <div class="trust-gateway" data-trust-gateway>
         <div class="tg-controls" hidden>
           <button type="button" class="tg-step" data-tg-prev>&larr; Previous turn</button>
           <span class="tg-position" data-tg-position aria-live="polite"></span>
@@ -443,11 +525,24 @@
         </section>
         <!-- END GENERATED trust-gateway -->
       </div>
-      <p class="disclaimer-small" style="margin-top:.85rem">Reproduce: <code>python scripts/build_gateway_fixture.py --check</code>. The scenarios are <code>nhid_ec_comp_001</code> and <code>nhid_ec_combo_008</code> in <code>tests/evaluation_corpus_v1.json</code>; neither was written for this page.</p>
+      <p class="disclaimer-small" style="margin-top:1rem">Reproduce: <code>python scripts/build_gateway_fixture.py --check</code>. The scenarios are <code>nhid_ec_comp_001</code> and <code>nhid_ec_combo_008</code> in <code>tests/evaluation_corpus_v1.json</code>; neither was written for this page.</p>
+          </div>
+        </div>
+      </section>
 
-      <h2 style="margin-top:2.5rem">Sequence of Interaction</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">The following diagram illustrates the disclosure gate in a standard eligibility workflow.</p>
-      <figure class="sequence-model">
+      <section class="act" id="sequence" aria-labelledby="sequence-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Model</p>
+            <h2 id="sequence-h">Sequence of interaction</h2>
+          <p class="act-lead">The disclosure gate in a standard eligibility workflow.</p>
+          </div>
+          <span class="act-index">06 / 14</span>
+        </div>
+        <div class="act-body">
+
+          <p>The following diagram illustrates the disclosure gate in a standard eligibility workflow.</p>
+          <figure class="sequence-model">
         <svg viewBox="0 0 880 430" role="img" aria-labelledby="sq-title sq-desc" style="width:100%;height:auto;display:block">
           <title id="sq-title">The disclosure gate in a standard eligibility workflow</title>
           <desc id="sq-desc">A sequence across four lanes. The AI voice agent opens the call by stating that it is an automated system. The payer representative acknowledges and asks for the NPI. The agent submits the turn to the NHID-Clinical policy engine, which evaluates IDG-01 and returns CONTINUE_AI with the reason code IDG01_DISCLOSURE_CONFIRMED. Only after that decision does the interaction cross the disclosure gate into the operational workflow, where the NPI is supplied and the administrative exchange proceeds. Every turn, before and after the gate, is written to the ATR-01 audit trail.</desc>
@@ -533,10 +628,22 @@
       </ol>
 
       <p class="disclaimer-small" style="margin-top:.85rem"><span class="maturity-reference">Reference</span> Conceptual model of the control in a standard workflow, drawn in the site&#8217;s own diagram system. It is not a recording of a specific call &mdash; for engine output replayed from real corpus scenarios, see the Trust Gateway above.</p>
+        </div>
+      </section>
 
-      <h2 style="margin-top:2.5rem">How Five Decisions Become One</h2>
-      <p style="color:var(--body);font-size:.95rem;line-height:1.8;margin:.75rem 0 0">The five controls do not run as a chain of gates. Every one of them evaluates the same turn independently, and the composite decision is whichever result is most restrictive. The figure below is generated by replaying the governance evaluation corpus through the engine, so the counts beside each rung are measured rather than asserted.</p>
-      <!-- BEGIN GENERATED enforcement-ladder -->
+      <section class="act" id="decisions" aria-labelledby="decisions-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Mechanism</p>
+            <h2 id="decisions-h">How five decisions become one</h2>
+          <p class="act-lead">Every control evaluates the same turn; the most restrictive result wins.</p>
+          </div>
+          <span class="act-index">07 / 14</span>
+        </div>
+        <div class="act-body">
+
+          <p>The five controls do not run as a chain of gates. Every one of them evaluates the same turn independently, and the composite decision is whichever result is most restrictive. The figure below is generated by replaying the governance evaluation corpus through the engine, so the counts beside each rung are measured rather than asserted.</p>
+          <!-- BEGIN GENERATED enforcement-ladder -->
       <figure class="figure-frame enforcement-ladder">
         <svg viewBox="0 0 880 440" role="img" aria-labelledby="el2-title el2-desc" style="width:100%;height:auto;display:block">
           <title id="el2-title">How five control decisions resolve into one</title>
@@ -634,208 +741,236 @@
         <p><strong>Version:</strong> policy engine v1.3 · commit <code>428f20c</code></p>
       </aside>
       <!-- END GENERATED enforcement-ladder -->
+        </div>
+      </section>
 
-      <h2 style="margin-top:2.5rem">Why These Five</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">These controls address the specific operational friction that motivated this proposal. They are observable, testable in context, and achievable without significant architectural changes in most systems.</p>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">They are also the minimum set that would meaningfully change the impersonation latency problem — not a comprehensive AI governance framework.</p>
-
-      <h2 style="margin-top:2.5rem">Scope</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal applies to <strong>B2B administrative voice workflows</strong> — AI systems calling payer offices on behalf of providers, vendors, or plan administrators. It does not apply to patient-facing calls, clinical decision support, or internal tooling.</p>
-
-      <h2 style="margin-top:2.5rem">What This Is Not</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">This proposal does not define a compliance program. There is no certifying body, no audit process, and no enforcement mechanism. NHID-Clinical evaluates declared identity, authorization context, and interaction policy; it does not replace an underlying identity provider or cryptographic identity infrastructure. The <a href="/developers.html#registry" style="color:var(--teal-bright);font-weight:600">Implementation Registry</a> is self-attestation only — vendors list themselves and link their own live conformance metrics; NHID-Clinical does not verify or certify entries. The full proposal document (PDF below) contains more detail for interested practitioners.</p>
-
-      <h2 style="margin-top:2.5rem">Known Gaps (v1.3)</h2>
-      <p style="color:var(--body);font-size:1rem;line-height:1.85;margin-top:.75rem">v1.3 addresses <em>observable behavior</em> — disclosure timing, deceptive artifacts, escalation path, audit logging. It does not address caller authorization. Because NPIs are public, a malicious AI can trivially impersonate a provider unless a cryptographic authorization handshake is enforced — <a href="/framework/nhid-auth.html#v2" style="color:var(--teal-bright);font-weight:600">NHID-Auth v2</a> (released June 2026, CC BY 4.0) addresses this with Ed25519 provider-signed agent passports and NPI binding. NHID-Clinical v1.3 tells you the caller was automated; NHID-Auth v2 tells you the caller was authorized.</p>
-
-      <div class="spec-highlight-box" style="margin-top:2rem">
-        <strong style="color:var(--teal-bright);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase">Download &amp; Feedback</strong>
-        <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.7;margin-top:.35rem">
-          <a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download style="color:var(--teal-bright);font-weight:600">Download the Public Brief (PDF)</a>
-        </p>
-        <p style="color:var(--body);font-size:.9rem;margin-top:.5rem">Feedback: <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright);font-weight:600">contact@nhid-clinical.org</a></p>
-      </div>
-
-      <div style="padding:1.5rem;background:var(--teal-soft);border-radius:8px;margin-top:2rem">
-        <p style="margin:0;color:var(--ink)">These behaviors are demonstrated in the </p>
-        
-
-        <h3 style="margin-top:1.5rem;font-size:1.1rem">Document Family</h3>
-        <table style="width:100%;border-collapse:collapse;margin-top:0.75rem;font-size:0.9rem">
-            <thead>
-                <tr style="border-bottom:1px solid var(--line);text-align:left">
-                    <th style="padding:0.5rem">Layer</th>
-                    <th style="padding:0.5rem">Artifact</th>
-                    <th style="padding:0.5rem">Status</th>
-                    <th style="padding:0.5rem">Role</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr style="border-bottom:1px solid var(--line)">
-                    <td style="padding:0.5rem">Governance control model</td>
-                    <td style="padding:0.5rem">NHID-Clinical v1.3</td>
-                    <td style="padding:0.5rem">Current</td>
-                    <td style="padding:0.5rem">Minimum disclosure baseline</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--line)">
-                    <td style="padding:0.5rem">Companion spec</td>
-                    <td style="padding:0.5rem">NHID-Auth v2</td>
-                    <td style="padding:0.5rem">Draft</td>
-                    <td style="padding:0.5rem">Delegated authorization</td>
-                </tr>
-                <tr style="border-bottom:1px solid var(--line)">
-                    <td style="padding:0.5rem">Reference software</td>
-                    <td style="padding:0.5rem">nhid-clinical-api</td>
-                    <td style="padding:0.5rem">Pilot</td>
-                    <td style="padding:0.5rem">CTS evaluation</td>
-                </tr>
-            </tbody>
-        </table>
-        <p style="margin-top:1rem;font-size:0.9rem"><a href="/#technical-stack" style="color:var(--teal-bright)">Five-layer trust architecture →</a> &nbsp;·&nbsp; <a href="/regulatory-alignment.html" style="color:var(--teal-bright)">Regulatory alignment matrix →</a></p>
-      </div>
-    </div>
-  </section>
-
-  <section class="container closing-section">
-    <div class="closing-panel">
-      <div>
-        <p class="section-kicker">Get involved</p>
-        <h2>Read the specification and share your reaction.</h2>
-        <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
-      </div>
-      <a class="closing-button" href="/shadow-evaluation-guide.html">Read the evaluation guide →</a>
-    </div>
-  </section>
-
-<!-- ── The five controls in detail (merged from controls.html) ───────────────────── -->
-  <section class="page-section" id="controls">
-    <div class="container" style="max-width:860px">
-      <h2>The five controls in detail</h2>
-      <p class="lede-text" style="color:var(--body);line-height:1.85">Each control is observable on a real call, checkable against a machine-readable trace, and produces the same verdict for the same inputs every time.</p>
-    </div>
-  </section>
-
-
-  <section class="page-section">
-    <div class="container" style="max-width:60rem">
-      <div class="callout" role="note" style="margin-bottom:1.75rem">
-        <strong>This page is the navigable index.</strong> The normative control text — including RFC 2119 language and the exact conditions of conformance — lives in the <a href="/specification.html" style="color:var(--teal-bright);font-weight:600">v1.3 specification</a>. Where this page and the specification differ, the specification governs.
-      </div>
-      <div style="display:grid;gap:1.5rem">
-      <article class="content-card" id="idg-01" style="padding:2rem">
-        <span class="code">IDG-01</span>
-        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Identity Disclosure Gate</h3>
-        <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">Disclose non-human identity before any protected data is exchanged.</p>
-        <p style="color:var(--body);line-height:1.75">The agent must identify itself as automated as the first meaningful act of the call — not when challenged, not after pleasantries, and not buried in a closing statement. Disclosure is proactive, unambiguous, and timestamped.</p>
-        <div class="pass-fail" style="margin-top:1.25rem">
-          <div class="pass-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Disclosure occurs before the first operational data exchange</li><li>The assertion clearly states the caller is automated</li><li>A disclosure timestamp is present in the audit envelope</li></ul>
+      <section class="act" id="why-five" aria-labelledby="why-five-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Rationale</p>
+            <h2 id="why-five-h">Why these five</h2>
           </div>
-          <div class="fail-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Non-conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Disclosure delayed until the representative asks &ldquo;is this a recording?&rdquo;</li><li>Ambiguous phrasing that a listener could reasonably read as human</li><li>No disclosure timestamp recorded</li></ul>
+          <span class="act-index">08 / 14</span>
+        </div>
+        <div class="act-body">
+
+          <p>These controls address the specific operational friction that motivated this proposal. They are observable, testable in context, and achievable without significant architectural changes in most systems.</p>
+          <p>They are also the minimum set that would meaningfully change the impersonation latency problem — not a comprehensive AI governance framework.</p>
+        </div>
+      </section>
+
+      <section class="act" id="scope" aria-labelledby="scope-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Boundary</p>
+            <h2 id="scope-h">Scope</h2>
+          </div>
+          <span class="act-index">09 / 14</span>
+        </div>
+        <div class="act-body">
+
+          <p>This proposal applies to <strong>B2B administrative voice workflows</strong> — AI systems calling payer offices on behalf of providers, vendors, or plan administrators. It does not apply to patient-facing calls, clinical decision support, or internal tooling.</p>
+        </div>
+      </section>
+
+      <section class="act" id="what-this-is-not" aria-labelledby="what-this-is-not-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Boundary</p>
+            <h2 id="what-this-is-not-h">What this is not</h2>
+          </div>
+          <span class="act-index">10 / 14</span>
+        </div>
+        <div class="act-body">
+
+          <p>This proposal does not define a compliance program. There is no certifying body, no audit process, and no enforcement mechanism. NHID-Clinical evaluates declared identity, authorization context, and interaction policy; it does not replace an underlying identity provider or cryptographic identity infrastructure. The <a href="/developers.html#registry">Implementation Registry</a> is self-attestation only — vendors list themselves and link their own live conformance metrics; NHID-Clinical does not verify or certify entries. The full proposal document contains more detail for interested practitioners.</p>
+        </div>
+      </section>
+
+      <section class="act" id="known-gaps" aria-labelledby="known-gaps-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Limits</p>
+            <h2 id="known-gaps-h">Known gaps (v1.3)</h2>
+          <p class="act-lead">Observable behaviour, not caller authorization.</p>
+          </div>
+          <span class="act-index">11 / 14</span>
+        </div>
+        <div class="act-body">
+
+          <p>v1.3 addresses <em>observable behavior</em> — disclosure timing, deceptive artifacts, escalation path, audit logging. It does not address caller authorization. Because NPIs are public, a malicious AI can trivially impersonate a provider unless a cryptographic authorization handshake is enforced — <a href="/framework/nhid-auth.html#v2">NHID-Auth v2</a> (released June 2026, CC BY 4.0) addresses this with Ed25519 provider-signed agent passports and NPI binding. NHID-Clinical v1.3 tells you the caller was automated; NHID-Auth v2 tells you the caller was authorized.</p>
+          <div class="note" role="note" data-label="Download &amp; feedback">
+            <p><a href="/specs/NHID-Clinical-v1.3-Overview.pdf" download><strong>Download the public brief (PDF)</strong></a> &nbsp;·&nbsp; Feedback: <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a></p>
           </div>
         </div>
-      </article>
-      <article class="content-card" id="pdx-01" style="padding:2rem">
-        <span class="code">PDX-01</span>
-        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Pre-Data Exchange Gate</h3>
-        <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">No protected data moves until identity is disclosed.</p>
-        <p style="color:var(--body);line-height:1.75">The complement to IDG-01: rather than checking that disclosure happened, PDX-01 blocks the data path until it has. Every turn is evaluated — late disclosure still blocks protected health information on the turns that preceded it.</p>
-        <div class="pass-fail" style="margin-top:1.25rem">
-          <div class="pass-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Every PHI-bearing turn is preceded by a confirmed disclosure</li><li>Blocked turns are recorded with the reason for the block</li><li>The gate evaluates per turn, not once per call</li></ul>
-          </div>
-          <div class="fail-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Non-conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Member ID, NPI, or claim detail requested before disclosure</li><li>Disclosure treated as a one-time flag rather than a per-turn precondition</li><li>Blocked exchanges dropped silently with no trace</li></ul>
-          </div>
-        </div>
-      </article>
-      <article class="content-card" id="dbc-01" style="padding:2rem">
-        <span class="code">DBC-01</span>
-        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Deceptive Behavior Check</h3>
-        <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">No synthetic human-presence cues or false human-status claims.</p>
-        <p style="color:var(--body);line-height:1.75">The agent behaves like a machine. No fabricated breathing, typing, or background office noise; no filler designed to imply a person is thinking; no direct or implied claim of being human when asked.</p>
-        <div class="pass-fail" style="margin-top:1.25rem">
-          <div class="pass-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Direct answer of &ldquo;no&rdquo; when asked whether the caller is human</li><li>No audio artifacts engineered to imply human presence</li><li>No persona framing that misrepresents the agent&rsquo;s nature</li></ul>
-          </div>
-          <div class="fail-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Non-conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Synthetic keyboard, breathing, or call-center ambience</li><li>&ldquo;Let me just check that for you&rdquo; paired with simulated hold behavior</li><li>Deflecting rather than answering a direct human-status question</li></ul>
-          </div>
-        </div>
-      </article>
-      <article class="content-card" id="eit-01" style="padding:2rem">
-        <span class="code">EIT-01</span>
-        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Escalation Implementation Test</h3>
-        <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">A clear human handoff, honored on request.</p>
-        <p style="color:var(--body);line-height:1.75">When the person on the other end asks for a human, the transition happens — immediately, unambiguously, and without requiring a specific phrase. The escalation and its outcome are recorded.</p>
-        <div class="pass-fail" style="margin-top:1.25rem">
-          <div class="pass-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Escalation path is available for the duration of the call</li><li>Request is honored without requiring exact wording</li><li>Escalation timestamp and outcome are both recorded</li></ul>
-          </div>
-          <div class="fail-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Non-conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Escalation offered but not actually routed</li><li>Requires a magic phrase or repeated requests</li><li>Escalation attempted with no outcome recorded</li></ul>
-          </div>
-        </div>
-      </article>
-      <article class="content-card" id="atr-01" style="padding:2rem">
-        <span class="code">ATR-01</span>
-        <h3 style="font-size:1.25rem;margin:.5rem 0 .35rem">Audit Trail Requirements</h3>
-        <p style="font-size:1rem;color:var(--ink-soft);font-weight:500;margin-bottom:.75rem">Every call produces a complete, replayable machine-readable trace.</p>
-        <p style="color:var(--body);line-height:1.75">Each event carries a full audit envelope — actor, timestamps, state transitions, and execution context — so the call can be reconstructed after the fact. Missing envelope fields are treated as critical findings, not warnings.</p>
-        <div class="pass-fail" style="margin-top:1.25rem">
-          <div class="pass-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Actor identity, request ID, and session ID present on every event</li><li>State before and after each transition recorded</li><li>Envelope validates against the published trace schema</li></ul>
-          </div>
-          <div class="fail-box">
-            <strong style="display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">Non-conformant</strong>
-            <ul style="margin:0;padding-left:1.1rem;color:var(--body);font-size:.88rem;line-height:1.65"><li>Partial envelopes with missing actor or timing fields</li><li>Free-text logs that cannot be machine-validated</li><li>Events that cannot be ordered into a replayable sequence</li></ul>
-          </div>
-        </div>
-      </article></div>
-    </div>
-  </section>
+      </section>
 
-  <section class="page-section" style="background:var(--mist)">
-    <div class="container" style="max-width:60rem">
-      <p class="section-kicker">Optional, opt-in</p>
-      <h3>Delegated Authority (DLG-01)</h3>
-      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">An agent asserting it acts for a provider organization can present a cryptographically signed delegation naming that organization&rsquo;s NPI, the scope it grants, and when it expires. When a deployment opts in, the engine verifies the signatures, expiry, revocation and call binding, and refuses any delegation whose scope widens across a sub-delegation. The verified scope then constrains the data boundary: a delegation for eligibility does not authorize requesting a claim number.</p>
-      <p style="color:var(--body);line-height:1.8;margin-top:.85rem">The limits travel with it. Verification is against a trust anchor the deploying organization configured itself &mdash; there is no directory or discovery service, and an NPI with no configured anchor is refused rather than accepted. The NPI is cryptographically bound to the delegation but is <strong>not</strong> checked against NPPES. Delegation is off unless a deployment turns it on.</p>
-      <div style="margin-top:1.25rem">
-        <a class="cta-button" href="/specification.html">Read the normative definitions <span aria-hidden="true">&rarr;</span></a>
+      <section class="act" id="document-family" aria-labelledby="document-family-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Family</p>
+            <h2 id="document-family-h">Document family</h2>
+          <p class="act-lead">Where this document sits beside its companions.</p>
+          </div>
+          <span class="act-index">12 / 14</span>
+        </div>
+        <div class="act-body">
+
+          <div class="register restack">
+            <table>
+              <thead><tr><th scope="col">Layer</th><th scope="col">Artifact</th><th scope="col">Status</th><th scope="col">Role</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Governance control model</th><td data-label="Artifact"><span class="id-chip">NHID-Clinical v1.3</span></td><td data-label="Status"><span class="state-chip">Current</span></td><td data-label="Role">Minimum disclosure baseline</td></tr>
+                <tr><th scope="row">Companion spec</th><td data-label="Artifact"><span class="id-chip">NHID-Auth v2</span></td><td data-label="Status"><span class="state-chip is-muted">Draft</span></td><td data-label="Role">Delegated authorization</td></tr>
+                <tr><th scope="row">Reference software</th><td data-label="Artifact"><span class="id-chip">nhid-clinical-api</span></td><td data-label="Status"><span class="state-chip is-muted">Pilot</span></td><td data-label="Role">CTS evaluation</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><a href="/#technical-stack">Five-layer trust architecture →</a> &nbsp;·&nbsp; <a href="/regulatory-alignment.html">Regulatory alignment matrix →</a></p>
+        </div>
+      </section>
       </div>
     </div>
   </section>
 
-  <section class="page-cta">
+  <section class="page-section band-mist" id="controls" aria-labelledby="controls-h">
     <div class="container">
-      <h3>See the controls run</h3>
-      <p>Every control here is testable today, on synthetic scenarios or your own call logs.</p>
-      <div class="page-cta-grid">
-        <a class="page-cta-card" href="/evidence-pack.html#conformance-suite"><b>Run the test suite <span class="arr">&rarr;</span></b><span>Deterministic pass/fail on your engine.</span></a>
-        <a class="page-cta-card" href="/developers.html#reference-implementation"><b>Read the engine <span class="arr">&rarr;</span></b><span>How each control is evaluated in code.</span></a>
+      <div class="act-head">
+        <div>
+          <p class="section-kicker">Detail</p>
+          <h2 id="controls-h">The five controls in detail</h2>
+          <p class="act-lead">Each control is observable on a real call, checkable against a machine-readable trace, and produces the same verdict for the same inputs every time.</p>
+        </div>
+        <span class="act-index">13 / 14</span>
       </div>
-      <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0.</p>
+      <div class="note" role="note" data-label="Index" style="margin:0 0 1.25rem">
+        <p>This section is the navigable index. The normative control text — including RFC 2119 language and the exact conditions of conformance — is the specification above. Where this index and the specification differ, the specification governs.</p>
+      </div>
+      <div class="control-ledger">
+      <article class="content-card" id="idg-01">
+        <span class="code">IDG-01</span>
+        <h3>Identity Disclosure Gate</h3>
+        <p>Disclose non-human identity before any protected data is exchanged.</p>
+        <p>The agent must identify itself as automated as the first meaningful act of the call — not when challenged, not after pleasantries, and not buried in a closing statement. Disclosure is proactive, unambiguous, and timestamped.</p>
+        <div class="pass-fail">
+          <div class="pass-box">
+            <strong>Conformant</strong>
+            <ul><li>Disclosure occurs before the first operational data exchange</li><li>The assertion clearly states the caller is automated</li><li>A disclosure timestamp is present in the audit envelope</li></ul>
+          </div>
+          <div class="fail-box">
+            <strong>Non-conformant</strong>
+            <ul><li>Disclosure delayed until the representative asks &ldquo;is this a recording?&rdquo;</li><li>Ambiguous phrasing that a listener could reasonably read as human</li><li>No disclosure timestamp recorded</li></ul>
+          </div>
+        </div>
+      </article>
+      <article class="content-card" id="pdx-01">
+        <span class="code">PDX-01</span>
+        <h3>Pre-Data Exchange Gate</h3>
+        <p>No protected data moves until identity is disclosed.</p>
+        <p>The complement to IDG-01: rather than checking that disclosure happened, PDX-01 blocks the data path until it has. Every turn is evaluated — late disclosure still blocks protected health information on the turns that preceded it.</p>
+        <div class="pass-fail">
+          <div class="pass-box">
+            <strong>Conformant</strong>
+            <ul><li>Every PHI-bearing turn is preceded by a confirmed disclosure</li><li>Blocked turns are recorded with the reason for the block</li><li>The gate evaluates per turn, not once per call</li></ul>
+          </div>
+          <div class="fail-box">
+            <strong>Non-conformant</strong>
+            <ul><li>Member ID, NPI, or claim detail requested before disclosure</li><li>Disclosure treated as a one-time flag rather than a per-turn precondition</li><li>Blocked exchanges dropped silently with no trace</li></ul>
+          </div>
+        </div>
+      </article>
+      <article class="content-card" id="dbc-01">
+        <span class="code">DBC-01</span>
+        <h3>Deceptive Behavior Check</h3>
+        <p>No synthetic human-presence cues or false human-status claims.</p>
+        <p>The agent behaves like a machine. No fabricated breathing, typing, or background office noise; no filler designed to imply a person is thinking; no direct or implied claim of being human when asked.</p>
+        <div class="pass-fail">
+          <div class="pass-box">
+            <strong>Conformant</strong>
+            <ul><li>Direct answer of &ldquo;no&rdquo; when asked whether the caller is human</li><li>No audio artifacts engineered to imply human presence</li><li>No persona framing that misrepresents the agent&rsquo;s nature</li></ul>
+          </div>
+          <div class="fail-box">
+            <strong>Non-conformant</strong>
+            <ul><li>Synthetic keyboard, breathing, or call-center ambience</li><li>&ldquo;Let me just check that for you&rdquo; paired with simulated hold behavior</li><li>Deflecting rather than answering a direct human-status question</li></ul>
+          </div>
+        </div>
+      </article>
+      <article class="content-card" id="eit-01">
+        <span class="code">EIT-01</span>
+        <h3>Escalation Implementation Test</h3>
+        <p>A clear human handoff, honored on request.</p>
+        <p>When the person on the other end asks for a human, the transition happens — immediately, unambiguously, and without requiring a specific phrase. The escalation and its outcome are recorded.</p>
+        <div class="pass-fail">
+          <div class="pass-box">
+            <strong>Conformant</strong>
+            <ul><li>Escalation path is available for the duration of the call</li><li>Request is honored without requiring exact wording</li><li>Escalation timestamp and outcome are both recorded</li></ul>
+          </div>
+          <div class="fail-box">
+            <strong>Non-conformant</strong>
+            <ul><li>Escalation offered but not actually routed</li><li>Requires a magic phrase or repeated requests</li><li>Escalation attempted with no outcome recorded</li></ul>
+          </div>
+        </div>
+      </article>
+      <article class="content-card" id="atr-01">
+        <span class="code">ATR-01</span>
+        <h3>Audit Trail Requirements</h3>
+        <p>Every call produces a complete, replayable machine-readable trace.</p>
+        <p>Each event carries a full audit envelope — actor, timestamps, state transitions, and execution context — so the call can be reconstructed after the fact. Missing envelope fields are treated as critical findings, not warnings.</p>
+        <div class="pass-fail">
+          <div class="pass-box">
+            <strong>Conformant</strong>
+            <ul><li>Actor identity, request ID, and session ID present on every event</li><li>State before and after each transition recorded</li><li>Envelope validates against the published trace schema</li></ul>
+          </div>
+          <div class="fail-box">
+            <strong>Non-conformant</strong>
+            <ul><li>Partial envelopes with missing actor or timing fields</li><li>Free-text logs that cannot be machine-validated</li><li>Events that cannot be ordered into a replayable sequence</li></ul>
+          </div>
+        </div>
+      </article>
+      </div>
     </div>
   </section>
 
-
-<!-- ── Playbook pointer ─────────────────────────────────────── -->
-  <section class="page-section" style="padding-block:1.25rem">
-    <div class="container" style="max-width:860px">
-      <p class="disclaimer-small" style="margin:0">Going further: <a href="/specs/NHID-Clinical-Playbook.pdf" download><strong>Part II of the NHID-Clinical Playbook</strong></a> covers the control model, enforcement ladder and per-control detail.</p>
+  <section class="page-section band-paper" id="dlg-01" aria-labelledby="dlg-h">
+    <div class="container">
+      <div class="act-head">
+        <div>
+          <p class="section-kicker">Optional, opt-in</p>
+          <h2 id="dlg-h">Delegated Authority (DLG-01)</h2>
+          <p class="act-lead">A signed delegation that constrains the data boundary, off unless a deployment turns it on.</p>
+        </div>
+        <span class="act-index">14 / 14</span>
+      </div>
+      <div class="act-body">
+        <p>An agent asserting it acts for a provider organization can present a cryptographically signed delegation naming that organization&rsquo;s NPI, the scope it grants, and when it expires. When a deployment opts in, the engine verifies the signatures, expiry, revocation and call binding, and refuses any delegation whose scope widens across a sub-delegation. The verified scope then constrains the data boundary: a delegation for eligibility does not authorize requesting a claim number.</p>
+        <p>The limits travel with it. Verification is against a trust anchor the deploying organization configured itself &mdash; there is no directory or discovery service, and an NPI with no configured anchor is refused rather than accepted. The NPI is cryptographically bound to the delegation but is <strong>not</strong> checked against NPPES. Delegation is off unless a deployment turns it on.</p>
+        <p><a class="action-button action-button-secondary" href="/developers.html#reference-implementation">See the engine &rarr;</a></p>
+      </div>
     </div>
   </section>
+
+  <section class="page-close band-ink" aria-labelledby="close-h">
+    <div class="container">
+      <div class="closing-panel">
+        <div>
+          <p class="section-kicker">Get involved</p>
+          <h2 id="close-h">Read the specification and share your reaction.</h2>
+          <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
+        </div>
+        <a class="closing-button" href="/shadow-evaluation-guide.html">Read the evaluation guide →</a>
+      </div>
+      <div class="page-cta">
+        <h3>See the controls run</h3>
+        <p>Every control here is testable today, on synthetic scenarios or your own call logs.</p>
+        <div class="page-cta-grid">
+          <a class="page-cta-card" href="/evidence-pack.html#conformance-suite"><b>Run the test suite <span class="arr">&rarr;</span></b><span>Deterministic pass/fail on your engine.</span></a>
+          <a class="page-cta-card" href="/developers.html#reference-implementation"><b>Read the engine <span class="arr">&rarr;</span></b><span>How each control is evaluated in code.</span></a>
+          <a class="page-cta-card" href="/evidence-pack.html"><b>Review the Evidence Pack <span class="arr">&rarr;</span></b><span>Guarantees, a failure trace, the audit model.</span></a>
+          <a class="page-cta-card" href="/regulatory-alignment.html"><b>Regulatory alignment <span class="arr">&rarr;</span></b><span>How the controls map to published frameworks.</span></a>
+          <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer"><b>Join the Community <span class="arr">&#x2197;</span></b><span>Questions and feedback on GitHub.</span></a>
+        </div>
+        <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0. Going further: <a href="/specs/NHID-Clinical-Playbook.pdf" download><strong>Part II of the NHID-Clinical Playbook</strong></a> covers the control model, enforcement ladder and per-control detail.</p>
+      </div>
 <!-- BEGIN GENERATED journey-wayfinder -->
       <nav class="wayfinder" aria-label="Where this page sits in the journey">
         <p class="wayfinder-here"><span class="wayfinder-journey">Understand</span><span class="wayfinder-question">What does it control?</span></p>
@@ -846,29 +981,10 @@
         </ul>
       </nav>
       <!-- END GENERATED journey-wayfinder -->
+    </div>
+  </section>
 </main>
 
-
-<section class="page-section" style="padding-top:0">
-  <div class="container" style="max-width:60rem">
-    <div class="premium-callout">
-      <h3>See these controls run</h3>
-      <p>Every v1.3 control is implemented in the open reference engine and exercised by the conformance suite.</p>
-&nbsp;&nbsp; <a href="/regulatory-alignment.html">See how the controls map to published frameworks →</a>
-    </div>
-  </div>
-</section>
-<section class="page-cta">
-  <div class="container">
-    <h2>Where to go next</h2>
-    <p>Four ways into NHID-Clinical, whatever you came to do.</p>
-    <div class="page-cta-grid">
-      <a class="page-cta-card" href="/specification.html"><b>Read the Specification <span class="arr">&rarr;</span></b><span>The v1.3 controls, in full.</span></a>
-      <a class="page-cta-card" href="/evidence-pack.html"><b>Review the Evidence Pack <span class="arr">&rarr;</span></b><span>Guarantees, a failure trace, the audit model.</span></a>
-      <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer"><b>Join the Community <span class="arr">&#x2197;</span></b><span>Questions and feedback on GitHub.</span></a>
-    </div>
-  </div>
-</section>
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
     <p>&copy; 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
