@@ -69,8 +69,8 @@ four canonical controls is either historical or wrong — see the claims registe
 Eight adapter modules exist: four active in `adapters/`, four archived under
 `adapters/archive/` as working reference implementations that are no longer
 maintained (the archive README says why: six vendor interfaces this project does
-not control was a permanent cost for a framework with no deployments). Five are
-wired to hosted routes, and the routes for the archived three still exist:
+not control was a permanent cost for a framework with no deployments).
+Five are wired to hosted routes, and the routes for the archived three still exist:
 
 | Adapter | Module | Status | Hosted route |
 |---|---|---|---|
