@@ -568,3 +568,35 @@ window.NHIDDemoStatus = (function () {
     io.observe(host);
   });
 })();
+
+/* ── Document rail ─────────────────────────────────────────────────────────
+   Inner pages composed as a document carry a sticky section rail. The link
+   whose section is nearest the top of the viewport is marked current. Without
+   JavaScript the rail is a plain list of anchors, which is all it needs to be. */
+(function () {
+  if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+  var rails = document.querySelectorAll('.doc-rail');
+  if (!rails.length) return;
+  rails.forEach(function (rail) {
+    var links = Array.prototype.slice.call(rail.querySelectorAll('a[href^="#"]'));
+    var targets = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+    if (!targets.length) return;
+    var visible = new Map();
+    function mark() {
+      var best = null, bestTop = Infinity;
+      targets.forEach(function (t) {
+        var top = t.getBoundingClientRect().top;
+        if (top <= 140 && top > -t.offsetHeight + 40 && top < bestTop + 1e9) { if (best === null || top > bestTop) { best = t; bestTop = top; } }
+      });
+      if (!best) { best = targets[0]; }
+      links.forEach(function (a) { a.classList.toggle('is-current', a.getAttribute('href') === '#' + best.id); });
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible.set(e.target, e.isIntersecting); });
+      mark();
+    }, { rootMargin: '-120px 0px -60% 0px', threshold: [0, 0.1] });
+    targets.forEach(function (t) { io.observe(t); });
+    window.addEventListener('scroll', mark, { passive: true });
+    mark();
+  });
+})();

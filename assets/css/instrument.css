@@ -1,5 +1,6 @@
 /* ── NHID-Clinical instrument layer ──────────────────────────────────────────
-   Additive only: loaded AFTER components.css, and only by index.html.
+   Additive only: loaded AFTER components.css on every published page. The
+   home page composes with it directly; the inner pages add pages.css on top.
 
    The homepage is composed as alternating bands. Light paper carries the
    reading sections; three deep-ink "instrument" bands carry the hero, the

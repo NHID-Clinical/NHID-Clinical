@@ -12,6 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
+  <link rel="stylesheet" href="/assets/css/instrument.css"/>
+  <link rel="stylesheet" href="/assets/css/pages.css"/>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
 </head>
@@ -106,27 +108,75 @@
 
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
-<main id="main" class="scope-note">
-  <section class="inner-hero hero-band" style="position:relative;overflow:clip">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="container" style="position:relative;z-index:1">
-      <div class="crumbs"><a href="/">Home</a><span>/</span><span>Privacy Policy</span></div>
-      <h1 class="reveal page-heading">Privacy Policy</h1>
-      <p class="lede reveal lede-text">How NHID-Clinical handles the limited personal information collected through this website.</p>
+<main id="main" class="scope-note page-doc">
+  <section class="inner-hero hero-band" aria-labelledby="page-h">
+    <div class="container hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span class="sep">/</span><span>Privacy Policy</span></div>
+        <p class="eyebrow meta-label">Legal · privacy</p>
+        <h1 class="reveal page-heading" id="page-h">Privacy Policy</h1>
+        <p class="lede reveal lede-text">How NHID-Clinical handles the limited personal information collected through this website.</p>
+        <ul class="hero-meta reveal">
+          <li><b>Last updated</b><span>June 20, 2026</span></li>
+          <li><b>Accounts</b><span>None</span></li>
+          <li><b>Health data</b><span>None collected</span></li>
+          <li><b>Analytics</b><span>Plausible, cookieless</span></li>
+          <li><b>Texts</b><span>One per request · STOP to opt out</span></li>
+        </ul>
+      </div>
+      <aside class="hero-instrument-card reveal" aria-label="In short">
+        <div class="card-head"><b>In short</b><span>What we hold, and why</span></div>
+        <dl>
+          <dt>Collected</dt><dd>A phone number when you ask for a demo call or the starter-pack text, and a CAPTCHA token</dd>
+          <dt>Used for</dt><dd>Only the action you requested, with rate limits to prevent abuse</dd>
+          <dt>Kept</dt><dd>Transiently; rate-limit and demo-status records expire, typically within an hour</dd>
+          <dt>Shared</dt><dd>Never. Mobile opt-in information is not shared or sold</dd>
+          <dt>Contact</dt><dd><a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a></dd>
+        </dl>
+      </aside>
     </div>
   </section>
 
-  <section class="page-section">
-    <div class="container" style="max-width:760px">
-      <div class="card" style="line-height:1.7">
-        <p><strong>Last updated:</strong> June 20, 2026</p>
+  <section class="page-section band-paper">
+    <div class="container doc">
+      <nav class="doc-rail" aria-label="Sections of this policy">
+        <p class="doc-rail-label">On this page</p>
+        <ol>
+          <li><a href="#p-who-we-are"><span>Who we are</span></a></li>
+          <li><a href="#p-information-we-collect"><span>Information we collect</span></a></li>
+          <li><a href="#p-website-analytics"><span>Website analytics</span></a></li>
+          <li><a href="#p-how-we-use-it"><span>How we use it</span></a></li>
+          <li><a href="#sms"><span>SMS / mobile messaging terms</span></a></li>
+          <li><a href="#p-data-retention"><span>Data retention</span></a></li>
+          <li><a href="#p-your-choices"><span>Your choices</span></a></li>
+          <li><a href="#p-changes"><span>Changes</span></a></li>
+        </ol>
+      </nav>
+      <div class="doc-body">
 
-        <h2>Who we are</h2>
-        <p>NHID-Clinical is an open proposal operated by Brianna Baynard. You can reach us at
+      <section class="act" id="p-who-we-are" aria-labelledby="p-who-we-are-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Privacy</p>
+            <h2 id="p-who-we-are-h">Who we are</h2>
+          </div>
+          <span class="act-index">01 / 08</span>
+        </div>
+        <div class="act-body">
+<p>NHID-Clinical is an open proposal operated by Brianna Baynard. You can reach us at
           <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a>.</p>
-
-        <h2>Information we collect</h2>
-        <p>We collect only what you submit to use a specific feature: a phone number when you
+        </div>
+      </section>
+      <section class="act" id="p-information-we-collect" aria-labelledby="p-information-we-collect-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Privacy</p>
+            <h2 id="p-information-we-collect-h">Information we collect</h2>
+          </div>
+          <span class="act-index">02 / 08</span>
+        </div>
+        <div class="act-body">
+<p>We collect only what you submit to use a specific feature: a phone number when you
           request a demo call or the starter-pack text, and a CAPTCHA token used solely to deter
           automated abuse. We do not require accounts and we do not collect health information
           through this website.</p>
@@ -135,9 +185,18 @@
           and entry and exit pages. Plausible is configured as a cookieless analytics script;
           NHID-Clinical does not use it to identify named visitors, and this site analytics
           does not receive the contents of pilot datasets or health information.</p>
-
-        <h2>Website analytics</h2>
-        <p>This site uses <a href="https://plausible.io/privacy-focused-web-analytics" rel="noopener">Plausible
+        </div>
+      </section>
+      <section class="act" id="p-website-analytics" aria-labelledby="p-website-analytics-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Privacy</p>
+            <h2 id="p-website-analytics-h">Website analytics</h2>
+          </div>
+          <span class="act-index">03 / 08</span>
+        </div>
+        <div class="act-body">
+<p>This site uses <a href="https://plausible.io/privacy-focused-web-analytics" rel="noopener">Plausible
           Analytics</a> on every page to count visits. It is cookieless, sets no identifier on your
           device, and collects aggregate measures only: page views, referring site, approximate
           country, device type and browser. It does not build a profile of you, does not follow you
@@ -151,14 +210,32 @@
           a form, and <strong>nothing here can tell us whether anyone has run the Tier&nbsp;0 pilot
           kit</strong>, which operates entirely offline and reports nothing to us.</p>
         <p>You can block it with any content blocker and the site will work normally.</p>
-
-        <h2>How we use it</h2>
-        <p>We use your phone number only to perform the action you requested — placing the demo
+        </div>
+      </section>
+      <section class="act" id="p-how-we-use-it" aria-labelledby="p-how-we-use-it-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Privacy</p>
+            <h2 id="p-how-we-use-it-h">How we use it</h2>
+          </div>
+          <span class="act-index">04 / 08</span>
+        </div>
+        <div class="act-body">
+<p>We use your phone number only to perform the action you requested — placing the demo
           call, or sending the one-time starter-pack text. We apply per-number and per-IP rate
           limits to prevent abuse.</p>
-
-        <h2 id="sms">SMS / mobile messaging terms</h2>
-        <p>If you opt in to the starter-pack text program — by checking the consent box on our
+        </div>
+      </section>
+      <section class="act" id="sms" aria-labelledby="sms-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Privacy</p>
+            <h2 id="sms-h">SMS / mobile messaging terms</h2>
+          </div>
+          <span class="act-index">05 / 08</span>
+        </div>
+        <div class="act-body">
+<p>If you opt in to the starter-pack text program — by checking the consent box on our
           <a href="/sms-opt-in.html">opt-in form</a> or by pressing the corresponding key on our
           demo phone line — you agree to receive a one-time SMS containing your starter-pack link.</p>
         <ul>
@@ -168,18 +245,61 @@
           <li>Reply <strong>STOP</strong> to opt out at any time; reply <strong>HELP</strong> for help.</li>
           <li>Carriers are not liable for delayed or undelivered messages.</li>
         </ul>
-
-        <h2>Data retention</h2>
-        <p>Rate-limit and demo-status records are stored transiently and automatically expire
+        </div>
+      </section>
+      <section class="act" id="p-data-retention" aria-labelledby="p-data-retention-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Privacy</p>
+            <h2 id="p-data-retention-h">Data retention</h2>
+          </div>
+          <span class="act-index">06 / 08</span>
+        </div>
+        <div class="act-body">
+<p>Rate-limit and demo-status records are stored transiently and automatically expire
           (typically within one hour). We do not maintain a marketing list from these requests.</p>
-
-        <h2>Your choices</h2>
-        <p>You can opt out of texts at any time by replying STOP. For any other request regarding
+        </div>
+      </section>
+      <section class="act" id="p-your-choices" aria-labelledby="p-your-choices-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Privacy</p>
+            <h2 id="p-your-choices-h">Your choices</h2>
+          </div>
+          <span class="act-index">07 / 08</span>
+        </div>
+        <div class="act-body">
+<p>You can opt out of texts at any time by replying STOP. For any other request regarding
           your information, email <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a>.</p>
-
-        <h2>Changes</h2>
-        <p>We may update this policy; material changes will be reflected by the "Last updated" date above.</p>
+        </div>
+      </section>
+      <section class="act" id="p-changes" aria-labelledby="p-changes-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Privacy</p>
+            <h2 id="p-changes-h">Changes</h2>
+          </div>
+          <span class="act-index">08 / 08</span>
+        </div>
+        <div class="act-body">
+<p>We may update this policy; material changes will be reflected by the "Last updated" date above.</p>
+        </div>
+      </section>
       </div>
+    </div>
+  </section>
+
+  <section class="page-close band-ink" aria-labelledby="close-h">
+    <div class="container">
+      <div class="closing-panel">
+        <div>
+          <p class="section-kicker">Questions</p>
+          <h2 id="close-h">A question about your information?</h2>
+          <p>Email us and we will answer it directly.</p>
+        </div>
+        <a class="closing-button" href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a>
+      </div>
+
     </div>
   </section>
 </main>
