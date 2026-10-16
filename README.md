@@ -36,7 +36,8 @@
   <a href="https://nhid-clinical.org/developers.html">Simulator</a> ·
   <a href="https://nhid-clinical.org/specification.html">Specification</a> ·
   <a href="https://nhid-clinical.org/framework/nhid-auth.html#v2">v2 Identity</a> ·
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions">Discussions</a>
+  <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions">Discussions</a> ·
+  <a href="https://x.com/NHIDClinical">@NHIDClinical</a>
 </p>
 
 <p align="center">
@@ -171,10 +172,13 @@ An honest maturity snapshot. NHID-Clinical is a working reference implementation
 - NHID-Auth v2 cryptographic authorization layer, published as public reference code
 - Figures generated from the engine and the committed corpora, not drawn by hand — the [visual system](docs/visual-system.md) is normative, and CI fails if a published figure stops matching its source
 - **Dual-licensed:** Apache-2.0 code, CC BY 4.0 specification — your counsel can clear the reference implementation without a Creative Commons licence sitting on software
+- A documented **validation path** — a [verified dataset inventory](docs/validation/data-sources-inventory.md) (four of six commonly cited call corpora do not exist as described; the two that do are named, with their access terms), an [evidence-provenance matrix](docs/validation/evidence-provenance-matrix.md) stating what each kind of evidence can and cannot prove, a consented-volunteer call protocol, and an [evaluation corpus v2](docs/validation/EVALUATION_CORPUS_V2_FINDINGS.md) built from the cases the engine is known to miss, scored honestly (5/10)
+- **DBC-01 scoped in writing** — [transcript-based detection of explicit or implied human-status claims](docs/validation/DBC-01-SCOPE-AND-LIMITATIONS.md), with the 17 misses and 5 false positives on the 550-call corpus examined one by one; acoustic artifact detection is not claimed
 
 **In progress**
 - First shadow-evaluation partners (observe-only, no vendor changes)
-- Raster brand assets and expanded interoperability adapters
+- An independent review of DBC-01 against its intended threat model
+- Raster brand assets
 
 **Not yet**
 - Production-scale deployments (see [Phase 5 findings](#phase-5--architecture-review-findings) below)
@@ -435,8 +439,8 @@ definition are the same in all three.
 | Repository | What it is |
 | :-- | :-- |
 | **[NHID-Clinical](https://github.com/NHID-Clinical/NHID-Clinical)** (this one) | The open framework: control definitions, the deterministic engine, the conformance suite, the event schema, the shadow-evaluation method. Apache-2.0 code, CC BY 4.0 specification. Free, and the governance verdict is never paywalled. |
-| **[NHID-Clinical-SaaS](https://github.com/NHID-Clinical/NHID-Clinical-SaaS)** | The commercial product: a healthcare voice-AI governance monitoring and evidence platform, built on these controls. Hosted ingestion, cross-vendor normalization, retained evidence, a findings workflow and reporting — the costs of running a service, not capabilities withheld from the framework. **Zero deployments, zero pilots, zero validated willingness-to-pay.** |
-| **[Simulator](https://github.com/NHID-Clinical/Simulator)** | A teaching site that walks through the controls interactively. A learning tool — not the framework, not the product, and not a certification. |
+| **[NHID-Clinical-SaaS](https://github.com/NHID-Clinical/NHID-Clinical-SaaS)** | The commercial product: a healthcare voice-AI governance monitoring and evidence platform, built on these controls. Hosted ingestion, cross-vendor normalization, retained evidence, a findings workflow and reporting — the costs of running a service, not capabilities withheld from the framework. Organization auth is an API key, a magic-link session for people, or an RFC 8693 token exchange so a backend can trade its own IdP's token for a short-lived scoped one; every pilot run carries a data classification (synthetic · de-identified · production-derived). **Zero deployments, zero pilots, zero validated willingness-to-pay.** |
+| **[Simulator](https://github.com/NHID-Clinical/Simulator)** | *Zero Latency* — a five-module interactive course that teaches the controls by making you run them: catch a missed disclosure, inspect a delegation, build a finding from evidence, decide what ships. Static HTML, no build. A learning tool — not the framework, not the product, and not a certification. |
 
 ## Contributing & Pilot Partners
 
@@ -457,7 +461,9 @@ AI Governance & Security Researcher · AIGP · ISC² CC · WGU Cybersecurity
 
 Creator and project lead for NHID-Clinical. Background in healthcare payer operations, identity-verification workflows, and regulated-data environments. NHID-Clinical grew out of direct experience observing operational gaps in healthcare AI voice workflows, and is maintained as an open reference implementation for technical review — feedback and criticism are welcome.
 
-[LinkedIn](https://www.linkedin.com/in/brianna-baynard) · [GitHub](https://github.com/NHID-Clinical/NHID-Clinical) · [Project website](https://nhid-clinical.org)
+**Public profiles** — [LinkedIn](https://www.linkedin.com/in/brianna-baynard) · [X @baynardmalone](https://x.com/baynardmalone) · [GitHub @thankcheeses](https://github.com/thankcheeses)
+
+**The project** — [nhid-clinical.org](https://nhid-clinical.org) · [X @NHIDClinical](https://x.com/NHIDClinical) · [GitHub organization](https://github.com/NHID-Clinical) · [NIST public comment](https://www.regulations.gov/comment/NIST-2025-0035-0026) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
 
 <br clear="left"/>
 

@@ -11,8 +11,8 @@ rather than inferring.
 
 | | |
 |---|---|
-| **Commit** | `ed342b3919b94e6259317829fc5103a088955fd8` (`ed342b3`) |
-| **Measured** | 2026-09-06 |
+| **Commit** | `e63b9840d7b949f4661e0bd8a2a2f8c112850ff7` (`e63b984`) |
+| **Measured** | 2026-10-16 (previously `ed342b3`, 2026-09-06 — see §13) |
 | **Method** | Commands in the "How to reproduce" section, run against a clean checkout |
 | **Branch** | `main` |
 | **Licence** | Apache-2.0 for code (`LICENSE`), CC BY 4.0 for specification and documentation prose (`LICENSE-DOCS`); split stated in `NOTICE` |
@@ -33,9 +33,9 @@ rather than inferring.
 
 ```
 1213 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
-1127 passed, 21 skipped             # ...the same command with no API listening (drift-ok: no-API measurement, not the published count)
+1192 passed, 21 skipped             # ...the same command with no API listening (drift-ok: no-API measurement, not the published count)
 1213 collected                # python -m pytest tests/ --collect-only -q
-64 files                      # files under tests/ that pytest collects from
+67 files                      # files under tests/ that pytest collects from
 ```
 
 1213 collected, 1213 passed. Every published surface stating these numbers must
@@ -66,24 +66,29 @@ four canonical controls is either historical or wrong — see the claims registe
 
 ## 4. Adapters
 
-Eight adapter modules exist in `adapters/`. Five are wired to hosted routes:
+Eight adapter modules exist: four active in `adapters/`, four archived under
+`adapters/archive/` as working reference implementations that are no longer
+maintained (the archive README says why: six vendor interfaces this project does
+not control was a permanent cost for a framework with no deployments).
+Five are wired to hosted routes, and the routes for the archived three still exist:
 
-| Adapter | Module | Hosted route |
-|---|---|---|
-| Twilio | `twilio_adapter.py` | `/v1/adapters/twilio/check` |
-| VAPI | `vapi_adapter.py` | `/v1/adapters/vapi/check` |
-| Vonage | `vonage_adapter.py` | `/v1/adapters/vonage/check` |
-| Retell | `retell_adapter.py` | `/v1/adapters/retell/check` |
-| Amazon Connect | `amazon_connect_adapter.py` | `/v1/adapters/connect/check` |
-| ElevenLabs (post-call) | `elevenlabs_postcall_adapter.py` | none |
-| Fabricate | `fabricate_adapter.py` | internal — corpus ingestion |
-| Call progress | `call_progress_adapter.py` | internal — event type |
+| Adapter | Module | Status | Hosted route |
+|---|---|---|---|
+| Twilio | `twilio_adapter.py` | active | `/v1/adapters/twilio/check` |
+| VAPI | `vapi_adapter.py` | active | `/v1/adapters/vapi/check` |
+| Vonage | `archive/vonage_adapter.py` | archived | `/v1/adapters/vonage/check` |
+| Retell | `archive/retell_adapter.py` | archived | `/v1/adapters/retell/check` |
+| Amazon Connect | `archive/amazon_connect_adapter.py` | archived | `/v1/adapters/connect/check` |
+| ElevenLabs (post-call) | `archive/elevenlabs_postcall_adapter.py` | archived | none |
+| Fabricate | `fabricate_adapter.py` | active | internal — corpus ingestion, incl. the voice-stress JSONL (`convert_voice_stress`) |
+| Call progress | `call_progress_adapter.py` | active | internal — event type |
 
-Any page describing an implemented adapter as "planned" contradicts this table.
+Any page describing an implemented adapter as "planned" contradicts this table;
+any page describing an archived one as maintained contradicts it too.
 
-## 5. Evidence — four distinct bodies, never to be merged
+## 5. Evidence — six distinct bodies, never to be merged
 
-Collapsing these into a single "accuracy" number would misrepresent all four.
+Collapsing these into a single "accuracy" number would misrepresent all six.
 
 ### 5.1 Fabricate Battle-Test Corpus — CI-gated baseline
 550 conversations; 127 labelled compliant (the false-positive population).
@@ -115,12 +120,42 @@ Last recorded run: 23/23 attacks withstood, 0 bypasses, 0/17 false positives.
 `conformance/nhid_conformance_test_suite_v1.yaml`. Distinct from all of the
 above: it tests the implementation, not detection quality over a corpus.
 
+### 5.5 Governance Evaluation Corpus v2 — hard cases, by construction
+`tests/evaluation_corpus_v2.json`: 8 scenarios (2 compliant negative controls),
+20 turns, 10 expected violations across five controls.
+**5/10 detected = 50.0%. 0 false positives on the compliant scenarios; 0
+unexpected detections.** Run by `tests/test_eval_corpus_v2.py`; findings in
+`docs/validation/EVALUATION_CORPUS_V2_FINDINGS.md`.
+The headline is low on purpose: v2 over-weights the failure modes the engine
+is known not to reach — cross-turn disclosure contradiction and a later-turn
+deceptive persona — and each carries its honest expected outcome. No expected
+outcome was weakened to raise the rate. It is not a regression against §5.2.
+
+### 5.6 Fabricate voice-stress corpus — staged, now measured
+The staged JSONL corpus under `fixtures/voice-stress`, wired through
+`adapters/fabricate_adapter.py` (`convert_voice_stress`) and
+`scripts/confusion_matrix.py --voice-stress`:
+
+| Control | Detected | Rate | False positives | FP rate |
+|---|---|---|---|---|
+| IDG-01 | 65/65 | 100.0% | 0/95 | 0.0% |
+| PDX-01 | 8/8 | 100.0% | 0/95 | 0.0% |
+| DBC-01 | 0/28 | **0.0%** | 0/95 | 0.0% | <!-- drift-ok: voice-stress corpus — a different measurement from the CSV-550 baseline in §5.1, which is the 91.5% the guard pins -->
+| EIT-01 | 12/25 | 48.0% | 6/95 | 6.3% |
+
+The pinned CSV-550 baseline in `scripts/check_baseline.py` (§5.1) was not
+edited and did not move. The DBC-01 zero is the subject of
+`docs/validation/DBC-01-SCOPE-AND-LIMITATIONS.md`: the control is kept and
+scoped to transcript-based explicit or implied human-status claims; these
+cases are outside that scope, and acoustic artifact detection is not claimed.
+Findings: `docs/validation/FABRICATE_VOICE_STRESS_FINDINGS.md`.
+
 ## 6. Published artifacts
 
-Seven PDFs in `specs/`, all produced by `scripts/generate_pdfs.py`:
-Evidence Pack · Knowledge Archive · Operational Blueprint v1.3 ·
-Shadow Evaluation Guide · v1.3 Core Specification · v1.3 Overview ·
-NHID-Auth v2 Technical Reference.
+Three PDFs in `specs/`, all produced by `scripts/generate_pdfs.py`:
+v1.3 Core Specification · Shadow Evaluation Guide · Playbook.
+(Seven at `ed342b3`; the suite was cut when the withdrawn trust score left four
+of them describing a control tier that no longer existed.)
 
 They are **generated, not hand-maintained**. Regenerate after any change to a
 published figure; `check_number_drift.py` now fails if a PDF's text disagrees
@@ -128,28 +163,24 @@ with `UNIT_PUBLISHED`.
 
 ## 7. Website shape
 
-45 published pages, ~18,000 words of body content — page count is inflated
-relative to substance.
+**12 published pages** (`PUBLISHED` in `tests/test_site_navigation.py`, which
+also asserts the build emits exactly that set): home, about, specification,
+shadow-evaluation guide, developers, evidence pack, regulatory alignment,
+NHID-Auth, FAQ, downloads (`specs/index.html`), privacy, SMS opt-in. Downloads
+is now in navigation.
 
-**15 pages are orphans** (nothing on the site links to them). Two carry real
-content and are simply unreachable:
+**Retired from the build** (present in the repository, not published, and no
+published page may link to them — the test fails if one does): `simulator.html`
+and the `simulator/` app, `docs.html`, `technical-stack.html`, `for-payers.html`,
+`script-examples.html`, `demo.html`, `interoperability.html`, `registry.html`,
+`roadmap.html`, `news.html`, `community.html`, `identity-layer.html`,
+`implementation-review.html`, `gov-sim.html`, `svg-preview.html`, `pilot.html`,
+`conformance.html`, the `framework/` sub-pages other than `nhid-auth.html`, and
+the `alignment/` and `platform/` stubs. The 45-page, 15-orphan shape recorded at
+`ed342b3` is gone.
 
-- `script-examples.html` — 748 words, sixth-largest page. Concrete disclosure
-  phrasing and the patterns that create impersonation latency.
-- `specs/index.html` — the PDF download index. There is no downloads page in
-  navigation; PDFs are linked ad-hoc from six other pages.
-
-The rest are redirect stubs (`pilot.html`, `conformance.html`,
-`conformance/index.html`), a Search Console verification file, dev artifacts
-(`svg-preview.html`), the retired `gov-sim.html`, `implementation-review.html`,
-and four `alignment/*` stubs of 37–61 words each.
-
-**Retired from the build** (present in the repository, not published):
-`simulator.html`, the `simulator/` app, and `docs.html`.
-
-The five-layer stack visual appears on 5 pages, not on every page.
-`technical-stack.html` is 155 words carrying it four times, which is why its
-rendering diverges from the homepage's.
+The five-layer stack figure is one canonical SVG, used on three pages; the
+`technical-stack.html` page that carried it four times is retired.
 
 ## 8. Maturity — what the repository does and does not establish
 
@@ -282,6 +313,54 @@ reporting red. Proven fixed by `workflow_dispatch` before merge (run
 **Retired visual assets are not deleted.** They remain in the repository and in
 git history, unreferenced by any live destination. Deletion is a retention
 decision recorded as open in `docs/visual-system.md` §9.
+
+## 13. State change — 2026-10-16 (`e63b984`)
+
+Eighteen pull requests merged since §12. The suite went 1148 → 1213 (API
+running), 67 collected files; the no-API run 1127 → 1192 with the same 21
+skips. No control definition changed. Each row is verifiable from the
+repository, not from this file.
+
+| PR | Change | Verifiable by |
+|---|---|---|
+| **#389** | NHID-Auth v2 claims brought down to what the implementation does | `framework/nhid-auth.html`, `src/agent_identity.py` |
+| **#390** | Fail closed: every router authenticates; nothing mints with a known secret | `app.py`; `tests/test_*auth*.py` |
+| **#391** | Trust score, tiers, badges, and the DBC-01 self-reported artifact sub-check withdrawn | README "Enforcement Profile" note; `docs/CONTROL_DECISION_TABLE.md` |
+| **#392** | Downstream-artifact failures caught locally; DBC-01 said the same way everywhere | `scripts/verify_all.py` |
+| **#393 / #394** | Site moved under `site/` and moved back | repository root |
+| **#395** | About page, JSON-LD, canonical, meta description, SVG brand mark | `about.html`, `index.html` `<head>` |
+| **#396 / #397** | Control count corrected; sprint status out of the README; copy straightened | `README.md` |
+| **#398** | `/spec` reading aid; site copy rewrite | `specification.html` |
+| **#399–#401** | Pilot kit repaired after the withdrawal; offline promise guarded over the kit's import closure; analytics disclosed; 300-scenario corpus measured | `docs/pilot-kit/`, `tests/test_pilot_kit_offline.py`, `privacy.html` |
+| **#402** | `nhid pilot`: one command, an evidence pack out | `src/pilot_measure.py`, `src/pilot_report.py`, `src/pilot_pdf.py`, `src/cli.py` |
+| **#403** | Token-exchange answer in the integration guide; the slot UDAP leaves open | `docs/v2-integration-guide.md` §3.2 and Part 3; `src/udap_agent_extension.py` |
+| **#404** | Trust Gateway walkthrough flattened to terminal chrome; fixture byte-identical to engine output | `tests/test_trust_gateway.py`; `verify_all` check 4 |
+| **#405** | Validation path: ten documents in `docs/validation/`, corpus v2 (§5.5), voice-stress measurement (§5.6), DBC-01 scope statement, `eval_corpus.py --report` | `tests/test_eval_corpus_v2.py`, `tests/test_fabricate_voice_stress.py`, `scripts/check_number_drift.py` (corpus report byte-check) |
+| **#406** | NIST AI RMF Playbook crosswalk; a wrong subcategory corrected | `docs/nist-ai-rmf-playbook-crosswalk.md` |
+
+**Adapters archived, routes kept.** Four adapters moved to `adapters/archive/`
+(§4). Their hosted routes were not removed, so an integrator who already calls
+one is not broken; the archive README states that they are not maintained.
+
+**PDFs: seven → three.** Evidence Pack, Knowledge Archive, Operational
+Blueprint, v1.3 Overview and the NHID-Auth v2 Technical Reference are no longer
+generated; the Playbook is new. All three are text-checked by the drift guard.
+
+**Companion repositories, same day.** `NHID-Clinical-SaaS` #26 — RFC 8693
+token exchange beside the API key, issuing an opaque hashed token, no new
+secret; #27 — `data_classification` on pilot runs (`synthetic` ·
+`deidentified` · `production_derived`), additive migration 0006. Both merged
+2026-10-16. The Simulator's README was rewritten to describe the five modules.
+
+**Open.** NHID-Clinical #407, the homepage recomposed as an instrument console
+(ink bands, the Trust Gateway isometric figure as the hero, a trust-stack system
+map, a four-pane trace console of real `evaluate_all()` output). Green on all
+checks; carries this file's count.
+
+**Not established by any of the above:** a shadow-evaluation partner, a
+production deployment, dataset access, or an independent review of DBC-01
+against its threat model. The corpus v2 figure (50%) measures hard cases chosen
+to be hard and is not comparable to §5.1 or §5.2.
 
 ---
 
