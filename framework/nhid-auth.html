@@ -111,153 +111,161 @@
 <div class="nav-backdrop" id="nav-backdrop"></div>
 
 <main id="main" class="scope-note page-doc">
-
-  <section class="inner-hero hero-band">
-    <div class="hero-glow" aria-hidden="true"></div>
-    <div class="container" style="position:relative;z-index:1;max-width:60rem">
-      <div class="crumbs"><a href="/">Home</a><span>/</span><a href="/specification.html">Framework</a><span>/</span><span>NHID-Auth</span></div>
-      <p class="eyebrow meta-label">Layer 3 · v2 · CC BY 4.0</p>
-      <h1 class="page-heading">NHID-Auth</h1>
-      <p class="lede lede-text">v1.3 tells you the caller was automated. NHID-Auth tells you the caller was authorized.</p>
+  <section class="inner-hero hero-band" aria-labelledby="page-h">
+    <div class="container hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span class="sep">/</span><a href="/specification.html">Framework</a><span class="sep">/</span><span>NHID-Auth</span></div>
+        <p class="eyebrow meta-label">Layer 3 · v2 · CC BY 4.0</p>
+        <h1 class="page-heading" id="page-h">NHID-Auth</h1>
+        <p class="lede lede-text">v1.3 tells you the caller was automated. NHID-Auth tells you the caller was authorized.</p>
+        <ul class="hero-meta">
+          <li><b>Layer</b><span>3 · optional extension</span></li>
+          <li><b>Version</b><span>v2 · June 2026</span></li>
+          <li><b>Code</b><span>Apache-2.0</span></li>
+          <li><b>Document</b><span>CC BY 4.0</span></li>
+          <li><b>Production issuers</b><span>None</span></li>
+        </ul>
+        <div class="hero-actions">
+          <a class="action-button action-button-primary" href="/developers.html#reference-implementation">Reference implementation &rarr;</a>
+          <a class="action-button action-button-secondary" href="/specs/NHID-Auth-v2-Technical-Reference.pdf" download>Technical reference (PDF)</a>
+        </div>
+      </div>
+      <aside class="hero-instrument-card" aria-label="What verification checks">
+        <div class="card-head"><b>Verification</b><span>Six ordered checks, offline</span></div>
+        <ol class="endpoint-strip check-strip">
+          <li><span class="verb">01</span><span class="path">Provider signature <small>Ed25519, against the provider's published public key</small></span></li>
+          <li><span class="verb">02</span><span class="path">NPI binding <small>The credential names the provider's 10-digit NPI</small></span></li>
+          <li><span class="verb">03</span><span class="path">Expiry <small>Short TTL, a field in the signed payload</small></span></li>
+          <li><span class="verb">04</span><span class="path">Revocation <small>Per agent or per delegation; the next verification fails</small></span></li>
+          <li><span class="verb">05</span><span class="path">Nonce / call-SID match <small>Bound to one call; cannot be replayed</small></span></li>
+          <li><span class="verb">06</span><span class="path">Scope containment <small>Scope can narrow across hops, never widen</small></span></li>
+        </ol>
+        <p>Then an audit record is written. No network call to NHID-Clinical, no registry lookup, no dependency on us.</p>
+      </aside>
     </div>
   </section>
 
-  <section class="page-section">
-    <div class="container" style="max-width:56rem">
-      <h2>The gap it closes</h2>
-      <p style="color:var(--body);line-height:1.85;margin-top:.75rem">NPIs are public. A caller can state one truthfully and still have no relationship to the organization it names. Behavioral controls establish that a caller disclosed itself as automated; they cannot establish that it was ever delegated authority to act for the provider it claims.</p>
-      <p style="color:var(--body);line-height:1.85;margin-top:.75rem">NHID-Auth addresses that with signed delegation rather than a registry or a gatekeeper. A provider signs a statement binding an agent&rsquo;s public key to an NPI and a bounded scope. The receiving side verifies that signature offline — no lookup, no central authority, no service to call.</p>
+  <section class="page-section band-paper">
+    <div class="container doc">
+      <nav class="doc-rail" aria-label="Sections of this page">
+        <p class="doc-rail-label">On this page</p>
+        <ol>
+          <li><a href="#gap"><span>The gap it closes</span></a></li>
+          <li><a href="#how-it-works"><span>How it works</span></a></li>
+          <li><a href="#design-properties"><span>Design properties</span></a></li>
+          <li><a href="#v2"><span>v2: cryptographic agent identity</span></a></li>
+          <li><a href="#trust-stack"><span>Where v2 sits in the trust stack</span></a></li>
+          <li><a href="#contains"><span>What the reference implementation contains</span></a></li>
+          <li><a href="#credential-flow"><span>How the credential flow works</span></a></li>
+          <li><a href="#run-it"><span>Run it</span></a></li>
+          <li><a href="#open-questions"><span>Open design questions</span></a></li>
+        </ol>
+      </nav>
+      <div class="doc-body">
 
-      <h2 style="margin-top:2.5rem">How it works</h2>
-      <ol class="gateway-flow">
-        <li class="gateway-step"><span class="gw-num">1</span><strong>Provider signs a delegation</strong><span>The provider organization holds a key pair and signs a passport binding an agent public key to its NPI, a purpose, a scope, and an expiration.</span></li>
-        <li class="gateway-step"><span class="gw-num">2</span><strong>Agent presents the passport</strong><span>The AI agent carries the signed passport into the call alongside its behavioral disclosure.</span></li>
-        <li class="gateway-step"><span class="gw-num">3</span><strong>Receiver verifies offline</strong><span>Ed25519 signature verification against the provider&rsquo;s published public key. No network call to NHID-Clinical, no registry lookup, no dependency on us.</span></li>
-        <li class="gateway-step"><span class="gw-num">4</span><strong>Scope is enforced</strong><span>An agent delegated for eligibility checks cannot use the same passport to pursue claims appeals. Scope is a precondition, not a suggestion.</span></li>
-        <li class="gateway-step is-endpoint"><span class="gw-num">5</span><strong>Expiration and revocation</strong><span>Passports carry an expiry. A provider revokes by rotating keys or publishing a revocation, without coordinating with any third party.</span></li>
-      </ol>
-
-      <h2 style="margin-top:2.5rem">Design properties</h2>
-      <div class="content-cards" style="grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin-top:1.25rem">
-        <div class="content-card">
-          <h3>No registry, no gatekeeper</h3>
-          <p>Verification is a signature check. NHID-Clinical is not in the trust path and cannot become a chokepoint.</p>
+      <section class="act" id="gap" aria-labelledby="gap-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Problem</p>
+            <h2 id="gap-h">The gap it closes</h2>
+            <p class="act-lead">NPIs are public. Disclosure does not prove authorization.</p>
+          </div>
+          <span class="act-index">01 / 09</span>
         </div>
-        <div class="content-card">
-          <h3>Offline verifiable</h3>
-          <p>Works when the network does not. Nothing about verification requires reaching an external service in real time.</p>
+        <div class="act-body">
+
+          <p>NPIs are public. A caller can state one truthfully and still have no relationship to the organization it names. Behavioral controls establish that a caller disclosed itself as automated; they cannot establish that it was ever delegated authority to act for the provider it claims.</p>
+          <p>NHID-Auth addresses that with signed delegation rather than a registry or a gatekeeper. A provider signs a statement binding an agent&rsquo;s public key to an NPI and a bounded scope. The receiving side verifies that signature offline — no lookup, no central authority, no service to call.</p>
         </div>
-        <div class="content-card">
-          <h3>Bounded by construction</h3>
-          <p>Scope and expiration are fields in the signed payload, so an over-broad or stale passport fails verification rather than relying on policy.</p>
+      </section>
+      <section class="act" id="how-it-works" aria-labelledby="how-it-works-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Mechanism</p>
+            <h2 id="how-it-works-h">How it works</h2>
+            <p class="act-lead">Five steps, none of which pass through NHID-Clinical.</p>
+          </div>
+          <span class="act-index">02 / 09</span>
         </div>
-        <div class="content-card">
-          <h3>Open reference code</h3>
-          <p>The implementation is public in the repository under Apache-2.0; the format it implements is CC BY 4.0. Fork it, port it, or write your own against the format.</p>
+        <div class="act-body">
+
+          <ol class="steps">
+            <li><h3>Provider signs a delegation</h3><p>The provider organization holds a key pair and signs a passport binding an agent public key to its NPI, a purpose, a scope, and an expiration.</p></li>
+            <li><h3>Agent presents the passport</h3><p>The AI agent carries the signed passport into the call alongside its behavioral disclosure.</p></li>
+            <li><h3>Receiver verifies offline</h3><p>Ed25519 signature verification against the provider&rsquo;s published public key. No network call to NHID-Clinical, no registry lookup, no dependency on us.</p></li>
+            <li><h3>Scope is enforced</h3><p>An agent delegated for eligibility checks cannot use the same passport to pursue claims appeals. Scope is a precondition, not a suggestion.</p></li>
+            <li><h3>Expiration and revocation</h3><p>Passports carry an expiry. A provider revokes by rotating keys or publishing a revocation, without coordinating with any third party.</p></li>
+          </ol>
         </div>
-      </div>
+      </section>
+      <section class="act" id="design-properties" aria-labelledby="design-properties-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Properties</p>
+            <h2 id="design-properties-h">Design properties</h2>
+          </div>
+          <span class="act-index">03 / 09</span>
+        </div>
+        <div class="act-body">
 
-      <div class="status-note">
-        <span>&#9432;</span>
-        <span><b>Status:</b> NHID-Auth v2 is a published open reference implementation, not a deployed identity infrastructure. There are no production issuers yet. It documents a workable approach to delegated agent authority and invites implementers to break it.</span>
-      </div>
-    </div>
-  </section>
+          <div class="card-grid">
+            <div class="card"><div class="card-meta"><b>Property</b><span>01</span></div><h3>No registry, no gatekeeper</h3><p>Verification is a signature check. NHID-Clinical is not in the trust path and cannot become a chokepoint.</p></div>
+            <div class="card"><div class="card-meta"><b>Property</b><span>02</span></div><h3>Offline verifiable</h3><p>Works when the network does not. Nothing about verification requires reaching an external service in real time.</p></div>
+            <div class="card"><div class="card-meta"><b>Property</b><span>03</span></div><h3>Bounded by construction</h3><p>Scope and expiration are fields in the signed payload, so an over-broad or stale passport fails verification rather than relying on policy.</p></div>
+            <div class="card"><div class="card-meta"><b>Property</b><span>04</span></div><h3>Open reference code</h3><p>The implementation is public in the repository under Apache-2.0; the format it implements is CC BY 4.0. Fork it, port it, or write your own against the format.</p></div>
+          </div>
+          <div class="note" role="note" data-label="Status">
+            <p>NHID-Auth v2 is a published open reference implementation, not a deployed identity infrastructure. There are no production issuers yet. It documents a workable approach to delegated agent authority and invites implementers to break it.</p>
+          </div>
+        </div>
+      </section>
+      <section class="act" id="v2" aria-labelledby="v2-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Release</p>
+            <h2 id="v2-h">NHID-Auth v2: cryptographic agent identity</h2>
+            <p class="act-lead">v1.3 establishes behavioral disclosure. v2 addresses what v1.3 cannot.</p>
+          </div>
+          <span class="act-index">04 / 09</span>
+        </div>
+        <div class="act-body">
 
-  <section class="page-cta">
-    <div class="container">
-      <h2>Work with NHID-Auth</h2>
-      <p>The reference code, the integration notes, and the layer it sits in.</p>
-      <div class="page-cta-grid">
-        <a class="page-cta-card" href="/developers.html#reference-implementation"><b>Reference implementation <span class="arr">&rarr;</span></b><span>Where the code lives and how to run it.</span></a>
-        <a class="page-cta-card" href="/#technical-stack"><b>The five-layer stack <span class="arr">&rarr;</span></b><span>How Layer 3 relates to the rest.</span></a>
-        <a class="page-cta-card" href="/developers.html"><b>Developer guide <span class="arr">&rarr;</span></b><span>APIs, schemas, and integration.</span></a>
-      </div>
-      <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0.</p>
-    </div>
-  </section>
+          <p>v2 verifies that an AI agent is actually authorized by the provider it claims to represent. NPIs are public via NPPES — any caller can present a real one. v2 makes that insufficient.</p>
+          <div class="note" role="note" data-label="Status">
+            <p>Released June 2026 (code Apache-2.0, document CC BY 4.0). Reference implementation in <code>src/agent_identity.py</code> (26 dedicated tests). The licence permits any use; the maturity does not. This is a reference implementation for technical exploration and review &mdash; not independently security audited, with no production issuers, and not a substitute for an organisation&rsquo;s own identity and access controls. As of v1.3 final, this is also wired into the hosted conformance API — not just a standalone library — via <code>POST /v1/identity/verify-passport</code> and <code>POST /v1/identity/revoke-passport</code>, with durable revocation that survives across stateless invocations.</p>
+          </div>
+          <h3><span class="sub-index">A</span>Where v1.3 ends and v2 begins</h3>
+          <div class="register restack">
+            <table>
+              <thead><tr><th scope="col">Capability</th><th scope="col">v1.3 <span class="maturity maturity-implemented">Implemented</span></th><th scope="col">v2 <span class="maturity maturity-reference">Reference</span></th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Identity disclosure</th><td data-label="v1.3">✅ Behavioral (spoken)</td><td data-label="v2">✅ + Cryptographic (signed)</td></tr>
+                <tr><th scope="row">Provider authorization</th><td data-label="v1.3">❌ Not verifiable</td><td data-label="v2">✅ Cryptographically verifiable</td></tr>
+                <tr><th scope="row">Revocation</th><td data-label="v1.3">❌ Not supported</td><td data-label="v2">✅ Real-time access controls</td></tr>
+                <tr><th scope="row">Audit trail</th><td data-label="v1.3">✅ Structured event logs</td><td data-label="v2">✅ + Credential ID in every log</td></tr>
+                <tr><th scope="row">Revocation durability</th><td data-label="v1.3">&mdash;</td><td data-label="v2">In&#8209;memory only <span class="maturity maturity-reference">Reference</span></td></tr>
+                <tr><th scope="row">Key custody, rotation, tenant isolation</th><td data-label="v1.3">&mdash;</td><td data-label="v2">Documented, not built <span class="maturity maturity-conceptual">Conceptual</span></td></tr>
+                <tr><th scope="row">Registry (NPI &rarr; public key)</th><td data-label="v1.3">&mdash;</td><td data-label="v2">Does not exist <span class="maturity maturity-future">Future</span></td></tr>
+                <tr><th scope="row">Standing</th><td data-label="v1.3">Shadow&#8209;evaluation ready <span class="maturity maturity-implemented">Implemented</span></td><td data-label="v2">Working primitive, not deployed infrastructure <span class="maturity maturity-reference">Reference</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="disclaimer-small">A tick in the v2 column means the reference implementation does this and the suite covers it. It does not mean the capability is deployed, operated, or available as a service. The last four rows are the ones that decide whether v2 could be run in production today, and three of them are <span class="maturity maturity-conceptual">Conceptual</span> or <span class="maturity maturity-future">Future</span>. Standings follow <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>.</p>
+        </div>
+      </section>
+      <section class="act" id="trust-stack" aria-labelledby="trust-stack-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Context</p>
+            <h2 id="trust-stack-h">Where v2 sits in the trust stack</h2>
+            <p class="act-lead">One layer in a stack that starts at a real gap and ends at a healthcare-native audit trail.</p>
+          </div>
+          <span class="act-index">05 / 09</span>
+        </div>
+        <div class="act-body">
 
-<!-- ── NHID-Auth v2: cryptographic agent identity (merged from roadmap.html) ───────────────────── -->
-  <section class="page-section" id="v2">
-    <div class="container" style="max-width:860px">
-      <h2>NHID-Auth v2: cryptographic agent identity</h2>
-      <p class="lede-text" style="color:var(--body);line-height:1.85">v1.3 establishes behavioral disclosure. v2 addresses what v1.3 cannot: verifying that an AI agent is actually authorized by the provider it claims to represent. NPIs are public via NPPES — any caller can present a real one. v2 makes that insufficient.</p>
-    </div>
-  </section>
-
-  <section class="page-section">
-    <div class="container" style="max-width:52rem">
-
-      <div class="hero-notice" role="note" style="margin-bottom:2rem">
-        <strong>Status:</strong> Released June 2026 (code Apache-2.0, document CC BY 4.0). Reference implementation in <code>src/agent_identity.py</code> (26 dedicated tests). The licence permits any use; the maturity does not. This is a reference implementation for technical exploration and review &mdash; not independently security audited, with no production issuers, and not a substitute for an organisation&rsquo;s own identity and access controls. As of v1.3 final, this is also wired into the hosted conformance API — not just a standalone library — via <code>POST /v1/identity/verify-passport</code> and <code>POST /v1/identity/revoke-passport</code>, with durable revocation that survives across stateless invocations.
-      </div>
-
-      <!-- Version comparison -->
-      <h3>Where v1.3 Ends and v2 Begins</h3>
-      <table style="width:100%;border-collapse:collapse;margin-top:1rem;font-size:.93rem">
-        <thead>
-          <tr>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">Capability</th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v1.3 <span class="maturity maturity-implemented">Implemented</span></th>
-            <th style="text-align:left;padding:.65rem .9rem;border-bottom:2px solid var(--border);color:var(--ink-soft);font-weight:600;background:none">v2 <span class="maturity maturity-reference">Reference</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Identity disclosure</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Behavioral (spoken)</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ + Cryptographic (signed)</td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Provider authorization</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">❌ Not verifiable</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Cryptographically verifiable</td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Revocation</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">❌ Not supported</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Real-time access controls</td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">Audit trail</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ Structured event logs</td>
-            <td style="padding:.7rem .9rem;border-bottom:1px solid var(--border);color:var(--body)">✅ + Credential ID in every log</td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;color:var(--body)">Revocation durability</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">&mdash;</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">In&#8209;memory only <span class="maturity maturity-reference">Reference</span></td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;color:var(--body)">Key custody, rotation, tenant isolation</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">&mdash;</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">Documented, not built <span class="maturity maturity-conceptual">Conceptual</span></td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;color:var(--body)">Registry (NPI &rarr; public key)</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">&mdash;</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">Does not exist <span class="maturity maturity-future">Future</span></td>
-          </tr>
-          <tr>
-            <td style="padding:.7rem .9rem;color:var(--body)">Standing</td>
-            <td style="padding:.7rem .9rem;color:var(--body)">Shadow&#8209;evaluation ready <span class="maturity maturity-implemented">Implemented</span></td>
-            <td style="padding:.7rem .9rem;color:var(--body)">Working primitive, not deployed infrastructure <span class="maturity maturity-reference">Reference</span></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <p class="disclaimer-small" style="margin-top:1rem">A tick in the v2 column
-      means the reference implementation does this and the suite covers it. It
-      does not mean the capability is deployed, operated, or available as a
-      service. The last four rows are the ones that decide whether v2 could be
-      run in production today, and three of them are <span class="maturity maturity-conceptual">Conceptual</span>
-      or <span class="maturity maturity-future">Future</span>. Standings follow
-      <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>.</p>
-
-      <!-- Trust stack diagram -->
-      <h3 style="margin-top:2.5rem">Where v2 Sits in the Trust Stack</h3>
-      <p class="lede" style="font-size:.93rem;margin-top:.5rem">v2 is one layer in a stack that starts at a real gap (no cross-org NPI authorization exists today) and ends at a healthcare-native audit trail. Layers 2–4 are NHID-Clinical's contribution; Layer 3 (this page) is optional.</p>
-      <figure class="figure-frame trust-stack-model">
+          <p>v2 is one layer in a stack that starts at a real gap (no cross-org NPI authorization exists today) and ends at a healthcare-native audit trail. Layers 2–4 are NHID-Clinical's contribution; Layer 3 (this page) is optional.</p>
+          <figure class="figure-frame trust-stack-model">
         <svg viewBox="0 0 880 366" role="img" aria-labelledby="ts-title ts-desc" style="width:100%;height:auto;display:block">
           <title id="ts-title">The five-layer trust stack, in cross-section</title>
           <desc id="ts-desc">Five layers, drawn bottom to top. Layer 1, STIR/SHAKEN, authenticates the carrier number and emits an attestation on the call leg. Layer 2, NHID-Clinical v1.3, is this framework: it establishes the behavioural disclosure baseline and emits a PolicyDecision with a reason code. Layer 3, NHID-Auth v2, is an optional extension adding cryptographic authorization through a signed agent passport. Layer 4, FHIR AuditEvent R4, emits an audit bundle per turn. Layer 5, OpenTelemetry, carries traces, spans and latency. Beneath all five sits layer 0, the NPI gap: no cross-organization authorization exists for AI agents today, which is the problem the stack is assembled to address. Only layer 2 is NHID-Clinical itself; layer 3 is its optional extension and the rest are existing standards it emits into.</desc>
@@ -297,37 +305,39 @@
           <text x="24" y="362" class="ts-key"><tspan class="ts-key-core">&#9632;</tspan> NHID-Clinical v1.3 &#183; <tspan class="ts-key-ext">&#9632;</tspan> NHID-Auth v2, optional extension &#183; <tspan class="ts-key-ext-o">&#9632;</tspan> existing standards this stack emits into</text>
         </svg>
       </figure>
-      <p class="disclaimer-small" style="margin-top:.7rem"><span class="maturity-reference">Reference</span> Architectural model of how the layers relate. Layer 2 is specified and implemented in this repository; layer 3 is released as a separate document; layers 1, 4 and 5 are existing standards and are not provided by NHID-Clinical.</p>
-
-      <!-- What the reference implementation contains -->
-      <h3 style="margin-top:2.5rem">What the Reference Implementation Contains</h3>
-      <div style="display:grid;gap:.85rem;margin-top:1.25rem">
-
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Provider-Issued Agent Credentials</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">An agent's identity is signed by the provider organization it acts for, with the provider's 10-digit NPI bound into the credential. A valid credential requires the provider's private key — something public NPI data cannot produce.</p>
+          <p class="disclaimer-small"><span class="maturity-reference">Reference</span> Architectural model of how the layers relate. Layer 2 is specified and implemented in this repository; layer 3 is released as a separate document; layers 1, 4 and 5 are existing standards and are not provided by NHID-Clinical.</p>
         </div>
-
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Scoped, Time-Limited Authorization</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Agents carry only the operations their provider granted (eligibility, claim status, prior authorization). Credentials expire on a short TTL. Delegation can be narrowed, never expanded — scope escalation is rejected at verification.</p>
+      </section>
+      <section class="act" id="contains" aria-labelledby="contains-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Contents</p>
+            <h2 id="contains-h">What the reference implementation contains</h2>
+          </div>
+          <span class="act-index">06 / 09</span>
         </div>
+        <div class="act-body">
 
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Immediate Withdrawal</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">A provider can revoke a compromised or decommissioned agent; the next verification fails. Revocation works per-agent or per-delegation. No central authority required.</p>
+          <ul class="ledger-list">
+            <li><span class="ledger-index">ISSUE</span><div><h3>Provider-issued agent credentials</h3><p>An agent's identity is signed by the provider organization it acts for, with the provider's 10-digit NPI bound into the credential. A valid credential requires the provider's private key — something public NPI data cannot produce.</p></div></li>
+            <li><span class="ledger-index">SCOPE</span><div><h3>Scoped, time-limited authorization</h3><p>Agents carry only the operations their provider granted (eligibility, claim status, prior authorization). Credentials expire on a short TTL. Delegation can be narrowed, never expanded — scope escalation is rejected at verification.</p></div></li>
+            <li><span class="ledger-index">REVOKE</span><div><h3>Immediate withdrawal</h3><p>A provider can revoke a compromised or decommissioned agent; the next verification fails. Revocation works per-agent or per-delegation. No central authority required.</p></div></li>
+            <li><span class="ledger-index">BIND</span><div><h3>Call binding and out-of-band verification</h3><p>Credentials can be bound to a specific call session, preventing replay across calls. All checks happen via API, not in the voice channel — no latency added to the call. v1.3 behavioral controls run unchanged alongside the v2 layer.</p></div></li>
+          </ul>
         </div>
-
-        <div style="padding:1.1rem 1.4rem;background:var(--bg-alt);border-left:3px solid var(--teal-bright);border-radius:0 6px 6px 0">
-          <p style="margin:0 0 .4rem;font-weight:700;color:var(--ink);font-size:.95rem">Call Binding and Out-of-Band Verification</p>
-          <p style="margin:0;color:var(--body);font-size:.93rem;line-height:1.75">Credentials can be bound to a specific call session, preventing replay across calls. All checks happen via API, not in the voice channel — no latency added to the call. v1.3 behavioral controls run unchanged alongside the v2 layer.</p>
+      </section>
+      <section class="act" id="credential-flow" aria-labelledby="credential-flow-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Protocol</p>
+            <h2 id="credential-flow-h">How the credential flow works</h2>
+            <p class="act-lead">Four ordered steps, then six ordered checks.</p>
+          </div>
+          <span class="act-index">07 / 09</span>
         </div>
+        <div class="act-body">
 
-      </div>
-
-      <!-- Credential flow diagram -->
-      <h3 style="margin-top:2.5rem">How the Credential Flow Works</h3>
-      <figure class="figure-frame credential-chain">
+          <figure class="figure-frame credential-chain">
         <svg viewBox="0 0 880 272" role="img" aria-labelledby="cc-title cc-desc" style="width:100%;height:auto;display:block">
           <title id="cc-title">The NHID-Auth v2 credential chain, end to end</title>
           <desc id="cc-desc">Four ordered steps. One: the provider organization signs the agent&#8217;s public key with its Ed25519 issuing key, binding its NPI, the granted scopes and a short expiry into the credential. Two, optional: the credential may be delegated down a chain of at most three hops, and scope can only narrow — any attempt to widen it is rejected at verification. Three: the agent presents its passport out of band via API, with a nonce bound to the specific call SID so it cannot be replayed across calls, adding no latency to the voice channel. Four: the payer side runs six ordered checks — provider signature by Ed25519, NPI binding, expiry, revocation, nonce and call-SID match, and scope containment — and then writes an audit record.</desc>
@@ -366,47 +376,71 @@
           <text x="608" y="247" class="cc-checktext">6. Scope containment</text>
         </svg>
       </figure>
-      <p class="disclaimer-small" style="margin-top:.7rem"><span class="maturity-reference">Reference</span> Protocol model from the NHID-Auth v2 document. NHID-Auth v2 is a separate release from the v1.3 behavioural baseline, and is optional.</p>
+          <p class="disclaimer-small"><span class="maturity-reference">Reference</span> Protocol model from the NHID-Auth v2 document. NHID-Auth v2 is a separate release from the v1.3 behavioural baseline, and is optional.</p>
+        </div>
+      </section>
+      <section class="act" id="run-it" aria-labelledby="run-it-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Run</p>
+            <h2 id="run-it-h">Run it</h2>
+          </div>
+          <span class="act-index">08 / 09</span>
+        </div>
+        <div class="act-body">
 
-      <!-- Run it -->
-      <h3 style="margin-top:2.5rem">Run It</h3>
-      <pre style="background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.4rem;font-size:.83rem;line-height:1.85;overflow-x:auto;color:var(--body);margin-top:.75rem">git clone https://github.com/NHID-Clinical/NHID-Clinical.git
+          <div class="console-bar"><span><b>Shell</b> · from a clean checkout</span><code>tests/test_identity.py</code></div>
+          <pre>git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/test_identity.py -v   # v2 identity layer (26 tests)
 python examples/issue_and_verify.py          # end-to-end credential walkthrough</pre>
+        </div>
+      </section>
+      <section class="act" id="open-questions" aria-labelledby="open-questions-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Open</p>
+            <h2 id="open-questions-h">Open design questions</h2>
+          </div>
+          <span class="act-index">09 / 09</span>
+        </div>
+        <div class="act-body">
 
-      <!-- What is not done -->
-      <h3 style="margin-top:2.5rem">Open Design Questions</h3>
-      <ul style="color:var(--body);font-size:.93rem;line-height:1.9;margin-top:.75rem;padding-left:1.25rem">
-        <li>No registry or discovery mechanism for provider keys — open design question</li>
-        <li>Credential delivery during live calls is not yet standardized</li>
-        <li>Shadow pilot data will inform the formal v2 specification document</li>
-      </ul>
-      <p style="color:var(--body);font-size:.93rem;line-height:1.75;margin-top:1rem">The reference implementation is live. If you want to test it against your own threat model or contribute to the formal specification, <a href="mailto:contact@nhid-clinical.org" style="color:var(--teal-bright)">contact us</a>.</p>
-
-      <p style="margin-top:2rem;font-size:.9rem;color:var(--ink-soft)">
-        <a href="/shadow-evaluation-guide.html" style="color:var(--teal-bright)">← Pilot Guide</a>
-        &nbsp;·&nbsp;
-        <a href="/specification.html" style="color:var(--teal-bright)">v1.3 Spec</a>
-        &nbsp;·&nbsp;
-        <a href="/#technical-stack" style="color:var(--teal-bright)">Five-layer trust architecture →</a>
-      </p>
-
-    </div>
-  </section>
-
-  <section class="container closing-section">
-    <div class="closing-panel">
-      <div>
-        <p class="section-kicker">Get involved</p>
-        <h3>Read the specification and share your reaction.</h3>
-        <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
+          <ul>
+            <li>No registry or discovery mechanism for provider keys — open design question</li>
+            <li>Credential delivery during live calls is not yet standardized</li>
+            <li>Shadow pilot data will inform the formal v2 specification document</li>
+          </ul>
+          <p>The reference implementation is live. If you want to test it against your own threat model or contribute to the formal specification, <a href="mailto:contact@nhid-clinical.org">contact us</a>.</p>
+        </div>
+      </section>
       </div>
-      <a class="closing-button" href="/shadow-evaluation-guide.html">Read the evaluation guide →</a>
     </div>
   </section>
 
+  <section class="page-close band-ink" aria-labelledby="close-h">
+    <div class="container">
+      <div class="closing-panel">
+        <div>
+          <p class="section-kicker">Get involved</p>
+          <h2 id="close-h">Read the specification and share your reaction.</h2>
+          <p>Whether you think it is right, wrong, incomplete, or misses the real problem — that feedback is what shapes the next version.</p>
+        </div>
+        <a class="closing-button" href="/shadow-evaluation-guide.html">Read the evaluation guide →</a>
+      </div>
+      <div class="page-cta">
+        <h3>Work with NHID-Auth</h3>
+        <p>The reference code, the integration notes, and the layer it sits in.</p>
+        <div class="page-cta-grid">
+          <a class="page-cta-card" href="/developers.html#reference-implementation"><b>Reference implementation <span class="arr">&rarr;</span></b><span>Where the code lives and how to run it.</span></a>
+          <a class="page-cta-card" href="/#technical-stack"><b>The five-layer stack <span class="arr">&rarr;</span></b><span>How Layer 3 relates to the rest.</span></a>
+          <a class="page-cta-card" href="/developers.html"><b>Developer guide <span class="arr">&rarr;</span></b><span>APIs, schemas, and integration.</span></a>
+          <a class="page-cta-card" href="/specification.html"><b>v1.3 specification <span class="arr">&rarr;</span></b><span>The behavioural baseline this extends.</span></a>
+          <a class="page-cta-card" href="/shadow-evaluation-guide.html"><b>Pilot guide <span class="arr">&rarr;</span></b><span>Observe first; v2 comes after.</span></a>
+        </div>
+        <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0.</p>
+      </div>
 <!-- BEGIN GENERATED journey-wayfinder -->
       <nav class="wayfinder" aria-label="Where this page sits in the journey">
         <p class="wayfinder-here"><span class="wayfinder-journey">Adopt</span><span class="wayfinder-question">What comes after v1.3?</span></p>
@@ -417,6 +451,8 @@ python examples/issue_and_verify.py          # end-to-end credential walkthrough
         </ul>
       </nav>
       <!-- END GENERATED journey-wayfinder -->
+    </div>
+  </section>
 </main>
 
 <footer id="contact" class="site-footer">

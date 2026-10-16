@@ -614,3 +614,29 @@
 .page-doc .module-grid { margin-top: 1rem; }
 .page-doc .module-card { border-radius: 14px; box-shadow: var(--soft-shadow); }
 .page-doc .module-card .module-num { font-family: var(--mono); letter-spacing: .12em; color: var(--teal); }
+
+/* ── Evidence pack: trace highlight, scorecard, console panel ──────────────── */
+.page-doc pre .trace-violation { display: block; background: rgba(255,170,164,.08); border-left: 2px solid var(--inst-red); border-right: 2px solid var(--inst-red); padding: .1rem .5rem; margin: 0 -.5rem; }
+.page-doc .register .row-name { font-weight: 500; color: var(--ink-soft); margin-left: .35rem; }
+.page-doc .sc-wrap { border: 1px solid var(--line); border-radius: 14px; background: var(--paper); box-shadow: var(--soft-shadow); margin-top: 1rem; }
+.page-doc .scorecard-table { border: 0; }
+.page-doc .scorecard-table caption { padding: .9rem 1rem .5rem; text-align: left; font-size: .85rem; color: var(--body); }
+.page-doc .scorecard-table thead th { font-family: var(--mono); font-weight: 500; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--body); background: var(--mist); }
+.page-doc .console-panel { border-radius: 14px; overflow: hidden; border: 1px solid var(--inst-line); background: var(--inst-ink-2); box-shadow: var(--soft-shadow); margin-top: 1rem; }
+.page-doc .console-panel .console-bar { margin: 0; border: 0; border-bottom: 1px solid var(--inst-line); border-radius: 0; background: var(--inst-ink); justify-content: flex-start; }
+.page-doc .console-panel .console-title { color: #cfe2f7; text-transform: none; letter-spacing: 0; margin-left: .5rem; }
+.page-doc .console-panel .mock-dot { background: var(--inst-line-strong); }
+.page-doc .console-panel .console-body { color: var(--inst-text); }
+.page-doc .console-panel .console-line { border-bottom-color: var(--inst-line); }
+.page-doc .console-panel .console-line .k { color: #cfe2f7; }
+.page-doc .console-panel .console-line .v.pass { color: var(--inst-teal-bright); }
+.page-doc .console-panel .console-verdict strong { color: var(--inst-text-strong); }
+.page-doc .console-panel .console-verdict { border-bottom-color: var(--inst-line); }
+.page-doc .console-panel .console-pill { background: rgba(85,217,203,.12); color: var(--inst-teal-bright); border: 1px solid var(--inst-teal); }
+.page-doc .console-panel .console-note { color: var(--inst-text-muted); }
+
+/* ── Check strip (ordered checks in a hero card) ───────────────────────────── */
+.page-doc .check-strip { list-style: none; padding: 0; }
+.page-doc .check-strip .verb { color: var(--inst-teal-bright); }
+.page-doc .maturity { vertical-align: .1em; }
+.page-doc .register .maturity { font-size: .62rem; }
