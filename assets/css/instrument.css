@@ -155,6 +155,10 @@
 .hero-instrument .iso-plate-corner[data-corner="hint"] { display: none; }
 .hero-instrument .iso-plate-corner[data-corner="readout"] { max-width: 100%; white-space: normal; text-align: right; line-height: 1.35; }
 .hero-instrument .iso-caption { display: none; }
+/* The figure's scenario chips sit in a half-width column here, so two per row
+   keeps every scenario name and reason code whole instead of ellipsised. */
+.hero-instrument .tg-chips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hero-instrument .tg-chip code { white-space: nowrap; }
 .hero-figure-note {
   margin: .75rem 0 0;
   font-size: .8125rem;
