@@ -427,7 +427,7 @@
 }
 .page-doc .instrument-form h2 { font-size: 1.25rem; margin: 0 0 .35rem; }
 .page-doc .instrument-form .form-note { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; color: var(--body); margin: 0 0 1.1rem; }
-.page-doc .instrument-form label { display: block; font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--body); margin: 0 0 .4rem; }
+.page-doc .instrument-form > label { display: block; font-family: var(--mono); font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--body); margin: 0 0 .4rem; }
 .page-doc .instrument-form input[type="tel"], .page-doc .instrument-form input[type="text"], .page-doc .instrument-form input[type="email"] {
   border: 1px solid var(--line); border-radius: 8px; background: var(--mist); color: var(--ink); padding: .75rem .9rem; font-size: 1rem; font-family: var(--mono);
 }
