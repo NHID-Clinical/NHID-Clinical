@@ -523,3 +523,48 @@ window.NHIDDemoStatus = (function () {
   controls.hidden = false;
   render();
 })();
+
+/* ── Figure fragments ─────────────────────────────────────────────────────
+   A host element carrying data-figure-src ships with a static fallback figure
+   already in it (the obligation map on the homepage), which is what a reader
+   without JavaScript, or on a failed fetch, keeps. When the host comes near
+   the viewport the fragment is fetched and swapped in; its <script> elements
+   are re-created so they execute, because scripts inserted via innerHTML do
+   not. The fragment is the Anatomy-built Trust Gateway under assets/figures/,
+   generated outside this repository and committed as a built artifact. */
+(function () {
+  if (typeof window === 'undefined' || !('fetch' in window)) return;
+  var hosts = document.querySelectorAll('[data-figure-src]');
+  if (!hosts.length) return;
+
+  function load(host) {
+    var src = host.getAttribute('data-figure-src');
+    host.setAttribute('data-figure-state', 'loading');
+    fetch(src, { credentials: 'same-origin' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function (html) {
+        var tpl = document.createElement('template');
+        tpl.innerHTML = html;
+        var scripts = Array.prototype.slice.call(tpl.content.querySelectorAll('script'));
+        scripts.forEach(function (s) { s.parentNode.removeChild(s); });
+        while (host.firstChild) host.removeChild(host.firstChild);
+        host.appendChild(tpl.content);
+        host.setAttribute('data-figure-state', 'live');
+        scripts.forEach(function (s) {
+          var n = document.createElement('script');
+          if (s.type) n.type = s.type;
+          n.textContent = s.textContent;
+          document.body.appendChild(n);
+        });
+      })
+      .catch(function () { host.setAttribute('data-figure-state', 'fallback'); });
+  }
+
+  hosts.forEach(function (host) {
+    if (!('IntersectionObserver' in window)) { load(host); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); load(host); }
+    }, { rootMargin: '240px 0px' });
+    io.observe(host);
+  });
+})();
