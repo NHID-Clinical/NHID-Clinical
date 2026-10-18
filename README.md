@@ -68,7 +68,7 @@ Pick your path — each is runnable today:
 
 **🔍 Reviewers & security teams** — read the boundaries, then run the tests.
 1. Skim [what it is / is not](#what-nhid-clinical-is--is-not) and the [claim boundaries](docs/claim-boundaries.md)
-2. `pip install -r requirements.txt && python -m pytest tests/ -v` → **1213 passing** (0 skipped, 0 xfailed)
+2. `pip install -r requirements.txt && python -m pytest tests/ -v` → everything passes except **21 skipped** integration tests, which need the local server: start `uvicorn app:app --port 8000` in a second terminal (same Python environment) and re-run for **1213 passing**, none skipped (see [Quick Start](#quick-start))
 3. Inspect the five controls in [`src/nhid_policy_engine_v1.py`](src/nhid_policy_engine_v1.py) and the [Enforcement Profile](docs/enforcement-profile.md)
 4. Read the [Conformance Test Suite](conformance/nhid_conformance_test_suite_v1.yaml) — each case asserts an expected policy action
 
@@ -209,7 +209,7 @@ Each returns one of four results — `pass`, `exception`, `unknown`, `not_assess
 The last two exist because forcing a binary verdict onto an interaction that cannot
 support one is how a governance record becomes fiction.
 
-Deterministic · same inputs → identical output · **1213 passing**, every collected test executed
+Deterministic · same inputs → identical output · **1213 passing**, every collected test executed when the local server is running (see [Quick Start](#quick-start))
 
 [**Try the Governance Simulator →**](https://nhid-clinical.org/developers.html)
 
@@ -335,14 +335,34 @@ curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/a
 
 ## Quick Start
 
+Python 3.10 or later.
+
 ```bash
 git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
+python -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
+
+# Unit, conformance and invariant tests — no server needed
 python -m pytest tests/ -v
 ```
 
-Expected: **1213 passing** in ~3.0s, with no skips and no xfails. Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
+Expected: everything passes except **21 skipped**. The 21 skips are the failure-injection integration tests in `tests/failure_injection_harness.py`, which call a running server and skip themselves when there isn't one.
+
+To run them too, start the server in a second terminal — activating the same environment there, or `uvicorn` will not be found — then re-run the suite in the first:
+
+```bash
+cd NHID-Clinical && . .venv/bin/activate
+uvicorn app:app --port 8000
+```
+
+```bash
+python -m pytest tests/ -v
+```
+
+Expected: **1213 passing**, with no skips and no xfails. Start the server with `app:app` as shown: the integration harness exercises `/voice/process` and `/debug/replay`, which `app.py` serves.
+
+Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
 
 <details>
 <summary><b>Repository structure</b></summary>
