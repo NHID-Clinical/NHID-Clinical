@@ -28,6 +28,7 @@
         "IDG01_DISCLOSURE_CONFIRMED",
         "IDG01_DISCLOSURE_CONTRADICTED",
         "IDG01_DISCLOSURE_INSUFFICIENT",
+        "IDG01_DISCLOSURE_INTERRUPTED",
         "IDG01_DISCLOSURE_MISSING"
       ]
     },
@@ -656,5 +657,5 @@
       ]
     }
   ],
-  "source_commit": "44deaae"
+  "source_commit": "5bcf312"
 }

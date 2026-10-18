@@ -436,13 +436,34 @@ def _claims_human_persona(text: str) -> str | None:
     return None
 
 
+def _disclosure_was_heard(governance: dict[str, Any]) -> bool:
+    """False when the disclosing turn was cut off before the identity statement played.
+
+    Platforms commonly log the whole scripted line even when the counterparty
+    barged in and playback stopped part-way, so a disclosure_timestamp alone
+    does not show the words were heard. When the harness reports
+    `disclosure_interrupted`, the disclosure counts only if
+    `disclosure_heard_text` -- the part actually played -- itself states a
+    non-human identity. Interrupted with no heard text reported is treated as
+    not heard: the record cannot show otherwise. Absent the flag (every
+    pre-existing caller), the disclosure counts as before.
+    """
+    if not _safe_get(governance, "disclosure_interrupted", default=False):
+        return True
+    heard = _safe_get(governance, "disclosure_heard_text", default="") or ""
+    return _asserts_nonhuman_identity(heard)
+
+
 def evaluate_idg01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecision:
     """
     IDG-01: The AI agent MUST proactively disclose its non-human identity
     at the start of the interaction, before any operational data exchange.
 
-    Pass condition: disclosure_timestamp is set AND identity_assertion_text is non-empty.
-    Fail condition: turn_count == 0 and no disclosure has occurred.
+    Pass condition: disclosure_timestamp is set AND identity_assertion_text is non-empty
+    AND, if playback of the disclosure was interrupted, the part actually heard
+    states a non-human identity.
+    Fail condition: turn_count == 0 and no disclosure has occurred, or the
+    disclosure was cut off before it was heard (IDG01_DISCLOSURE_INTERRUPTED).
     """
     try:
         governance = _safe_get(event, "healthcare_governance", default={})
@@ -483,6 +504,32 @@ def evaluate_idg01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDeci
                 twiml_fallback=_fallback_twiml(
                     "Hello. I am an automated system. I am not a human representative. "
                     "How can I help you today?",
+                    gather=True,
+                ),
+                gather_speech=True,
+            )
+
+        if not _disclosure_was_heard(governance):
+            violations = [
+                BoundaryViolation(
+                    rule_id="IDG-01",
+                    description=(
+                        "Disclosure playback was interrupted before the non-human "
+                        "identity statement was heard. A disclosure the counterparty "
+                        "did not hear does not disclose; it must be repeated before "
+                        "any data is requested."
+                    ),
+                    severity=ViolationSeverity.CRITICAL,
+                )
+            ]
+            return PolicyDecision(
+                action=PolicyAction.DISCLOSE_IDENTITY,
+                reason_code="IDG01_DISCLOSURE_INTERRUPTED",
+                violations=violations,
+                next_state="AWAITING_DISCLOSURE",
+                twiml_fallback=_fallback_twiml(
+                    "Sorry, let me finish: I am an automated system, not a human "
+                    "representative. How can I help you today?",
                     gather=True,
                 ),
                 gather_speech=True,
@@ -777,6 +824,10 @@ def evaluate_pdx01(
     try:
         governance      = _safe_get(event, "healthcare_governance", default={})
         disclosure_ts   = _safe_get(governance, "disclosure_timestamp")
+        # A disclosure cut off before it was heard has not happened yet for
+        # sequencing purposes, so the gate stays closed until it is repeated.
+        if not _disclosure_was_heard(governance):
+            disclosure_ts = None
         phi_accessed    = _safe_get(governance, "phi_accessed", default=[])
         speech_text     = _safe_get(event, "input_payload", "speech_text", default="") or ""
         state_before    = _safe_get(event, "state_before", default="UNKNOWN")

@@ -77,7 +77,7 @@ bot-to-bot variants are implemented in `src/nhid_policy_engine_v1.py` — summar
 
 | ID | Name | Requirement | Severity on failure |
 | :-- | :-- | :-- | :-- |
-| **IDG-01** | Identity Disclosure Gate | AI agent must identify itself as automated before any data is requested or exchanged | CRITICAL |
+| **IDG-01** | Identity Disclosure Gate | AI agent must identify itself as automated before any data is requested or exchanged. The disclosure must be heard: if playback is interrupted (`disclosure_interrupted`), it counts only when `disclosure_heard_text` states a non-human identity | CRITICAL |
 | **PDX-01** | Pre-Data Exchange Gate | No PHI/operational data field (`member_id`, `npi`, `date_of_birth`, `claim_number`, `prior_auth_number`, `diagnosis_code`, `procedure_code`, `provider_tin`, `group_number`) may be exchanged until IDG-01 disclosure is confirmed | CRITICAL |
 | **DBC-01** | Deceptive Behavior Check | No synthetic voice artifacts (breathing, hesitation, laughter) implying human presence (Tier A, CRITICAL); no explicit human-status claims via text heuristic (Tier B, MAJOR, non-blocking) | CRITICAL (Tier A) / MAJOR, LOG_ONLY (Tier B) |
 | **EIT-01** | Escalation Implementation Test | A human escalation path must be communicated and, when requested, honored | CRITICAL |
@@ -101,8 +101,9 @@ machine-scored metric rather than a subjective call-quality impression.
 
 **The time form is a measurement, not a gate.** No control in this specification imposes a
 seconds-based disclosure deadline, and the policy engine performs no elapsed-time arithmetic:
-IDG-01 is satisfied by the presence of a disclosure with assertion text, and PDX-01 by disclosure
-preceding PHI. The normative target is the turn form, `IL(turns) = 0`. Pilot reporting buckets the
+IDG-01 is satisfied by the presence of a disclosure with assertion text that was heard, and PDX-01 by
+disclosure preceding PHI. A disclosure the counterparty interrupted before the identity statement
+played does not count as the disclosure for either control, so IL runs until one is heard. The normative target is the turn form, `IL(turns) = 0`. Pilot reporting buckets the
 seconds form into timeliness bands (pass / delayed / late / critical — see the
 [Shadow Pilot Kit](pilot-kit/README.md)) so that a slow-but-present disclosure can be
 distinguished from no disclosure at all. Those bands are a scoring convention for reports; they

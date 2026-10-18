@@ -62,6 +62,8 @@ def vapi_to_nhid_trace(vapi_payload: dict[str, Any]) -> dict[str, Any]:
     events: list[dict[str, Any]] = []
     disclosure_timestamp: float | None = None
     first_data_request_timestamp: float | None = None
+    # Offsets of disclosures the counterparty cut off before hearing (IDG-01).
+    interrupted_disclosure_offsets: list[float] = []
 
     for msg in messages:
         role = msg.get("role", "unknown")
@@ -74,7 +76,31 @@ def vapi_to_nhid_trace(vapi_payload: dict[str, Any]) -> dict[str, Any]:
 
         words = set(text.replace(",", " ").replace(".", " ").split())
 
-        if DISCLOSURE_KEYWORDS & words and speaker in ("agent", "unknown"):
+        # A disclosure counts only if it was heard. When the platform reports
+        # that playback was cut off (barge-in), the logged text may be the whole
+        # scripted line, so credit it only if the part actually played -- the
+        # optional `heard_text` -- still carries the disclosure. Interrupted with
+        # no heard_text: not credited, since nothing shows it was heard.
+        heard_words = set(
+            str(msg.get("heard_text") or "").lower()
+            .replace(",", " ").replace(".", " ").split()
+        )
+        if (
+            DISCLOSURE_KEYWORDS & words
+            and speaker in ("agent", "unknown")
+            and msg.get("interrupted")
+            and not DISCLOSURE_KEYWORDS & heard_words
+        ):
+            interrupted_disclosure_offsets.append(ts)
+            events.append({
+                "event_type": "DISCLOSURE_INTERRUPTED",
+                "timestamp_offset_s": ts,
+                "speaker": speaker,
+                "text_snippet": original_text[:120],
+                "nhid_rule": "IDG-01",
+            })
+
+        elif DISCLOSURE_KEYWORDS & words and speaker in ("agent", "unknown"):
             if disclosure_timestamp is None:
                 disclosure_timestamp = ts
             events.append({
@@ -106,7 +132,9 @@ def vapi_to_nhid_trace(vapi_payload: dict[str, Any]) -> dict[str, Any]:
             })
 
     # IDG-01: disclosure must precede any data request
-    if disclosure_timestamp is None:
+    if disclosure_timestamp is None and interrupted_disclosure_offsets:
+        idg01 = "FAIL – disclosure interrupted before it was heard, and not repeated"
+    elif disclosure_timestamp is None:
         idg01 = "FAIL – no disclosure detected"
     elif (
         first_data_request_timestamp is not None
@@ -129,6 +157,7 @@ def vapi_to_nhid_trace(vapi_payload: dict[str, Any]) -> dict[str, Any]:
             "disclosure_timestamp_offset_s": disclosure_timestamp,
             "first_data_request_offset_s": first_data_request_timestamp,
             "disclosure_made": disclosure_timestamp is not None,
+            "interrupted_disclosure_offsets_s": interrupted_disclosure_offsets,
         },
     }
 
