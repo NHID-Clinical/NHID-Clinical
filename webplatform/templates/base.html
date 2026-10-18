@@ -5,20 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>NHID-Clinical Platform — {% block title %}{{ active }}{% endblock %}</title>
   <link rel="stylesheet" href="/static/app.css">
-  <script defer src="/static/app.js"></script>
+  <script src="/static/app.js"></script>
 </head>
 <body>
-  <header class="top">
-    <div class="brand">NHID-Clinical <small>conformance platform</small></div>
-    <nav>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="/">NHID-Clinical <span>Conformance workspace</span></a>
+    <span class="env">Reference implementation · not a product or certification</span>
+  </header>
+
+  <div class="shell">
+    <nav class="sidenav" aria-label="Workspace">
       {% for item in nav %}
-        <a href="{{ item.href }}" class="{{ 'active' if item.href == active else '' }}">{{ item.label }}</a>
+        {% if loop.first or item.section != loop.previtem.section %}
+          <p class="navgroup">{{ item.section }}</p>
+        {% endif %}
+        <a href="{{ item.href }}"{% if item.href == active %} class="active" aria-current="page"{% endif %}>{{ item.label }}</a>
       {% endfor %}
     </nav>
-  </header>
-  <main>
-    {% block content %}{% endblock %}
-  </main>
+
+    <main id="main">
+      <p class="crumbs"><a href="/">Workspace</a> <span aria-hidden="true">/</span> {{ self.title() }}</p>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
   <footer>
     Policy engine v{{ versions.policy_engine_version }} · NHID-Clinical spec v{{ versions.nhid_spec_version }}
     · every result is produced by the real engine, not a mock.

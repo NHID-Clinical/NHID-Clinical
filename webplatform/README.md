@@ -30,8 +30,8 @@ python -m uvicorn webplatform.app:app --host 0.0.0.0 --port 8080
 
 | Page | Route | What it does | Audience |
 |---|---|---|---|
-| Dashboard | `/` | CAS trust-tier distribution, per-control detection rates, audit KPIs | Payer executives |
-| Transcript Analyzer | `/analyzer` | Runs a transcript through the live engine (decision + CAS + violations + review routing) | Ops / QA |
+| Dashboard | `/` | Audit counts and per-control detection rates | Payer executives |
+| Transcript Analyzer | `/analyzer` | Runs a transcript through the live engine (decision + evidence completeness + violations + review routing) | Ops / QA |
 | Synthetic Generator | `/generator` | Runs the real eval loop over the Fabricate corpus; ingests events | Your team |
 | Conformance Suite | `/conformance` | Runs the 18 CTS cases + the disjoint-population confusion matrix (detection **and** FP) | Regulators / team |
 | Vendor Verification | `/vendors` | Adapter conformance check + Ed25519 passport verify (with tamper demo) | Vendors |

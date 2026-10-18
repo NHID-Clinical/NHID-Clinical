@@ -1,0 +1,9 @@
+{
+  "skill": "enterprise-grc-ui",
+  "test_cases": [
+    {"input": "create a service now style risk dashboard", "should_trigger": true},
+    {"input": "customer portal loading skeleton", "should_trigger": true},
+    {"input": "enterprise grc interface design", "should_trigger": true},
+    {"input": "write a linkedin post", "should_trigger": false}
+  ]
+}
