@@ -14,6 +14,8 @@ Webhook body format:
     "turn_index": 3,
     "speaker": "agent",          # "agent" or "user"
     "text": "...",
+    "interrupted": false,        # optional: playback cut off by the other party
+    "heard_text": null,          # optional: the part actually played, if interrupted
     "session_state": {
       "turn_count": 3,
       "disclosure_timestamp": null,    # ISO 8601 or null
@@ -22,7 +24,9 @@ Webhook body format:
   }
 
 On each turn, the caller receives back an action + violations.
-Update session_state.disclosure_timestamp when the agent discloses.
+Update session_state.disclosure_timestamp when the agent discloses and the
+result is not IDG01_DISCLOSURE_INTERRUPTED: a disclosure the counterparty cut
+off before hearing does not count and must be repeated.
 Send the updated session_state on the next turn.
 
 NHID-Clinical is a voluntary open proposal. This module is licensed
@@ -97,9 +101,16 @@ def to_nhid_event(body: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]
 
     # Derive disclosure state from session_state or detect in agent speech
     identity_assertion_text = ""
+    interrupted = bool(body.get("interrupted"))
+    heard_text = body.get("heard_text")
+    disclosure_interrupted = False
     if speaker == "agent" and _detect_disclosure(text):
         if not disclosure_ts:
             disclosure_ts = now
+            # The disclosure is first being made on this turn, so whether it
+            # was heard decides IDG-01. The engine credits an interrupted turn
+            # only if heard_text itself states a non-human identity.
+            disclosure_interrupted = interrupted
         identity_assertion_text = text
 
     phi_accessed = []
@@ -127,6 +138,8 @@ def to_nhid_event(body: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]
         "healthcare_governance": {
             "disclosure_timestamp": disclosure_ts,
             "identity_assertion_text": identity_assertion_text,
+            "disclosure_interrupted": disclosure_interrupted,
+            "disclosure_heard_text": heard_text if disclosure_interrupted else None,
             "deceptive_artifact_flags": [],
             "escalation_timestamp": escalation_ts,
             "escalation_outcome": None,

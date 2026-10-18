@@ -42,7 +42,7 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-1213%20passing-brightgreen?style=flat-square">
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-1222%20passing-brightgreen?style=flat-square">
   <img alt="Middleware Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
   <img alt="Code license" src="https://img.shields.io/badge/code-Apache--2.0-lightgrey?style=flat-square">
@@ -68,7 +68,7 @@ Pick your path — each is runnable today:
 
 **🔍 Reviewers & security teams** — read the boundaries, then run the tests.
 1. Skim [what it is / is not](#what-nhid-clinical-is--is-not) and the [claim boundaries](docs/claim-boundaries.md)
-2. `pip install -r requirements.txt && python -m pytest tests/ -v` → everything passes except **21 skipped** integration tests, which need the local server: start `uvicorn app:app --port 8000` in a second terminal (same Python environment) and re-run for **1213 passing**, none skipped (see [Quick Start](#quick-start))
+2. `pip install -r requirements.txt && python -m pytest tests/ -v` → everything passes except **21 skipped** integration tests, which need the local server: start `uvicorn app:app --port 8000` in a second terminal (same Python environment) and re-run for **1222 passing**, none skipped (see [Quick Start](#quick-start))
 3. Inspect the five controls in [`src/nhid_policy_engine_v1.py`](src/nhid_policy_engine_v1.py) and the [Enforcement Profile](docs/enforcement-profile.md)
 4. Read the [Conformance Test Suite](conformance/nhid_conformance_test_suite_v1.yaml) — each case asserts an expected policy action
 
@@ -164,7 +164,7 @@ For a one-page overview aimed at hospital, payer, compliance, and procurement le
 An honest maturity snapshot. NHID-Clinical is a working reference implementation, not a production-scale product.
 
 **Available today**
-- Deterministic policy engine with 1213 tests, all passing, across all phases
+- Deterministic policy engine with 1222 tests, all passing, across all phases
 - Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
 - Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
 - Conformance Test Suite, plus an evidence pack export a vendor can hand to a reviewer
@@ -196,7 +196,7 @@ This is a voluntary framework — **not an accredited standard, certification, o
 
 | | Control | Requirement |
 | :--: | :--- | :--- |
-| 🪪 | **IDG-01** · Identity Disclosure Gate | Disclose non-human identity **before** any PHI exchange |
+| 🪪 | **IDG-01** · Identity Disclosure Gate | Disclose non-human identity **before** any PHI exchange — and it counts only if it was heard: a disclosure the caller cut off is not a disclosure |
 | 🔒 | **PDX-01** · Pre-Data Exchange Gate | No protected data until identity is disclosed |
 | 🎭 | **DBC-01** · Deceptive Behavior Check | No claim of human status or licensed-professional standing, judged on the agent's own identity assertion |
 | 🙋 | **EIT-01** · Escalation Implementation Test | A human handoff path that exists and is honored on request |
@@ -209,7 +209,7 @@ Each returns one of four results — `pass`, `exception`, `unknown`, `not_assess
 The last two exist because forcing a binary verdict onto an interaction that cannot
 support one is how a governance record becomes fiction.
 
-Deterministic · same inputs → identical output · **1213 passing**, every collected test executed when the local server is running (see [Quick Start](#quick-start))
+Deterministic · same inputs → identical output · **1222 passing**, every collected test executed when the local server is running (see [Quick Start](#quick-start))
 
 [**Try the Governance Simulator →**](https://nhid-clinical.org/developers.html)
 
@@ -360,7 +360,7 @@ uvicorn app:app --port 8000
 python -m pytest tests/ -v
 ```
 
-Expected: **1213 passing**, with no skips and no xfails. Start the server with `app:app` as shown: the integration harness exercises `/voice/process` and `/debug/replay`, which `app.py` serves.
+Expected: **1222 passing**, with no skips and no xfails. Start the server with `app:app` as shown: the integration harness exercises `/voice/process` and `/debug/replay`, which `app.py` serves.
 
 Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
 
@@ -443,7 +443,7 @@ the score is not the `text-embedding-3-small` score.
 | `src/` | Packaged Python modules used by the engine and tests (e.g. agent identity). |
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio). |
 | `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (1213 passing, all phases: foundations, adversarial, synthetic, hardening). |
+| `tests/` | The Python conformance and invariant tests (1222 passing, all phases: foundations, adversarial, synthetic, hardening). |
 | `eval/` | The specification reading aid's question set, its scorer and its tests — deliberately outside `tests/`, which is the conformance suite the published count describes. |
 | `scripts/` | CI guards — `validate_ci.py`, `check_baseline.py`, `check_number_drift.py` — and tooling. |
 | `schema/` | Event and audit-trace schemas. |

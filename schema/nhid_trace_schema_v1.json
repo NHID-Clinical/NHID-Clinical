@@ -307,6 +307,21 @@
           ],
           "description": "Verbatim text of the AI agent's identity disclosure statement. Null if disclosure has not yet occurred."
         },
+        "disclosure_interrupted": {
+          "$comment": "NHID-Clinical IDG-01. Platforms often log the full scripted disclosure even when the counterparty barged in and playback stopped part-way.",
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "True when playback of the disclosing turn was cut off by the counterparty (barge-in). When true, the disclosure satisfies IDG-01 and opens the PDX-01 gate only if disclosure_heard_text states a non-human identity. Null or absent: not reported."
+        },
+        "disclosure_heard_text": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "For an interrupted disclosure, the part actually played before the cut-off. Null when not reported, in which case an interrupted disclosure is treated as not heard."
+        },
         "deceptive_artifact_flags": {
           "$comment": "REGULATORY MAPPING: NHID-Clinical DBC-01 (Prohibition of Deceptive Behavior). Flags any detected synthetic human-mimicry artifacts. An empty array is required for DBC-01 conformance.",
           "type": "array",

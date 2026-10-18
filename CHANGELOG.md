@@ -2,6 +2,15 @@
 
 ## [Unreleased] - 2026-09
 
+- **IDG-01: a disclosure counts only if it was heard.** Platforms commonly log the full scripted
+  disclosure even when the counterparty barged in and playback stopped before "automated". The
+  engine now reads two optional `healthcare_governance` fields, `disclosure_interrupted` and
+  `disclosure_heard_text`: an interrupted disclosure is credited only when the part actually played
+  states a non-human identity, and an interrupted disclosure with no heard text is not credited.
+  New reason code `IDG01_DISCLOSURE_INTERRUPTED` (CRITICAL, `DISCLOSE_IDENTITY`); PDX-01 keeps
+  protected data gated until a disclosure has been heard. The Twilio, Vapi and call-progress
+  adapters accept `interrupted` / `heard_text` per turn and report `DISCLOSURE_INTERRUPTED`
+  events. Callers that send neither field see no change.
 - **Dual-licensed the repository.** Code is Apache-2.0 (`LICENSE`); specification and documentation
   prose stay CC BY 4.0 (`LICENSE-DOCS`); `NOTICE` states which tree each covers. The repository was
   previously CC BY 4.0 throughout, including every Python file — a licence Creative Commons advises
