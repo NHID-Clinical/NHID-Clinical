@@ -42,13 +42,15 @@ def _snapshot() -> list[dict[str, Any]]:
     return _detection_snapshot
 
 
+# Grouped by what the reader is doing; the side navigation prints a heading
+# whenever the section changes, so keep each section's entries together.
 NAV = [
-    {"href": "/", "label": "Dashboard"},
-    {"href": "/analyzer", "label": "Transcript Analyzer"},
-    {"href": "/generator", "label": "Synthetic Generator"},
-    {"href": "/conformance", "label": "Conformance Suite"},
-    {"href": "/vendors", "label": "Vendor Verification"},
-    {"href": "/audit", "label": "Audit Log"},
+    {"href": "/", "label": "Dashboard", "section": "Overview"},
+    {"href": "/analyzer", "label": "Transcript Analyzer", "section": "Evaluate"},
+    {"href": "/generator", "label": "Synthetic Generator", "section": "Evaluate"},
+    {"href": "/conformance", "label": "Conformance Suite", "section": "Evaluate"},
+    {"href": "/vendors", "label": "Vendor Verification", "section": "Verify"},
+    {"href": "/audit", "label": "Audit Log", "section": "Records"},
 ]
 
 

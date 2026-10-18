@@ -1,0 +1,20 @@
+{
+  "skill": "enterprise-grc-ui",
+  "test_cases": [
+    {
+      "name": "loading_skeleton",
+      "input": "Create a mobile loading skeleton for customer portal cards",
+      "assertions": ["Produces card-based skeleton with avatar and text lines", "Calm professional style"]
+    },
+    {
+      "name": "risk_dashboard",
+      "input": "Design a risk management workspace overview",
+      "assertions": ["Includes risk posture or heatmap elements", "Enterprise operational tone"]
+    },
+    {
+      "name": "grc_component",
+      "input": "Make a compliance task card component",
+      "assertions": ["Clear hierarchy and status", "Reusable pattern"]
+    }
+  ]
+}
