@@ -228,6 +228,57 @@
   </section>
 
 
+  <!-- ══ Act 1½ · How it works, told three ways anyone can follow ══════════ -->
+  <section class="page-section band-paper film-band" id="how-it-works" aria-labelledby="film-h">
+    <div class="container" style="max-width:62rem">
+      <div class="act-head reveal">
+        <div>
+          <p class="section-kicker">How it works, in plain terms</p>
+          <h2 id="film-h">Five rules a robot has to follow before it can talk about a patient.</h2>
+          <p class="act-lead">The same five rules, told in three settings anyone can follow. Each rule in the films is one control in the specification, and the label under each station names it. The films are an analogy for the conduct the controls check, not a picture of the architecture.</p>
+        </div>
+        <span class="act-index">44 s each</span>
+      </div>
+      <div class="film-tabs reveal" role="tablist" aria-label="Choose a setting">
+        <button type="button" role="tab" class="film-tab is-active" aria-selected="true" aria-controls="film-front-desk" id="film-tab-front-desk" tabindex="0">Clinic front desk</button>
+        <button type="button" role="tab" class="film-tab" aria-selected="false" aria-controls="film-airport" id="film-tab-airport" tabindex="-1">Airport checkpoint</button>
+        <button type="button" role="tab" class="film-tab" aria-selected="false" aria-controls="film-school" id="film-tab-school" tabindex="-1">School pickup line</button>
+      </div>
+      <div class="film-stage reveal">
+        <figure class="film" id="film-front-desk" role="tabpanel" aria-labelledby="film-tab-front-desk">
+          <video class="film-video" controls preload="none" playsinline width="960" height="540" poster="/assets/media/how-it-works/front-desk.jpg" aria-label="How NHID-Clinical works, told as clinic front desk. 44 seconds, captions on screen.">
+            <source src="/assets/media/how-it-works/front-desk.mp4" type="video/mp4"/>
+            Your browser does not play this video. <a href="/assets/media/how-it-works/front-desk.mp4">Download the film</a>.
+          </video>
+          <figcaption><strong>Clinic front desk.</strong> A robot calls the clinic to talk about a patient. It has to say it is a robot before the gate opens, the folder stays locked until it does, the scanner catches a borrowed face, a button brings a nurse, and every step is stamped in the sign-in book. Only then is the folder handed over.</figcaption>
+        </figure>
+        <figure class="film" id="film-airport" role="tabpanel" aria-labelledby="film-tab-airport" hidden>
+          <video class="film-video" controls preload="none" playsinline width="960" height="540" poster="/assets/media/how-it-works/airport.jpg" aria-label="How NHID-Clinical works, told as airport checkpoint. 44 seconds, captions on screen.">
+            <source src="/assets/media/how-it-works/airport.mp4" type="video/mp4"/>
+            Your browser does not play this video. <a href="/assets/media/how-it-works/airport.mp4">Download the film</a>.
+          </video>
+          <figcaption><strong>Airport checkpoint.</strong> The same five rules at a checkpoint: passport booth, locked suitcase on the belt, body scanner, an officer on call, and a stamp for every step. The suitcase comes through only after all five.</figcaption>
+        </figure>
+        <figure class="film" id="film-school" role="tabpanel" aria-labelledby="film-tab-school" hidden>
+          <video class="film-video" controls preload="none" playsinline width="960" height="540" poster="/assets/media/how-it-works/school.jpg" aria-label="How NHID-Clinical works, told as school pickup line. 44 seconds, captions on screen.">
+            <source src="/assets/media/how-it-works/school.mp4" type="video/mp4"/>
+            Your browser does not play this video. <a href="/assets/media/how-it-works/school.mp4">Download the film</a>.
+          </video>
+          <figcaption><strong>School pickup line.</strong> A robot drives up to collect a child. The driver says who it is, the yard gate stays locked until it does, a paper face is caught at the check, the office phone brings a teacher, and the pickup is written in the log. Only then does the child get picked up.</figcaption>
+        </figure>
+      </div>
+      <ol class="film-rules reveal" aria-label="The five rules and the control each one stands for">
+        <li><span>1 &middot; Say who you are</span><code>IDG-01 &middot; Identity Disclosure Gate</code></li>
+        <li><span>2 &middot; Nothing moves until you do</span><code>PDX-01 &middot; Pre-Data Exchange Gate</code></li>
+        <li><span>3 &middot; No pretending</span><code>DBC-01 &middot; Deceptive Behavior Check</code></li>
+        <li><span>4 &middot; Ask for a person</span><code>EIT-01 &middot; Escalation Implementation Test</code></li>
+        <li><span>5 &middot; Write it down</span><code>ATR-01 &middot; Audit Trail</code></li>
+      </ol>
+      <p class="record-note">The gate, the scanner and the stamp are the receiving organization acting on what the controls report; NHID-Clinical evaluates the call and records the evidence. <a href="/specification.html#controls">Read the control definitions</a>. Not a standard, a certification or a product.</p>
+    </div>
+  </section>
+
+
   <!-- ══ Act 2 · What this governs: the boundary, drawn ═══════════════════ -->
   <section class="page-section band-mist" id="boundary" aria-labelledby="ib-h">
     <div class="container" style="max-width:62rem" id="interaction-boundary">
