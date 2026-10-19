@@ -71,6 +71,14 @@ jobs:
       - name: Control-set completeness guard
         run: python scripts/check_control_set.py
 
+      # check_baseline.py pins DETECTION RATES; nothing checked the corpora's
+      # own structure, so a README claiming "~2,200 turns" for a 4,838-row
+      # file, three stale declared-count columns, and a join key that resolves
+      # to a different column than its name suggests all sat in committed data
+      # while CI reported green.
+      - name: Fixture self-consistency guard
+        run: python scripts/check_fixture_integrity.py
+
       # Tier 0 is deliberately offline: prevent accidental phone-home code.
       # This ran scripts/check_pilot_offline.py, which inspected only
       # docs/pilot-kit/measure_pilot.py. That file is now a shim over

@@ -2460,6 +2460,65 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.11 Third-party fixture analysis, adjudicated — 2026-10-19
+
+An outside first-pass analysis of the committed corpora was submitted (a report
+plus two inventory CSVs) and verified line by line against `77d1957`. It is the
+first external technical scrutiny the fixtures have had, and it found real
+defects. It also got one finding wrong, in an instructive way.
+
+**Held, and now guarded.** `fixtures/voice-stress/scenarios.csv` ships
+`num_assertions` wrong for all 300 rows (declared sum 806 vs 2,071 actual rows)
+<!-- drift-ok: fixture metadata counts, not test counts --> and `num_turns`
+wrong for 148/300 (1,782 vs 1,582). The child tables join on
+`scenarios.id`, not on the identically-named `scenarios.scenario_id`,
+which matches 0 of 300 — so the obvious join returns an empty result with no
+error. Vendor `cas_score` values are only weakly rank-correlated with the
+ground-truth labels (Spearman -0.59, n=550), consistent with the composite
+score's withdrawal in §19.4.
+
+**Did not hold.** The report read `pdx01_violation = 70` from the CSV against a
+declared baseline of 41 and called it a stale baseline. It is not:
+`adapters/fabricate_adapter.py` drops 29 rows that disclose identity at turn 0,
+because a pre-disclosure gate cannot be violated where no pre-disclosure
+exchange exists, and `scripts/confusion_matrix.py` prints that drop on every
+run. The analysis had the data but not the adapter. The defect it exposed was
+documentary: the fixture README stated post-filter denominators without saying
+they were post-filter, which is now fixed with an explicit raw-vs-scored table
+including the 14 ATR-01 exclusions.
+
+**Found on follow-up, missed by the report.** `fixtures/fabricate/README.md`
+claimed the corpus held "~2,200 turns" against a 4,838-row file, while
+`docs/project-state.md` already recorded 4,838 — the repository contradicting
+itself. `num_turns` is stale in 42/550 rows of the CSV-550 corpus the pinned
+baseline runs against. That corpus carries the same join trap
+(`turns.conversation_id` resolves to `conversations.id`, 0/550 against
+`conversations.conversation_ref`).
+
+**Fourth instance of the same bug class.** A check that narrows until it
+verifies less than its output claims: PDFs outside `check_number_drift`'s
+`WATCHED` list (2026-09-03); the nightly shallow checkout (#385); the `\d{3}`
+count patterns that went blind when the suite crossed 1,000 tests; and now
+`check_baseline.py` pinning detection *rates* while nothing checked corpus
+*shape*. Every number above sat in committed data that CI reported green on.
+
+**Response.** `scripts/check_fixture_integrity.py` (new) pins row counts,
+primary-key uniqueness, join resolution — asserting both that the documented
+key resolves and that the decoy does not, so swapping the two cannot pass — the
+stale-count divergences at their measured values, label/flag agreement on
+non-negative-control rows, the scoreable population (118 of 205 positives; 87
+unscoreable, 67 of them targeting the still-proposed NHID-Auth), and the prose
+figures in both fixture READMEs. It is wired into `ci.yml` and
+`nightly-verify.yml`. Its docstring carries the corruption test that proves it
+is not blind; 8 structural and 3 README corruptions were each detected.
+
+**Recorded non-actions.** No fixture CSV was edited — the vendor exports are
+preserved as shipped, per the `staging/README.md` precedent, so the staleness is
+pinned rather than patched. `check_baseline.py` and its `EXPECTED` table were
+not touched. No engine, control, adapter or crypto change. NHID-Auth was not
+promoted from "proposed, not an existing control", and the open DBC-01 scope
+decision was not made.
+
 ---
 
 ## 20. Future Work

@@ -7,17 +7,51 @@ Synthetic healthcare call transcripts for testing the NHID-Clinical governance f
 ### 1. Baseline CSV Corpus (Original Fabricate v1.0)
 **Files**: `conversations.csv`, `turns.csv`  
 **Format**: Two-table relational CSV export  
-**Size**: 550 conversations, ~2,200 turns  
+**Size**: 550 conversations, 4,838 turns  
 **Purpose**: Baseline detection rate validation via `scripts/check_baseline.py`  
 **Status**: ✅ Production (Phase 6A)
 
-**Expected Baseline** (as of July 31, 2026):
+**Expected Baseline** (as of July 31, 2026). **Denominators are
+post-adapter-filter, not raw column counts** — `adapters/fabricate_adapter.py`
+drops two classes of expectation before scoring, and the gap between the raw
+label column and the denominator below is that drop, not a stale baseline:
+
 ```
-IDG-01:  70/70 (100%)  — AI identity disclosure detection
-PDX-01:  41/41 (100%)  — Pre-disclosure PHI gate
+IDG-01:  70/70  (100%)  — AI identity disclosure detection
+PDX-01:  41/41  (100%)  — Pre-disclosure PHI gate
 DBC-01: 183/200 (91.5%) — Deceptive behavior detection (voice artifacts)
 EIT-01: 169/171 (98.8%) — Escalation honor verification
+ATR-01:   — excluded by design, see below
 ```
+
+| Control | Raw `*_violation` rows | Scored denominator | Why they differ |
+|---------|-----------------------:|-------------------:|-----------------|
+| IDG-01 | 70 | 70 | no exclusion |
+| PDX-01 | **70** | **41** | 29 rows disclose identity at turn 0, so no pre-disclosure exchange exists and a pre-disclosure gate cannot be violated (adapter note 3). Derived from the transcript's own disclosure flags, not from the violation label. |
+| DBC-01 | 200 | 200 | no exclusion |
+| EIT-01 | 171 | 171 | no exclusion |
+| ATR-01 | **14** | **0** | all 14 dropped: this replay harness synthesizes a complete audit envelope for every event, so "the vendor failed to emit complete audit records" cannot be reproduced from transcript text without degrading envelopes based on the label — tautological detection (adapter note 2). ATR-01 stays covered by the CTS envelope tests. |
+
+`scripts/confusion_matrix.py` prints both drops on every run
+(`dropped 29 expectation(s): PDX-01 ...`, `dropped 14 expectation(s): ATR-01 ...`).
+Reading `pdx01_violation` straight from the CSV and comparing it to the 41
+above is the expected way to reach a wrong conclusion about this corpus.
+
+**Known-stale and ignored columns**
+
+- `num_turns` disagrees with the actual turn-row count in **42 of 550** rows
+  (declared sum 4,796; actual 4,838). The column is **not corrected** — the
+  export is preserved as shipped. Count rows in `turns.csv` instead. The
+  divergence is pinned by `scripts/check_fixture_integrity.py`, so new drift
+  fails CI.
+- **Join key**: `turns.conversation_id` resolves to `conversations.`**`id`**
+  (550/550). `conversations.conversation_ref` matches **nothing** (0/550);
+  joining on it returns zero rows with no error.
+- `conversations.csv` carries vendor-supplied `cas_score` / `cas_band` fields.
+  **NHID-Clinical ignores them**: the composite score is withdrawn, and these
+  are the corpus author's values, not a measurement by this framework. They are
+  weakly rank-correlated with the ground-truth labels (Spearman −0.59, n=550),
+  which is one reason the score was withdrawn rather than published.
 
 ---
 

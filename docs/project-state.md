@@ -227,6 +227,7 @@ python -m pytest tests/ --collect-only -q       # 1222 collected
 python scripts/validate_ci.py                   # CI PASS
 python scripts/check_baseline.py                # Fabricate baseline
 python scripts/check_number_drift.py            # drift + corpus + PDFs
+python scripts/check_fixture_integrity.py       # fixture shape + join keys
 python scripts/eval_corpus.py                   # Governance Evaluation Corpus
 python scripts/redteam_corpus.py                # adversarial corpus
 bash scripts/build_pages_site.sh                # _site/
@@ -256,6 +257,8 @@ that introduced no net change.
 | EIT-01 | 169/171, 5 FP | `scripts/check_baseline.py` |
 | Fabricate corpus | **550** conversations, 4838 turns | row count of `fixtures/fabricate/conversations.csv` / `turns.csv` |
 | Fabricate compliant | **127** | conversations with `0` on all five `*_violation` columns |
+| Voice-stress corpus | **300** scenarios, **1582** turns, **2071** assertions | row count of `fixtures/voice-stress/*.csv` |
+| Voice-stress scoreable | **118** of 205 positives | positives declaring an IDG/PDX/DBC/EIT expectation; 87 cannot be scored (67 target the still-proposed NHID-Auth) |
 | Governance corpus | **25** scenarios, **55** turns | `scripts/eval_corpus.py` |
 | Governance detection | **23/32 = 71.9%** | `scripts/eval_corpus.py` |
 | Governance false positives | 0 of 5 compliant scenarios | `scripts/eval_corpus.py` |

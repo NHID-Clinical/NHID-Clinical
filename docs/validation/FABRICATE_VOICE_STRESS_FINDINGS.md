@@ -122,3 +122,60 @@ baseline was not edited; no expected outcome was weakened; the DBC-01 scope
 decision is left to the maintainer; the voice-stress numbers are not pinned as a
 CI baseline, because doing so before the DBC-01 decision would freeze a known
 gap as if it were intended.
+
+---
+
+## Fixture integrity (added 2026-10-19)
+
+A third-party first-pass analysis of the corpora was submitted and verified
+against the repository at `77d1957`. It surfaced real structural defects that
+no guard was checking, because `scripts/check_baseline.py` pins per-control
+**detection rates** and nothing checked the fixtures' own **shape**. The
+findings below are now pinned by `scripts/check_fixture_integrity.py` and
+documented in [`../../fixtures/voice-stress/README.md`](../../fixtures/voice-stress/README.md).
+
+**Join key.** `turns.scenario_id` and `assertions.scenario_id` resolve to
+`scenarios.id` (300/300). They match `scenarios.scenario_id` — the
+human-readable label — on **0 of 300**. Joining the two identically-named
+columns is valid SQL, returns nothing, and raises no error. The guard asserts
+both halves: the documented key resolves completely, the decoy resolves not at
+all.
+
+**Stale declared counts.** `scenarios.csv` ships two count columns that
+disagree with the data: `num_turns` wrong in 148/300 rows (declared sum 1,782
+vs 1,582 actual) and `num_assertions` wrong in **300/300** (declared sum 806 vs
+2,071 actual). The export is preserved as shipped rather than patched, so the
+divergence is pinned at its measured value — documented staleness passes, new
+drift fails. The CSV-550 corpus has the same defect in `num_turns` (42/550
+rows, declared sum 4,796 vs 4,838 actual).
+
+**Scoreable population.** Of 300 scenarios: 95 negative controls and 205
+positives. Only **118** of the positives carry an IDG/PDX/DBC/EIT expectation
+and can therefore be scored by `confusion_matrix.compute`. The other **87**
+cannot: 67 target `NHID-Auth (proposed, not an existing control)`, 10 target
+ATR-01 plus NHID-Auth, 5 target ATR-01 alone (untestable in replay), and 5
+(`repeats_introduction_indefinitely_loop-*`) declare
+`expected_result = FLAG_FOR_REVIEW` with no control named — an open-gap marker,
+not a labelling error. This population is pinned so that silently shrinking
+the scoreable set, which would raise every rate, fails CI.
+
+**What was *not* a defect.** The analysis reported `pdx01_violation = 70` in
+`fixtures/fabricate/conversations.csv` against a declared baseline of 41 and
+called it a stale baseline. It is not: `adapters/fabricate_adapter.py` drops 29
+rows that disclose identity at turn 0, because a pre-disclosure gate cannot be
+violated where no pre-disclosure exchange exists. 70 − 29 = 41, and
+`confusion_matrix.py` prints the drop on every run. The defect it exposed was
+documentary — the fixture README stated post-filter denominators without saying
+so — and that is now fixed with a raw-vs-scored table.
+
+Likewise, six `repeated_disclosure_no_double_count-*` scenarios carry
+`expected_control = IDG-01` with `expected_idg01_violation = 0`. That is
+correct, not inconsistent: `expected_control` names the control under test, and
+these are negative controls whose expected outcome is `ALLOW`. The guard
+enforces label/flag agreement only on non-negative-control rows, where it holds
+exactly (0 mismatches).
+
+**Recorded non-actions:** no fixture CSV was edited; the pinned CSV-550
+baseline and its `EXPECTED` table were not touched; the measured detection
+table above was not revised; the DBC-01 scope decision remains open; NHID-Auth
+remains a proposed control.
