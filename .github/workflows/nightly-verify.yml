@@ -73,6 +73,11 @@ jobs:
       - name: Confusion-matrix baseline guard
         run: python scripts/check_baseline.py
 
+      # The structural companion to the baseline guard above: that one pins
+      # per-control detection rates, this one pins the corpora's own shape.
+      - name: Fixture self-consistency guard
+        run: python scripts/check_fixture_integrity.py
+
       - name: Published-number drift guard
         run: python scripts/check_number_drift.py
 
