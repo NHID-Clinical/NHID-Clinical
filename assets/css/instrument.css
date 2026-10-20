@@ -448,3 +448,34 @@
   .hero-instrument[data-figure-state="live"] > .iso { animation: none; }
   .sm-row rect.sm-slab { transition: none; }
 }
+
+/* ── How it works: the three explainer films (light) ──────────────────────
+   One film is shown at a time behind a tab row. Without JavaScript the tab
+   row is hidden and all three films stack, so nothing depends on the script. */
+.film-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
+.film-tab {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+  padding: .55rem .95rem; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--paper); color: var(--body); cursor: pointer; line-height: 1;
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+}
+.film-tab:hover { border-color: var(--teal); color: var(--teal); }
+.film-tab.is-active { border-color: var(--teal); color: var(--teal); background: rgba(20, 184, 166, .09); }
+.film-tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+html:not(.js) .film-tabs { display: none; }
+html:not(.js) .film[hidden] { display: block; }
+.film-stage { display: grid; gap: 1.25rem; }
+.film {
+  margin: 0; min-width: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  background: var(--mist); box-shadow: 0 28px 56px -40px rgba(8, 42, 91, .4);
+}
+.film-video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #eef0f3; }
+.film figcaption { padding: .9rem 1.15rem; font-size: .875rem; line-height: 1.65; color: var(--body); border-top: 1px solid var(--line); background: var(--paper); }
+.film figcaption strong { color: var(--ink); }
+.film-rules {
+  list-style: none; padding: 0; margin: 1.5rem 0 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr)); gap: .6rem;
+}
+.film-rules li { display: flex; flex-direction: column; gap: .3rem; min-width: 0; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); font-size: .9rem; line-height: 1.4; }
+.film-rules li > span { font-weight: 700; color: var(--ink); }
+.film-rules code { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: var(--teal); white-space: normal; }

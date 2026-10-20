@@ -600,3 +600,38 @@ window.NHIDDemoStatus = (function () {
     mark();
   });
 })();
+
+/* ── How-it-works films ───────────────────────────────────────────────────
+   One of the three explainer films is visible at a time; the tab row picks it.
+   Switching away pauses the film that was playing. Without JavaScript the tabs
+   are hidden by the stylesheet and all three films are shown stacked. */
+(function () {
+  var bands = document.querySelectorAll('.film-band');
+  if (!bands.length) return;
+  bands.forEach(function (band) {
+    var tabs = Array.prototype.slice.call(band.querySelectorAll('.film-tab'));
+    var films = Array.prototype.slice.call(band.querySelectorAll('.film'));
+    if (!tabs.length || !films.length) return;
+    function show(id) {
+      films.forEach(function (f) {
+        var on = f.id === id;
+        f.hidden = !on;
+        if (!on) { var v = f.querySelector('video'); if (v && !v.paused) { v.pause(); } }
+      });
+      tabs.forEach(function (t) {
+        var on = t.getAttribute('aria-controls') === id;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+    }
+    tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.getAttribute('aria-controls')); }); });
+    band.addEventListener('keydown', function (e) {
+      if (!e.target.classList || !e.target.classList.contains('film-tab')) return;
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var i = tabs.indexOf(e.target);
+      var n = (i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
+      tabs[n].focus(); show(tabs[n].getAttribute('aria-controls')); e.preventDefault();
+    });
+  });
+})();
