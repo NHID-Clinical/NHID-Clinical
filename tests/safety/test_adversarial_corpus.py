@@ -404,13 +404,18 @@ class TestAdversarialMetrics:
         )
         assert fnr == 0.4
 
-    def test_false_positive_rate_calculation(self):
-        """Should calculate false positive rate."""
-        fpr = MetricsCalculator.calculate_false_positive_rate(
+    def test_false_discovery_rate_calculation(self):
+        """Should calculate the false DISCOVERY rate: spurious / everything flagged.
+
+        Named for what it computes. The denominator is the flagged set, not the
+        compliant population, so this is 1 - precision and not the false
+        positive rate that safety_metrics.py and confusion_matrix.py report.
+        """
+        fdr = MetricsCalculator.calculate_false_discovery_rate(
             ["EIT-01"],  # Extra detected
             5  # Total detected
         )
-        assert fpr == 0.2
+        assert fdr == 0.2
 
     def test_test_confidence_calculation(self):
         """Should calculate test confidence score."""

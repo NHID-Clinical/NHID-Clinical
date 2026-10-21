@@ -104,8 +104,8 @@
       {
         "name": "Conformance suite",
         "measures": "Implementation correctness against the specification",
-        "size": "1752 tests",
-        "result": "1752/1752 passing, 0 skipped, 0 xfailed",
+        "size": "1796 tests",
+        "result": "1796/1796 passing, 0 skipped, 0 xfailed",
         "rate": 100.0,
         "source": "tests/",
         "command": "python -m pytest tests/ -q"
@@ -116,33 +116,78 @@
   "latency": {
     "source": "fixtures/fabricate/conversations.csv",
     "field": "impersonation_latency_ms",
+    "percentile_convention": "nearest-rank, rank = ceil(p/100 \u00d7 N), no interpolation",
+    "conversations_total": 550,
     "conversations_with_a_value": 527,
+    "conversations_censored": 23,
+    "censored_also_flagged_idg01": 21,
+    "identifiable_to_percentile": 95.8,
     "overall": {
       "min": 205,
-      "p50": 988,
-      "p90": 5592,
-      "p95": 13680,
-      "p99": 21541,
-      "max": 46122
+      "p50": {
+        "ms": 1029,
+        "exact": true
+      },
+      "p90": {
+        "ms": 11987,
+        "exact": true
+      },
+      "p95": {
+        "ms": 25774,
+        "exact": true
+      },
+      "p99": {
+        "ms": 46122,
+        "exact": false
+      },
+      "max": {
+        "ms": 46122,
+        "exact": false
+      }
     },
     "by_label": {
       "REVIEW": {
-        "n": 271,
-        "p50": 935,
-        "p95": 11987
+        "n": 282,
+        "observed": 271,
+        "censored": 11,
+        "p50": {
+          "ms": 948,
+          "exact": true
+        },
+        "p95": {
+          "ms": 27609,
+          "exact": true
+        }
       },
       "FAIL": {
-        "n": 129,
-        "p50": 1482,
-        "p95": 15481
+        "n": 141,
+        "observed": 129,
+        "censored": 12,
+        "p50": {
+          "ms": 1703,
+          "exact": true
+        },
+        "p95": {
+          "ms": 21541,
+          "exact": false
+        }
       },
       "PASS": {
         "n": 127,
-        "p50": 835,
-        "p95": 1639
+        "observed": 127,
+        "censored": 0,
+        "p50": {
+          "ms": 835,
+          "exact": true
+        },
+        "p95": {
+          "ms": 1639,
+          "exact": true
+        }
       }
     },
-    "reading_note": "expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval."
+    "reading_note": "expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval.",
+    "censoring_note": "23 of 550 conversations record no disclosure interval; 21 of those 23 also carry an IDG-01 violation, and none is labelled PASS. They are treated as right-censored above every observed value, so percentiles are taken over all 550 conversations and are identifiable only up to p95.8. Anything beyond that is reported as a lower bound, not as a value."
   },
-  "source_commit": "646a0af"
+  "source_commit": "e9edd77"
 }

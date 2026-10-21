@@ -160,6 +160,7 @@ read a nested block, and flat fields are silently ignored:
 | :--- | :--- | :--- |
 | `disclosure_timestamp` | `event.healthcare_governance.disclosure_timestamp` | **Sticky**: once set, carried forward to every later turn |
 | `identity_assertion_text` | `event.healthcare_governance.identity_assertion_text` | Agent turns default to their own `speech_text`; caller turns carry the sticky disclosure sentence |
+| `disclosure_interrupted` + `disclosure_heard_text` | `event.healthcare_governance.disclosure_interrupted` / `.disclosure_heard_text` | **Not sticky** — interruption belongs to the turn that played the line. An interrupted disclosure counts only if the heard part itself states a non-human identity; otherwise Impersonation Latency keeps running |
 | `deceptive_artifact_flags` | `event.healthcare_governance.deceptive_artifact_flags` | Copied into the nested block (top-level flags are ignored by the engine) |
 | `phi_accessed` | `event.healthcare_governance.phi_accessed` | Copied per turn |
 | `escalation_requested` + `escalation_honored` | `session.escalation_path_available` | `False` only when a request was explicitly not honored |

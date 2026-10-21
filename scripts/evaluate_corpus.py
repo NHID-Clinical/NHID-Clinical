@@ -22,6 +22,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.nhid_policy_engine_v1 import evaluate_all, PolicyAction, PolicyDecision
 
+ROOT = Path(__file__).resolve().parents[1]
+
 
 class CorpusEvaluator:
     """Comprehensive corpus evaluation against policy engine."""
@@ -297,7 +299,10 @@ if __name__ == "__main__":
         for key, value in stats.items():
             print(f"  {key}: {value}")
 
-    # Save results
-    output_path = "/home/user/NHID-Clinical/corpus_evaluation_results.json"
+    # Save results. The path used to be the absolute path of one developer's
+    # checkout, so on any other machine this script wrote outside the
+    # repository or failed outright — a committed script that only ran in the
+    # directory it was written in.
+    output_path = str(ROOT / "corpus_evaluation_results.json")
     evaluator.save_results(output_path)
     print(f"\nDetailed results saved to {output_path}")

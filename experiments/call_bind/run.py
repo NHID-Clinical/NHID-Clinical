@@ -20,7 +20,7 @@ for a crypto operation" but "is it invisible to the person on the call".
 from __future__ import annotations
 
 import argparse
-import statistics
+import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -248,6 +248,22 @@ def run_matrix() -> list[tuple[Case, Outcome]]:
     return [(case, case.build()["outcome"]) for case in CASES]
 
 
+def _percentile(values: list[float], p: float) -> float:
+    """Nearest-rank percentile: rank = ceil(p/100 × N), value at that 1-based rank.
+
+    Same convention as scripts/build_evidence_visuals.py, deliberately. This
+    file previously reported p50 through statistics.median (which averages the
+    two middle samples) and p95 through int(0.95 × N) (a floor, so p95 of 20
+    samples was the maximum). Neither matched the estimator behind the
+    percentiles published on the site, which made a latency figure here and a
+    latency figure there incomparable despite identical labels.
+    """
+    if not values:
+        return 0.0
+    rank = max(1, min(len(values), math.ceil(p / 100.0 * len(values))))
+    return values[rank - 1]
+
+
 def measure_latency(repeats: int = REPEATS) -> dict[str, float]:
     """Latency of the full happy path: verify, bind, decide.
 
@@ -264,8 +280,8 @@ def measure_latency(repeats: int = REPEATS) -> dict[str, float]:
     samples.sort()
     return {
         "n": float(len(samples)),
-        "p50": statistics.median(samples),
-        "p95": samples[min(len(samples) - 1, int(0.95 * len(samples)))],
+        "p50": _percentile(samples, 50),
+        "p95": _percentile(samples, 95),
         "max": samples[-1],
     }
 
