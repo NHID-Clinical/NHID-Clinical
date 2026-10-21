@@ -77,8 +77,14 @@
   provider's signature and the agent's co-signature (NHID-Auth v2 reference
   object).
 - **Per-interaction binding** — binding a delegation to a specific call
-  (call-SID nonce), so a valid credential replayed from a different
-  interaction fails verification.
+  (its `call_sid`), so a valid credential replayed from a different
+  interaction fails verification. Requires a `call_sid` in the delegation
+  *and* one supplied by the verifier; the `nonce` field is derived from
+  the delegation's own signed fields and is not what provides this.
+- **Proof of possession** — answering a verifier-issued challenge with the
+  delegated agent key (`PresentationProof`), which is what distinguishes
+  the party holding the key from a party holding captured credential bytes.
+  The passport's own agent co-signature covers static data and cannot.
 - **Call Authorization Score (CAS)** — **withdrawn.** A per-interaction
   composite score bucketed into "Verified Trust" / "Conditional Trust" tiers.
   Removed in the v1.3 scope corrections: it blended unlike denominators, nothing

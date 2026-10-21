@@ -87,7 +87,7 @@
 | **Decision/Evidence** | Stored in `PolicyDecision.audit_trail` (an `AuditTrail` object holding `events: list[AuditEvent]`); persisted via hash-chained append-only log |
 | **Limitation** | Persistence is outside engine (external responsibility); engine cannot enforce persistence failure detection |
 | **Test Coverage** | `tests/test_atr01_audit_trail.py` (12 tests) + `tests/test_atr01_persistence.py` (5 tests) |
-| **Corpus Status** | 100% operational (5 events/turn logged for all 150 sessions; persistence tested separately) |
+| **Corpus Status** | **Not corpus-measured.** The transcript-replay harness synthesizes a complete audit envelope for every event, so an "audit records missing" label cannot be reproduced from transcript text without degrading envelopes based on the label — tautological detection. ATR-01's coverage is the CTS envelope tests plus the two unit files above. (A former "100% operational across 150 sessions" figure came from the Tonic run retracted 2026-10-21.) |
 
 ---
 
@@ -148,24 +148,44 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 
 ## Test Coverage Summary
 
-| Control | Dedicated test file(s) | Corpus expectation | Corpus result |
-|---------|------------------------|--------------------|---------------|
-| IDG-01 | *(covered across adapter + endpoint suites)* | 64 violations | 64 detected — 0% FP rate, 100% accuracy |
-| PDX-01 | *(covered across adapter + endpoint suites)* | 64 violations | 64 detected — 0% FP rate, 100% accuracy |
-| DBC-01 | `test_dbc01_heuristics.py` (11) | 23 violations | 23 detected — 0% FP rate, 100% accuracy |
-| EIT-01 | `test_eit01_multiturn.py` (8) | 2 violations | 2 detected — 100% detection, 100% accuracy |
-| ATR-01 | `test_atr01_audit_trail.py` (12), `test_atr01_persistence.py` (5) | 150 sessions | Audit trail operational across all sessions |
+> **Retracted 2026-10-21 — the Tonic per-control figures.** This table
+> previously reported, per control, "0% FP rate, 100% accuracy" read from
+> `corpus_evaluation_output/corpus_metrics.json` (Tonic, 150 sessions, 1,227
+> turns). Those figures are withdrawn and the output files are deleted, for
+> three reasons:
+>
+> 1. **Nothing can reproduce them.** `scripts/evaluate_tonic_corpus.py`
+>    hardcoded its input to a path inside a single ephemeral session's upload
+>    directory. That file does not exist and was never tracked in git, so it
+>    was never available to anyone — including the maintainer.
+> 2. **The outputs shipped anyway.** `corpus_metrics.json` was committed, so an
+>    unreproducible number was published and then quoted here.
+> 3. **They contradict the reproducible measurements.** A DBC-01 of "100%
+>    accuracy, 0% FP" cannot coexist with DBC-01 at 183/200 with 5 false
+>    positives on Fabricate (CI-gated) and **0/28** on voice-stress.
+>
+> This is the same failure as §7.1a of the archive (retracted) and
+> `docs/pilot-kit/pilot_evidence.json` (deleted rather than refreshed): a figure
+> presented as evidence that no artifact reproduces. The table below reports
+> only figures a command regenerates on demand.
 
-Suite totals: **1222 passing, 0 skipped, 0 xfailed** across 57 test files. The per-control
-figures in *this* table are read from `corpus_evaluation_output/corpus_metrics.json`
-(Tonic, 150 sessions, 1,227 turns).
+| Control | Dedicated test file(s) | Reproducible measurement | Produced by |
+|---------|------------------------|--------------------------|-------------|
+| IDG-01 | `test_engine_disclosure_hardening.py` (38), plus adapter + endpoint suites | **70/70** detected, 0 FP / 127 clean (Fabricate); **65/65**, 0 FP / 95 (voice-stress) | `check_baseline.py`; `confusion_matrix.py --voice-stress` |
+| PDX-01 | `test_adversarial_hardening.py`, plus adapter + endpoint suites | **41/41** detected, 0 FP / 127 (Fabricate, post-filter denominator); **8/8**, 0 FP / 95 (voice-stress) | same |
+| DBC-01 | `test_dbc01_heuristics.py` (12) | **183/200 = 91.5%**, 5 FP / 127 (Fabricate); **6/6**, 0 FP / 95 (voice-stress, 22 expectations excluded as outcome-truthfulness not identity — adapter note 4) — see [`validation/DBC-01-SCOPE-AND-LIMITATIONS.md`](validation/DBC-01-SCOPE-AND-LIMITATIONS.md) | same |
+| EIT-01 | `test_eit01_multiturn.py` (8) | **169/171 = 98.8%**, 5 FP / 127 (Fabricate); **12/25 = 48%**, 6 FP / 95 (voice-stress) | same |
+| ATR-01 | `test_atr01_audit_trail.py` (12), `test_atr01_persistence.py` (5) | **not measured by transcript replay** — the harness synthesizes the audit envelope, so detecting its absence would be tautological. Covered by the CTS envelope tests only. | `adapters/fabricate_adapter.py` notes 2–3 |
+| DLG-01 | `test_dlg01_delegated_authority.py` (48 functions / 51 collected), `test_identity.py` (43 / 44), `test_trust_anchor.py` (18 / 31), `test_call_bind_experiment.py` (10 / 34) | **not corpus-measured** — opt-in cryptographic authorization, exercised by unit tests including expiry, bad signatures, unknown NPI, revocation, scope narrowing, empty-scope narrowing, per-hop call binding and proof of possession; plus a 14-case receiver-side matrix in `experiments/call_bind/`. Counts are given as *functions / collected* because parametrization makes them differ and a bare number invites the wrong reading | `pytest tests/test_dlg01_delegated_authority.py` |
 
-**Three corpora are measured in this project and their figures are not interchangeable:**
+Suite totals: **1356 passing, 0 skipped, 0 xfailed** across 59 test files.
+
+**Two corpora produce the figures above, and they are not interchangeable:**
 
 | Corpus | Size | Produced by | Reported in |
 | :--- | :--- | :--- | :--- |
-| Fabricate | 550 conversations (127 compliant) | `scripts/check_baseline.py` — CI-gated | `evidence-pack.html` |
-| Tonic | 150 sessions, 1,227 turns | `scripts/evaluate_tonic_corpus.py` | `docs/CORPUS_EVALUATION_SUMMARY.md` |
+| Fabricate (CSV-550) | 550 conversations (127 compliant) | `scripts/check_baseline.py` — CI-gated | `evidence-pack.html` |
+| Voice-stress | 300 scenarios (95 negative controls) | `scripts/confusion_matrix.py --voice-stress` | [`validation/FABRICATE_VOICE_STRESS_FINDINGS.md`](validation/FABRICATE_VOICE_STRESS_FINDINGS.md) |
 | Governance Evaluation | 25 scenarios, 55 turns | `scripts/eval_corpus.py` | `docs/EVALUATION_CORPUS_REPORT_v1.md` |
 
 A fourth, `tests/adversarial_corpus_v1.json` (40 scenarios), measures resistance to
@@ -191,4 +211,4 @@ have dedicated regression files (`test_engine_disclosure_hardening.py`,
 
 ---
 
-**Status**: Tier 0 Ready (1222 passing, 0 skipped, 0 xfailed; audit trail operational)
+**Status**: Tier 0 Ready (1356 passing, 0 skipped, 0 xfailed; audit trail operational)

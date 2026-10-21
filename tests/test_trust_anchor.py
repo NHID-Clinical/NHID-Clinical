@@ -9,6 +9,7 @@ policy engine and never fall through to a permissive default.
 import pytest
 
 from src.agent_identity import AgentIdentityManager
+from src.agent_identity import AgentIdentityManager, _validate_npi, npi_check_digit_valid
 from src.trust_anchor import StaticTrustAnchorResolver, TrustAnchorResolver
 
 NPI_A = "1234567890"
@@ -113,3 +114,91 @@ def test_static_resolver_satisfies_the_protocol(key_b64):
 def test_resolution_is_deterministic(key_b64):
     resolver = StaticTrustAnchorResolver({NPI_A: key_b64})
     assert resolver.resolve(NPI_A) is resolver.resolve(NPI_A)
+
+
+# ── NPI check digit (opt-in) ──────────────────────────────────────────────────
+
+@pytest.mark.parametrize("npi,expected", [
+    ("1234567893", True),    # 1234567890 with the correct check digit
+    ("1679576722", True),
+    ("1234567890", False),   # UDAP's worked example; not Luhn-valid
+    ("9999999999", False),
+    ("123456789", False),    # too short
+    ("12345678934", False),  # too long
+    ("abcdefghij", False),
+    ("", False),
+])
+def test_npi_check_digit_valid(npi, expected):
+    assert npi_check_digit_valid(npi) is expected
+
+
+def test_check_digit_validation_is_off_by_default():
+    """The project's own synthetic NPI (1234567890, 108 occurrences) is not
+    Luhn-valid, and it is UDAP's published example. Turning the check on
+    globally would reject it, so it is a deployment opt-in."""
+    _validate_npi("1234567890")                      # no raise
+    with pytest.raises(ValueError):
+        _validate_npi("1234567890", check_digit=True)
+
+
+def test_an_empty_npi_passes_either_way():
+    """A sub-delegation names no provider; the check must not invent one."""
+    _validate_npi("")
+    _validate_npi("", check_digit=True)
+
+
+# ── Key rotation via kid ──────────────────────────────────────────────────────
+
+def test_two_keys_for_one_provider_resolve_by_kid():
+    """The rotation window: both keys registered, each delegation naming its own."""
+    m = AgentIdentityManager()
+    _, old_pub = m.generate_agent_keys()
+    _, new_pub = m.generate_agent_keys()
+    r = StaticTrustAnchorResolver()
+    r.add(NPI_A, m.public_key_to_b64(old_pub), kid="2026-q3")
+    r.add(NPI_A, m.public_key_to_b64(new_pub), kid="2026-q4")
+
+    assert r.resolve(NPI_A, "2026-q3") is not None
+    assert r.resolve(NPI_A, "2026-q4") is not None
+    assert r.resolve(NPI_A, "2026-q3") is not r.resolve(NPI_A, "2026-q4")
+    assert r.known_npis() == frozenset({NPI_A})
+
+
+def test_a_named_kid_falls_back_to_an_unlabelled_key():
+    """A deployer holding one key for a provider has named the key for that
+    provider; a signer that starts labelling must not break them."""
+    m = AgentIdentityManager()
+    _, pub = m.generate_agent_keys()
+    r = StaticTrustAnchorResolver({NPI_A: m.public_key_to_b64(pub)})
+    assert r.resolve(NPI_A, "some-new-kid") is not None
+    assert r.resolve(NPI_A) is not None
+
+
+def test_strict_kid_enforcement_is_available():
+    """Register no unlabelled key and an unknown kid resolves to nothing."""
+    m = AgentIdentityManager()
+    _, pub = m.generate_agent_keys()
+    r = StaticTrustAnchorResolver()
+    r.add(NPI_A, m.public_key_to_b64(pub), kid="2026-q4")
+    assert r.resolve(NPI_A, "2026-q4") is not None
+    assert r.resolve(NPI_A, "retired-key") is None
+    assert r.resolve(NPI_A) is None
+
+
+def test_a_rotated_key_is_distinguishable_from_a_forgery():
+    """The gap kid closes.
+
+    Without a key identifier, a delegation signed by a provider's retired key
+    and a delegation signed by an attacker both fail as ERR_INVALID_SIG, and
+    the verifier cannot tell which it is looking at. With one, the retired key
+    is simply not a registered anchor — an unresolvable kid, not a bad
+    signature.
+    """
+    m = AgentIdentityManager()
+    retired_priv, retired_pub = m.generate_agent_keys()
+    _, current_pub = m.generate_agent_keys()
+    r = StaticTrustAnchorResolver()
+    r.add(NPI_A, m.public_key_to_b64(current_pub), kid="current")
+
+    assert r.resolve(NPI_A, "retired") is None
+    assert r.resolve(NPI_A, "current") is not None

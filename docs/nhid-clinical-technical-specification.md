@@ -263,8 +263,23 @@ provider-signed delegation, multi-hop sub-vendor chains, future registry-based d
 ## 9. Call binding
 
 Call binding is the mechanism that prevents a captured, still-valid credential from being
-replayed on a different call: every `Delegation` carries a `call_sid` and `nonce`, and
-`verify_passport` rejects a mismatch with `ERR_NONCE_MISMATCH`. This is also the structural answer
+replayed on a different call: every `Delegation` carries a `call_sid`, and `verify_passport`
+rejects a mismatch against the verifier's own call identifier with `ERR_NONCE_MISMATCH`.
+
+**Three preconditions, none of which this document previously stated.** The check runs only
+when the delegation carries a non-empty `call_sid` *and* the verifier supplies one; either
+being empty skips it silently. Until 2026-10-21 it also required a single passport rather
+than a chain, because `validate_chain` passed no call identifier to any hop. A deployment
+that depends on call binding should set `DelegationContext.require_call_binding`, which
+refuses a credential that carries none rather than accepting it unbound.
+
+**The `nonce` field is not the mechanism.** It is `sha256(call_sid:created_at)` over two
+fields of the same signed delegation, so it is fully derivable from the signed payload and
+contributes no entropy. The comparison against the verifier's independently-held call
+identifier is what does the work — and where that identifier comes from the same party that
+presented the credential, nothing is being verified. See
+[PKI/OAuth2 guide](nhid-auth-pki-and-oauth2-integration.md) §1.9a and
+`experiments/call_bind/`. This is also the structural answer
 to "why OAuth2 bearer tokens alone don't solve cross-org call authorization" — OAuth2 was not
 designed to express per-call scoping, and a delegation's call-SID binding is what closes that gap
 (see [PKI/OAuth2 guide](nhid-auth-pki-and-oauth2-integration.md) §2.9).

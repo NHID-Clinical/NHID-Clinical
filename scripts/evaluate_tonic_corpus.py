@@ -1,17 +1,32 @@
 #!/usr/bin/env python3
 """
-Comprehensive Tonic Corpus Evaluation Against NHID-Clinical Policy Engine
+Tonic Corpus Evaluation Against NHID-Clinical Policy Engine
 
-Evaluates all 150 sessions (1,227 turns) against 5 policy controls:
-- IDG-01: Identity Disclosure Gate
-- PDX-01: Pre-Data Exchange Gate
-- DBC-01: Deceptive Behavior Check
-- EIT-01: Escalation Implementation Test
-- ATR-01: Audit Trail Requirements
+Evaluates a Tonic-shaped flat CSV corpus against the behavioural controls
+(IDG-01 identity disclosure, PDX-01 pre-data-exchange, DBC-01 deceptive
+behaviour, EIT-01 escalation) plus ATR-01 audit-trail requirements, and writes
+per-control metrics and detailed violation reports.
 
-Produces per-control metrics, multilingual analysis, and detailed violation reports.
+Usage:
+  python scripts/evaluate_tonic_corpus.py <corpus.csv> [--output-dir DIR]
+
+THE CORPUS PATH IS A REQUIRED ARGUMENT, DELIBERATELY
+----------------------------------------------------
+This script used to hardcode its input to a path inside one ephemeral session's
+upload directory. That file was never tracked in git, so it existed for nobody
+— yet its outputs WERE committed, and `docs/CONTROL_DECISION_TABLE.md` quoted
+them as per-control evidence ("0% FP rate, 100% accuracy" on all five). Those
+figures were retracted on 2026-10-21 and the output files deleted, because
+nothing could reproduce them and they contradicted the CI-gated Fabricate
+measurement (DBC-01 183/200 with 5 FP) and voice-stress (DBC-01 0/28).
+
+So: no default path. If you have no corpus, this exits non-zero and says so,
+instead of silently standing in for evidence. Anything it writes is
+unpublishable until the corpus it was run against is itself committed or
+fetchable — see docs/validation/evidence-provenance-matrix.md.
 """
 
+import argparse
 import csv
 import json
 import sys
@@ -152,7 +167,7 @@ class TonicCorpusEvaluator:
         return result
 
     def evaluate_all_sessions(self):
-        """Evaluate all 150 sessions and collect metrics."""
+        """Evaluate every session in the supplied corpus and collect metrics."""
         total = len(self.sessions_data)
         for i, session_id in enumerate(sorted(self.sessions_data.keys()), 1):
             if i % 30 == 0:
@@ -256,12 +271,30 @@ class TonicCorpusEvaluator:
 
 
 def main():
-    corpus_path = "/root/.claude/uploads/44c6fd1e-68a3-5f7e-bc5c-9a33e24f19ef/db86f0f9-nhid_corpus_flat.csv"
-    output_dir = "/home/user/NHID-Clinical/corpus_evaluation_output"
+    parser = argparse.ArgumentParser(
+        description="Evaluate a Tonic-shaped flat CSV corpus against the NHID controls.",
+        epilog="The corpus path is required; see this module's docstring for why.",
+    )
+    parser.add_argument("corpus", help="path to the Tonic flat-CSV corpus")
+    parser.add_argument(
+        "--output-dir",
+        default="corpus_evaluation_output",
+        help="where to write metrics (default: %(default)s, which is NOT committed)",
+    )
+    args = parser.parse_args()
+    corpus_path = args.corpus
+    output_dir = args.output_dir
 
     if not Path(corpus_path).exists():
-        print(f"ERROR: Corpus not found at {corpus_path}", file=sys.stderr)
-        sys.exit(1)
+        print(f"ERROR: corpus not found at {corpus_path}", file=sys.stderr)
+        print(
+            "This script has no default corpus on purpose. Its previous default "
+            "pointed at a vanished session upload, and the figures it produced "
+            "were published and then retracted. Pass a corpus you can point "
+            "someone else at.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
 
     print("=== NHID-Clinical Tonic Corpus Evaluation ===")
     print(f"Corpus: {corpus_path}")

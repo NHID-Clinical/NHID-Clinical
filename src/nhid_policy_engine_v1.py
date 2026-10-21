@@ -23,7 +23,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Callable
 
 from src.nhid_audit_trail import (
     AuditEvent,
@@ -114,11 +114,41 @@ class DelegationContext:
         enforce_scope: when True, verified delegation scope constrains which
             protected-data categories PDX-01 will permit. Defaults to True,
             since scope that does not constrain anything is only a record.
+        require_call_binding: when True, a passport whose leaf delegation
+            carries no `call_sid` is a DLG-01 violation. An unbound delegation
+            is valid for any call until it expires, which is a deployment
+            decision and should never be reached by accident — without this
+            flag the binding is simply skipped and nothing says so.
+        require_possession_proof: when True, the agent must answer a
+            verifier-issued challenge with a `PresentationProof`, proving it
+            holds the delegated key *now* rather than merely holding bytes
+            that once verified. The challenge arrives as
+            `session["verifier_nonce"]` and the answer as
+            `session["presentation_proof"]`; a missing challenge is a
+            deployment misconfiguration and denies, because silently skipping
+            the check is how a requirement becomes decorative.
+        require_npi_check_digit: when True, the root delegation's NPI must
+            carry a valid Luhn check digit. Off by default: it is not a
+            security control — anyone can generate a Luhn-valid NPI — so it
+            buys typo and fabrication detection, not authenticity, and the
+            project's synthetic NPIs do not all satisfy it.
+        revocation_checker: an optional `(delegation_id) -> bool` consulted for
+            every hop after signatures verify. The policy engine performs no
+            I/O, so durable revocation arrives as an injected callable rather
+            than a store the engine reads: a deployment passes
+            `nhid_event_store.is_delegation_revoked`. Without it, DLG-01 sees
+            only whatever in-memory revocations its `AgentIdentityManager`
+            happens to hold — which, for the manager DLG-01 constructs itself,
+            is none.
     """
 
     resolver: Any
     require_delegation: bool = False
     enforce_scope: bool = True
+    require_call_binding: bool = False
+    require_possession_proof: bool = False
+    require_npi_check_digit: bool = False
+    revocation_checker: Callable[[str], bool] | None = None
 
 
 @dataclass(frozen=True)
@@ -134,8 +164,18 @@ class DelegationResult:
 
     @property
     def constrains_scope(self) -> bool:
-        """True when a verified scope exists that PDX-01 should enforce against."""
-        return self.evaluated and self.verified and bool(self.scope)
+        """True when a delegation was verified, so its scope is what PDX-01
+        enforces against — including an empty scope, which authorizes nothing.
+
+        Requiring a non-empty scope here was a privilege escalation. The empty
+        set is a subset of every set, so a chain hop may narrow to nothing and
+        still pass `validate_chain`; treating that as "no scope to enforce"
+        skipped the gate entirely, and a sub-delegation that surrendered its
+        whole grant obtained more authority than its parent. The cryptographic
+        layer never agreed with that reading — `verify_passport` already fails
+        any `required_scope` against an empty grant.
+        """
+        return self.evaluated and self.verified
 
 
 _DELEGATION_NOT_EVALUATED = DelegationResult(
@@ -321,6 +361,38 @@ _PERSONA_ROLE_WORDS: frozenset[str] = frozenset({
 })
 
 
+def _claims_role_frame(text: str) -> str | None:
+    """Return the matched frame when a role is claimed without "I'm <role>".
+
+    `_HUMAN_PERSONA_MARKERS` covers the first-person form ("I'm a specialist").
+    The same persona can be asserted in a frame that carries first person in the
+    following clause instead: "As the specialist handling your case, I'll review
+    this personally". Six voice-stress scenarios
+    (`disclosure_then_self_contradiction`) do exactly that and were detected by
+    neither IDG-01 nor DBC-01 — most of what the project's "DBC-01 0/28" figure
+    actually was.
+
+    Shared by `_claims_human_persona` (IDG-01's contradiction path) and
+    `_assertion_implies_human` (DBC-01), so the two rules cannot disagree about
+    whether this phrasing is a persona claim.
+
+    Conservative by construction: a word from `_PERSONA_ROLE_WORDS` is required,
+    so "as the automated assistant handling your case" does not match, and an
+    assertion that also discloses non-human identity remains compliant by the
+    disclosure check in each caller. Verified to fire on 0 of 2,555 agent turns
+    in the Fabricate corpus and 0 of 265 voice-stress negative-control agent
+    turns, so neither pinned baseline moves.
+    """
+    if not text:
+        return None
+    normalized = _normalize_disclosure_text(text)
+    for role in _PERSONA_ROLE_WORDS:
+        for frame in (f" as the {role} ", f" as your {role} "):
+            if frame in normalized:
+                return frame.strip()
+    return None
+
+
 def _is_negated(words: list[str], index: int) -> bool:
     """True when a negator appears within the preceding window."""
     start = max(0, index - _NEGATION_WINDOW)
@@ -392,6 +464,10 @@ def _claims_human_persona(text: str) -> str | None:
     for marker in _HUMAN_PERSONA_MARKERS:
         if marker in normalized:
             return marker.strip()
+
+    role_frame = _claims_role_frame(text)
+    if role_frame:
+        return role_frame
 
     # Corpus-mined humanity cues, reused from DBC-01 rather than restated. An
     # assertion built out of staff framing ("our team has already reviewed
@@ -1057,7 +1133,9 @@ def _assertion_implies_human(text: str) -> str | None:
     for phrase in _DBC_IMPERSONATION_PHRASES:
         if phrase in normalized:
             return phrase
-    return None
+    # Same persona, different frame — see _claims_role_frame. Shared with
+    # IDG-01 so the two rules read this phrasing identically.
+    return _claims_role_frame(text)
 
 
 def evaluate_dbc01(session: dict[str, Any], event: dict[str, Any]) -> PolicyDecision:
@@ -1613,6 +1691,26 @@ def _coerce_passports(raw: Any) -> list[Any]:
     return [one(i) for i in items]
 
 
+def _coerce_proof(raw: Any) -> Any:
+    """Normalize a presented proof into a PresentationProof, or None.
+
+    Adapters carry JSON, so the proof may arrive as a dict. A malformed one
+    becomes None rather than raising, so verification reports
+    ERR_PROOF_MISSING — a proof that cannot be read is a proof that was not
+    supplied, and either way the call is denied.
+    """
+    from src.agent_identity import PresentationProof
+
+    if raw is None or isinstance(raw, PresentationProof):
+        return raw
+    if isinstance(raw, dict):
+        try:
+            return PresentationProof(**raw)
+        except Exception:
+            return None
+    return None
+
+
 def _dlg01_denial(reason_code: str, description: str) -> PolicyDecision:
     """A DLG-01 failure is an explicit DENY_DATA decision, never an exception."""
     return PolicyDecision(
@@ -1715,7 +1813,32 @@ def evaluate_dlg01(
 
         # The root delegation names the provider whose key must be resolved.
         claimed_npi = passports[0].delegation.provider_npi
-        provider_pub = context.resolver.resolve(claimed_npi)
+
+        if context.require_npi_check_digit:
+            from src.agent_identity import npi_check_digit_valid
+
+            if not npi_check_digit_valid(claimed_npi):
+                return (
+                    _dlg01_denial(
+                        "DLG01_INVALID_NPI",
+                        f"Provider NPI '{claimed_npi}' does not carry a valid "
+                        "check digit. This catches transcription errors and "
+                        "fabricated identifiers; it is not proof the NPI is "
+                        "registered.",
+                    ),
+                    DelegationResult(
+                        evaluated=True,
+                        verified=False,
+                        reason="DLG01_INVALID_NPI",
+                        provider_npi=claimed_npi,
+                    ),
+                )
+        # The delegation names which of the provider's keys signed it, so a
+        # provider mid-rotation resolves to the right one instead of failing a
+        # signature check that looks indistinguishable from forgery.
+        provider_pub = context.resolver.resolve(
+            claimed_npi, passports[0].delegation.kid
+        )
         if provider_pub is None:
             return (
                 _dlg01_denial(
@@ -1740,12 +1863,63 @@ def evaluate_dlg01(
 
         call_sid = _safe_get(event, "session_id", default="") or ""
 
+        # The leaf is the agent that will actually make the request, so it is
+        # the hop whose call binding matters. A delegation carrying no call_sid
+        # is valid for every call until it expires; a deployment may accept
+        # that, but it must say so rather than discover it.
+        if context.require_call_binding and not passports[-1].delegation.call_sid:
+            return (
+                _dlg01_denial(
+                    "DLG01_NO_CALL_BINDING",
+                    "Presented delegation carries no call binding and this "
+                    "deployment requires one. An unbound delegation authorizes "
+                    "any call within its lifetime.",
+                ),
+                DelegationResult(
+                    evaluated=True,
+                    verified=False,
+                    reason="DLG01_NO_CALL_BINDING",
+                    provider_npi=claimed_npi,
+                ),
+            )
+
+        # Proof of possession. The challenge is the verifier's and arrives in
+        # session state; the answer is the agent's and arrives beside the
+        # passport. A deployment that asked for the check but supplied no
+        # challenge is misconfigured, and must not quietly get no check.
+        verifier_nonce = ""
+        presented_proof = None
+        if context.require_possession_proof:
+            verifier_nonce = _safe_get(session, "verifier_nonce", default="") or ""
+            presented_proof = _safe_get(session, "presentation_proof", default=None)
+            if not verifier_nonce:
+                return (
+                    _dlg01_denial(
+                        "DLG01_NO_CHALLENGE_ISSUED",
+                        "Proof of possession is required but no verifier nonce "
+                        "was issued for this call. The verifier must generate a "
+                        "challenge; without one there is nothing for the agent "
+                        "to prove.",
+                    ),
+                    DelegationResult(
+                        evaluated=True,
+                        verified=False,
+                        reason="DLG01_NO_CHALLENGE_ISSUED",
+                        provider_npi=claimed_npi,
+                    ),
+                )
+            presented_proof = _coerce_proof(presented_proof)
+
         if len(passports) == 1:
             result = manager.verify_passport(
-                passports[0], provider_pub, call_sid=call_sid
+                passports[0], provider_pub, call_sid=call_sid,
+                verifier_nonce=verifier_nonce, proof=presented_proof,
             )
         else:
-            result = manager.validate_chain(passports, provider_pub)
+            result = manager.validate_chain(
+                passports, provider_pub, call_sid=call_sid,
+                verifier_nonce=verifier_nonce, proof=presented_proof,
+            )
 
         if not result.valid:
             return (
@@ -1761,6 +1935,28 @@ def evaluate_dlg01(
                     provider_npi=claimed_npi,
                 ),
             )
+
+        # Revocation last, and over every hop: a signature proves the
+        # delegation was issued, not that it still stands. Revoking the root
+        # must invalidate everything descended from it, so a chain is only as
+        # live as its least-live link.
+        if context.revocation_checker is not None:
+            for presented in passports:
+                presented_id = presented.delegation.delegation_id
+                if context.revocation_checker(presented_id):
+                    return (
+                        _dlg01_denial(
+                            "DLG01_REVOKED",
+                            f"Delegation {presented_id} has been revoked. "
+                            f"Provider NPI: {claimed_npi}.",
+                        ),
+                        DelegationResult(
+                            evaluated=True,
+                            verified=False,
+                            reason=f"DLG01_REVOKED: {presented_id}",
+                            provider_npi=claimed_npi,
+                        ),
+                    )
 
         return (
             PolicyDecision(

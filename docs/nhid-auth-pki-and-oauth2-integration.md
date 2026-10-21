@@ -18,8 +18,12 @@ From `src/agent_identity.py`:
 
 - **Algorithm:** Ed25519 (Curve25519, twisted Edwards) — 32-byte public keys, 64-byte signatures. Chosen for small key size, fast verification, and resistance to common side-channel issues relative to RSA.
 - **Core objects:** `Delegation` (provider NPI + agent ID + agent public key + scope + TTL + call-SID binding), `AgentPassport` (delegation + provider signature + agent co-signature), `VerificationResult`.
-- **Delegation chain rules:** maximum 3 hops (Provider → Vendor → Sub-vendor → Agent), monotonic scope narrowing only, NPI-anchored, call-SID nonce bound, revocation is permanent.
-- **Storage:** revocation state is **in-memory** in the reference implementation. This is explicitly a reference/demo limitation, not a production design.
+- **Delegation chain rules:** maximum 3 hops (Provider → Vendor → Sub-vendor → Agent), monotonic scope narrowing only, NPI-anchored on the root, call-SID bound per hop, revocation is permanent.
+  - **Correction, 2026-10-21.** This line previously said chains were "call-SID nonce bound". They were not. `validate_chain` passed no `call_sid` to any hop, so the binding branch in `verify_passport` was never entered and a chain minted for one call verified on any other — while the single-passport path refused exactly that attack. Found by audit, fixed in the same change, and pinned by `tests/test_dlg01_delegated_authority.py::test_a_chain_bound_to_another_call_is_denied` plus case 8 of `experiments/call_bind/`. The claim is now true; it was not when it was written.
+  - **What "call-SID bound" does and does not mean.** Binding is enforced per hop and only where there is something to enforce: a hop carrying a `call_sid` must match the live call, a hop carrying none asserts no call and rides its parent's binding, and a verifier that supplies no call identifier skips the check entirely. A deployment that depends on binding should set `DelegationContext.require_call_binding`, which refuses a leaf that carries none.
+  - **The `nonce` field is not what provides this.** `Delegation.nonce` is `sha256(call_sid + ":" + created_at)` over two fields of the delegation it travels in, so it is derivable from the signed payload and carries no entropy that payload does not already have. The binding comes from comparing `delegation.call_sid` against the verifier's own call identifier. See §1.9a.
+- **Storage:** revocation state is **in-memory** in `AgentIdentityManager`. Durability is supplied above it by `nhid_event_store`, and `DelegationContext.revocation_checker` is how it reaches the policy control — see §1.9. This is explicitly a reference/demo limitation, not a production design.
+- **Proof of possession:** `PresentationProof` — the agent answers a verifier-issued nonce with a signature over it, checked against the agent public key already inside the signed delegation. Opt-in via `DelegationContext.require_possession_proof`. Without it, the passport's `agent_signature_b64` covers only static delegation bytes, so a captured passport is replayable by anyone holding the bytes. See §1.9b.
 
 This is a working trust *primitive*, not a deployed trust *infrastructure*. The rest of this section addresses what changes between the reference implementation and a production deployment serving real provider organizations and real voice vendors.
 
@@ -105,7 +109,62 @@ This is an appropriate simplification **today**, while NHID-Clinical is a refere
 
 **Reference implementation, two layers.** The `AgentIdentityManager` primitive keeps an in-memory revocation set — `revoke_agent()` and `revoke_delegation()` are permanent and irreversible by design, but that state does not survive a process restart. **Durability is supplied above it:** `nhid_event_store.record_revocation()` writes to a persistent SQLite `revoked_delegations` table and `is_delegation_revoked()` reads it, wired to `POST /v1/identity/revoke-passport` and checked by `POST /v1/identity/verify-passport` (`functions/handler.py`). So a revocation made through the hosted API survives restarts and stateless invocations.
 
-Two limits belong with that statement. The policy engine performs no I/O, so `evaluate_dlg01` consults only the in-memory lists its caller supplies — an embedding deployment wires the durable store in itself. And the hosted verify path falls back to the library-only check if the store is unreachable. Revocation still does **not** propagate across organizations.
+**Correction, 2026-10-21.** This paragraph previously said "an embedding deployment wires the durable store in itself", which named no mechanism because none existed. `evaluate_dlg01` constructed its own `AgentIdentityManager` when the session supplied none, and a fresh manager's revocation lists are empty — so DLG-01 honoured **no revocation at all** on its default path, while the durable store sat in the same repository consulted only by the hosted verify route. A delegation revoked through the API still passed the policy gate.
+
+The hook now exists: `DelegationContext.revocation_checker`, a `(delegation_id) -> bool` the deployment supplies, typically `nhid_event_store.is_delegation_revoked`. It is consulted for **every hop** of a chain after signatures verify, so revoking a root invalidates everything descended from it. The engine still performs no I/O — the check arrives as an injected callable, which is also why `scripts/check_offline_kit.py` stays green. Pinned by `tests/test_dlg01_delegated_authority.py::test_durable_revocation_is_honoured` and case 3 of `experiments/call_bind/`.
+
+Three limits remain, and they are limits, not oversights. A deployment that passes no `revocation_checker` still gets only whatever in-memory state its manager holds. The hosted **v1** verify path falls back to the library-only check if the durable store is unreachable — `/v2/identity/verify-passport` returns 503 instead, because an unreachable revocation store means the question cannot be answered rather than that the answer is yes. And revocation still does **not** propagate across organizations; that needs a counterparty, not code.
+
+### 1.9a What the `nonce` field actually contributes
+
+Nothing that the signature does not already provide, and the documentation
+said otherwise for a long time.
+
+`Delegation.nonce` is `sha256(f"{call_sid}:{created_at}")`, and verification
+recomputes exactly that from `d.call_sid` and `d.created_at` — both fields of
+the same signed delegation. It is therefore a derived checksum over data that
+is already integrity-protected: it adds no entropy, and an attacker who could
+alter `call_sid` could recompute the nonce to match. What actually resists
+replay is the plain comparison on the next line, `d.call_sid != call_sid`,
+against a call identifier **the verifier holds independently**.
+
+That last clause is the load-bearing one and was never stated. Replay
+resistance requires all of: a non-empty `call_sid` inside the delegation, a
+non-empty `call_sid` at the verifier, and — before 2026-10-21 — a single
+passport rather than a chain. Where the verifier's call identifier comes from
+the same party that presented the credential, nothing is being checked at all;
+`experiments/call_bind/` exists to demonstrate the inversion where the
+receiver sources it from its own telephony platform instead.
+
+The field is kept because it is inside the signed payload and removing it
+would be a wire-format change for no gain. It should not be described as
+"additional replay prevention".
+
+### 1.9b Proof of possession at presentation
+
+`AgentPassport.agent_signature_b64` covers `delegation.to_json()` — the same
+bytes the provider signed. It is a static artifact, so it proves that whoever
+assembled the passport held the agent private key at assembly time, and
+nothing about who is presenting it now. Anyone who captures the passport bytes
+holds a complete, verifiable passport.
+
+`PresentationProof` closes that: the verifier issues a fresh random nonce
+(`new_verifier_nonce`), the agent signs it together with the delegation id and
+a timestamp, and the verifier checks the result against
+`delegation.agent_public_key_b64` — a key already inside the signed
+delegation, so no new trust is required to check it. A captured passport
+replayed without the matching private key cannot produce one, and a proof
+lifted from an earlier exchange answers the wrong nonce.
+
+This is the property DPoP gives an HTTP API, minus the HTTP binding: there is
+no request to bind to on a telephone call, so the verifier's nonce is what
+supplies freshness. Proofs are bounded by `MAX_PROOF_AGE_SECONDS` in both
+directions, so a forward-skewed clock cannot mint one that stays acceptable.
+
+It is **opt-in** (`DelegationContext.require_possession_proof`) because it
+requires a challenge to reach the agent, and no transport carries one today —
+which is the honest limit on all of this and is recorded in
+`experiments/call_bind/README.md` rather than buried.
 
 **Production recommendation:**
 

@@ -72,7 +72,7 @@ AI Governance
             ├── agent identity ............. Ed25519 agent passport
             ├── delegated authority ........ NPI-anchored delegation
             ├── scoped authorization ....... monotonic scope narrowing
-            ├── per-interaction binding .... call-SID nonce
+            ├── per-interaction binding .... call-SID (verifier-held)
             └── revocation ................. permanent, per-agent/delegation
 ```
 

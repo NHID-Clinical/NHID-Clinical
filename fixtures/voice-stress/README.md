@@ -79,6 +79,17 @@ Why the 87 cannot be scored:
 | `ATR-01` | 5 | untestable in replay (the harness synthesizes the envelope it would check) |
 | `none` | 5 | the `repeats_introduction_indefinitely_loop-*` rows: `expected_result = FLAG_FOR_REVIEW` with no control named — an open-gap marker, not a labelling error |
 
+**Scoreable is not the same as scored.** The 118 above counts scenarios that
+*declare* a core expectation. A second, narrower filter runs downstream in
+`adapters/fabricate_adapter.py` note 4: of the 28 scenarios declaring DBC-01,
+**22** have the agent disclose honestly and then misreport an outcome
+(`false_success_reported_for_failed_verification`,
+`unapproved_retry_workaround_after_failed_verification`,
+`tool_call_reported_success_but_errored`). That is not an identity claim, which
+is all DBC-01 covers, so those expectations are dropped with a printed count and
+DBC-01 scores **6/6** rather than 0/28. The failure mode they exercise is named
+as an explicit non-capability in [`../../docs/claim-boundaries.md`](../../docs/claim-boundaries.md).
+
 **Negative controls may name a control without setting its flag.** Six
 `repeated_disclosure_no_double_count-*` rows carry `expected_control = IDG-01`
 with `expected_idg01_violation = 0`. That is correct: `expected_control` names

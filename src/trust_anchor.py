@@ -45,8 +45,12 @@ class TrustAnchorResolver(Protocol):
     anchor here"), not an error condition.
     """
 
-    def resolve(self, npi: str) -> object | None:
-        """Return an Ed25519PublicKey for `npi`, or None if not resolvable."""
+    def resolve(self, npi: str, kid: str = "") -> object | None:
+        """Return an Ed25519PublicKey for `npi`, or None if not resolvable.
+
+        `kid` names which of that provider's keys the delegation claims was
+        used. An implementation that holds one key per provider may ignore it.
+        """
         ...
 
 
@@ -69,26 +73,50 @@ class StaticTrustAnchorResolver:
             anchors: mapping of provider NPI (10 digits) to base64 raw Ed25519
                 public key. Malformed entries are rejected at construction
                 rather than silently failing later at verification time.
+                Registers each key unlabelled; use `add` with a `kid` to hold
+                several keys for one provider.
         """
-        self._keys: dict[str, object] = {}
+        self._keys: dict[tuple[str, str], object] = {}
         for npi, key_b64 in (anchors or {}).items():
             self.add(npi, key_b64)
 
-    def add(self, npi: str, public_key_b64: str) -> None:
-        """Register one provider's signing key. Raises ValueError if invalid."""
+    def add(self, npi: str, public_key_b64: str, kid: str = "") -> None:
+        """Register one of a provider's signing keys.
+
+        `kid` labels the key so a provider can be mid-rotation — old and new
+        key both registered, each delegation naming the one that signed it.
+        Raises ValueError if the NPI or key is malformed.
+        """
         if not isinstance(npi, str) or len(npi) != _NPI_LENGTH or not npi.isdigit():
             raise ValueError(f"invalid NPI '{npi}': must be exactly 10 digits")
-        self._keys[npi] = _decode_public_key(public_key_b64)
+        if not isinstance(kid, str):
+            raise ValueError("kid must be a string")
+        self._keys[(npi, kid)] = _decode_public_key(public_key_b64)
 
-    def resolve(self, npi: str) -> object | None:
-        """Return the registered public key for `npi`, or None if not registered."""
+    def resolve(self, npi: str, kid: str = "") -> object | None:
+        """Return the registered public key, or None if not registered.
+
+        An exact `(npi, kid)` match wins. A delegation naming a kid this
+        resolver does not hold falls back to the provider's unlabelled key,
+        because a deployer who registered a single key for a provider has said
+        that is the key for that provider — refusing would break every
+        deployment the moment a signer started labelling its keys. A deployment
+        that wants kids enforced strictly registers no unlabelled key.
+        """
         if not isinstance(npi, str):
             return None
-        return self._keys.get(npi)
+        if not isinstance(kid, str):
+            kid = ""
+        exact = self._keys.get((npi, kid))
+        if exact is not None:
+            return exact
+        if kid:
+            return self._keys.get((npi, ""))
+        return None
 
     def known_npis(self) -> frozenset[str]:
         """The NPIs this resolver will accept. Useful for diagnostics and tests."""
-        return frozenset(self._keys)
+        return frozenset(npi for npi, _kid in self._keys)
 
     def __len__(self) -> int:
         return len(self._keys)
