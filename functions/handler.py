@@ -3,6 +3,7 @@ import json
 import os
 import re
 import sys
+from typing import Any, Optional
 
 # When SAM packages with CodeUri: ., the repo root is /var/task.
 # This insert ensures `src` and `adapters` are importable whether running locally or in Lambda.
@@ -55,7 +56,8 @@ def lambda_handler(event: dict, context) -> dict:
       POST /v1/demo/call                     — trigger Beacon outbound demo call, Turnstile+rate-limited (website demo, not framework)
       POST /v1/demo/sms-opt-in               — web opt-in to text the starter-pack link, consent+Turnstile+rate-limited (website demo, not framework)
       POST /v1/webhooks/elevenlabs/postcall  — ElevenLabs post-call webhook for the Beacon demo, no API key (website demo, not framework)
-      POST /v1/identity/verify-passport      — verify an NHID-Auth v2 agent passport (src/agent_identity.py), no API key required
+      POST /v1/identity/verify-passport      — verify an agent passport against a CALLER-SUPPLIED provider key: a consistency check, not a trust decision, no API key required
+      POST /v2/identity/verify-passport      — verify against a SERVER-CONFIGURED trust anchor, with durable revocation and optional proof of possession, API key required
       POST /v1/identity/revoke-passport      — durably revoke a delegation_id, API key required
     """
     method = event.get("httpMethod", "POST")
@@ -90,7 +92,11 @@ def lambda_handler(event: dict, context) -> dict:
         from functions.elevenlabs_postcall_handler import _handle_elevenlabs_postcall_webhook
         return _handle_elevenlabs_postcall_webhook(event)
 
-    # NHID-Auth v2 agent passport verification / revocation
+    # NHID-Auth v2 agent passport verification / revocation.
+    # v2 is matched first: "/identity/verify-passport" is a substring of the
+    # v2 path, so testing v1 first would swallow every v2 request.
+    if "/v2/identity/verify-passport" in path:
+        return _handle_verify_passport_v2(event)
     if "/identity/verify-passport" in path:
         return _handle_verify_passport(event)
     if "/identity/revoke-passport" in path:
@@ -121,14 +127,9 @@ def lambda_handler(event: dict, context) -> dict:
         return _handle_vendor(event, "connect")
 
     # Generic NHID event routes (/v1/conformance/check and /v1/demo/check)
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     if "event" not in body:
         return _error(400, "Missing required field: 'event'")
@@ -146,14 +147,9 @@ def lambda_handler(event: dict, context) -> dict:
 
 def _handle_vendor(event: dict, vendor: str) -> dict:
     """Parse a vendor-native payload, run the adapter, and evaluate conformance."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        payload = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    payload, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     try:
         if vendor == "vapi":
@@ -188,14 +184,9 @@ def _handle_vendor(event: dict, vendor: str) -> dict:
 
 def _handle_call_progress(event: dict) -> dict:
     """Turn-by-turn conformance evaluation. Stateless — caller maintains session_state."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     try:
         from adapters.call_progress_adapter import to_nhid_event
@@ -280,14 +271,9 @@ def _handle_demo_sms_optin(event: dict) -> dict:
     text. CAPTCHA- and rate-limited; sends a real SMS via functions.twilio_sms.
     The submitted consent + this server-side gate are the documented A2P 10DLC
     opt-in for the campaign."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     # Explicit opt-in consent is mandatory — never text without it.
     if not body.get("consent"):
@@ -340,14 +326,9 @@ def _handle_demo_call(event: dict) -> dict:
     number. The one demo route with real per-call Twilio/ElevenLabs cost --
     gated by Turnstile CAPTCHA and per-IP/per-number rate limits before any
     network call is made."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     if not _verify_turnstile(str(body.get("turnstile_token", ""))):
         return _error(400, "CAPTCHA verification failed")
@@ -429,14 +410,9 @@ def _handle_demo_call_status(event: dict) -> dict:
 
 def _handle_pilot_enroll(event: dict) -> dict:
     """Pilot enrollment — validates the request and returns next steps."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     org_name = str(body.get("org_name", "")).strip()
     contact_email = str(body.get("contact_email", "")).strip()
@@ -463,11 +439,9 @@ def _handle_pilot_enroll(event: dict) -> dict:
 
 def _handle_cts_evaluate(event: dict) -> dict:
     """Run the NHID CTS YAML test cases and return structured results."""
-    raw_body = event.get("body") or "{}"
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event, allow_empty=True)
+    if parse_error:
+        return parse_error
 
     test_ids = body.get("test_ids") or None
     if test_ids is not None and not isinstance(test_ids, list):
@@ -483,21 +457,30 @@ def _handle_cts_evaluate(event: dict) -> dict:
 
 
 def _handle_verify_passport(event: dict) -> dict:
-    """Verify an NHID-Auth v2 agent passport (src/agent_identity.py).
+    """Check an agent passport against a provider key the **caller** supplies.
+
+    **This is a consistency check, not a trust decision**, and the response
+    says so in its `trust` field. The route is handed both the passport and
+    the key it should verify against, so a `valid: true` means only that those
+    two agree. It cannot mean the issuer is trusted: the caller chose the
+    issuer. Anyone can mint a keypair, sign a delegation naming any NPI, and
+    get `valid: true` from this route.
+
+    For an answer that depends on who the signer is, use
+    `/v2/identity/verify-passport`, which resolves the provider key from this
+    deployment's configured trust anchors and refuses a caller-supplied one.
 
     AgentIdentityManager.verify_passport() only checks its own in-memory
     revocation dicts, which are empty on every fresh Lambda invocation — so
     this also checks nhid_event_store's durable revoked_delegations table,
-    which is the revocation store of record across invocations.
+    which is the revocation store of record across invocations. Note that the
+    durable check is best-effort here: an unreachable store falls back to the
+    library-only check, which on a fresh manager is no revocation check at
+    all. v2 returns 503 in that situation instead.
     """
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     delegation_raw = body.get("delegation")
     signature_b64 = body.get("signature_b64")
@@ -527,11 +510,16 @@ def _handle_verify_passport(event: dict) -> dict:
     if required_scope is not None and not isinstance(required_scope, list):
         return _error(400, "'required_scope' must be a list of strings")
 
+    # A passport presented on its own is claiming provider authority on its
+    # own, so it must name a provider. Without this the route answered
+    # `valid: true` with `provider_npi: ""` for a delegation that asserts no
+    # authority at all.
     result = manager.verify_passport(
         passport,
         provider_pub,
         call_sid=str(body.get("call_sid", "")),
         required_scope=required_scope,
+        require_npi=True,
     )
 
     if result.valid:
@@ -549,19 +537,190 @@ def _handle_verify_passport(event: dict) -> dict:
         "provider_npi": result.provider_npi,
         "agent_id": result.agent_id,
         "scope": result.scope,
+        # Named explicitly so no integrator mistakes this for a trust
+        # decision. The provider key came from the request, so a `valid: true`
+        # here says the passport is internally consistent with a key the
+        # caller chose — it cannot say the issuer is trusted, because the
+        # caller supplied both halves of that question.
+        "trust": "caller_supplied_key",
+    })
+
+
+#: Server-configured trust anchors for the v2 verify route, as
+#: NHID_TRUST_ANCHORS="<npi>:<base64 key>[:<kid>],<npi>:<key>[:<kid>]".
+#:
+#: The v1 route takes the provider key from the request body, which proves a
+#: passport is internally consistent and nothing about whether its issuer is
+#: trusted — the caller supplied both halves. v2 resolves the key from this
+#: configuration instead, so "valid" means "signed by a provider this
+#: deployment decided to trust".
+_TRUST_ANCHOR_ENV = "NHID_TRUST_ANCHORS"
+
+
+def _configured_trust_anchors():
+    """Build a resolver from the environment, or None if none is configured.
+
+    Returns None rather than an empty resolver so the route can tell "this
+    deployment has not configured trust anchors" (a 503 — it cannot answer the
+    question) from "this provider is not trusted" (a verification failure).
+    """
+    raw = (os.environ.get(_TRUST_ANCHOR_ENV) or "").strip()
+    if not raw:
+        return None
+    from src.trust_anchor import StaticTrustAnchorResolver
+
+    resolver = StaticTrustAnchorResolver()
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        parts = entry.split(":")
+        if len(parts) == 2:
+            npi, key_b64, kid = parts[0], parts[1], ""
+        elif len(parts) == 3:
+            npi, key_b64, kid = parts
+        else:
+            raise ValueError(
+                f"{_TRUST_ANCHOR_ENV} entry {entry!r} must be "
+                f"'<npi>:<key>' or '<npi>:<key>:<kid>'"
+            )
+        resolver.add(npi.strip(), key_b64.strip(), kid.strip())
+    return resolver
+
+
+def _handle_verify_passport_v2(event: dict) -> dict:
+    """Verify a passport against a trust anchor this deployment configured.
+
+    Differences from v1, all of them the point of the route:
+      * the provider key is **resolved by NPI and kid** from server
+        configuration, never read from the request body;
+      * the durable revocation store is consulted and a failure to reach it is
+        a 503, not a silent fallback to the in-memory check;
+      * an optional presentation proof can be required, so the caller must
+        prove it holds the agent key now rather than merely holding bytes that
+        once verified.
+    """
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
+
+    try:
+        resolver = _configured_trust_anchors()
+    except ValueError as exc:
+        return _error(500, f"Trust anchor configuration is invalid: {exc}")
+    if resolver is None:
+        return _error(
+            503,
+            f"No trust anchors are configured. Set {_TRUST_ANCHOR_ENV} to "
+            f"'<npi>:<base64-ed25519-key>[:<kid>]' entries. Without one this "
+            f"route cannot establish who signed a delegation, and answering "
+            f"would only restate the caller's own assumption.",
+        )
+
+    delegation_raw = body.get("delegation")
+    signature_b64 = body.get("signature_b64")
+    agent_signature_b64 = body.get("agent_signature_b64")
+    if not delegation_raw or not signature_b64 or not agent_signature_b64:
+        return _error(
+            400,
+            "Missing required fields: 'delegation', 'signature_b64', "
+            "'agent_signature_b64'",
+        )
+    if body.get("provider_public_key_b64"):
+        return _error(
+            400,
+            "'provider_public_key_b64' is not accepted on this route. The "
+            "provider key is resolved from this deployment's configured trust "
+            "anchors; a caller-supplied key would make the result a "
+            "consistency check rather than a trust decision. Use "
+            "/v1/identity/verify-passport if that is what you want.",
+        )
+
+    try:
+        from src.agent_identity import (
+            AgentIdentityManager, AgentPassport, Delegation, PresentationProof,
+        )
+        delegation = Delegation.from_json(json.dumps(delegation_raw))
+        passport = AgentPassport(
+            delegation=delegation,
+            signature_b64=signature_b64,
+            agent_signature_b64=agent_signature_b64,
+        )
+        manager = AgentIdentityManager()
+    except Exception as exc:  # noqa: BLE001
+        return _error(400, f"Invalid passport payload: {exc}")
+
+    required_scope = body.get("required_scope")
+    if required_scope is not None and not isinstance(required_scope, list):
+        return _error(400, "'required_scope' must be a list of strings")
+
+    verifier_nonce = str(body.get("verifier_nonce", ""))
+    proof = None
+    proof_raw = body.get("presentation_proof")
+    if proof_raw is not None:
+        if not isinstance(proof_raw, dict):
+            return _error(400, "'presentation_proof' must be an object")
+        try:
+            proof = PresentationProof(**proof_raw)
+        except Exception as exc:  # noqa: BLE001
+            return _error(400, f"Invalid presentation_proof: {exc}")
+
+    provider_pub = resolver.resolve(delegation.provider_npi, delegation.kid)
+    if provider_pub is None:
+        return _ok({
+            "valid": False,
+            "reason": "ERR_TRUST_ANCHOR_UNRESOLVED",
+            "delegation_id": delegation.delegation_id,
+            "provider_npi": delegation.provider_npi,
+            "agent_id": None,
+            "scope": None,
+            "trust": "configured_trust_anchor",
+        })
+
+    result = manager.verify_passport(
+        passport,
+        provider_pub,
+        call_sid=str(body.get("call_sid", "")),
+        required_scope=required_scope,
+        require_npi=True,
+        verifier_nonce=verifier_nonce,
+        proof=proof,
+    )
+
+    # Revocation is not optional here, and an unreachable store is an answer
+    # this route cannot give rather than a pass. v1 swallows the error and
+    # falls back to the in-memory check, which on a fresh manager is no check.
+    if result.valid:
+        try:
+            import nhid_event_store as store
+            if store.is_delegation_revoked(delegation.delegation_id):
+                result = type(result)(
+                    False, "ERR_REVOKED", delegation_id=delegation.delegation_id
+                )
+        except Exception as exc:  # noqa: BLE001
+            return _error(
+                503,
+                f"Revocation store is unreachable, so this passport cannot be "
+                f"confirmed live: {exc}",
+            )
+
+    return _ok({
+        "valid": result.valid,
+        "reason": result.reason,
+        "delegation_id": result.delegation_id,
+        "provider_npi": result.provider_npi,
+        "agent_id": result.agent_id,
+        "scope": result.scope,
+        "trust": "configured_trust_anchor",
+        "possession_proved": bool(verifier_nonce) and result.valid,
     })
 
 
 def _handle_revoke_passport(event: dict) -> dict:
     """Durably revoke a delegation_id, surviving across stateless invocations."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     delegation_id = str(body.get("delegation_id", "")).strip()
     if not delegation_id:
@@ -660,6 +819,68 @@ _CORS = {
     "Access-Control-Allow-Headers": "Content-Type,x-api-key",
     "Access-Control-Allow-Methods": "POST,GET,OPTIONS",
 }
+
+
+#: Largest request body this function will attempt to parse. API Gateway's own
+#: ceiling for a REST API is 10 MB; this is well under it because every payload
+#: these routes accept — one NHID event, one passport, one scenario list — is
+#: kilobytes. A body larger than this is refused before `json.loads` sees it.
+MAX_BODY_BYTES = 2 * 1024 * 1024
+
+
+def _parse_json_body(
+    event: dict, *, require_object: bool = True, allow_empty: bool = False
+) -> tuple[Any, Optional[dict]]:
+    """Parse a request body into JSON, or return the 400 to send instead.
+
+    Returns `(parsed, None)` on success and `(None, error_response)` on failure,
+    so a route reads:
+
+        body, err = _parse_json_body(event)
+        if err:
+            return err
+
+    Every route used to inline `json.loads` guarded by `json.JSONDecodeError`
+    alone. That is not the only way parsing fails: CPython's JSON decoder
+    recurses per nesting level, so a body of 60,000 open brackets raises
+    `RecursionError`, which no route caught — one trivially-crafted request
+    produced an unhandled exception and a 502 on four routes. Depth is the
+    attack, not size, so the breadth of this `except` is the actual fix and the
+    size cap is a second line.
+
+    `require_object` rejects a body that parses but is not a JSON object, which
+    every one of these routes assumes when it calls `.get(...)` on the result.
+    """
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        # Some routes treat an absent body as "no options supplied" rather than
+        # as a malformed request.
+        if allow_empty:
+            return ({} if require_object else None), None
+        return None, _error(400, "Request body is required")
+
+    if isinstance(raw_body, (str, bytes)) and len(raw_body) > MAX_BODY_BYTES:
+        return None, _error(
+            413,
+            f"Request body is {len(raw_body)} bytes; the limit is "
+            f"{MAX_BODY_BYTES}",
+        )
+
+    try:
+        parsed = json.loads(raw_body) if isinstance(raw_body, (str, bytes)) else raw_body
+    except (json.JSONDecodeError, RecursionError, ValueError, UnicodeDecodeError) as exc:
+        # RecursionError is not a ValueError and JSONDecodeError does not cover
+        # it, so it has to be named explicitly.
+        return None, _error(400, f"Invalid JSON: {exc}")
+
+    if require_object and not isinstance(parsed, dict):
+        return None, _error(
+            400,
+            f"Request body must be a JSON object, got "
+            f"{type(parsed).__name__}",
+        )
+
+    return parsed, None
 
 
 def _ok(body: dict) -> dict:

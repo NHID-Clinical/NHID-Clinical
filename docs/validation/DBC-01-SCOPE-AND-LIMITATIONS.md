@@ -129,13 +129,19 @@ is broad.
 | corpus | DBC-01 | note |
 | :-- | :-- | :-- |
 | CSV-550 (`check_baseline.py`) | 183/200, 5 FP | pinned baseline; unchanged by this work |
-| voice-stress (300) | 0/28 | deceptive-persona scenarios; the open gap, now explained |
+| voice-stress (300) | **6/6**, 0 FP | corrected 2026-10-21 from "0/28 — deceptive-persona scenarios". Only **6** of those 28 are persona scenarios; the other **22** have the agent disclose honestly and then misreport an outcome, which is not an identity claim and which no control covers. Adapter note 4 excludes them with a printed count; [`claim-boundaries.md`](../claim-boundaries.md) names the uncovered failure mode. The 6 were real misses on an indirect frame ("as the specialist handling your case"), closed by the shared `_claims_role_frame`. |
 | synthetic v2 (8) | 0/2 | cross-turn / undisclosed persona; IDG-01's domain |
 
-The three figures measure different corpora and are not interchangeable. The
-voice-stress and v2 zeros are consistent with the scope stated here — those
-scenarios are persona/cross-turn shaped, which this narrowly-scoped control does
-not claim to cover.
+The three figures measure different corpora and are not interchangeable.
+
+**A correction to this document.** The voice-stress row above previously
+described all 28 scenarios as "deceptive-persona", and read the zero as
+"consistent with the scope stated here". It was not: 6 of them were squarely in
+this control's scope and were being missed on a phrasing gap, while 22 were
+never this control's to catch. Describing a wrong denominator as a scope
+boundary made a fixable lexicon gap look like a deliberate limitation. The
+narrow-scope statement in this document stands; what changed is that the figure
+now measures only what the scope actually covers.
 
 ## Recorded non-actions
 

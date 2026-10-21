@@ -39,14 +39,14 @@ def _critical_violation_count(turns: list[dict[str, Any]]) -> int:
 
 
 def _handle_elevenlabs_postcall_webhook(event: dict[str, Any], *, status_table=None) -> dict[str, Any]:
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
+    # Shares the conformance handler's body parser so this webhook gets the
+    # same size cap and the same breadth of parse-failure handling; a 60,000
+    # bracket body raises RecursionError, which JSONDecodeError does not cover.
+    from functions.handler import _parse_json_body
 
-    try:
-        payload = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    payload, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     try:
         turns = list(iter_turns(payload))

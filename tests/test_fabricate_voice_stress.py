@@ -10,7 +10,7 @@ drift silently:
      population, so false positives remain measurable;
   2. the measured per-control result stays exactly what was reported in
      docs/validation/FABRICATE_VOICE_STRESS_FINDINGS.md — including the honest
-     misses (DBC-01 0/28, EIT-01 12/25). If the engine later detects a case this
+     misses (EIT-01 12/25). If the engine later detects a case this
      corpus currently misses (good), the test fails and forces the findings doc
      and this pin to move together, so an improvement lands in the open rather
      than silently;
@@ -61,9 +61,16 @@ def _by(result):
 @pytest.mark.parametrize("control,detected,expected,fp", [
     ("IDG-01", 65, 65, 0),
     ("PDX-01", 8, 8, 0),
-    # The documented gap: DBC-01 detects none of its 28 targeted scenarios.
-    # Pinned so a fix cannot land without updating the findings doc with it.
-    ("DBC-01", 0, 28, 0),
+    # Was pinned at 0/28 — "the documented gap". 2026-10-21: that denominator
+    # was wrong. 22 of those 28 scenarios have the agent disclose honestly and
+    # then misreport an OUTCOME (false verification success), which DBC-01 does
+    # not claim to cover; the adapter now drops them with a reported count
+    # (note 4) and claim-boundaries.md names the uncovered failure mode. The 6
+    # that genuinely are persona scenarios were missed on an indirect frame
+    # ("as the specialist handling your case") and are now caught by the shared
+    # _claims_role_frame. This pin moving is the improvement landing in the
+    # open, exactly as this module's docstring intends.
+    ("DBC-01", 6, 6, 0),
     ("EIT-01", 12, 25, 6),
 ])
 def test_measured_result_is_what_was_reported(result, control, detected, expected, fp):
@@ -76,7 +83,7 @@ def test_measured_result_is_what_was_reported(result, control, detected, expecte
 
 def test_voice_stress_is_not_the_csv550_baseline(result):
     """The two corpora are distinct measurements and must not be conflated. The
-    pinned CSV-550 baseline has DBC-01 at 183/200; voice-stress has 0/28. If a
+    pinned CSV-550 baseline has DBC-01 at 183/200; voice-stress has 6/6. If a
     loader regression routed one through the other, these would collide."""
     from scripts.check_baseline import EXPECTED
 

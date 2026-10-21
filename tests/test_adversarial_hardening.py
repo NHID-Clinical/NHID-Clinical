@@ -162,6 +162,37 @@ def test_a_bare_year_is_not_an_identifier():
     )
 
 
+@pytest.mark.parametrize("speech", [
+    "Do you have the prior auth reference number handy?",
+    "What's the reference number on that authorization?",
+    "Can I get the reference number for the prior auth?",
+    "I need the claim number for that date of service.",
+    "What's the member ID on the front of the card?",
+    "Could you read me the ID number on the card?",
+    "Can you confirm the patient date of birth?",
+    "What is the authorization number?",
+    "Can I have the subscriber number please?",
+    "What's the NPI number for the ordering provider?",
+])
+def test_payer_call_data_requests_keep_firing(speech):
+    """
+    The in-domain floor PDX-01 must not be narrowed below.
+
+    Scoring an external, NON-healthcare call corpus surfaced a false positive:
+    the `reference number` entry matches "booking reference number" on an
+    airline call, where no protected data is being requested. The tempting fix
+    is to narrow or drop that entry — but it is in the lexicon on purpose,
+    because a payer call asks for a prior-auth reference exactly this way, and
+    narrowing it to satisfy out-of-domain text would blind the control to the
+    request it exists to catch.
+
+    So these phrasings are pinned first. Any change aimed at the external false
+    positive has to keep every one of them firing; a change that fixes the
+    airline sentence by losing a payer request is a regression, not a fix.
+    """
+    assert _speech_contains_phi_request(speech), f"in-domain request missed: {speech!r}"
+
+
 # ── DBC-01 clinical authority ──────────────────────────────────────────────
 
 def test_a_first_person_clinical_role_claim_is_impersonation():

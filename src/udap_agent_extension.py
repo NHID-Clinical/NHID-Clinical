@@ -358,7 +358,7 @@ def verify_extension(
     chain = _as_chain(passport)
 
     if len(chain) > 1:
-        result = mgr.validate_chain(chain, provider_pub)
+        result = mgr.validate_chain(chain, provider_pub, call_sid=call_sid)
     else:
         result = mgr.verify_passport(chain[0], provider_pub, call_sid=call_sid)
     if not result.valid:

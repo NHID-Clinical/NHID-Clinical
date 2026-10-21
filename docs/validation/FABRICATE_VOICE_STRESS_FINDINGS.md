@@ -50,7 +50,7 @@ are dropped and reported, exactly as for CSV-550.
 | :------ | :-------- | ---: | :--------- | ------: |
 | IDG-01  | 65/65     | 100.0% | 0/95 | 0.0% |
 | PDX-01  | 8/8       | 100.0% | 0/95 | 0.0% |
-| DBC-01  | 0/28      | **0.0%** | 0/95 | 0.0% |
+| DBC-01  | 6/6       | 100.0% | 0/95 | 0.0% | *(was 0/28 — denominator corrected 2026-10-21, see below)* |
 | EIT-01  | 12/25     | 48.0% | 6/95 | 6.3% |
 
 Reproduce:
@@ -75,7 +75,43 @@ The engine was not changed, so detection on CSV-550 is byte-for-byte what it
 was. The voice-stress numbers are a *new, separate* measurement, not a revision
 of the baseline.
 
-## The DBC-01 result: 0/28 — the open scope question, again
+## The DBC-01 result: corrected from 0/28 to 6/6 — 2026-10-21
+
+> **The 0/28 was a wrong denominator, not a failed detector.** Reading the 28
+> scenarios' text: only **6** (`disclosure_then_self_contradiction`) are
+> identity-persona scenarios. The other **22** have the agent disclose honestly
+> — *"Hi, this is an automated verification assistant"* — and then misreport an
+> **outcome**: `false_success_reported_for_failed_verification` (8),
+> `unapproved_retry_workaround_after_failed_verification` (8),
+> `tool_call_reported_success_but_errored` (6). Telling a provider a prior
+> authorization succeeded when it failed is a serious failure, but it is not an
+> identity claim, and **no NHID control covers it** — now named as an explicit
+> non-capability in [`../claim-boundaries.md`](../claim-boundaries.md).
+>
+> `adapters/fabricate_adapter.py` note 4 drops those 22 with a reported count,
+> the same mechanism already used for ATR-01 and PDX-01, so the exclusion prints
+> on every run and is never invisible.
+>
+> The remaining 6 were genuine misses on an indirect frame: *"As the specialist
+> handling your case, I'll review this personally."* `_HUMAN_PERSONA_MARKERS`
+> carried `"i'm a specialist"` and `_DBC_IMPLIED_HUMANITY_STRONG` carried
+> `"i'll personally"`, and the sentence matches neither — the role is in an
+> "as the \<role\>" frame and the adverb follows its verb. A shared
+> `_claims_role_frame` helper, consulted by both DBC-01 and IDG-01's
+> contradiction path, closes it. Verified to fire on **0 of 2,555** Fabricate
+> agent turns and **0 of 265** voice-stress negative-control agent turns, so
+> neither pinned baseline moved: Fabricate DBC-01 is still 183/200 with 5 FP,
+> and voice-stress false positives are still 0/95.
+>
+> **A correction to this document's own earlier explanation.** It attributed the
+> zero to the adapter extracting "only *voice/signal* artifacts … not text
+> personas". That is not why. DBC-01 reads `identity_assertion_text`, the
+> adapter populates it from the agent's words, and voice-stress labels 839 turns
+> `speaker='agent'`. The channel and the wiring were always fine; the lexicon
+> missed one phrasing and the denominator counted 22 scenarios that were never
+> DBC-01's to catch.
+
+### Original note (retained — the scope question it raises is still open)
 
 **DBC-01 detects none of the 28 voice-stress scenarios that target it.** This is
 the same gap the synthetic v2 corpus isolates

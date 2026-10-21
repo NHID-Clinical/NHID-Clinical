@@ -10,6 +10,9 @@ from enum import Enum
 from typing import Optional
 from dataclasses import dataclass
 from pathlib import Path
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class DeploymentMode(str, Enum):
@@ -171,9 +174,25 @@ def load_config() -> NHIDConfig:
     if not secret_key_b64:
         if deployment_mode == DeploymentMode.PRODUCTION:
             raise ValueError("AUDIT_SECRET_KEY_B64 is required in production")
-        # Generate temporary key for development
+        # Generate an ephemeral key for development, and say so loudly.
+        #
+        # This was silent, and the consequence is not obvious: audit events are
+        # HMAC-signed with this key, so a new key per process means every event
+        # written before a restart fails verification afterwards. `verify_chain`
+        # then reports signature failures on events that were written
+        # correctly — indistinguishable from tampering. An operator would
+        # investigate an attack and find a key rotation.
         import os as os_module
         secret_key = os_module.urandom(32)
+        logger.warning(
+            "AUDIT_SECRET_KEY_B64 is not set; generated an EPHEMERAL audit "
+            "signing key for %s mode. Audit events signed with it cannot be "
+            "verified after this process exits, and an existing audit trail "
+            "signed with a different key will read as tampered. Set "
+            "AUDIT_SECRET_KEY_B64 to a stable base64-encoded 32-byte key for "
+            "any environment whose audit trail needs to outlive a restart.",
+            deployment_mode.value,
+        )
     else:
         secret_key = _decode_secret_key(secret_key_b64)
 

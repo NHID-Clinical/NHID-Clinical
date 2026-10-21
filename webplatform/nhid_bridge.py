@@ -288,6 +288,15 @@ def mint_demo_passport(provider_npi: str = "1234567890",
 
     Proves the full round-trip end to end. `tamper=True` corrupts the agent
     signature to demonstrate a genuine ERR_INVALID_SIG rejection.
+
+    **Deliberately on the v1 route, and it must stay there.** This mints a
+    fresh provider keypair on every call and hands the public half to the
+    verifier, so what it demonstrates is the cryptographic round-trip, not
+    trust establishment — the response's `trust: "caller_supplied_key"` says
+    as much. `/v2/identity/verify-passport` resolves the provider key from
+    server-configured trust anchors and refuses a caller-supplied one, so an
+    ephemeral demo key can never satisfy it: pointing this at v2 would return
+    503 on every request, not a better demo.
     """
     from src.agent_identity import AgentIdentityManager
 

@@ -367,8 +367,10 @@ def build_report(corpus_path, scenarios, stats, false_positives, unexpected,
         "  disclose with weak wording are counted as misses; that is a control-scope",
         "  boundary, not a defect.",
         "- This corpus is distinct from the Fabricate corpus (550 conversations,",
-        "  `scripts/confusion_matrix.py`) and the Tonic corpus (150 sessions,",
-        "  `scripts/evaluate_tonic_corpus.py`). Their figures are not interchangeable.",
+        "  `scripts/confusion_matrix.py`) and the voice-stress corpus (300 scenarios,",
+        "  `scripts/confusion_matrix.py --voice-stress`). Their figures are not",
+        "  interchangeable. The former Tonic figures (150 sessions) were retracted",
+        "  on 2026-10-21 as unreproducible — see docs/CORPUS_EVALUATION_SUMMARY.md.",
         "",
     ]
     return "\n".join(L)

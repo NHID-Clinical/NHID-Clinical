@@ -24,7 +24,19 @@ from fastapi.testclient import TestClient
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-if "openai" not in sys.modules:  # pragma: no cover - import shim
+try:  # pragma: no cover - exercised by whichever branch the env provides
+    import openai  # noqa: F401  (import for effect: main -> app -> llm needs it)
+except ImportError:  # pragma: no cover - import shim for envs without openai
+    # Only fake it when the real package is genuinely absent.
+    #
+    # This used to be `if "openai" not in sys.modules`, which installed the
+    # stub whenever this module happened to be imported before anything that
+    # imports openai for real. The stub is never removed, so it leaked into
+    # the whole session: a later test importing `openai.resources` got
+    # "'openai' is not a package". It also made the outcome depend on
+    # collection order, since importing real openai first suppressed the stub.
+    # `openai` is a declared dependency, so in a correctly provisioned
+    # environment this branch does not run at all.
     _openai = types.ModuleType("openai")
 
     class _OpenAI:  # noqa: D401 - stand-in for the real client

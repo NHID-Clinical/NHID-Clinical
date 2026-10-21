@@ -236,6 +236,116 @@ def test_revoked_delegation_denies(manager, provider_keys, agent_keys, resolver)
     assert "revoked" in result.reason.lower()
 
 
+def test_require_call_binding_denies_an_unbound_delegation(
+    manager, provider_keys, agent_keys, resolver
+):
+    """An unbound delegation authorizes any call until it expires.
+
+    `verify_passport` skips the binding check when either side's call_sid is
+    empty, which is right for the primitive — a delegation that names no call
+    asserts no call. But it means a deployment relying on call binding gets no
+    signal when a credential simply does not carry one. This makes that a
+    deployment choice instead of a silent default.
+    """
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"], call_sid="")
+    decision, result = evaluate_dlg01(
+        session(p, manager), event(), ctx(resolver, require_call_binding=True)
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "DLG01_NO_CALL_BINDING"
+    assert result.verified is False
+
+
+def test_require_call_binding_permits_a_bound_delegation(
+    manager, provider_keys, agent_keys, resolver
+):
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    decision, result = evaluate_dlg01(
+        session(p, manager), event(), ctx(resolver, require_call_binding=True)
+    )
+    assert decision.action == PolicyAction.CONTINUE_AI
+    assert result.verified is True
+
+
+def test_an_unbound_delegation_is_permitted_by_default(
+    manager, provider_keys, agent_keys, resolver
+):
+    """Opt-in: the requirement must not change behaviour for anyone who did
+    not ask for it."""
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"], call_sid="")
+    decision, _ = evaluate_dlg01(session(p, manager), event(), ctx(resolver))
+    assert decision.action == PolicyAction.CONTINUE_AI
+
+
+def test_require_call_binding_looks_at_the_leaf_not_the_root(
+    manager, provider_keys, agent_keys, resolver
+):
+    """The leaf is the agent that makes the request, so it is the hop whose
+    binding decides. A chain whose child is unbound fails the requirement even
+    though its root is bound."""
+    chain = build_chain(
+        manager, provider_keys, agent_keys, ["eligibility"], ["eligibility"],
+    )
+    assert chain[0].delegation.call_sid == CALL_SID
+    assert chain[1].delegation.call_sid == ""
+    decision, _ = evaluate_dlg01(
+        session(chain, manager), event(), ctx(resolver, require_call_binding=True)
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "DLG01_NO_CALL_BINDING"
+
+
+def test_durable_revocation_is_honoured(manager, provider_keys, agent_keys, resolver):
+    """A revocation recorded outside this process must reach the control.
+
+    `AgentIdentityManager`'s own revocation lists are per-process and empty on a
+    fresh instance, which is exactly what DLG-01 constructs when a session
+    supplies no manager. The project's durable store
+    (`nhid_event_store.record_revocation`) was consulted only by the HTTP verify
+    route, so a delegation revoked through the API still passed the policy gate.
+    The engine performs no I/O, so the check arrives as an injected callable.
+    """
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    revoked = {p.delegation.delegation_id}
+    decision, result = evaluate_dlg01(
+        session(p, manager),
+        event(),
+        ctx(resolver, revocation_checker=lambda did: did in revoked),
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "DLG01_REVOKED"
+    assert result.verified is False
+
+
+def test_a_revocation_checker_that_revokes_nothing_permits(
+    manager, provider_keys, agent_keys, resolver
+):
+    """The hook must not deny by merely being present."""
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    decision, result = evaluate_dlg01(
+        session(p, manager), event(), ctx(resolver, revocation_checker=lambda did: False)
+    )
+    assert decision.action == PolicyAction.CONTINUE_AI
+    assert result.verified is True
+
+
+def test_a_revoked_hop_anywhere_in_a_chain_denies(
+    manager, provider_keys, agent_keys, resolver
+):
+    """Revoking the root must invalidate everything descended from it."""
+    chain = build_chain(
+        manager, provider_keys, agent_keys, ["eligibility"], ["eligibility"],
+    )
+    root_id = chain[0].delegation.delegation_id
+    decision, _ = evaluate_dlg01(
+        session(chain, manager),
+        event(),
+        ctx(resolver, revocation_checker=lambda did: did == root_id),
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "DLG01_REVOKED"
+
+
 def test_malformed_passport_denies_rather_than_raising(resolver):
     decision, result = evaluate_dlg01(
         session({"not": "a passport"}), event(), ctx(resolver)
@@ -260,13 +370,22 @@ def test_passport_accepted_as_plain_dict(manager, provider_keys, agent_keys, res
 
 # ── 3. Delegation chains ───────────────────────────────────────────────────
 
-def build_chain(manager, provider_keys, agent_keys, parent_scope, child_scope):
+def build_chain(
+    manager, provider_keys, agent_keys, parent_scope, child_scope,
+    child_call_sid="",
+):
+    """Two hops. The child is call-unbound by default, which is the realistic
+    shape: a provider issues the root for a call and the vendor sub-delegates
+    without re-stating the call. `child_call_sid` exists so a test can bind the
+    child too and assert the binding is enforced per hop.
+    """
     parent = make_passport(manager, provider_keys, agent_keys, parent_scope)
     agent_priv, _ = agent_keys
     sub_priv, sub_pub = manager.generate_agent_keys()
     child_delegation = manager.create_delegation(
         agent_priv, "sub-agent-001", sub_pub,
         scope=child_scope, ttl_seconds=3600, provider_npi=PROVIDER_NPI,
+        call_sid=child_call_sid,
     )
     child_sig = manager.sign_delegation(agent_priv, child_delegation)
     child = manager.create_agent_passport(child_delegation, child_sig, sub_priv)
@@ -296,6 +415,73 @@ def test_child_scope_wider_than_parent_denies(
     decision, result = evaluate_dlg01(session(chain, manager), event(), ctx(resolver))
     assert decision.action == PolicyAction.DENY_DATA
     assert "claim_status" in result.reason
+
+
+def test_a_chain_bound_to_another_call_is_denied(
+    manager, provider_keys, agent_keys, resolver
+):
+    """Call binding must survive sub-delegation.
+
+    `test_wrong_call_sid_denies` pins this for a single passport, and that was
+    the whole of the coverage: every other chain test here presents the chain on
+    the call it was issued for. `validate_chain` passed no call_sid to any hop,
+    so a chain minted for one call verified on any other — the single-passport
+    gate was simply absent one level down.
+    """
+    chain = build_chain(
+        manager, provider_keys, agent_keys, ["eligibility"], ["eligibility"],
+    )
+    decision, _ = evaluate_dlg01(
+        session(chain, manager), event(call_sid="CA-different-call"), ctx(resolver)
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "DLG01_VERIFICATION_FAILED"
+
+
+def test_a_call_bound_child_is_checked_against_the_live_call(
+    manager, provider_keys, agent_keys, resolver
+):
+    """Binding is enforced per hop, not only at the root."""
+    chain = build_chain(
+        manager, provider_keys, agent_keys, ["eligibility"], ["eligibility"],
+        child_call_sid="CA-some-other-call",
+    )
+    decision, _ = evaluate_dlg01(session(chain, manager), event(), ctx(resolver))
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "DLG01_VERIFICATION_FAILED"
+
+
+def test_an_unbound_child_rides_the_roots_binding(
+    manager, provider_keys, agent_keys, resolver
+):
+    """The realistic shape must keep working: a child carrying no call_sid
+    asserts no call of its own, so the root's binding is what governs."""
+    chain = build_chain(
+        manager, provider_keys, agent_keys, ["eligibility"], ["eligibility"],
+    )
+    decision, result = evaluate_dlg01(
+        session(chain, manager), event(), ctx(resolver)
+    )
+    assert decision.action == PolicyAction.CONTINUE_AI
+    assert result.verified is True
+
+
+def test_a_chain_narrowed_to_empty_scope_authorizes_nothing(
+    manager, provider_keys, agent_keys, resolver
+):
+    """Giving away all scope must not buy more authority than holding some.
+
+    The empty set is a subset of every set, so `issubset` admits a hop that
+    narrows to nothing — and a `constrains_scope` that required a non-empty
+    scope then read that as "no scope to enforce". A sub-delegation that
+    surrendered its whole grant therefore outranked its own parent: the root's
+    `billing` grant denies a member-ID request, and the chain permitted it.
+    """
+    chain = build_chain(manager, provider_keys, agent_keys, ["billing"], [])
+    ev = event(speech="can you confirm the member id number")
+    decision = evaluate_all(session(chain, manager), ev, ctx(resolver))
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "PDX01_SCOPE_NOT_AUTHORIZED"
 
 
 # ── 4. Delegated scope gates PDX-01 — the product behavior ─────────────────
@@ -356,14 +542,27 @@ def test_phi_accessed_fields_are_scope_checked_not_only_speech(
     assert decision.reason_code == "PDX01_SCOPE_NOT_AUTHORIZED"
 
 
-def test_empty_scope_does_not_constrain(manager, provider_keys, agent_keys, resolver):
-    """A delegation granting nothing is not a licence to enforce nothing —
-    but neither can it be read as authorizing everything. It simply carries no
-    scope to enforce, and PDX-01 falls back to its disclosure-ordering gate."""
+def test_empty_scope_authorizes_nothing(manager, provider_keys, agent_keys, resolver):
+    """A delegation granting nothing authorizes nothing.
+
+    This test previously asserted the opposite — `constrains_scope is False` —
+    while its own docstring said an empty grant "neither can be read as
+    authorizing everything". The code did read it that way: PDX-01's scope gate
+    was skipped, so an empty grant permitted every protected-data field. The
+    docstring was right and the assertion was wrong.
+    """
     p = make_passport(manager, provider_keys, agent_keys, [])
     _, result = evaluate_dlg01(session(p, manager), event(), ctx(resolver))
     assert result.verified is True
-    assert result.constrains_scope is False
+    assert result.constrains_scope is True
+
+    decision = evaluate_all(
+        session(p, manager),
+        event(speech="can you confirm the member id number"),
+        ctx(resolver),
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "PDX01_SCOPE_NOT_AUTHORIZED"
 
 
 def test_unknown_scope_string_authorizes_nothing(
@@ -437,3 +636,140 @@ def test_determinism_across_repeated_evaluation(
         for _ in range(5)
     }
     assert results == {"PDX01_SCOPE_NOT_AUTHORIZED"}
+
+
+# ── 6. NPI check digit (opt-in) ────────────────────────────────────────────
+
+def test_require_npi_check_digit_denies_a_bad_check_digit(
+    manager, provider_keys, agent_keys, resolver
+):
+    """PROVIDER_NPI here is 1234567890 — UDAP's published example, and not
+    Luhn-valid. With the check on, it is rejected before any key is resolved."""
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    decision, result = evaluate_dlg01(
+        session(p, manager), event(), ctx(resolver, require_npi_check_digit=True)
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "DLG01_INVALID_NPI"
+    assert result.verified is False
+
+
+def test_require_npi_check_digit_permits_a_valid_one(manager, agent_keys):
+    """1234567893 is 1234567890 carrying its correct check digit."""
+    valid_npi = "1234567893"
+    provider_priv, provider_pub = manager.generate_agent_keys()
+    anchors = StaticTrustAnchorResolver(
+        {valid_npi: manager.public_key_to_b64(provider_pub)}
+    )
+    p = make_passport(
+        manager, (provider_priv, provider_pub), agent_keys, ["eligibility"],
+        npi=valid_npi,
+    )
+    decision, result = evaluate_dlg01(
+        session(p, manager), event(), ctx(anchors, require_npi_check_digit=True)
+    )
+    assert decision.action == PolicyAction.CONTINUE_AI
+    assert result.verified is True
+
+
+def test_the_check_digit_requirement_is_off_by_default(
+    manager, provider_keys, agent_keys, resolver
+):
+    decision, _ = evaluate_dlg01(
+        session(make_passport(manager, provider_keys, agent_keys, ["eligibility"]),
+                manager),
+        event(),
+        ctx(resolver),
+    )
+    assert decision.action == PolicyAction.CONTINUE_AI
+
+
+# ── 7. Proof of possession through the control (opt-in) ────────────────────
+
+def test_require_possession_proof_denies_when_no_proof_is_answered(
+    manager, provider_keys, agent_keys, resolver
+):
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    decision, _ = evaluate_dlg01(
+        session(p, manager, verifier_nonce="challenge-abc"),
+        event(),
+        ctx(resolver, require_possession_proof=True),
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "DLG01_VERIFICATION_FAILED"
+
+
+def test_require_possession_proof_accepts_the_agents_answer(
+    manager, provider_keys, agent_keys, resolver
+):
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    agent_priv, _ = agent_keys
+    nonce = "challenge-abc"
+    proof = manager.create_presentation_proof(agent_priv, p.delegation, nonce)
+    decision, result = evaluate_dlg01(
+        session(p, manager, verifier_nonce=nonce, presentation_proof=proof),
+        event(),
+        ctx(resolver, require_possession_proof=True),
+    )
+    assert decision.action == PolicyAction.CONTINUE_AI
+    assert result.verified is True
+
+
+def test_a_proof_as_a_plain_dict_is_accepted(
+    manager, provider_keys, agent_keys, resolver
+):
+    """Adapters carry JSON, not Python objects — same reason
+    `test_passport_accepted_as_plain_dict` exists."""
+    from dataclasses import asdict
+
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    agent_priv, _ = agent_keys
+    nonce = "challenge-abc"
+    proof = manager.create_presentation_proof(agent_priv, p.delegation, nonce)
+    decision, _ = evaluate_dlg01(
+        session(p, manager, verifier_nonce=nonce,
+                presentation_proof=asdict(proof)),
+        event(),
+        ctx(resolver, require_possession_proof=True),
+    )
+    assert decision.action == PolicyAction.CONTINUE_AI
+
+
+def test_a_malformed_proof_denies_rather_than_raising(
+    manager, provider_keys, agent_keys, resolver
+):
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    decision, _ = evaluate_dlg01(
+        session(p, manager, verifier_nonce="challenge-abc",
+                presentation_proof={"garbage": True}),
+        event(),
+        ctx(resolver, require_possession_proof=True),
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+
+
+def test_requiring_a_proof_without_issuing_a_challenge_denies(
+    manager, provider_keys, agent_keys, resolver
+):
+    """Fail closed on misconfiguration.
+
+    A deployment that asks for proof of possession but never issues a nonce
+    would otherwise get no check at all — which is precisely how a security
+    requirement becomes decorative, and the shape of three of the defects this
+    change set exists to fix.
+    """
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    decision, result = evaluate_dlg01(
+        session(p, manager), event(), ctx(resolver, require_possession_proof=True)
+    )
+    assert decision.action == PolicyAction.DENY_DATA
+    assert decision.reason_code == "DLG01_NO_CHALLENGE_ISSUED"
+    assert result.verified is False
+
+
+def test_possession_proof_is_off_by_default(
+    manager, provider_keys, agent_keys, resolver
+):
+    p = make_passport(manager, provider_keys, agent_keys, ["eligibility"])
+    decision, _ = evaluate_dlg01(session(p, manager), event(), ctx(resolver))
+    assert decision.action == PolicyAction.CONTINUE_AI

@@ -155,7 +155,8 @@ def carry_disclosure_forward(turns: list[dict[str, Any]]) -> list[dict[str, Any]
     conversation's own terms, fully compliant. That is a wiring gap in the
     harness, not engine behaviour — the identical defect diagnosed and fixed for
     the Tonic corpus (see the session-level note in
-    scripts/evaluate_tonic_corpus.py).
+    scripts/evaluate_tonic_corpus.py; that corpus's *figures* were retracted
+    2026-10-21 as unreproducible, but the defect diagnosis stands).
 
     This returns shallow copies and leaves the input untouched. It is opt-in:
     `build_session` / `build_event` and every existing caller are unchanged, so

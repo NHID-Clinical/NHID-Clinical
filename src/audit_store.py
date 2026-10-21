@@ -2,14 +2,57 @@
 
 Provides durable storage for audit trails, query interfaces, and chain verification.
 Local development uses SQLite; production can extend to DynamoDB (Phase 6B).
+
+What chain verification can and cannot detect
+---------------------------------------------
+`verify_chain` detects **modification** of retained events: each event carries
+an HMAC over its own fields plus its predecessor's id, so altering a payload,
+a timestamp or the ordering breaks the chain.
+
+It detects **wholesale removal** only as far as the `audit_sessions.event_count`
+anchor allows. That counter is incremented on every write and compared against
+the events actually readable, so deleting rows is caught — but the counter
+lives in the same SQLite file as the events, so an attacker with write access
+to the file can edit both. **This raises the cost of tampering from one edit to
+two coordinated edits; it is not a cryptographic guarantee.** A deployment that
+needs one must anchor the count outside this file: an append-only or WORM store,
+a signed periodic checkpoint, or replication to a system the calling agent
+cannot write to. That is documented in docs/claim-boundaries.md and is not
+implemented here.
+
+It cannot detect anything at all if the store is unreadable, which is why an
+unreadable store is reported as a verification **failure** rather than silently
+as an empty, vacuously-valid trail. Returning "valid" for a database that has
+been deleted would make the cleanest attack on an audit log — removing it — the
+one the log reports as fine.
 """
 
 import sqlite3
 import json
+import logging
 import os
 from datetime import datetime, timedelta
 from typing import Optional
 from src.audit_integrity import AuditIntegrity
+
+logger = logging.getLogger(__name__)
+
+#: Reported when a read fails for an infrastructural reason — the file is gone,
+#: corrupt, locked or unreadable. Distinct from "the query matched nothing".
+ERR_AUDIT_STORE_UNREADABLE = "ERR_AUDIT_STORE_UNREADABLE"
+
+#: Reported when the session's declared event count exceeds what can be read,
+#: i.e. events that were written are no longer there.
+ERR_AUDIT_EVENTS_MISSING = "ERR_AUDIT_EVENTS_MISSING"
+
+
+class AuditStoreUnavailable(Exception):
+    """A read could not be completed, so its result is unknown — not empty.
+
+    Raised instead of returning `[]` or `None`, because an audit store that
+    conflates "I could not read" with "there is nothing there" turns every
+    infrastructure failure into a clean bill of health.
+    """
 
 
 class AuditStore:
@@ -23,7 +66,25 @@ class AuditStore:
             secret_key: HMAC secret key for verification (optional; generated if not provided)
         """
         self.db_path = db_path
-        self.secret_key = secret_key or os.urandom(32)
+        if secret_key is None:
+            # Ephemeral key, announced rather than assumed.
+            #
+            # Events are HMAC-signed with this key, so a fresh one per process
+            # means anything already in `db_path` fails verification and
+            # `verify_chain` reports signature failures on events that were
+            # written correctly — the same symptom as tampering. Callers that
+            # need a trail to survive a restart must pass a stable key;
+            # src/config.py reads one from AUDIT_SECRET_KEY_B64 and requires it
+            # in production.
+            secret_key = os.urandom(32)
+            logger.warning(
+                "AuditStore(%s) was constructed without a secret_key, so an "
+                "ephemeral one was generated. Any events already stored there "
+                "will fail verification, and events written now cannot be "
+                "verified after this process exits.",
+                db_path,
+            )
+        self.secret_key = secret_key
         self._integrity = AuditIntegrity(self.secret_key)
         self._init_db()
 
@@ -159,12 +220,20 @@ class AuditStore:
             )
 
             if cursor.rowcount == 0:
-                # Session doesn't exist, create it
+                # Session doesn't exist, create it — counting this event.
+                #
+                # `event_count` defaults to 0 in the schema, so inserting
+                # without it left the first event of every session uncounted
+                # and the anchor permanently one short. That was invisible
+                # while nothing read the column; `verify_chain` now compares
+                # against it, where an off-by-one would let exactly one deleted
+                # event slip through.
                 cursor.execute(
                     """
                     INSERT INTO audit_sessions
-                    (session_id, agent_id, organization_id, retention_days)
-                    VALUES (?, ?, ?, ?)
+                    (session_id, agent_id, organization_id, retention_days,
+                     event_count)
+                    VALUES (?, ?, ?, ?, 1)
                     """,
                     (session_id, agent_id, organization_id, retention_days),
                 )
@@ -172,7 +241,13 @@ class AuditStore:
             conn.commit()
             conn.close()
             return True
-        except Exception as e:
+        except Exception as exc:
+            # False is the honest answer to "did this write land?", but an
+            # audit write failing silently is worth a record of its own.
+            logger.error(
+                "audit write failed for event %r session %r on %s: %s",
+                event_id, session_id, self.db_path, exc,
+            )
             return False
 
     def read_event(self, event_id: str) -> Optional[dict]:
@@ -207,8 +282,13 @@ class AuditStore:
                 "previous_event_id": row["previous_event_id"],
                 "evidence_hash": row["evidence_hash"],
             }
-        except Exception:
-            return None
+        except Exception as exc:
+            # None means "no such event". A read that failed is a different
+            # fact and must not borrow that answer.
+            raise AuditStoreUnavailable(
+                f"{ERR_AUDIT_STORE_UNREADABLE}: could not read event "
+                f"{event_id!r} from {self.db_path}: {exc}"
+            ) from exc
 
     def query_events(
         self,
@@ -267,8 +347,39 @@ class AuditStore:
                 }
                 for row in rows
             ]
-        except Exception:
-            return []
+        except Exception as exc:
+            # An empty list means "nothing matched". A failed read means the
+            # answer is unknown, and presenting it as "nothing happened" is
+            # how a corrupt audit trail reads as a quiet one.
+            raise AuditStoreUnavailable(
+                f"{ERR_AUDIT_STORE_UNREADABLE}: could not query {self.db_path}: {exc}"
+            ) from exc
+
+    def declared_event_count(self, session_id: str) -> Optional[int]:
+        """How many events `write_event` recorded for this session.
+
+        Maintained by `write_event` on every call, and the only independent
+        witness this store has to how many events *should* be readable. Returns
+        None when no session row exists, which is different from 0.
+
+        See the module docstring for why this is a cost increase rather than a
+        guarantee: the counter shares a file with the events it describes.
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT event_count FROM audit_sessions WHERE session_id = ?",
+                (session_id,),
+            )
+            row = cursor.fetchone()
+            conn.close()
+            return None if row is None else int(row[0])
+        except Exception as exc:
+            raise AuditStoreUnavailable(
+                f"{ERR_AUDIT_STORE_UNREADABLE}: could not read the session "
+                f"anchor for {session_id!r} from {self.db_path}: {exc}"
+            ) from exc
 
     def verify_chain(self, session_id: str) -> tuple[bool, Optional[str]]:
         """Verify integrity of entire audit trail for a session.
@@ -279,9 +390,33 @@ class AuditStore:
         Returns:
             Tuple of (is_valid, error_message)
         """
-        events = self.query_events(session_id=session_id, limit=10000)
+        try:
+            events = self.query_events(session_id=session_id, limit=10000)
+            declared = self.declared_event_count(session_id)
+        except AuditStoreUnavailable as exc:
+            # Cannot read, therefore cannot attest. Previously this surfaced as
+            # an empty list and the `if not events` branch below reported the
+            # trail as valid — so deleting the database, the cleanest attack on
+            # a log, produced a passing integrity check.
+            return False, str(exc)
+
+        # The anchor is the only independent witness to how many events were
+        # written. Fewer readable than declared means events are gone, which a
+        # hash chain over the survivors cannot notice: the remaining links
+        # still agree with each other.
+        if declared is not None and declared > len(events):
+            return False, (
+                f"{ERR_AUDIT_EVENTS_MISSING}: session {session_id!r} declares "
+                f"{declared} event(s), {len(events)} readable"
+            )
 
         if not events:
+            if declared is None:
+                # No session row and no events: this store has no record of the
+                # session at all. Vacuously consistent, and said explicitly so
+                # a caller cannot read it as "verified".
+                return True, None
+            # declared == 0: the session was opened and nothing was written.
             return True, None
 
         # Build verification format
@@ -314,8 +449,14 @@ class AuditStore:
             )
             conn.commit()
             conn.close()
-        except Exception:
-            pass
+        except Exception as exc:
+            # Non-fatal: failing to *record* the verification must not change
+            # the verification's answer. But it was silent, which meant a store
+            # that could no longer write its own audit of audits said nothing.
+            logger.warning(
+                "could not persist the verification record for session %r to "
+                "%s: %s", session_id, self.db_path, exc,
+            )
 
         return is_valid, error
 
@@ -335,8 +476,13 @@ class AuditStore:
             conn.commit()
             conn.close()
             return count
-        except Exception:
-            return 0
+        except Exception as exc:
+            # 0 means "nothing was due for pruning". A failed prune is not that,
+            # and reporting it as 0 would show a retention job as working.
+            raise AuditStoreUnavailable(
+                f"{ERR_AUDIT_STORE_UNREADABLE}: prune failed on "
+                f"{self.db_path}: {exc}"
+            ) from exc
 
     def close_session(self, session_id: str) -> bool:
         """Mark a session as closed.

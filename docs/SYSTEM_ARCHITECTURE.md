@@ -2,7 +2,7 @@
 
 **Date**: 2026-08-11  
 **Version**: v1.3-shadow-ready  
-**Status**: Pilot Ready (1222 tests passing, 0 skipped, 0 xfailed; schema adapter operational)
+**Status**: Pilot Ready (1752 tests passing, 0 skipped, 0 xfailed; schema adapter operational)
 
 ---
 
@@ -399,7 +399,7 @@ Both branches return `ESCALATE_HUMAN` — the action states what should happen, 
 ### 4.1 Pipeline
 
 ```
-Tonic Corpus (150 sessions, 1,227 turns)
+Tonic-shaped flat CSV corpus (path is a required argument; see below)
   ├─ CSV Load: session_id, turn_number, speaker, utterance, event_type, ...
   │
   ├─ [TonicschemAdapter.load_corpus()]
@@ -420,31 +420,34 @@ Tonic Corpus (150 sessions, 1,227 turns)
   │       └─ corpus_failures.json (any exceptions encountered)
   │
   └─ [Compare: Expected (corpus ground truth) vs Detected (engine output)]
-      ├─ IDG-01: 64 violations expected, 64 detected (0% FP rate)
-      ├─ PDX-01: 64 violations expected, 64 detected (100% accuracy)
-      ├─ DBC-01: 23 violations expected, 23 detected (100% accuracy)
-      ├─ EIT-01: 2 violations expected, 2 detected (100% detection)
-      └─ ATR-01: 150 sessions audited (100% events logged)
 ```
 
-### 4.2 Metrics Interpretation
+### 4.2 Metrics Interpretation — RETRACTED 2026-10-21
 
-**Perfect Controls** (100% accuracy):
-- PDX-01: Adapter correctly infers PHI fields from utterance; engine correctly checks pre-disclosure PHI access
-- DBC-01: Adapter correctly maps deception patterns; engine correctly detects explicit deception
+> **The per-control figures formerly in §4.1 and §4.2 are withdrawn.** They
+> came from `corpus_evaluation_output/corpus_metrics.json`, whose input was
+> hardcoded to a vanished session-upload path and was never tracked in git, so
+> nothing can reproduce them. The output files are deleted and the directory is
+> gitignored. Full reasoning:
+> [`CORPUS_EVALUATION_SUMMARY.md`](CORPUS_EVALUATION_SUMMARY.md).
+>
+> This section also read as self-contradictory: §4.1 reported "IDG-01: 64
+> expected, 64 detected (0% FP)" while §4.2 reported IDG-01 firing on "148/148
+> when only 64 expected". Per the Conclusion, those were pre-fix figures left
+> standing beside post-fix ones rather than a disagreement about one run — but
+> leaving both in place without saying which was current is its own defect.
 
-**Problematic Controls** (open, under investigation):
-- IDG-01: Every session detecting violations (148/148) when only 64 expected
-  - Root cause: Adapter disclosure_timestamp inference OR engine IDG-01 semantics mismatch
-  - Investigation: Compare adapter inferences vs. corpus labels for CLEAN sessions (should all PASS)
-  
-- EIT-01: Zero violations detected when 2 expected
-  - Root cause: Multi-turn escalation state tracking through adapter not reconstructing engine state correctly
-  - Investigation: Deep-dive into escalation_request_turn and escalation_outcome mapping
+The reproducible per-control figures, and the commands that regenerate them, are
+in [`CONTROL_DECISION_TABLE.md`](CONTROL_DECISION_TABLE.md). In summary: measured
+on Fabricate (CSV-550, CI-gated) IDG-01 70/70, PDX-01 41/41, DBC-01 183/200 with
+5 false positives, EIT-01 169/171 with 5; measured on voice-stress, DBC-01 **0/28**
+and EIT-01 12/25 with 6. ATR-01 is **not** corpus-measurable in transcript replay
+— the harness synthesizes the audit envelope, so detecting its absence would be
+tautological; it is covered by the CTS envelope tests.
 
-**Audit Trail** (ATR-01):
-- Working as designed: 5 audit events logged per turn
-- Persistence layer (external AuditPersistenceManager) is operational
+**Audit Trail (ATR-01) — what is still true:** the audit path emits events per
+turn and the external `AuditPersistenceManager` is operational. That is a
+capability statement (tier 1), not a detection rate.
 
 ---
 
@@ -453,7 +456,7 @@ Tonic Corpus (150 sessions, 1,227 turns)
 ### 5.1 Shadow Pilot (Tier 0, Current)
 
 **Status**: Production Ready  
-**Test Coverage**: 1222 passing tests, 0 skipped, 0 xfailed  
+**Test Coverage**: 1752 passing tests, 0 skipped, 0 xfailed  
 **Release Tag**: v1.3-shadow-ready  
 
 **Deployment**:
@@ -497,7 +500,7 @@ Receiver obligations for each action are specified normatively in
 ```
 NHID-Clinical/
 ├─ src/
-│   └─ nhid_policy_engine_v1.py (1222 tests passing)
+│   └─ nhid_policy_engine_v1.py (1752 tests passing)
 │       ├─ evaluate_all(session, event) → PolicyDecision
 │       ├─ IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 implementations
 │       └─ No I/O, no external calls, pure functional
@@ -505,7 +508,7 @@ NHID-Clinical/
 ├─ scripts/
 │   ├─ validate_ci.py (updated: flexible test count)
 │   ├─ tonic_schema_adapter.py (schema transformation)
-│   └─ evaluate_tonic_corpus.py (corpus evaluation harness)
+│   └─ evaluate_tonic_corpus.py (corpus evaluation harness; corpus path required)
 │
 ├─ tests/                     (56 files, 1222 tests, all passing)
 │   ├─ test_atr01_audit_trail.py   (12 tests)
@@ -523,9 +526,8 @@ NHID-Clinical/
 │   ├─ enforcement-profile.md (normative receiver actions)
 │   └─ claim-boundaries.md (policy on external claims)
 │
-└─ corpus_evaluation_output/
-    ├─ corpus_metrics.json (per-control metrics)
-    └─ corpus_detailed_results.json (first 50 sessions)
+(corpus_evaluation_output/ was deleted 2026-10-21 and is now gitignored —
+ its figures were unreproducible; see CORPUS_EVALUATION_SUMMARY.md)
 ```
 
 IDG-01 and PDX-01 are exercised across the adapter and endpoint suites rather than in
@@ -536,22 +538,25 @@ dedicated per-control files.
 ## Conclusion
 
 NHID-Clinical v1.3 is a **pure, testable, deterministic policy engine** suitable for Tier 0
-shadow (observe-only) evaluation. The corpus evaluation framework exercises the control
-implementations against 150 reference scenarios; the results in
-`corpus_evaluation_output/corpus_metrics.json` are mixed and are reported as measured:
+shadow (observe-only) evaluation.
 
-| Control | Detection rate | False-positive rate | Accuracy |
-| :-- | --: | --: | --: |
-| IDG-01 | 100.0% | 0.0% | 100.0% |
-| PDX-01 | 100.0% | 0.0% | 100.0% |
-| DBC-01 | 100.0% | 0.0% | 100.0% |
-| EIT-01 | 100.0% | 0.0% | 100.0% |
+> **Retracted 2026-10-21.** This conclusion previously published a table showing
+> 100.0% detection, 0.0% false-positive rate and 100.0% accuracy for all four
+> behavioural controls, "reported as measured" from
+> `corpus_evaluation_output/corpus_metrics.json`. Withdrawn: that file's input
+> was hardcoded to a vanished session-upload path never tracked in git, so no
+> one can reproduce, check or dispute the result. Reasoning in
+> [`CORPUS_EVALUATION_SUMMARY.md`](CORPUS_EVALUATION_SUMMARY.md). The
+> corpus-evaluation *defect fixes* it described (assertion text not carried
+> forward, IDG-01 scored per turn rather than per session, escalation data in
+> unused metadata, incomplete audit context) were real and remain in
+> `scripts/tonic_schema_adapter.py`; the policy engine was not modified.
 
-All four behavioural controls detect every seeded violation with no false positives against this
-corpus. The earlier IDG-01 (100% FP) and EIT-01 (0% detection) results were caused by four defects
-in the corpus-evaluation path — assertion text not carried forward, IDG-01 scored per turn rather
-than per session, escalation data routed into unused metadata, and an incomplete audit context —
-all fixed in `scripts/tonic_schema_adapter.py` and `scripts/evaluate_tonic_corpus.py`. The policy
-engine was not modified. A 150-session synthetic corpus with 2 seeded escalation failures is a
-floor, not a validation, which is why Tier 0 remains observe-only. The unit suite is green:
-1222 passing, 0 skipped, 0 xfailed.
+The reproducible per-control figures are in
+[`CONTROL_DECISION_TABLE.md`](CONTROL_DECISION_TABLE.md), each with the command
+that regenerates it. They are **not** uniform: against Fabricate (CSV-550,
+CI-gated) IDG-01 is 70/70 and PDX-01 41/41, but DBC-01 is 183/200 with 5 false
+positives and EIT-01 169/171 with 5; against voice-stress DBC-01 is **0/28** and
+EIT-01 12/25 with 6. A synthetic corpus is a floor, not a validation, which is
+why Tier 0 remains observe-only. The unit suite is green: 1752 passing, 0
+skipped, 0 xfailed.

@@ -192,6 +192,14 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/identity/verify-passport
             Method: POST
+        IdentityVerifyPassportV2Post:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v2/identity/verify-passport
+            Method: POST
+            Auth:
+              ApiKeyRequired: true
         IdentityRevokePassportPost:
           Type: Api
           Properties:

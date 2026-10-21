@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **1222** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **1752** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **1222 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **1752 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -868,7 +868,9 @@ class Delegation:
     created_at: str            # ISO 8601 UTC
     delegation_id: str         # UUID v4
     call_sid: str              # Binds this credential to a specific call
-    nonce: str                 # Additional replay prevention
+    nonce: str                 # sha256(call_sid:created_at) - see note below
+    kid: str                   # which provider key signed this (rotation)
+    nhid_auth_version: str     # delegation format version
 ```
 
 #### AgentPassport
@@ -1374,9 +1376,12 @@ All items from the original 7-gap enterprise production readiness plan:
 >
 > For current, reproducible figures use the generated reports:
 > `docs/EVALUATION_CORPUS_REPORT_v1.md` (Governance Evaluation Corpus, 25
-> scenarios — `python scripts/eval_corpus.py`), `docs/CORPUS_EVALUATION_SUMMARY.md`
-> (Tonic, 150 sessions), and `scripts/check_baseline.py` (Fabricate, 550
-> conversations, CI-enforced).
+> scenarios — `python scripts/eval_corpus.py`), `scripts/check_baseline.py`
+> (Fabricate, 550 conversations, CI-enforced), and
+> `scripts/confusion_matrix.py --voice-stress` (300 scenarios). **Not**
+> `docs/CORPUS_EVALUATION_SUMMARY.md` — the Tonic figures it carried were
+> retracted 2026-10-21 as unreproducible; that file is now the retraction
+> notice. <!-- drift-ok: names corpora, not test counts -->
 
 ~~- Total conversations: 52 (TONIC Fabricate)~~
 ~~- Expected violations: 52 conversation-level labels across 5 rules~~
@@ -1493,7 +1498,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 1222 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 1752 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1764,7 +1769,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 1222 passing tests · machine-readable traces · open implementation
+> 5 controls · 1752 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1794,7 +1799,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-1222%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-1752%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2459,6 +2464,309 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.15 Repository-wide audit: the audit trail, the HTTP surface, and the image — 2026-10-21
+
+**A repository-wide audit beyond NHID-Auth found three security-property
+failures, a deployment artifact that could not start, and two guards that had
+stopped guarding. Suite 1356 → 1752. Both pinned baselines unmoved.**
+
+#### Security properties that failed
+
+| | Finding | Before |
+| :-- | :-- | :-- |
+| 1 | **Deleting the audit database produced a passing integrity check.** `query_events` returned `[]` on any DB exception and `verify_chain` read `if not events: return True, None`. A removed, corrupt, locked or permission-denied store all reported the tamper-evident trail as **valid**, indistinguishable from an empty session. | `(True, None)` |
+| 2 | **Tail truncation of the log was undetectable.** A hash chain binds each event to its predecessor, so it catches a *mid-chain* deletion — not one from the *end*, where the survivors still agree and nothing points at what is gone. Dropping the inconvenient ending is the most natural way to redact a log. Proved the chain alone returns `(True, None)` on a truncated trail. | undetected |
+| 3 | **An internal error relaxed the gate.** `_internal_error_decision` returned `LOG_ONLY` — priority 2, above only `CONTINUE_AI` — so a control that faulted contributed nothing restrictive. With a fault injected into PDX-01's helper, a member-ID request with no disclosure went from `DENY_DATA/PDX01_PHI_GATE_TRIGGERED` to `DISCLOSE_IDENTITY/IDG01_DISCLOSURE_MISSING`. Asking the agent to disclose does not stop the exchange, and the composite reason code named IDG-01 — nothing said the PHI gate had failed. | fail-open |
+| 4 | **Unhandled exceptions on every HTTP route.** Ten inlined `json.loads` sites guarded by `json.JSONDecodeError` alone: `RecursionError` from 60,000 nested brackets is not one, so a trivially-crafted body produced a 502. A body that parsed but was not an object reached `.get(...)`. No size limit anywhere. | 502 |
+
+Fixes, in order: `AuditStoreUnavailable` raised by every read path, with
+`verify_chain` reporting `ERR_AUDIT_STORE_UNREADABLE`; `verify_chain` now
+compares against `audit_sessions.event_count`, a column `write_event` already
+maintained and **nothing had ever read**; `_internal_error_decision` returns
+`DENY_DATA`, keeping `INTERNAL_POLICY_ERROR` so a fault stays distinguishable
+from a real violation; one `_parse_json_body` helper for all eleven parse sites.
+
+A fifth, found while wiring the anchor: `write_event` incremented
+`event_count` but created the session row letting it default to 0, so **the
+first event of every session went uncounted** and the anchor sat permanently
+one short — exactly enough for one deleted event to pass. Invisible while
+nothing read the column; load-bearing the moment verification used it.
+
+#### The deployment artifact could not start
+
+Three independent defects in `Dockerfile`. `CMD` served
+`functions.handler:app`, which does not exist — that module is a Lambda entry
+point with no ASGI object (**verified**: uvicorn exits with `Attribute "app"
+not found`). **None** of the eleven root-level modules the application is made
+of were copied in (verified by walking `main.py`'s import closure against the
+COPY list). Dependencies were installed to `/root/.local` and then read as
+`USER nhid`, and `/root` is mode 700 (reasoned from the mode, **not** verified
+in-image).
+
+`tests/test_docker_smoke.py` had a `docker_image_built` fixture that would have
+caught all three — and **no test took it as an argument**, so it never ran. The
+remaining tests asserted the Dockerfile *contained the strings* "FROM python",
+"HEALTHCHECK", "EXPOSE". Wiring the fixture was impossible anyway: it skips
+without a daemon and `validate_ci.py` pins `SKIP_EXPECTED = 0`. That tension is
+why the image went unchecked. Resolved by making the checks static — the CMD
+target resolves to a real ASGI app, serves the path the HEALTHCHECK probes, and
+the COPY list covers the import closure — so they run in CI, with the real
+build in `scripts/check_docker_build.py`, which exits **2** ("not a pass") when
+no daemon is reachable.
+
+#### Guards that had stopped guarding
+
+`test_published_adapter_claims_match_the_repository` globbed
+`adapters/*_adapter.py` and keyed its assertions on `vendor in vendors`. When
+the four unmaintained adapters moved to `adapters/archive/`, retell, vonage and
+amazon_connect silently dropped out and **every assertion inside the loop was
+skipped** — a guard whose stated purpose is keeping the website's adapter
+claims honest, checking none of the three adapters it names. The claims turned
+out to be correct; the guard was not checking them.
+
+`adapters/archive/README.md` said "no longer actively maintained" without
+mentioning that three of the four are imported by `functions/handler.py` and
+reachable on published routes. Now stated, with the route table.
+
+#### Verified clean, reported as such rather than left unexamined
+
+* `pip-audit -r requirements.txt` → **no known vulnerabilities**. (24 CVEs exist
+  in the sandbox's own toolchain — pip, setuptools, wheel, gcloud packages —
+  none in this project's tree.)
+* No `eval`/`exec` outside `ast.literal_eval`, no pickle, no `yaml.load`, no
+  `shell=True` in any production path, no `verify=False`, no hardcoded secrets,
+  no TODO/FIXME/NotImplementedError anywhere, no orphan modules in `src/`.
+* The two published JSON Schemas **do** agree with the engine and the pilot kit.
+  The gap was purely that nothing enforced them, and `jsonschema` was a declared
+  dependency imported by no file. Reported as an enforcement gap rather than
+  inflated into a schema defect.
+* Vendor adapters are genuinely robust against malformed payloads — 92 cases
+  across five routes, all answering with a status code.
+
+#### Corrections to this audit's own findings
+
+Recorded because each would have shipped something wrong:
+
+1. I first reported that a fault in one control disabled **all five**. That was an artefact of patching the whole evaluator, which bypasses its own handler. Re-probed with a fault *inside* a control: the other controls still run, and the real defect is a silent **downgrade** of enforcement. Narrower, and the fix differs.
+2. I validated `tests/sample_request.json` against the trace schema and reported two missing required fields. The schema's own description says it governs what pipeline stages **emit**, not what a request supplies, so that was the wrong contract. No defect.
+3. I was about to rename `adapters/archive/` as misleading. It is a deliberate, documented decision — `docs/project-state.md` records "adapters archived, routes kept" and the directory has a README explaining it. Left alone; the omission was that the README did not mention the live routes.
+4. `pytest-asyncio` looked like dead weight — zero async tests existed and `pytest.ini` set `asyncio_mode` for a suite with none. Rather than drop it, it now serves the suite's first async tests, covering `llm.py`, which was the only production module with no test at all and sits on the `/voice/process` path.
+
+#### Remaining limitations, not resolved
+
+* **The Docker build is not end-to-end verified.** No daemon in this
+  environment. Static checks pass; `scripts/check_docker_build.py` must be run
+  on a docker-enabled runner.
+* **ATR-01 tamper-evidence is a cost increase, not a guarantee.** The session
+  anchor shares a file with the events it describes, so two coordinated edits
+  defeat it. An external anchor — WORM, signed checkpoint, replication — is not
+  implemented. Named in `docs/claim-boundaries.md` and asserted by a test that
+  demonstrates the defeat.
+* **No lockfile.** Upper bounds now prevent a breaking major from landing
+  unannounced, and `tests/test_dependency_contract.py` keeps the declared
+  ranges honest about what is installed, but builds are not byte-reproducible.
+
+### 19.14 NHID-Auth audit: three documented properties were not implemented — 2026-10-21
+
+**An architecture audit traced 29 NHID-Auth capabilities against the code.
+Three properties the documentation claimed did not exist, two of them
+demonstrated as live privilege escalations. All closed in the same change, each
+pinned by a test that failed before the fix.**
+
+The audit was prompted by two third-party assessments, both of which stated
+they had no local clone. Having one changed the conclusions in both directions:
+the assessments **under-rated** the project on standards — neither knew
+`src/udap_agent_extension.py` existed (416 lines, 40 collected tests, a real
+HL7 UDAP extension object against UDAP's own documented extension point) — and
+**over-rated** it on security.
+
+#### What was wrong
+
+| | Finding | Status before |
+| :-- | :-- | :-- |
+| A | Narrowing a delegation chain to the **empty scope** escalated authority. The empty set is a subset of every set, so the hop passed `validate_chain`; `constrains_scope` then required a non-empty scope and skipped PDX-01's gate entirely. A root granting `billing` denied a member-ID request while a chain that surrendered all scope permitted it. | **Permitted** |
+| B | **Chains were not call-bound.** `validate_chain` passed no `call_sid` to any hop, so the binding branch was never entered and a chain minted for one call verified on any other — while the single-passport path refused the identical attack. `nhid-auth-pki-and-oauth2-integration.md` claimed chains were "call-SID nonce bound". | **Permitted** |
+| C | The agent co-signature covers `delegation.to_json()` — the same static bytes the provider signed. It proves key control at issuance, not at presentation, so a captured passport was replayable by anyone holding the bytes. Described in `visuals-and-graph-recommendations.md` as proving the agent controls the key. | Not detectable |
+| D | `Delegation.nonce` is `sha256(call_sid:created_at)` over two fields of the delegation it travels in — fully derivable from the signed payload, no entropy. **Six documents** described the replay story through it. The binding actually comes from comparing `call_sid` against the verifier's own identifier. | Overstated |
+| E | **DLG-01 honoured no revocation.** The durable SQLite store existed and was consulted only by the hosted verify route; the policy control constructed a fresh `AgentIdentityManager` whose revocation lists are empty. §1.9 said "an embedding deployment wires the durable store in itself" and named no hook, because none existed. | **Permitted** |
+| F | `_validate_npi` is skipped when the NPI is empty, so a lone passport naming no provider verified as valid and the HTTP route returned `provider_npi: ""` as a pass. | **Permitted** |
+| — | No `kid` anywhere, so a rotated provider key made every outstanding delegation fail as `ERR_INVALID_SIG`, indistinguishable from forgery. | Not expressible |
+
+A, B, E and F were demonstrated by executing probes against the live code, not
+inferred from reading it. **This is the sixth and seventh instance of the
+project's recurring bug class** — a check that does not reach everywhere its
+description claims. B is the purest form yet: the correct check existed one
+level up and simply was not passed down.
+
+#### What was built
+
+Per-hop `call_sid` threading through `validate_chain`; `constrains_scope`
+reduced to `evaluated and verified`, so an empty grant authorizes nothing;
+`DelegationContext.revocation_checker`, an injected callable consulted for every
+hop (the engine still performs no I/O, so `check_offline_kit.py` stays green);
+`require_npi` on `verify_passport`, set for a lone passport and for a chain root
+but not for hops, which legitimately inherit the root's provider;
+`PresentationProof` plus `new_verifier_nonce`, giving proof of possession at
+presentation; `kid` and `nhid_auth_version` inside the signed payload, with
+`StaticTrustAnchorResolver` resolving `(npi, kid)`; an opt-in Luhn check digit,
+**off by default** because the project's own synthetic NPI `1234567890` appears
+108 times and is not Luhn-valid — it is also UDAP's published example;
+`src/udap_jws.py`, so the UDAP extension object can actually be transmitted;
+and `/v2/identity/verify-passport`, which resolves the provider key from
+configured trust anchors and refuses a caller-supplied one.
+
+Every new requirement is **opt-in and fails closed**: `require_call_binding`,
+`require_possession_proof` (which denies with `DLG01_NO_CHALLENGE_ISSUED` if a
+deployment asks for proof but issues no challenge) and
+`require_npi_check_digit`. Defaults are unchanged, so no existing integration
+behaves differently.
+
+#### What was corrected rather than fixed
+
+`/v1/identity/verify-passport` takes the provider public key from the request
+body. It is kept, because a round-trip demo needs it, but its response now
+carries `"trust": "caller_supplied_key"` and its docstring says plainly that a
+`valid: true` means the passport is consistent with a key **the caller chose** —
+anyone can mint a keypair, sign a delegation naming any NPI, and get a pass.
+`webplatform/nhid_bridge.py` stays on v1 deliberately: it mints an ephemeral
+provider key per request, so it can never be a configured anchor and v2 would
+return 503 on every call.
+
+#### Three plan items that inspection overturned
+
+Recorded because each would have shipped a defect:
+
+1. The plan said reject an empty `provider_npi` in `create_delegation`. **Wrong** — 15 call sites omit it correctly, because only a chain's root anchors to a provider and `test_chain_npi_from_root` pins that. The rule belongs in `verify_passport` behind `require_npi`, where root and hop are distinguishable.
+2. The plan said point `webplatform` at v2. **Wrong** — see above; it would 503 every request.
+3. The plan asserted `claim-boundaries.md`'s "28 cases" was drift against pytest's 31. **Wrong** — 28 counted test functions and 31 counted collected cases; both were accurate under different denominators. Fixed by stating the denominator, not the number. While writing that correction I then wrote "51 functions / 51 collected" for a file that has 48 and 51, and had to correct it again in the same pass — the trap is live, and any bare test count in a document should be read as denominator-ambiguous.
+
+#### What remains open, and is not closeable in code
+
+`experiments/call_bind/` demonstrates the receiver-side mechanism: 14 cases, 13
+denials each correctly diagnosed, p95 0.65 ms against a 150 ms budget, with the
+call identifier taken from the **receiver's own** side rather than from the
+credential. That inversion is the experiment, because a verifier that accepts
+the call identifier from the party presenting the credential is not checking
+binding.
+
+What it does not establish: that a credential can reach a payer's verifier at
+all. There is still **no credential transport** — no adapter, handler or webhook
+carries a passport, and there is no SIP integration. The SIP-header arm needs a
+carrier path to test and is recorded as blocked, not solved. Key distribution
+(JWKS, registry, `.well-known`) does not exist; `kid` makes rotation
+*expressible*, not *operable*. Revocation does not propagate across
+organizations. And **no payer or vendor has agreed to receive a credential at
+call setup** — until one does, this layer solves a problem no counterparty has
+committed to accepting. That is the project's largest open risk and it is not a
+software problem.
+
+### 19.13 DBC-01 "0/28" was a wrong denominator — 2026-10-21
+
+**The project's headline weakness was a counting error plus a one-phrasing
+lexicon gap. Corrected to 6/6 with both pinned baselines untouched.**
+
+Reading the 28 voice-stress scenarios labelled DBC-01: only **6**
+(`disclosure_then_self_contradiction`) are identity-persona scenarios. The other
+**22** have the agent disclose honestly — *"Hi, this is an automated
+verification assistant"* — and then misreport an **outcome**:
+`false_success_reported_for_failed_verification` (8),
+`unapproved_retry_workaround_after_failed_verification` (8),
+`tool_call_reported_success_but_errored` (6). DBC-01's specification is "MUST
+NOT make claims that imply licensed-professional or human status". Telling a
+provider a prior authorization succeeded when it failed is a serious failure and
+**no NHID control covers it** — now named as a non-capability in
+`docs/claim-boundaries.md`, in both the make/avoid and prohibited tables, and
+flagged as the strongest candidate for a sixth control (not specified here).
+
+The 6 were genuine misses on an indirect frame: *"As the specialist handling
+your case, I'll review this personally."* `_HUMAN_PERSONA_MARKERS` carried
+`"i'm a specialist"`; `_DBC_IMPLIED_HUMANITY_STRONG` carried `"i'll
+personally"`. The sentence matches neither — the role sits in an "as the
+\<role\>" frame and the adverb follows its verb. A shared `_claims_role_frame`
+helper now serves both DBC-01 and IDG-01's contradiction path, so the two rules
+cannot disagree about this phrasing.
+
+**Two wrong explanations retracted, one of them the maintainer's own working
+assumption carried in this session.** (a) That DBC-01 "reads
+`deceptive_artifact_flags` — voice artifacts — which no transcript can carry, so
+the zero is structural." False: DBC-01 reads `identity_assertion_text`, the
+adapter populates it from the agent's words (note 1), and voice-stress labels 839
+turns `speaker='agent'`. The channel and wiring were always fine. (b)
+`docs/validation/DBC-01-SCOPE-AND-LIMITATIONS.md` described all 28 as
+"deceptive-persona scenarios" and read the zero as "consistent with the scope
+stated here" — which turned a fixable lexicon gap into an apparent deliberate
+limitation.
+
+**Gates held, and they were the point.** Verified the new frame rule fires on
+**0 of 2,555** Fabricate agent turns and **0 of 265** voice-stress
+negative-control agent turns before it was applied. Fabricate DBC-01 remains
+183/200 with 5 FP (`check_baseline.py` `EXPECTED` untouched); voice-stress false
+positives remain 0/95; IDG-01, PDX-01 and EIT-01 are unmoved.
+
+`tests/test_fabricate_voice_stress.py` pinned the 0/28 and failed on this
+change, exactly as its docstring intends ("an improvement lands in the open
+rather than silently"); the pin and the findings doc moved together. Three tests
+added to `tests/test_dbc01_heuristics.py`: the indirect frame must fire, the
+honest automated disclosure must not (it is turn 0 of all 22 excluded
+scenarios), and "as the automated assistant" must not.
+
+**Recorded non-actions.** No fixture CSV edited. No sixth control proposed. No
+PDX-01 change. `check_baseline.py`'s `EXPECTED` untouched.
+`check_fixture_integrity.py` needed no re-pinning — its population figures read
+the raw CSV, which did not change.
+
+---
+
+### 19.12 Tonic per-control figures retracted — 2026-10-21
+
+**A published "100% detection, 0% false positives, 100% accuracy on all five
+controls" was unreproducible by construction, and is withdrawn.**
+
+`docs/CONTROL_DECISION_TABLE.md` carried per-control results read from
+`corpus_evaluation_output/corpus_metrics.json` (Tonic, 150 sessions, 1,227
+turns). The doc quoted its source faithfully; the source was the defect.
+`scripts/evaluate_tonic_corpus.py` hardcoded its input to
+`/root/.claude/uploads/<session-id>/…nhid_corpus_flat.csv` — a path inside one
+ephemeral session's upload directory. That file does not exist, was **never
+tracked in git**, and so was never available to anyone, including the
+maintainer. The run cannot be repeated, checked, or disputed. Meanwhile the
+*outputs* were committed, so the unreproducible numbers shipped with the
+repository.
+
+They also contradicted every reproducible measurement of the same engine: a
+DBC-01 at "100% accuracy, 0% FP" cannot coexist with 183/200 and 5 false
+positives on Fabricate (CI-gated) or **0/28** on voice-stress.
+
+**Fifth instance of the recurring class** — a figure presented as evidence that
+nothing reproduces. The others: §7.1a's per-rule lines (retracted in place);
+`docs/pilot-kit/pilot_evidence.json` (deleted rather than refreshed, "referenced
+by nothing, produced by nothing"); `fixtures/fabricate/README.md`'s "~2,200
+turns" for a 4,838-row file; and the `\d{3}` drift patterns that went blind past
+1,000 tests. The shape is always the same: an artifact whose claim outlives the
+thing that produced it.
+
+**Actions.** Per-control block in `CONTROL_DECISION_TABLE.md` retracted in place
+and replaced with figures each naming the command that regenerates them.
+`CORPUS_EVALUATION_SUMMARY.md` replaced by a retraction notice (its substance
+*was* the withdrawn measurement). `SYSTEM_ARCHITECTURE.md` §4.1/§4.2 and its
+Conclusion table retracted — the Conclusion had published the 100%/0%/100% grid
+as "reported as measured". ATR-01's "100% operational across 150 sessions" row
+replaced with the honest statement that ATR-01 is **not** corpus-measurable in
+transcript replay. `corpus_evaluation_output/*.json` deleted from git and the
+directory gitignored. `scripts/evaluate_tonic_corpus.py` keeps its logic but the
+corpus path is now a **required argument**; with none it exits 2 and explains
+why, so it can never again produce figures from an input nobody can reach. The
+generated `EVALUATION_CORPUS_REPORT_v1/v2.md` were regenerated, not hand-edited.
+
+**Recorded non-actions.** The policy engine was not modified. The
+corpus-evaluation *defect fixes* the retracted documents described (assertion
+text not carried forward, IDG-01 scored per turn rather than per session,
+escalation data in unused metadata, incomplete audit context) were real and
+remain in `scripts/tonic_schema_adapter.py`. `check_baseline.py`'s `EXPECTED`
+was not touched. The DBC-01 scope decision stays open.
+
+---
 
 ### 19.11 Third-party fixture analysis, adjudicated — 2026-10-19
 
