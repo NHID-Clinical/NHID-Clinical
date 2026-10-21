@@ -119,8 +119,12 @@ def generate_report(
 
     mit = summary["median_impersonation_latency_turns"]
     mis = summary["median_impersonation_latency_seconds"]
-    il = "n/a — no call disclosed" if mit is None else (
-        f"{mit} turns" + (f" / {mis:.1f}s" if mis is not None else " (no time anchor)")
+    # Censored calls (never disclosed) are included at their lower bound, so
+    # the median is itself a lower bound and has to be written as one.
+    bound = "≥ " if summary.get("median_impersonation_latency_is_lower_bound") else ""
+    il = "n/a — no calls measured" if mit is None else (
+        f"{bound}{mit} turns"
+        + (f" / {bound}{mis:.1f}s" if mis is not None else " (no time anchor)")
     )
     ehr = summary["escalation_honor_rate"]
     ehr_text = "n/a — no escalation requested" if ehr is None else f"{ehr:.1%}"

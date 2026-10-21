@@ -40,6 +40,13 @@
   recipient. Reported in seconds and in conversational turns, with turns as the
   normative unit (`IL = 0` turns means disclosure preceded any data request).
 
+  Written `IL₀` where the conformant target needs one token: `IL₀ :⟺ IL(turns) = 0`.
+  That is shorthand for a value this project already publishes, not a new metric, and
+  normative text keeps the long form. It carries one property worth stating — `IL₀ ⟹ E = 0`,
+  where `E` is Pre-Disclosure PHI Exposure — because a disclosure on the first turn has no
+  turn before it to have exposed anything on. See the technical specification §2.4 for the
+  turn-granularity limit on that implication.
+
   The term is deliberate and retained: the window it names is the interval during
   which a human recipient may reasonably believe they are talking to another
   human. Naming that window is the point.

@@ -27,8 +27,10 @@ class AdversarialMetrics:
     control_robustness_score: float  # 1 - ASR
     coverage_ratio: float  # tested scenarios / potential scenarios
     severity_weighted_bypass_score: float  # Weighted by attack severity
-    false_negative_rate: float  # Violations missed
-    false_positive_rate: float  # Extra violations detected
+    # None = not measured. Only a caller with per-case results can compute
+    # these; calculate_campaign_metrics() cannot and no longer pretends to.
+    false_negative_rate: Optional[float]  # missed / expected violations
+    false_positive_rate: Optional[float]  # spurious / genuinely compliant
     test_confidence: float  # Confidence in results (based on coverage)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -42,8 +44,14 @@ class AdversarialMetrics:
             "control_robustness_score": round(self.control_robustness_score, 4),
             "coverage_ratio": round(self.coverage_ratio, 4),
             "severity_weighted_bypass_score": round(self.severity_weighted_bypass_score, 4),
-            "false_negative_rate": round(self.false_negative_rate, 4),
-            "false_positive_rate": round(self.false_positive_rate, 4),
+            "false_negative_rate": (
+                None if self.false_negative_rate is None
+                else round(self.false_negative_rate, 4)
+            ),
+            "false_positive_rate": (
+                None if self.false_positive_rate is None
+                else round(self.false_positive_rate, 4)
+            ),
             "test_confidence": round(self.test_confidence, 4),
         }
 
@@ -143,13 +151,29 @@ class MetricsCalculator:
         return len(missed_violations) / total_expected_violations
 
     @staticmethod
-    def calculate_false_positive_rate(
+    def calculate_false_discovery_rate(
         extra_violations: List[str],
         total_detected_violations: int
     ) -> float:
-        """Calculate false positive rate: extra violations / total detected.
+        """False DISCOVERY rate: extra violations / total detected (= 1 - precision).
 
-        Range: 0.0 (none extra) to 1.0 (all false positives)
+        This was named `calculate_false_positive_rate`, which it is not. The
+        false positive rate is FP / (FP + TN) — a share of the genuinely
+        compliant population — and it is what `safety_metrics.py` computes as
+        `false_positives / compliant`, what `scripts/confusion_matrix.py`
+        reports as `fp / clean`, and what `safety_scorer.calculate_score`
+        documents its `false_positive_rate` argument to be ("fraction of
+        compliant calls rejected").
+
+        This quantity has a different denominator — everything the engine
+        flagged — so it is a share of predictions, not of the negative class.
+        The two coincide only when prevalence is 50%, and under the low
+        prevalence these corpora are built with they differ by a lot. Having
+        both in one package under one name meant a value from here could be
+        passed to a function expecting the other with no type error and no
+        unit mismatch to notice.
+
+        Range: 0.0 (nothing flagged was spurious) to 1.0 (everything was).
         Lower is better.
         """
         if total_detected_violations == 0:
@@ -226,14 +250,30 @@ class MetricsCalculator:
             total
         )
 
-        # False negative rate (approximate from partial bypasses)
-        false_negative = 0.0
-        if partial > 0:
-            # Partial bypasses indicate ~50% false negative on average
-            false_negative = (partial / total) * 0.5
-
-        # False positive rate (from extra detected violations)
-        false_positive = 0.0  # Would need detailed results
+        # Neither detection-quality rate is computable from a campaign summary,
+        # and both used to be filled in anyway.
+        #
+        # `false_positive` was the literal constant 0.0 with the comment "would
+        # need detailed results", and it was exported by to_dict() and printed
+        # by generate_report() as "False Positive Rate: 0.0%" — a zero
+        # false-positive claim produced by nothing measuring anything. That is
+        # the same defect scripts/check_number_drift.py was written to catch
+        # after a "0% false-positive rate" was published for the governance
+        # corpus; it survived here because this package has no drift guard.
+        #
+        # `false_negative` was (partial / total) * 0.5, where the 0.5 came from
+        # the comment "partial bypasses indicate ~50% false negative on
+        # average" — an invented coefficient — and the denominator was total
+        # attacks rather than total expected violations, so it was not a false
+        # negative rate either. The partial-bypass information it was standing
+        # in for is already carried exactly by `partial_bypasses` and
+        # `total_bypass_attempts`.
+        #
+        # None means not measured. A caller that needs these must compute them
+        # from per-case results with MetricsCalculator.calculate_* and pass
+        # them in; a report cannot print a rate nobody produced.
+        false_negative = None
+        false_positive = None
 
         # Test confidence
         num_tactics = len(campaign_summary.get("tactic_effectiveness", {}))
@@ -313,8 +353,11 @@ class MetricsCalculator:
         report += f"- **Total Bypass Attempts:** {metrics.total_bypass_attempts}\n\n"
 
         report += "## Detection Quality\n"
-        report += f"- **False Negative Rate:** {metrics.false_negative_rate*100:.1f}%\n"
-        report += f"- **False Positive Rate:** {metrics.false_positive_rate*100:.1f}%\n"
+        def _rate(value: Optional[float]) -> str:
+            return "not measured" if value is None else f"{value*100:.1f}%"
+
+        report += f"- **False Negative Rate:** {_rate(metrics.false_negative_rate)}\n"
+        report += f"- **False Positive Rate:** {_rate(metrics.false_positive_rate)}\n"
         report += f"- **Severity-Weighted Bypass Score:** {metrics.severity_weighted_bypass_score:.3f}\n\n"
 
         report += "## Recommendations\n"

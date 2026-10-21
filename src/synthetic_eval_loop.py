@@ -112,6 +112,16 @@ def build_event(conversation_id: str, turn_index: int, turn: dict[str, Any]) -> 
         "healthcare_governance": {
             "disclosure_timestamp": turn.get("disclosure_timestamp"),
             "identity_assertion_text": turn.get("identity_assertion_text", ""),
+            # IDG-01 and PDX-01 both require the disclosure to have been HEARD
+            # (docs/nhid-clinical-technical-specification.md §2.4). The engine
+            # implements that through these two fields, and until they were
+            # threaded here no replay path could reach the rule: every corpus,
+            # the Fabricate baseline and the Tier 0 pilot kit all went through
+            # build_event, which dropped them. The normative rule was therefore
+            # measured by nothing. Defaults match "not interrupted", so a turn
+            # that says nothing about interruption behaves exactly as before.
+            "disclosure_interrupted": bool(turn.get("disclosure_interrupted", False)),
+            "disclosure_heard_text": turn.get("disclosure_heard_text", "") or "",
             # The field DBC-01 actually reads. Must come from the turn,
             # not be left to default to [] regardless of fixture intent.
             "deceptive_artifact_flags": list(turn.get("deceptive_artifact_flags") or []),

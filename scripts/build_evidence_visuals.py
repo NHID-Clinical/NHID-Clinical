@@ -50,6 +50,7 @@ import ast
 import collections
 import csv
 import json
+import math
 import re
 import subprocess
 import sys
@@ -355,15 +356,51 @@ def measure_scorecard() -> dict[str, Any]:
     }
 
 
-# ── Measurement 4: impersonation latency, as the corpus actually records it ──
+# ── Percentile convention, shared by every figure in this file ─────────────
+#
+# Nearest-rank, no interpolation: rank = ceil(p/100 × N) and the value is the
+# sorted sample at that 1-based rank. This is the classical nearest-rank
+# definition.
+#
+# It is spelled out because this repository was carrying three different
+# estimators under the same labels. This file used round(), which is
+# half-to-even in Python, so p90 over 527 values landed one rank below the
+# nearest-rank value; src/pilot_measure.py averages its two middle values for a
+# median; experiments/call_bind/run.py indexed with int(0.95 × N), a floor. The
+# numbers were not comparable across figures even though the labels matched.
 
-def _percentile(values: list[int], p: float) -> int:
-    """Nearest-rank percentile. No interpolation — these are recorded values."""
-    if not values:
+
+def _percentile_rank(p: float, n: int) -> int:
+    """1-based nearest-rank index for percentile `p` over `n` values."""
+    if n <= 0:
         return 0
-    index = max(1, min(len(values), int(round(p / 100.0 * len(values)))))
-    return values[index - 1]
+    return max(1, min(n, math.ceil(p / 100.0 * n)))
 
+
+def _censored_percentile(observed: list[int], n_total: int, p: float) -> dict[str, Any]:
+    """Percentile over a right-censored sample.
+
+    `observed` is the sorted subset that carries a value; `n_total` counts every
+    conversation including those that do not. Censored conversations are known
+    to sit ABOVE every observed one (see `measure_latency` for why), so the rank
+    is taken over `n_total`, not over the observed subset.
+
+    When the rank falls beyond the observed subset the percentile is not
+    identifiable from this data and the honest report is a lower bound, which
+    `exact: False` marks. Taking the rank over the observed subset instead —
+    which is what this file did — relabels a lower percentile as a higher one
+    and understates the tail. Over this corpus it reported p90 as 5,592 ms when
+    the nearest-rank p90 of the population is 11,987 ms.
+    """
+    if not observed:
+        return {"ms": 0, "exact": False}
+    rank = _percentile_rank(p, n_total)
+    if rank <= len(observed):
+        return {"ms": observed[rank - 1], "exact": True}
+    return {"ms": observed[-1], "exact": False}
+
+
+# ── Measurement 4: impersonation latency, as the corpus actually records it ──
 
 def measure_latency() -> dict[str, Any]:
     """Read impersonation_latency_ms straight out of the Fabricate corpus.
@@ -375,47 +412,99 @@ def measure_latency() -> dict[str, Any]:
     label the corpus was authored with, not something the engine decided. The
     split below therefore describes how this corpus was written. It is NOT
     evidence that conformance shortens the interval, and the figure says so.
+
+    WHY THE BLANK FIELD IS CENSORING AND NOT MISSING DATA
+    -----------------------------------------------------
+    23 of the 550 conversations carry no value in this field, and they are not
+    a random sample of the corpus: 21 of the 23 also carry
+    `idg01_violation = 1`, against 49 of the 527 that do carry a value. None of
+    them is labelled PASS. In the corpus's own terms a blank is overwhelmingly
+    a conversation where the disclosure never arrived, which is the longest
+    interval there is — not an interval nobody wrote down.
+
+    That makes the missingness informative and upper-tail, so dropping those
+    rows and taking percentiles over the survivors removes exactly the worst
+    cases and understates every upper percentile. They are therefore treated as
+    right-censored at the top, which is also what the specification requires of
+    Impersonation Latency: `IL ≥ call duration` when no valid disclosure occurs
+    (docs/nhid-clinical-technical-specification.md §2.4.1).
+
+    Two of the 23 carry `idg01_violation = 0`, so for those two a blank may
+    genuinely be an unrecorded value. The corpus does not distinguish "never
+    disclosed" from "not recorded" in this field, and that limitation is
+    reported on the figure rather than resolved here.
     """
     values: list[int] = []
     by_label: dict[str, list[int]] = {}
+    label_totals: collections.Counter = collections.Counter()
+    censored_rows = 0
+    censored_with_idg01 = 0
+    total = 0
 
     with FABRICATE_CSV.open(encoding="utf-8", newline="") as handle:
         for row in csv.DictReader(handle):
+            total += 1
+            label = row.get("expected_outcome") or "UNLABELLED"
+            label_totals[label] += 1
             raw = (row.get("impersonation_latency_ms") or "").strip()
             if not raw.isdigit():
+                censored_rows += 1
+                if str(row.get("idg01_violation", "")).strip() == "1":
+                    censored_with_idg01 += 1
                 continue
             value = int(raw)
             values.append(value)
-            by_label.setdefault(row.get("expected_outcome") or "UNLABELLED", []).append(value)
+            by_label.setdefault(label, []).append(value)
 
     values.sort()
     for bucket in by_label.values():
         bucket.sort()
 
+    observed = len(values)
+    identifiable = (100.0 * observed / total) if total else 0.0
+
     return {
         "source": "fixtures/fabricate/conversations.csv",
         "field": "impersonation_latency_ms",
-        "conversations_with_a_value": len(values),
+        "percentile_convention": "nearest-rank, rank = ceil(p/100 × N), no interpolation",
+        "conversations_total": total,
+        "conversations_with_a_value": observed,
+        "conversations_censored": censored_rows,
+        "censored_also_flagged_idg01": censored_with_idg01,
+        "identifiable_to_percentile": round(identifiable, 1),
         "overall": {
             "min": values[0] if values else 0,
-            "p50": _percentile(values, 50),
-            "p90": _percentile(values, 90),
-            "p95": _percentile(values, 95),
-            "p99": _percentile(values, 99),
-            "max": values[-1] if values else 0,
+            "p50": _censored_percentile(values, total, 50),
+            "p90": _censored_percentile(values, total, 90),
+            "p95": _censored_percentile(values, total, 95),
+            "p99": _censored_percentile(values, total, 99),
+            "max": {"ms": values[-1] if values else 0, "exact": censored_rows == 0},
         },
         "by_label": {
             label: {
-                "n": len(bucket),
-                "p50": _percentile(bucket, 50),
-                "p95": _percentile(bucket, 95),
+                "n": label_totals[label],
+                "observed": len(bucket),
+                "censored": label_totals[label] - len(bucket),
+                "p50": _censored_percentile(bucket, label_totals[label], 50),
+                "p95": _censored_percentile(bucket, label_totals[label], 95),
             }
-            for label, bucket in sorted(by_label.items(), key=lambda kv: -len(kv[1]))
+            for label, bucket in sorted(by_label.items(),
+                                        key=lambda kv: -label_totals[kv[0]])
         },
         "reading_note": (
             "expected_outcome is a label the corpus was authored with, not an "
             "engine decision. The split describes how this corpus was written; "
             "it is not evidence that conformance shortens the interval."
+        ),
+        "censoring_note": (
+            f"{censored_rows} of {total} conversations record no disclosure "
+            f"interval; {censored_with_idg01} of those {censored_rows} also "
+            "carry an IDG-01 violation, and none is labelled PASS. They are "
+            "treated as right-censored above every observed value, so "
+            "percentiles are taken over all "
+            f"{total} conversations and are identifiable only up to "
+            f"p{identifiable:.1f}. Anything beyond that is reported as a lower "
+            "bound, not as a value."
         ),
     }
 
@@ -615,12 +704,22 @@ def render_scorecard(data: dict[str, Any]) -> str:
       </aside>"""
 
 
+def _ms_glyph(stat: dict[str, Any]) -> str:
+    """Visual form of a percentile: a bare number, or ≥ when it is a bound."""
+    return ("&#8805;&#8201;" if not stat["exact"] else "") + f"{stat['ms']:,}"
+
+
+def _ms_words(stat: dict[str, Any]) -> str:
+    """Spoken form, for the <desc> a screen reader reads aloud."""
+    return ("at least " if not stat["exact"] else "") + f"{stat['ms']}"
+
+
 def render_latency(data: dict[str, Any]) -> str:
     d = data["latency"]
     o = d["overall"]
     # Axis stops at the whole-population p95. The tail beyond it is real and is
     # stated in words rather than compressed into a misleading bar.
-    axis_max = max(o["p95"], 1)
+    axis_max = max(o["p95"]["ms"], 1)
     x0, width = 176.0, 620.0
 
     def x(value: int) -> float:
@@ -630,19 +729,23 @@ def render_latency(data: dict[str, Any]) -> str:
     y = 66
     for label, stats in d["by_label"].items():
         p50, p95 = stats["p50"], stats["p95"]
-        clipped = p95 > axis_max
+        clipped = p95["ms"] > axis_max
+        n_note = (
+            f'n={stats["n"]}' if not stats["censored"]
+            else f'n={stats["n"]} &#183; {stats["censored"]} censored'
+        )
         rows.append(
             f'          <text x="{x0 - 12}" y="{y + 12}" text-anchor="end" class="lt-cat">'
             f"{_esc(label)}</text>\n"
             f'          <text x="{x0 - 12}" y="{y + 24}" text-anchor="end" class="lt-n">'
-            f'n={stats["n"]}</text>\n'
-            f'          <line x1="{x(p50):.1f}" y1="{y + 9}" x2="{x(p95):.1f}" y2="{y + 9}" class="lt-span"/>\n'
-            f'          <circle cx="{x(p50):.1f}" cy="{y + 9}" r="4.5" class="lt-p50"/>\n'
-            f'          <circle cx="{x(p95):.1f}" cy="{y + 9}" r="4.5" class="lt-p95"/>\n'
-            f'          <text x="{x(p50):.1f}" y="{y - 2}" text-anchor="middle" class="lt-val">'
-            f"{p50:,}</text>\n"
-            f'          <text x="{x(p95):.1f}" y="{y - 2}" text-anchor="middle" class="lt-val">'
-            f'{p95:,}{"+" if clipped else ""}</text>'
+            f'{n_note}</text>\n'
+            f'          <line x1="{x(p50["ms"]):.1f}" y1="{y + 9}" x2="{x(p95["ms"]):.1f}" y2="{y + 9}" class="lt-span"/>\n'
+            f'          <circle cx="{x(p50["ms"]):.1f}" cy="{y + 9}" r="4.5" class="lt-p50"/>\n'
+            f'          <circle cx="{x(p95["ms"]):.1f}" cy="{y + 9}" r="4.5" class="lt-p95"/>\n'
+            f'          <text x="{x(p50["ms"]):.1f}" y="{y - 2}" text-anchor="middle" class="lt-val">'
+            f"{_ms_glyph(p50)}</text>\n"
+            f'          <text x="{x(p95["ms"]):.1f}" y="{y - 2}" text-anchor="middle" class="lt-val">'
+            f'{_ms_glyph(p95)}{"+" if clipped else ""}</text>'
         )
         y += 40
     row_svg = "\n".join(rows)
@@ -653,7 +756,8 @@ def render_latency(data: dict[str, Any]) -> str:
     tick_y = y + 2
     divider_y = y + 18
     headline_y = y + 40
-    height = y + 58
+    censor_y = y + 58
+    height = y + 76
 
     ticks = []
     for frac in (0, 0.25, 0.5, 0.75, 1.0):
@@ -667,29 +771,33 @@ def render_latency(data: dict[str, Any]) -> str:
     tick_svg = "\n".join(ticks)
 
     label_desc = "; ".join(
-        f'{k} p50 {v["p50"]} milliseconds and p95 {v["p95"]} milliseconds over {v["n"]} conversations'
+        f'{k} p50 {_ms_words(v["p50"])} milliseconds and p95 {_ms_words(v["p95"])} '
+        f'milliseconds over {v["n"]} conversations of which {v["censored"]} are censored'
         for k, v in d["by_label"].items()
     )
 
     return f"""<figure class="figure-frame latency-distribution">
         <svg viewBox="0 0 880 {height}" role="img" aria-labelledby="lt-title lt-desc" style="width:100%;height:auto;display:block">
           <title id="lt-title">Recorded impersonation latency across the Fabricate corpus</title>
-          <desc id="lt-desc">A percentile strip per corpus label. Across {d['conversations_with_a_value']} conversations carrying a value, impersonation latency runs from {o['min']} milliseconds at minimum through {o['p50']} at the median, {o['p90']} at p90, {o['p95']} at p95 and {o['p99']} at p99, to {o['max']} at maximum. By label: {label_desc}. The axis stops at the whole-population p95; longer values exist and are stated in the note beneath. The label is how each conversation was authored, not a decision the engine made.</desc>
+          <desc id="lt-desc">A percentile strip per corpus label over all {d['conversations_total']} conversations. {d['conversations_censored']} of them record no disclosure interval at all and are treated as right-censored above every observed value, so percentiles are identifiable only up to p{d['identifiable_to_percentile']} and anything beyond that is a lower bound rather than a value. Impersonation latency runs from {o['min']} milliseconds at minimum through {_ms_words(o['p50'])} at the median, {_ms_words(o['p90'])} at p90, {_ms_words(o['p95'])} at p95 and {_ms_words(o['p99'])} at p99, to {_ms_words(o['max'])} at maximum. By label: {label_desc}. The axis stops at the whole-population p95; longer values exist and are stated in the note beneath. The label is how each conversation was authored, not a decision the engine made.</desc>
 
-          <text x="24" y="22" class="ev-zone">RECORDED IMPERSONATION LATENCY &#183; {d['conversations_with_a_value']} CONVERSATIONS</text>
-          <text x="24" y="40" class="ev-sub">Dots mark p50 and p95. Axis stops at the whole-population p95.</text>
+          <text x="24" y="22" class="ev-zone">RECORDED IMPERSONATION LATENCY &#183; {d['conversations_total']} CONVERSATIONS, {d['conversations_censored']} CENSORED</text>
+          <text x="24" y="40" class="ev-sub">Dots mark p50 and p95. Axis stops at the whole-population p95. &#8805; marks a lower bound, not a value.</text>
 
 {tick_svg}
 {row_svg}
 
           <line x1="24" y1="{divider_y}" x2="856" y2="{divider_y}" class="ev-divider"/>
-          <text x="24" y="{headline_y}" class="ev-headline">Whole population: p50 {o['p50']:,} ms &#183; p90 {o['p90']:,} ms &#183; p95 {o['p95']:,} ms &#183; p99 {o['p99']:,} ms &#183; max {o['max']:,} ms</text>
+          <text x="24" y="{headline_y}" class="ev-headline">Whole population: p50 {_ms_glyph(o['p50'])} ms &#183; p90 {_ms_glyph(o['p90'])} ms &#183; p95 {_ms_glyph(o['p95'])} ms &#183; p99 {_ms_glyph(o['p99'])} ms &#183; max {_ms_glyph(o['max'])} ms</text>
+          <text x="24" y="{censor_y}" class="ev-sub">Percentiles are taken over all {d['conversations_total']} conversations and are identifiable only to p{d['identifiable_to_percentile']}.</text>
         </svg>
       </figure>
 
       <aside class="visual-provenance">
-        <p><strong>Evidence basis:</strong> <code>{_esc(d['source'])}</code> field <code>{_esc(d['field'])}</code> &mdash; {d['conversations_with_a_value']} conversations carrying a recorded value</p>
+        <p><strong>Evidence basis:</strong> <code>{_esc(d['source'])}</code> field <code>{_esc(d['field'])}</code> &mdash; all {d['conversations_total']} conversations, {d['conversations_with_a_value']} carrying a recorded value</p>
         <p><strong>Classification:</strong> <span class="maturity-research">Research</span> A synthetic corpus as authored. These are not measurements of production calls.</p>
+        <p><strong>Censoring:</strong> {_esc(d['censoring_note'])}</p>
+        <p><strong>Percentile convention:</strong> {_esc(d['percentile_convention'])}</p>
         <p><strong>How to read the split:</strong> {_esc(d['reading_note'])}</p>
         <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>{_esc(data['source_commit'])}</code></p>
       </aside>"""
@@ -790,7 +898,8 @@ def main(argv: list[str] | None = None) -> int:
             f"EVIDENCE PASS: all {len(TARGETS)} figures match their sources "
             f"(ladder {fresh['ladder']['turns']} turns, "
             f"shadow {fresh['shadow']['turns']} turns, "
-            f"latency {fresh['latency']['conversations_with_a_value']} conversations, "
+            f"latency {fresh['latency']['conversations_total']} conversations "
+            f"({fresh['latency']['conversations_censored']} censored), "
             f"{len(fresh['scorecard']['populations'])} populations kept separate)"
         )
         return 0

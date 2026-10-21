@@ -93,7 +93,23 @@ citations; older PDF artifacts predating that fix may still show the old names �
 ```
 IL = t(disclosure) − t(connect)               (time form)
 IL(turns) = turns completed before first valid disclosure   (turn form, target = 0)
+E  = phi_accessed fields on turns strictly before the disclosing turn
+IL₀ :⟺ IL(turns) = 0                          (shorthand for the conformant target)
 ```
+
+`E` is Pre-Disclosure PHI Exposure, the quantity PDX-01 already gates on — it fires when
+`E > 0`. `IL₀` is **notation, not a new metric**: it names the value this specification
+already calls the normative target, so that the target can be referred to in one token.
+Normative text uses `IL(turns) = 0`; `IL₀` is the shorthand for prose, labels and figures.
+
+**`IL₀ ⟹ E = 0`.** At `IL(turns) = 0` the disclosing turn is the first turn of the call, so
+no turn precedes it and `E` is necessarily zero. This is why one normative target suffices
+instead of two: away from the target both quantities must be reported, but at the target the
+second is implied by the first. The implication holds **at turn granularity** — a capture
+record carries no ordering within a turn, so a protected-data request and the disclosure
+landing on the same turn yields `E = 0`. It is a statement about turn ordering, not about
+sub-turn ordering. It also depends on the heard-disclosure rule above: a turn-0 disclosure
+that was interrupted and not heard does not satisfy `IL₀`.
 
 Both anchors are required ATR-01 event fields, so IL is computable from any conformant audit
 trail with no human judgment involved — this determinism is what makes IL usable as a

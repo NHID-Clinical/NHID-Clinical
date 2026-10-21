@@ -328,7 +328,7 @@
         <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/shadow_pilot.jsonl</code> — 60 conversations, 301 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Classification:</strong> <span class="maturity-research">Research</span> Reference corpus results, not operational performance. This is a committed synthetic corpus, not production call data, and it says nothing about how any deployment would behave.</p>
         <p><strong>Known limitation:</strong> DBC-01 evaluates the agent's own identity assertion text: claims of human status or licensed-professional standing. Its former artifact tier, which read a deceptive_artifact_flags field the agent supplied about itself, is withdrawn. This count is therefore what the transcript says, not a measurement of how much deception the corpus contains.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>646a0af</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>e9edd77</code></p>
       </aside>
       <!-- END GENERATED shadow-outcomes -->
         </div>
@@ -347,55 +347,58 @@
 
           <!-- BEGIN GENERATED latency-distribution -->
       <figure class="figure-frame latency-distribution">
-        <svg viewBox="0 0 880 244" role="img" aria-labelledby="lt-title lt-desc" style="width:100%;height:auto;display:block">
+        <svg viewBox="0 0 880 262" role="img" aria-labelledby="lt-title lt-desc" style="width:100%;height:auto;display:block">
           <title id="lt-title">Recorded impersonation latency across the Fabricate corpus</title>
-          <desc id="lt-desc">A percentile strip per corpus label. Across 527 conversations carrying a value, impersonation latency runs from 205 milliseconds at minimum through 988 at the median, 5592 at p90, 13680 at p95 and 21541 at p99, to 46122 at maximum. By label: REVIEW p50 935 milliseconds and p95 11987 milliseconds over 271 conversations; FAIL p50 1482 milliseconds and p95 15481 milliseconds over 129 conversations; PASS p50 835 milliseconds and p95 1639 milliseconds over 127 conversations. The axis stops at the whole-population p95; longer values exist and are stated in the note beneath. The label is how each conversation was authored, not a decision the engine made.</desc>
+          <desc id="lt-desc">A percentile strip per corpus label over all 550 conversations. 23 of them record no disclosure interval at all and are treated as right-censored above every observed value, so percentiles are identifiable only up to p95.8 and anything beyond that is a lower bound rather than a value. Impersonation latency runs from 205 milliseconds at minimum through 1029 at the median, 11987 at p90, 25774 at p95 and at least 46122 at p99, to at least 46122 at maximum. By label: REVIEW p50 948 milliseconds and p95 27609 milliseconds over 282 conversations of which 11 are censored; FAIL p50 1703 milliseconds and p95 at least 21541 milliseconds over 141 conversations of which 12 are censored; PASS p50 835 milliseconds and p95 1639 milliseconds over 127 conversations of which 0 are censored. The axis stops at the whole-population p95; longer values exist and are stated in the note beneath. The label is how each conversation was authored, not a decision the engine made.</desc>
 
-          <text x="24" y="22" class="ev-zone">RECORDED IMPERSONATION LATENCY &#183; 527 CONVERSATIONS</text>
-          <text x="24" y="40" class="ev-sub">Dots mark p50 and p95. Axis stops at the whole-population p95.</text>
+          <text x="24" y="22" class="ev-zone">RECORDED IMPERSONATION LATENCY &#183; 550 CONVERSATIONS, 23 CENSORED</text>
+          <text x="24" y="40" class="ev-sub">Dots mark p50 and p95. Axis stops at the whole-population p95. &#8805; marks a lower bound, not a value.</text>
 
           <line x1="176.0" y1="52" x2="176.0" y2="168" class="lt-grid"/>
           <text x="176.0" y="188" text-anchor="middle" class="lt-tick">0 ms</text>
           <line x1="331.0" y1="52" x2="331.0" y2="168" class="lt-grid"/>
-          <text x="331.0" y="188" text-anchor="middle" class="lt-tick">3,420 ms</text>
+          <text x="331.0" y="188" text-anchor="middle" class="lt-tick">6,443 ms</text>
           <line x1="486.0" y1="52" x2="486.0" y2="168" class="lt-grid"/>
-          <text x="486.0" y="188" text-anchor="middle" class="lt-tick">6,840 ms</text>
+          <text x="486.0" y="188" text-anchor="middle" class="lt-tick">12,887 ms</text>
           <line x1="641.0" y1="52" x2="641.0" y2="168" class="lt-grid"/>
-          <text x="641.0" y="188" text-anchor="middle" class="lt-tick">10,260 ms</text>
+          <text x="641.0" y="188" text-anchor="middle" class="lt-tick">19,330 ms</text>
           <line x1="796.0" y1="52" x2="796.0" y2="168" class="lt-grid"/>
-          <text x="796.0" y="188" text-anchor="middle" class="lt-tick">13,680 ms</text>
+          <text x="796.0" y="188" text-anchor="middle" class="lt-tick">25,774 ms</text>
           <text x="164.0" y="78" text-anchor="end" class="lt-cat">REVIEW</text>
-          <text x="164.0" y="90" text-anchor="end" class="lt-n">n=271</text>
-          <line x1="218.4" y1="75" x2="719.3" y2="75" class="lt-span"/>
-          <circle cx="218.4" cy="75" r="4.5" class="lt-p50"/>
-          <circle cx="719.3" cy="75" r="4.5" class="lt-p95"/>
-          <text x="218.4" y="64" text-anchor="middle" class="lt-val">935</text>
-          <text x="719.3" y="64" text-anchor="middle" class="lt-val">11,987</text>
+          <text x="164.0" y="90" text-anchor="end" class="lt-n">n=282 &#183; 11 censored</text>
+          <line x1="198.8" y1="75" x2="796.0" y2="75" class="lt-span"/>
+          <circle cx="198.8" cy="75" r="4.5" class="lt-p50"/>
+          <circle cx="796.0" cy="75" r="4.5" class="lt-p95"/>
+          <text x="198.8" y="64" text-anchor="middle" class="lt-val">948</text>
+          <text x="796.0" y="64" text-anchor="middle" class="lt-val">27,609+</text>
           <text x="164.0" y="118" text-anchor="end" class="lt-cat">FAIL</text>
-          <text x="164.0" y="130" text-anchor="end" class="lt-n">n=129</text>
-          <line x1="243.2" y1="115" x2="796.0" y2="115" class="lt-span"/>
-          <circle cx="243.2" cy="115" r="4.5" class="lt-p50"/>
-          <circle cx="796.0" cy="115" r="4.5" class="lt-p95"/>
-          <text x="243.2" y="104" text-anchor="middle" class="lt-val">1,482</text>
-          <text x="796.0" y="104" text-anchor="middle" class="lt-val">15,481+</text>
+          <text x="164.0" y="130" text-anchor="end" class="lt-n">n=141 &#183; 12 censored</text>
+          <line x1="217.0" y1="115" x2="694.2" y2="115" class="lt-span"/>
+          <circle cx="217.0" cy="115" r="4.5" class="lt-p50"/>
+          <circle cx="694.2" cy="115" r="4.5" class="lt-p95"/>
+          <text x="217.0" y="104" text-anchor="middle" class="lt-val">1,703</text>
+          <text x="694.2" y="104" text-anchor="middle" class="lt-val">&#8805;&#8201;21,541</text>
           <text x="164.0" y="158" text-anchor="end" class="lt-cat">PASS</text>
           <text x="164.0" y="170" text-anchor="end" class="lt-n">n=127</text>
-          <line x1="213.8" y1="155" x2="250.3" y2="155" class="lt-span"/>
-          <circle cx="213.8" cy="155" r="4.5" class="lt-p50"/>
-          <circle cx="250.3" cy="155" r="4.5" class="lt-p95"/>
-          <text x="213.8" y="144" text-anchor="middle" class="lt-val">835</text>
-          <text x="250.3" y="144" text-anchor="middle" class="lt-val">1,639</text>
+          <line x1="196.1" y1="155" x2="215.4" y2="155" class="lt-span"/>
+          <circle cx="196.1" cy="155" r="4.5" class="lt-p50"/>
+          <circle cx="215.4" cy="155" r="4.5" class="lt-p95"/>
+          <text x="196.1" y="144" text-anchor="middle" class="lt-val">835</text>
+          <text x="215.4" y="144" text-anchor="middle" class="lt-val">1,639</text>
 
           <line x1="24" y1="204" x2="856" y2="204" class="ev-divider"/>
-          <text x="24" y="226" class="ev-headline">Whole population: p50 988 ms &#183; p90 5,592 ms &#183; p95 13,680 ms &#183; p99 21,541 ms &#183; max 46,122 ms</text>
+          <text x="24" y="226" class="ev-headline">Whole population: p50 1,029 ms &#183; p90 11,987 ms &#183; p95 25,774 ms &#183; p99 &#8805;&#8201;46,122 ms &#183; max &#8805;&#8201;46,122 ms</text>
+          <text x="24" y="244" class="ev-sub">Percentiles are taken over all 550 conversations and are identifiable only to p95.8.</text>
         </svg>
       </figure>
 
       <aside class="visual-provenance">
-        <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/conversations.csv</code> field <code>impersonation_latency_ms</code> &mdash; 527 conversations carrying a recorded value</p>
+        <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/conversations.csv</code> field <code>impersonation_latency_ms</code> &mdash; all 550 conversations, 527 carrying a recorded value</p>
         <p><strong>Classification:</strong> <span class="maturity-research">Research</span> A synthetic corpus as authored. These are not measurements of production calls.</p>
+        <p><strong>Censoring:</strong> 23 of 550 conversations record no disclosure interval; 21 of those 23 also carry an IDG-01 violation, and none is labelled PASS. They are treated as right-censored above every observed value, so percentiles are taken over all 550 conversations and are identifiable only up to p95.8. Anything beyond that is reported as a lower bound, not as a value.</p>
+        <p><strong>Percentile convention:</strong> nearest-rank, rank = ceil(p/100 × N), no interpolation</p>
         <p><strong>How to read the split:</strong> expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>646a0af</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>e9edd77</code></p>
       </aside>
       <!-- END GENERATED latency-distribution -->
         </div>

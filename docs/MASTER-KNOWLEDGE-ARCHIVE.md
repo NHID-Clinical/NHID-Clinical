@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **1752** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **1796** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **1752 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **1796 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -455,13 +455,35 @@ IL = t(disclosure) − t(connect)
 
 where `t(disclosure)` is the first valid IDG-01 disclosure event (`disclosure_timestamp`) and `t(connect)` is the session start timestamp. If no valid disclosure occurs, IL is right-censored at call end and reported as `IL ≥ call duration`.
 
+**Identifiability limit (added 2026-10-21).** Censored observations bound what any order
+statistic of IL can say. Over a sample of `N` calls of which `n` carry a value, percentiles are
+identifiable only up to `p_max = 100 × n / N`; beyond that the honest report is a lower bound,
+not a value. The rank is taken over `N`, not over `n` — taking it over the observed subset
+relabels a lower percentile as a higher one and understates the tail. On the Fabricate corpus
+`p_max` is p95.8, so p99 is published as a bound. The censoring there is **informative**, not
+independent: of the 23 conversations carrying no value, 21 also carry an IDG-01 violation and
+none is labelled PASS. That rules out Kaplan–Meier, whose independent-censoring assumption
+fails when never disclosing is a different behaviour rather than a random cutoff, and is why
+the treatment is a stated lower bound rather than a survival estimate.
+
 **Turn form:**
 
 ```
 IL(turns) = number of completed conversational turns before the first valid disclosure
 ```
 
-Disclosure in the first message yields `IL(turns) = 0` — the conformant target.
+Disclosure in the first message yields `IL(turns) = 0` — the conformant target, written
+`IL₀` where one token is wanted (`IL₀ :⟺ IL(turns) = 0`). The shorthand names an existing
+value and introduces no new quantity; normative text keeps the long form.
+
+**`IL₀ ⟹ E = 0`**, where `E` is Pre-Disclosure PHI Exposure below. At `IL(turns) = 0` the
+disclosing turn is the call's first, so nothing precedes it to have exposed anything. This is
+the justification for a single normative target rather than a pair: away from the target both
+must be reported, at the target the second is implied. Two conditions on it, both load-bearing:
+it holds at **turn granularity** only (a capture record carries no within-turn ordering, so a
+protected-data request on the disclosing turn itself yields `E = 0`), and it depends on the
+heard-disclosure rule — an interrupted turn-0 disclosure does not satisfy `IL₀`. Verified
+against the implementation across four cases including both edges, 2026-10-21.
 
 **Exposure weighting:** IL measures the interval; the harm is what moved inside it. Pre-Disclosure PHI Exposure = count of `phi_accessed` fields with timestamps earlier than `t(disclosure)`. PDX-01 fires when this count exceeds zero. A call may have high IL with zero exposure (bad practice, no breach) or low IL with nonzero exposure (critical).
 
@@ -1498,7 +1520,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 1752 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 1796 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1769,7 +1791,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 1752 passing tests · machine-readable traces · open implementation
+> 5 controls · 1796 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1799,7 +1821,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-1752%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-1796%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2420,7 +2442,10 @@ Recorded because each is a live constraint or a recurrence risk, not a closed ti
 | The published suite's `suite_metadata` claimed **"173 passed"** long after the suite outgrew it, invisible because that file was not watched. | Fixed and added to the drift guard's watch list, plus a test comparing it to `UNIT_PUBLISHED`. | <!-- drift-ok: catalogues a claim that was wrong; it is the defect, not an assertion -->
 | **The drift guard was narrower than the claim surface.** It reported PASS while six files carried a superseded count, and nothing compared `UNIT_PUBLISHED` to reality — so every surface could be *consistently wrong*. | Guard widened by 7 files; `validate_ci.py` now warns on divergence (a warning, not a gate, preserving the documented decision that the suite may grow). |
 | `docs/csa-ai-caiq-summary.md` claimed a "CI-enforced 284-test baseline". | Fixed. |
-| `pilot_evidence_bundle/EXECUTIVE_SUMMARY.md` says "evidence-based assurance" and is signed "NHID-Clinical Safety Assurance Team". | **Open — maintainer's call.** Assurance language the project should not use. A dated historical artifact, not published by the site build, so flagged rather than silently rewritten. |
+| `pilot_evidence_bundle/EXECUTIVE_SUMMARY.md` says "evidence-based assurance" and is signed "NHID-Clinical Safety Assurance Team". | **Resolved in principle 2026-10-21 — deletion approved, not yet executed.** The maintainer's call came back: delete the bundle. The 2026-10-21 mathematical audit then found more in the same directory than assurance language — see the row below — which is why correcting it was rejected in favour of removing it. The deletion is pending: the audit session's sandbox refused it as irreversible local destruction, so the files are still present at the commit that records this. |
+| `pilot_evidence_bundle/safety_report.json` reports detection rates that contradict their own numerators: IDG-01 `10/12` as **0.875** (0.833), PDX-01 `9/10` as 0.875 (0.900), DBC-01 `2/3` as 0.800 (0.667), EIT-01 `3/5` as 0.727 (0.600). `metrics_summary.rule_detection_average = 0.81` is the unweighted mean of those four wrong rates over denominators of 12, 10, 3 and 5. Also `total_tests: 643` with `skipped: 18` and `pass_rate: 1.0`, "Production Ready", `GO_IF_BLOCKERS_FIXED`, and a `shadpw_mode_confirmed` typo. | **Deletion approved 2026-10-21, not yet executed.** The directory is absent from `check_number_drift.py`'s `WATCHED` list, which is why `643` survived every count propagation. Correcting the arithmetic was rejected: it would fabricate a 2026-08-01 report that never existed and would leave the stale counts and the assurance language standing. |
+| `corpus_evaluation_results.json` (repository root) records **0% detection for PDX-01, DBC-01 and EIT-01 and a 100% false-positive rate for IDG-01**, dated 2026-08-11. Its arithmetic is internally consistent, which is what makes it dangerous. | **Deletion approved 2026-10-21, not yet executed.** Referenced by nothing but the script that wrote it, unguarded, and flatly contradicted by every other evidence surface (Fabricate: IDG 70/70, PDX 41/41, DBC 183/200, EIT 169/171). The `tn=0` / all-zero-detection signature is the "flat records are silently ignored" trap `docs/pilot-kit/README.md` warns about. `scripts/evaluate_corpus.py`, a third duplicate corpus harness beside the canonical guarded `eval_corpus.py` and `evaluate_tonic_corpus.py`, goes with it. |
+| `src/safety_evaluation/safety_scorer.py` computes a composite safety score 0–100 with GREEN/YELLOW/RED risk tiers, exported from the package's public API. `README.md` states there is no composite score and that **nothing replaces them under another name**. | **Deletion approved 2026-10-21, not yet executed.** Both existing withdrawal guards (`test_report_does_not_resurrect_the_composite_score`, `test_cas_is_recorded_as_withdrawn_not_merely_research`) check **documents only**, so a structurally equivalent scorer in code passes them both — the repository's recurring failure of a guard narrower than its own claim. Its weights (35/20/20/15/10), thresholds (0.95/0.05/0.99) and penalty slopes (×70, ×10) are unjustified, and it sums non-commensurable components. A code-scanning guard is to land with the deletion. |
 | Packaging installs top-level `src`, `adapters`, `scripts`. | **Open — pre-publication blocker**, recorded in `pyproject.toml`. Fine for an editable install; unacceptable on a public index. The rename to a single `nhid_clinical` package touches every import. |
 
 
@@ -2464,6 +2489,119 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.16 Mathematical audit: a published percentile was measured over a population with the worst cases removed — 2026-10-21
+
+A repository-wide audit of every formula, symbol, threshold, unit and statistical summary,
+traced from the specification to the implementation to the tests to the generated artifacts.
+Suite 1752 → 1796. Both pinned baselines unmoved throughout: Fabricate DBC-01 183/200 with 5 FP;
+voice-stress DBC-01 6/6, FP 0/95.
+
+The common shape of what it found: **a quantity computed over a population that had already had
+its worst members removed, or a rate reported with a denominator other than the one its name
+implies.** This is the same class as §19.14's and §19.15's — a check or a claim that outlives
+what reproduces it — but on the measurement layer rather than the enforcement layer.
+
+**The published figure.** `shadow-evaluation-guide.html` reported impersonation-latency
+percentiles over the 527 Fabricate conversations carrying `impersonation_latency_ms`, silently
+dropping 23. Those 23 are not a random sample: **21 of 23 also carry `idg01_violation = 1`**
+(against 49 of the 527 that do carry a value), and **none is labelled PASS**. Informative,
+upper-tail missingness, so excluding them removed exactly the worst cases from the tail:
+
+| | published | corrected |
+| :-- | :-- | :-- |
+| overall p50 | 988 ms | 1,029 ms |
+| overall p90 | 5,592 ms | **11,987 ms** |
+| overall p95 | 13,680 ms | **25,774 ms** |
+| overall p99 | 21,541 ms | **not identifiable** (≥ 46,122 ms) |
+| REVIEW p95 | 11,987 ms | 27,609 ms |
+| FAIL p95 | 15,481 ms | not identifiable (≥ 21,541 ms) |
+| PASS p50 / p95 | 835 / 1,639 ms | **unchanged** |
+
+p90 was understated by 2.1×. PASS is the control: it has no censored rows, so its percentiles
+had to come out identical, and they did — if they had moved, the change would have been doing
+something other than accounting for censoring. The rank is now taken over all 550; the
+identifiability limit and the Kaplan–Meier exclusion are recorded in §2.4.1.
+
+**The normative rule nothing could measure.** §2.4 requires that an interrupted disclosure
+counts only if the heard part asserts non-human identity, "so IL runs until one is heard"
+(added in #412). The engine implements it at both IDG-01 and PDX-01. But `build_event` did not
+pass `disclosure_interrupted` / `disclosure_heard_text` into `healthcare_governance`, and every
+corpus replay, the Fabricate baseline and the whole Tier 0 kit reach the engine through
+`build_event`. The capture schema had no such fields either. A normative requirement was
+therefore measured by nothing, in any population, for as long as it had existed.
+
+**The metric that improved as the system got worse.** §2.4.1 requires `IL ≥ call duration` when
+no valid disclosure occurs. `measure_call` returned `None` and `aggregate` filtered
+`is not None`, so the median was computed over `IL | disclosed` while being labelled
+`median_impersonation_latency`. The more calls a vendor failed to disclose on, the fewer bad
+values survived and the better its median looked. Now pinned by the property that was violated:
+adding never-disclosing calls must not lower the reported median.
+
+**A zero that nothing measured.** `adversarial_metrics.from_campaign_results` set
+`false_positive = 0.0  # Would need detailed results`, exported it and printed
+"**False Positive Rate:** 0.0%". This is the defect `check_number_drift.py` was *written* for —
+its docstring names "a '0% false-positive rate' that nothing computed" — surviving in a package
+that has no drift guard. Its companion `false_negative` was `(partial / total) * 0.5`, the 0.5
+from a comment reading "partial bypasses indicate ~50% false negative on average", over a
+denominator of total attacks rather than expected violations. Both are now `None` and print
+"not measured".
+
+**Also:** `escalation_honor_rate` could reach **3.0 (300%)**, because `escalation_honored` is not
+conditioned on `escalation_requested` in the capture schema and one request collected three
+honors — a rate above 1 is not a rate. `false_positive_rate` named two different quantities in
+one package (`extra / total_detected`, a false *discovery* rate, versus `safety_metrics`'
+`fp / compliant`), either passable to the other with no type error. Three percentile estimators
+ran under identical labels — `round()` half-to-even, `statistics.median`, and a floor index — so
+site figures and experiment figures were not comparable; one nearest-rank convention
+(`ceil(p/100 × N)`) now applies to both. `IL(turns)` read the `turn_index` field instead of
+counting turns, so a 1-based capture inflated every value and made `IL(turns) = 0` unreachable.
+`(t_disc − t0)` crashed on mixed naive/aware timestamps and clamped a negative interval to 0.0,
+turning a malformed trace into the best possible score. `CONTROL_DECISION_TABLE.md` claimed 59
+test files against 78. `scripts/evaluate_corpus.py` wrote to the absolute path of one developer's
+checkout.
+
+**Verified correct, no change made:** `confusion_matrix.py` (recall over declaring conversations,
+FP rate over the disjoint compliant population); the enforcement-ladder figure (counts not
+shares, ties disclosed); `pilot_measure`'s median implementation; the 10-second band threshold
+across seven surfaces; and disclosure latency versus credential-verification latency, which are
+never conflated on any published surface.
+
+**Notation.** `IL₀ :⟺ IL(turns) = 0` adopted as shorthand for the conformant target, with
+`IL₀ ⟹ E = 0` as the property that justifies a single normative target rather than a pair.
+Normative text keeps the long form. It is notation over existing quantities and is recorded in
+`claim-boundaries.md` as such; priority over the identifiability limit is not claimed, because
+no literature survey was done. An earlier answer in this session offered the IL/exposure pair as
+a novel contribution before the specification was read; it was already in §2.4.1, and the
+retraction is part of why the row disclaims novelty explicitly.
+
+**Evidence.** 44 tests in `tests/test_metric_definitions.py`; **31 of them fail against the
+pre-change tree**, measured by stashing every change and re-running, with the restore verified
+byte-identical afterwards. The rest are characterization
+tests pinning properties the corrections depend on, including the 21-of-23 association that
+justifies treating a blank as censoring and the PASS control above.
+
+**Left standing, with the maintainer's approval to remove them and the removal still pending:**
+`pilot_evidence_bundle/` (four detection rates contradicting their own numerators),
+`corpus_evaluation_results.json` (0% detection for three controls, 100% FP rate for IDG-01),
+`scripts/evaluate_corpus.py`, and `src/safety_evaluation/safety_scorer.py` (a composite score
+with risk tiers against README's "nothing replaces them under another name"). All four are in
+the open-items table above with their arithmetic recorded. The audit session's sandbox refused
+the deletions as irreversible local destruction, so they are present at this commit.
+
+**Correction to this audit's own findings.** Two conclusions of mine were wrong before they
+shipped. I reported 21 skipped tests as a regression I had caused; they are the server-dependent
+integration tests that `verify_all.py` starts the API for, and the invariant holds only with it
+running — the plain `pytest` run was never the one the invariant describes. And I switched the
+percentile convention from `round()` to `ceil()` for standardness, which moves p90 by one rank
+on its own, independently of the censoring correction; both effects are folded into the table
+above rather than attributed solely to censoring.
+
+**Process note, second occurrence.** `scripts/bump_published_test_count.py` again rewrote a
+historical narrative line — "Suite 1356 → 1752" became "→ 1784" — caught and restored. The
+script cannot distinguish a current claim from a dated record. It will keep happening until the
+current-state block is marked off from the history, and marking it is the fix rather than
+remembering to check the diff.
 
 ### 19.15 Repository-wide audit: the audit trail, the HTTP surface, and the image — 2026-10-21
 
