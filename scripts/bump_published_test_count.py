@@ -8,8 +8,11 @@ drift guard remains the check that it worked.
 
   python scripts/bump_published_test_count.py 921 924 939 942
 
-Historical changelog entries are never touched: they record what was true when
-they were written.
+Historical entries are never touched: they record what was true when they were
+written. A recorded transition ("Suite 1356 -> 1752") is protected by shape, so
+a number inside one is never rewritten -- the blind substitution this replaces
+damaged such a line on three consecutive bumps and was caught each time only by
+reading the diff.
 """
 import re
 import sys
@@ -38,19 +41,57 @@ SURFACES = [
 ]
 
 
+#: A recorded transition: "Suite 1356 -> 1752", "851 → 920 passed". Always a
+#: historical delta, never a claim about the current count, so the numbers
+#: inside one are protected from rewriting.
+#:
+#: This exists because the blind substitution below rewrote such a line on
+#: three consecutive bumps -- "Suite 1356 → 1752" became "→ 1784", then
+#: "Suite 1752 → 1796" became "→ 1779" -- each time inside a dated archive
+#: entry describing what a past change did. Each was caught by reading the
+#: diff, which is not a control. The shape is the signal: a current-state
+#: claim never takes the form "A -> B".
+TRANSITION = re.compile(r"\d{3,5}\s*(?:→|->)\s*\d{3,5}")
+
+
+def _rewrite(src: str, pairs: list[tuple[str, str]]) -> tuple[str, int]:
+    """Substitute each (old, new) in `src`, leaving recorded transitions alone.
+
+    Returns the new text and how many figures moved.
+    """
+    protected: list[str] = []
+
+    def _stash(match: re.Match) -> str:
+        protected.append(match.group(0))
+        return f"\x00{len(protected) - 1}\x00"
+
+    guarded = TRANSITION.sub(_stash, src)
+
+    moved = 0
+    for old, new in pairs:
+        pattern = rf"(?<!\d){re.escape(old)}(?!\d)"
+        guarded, n = re.subn(pattern, new, guarded)
+        moved += n
+
+    restored = re.sub(r"\x00(\d+)\x00",
+                      lambda m: protected[int(m.group(1))], guarded)
+    return restored, moved
+
+
 def main() -> int:
     if len(sys.argv) != 5:
         print(__doc__)
         return 2
     old_pass, new_pass, old_total, new_total = sys.argv[1:5]
+    pairs = [(old_pass, new_pass)]
+    if old_total != old_pass:
+        pairs.append((old_total, new_total))
     changed = 0
     for rel in SURFACES:
         p = ROOT / rel
         src = p.read_text()
-        out = re.sub(rf"(?<!\d){old_pass}(?!\d)", new_pass, src)
-        out = re.sub(rf"(?<!\d){old_total}(?!\d)", new_total, out)
+        out, n = _rewrite(src, pairs)
         if out != src:
-            n = len(re.findall(rf"(?<!\d)(?:{old_pass}|{old_total})(?!\d)", src))
             p.write_text(out)
             changed += n
             print(f"  {rel}: {n}")

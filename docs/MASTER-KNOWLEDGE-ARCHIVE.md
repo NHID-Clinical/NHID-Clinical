@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **1796** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **1792** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **1796 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **1792 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1520,7 +1520,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 1796 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 1792 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1791,7 +1791,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 1796 passing tests · machine-readable traces · open implementation
+> 5 controls · 1792 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1821,7 +1821,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-1796%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-1792%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2442,10 +2442,10 @@ Recorded because each is a live constraint or a recurrence risk, not a closed ti
 | The published suite's `suite_metadata` claimed **"173 passed"** long after the suite outgrew it, invisible because that file was not watched. | Fixed and added to the drift guard's watch list, plus a test comparing it to `UNIT_PUBLISHED`. | <!-- drift-ok: catalogues a claim that was wrong; it is the defect, not an assertion -->
 | **The drift guard was narrower than the claim surface.** It reported PASS while six files carried a superseded count, and nothing compared `UNIT_PUBLISHED` to reality — so every surface could be *consistently wrong*. | Guard widened by 7 files; `validate_ci.py` now warns on divergence (a warning, not a gate, preserving the documented decision that the suite may grow). |
 | `docs/csa-ai-caiq-summary.md` claimed a "CI-enforced 284-test baseline". | Fixed. |
-| `pilot_evidence_bundle/EXECUTIVE_SUMMARY.md` says "evidence-based assurance" and is signed "NHID-Clinical Safety Assurance Team". | **Resolved in principle 2026-10-21 — deletion approved, not yet executed.** The maintainer's call came back: delete the bundle. The 2026-10-21 mathematical audit then found more in the same directory than assurance language — see the row below — which is why correcting it was rejected in favour of removing it. The deletion is pending: the audit session's sandbox refused it as irreversible local destruction, so the files are still present at the commit that records this. |
-| `pilot_evidence_bundle/safety_report.json` reports detection rates that contradict their own numerators: IDG-01 `10/12` as **0.875** (0.833), PDX-01 `9/10` as 0.875 (0.900), DBC-01 `2/3` as 0.800 (0.667), EIT-01 `3/5` as 0.727 (0.600). `metrics_summary.rule_detection_average = 0.81` is the unweighted mean of those four wrong rates over denominators of 12, 10, 3 and 5. Also `total_tests: 643` with `skipped: 18` and `pass_rate: 1.0`, "Production Ready", `GO_IF_BLOCKERS_FIXED`, and a `shadpw_mode_confirmed` typo. | **Deletion approved 2026-10-21, not yet executed.** The directory is absent from `check_number_drift.py`'s `WATCHED` list, which is why `643` survived every count propagation. Correcting the arithmetic was rejected: it would fabricate a 2026-08-01 report that never existed and would leave the stale counts and the assurance language standing. |
-| `corpus_evaluation_results.json` (repository root) records **0% detection for PDX-01, DBC-01 and EIT-01 and a 100% false-positive rate for IDG-01**, dated 2026-08-11. Its arithmetic is internally consistent, which is what makes it dangerous. | **Deletion approved 2026-10-21, not yet executed.** Referenced by nothing but the script that wrote it, unguarded, and flatly contradicted by every other evidence surface (Fabricate: IDG 70/70, PDX 41/41, DBC 183/200, EIT 169/171). The `tn=0` / all-zero-detection signature is the "flat records are silently ignored" trap `docs/pilot-kit/README.md` warns about. `scripts/evaluate_corpus.py`, a third duplicate corpus harness beside the canonical guarded `eval_corpus.py` and `evaluate_tonic_corpus.py`, goes with it. |
-| `src/safety_evaluation/safety_scorer.py` computes a composite safety score 0–100 with GREEN/YELLOW/RED risk tiers, exported from the package's public API. `README.md` states there is no composite score and that **nothing replaces them under another name**. | **Deletion approved 2026-10-21, not yet executed.** Both existing withdrawal guards (`test_report_does_not_resurrect_the_composite_score`, `test_cas_is_recorded_as_withdrawn_not_merely_research`) check **documents only**, so a structurally equivalent scorer in code passes them both — the repository's recurring failure of a guard narrower than its own claim. Its weights (35/20/20/15/10), thresholds (0.95/0.05/0.99) and penalty slopes (×70, ×10) are unjustified, and it sums non-commensurable components. A code-scanning guard is to land with the deletion. |
+| `pilot_evidence_bundle/EXECUTIVE_SUMMARY.md` says "evidence-based assurance" and is signed "NHID-Clinical Safety Assurance Team". | **Resolved 2026-10-21 — deleted.** The maintainer's call came back: delete the bundle. The mathematical audit then found more in the same directory than assurance language — see the row below — which is why correcting it was rejected in favour of removing it. All three files removed in the follow-up to §19.16; git history retains them. |
+| `pilot_evidence_bundle/safety_report.json` reports detection rates that contradict their own numerators: IDG-01 `10/12` as **0.875** (0.833), PDX-01 `9/10` as 0.875 (0.900), DBC-01 `2/3` as 0.800 (0.667), EIT-01 `3/5` as 0.727 (0.600). `metrics_summary.rule_detection_average = 0.81` is the unweighted mean of those four wrong rates over denominators of 12, 10, 3 and 5. Also `total_tests: 643` with `skipped: 18` and `pass_rate: 1.0`, "Production Ready", `GO_IF_BLOCKERS_FIXED`, and a `shadpw_mode_confirmed` typo. | **Deleted 2026-10-21.** The directory was absent from `check_number_drift.py`'s `WATCHED` list, which is why `643` survived every count propagation. Correcting the arithmetic was rejected: it would have fabricated a 2026-08-01 report that never existed and left the stale counts and the assurance language standing. |
+| `corpus_evaluation_results.json` (repository root) records **0% detection for PDX-01, DBC-01 and EIT-01 and a 100% false-positive rate for IDG-01**, dated 2026-08-11. Its arithmetic is internally consistent, which is what makes it dangerous. | **Deleted 2026-10-21.** Referenced by nothing but the script that wrote it, unguarded, and flatly contradicted by every other evidence surface (Fabricate: IDG 70/70, PDX 41/41, DBC 183/200, EIT 169/171). The `tn=0` / all-zero-detection signature is the "flat records are silently ignored" trap `docs/pilot-kit/README.md` warns about. `scripts/evaluate_corpus.py`, a third duplicate corpus harness beside the canonical guarded `eval_corpus.py` and `evaluate_tonic_corpus.py`, went with it. |
+| `src/safety_evaluation/safety_scorer.py` computed a composite safety score 0–100 with GREEN/YELLOW/ORANGE/RED risk tiers, exported from the package's public API, and `adversarial_metrics.assess_robustness_tier` returned the same four colours on its own cutoffs. `README.md` states there is no composite score and that **nothing replaces them under another name**. | **Both deleted 2026-10-21.** Its weights (35/20/20/15/10), thresholds (0.95/0.05/0.99) and penalty slopes (×70, ×10) were unjustified, and it summed non-commensurable components; the second ladder's GREEN branch printed "APPROVED: Robustness metrics within acceptable range", a deployment verdict this project does not issue. **Correction to how this row first read:** it said both existing withdrawal guards "check documents only". That was wrong. Two guards in `tests/test_v132_scope_corrections.py` do scan code — `test_no_composite_score_module_exists` asserted two hardcoded filenames were absent (`src/nhid_cas.py`, `src/nhid_badge_generator.py`) and `test_no_trust_tier_vocabulary_in_source` scans all of `src/` for three literal phrases. The scorer cleared the first by having a different filename and the second by using four colours the phrase list had never heard of. The guards were keyed on the previous scorer's name and vocabulary, not on what makes a scorer a scorer. Replaced by a structural AST scan on the tier *shape*, verified to fail on both deleted ladders before they were removed. |
 | Packaging installs top-level `src`, `adapters`, `scripts`. | **Open — pre-publication blocker**, recorded in `pyproject.toml`. Fine for an editable install; unacceptable on a public index. The rename to a single `nhid_clinical` package touches every import. |
 
 
@@ -2489,6 +2489,71 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.17 The guards were keyed on the old scorer's name, so a new one walked past them — 2026-10-21
+
+Follow-up to §19.16, which left four artifacts standing with the maintainer's approval to
+remove them and a sandbox that refused the deletion. All four are now gone:
+
+- `pilot_evidence_bundle/` — three files, including a `safety_report.json` whose four
+  detection rates contradicted their own numerators.
+- `corpus_evaluation_results.json` — 0% detection for three controls and a 100%
+  false-positive rate for IDG-01, arithmetically self-consistent and contradicted by
+  every other evidence surface.
+- `scripts/evaluate_corpus.py` — the third duplicate corpus harness.
+- `src/safety_evaluation/safety_scorer.py` — the composite score with risk tiers.
+
+git history retains all of them; none was referenced by anything but the edits below.
+Suite 1796 → 1792: nineteen tests went with the deleted modules and fifteen arrived with
+the new guards. Both pinned baselines unmoved: Fabricate DBC-01 183/200 with 5 FP;
+voice-stress DBC-01 6/6, FP 0/95.
+
+**A second ladder, found only while planning the removal.** Deleting the composite scorer
+would not have made README's claim true. `adversarial_metrics.assess_robustness_tier`
+returned the same four colours — RED/ORANGE/YELLOW/GREEN — on its own cutoffs (robustness
+50/70/85%, coverage 30/60/80%), and `generate_report`'s GREEN branch printed
+**"APPROVED: Robustness metrics within acceptable range"**: a deployment verdict this
+project does not issue, reached from two measured quantities by way of four colours and
+six unjustified thresholds. The colours were not the problem; the verdict was. Both are
+gone, and the report now carries the measurements with the denominators they are over and
+says in its own text that it is not a conformance result and not a deployment decision.
+
+**Correction to §19.16's open-items row.** It said both existing withdrawal guards "check
+documents only". That was wrong, and the row is corrected in place with this note rather
+than quietly edited. Two guards in `tests/test_v132_scope_corrections.py` do scan code:
+`test_no_composite_score_module_exists` asserted that two **hardcoded filenames** were
+absent (`src/nhid_cas.py`, `src/nhid_badge_generator.py`), and
+`test_no_trust_tier_vocabulary_in_source` scans all of `src/` for three **literal
+phrases** ("Verified Trust", "Conditional Trust", "badge_eligible"). The scorer cleared
+the first by living in a different file and the second by using four colours the phrase
+list had never heard of. The guards were keyed on the previous scorer's name and
+vocabulary rather than on what makes a scorer a scorer — which is the same failure as
+§19.15's adapter guard that stopped guarding when the files moved, and §19.14's chain
+check that existed one level up and was never passed down. The claim in the PR that
+shipped §19.16 is wrong on this point and this entry is the correction.
+
+**What replaced them.** `test_no_composite_score_survives_under_any_name` AST-scans every
+module under `src/` and fails on the *shape* of a tier ladder rather than on any name: an
+Enum whose member names include two or more of GREEN/YELLOW/AMBER/ORANGE/RED, or a
+function returning two or more of those as string literals. It was written before the
+deletions and **run against the tree that still contained them**, where it failed naming
+both — `src/safety_evaluation/safety_scorer.py: enum RiskTier` and
+`src/safety_evaluation/adversarial_metrics.py: function assess_robustness_tier()`. A guard
+that has never failed has not been tested, so two further tests assert it recognises both
+shapes and that it leaves `src/pilot_pdf.py`'s imported `AMBER` PDF colour, a lone status
+string, and a plain non-Enum palette class alone. The older filename and phrase checks are
+kept: they still catch what they were written for.
+
+**The bump script, fixed rather than watched.** `bump_published_test_count.py` damaged a
+recorded transition for a third time on this change — "Suite 1752 → 1796" became
+"→ 1779" — so it is no longer the operator's job to notice. The script now protects any
+`NNNN → NNNN` or `NNNN -> NNNN` span before substituting: a current-state claim never
+takes that shape, and a transition is always history. Measured against this archive, the
+old blind substitution damaged 1 of the 28 transitions it contains and the new rewriter
+damages none, while a live claim on the same line as a transition still moves.
+`tests/test_published_count_propagation.py` holds it to that in 13 cases, including the
+exact line that was damaged three times and a pass over the real archive. The script had
+no test at all before this.
 
 ### 19.16 Mathematical audit: a published percentile was measured over a population with the worst cases removed — 2026-10-21
 

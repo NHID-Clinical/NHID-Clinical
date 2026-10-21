@@ -426,34 +426,6 @@ class TestAdversarialMetrics:
         )
         assert 0.0 <= confidence <= 1.0
 
-    def test_robustness_tier_assessment_red(self):
-        """Should assess RED tier for poor robustness."""
-        metrics = AdversarialMetrics(
-            total_attacks=10, successful_bypasses=8, partial_bypasses=1,
-            total_bypass_attempts=9, attack_success_rate=0.9,
-            control_robustness_score=0.1, coverage_ratio=0.2,
-            severity_weighted_bypass_score=0.8,
-            false_negative_rate=0.8, false_positive_rate=0.1,
-            test_confidence=0.3
-        )
-
-        tier = MetricsCalculator.assess_robustness_tier(metrics)
-        assert tier == "RED"
-
-    def test_robustness_tier_assessment_green(self):
-        """Should assess GREEN tier for good robustness."""
-        metrics = AdversarialMetrics(
-            total_attacks=10, successful_bypasses=1, partial_bypasses=0,
-            total_bypass_attempts=1, attack_success_rate=0.1,
-            control_robustness_score=0.9, coverage_ratio=0.85,
-            severity_weighted_bypass_score=0.05,
-            false_negative_rate=0.05, false_positive_rate=0.0,
-            test_confidence=0.8
-        )
-
-        tier = MetricsCalculator.assess_robustness_tier(metrics)
-        assert tier == "GREEN"
-
     def test_metrics_export_to_dict(self):
         """Should export metrics as dictionary."""
         metrics = AdversarialMetrics(
@@ -483,9 +455,23 @@ class TestAdversarialMetrics:
 
         report = MetricsCalculator.generate_report(metrics)
         assert isinstance(report, str)
-        assert "Robustness Tier" in report
         assert "Core Metrics" in report
         assert "30.0%" in report  # ASR percentage
+
+        # The report carries measurements with their denominators.
+        assert "2 of 10 attacks" in report
+        assert "50.0% of the scenarios" in report
+
+        # And issues no verdict. It used to open with "## Robustness Tier: GREEN"
+        # and close with "APPROVED: Robustness metrics within acceptable range",
+        # reached from two measured quantities by way of four colours and six
+        # unjustified cutoffs. README withdraws the composite score and its
+        # tiers and says nothing replaces them under another name.
+        assert "Robustness Tier" not in report
+        for verdict in ("APPROVED", "CRITICAL", "WARNING", "MONITOR",
+                        "GREEN", "YELLOW", "ORANGE", "RED"):
+            assert verdict not in report, f"report still issues a verdict: {verdict}"
+        assert "not a conformance result and not a deployment decision" in report
 
 
 if __name__ == "__main__":
