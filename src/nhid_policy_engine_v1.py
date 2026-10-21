@@ -212,9 +212,30 @@ def _fallback_twiml(message: str, gather: bool = False) -> str:
 
 
 def _internal_error_decision(context: str) -> PolicyDecision:
-    """Last-resort safe decision on unexpected internal error. Never raises."""
+    """Last-resort decision on an unexpected internal error. Never raises.
+
+    **Fails closed.** This returned `LOG_ONLY`, which is priority 2 in the
+    enforcement ladder — above only `CONTINUE_AI`. A control that faulted
+    therefore contributed nothing restrictive and the composite became whatever
+    the remaining controls happened to say, so enforcement degraded silently:
+    with a fault injected into PDX-01's helper, a request for a member ID with
+    no disclosure went from `DENY_DATA/PDX01_PHI_GATE_TRIGGERED` to
+    `DISCLOSE_IDENTITY/IDG01_DISCLOSURE_MISSING`. Asking the agent to disclose
+    does not stop the data exchange, and the composite reason code named
+    IDG-01, so nothing in the decision said the PHI gate had failed.
+
+    For a gate standing in front of protected data, "safe" has to mean the
+    patient's safety rather than the call's, so an internal error now denies.
+    `reason_code` stays `INTERNAL_POLICY_ERROR` and the violation is still
+    recorded against ATR-01, so a denial caused by a fault remains
+    distinguishable from a denial caused by a real violation.
+
+    No corpus row reaches this path — the Fabricate, voice-stress and
+    governance runs report zero internal errors — so the pinned baselines are
+    unaffected, which was checked rather than assumed.
+    """
     return PolicyDecision(
-        action=PolicyAction.LOG_ONLY,
+        action=PolicyAction.DENY_DATA,
         reason_code="INTERNAL_POLICY_ERROR",
         violations=[
             BoundaryViolation(

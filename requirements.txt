@@ -1,16 +1,55 @@
-fastapi>=0.110.0
-httpx>=0.27.0
-pytest>=8.0.0
-pytest-asyncio>=0.23.0
-pydantic>=2.6.0
-uvicorn>=0.29.0
-python-multipart>=0.0.9
-pyyaml>=6.0.1
-jsonschema>=4.21.0
-cryptography>=41.0.0
-openai>=1.0.0
-python-dotenv>=1.0.0
+# NHID-Clinical runtime and test dependencies.
+#
+# Every entry carries an upper bound at the next major. The floors were
+# unbounded, so `pip install -r requirements.txt` resolved to whatever was
+# latest on the day it ran: a breaking major release would have changed what
+# CI and the Docker image execute with nothing failing to announce it, and the
+# versions actually exercised had drifted far past the floors — openai two
+# majors, cryptography nine, pytest and reportlab one each.
+#
+# The bound is a statement about what has been tested, not a guess about the
+# future. `tests/test_dependency_contract.py` asserts the installed set
+# satisfies these ranges, so a bound cannot drift out of step with what CI
+# resolves. Raise a bound deliberately, after the suite passes on the new
+# major.
+#
+# Verified clean: `pip-audit -r requirements.txt` reports no known
+# vulnerabilities (2026-10-21).
 
-PyJWT>=2.8.0
+# ── Web framework and transport ──────────────────────────────────────────────
+fastapi>=0.110.0,<1.0.0
+uvicorn>=0.29.0,<1.0.0
+pydantic>=2.6.0,<3.0.0
+httpx>=0.27.0,<1.0.0
+# Not imported directly: FastAPI needs it to parse the form posts the Twilio
+# webhooks in app.py receive. Removing it breaks /voice/incoming at runtime.
+python-multipart>=0.0.9,<1.0.0
+
+# ── Cryptography ─────────────────────────────────────────────────────────────
+# Ed25519 delegation signing and verification (src/agent_identity.py).
+cryptography>=41.0.0,<51.0.0
+# JWS for the UDAP authorization extension (src/udap_jws.py).
+PyJWT>=2.8.0,<3.0.0
+
+# ── Data and schema ──────────────────────────────────────────────────────────
+pyyaml>=6.0.1,<7.0.0
+# Enforces the two published schemas in tests/test_schema_conformance.py. This
+# was a declared dependency imported by no file in the repository, so the
+# schemas were documentation nothing could contradict.
+jsonschema>=4.21.0,<5.0.0
+
+# ── LLM (reference voice pipeline only) ──────────────────────────────────────
+# Used by llm.py, reached from app.py's /voice/process. Not used by the
+# conformance engine or any control.
+openai>=1.0.0,<4.0.0
+python-dotenv>=1.0.0,<2.0.0
+
+# ── Document generation ──────────────────────────────────────────────────────
+reportlab>=4.0.0,<6.0.0
+# Text extraction for the published-number drift guard, which reads specs/*.pdf.
+# A missing pdfminer makes check_number_drift.py fail rather than skip.
 pdfminer.six>=20231228
-reportlab>=4.0.0
+
+# ── Test tooling ─────────────────────────────────────────────────────────────
+pytest>=8.0.0,<10.0.0
+pytest-asyncio>=0.23.0,<2.0.0

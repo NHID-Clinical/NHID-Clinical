@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **1356** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **1752** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **1356 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **1752 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1498,7 +1498,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 1356 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 1752 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1769,7 +1769,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 1356 passing tests · machine-readable traces · open implementation
+> 5 controls · 1752 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1799,7 +1799,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-1356%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-1752%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2464,6 +2464,108 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.15 Repository-wide audit: the audit trail, the HTTP surface, and the image — 2026-10-21
+
+**A repository-wide audit beyond NHID-Auth found three security-property
+failures, a deployment artifact that could not start, and two guards that had
+stopped guarding. Suite 1356 → 1752. Both pinned baselines unmoved.**
+
+#### Security properties that failed
+
+| | Finding | Before |
+| :-- | :-- | :-- |
+| 1 | **Deleting the audit database produced a passing integrity check.** `query_events` returned `[]` on any DB exception and `verify_chain` read `if not events: return True, None`. A removed, corrupt, locked or permission-denied store all reported the tamper-evident trail as **valid**, indistinguishable from an empty session. | `(True, None)` |
+| 2 | **Tail truncation of the log was undetectable.** A hash chain binds each event to its predecessor, so it catches a *mid-chain* deletion — not one from the *end*, where the survivors still agree and nothing points at what is gone. Dropping the inconvenient ending is the most natural way to redact a log. Proved the chain alone returns `(True, None)` on a truncated trail. | undetected |
+| 3 | **An internal error relaxed the gate.** `_internal_error_decision` returned `LOG_ONLY` — priority 2, above only `CONTINUE_AI` — so a control that faulted contributed nothing restrictive. With a fault injected into PDX-01's helper, a member-ID request with no disclosure went from `DENY_DATA/PDX01_PHI_GATE_TRIGGERED` to `DISCLOSE_IDENTITY/IDG01_DISCLOSURE_MISSING`. Asking the agent to disclose does not stop the exchange, and the composite reason code named IDG-01 — nothing said the PHI gate had failed. | fail-open |
+| 4 | **Unhandled exceptions on every HTTP route.** Ten inlined `json.loads` sites guarded by `json.JSONDecodeError` alone: `RecursionError` from 60,000 nested brackets is not one, so a trivially-crafted body produced a 502. A body that parsed but was not an object reached `.get(...)`. No size limit anywhere. | 502 |
+
+Fixes, in order: `AuditStoreUnavailable` raised by every read path, with
+`verify_chain` reporting `ERR_AUDIT_STORE_UNREADABLE`; `verify_chain` now
+compares against `audit_sessions.event_count`, a column `write_event` already
+maintained and **nothing had ever read**; `_internal_error_decision` returns
+`DENY_DATA`, keeping `INTERNAL_POLICY_ERROR` so a fault stays distinguishable
+from a real violation; one `_parse_json_body` helper for all eleven parse sites.
+
+A fifth, found while wiring the anchor: `write_event` incremented
+`event_count` but created the session row letting it default to 0, so **the
+first event of every session went uncounted** and the anchor sat permanently
+one short — exactly enough for one deleted event to pass. Invisible while
+nothing read the column; load-bearing the moment verification used it.
+
+#### The deployment artifact could not start
+
+Three independent defects in `Dockerfile`. `CMD` served
+`functions.handler:app`, which does not exist — that module is a Lambda entry
+point with no ASGI object (**verified**: uvicorn exits with `Attribute "app"
+not found`). **None** of the eleven root-level modules the application is made
+of were copied in (verified by walking `main.py`'s import closure against the
+COPY list). Dependencies were installed to `/root/.local` and then read as
+`USER nhid`, and `/root` is mode 700 (reasoned from the mode, **not** verified
+in-image).
+
+`tests/test_docker_smoke.py` had a `docker_image_built` fixture that would have
+caught all three — and **no test took it as an argument**, so it never ran. The
+remaining tests asserted the Dockerfile *contained the strings* "FROM python",
+"HEALTHCHECK", "EXPOSE". Wiring the fixture was impossible anyway: it skips
+without a daemon and `validate_ci.py` pins `SKIP_EXPECTED = 0`. That tension is
+why the image went unchecked. Resolved by making the checks static — the CMD
+target resolves to a real ASGI app, serves the path the HEALTHCHECK probes, and
+the COPY list covers the import closure — so they run in CI, with the real
+build in `scripts/check_docker_build.py`, which exits **2** ("not a pass") when
+no daemon is reachable.
+
+#### Guards that had stopped guarding
+
+`test_published_adapter_claims_match_the_repository` globbed
+`adapters/*_adapter.py` and keyed its assertions on `vendor in vendors`. When
+the four unmaintained adapters moved to `adapters/archive/`, retell, vonage and
+amazon_connect silently dropped out and **every assertion inside the loop was
+skipped** — a guard whose stated purpose is keeping the website's adapter
+claims honest, checking none of the three adapters it names. The claims turned
+out to be correct; the guard was not checking them.
+
+`adapters/archive/README.md` said "no longer actively maintained" without
+mentioning that three of the four are imported by `functions/handler.py` and
+reachable on published routes. Now stated, with the route table.
+
+#### Verified clean, reported as such rather than left unexamined
+
+* `pip-audit -r requirements.txt` → **no known vulnerabilities**. (24 CVEs exist
+  in the sandbox's own toolchain — pip, setuptools, wheel, gcloud packages —
+  none in this project's tree.)
+* No `eval`/`exec` outside `ast.literal_eval`, no pickle, no `yaml.load`, no
+  `shell=True` in any production path, no `verify=False`, no hardcoded secrets,
+  no TODO/FIXME/NotImplementedError anywhere, no orphan modules in `src/`.
+* The two published JSON Schemas **do** agree with the engine and the pilot kit.
+  The gap was purely that nothing enforced them, and `jsonschema` was a declared
+  dependency imported by no file. Reported as an enforcement gap rather than
+  inflated into a schema defect.
+* Vendor adapters are genuinely robust against malformed payloads — 92 cases
+  across five routes, all answering with a status code.
+
+#### Corrections to this audit's own findings
+
+Recorded because each would have shipped something wrong:
+
+1. I first reported that a fault in one control disabled **all five**. That was an artefact of patching the whole evaluator, which bypasses its own handler. Re-probed with a fault *inside* a control: the other controls still run, and the real defect is a silent **downgrade** of enforcement. Narrower, and the fix differs.
+2. I validated `tests/sample_request.json` against the trace schema and reported two missing required fields. The schema's own description says it governs what pipeline stages **emit**, not what a request supplies, so that was the wrong contract. No defect.
+3. I was about to rename `adapters/archive/` as misleading. It is a deliberate, documented decision — `docs/project-state.md` records "adapters archived, routes kept" and the directory has a README explaining it. Left alone; the omission was that the README did not mention the live routes.
+4. `pytest-asyncio` looked like dead weight — zero async tests existed and `pytest.ini` set `asyncio_mode` for a suite with none. Rather than drop it, it now serves the suite's first async tests, covering `llm.py`, which was the only production module with no test at all and sits on the `/voice/process` path.
+
+#### Remaining limitations, not resolved
+
+* **The Docker build is not end-to-end verified.** No daemon in this
+  environment. Static checks pass; `scripts/check_docker_build.py` must be run
+  on a docker-enabled runner.
+* **ATR-01 tamper-evidence is a cost increase, not a guarantee.** The session
+  anchor shares a file with the events it describes, so two coordinated edits
+  defeat it. An external anchor — WORM, signed checkpoint, replication — is not
+  implemented. Named in `docs/claim-boundaries.md` and asserted by a test that
+  demonstrates the defeat.
+* **No lockfile.** Upper bounds now prevent a breaking major from landing
+  unannounced, and `tests/test_dependency_contract.py` keeps the declared
+  ranges honest about what is installed, but builds are not byte-reproducible.
 
 ### 19.14 NHID-Auth audit: three documented properties were not implemented — 2026-10-21
 

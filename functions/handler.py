@@ -3,6 +3,7 @@ import json
 import os
 import re
 import sys
+from typing import Any, Optional
 
 # When SAM packages with CodeUri: ., the repo root is /var/task.
 # This insert ensures `src` and `adapters` are importable whether running locally or in Lambda.
@@ -126,14 +127,9 @@ def lambda_handler(event: dict, context) -> dict:
         return _handle_vendor(event, "connect")
 
     # Generic NHID event routes (/v1/conformance/check and /v1/demo/check)
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     if "event" not in body:
         return _error(400, "Missing required field: 'event'")
@@ -151,14 +147,9 @@ def lambda_handler(event: dict, context) -> dict:
 
 def _handle_vendor(event: dict, vendor: str) -> dict:
     """Parse a vendor-native payload, run the adapter, and evaluate conformance."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        payload = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    payload, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     try:
         if vendor == "vapi":
@@ -193,14 +184,9 @@ def _handle_vendor(event: dict, vendor: str) -> dict:
 
 def _handle_call_progress(event: dict) -> dict:
     """Turn-by-turn conformance evaluation. Stateless — caller maintains session_state."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     try:
         from adapters.call_progress_adapter import to_nhid_event
@@ -285,14 +271,9 @@ def _handle_demo_sms_optin(event: dict) -> dict:
     text. CAPTCHA- and rate-limited; sends a real SMS via functions.twilio_sms.
     The submitted consent + this server-side gate are the documented A2P 10DLC
     opt-in for the campaign."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     # Explicit opt-in consent is mandatory — never text without it.
     if not body.get("consent"):
@@ -345,14 +326,9 @@ def _handle_demo_call(event: dict) -> dict:
     number. The one demo route with real per-call Twilio/ElevenLabs cost --
     gated by Turnstile CAPTCHA and per-IP/per-number rate limits before any
     network call is made."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     if not _verify_turnstile(str(body.get("turnstile_token", ""))):
         return _error(400, "CAPTCHA verification failed")
@@ -434,14 +410,9 @@ def _handle_demo_call_status(event: dict) -> dict:
 
 def _handle_pilot_enroll(event: dict) -> dict:
     """Pilot enrollment — validates the request and returns next steps."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     org_name = str(body.get("org_name", "")).strip()
     contact_email = str(body.get("contact_email", "")).strip()
@@ -468,11 +439,9 @@ def _handle_pilot_enroll(event: dict) -> dict:
 
 def _handle_cts_evaluate(event: dict) -> dict:
     """Run the NHID CTS YAML test cases and return structured results."""
-    raw_body = event.get("body") or "{}"
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event, allow_empty=True)
+    if parse_error:
+        return parse_error
 
     test_ids = body.get("test_ids") or None
     if test_ids is not None and not isinstance(test_ids, list):
@@ -509,14 +478,9 @@ def _handle_verify_passport(event: dict) -> dict:
     library-only check, which on a fresh manager is no revocation check at
     all. v2 returns 503 in that situation instead.
     """
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     delegation_raw = body.get("delegation")
     signature_b64 = body.get("signature_b64")
@@ -636,14 +600,9 @@ def _handle_verify_passport_v2(event: dict) -> dict:
         prove it holds the agent key now rather than merely holding bytes that
         once verified.
     """
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     try:
         resolver = _configured_trust_anchors()
@@ -759,14 +718,9 @@ def _handle_verify_passport_v2(event: dict) -> dict:
 
 def _handle_revoke_passport(event: dict) -> dict:
     """Durably revoke a delegation_id, surviving across stateless invocations."""
-    raw_body = event.get("body") or ""
-    if not raw_body:
-        return _error(400, "Request body is required")
-
-    try:
-        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
-    except json.JSONDecodeError as exc:
-        return _error(400, f"Invalid JSON: {exc}")
+    body, parse_error = _parse_json_body(event)
+    if parse_error:
+        return parse_error
 
     delegation_id = str(body.get("delegation_id", "")).strip()
     if not delegation_id:
@@ -865,6 +819,68 @@ _CORS = {
     "Access-Control-Allow-Headers": "Content-Type,x-api-key",
     "Access-Control-Allow-Methods": "POST,GET,OPTIONS",
 }
+
+
+#: Largest request body this function will attempt to parse. API Gateway's own
+#: ceiling for a REST API is 10 MB; this is well under it because every payload
+#: these routes accept — one NHID event, one passport, one scenario list — is
+#: kilobytes. A body larger than this is refused before `json.loads` sees it.
+MAX_BODY_BYTES = 2 * 1024 * 1024
+
+
+def _parse_json_body(
+    event: dict, *, require_object: bool = True, allow_empty: bool = False
+) -> tuple[Any, Optional[dict]]:
+    """Parse a request body into JSON, or return the 400 to send instead.
+
+    Returns `(parsed, None)` on success and `(None, error_response)` on failure,
+    so a route reads:
+
+        body, err = _parse_json_body(event)
+        if err:
+            return err
+
+    Every route used to inline `json.loads` guarded by `json.JSONDecodeError`
+    alone. That is not the only way parsing fails: CPython's JSON decoder
+    recurses per nesting level, so a body of 60,000 open brackets raises
+    `RecursionError`, which no route caught — one trivially-crafted request
+    produced an unhandled exception and a 502 on four routes. Depth is the
+    attack, not size, so the breadth of this `except` is the actual fix and the
+    size cap is a second line.
+
+    `require_object` rejects a body that parses but is not a JSON object, which
+    every one of these routes assumes when it calls `.get(...)` on the result.
+    """
+    raw_body = event.get("body") or ""
+    if not raw_body:
+        # Some routes treat an absent body as "no options supplied" rather than
+        # as a malformed request.
+        if allow_empty:
+            return ({} if require_object else None), None
+        return None, _error(400, "Request body is required")
+
+    if isinstance(raw_body, (str, bytes)) and len(raw_body) > MAX_BODY_BYTES:
+        return None, _error(
+            413,
+            f"Request body is {len(raw_body)} bytes; the limit is "
+            f"{MAX_BODY_BYTES}",
+        )
+
+    try:
+        parsed = json.loads(raw_body) if isinstance(raw_body, (str, bytes)) else raw_body
+    except (json.JSONDecodeError, RecursionError, ValueError, UnicodeDecodeError) as exc:
+        # RecursionError is not a ValueError and JSONDecodeError does not cover
+        # it, so it has to be named explicitly.
+        return None, _error(400, f"Invalid JSON: {exc}")
+
+    if require_object and not isinstance(parsed, dict):
+        return None, _error(
+            400,
+            f"Request body must be a JSON object, got "
+            f"{type(parsed).__name__}",
+        )
+
+    return parsed, None
 
 
 def _ok(body: dict) -> dict:

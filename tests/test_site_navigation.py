@@ -273,13 +273,24 @@ def test_published_adapter_claims_match_the_repository():
     import glob
     import re as _re
 
+    # Globbing only adapters/*_adapter.py made this guard stop guarding the
+    # moment the four unmaintained adapters moved to adapters/archive/. The
+    # loop below keys on `vendor in vendors`, so retell, vonage and
+    # amazon_connect silently dropped out and every assertion about them was
+    # skipped — a check that no longer reached what its docstring describes.
+    # Archived adapters are still served over HTTP, so they are still claims.
     modules = {
         os.path.basename(p)[: -len("_adapter.py")]
         for p in glob.glob(os.path.join(REPO_ROOT, "adapters", "*_adapter.py"))
+        + glob.glob(os.path.join(REPO_ROOT, "adapters", "archive", "*_adapter.py"))
     }
-    # vendor adapters only; these three are internal plumbing, not integrations
+    # vendor adapters only; these are internal plumbing, not integrations
     vendors = modules - {"fabricate", "call_progress"}
     assert vendors, "no vendor adapters found — check the path"
+    assert {"retell", "vonage", "amazon_connect"} <= vendors, (
+        f"the archived-but-served adapters are missing from the set this "
+        f"guard checks: found {sorted(vendors)}"
+    )
 
     # interoperability.html was merged into developers.html by the IA
     # consolidation. Reading the retired file would leave this guard passing
