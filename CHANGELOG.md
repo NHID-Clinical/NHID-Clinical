@@ -2,6 +2,10 @@
 
 ## [Unreleased] - 2026-09
 
+- **Retired `docs/visual-system.md`.** The visual design is being rebuilt, so the Evidence
+  Diagram System no longer binds new site pages, figures or graphics. The file stays as a
+  historical record. The generated-figure check (`scripts/build_evidence_visuals.py --check`)
+  is unchanged: evidence figures must still match their source.
 - **IDG-01: a disclosure counts only if it was heard.** Platforms commonly log the full scripted
   disclosure even when the counterparty barged in and playback stopped before "automated". The
   engine now reads two optional `healthcare_governance` fields, `disclosure_interrupted` and

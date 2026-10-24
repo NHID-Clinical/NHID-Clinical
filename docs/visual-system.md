@@ -1,7 +1,13 @@
 # NHID-Clinical Evidence Diagram System
 
-**Status:** Normative for new visuals on nhid-clinical.org
+**Status:** Retired 2026-10-24. No longer normative for the site, the repository or any NHID-Clinical graphic.
 **Version:** 1.0 · established 2026-09-05
+
+> **Retired.** The project's visual design is being rebuilt, and the style rules below no
+> longer bind new work. This file is kept as a historical record only. One thing outlives it:
+> published evidence figures are still generated from the engine and the committed corpora,
+> and `python scripts/build_evidence_visuals.py --check` still fails CI when a figure stops
+> matching its source. That is an accuracy guarantee, not a style rule.
 
 This document exists because a visual audit of the eleven live destinations
 found four coexisting visual systems, not one: a flat token-driven inline model
