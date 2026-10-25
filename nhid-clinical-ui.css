@@ -39,7 +39,7 @@
   --mist: #f6f4f0;           /* warm paper, one step down */
   --shadow: 0 1px 2px rgba(20, 30, 45, 0.05), 0 8px 24px rgba(20, 30, 45, 0.06);  /* restrained */
   /* NOTE: --display is redefined in the second :root block near the end of
-     this file (Raleway). Custom properties resolve at use time, so that
+     this file (Inter). Custom properties resolve at use time, so that
      later definition wins everywhere and this one was dead. Removed to stop
      the file appearing to set two different display faces. */
   --sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -1727,7 +1727,7 @@ iframe[src*="elevenlabs.io"] {
    Clutch-inspired refinement layer — calm, airy, premium (2026-07)
    ═══════════════════════════════════════════════════════════════════════ */
 :root {
-  --display: "Raleway", "Inter", system-ui, -apple-system, sans-serif;
+  --display: "Inter", system-ui, -apple-system, sans-serif;  /* one family for display and body; Plex Mono for code and control IDs */
   --cyan: #67E8F9;
   --teal-bright: #14B8A6;
   --glow-teal: rgba(20, 184, 166, 0.26);
@@ -1757,8 +1757,12 @@ h2 { font-weight: 700; }
    without JavaScript, unless they happened to have reduced motion enabled.
    Entrance animation is decoration; the content is not. */
 .reveal { opacity: 1; transform: none; }
-html.js .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
-html.js .reveal.in { opacity: 1; transform: none; }
+/* Opacity is never animated. With JS on, an IntersectionObserver that never fires
+   (a block below the fold in a full-page capture, a crawler, print) used to leave
+   the block at opacity 0 for good -- the 25 Oct audit found two such blocks on
+   the home page. The entrance is now a 10px rise only; the content is always there. */
+html.js .reveal { opacity: 1; transform: translateY(10px); transition: transform .5s ease; }
+html.js .reveal.in { transform: none; }
 @media (prefers-reduced-motion: reduce) {
   html.js .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }

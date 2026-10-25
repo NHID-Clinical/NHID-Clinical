@@ -364,3 +364,108 @@ def test_the_dead_link_check_actually_fails_on_a_dead_link():
             '<a href="#top">anchor</a>'
             '<a href="/specs/">dir</a>')
     assert dead_local_links(html, "") == ["/specs/does-not-exist.pdf"]
+
+
+# ── Phase A of the 25 Oct redesign: the mechanics every page must carry ──────
+
+#: What a link preview needs. All twelve pages had no og:image and a
+#: `summary` card; canonical was missing on nine. One generated block per page.
+PREVIEW_TAGS = (
+    'rel="canonical"', 'property="og:title"', 'property="og:description"',
+    'property="og:url"', 'property="og:image"', 'name="twitter:card" content="summary_large_image"',
+)
+
+
+@pytest.mark.parametrize("page", PUBLISHED)
+def test_every_page_carries_a_complete_link_preview(page):
+    head = read(page).split("</head>", 1)[0]
+    missing = [t for t in PREVIEW_TAGS if t not in head]
+    assert not missing, f"{page} head is missing {missing}"
+    img = re.search(r'property="og:image" content="https://nhid-clinical\.org/([^"]+)"', head)
+    assert img and os.path.exists(os.path.join(REPO_ROOT, img.group(1))), (
+        f"{page} points og:image at a file that is not in the repository"
+    )
+
+
+@pytest.mark.parametrize("page", PUBLISHED)
+def test_og_description_is_the_page_description(page):
+    """The audit found the home page's og:description describing a different
+    product than its own meta description. They are one string now."""
+    head = read(page).split("</head>", 1)[0]
+    meta = re.search(r'<meta name="description" content="([^"]*)"', head).group(1)
+    og = re.search(r'property="og:description" content="([^"]*)"', head).group(1)
+    assert meta == og, f"{page}: meta description and og:description differ"
+
+
+def test_the_reveal_animation_never_hides_content():
+    """With JS on, a block whose IntersectionObserver never fires stayed at
+    opacity 0 for good. The entrance may move a block; it may not hide it."""
+    # Comments out first: the stylesheet documents the old `.reveal { opacity: 0 }`
+    # in prose, and a guard that reads prose as rules fails on its own history.
+    sheet = re.sub(r"/\*.*?\*/", "", read("nhid-clinical-ui.css"), flags=re.S)
+    for m in re.finditer(r"\.reveal[^{]*\{([^}]*)\}", sheet):
+        body = m.group(1)
+        op = re.search(r"opacity\s*:\s*([\d.]+)", body)
+        assert op is None or float(op.group(1)) >= 1, f"a .reveal rule sets opacity {op.group(1)}: {body.strip()}"
+
+
+def test_one_display_family():
+    """Three fonts loaded (Raleway, Inter, Plex Mono). Inter does display and
+    body; Plex Mono is for code and control IDs."""
+    assert "Raleway" not in read("nhid-clinical-ui.css")
+    for page in PUBLISHED:
+        assert "Raleway" not in read(page), f"{page} still loads Raleway"
+
+
+@pytest.mark.parametrize("page", PUBLISHED)
+def test_every_page_loads_the_same_stylesheet_set(page):
+    """specs/ and the FAQ lacked premium.css, so the same component rendered
+    two ways depending on the page."""
+    head = read(page).split("</head>", 1)[0]
+    assert "/assets/css/premium.css" in head, f"{page} does not load premium.css"
+
+
+@pytest.mark.parametrize("page", PUBLISHED)
+def test_the_header_cta_has_one_wording(page):
+    content = read(page)
+    assert "Run a shadow evaluation</a>" not in content, f"{page} still says 'Run a shadow evaluation'"
+    assert "<small>A Behavioral Baseline for Healthcare Voice AI</small>" not in content.split("</header>", 1)[0], (
+        f"{page}: the tagline wrapped under the wordmark at 1440; it lives in the footer"
+    )
+
+
+@pytest.mark.parametrize("page", PUBLISHED)
+def test_one_copyright_line_per_footer(page):
+    footer = re.search(r"<footer.*?</footer>", read(page), re.S)
+    assert footer, f"{page} has no footer"
+    assert footer.group(0).count("© 2026") == 1, f"{page} repeats the copyright line in one footer"
+
+
+@pytest.mark.parametrize("page", PUBLISHED)
+def test_about_is_reachable_from_every_nav(page):
+    """'About' was in the nav on the home page only."""
+    content = read(page)
+    links = re.search(r'<div class="nav-links">(.*?)<div class="nav-actions">', content, re.S)
+    assert links and 'href="/about.html"' in links.group(1), f"{page}: About is not in the primary nav"
+
+
+def test_no_page_calls_the_optional_check_a_sixth_control():
+    """DLG-01 is opt-in; there is no sixth control (CLAUDE.md §3). The home page
+    said 'a sixth when you opt in'."""
+    for page in PUBLISHED:
+        text = read(page).lower()
+        assert "sixth control" not in text and "a sixth" not in text, f"{page} calls DLG-01 a sixth control"
+
+
+def test_faq_schema_matches_the_questions_on_the_page():
+    """The FAQPage JSON-LD is generated from the markup; if a question is
+    added or reworded without regenerating it, search engines get a stale set."""
+    import json
+    page = read("faq.html")
+    ld = re.search(r'<script type="application/ld\+json" id="faq-schema">(.*?)</script>', page, re.S)
+    assert ld, "faq.html carries no FAQPage JSON-LD"
+    names = {q["name"] for q in json.loads(ld.group(1))["mainEntity"]}
+    import html as _html
+    on_page = {_html.unescape(re.sub(r"<[^>]+>", "", q)).strip()
+               for q in re.findall(r'<h2 class="faq-q">(.*?)</h2>', page, re.S)}
+    assert on_page == names, f"questions on the page and in the schema differ: {on_page ^ names}"

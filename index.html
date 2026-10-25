@@ -6,19 +6,24 @@
   <meta name="description" content="NHID-Clinical — a voluntary, testable baseline for AI voice agents on B2B healthcare payer–provider calls. Five open controls and a reference implementation."/>
   <title>NHID-Clinical | Transparent AI Voice Agents in Healthcare</title>
   <link rel="canonical" href="https://nhid-clinical.org/"/>
-  <meta name="author" content="Brianna Baynard"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="NHID-Clinical"/>
   <meta property="og:url" content="https://nhid-clinical.org/"/>
-  <meta property="og:title" content="NHID-Clinical — Non-Human Identity Disclosure for Healthcare Voice AI"/>
-  <meta property="og:description" content="An independent, open governance framework for non-human actors operating under delegated authority across healthcare organizational boundaries. Created by Brianna Baynard."/>
-  <meta name="twitter:card" content="summary"/>
-  <meta name="twitter:title" content="NHID-Clinical — Non-Human Identity Disclosure for Healthcare Voice AI"/>
-  <meta name="twitter:description" content="An independent, open governance framework for non-human actors operating under delegated authority across healthcare organizational boundaries."/>
+  <meta property="og:title" content="NHID-Clinical | Transparent AI Voice Agents in Healthcare"/>
+  <meta property="og:description" content="NHID-Clinical — a voluntary, testable baseline for AI voice agents on B2B healthcare payer–provider calls. Five open controls and a reference implementation."/>
+  <meta property="og:image" content="https://nhid-clinical.org/assets/og/default.png"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="NHID-Clinical: five open controls for AI voice agents on healthcare payer calls"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="NHID-Clinical | Transparent AI Voice Agents in Healthcare"/>
+  <meta name="twitter:description" content="NHID-Clinical — a voluntary, testable baseline for AI voice agents on B2B healthcare payer–provider calls. Five open controls and a reference implementation."/>
+  <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/default.png"/>
+  <meta name="author" content="Brianna Baynard"/>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
@@ -79,7 +84,7 @@
 <a class="skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
-  <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · Not an accredited standard, certification, or regulatory requirement · Shadow evaluations now open</span>
+  <span class="status-strip-inner"><strong>Open proposal · v1.3</strong> · Not an accredited standard or certification</span>
 </div>
 
 
@@ -89,7 +94,6 @@
       <span class="brand-mark" aria-hidden="true"><img src="/assets/brand/logo-mark-rich.svg" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
-        <small>A Behavioral Baseline for Healthcare Voice AI</small>
       </span>
     </a>
     <div class="nav-links">
@@ -121,7 +125,7 @@
       <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
-      <a class="primary-pill" href="/shadow-evaluation-guide.html">Run a shadow evaluation</a>
+      <a class="primary-pill" href="/shadow-evaluation-guide.html">Start a shadow evaluation</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
@@ -154,6 +158,7 @@
   <a href="/developers.html">Developers</a>
   <a href="/specs/">Downloads</a>
   <strong class="mobile-nav-group">More</strong>
+  <a href="/about.html">About</a>
   <a href="/faq.html">FAQ</a>
   <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
@@ -184,7 +189,7 @@
           <a class="action-button action-button-primary" href="/shadow-evaluation-guide.html">Run an observe-only shadow evaluation</a>
           <a class="action-button action-button-secondary" href="/specification.html">Read the specification</a>
         </div>
-        <p class="proof-line reveal">5 controls &middot; 1840 passing tests &middot; machine-readable traces &middot; open implementation</p>
+        <p class="proof-line reveal">5 controls &middot; machine-readable traces &middot; open implementation</p>
         <p class="hero-observe reveal">Observe-only and non-intercepting: it runs against call traces you already hold, never in the live call path, and requires no vendor changes. <a href="#shadow-evaluation">How it works &darr;</a></p>
         <p class="boundary-note reveal">
           <span aria-hidden="true">&#9679;</span>
@@ -603,7 +608,7 @@
       <div class="act-head reveal">
         <div>
           <p class="section-kicker">The control layer</p>
-          <h2 id="controls-h" style="max-width:30ch">Five checks on every AI-agent call, and a sixth when you opt in.</h2>
+          <h2 id="controls-h" style="max-width:30ch">Five checks on every AI-agent call, plus an optional delegation check.</h2>
           <p class="act-lead">Each control is triggered by something observable on the call, returns one decision, and records a reason code in the machine-readable trace. The decisions and reason codes below are the ones the reference engine actually emits &mdash; <a href="/specification.html#controls">read the control definitions</a> or <a href="/specification.html">the normative text</a>. Mapped, not certified.</p>
         </div>
         <span class="act-index">04 / 06</span>
@@ -728,8 +733,8 @@
       <h3 class="section-kicker reveal" style="margin:2.25rem 0 0">Built in the open &mdash; every claim below is checkable</h3>
       <div class="proof-grid reveal" role="list">
         <div class="proof-cell" role="listitem">
-          <span class="proof-value">1840</span>
-          <span class="proof-label">Passing tests</span>
+          <span class="proof-value">&check;</span>
+          <span class="proof-label">Every test executed</span>
           <span class="proof-note">every collected test executed, in the open repo &mdash; <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions">see the runs</a></span>
         </div>
         <div class="proof-cell" role="listitem">
@@ -1143,7 +1148,6 @@
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
-    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
       <a href="/about.html">About</a>
       <a href="/privacy.html">Privacy</a>

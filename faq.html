@@ -5,24 +5,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="description" content="NHID-Clinical FAQ — frequently asked questions about the non-human identity disclosure proposal for healthcare voice AI."/>
   <title>FAQ | NHID-Clinical</title>
+  <link rel="canonical" href="https://nhid-clinical.org/faq.html"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="NHID-Clinical"/>
+  <meta property="og:url" content="https://nhid-clinical.org/faq.html"/>
+  <meta property="og:title" content="FAQ | NHID-Clinical"/>
+  <meta property="og:description" content="NHID-Clinical FAQ — frequently asked questions about the non-human identity disclosure proposal for healthcare voice AI."/>
+  <meta property="og:image" content="https://nhid-clinical.org/assets/og/default.png"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="NHID-Clinical: five open controls for AI voice agents on healthcare payer calls"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="FAQ | NHID-Clinical"/>
+  <meta name="twitter:description" content="NHID-Clinical FAQ — frequently asked questions about the non-human identity disclosure proposal for healthcare voice AI."/>
+  <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/default.png"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
   <link rel="stylesheet" href="/assets/css/instrument.css"/>
   <link rel="stylesheet" href="/assets/css/pages.css"/>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
+  <script type="application/ld+json" id="faq-schema">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is NHID-Clinical?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "NHID-Clinical is a voluntary, practitioner-led open framework (v1.3) that addresses a specific problem in healthcare payer–provider voice workflows: AI voice agents that interact with payer staff without disclosing they are automated systems. It is not an official standard, certification program, or regulatory requirement. It is an independent, practitioner-led effort to name the problem and define a testable baseline for shared expectations. It also does not evaluate model fairness, clinical safety, or output quality — those remain separate governance responsibilities. See the scope boundary note for what stays out of scope and how NHID-Clinical integrates underneath those programs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What problem does it address?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Impersonation latency — the gap between when an AI voice agent begins a call and when the person on the other end realizes they are not speaking to a human. An AI calls as \"Sarah from Dr. Smith's office,\" handles several minutes of normal workflow conversation, and only admits \"I'm an automated system\" when challenged. By then, sensitive operational data has already been exchanged — without clear consent or accountability."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who created this?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Brianna Baynard , after working in healthcare payer operations and personally experiencing these calls from AI systems that presented as human. It is an individual volunteer effort, not backed by any organization or standards body."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this mandatory?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Completely voluntary. Payers, providers, and vendors can choose to reference it, adapt it, or ignore it entirely."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the proposal actually suggest?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Four behaviors for AI voice agents in B2B healthcare administrative calls: Identify as an automated system before any operational data is exchanged Do not claim to be a human or a licensed professional Provide a clear, easy path to a human when requested Maintain basic logs of the interaction The full proposal document has detailed discussion of each. Download the PDF →"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who is this for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Payers receiving AI calls from providers or vendors Providers and vendors building AI voice agents Operations and compliance teams who want clearer expectations It does not apply to patient-facing calls, internal tools, or clinical decision AI."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is this different from HIPAA or TCPA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Those regulations cover patient data privacy and consumer call consent. Neither specifically addresses the B2B scenario where an AI agent calls a payer office on behalf of a provider — which is where the impersonation latency problem actually occurs. This proposal is designed to address a gap, not replace existing rules."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why are NPIs a security risk in voice calls?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "NPIs are public identifiers. Anyone can find a provider's NPI in the NPPES registry and use it when calling a payer. Without a real-time authorization check, a caller can claim to be from that practice and request operational data — claim status, eligibility, authorization details — and the payer's system has no mechanism to refuse. NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just that they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes 1916 passing tests to ensure deterministic policy evaluation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I get feedback on my implementation?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Informal peer feedback is available on a limited basis. Email contact@nhid-clinical.org with your context. This is not certification or formal assessment."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the NIST connection?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security) in January 2026. Comment ID: NIST-2025-0035-0026 . This is a public comment — it does not imply NIST endorsement or recognition."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I give feedback or get involved?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Email: contact@nhid-clinical.org GitHub: github.com/NHID-Clinical/NHID-Clinical/discussions Real-world experience from payers and implementers is what this proposal most needs. Read the evaluation guide →"
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
 
 <a class="skip-link" href="#main">Skip to main content</a>
 
 <div class="status-strip">
-  <span class="status-strip-inner"><strong>Open governance framework · v1.3</strong> · Practitioner-led · Not an accredited standard, certification, or regulatory requirement · Shadow evaluations now open</span>
+  <span class="status-strip-inner"><strong>Open proposal · v1.3</strong> · Not an accredited standard or certification</span>
 </div>
 
 
@@ -32,7 +143,6 @@
       <span class="brand-mark" aria-hidden="true"><img src="/assets/brand/logo-mark-rich.svg" alt="NHID-Clinical" /></span>
       <span>
         <strong>NHID-Clinical</strong>
-        <small>A Behavioral Baseline for Healthcare Voice AI</small>
       </span>
     </a>
     <div class="nav-links">
@@ -53,6 +163,7 @@
       </div>
       <a href="/developers.html">Developers</a>
       <a href="/specs/">Downloads</a>
+      <a href="/about.html">About</a>
       <a href="/faq.html">FAQ</a>
       <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
     </div>
@@ -63,7 +174,7 @@
       <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
-      <a class="primary-pill" href="/shadow-evaluation-guide.html">Run a shadow evaluation</a>
+      <a class="primary-pill" href="/shadow-evaluation-guide.html">Start a shadow evaluation</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
@@ -96,6 +207,7 @@
   <a href="/developers.html">Developers</a>
   <a href="/specs/">Downloads</a>
   <strong class="mobile-nav-group">More</strong>
+  <a href="/about.html">About</a>
   <a href="/faq.html">FAQ</a>
   <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
@@ -232,7 +344,7 @@
             <div>
               <h2 class="faq-q">Why are NPIs a security risk in voice calls?</h2>
               <p>NPIs are public identifiers. Anyone can find a provider's NPI in the NPPES registry and use it when calling a payer. Without a real-time authorization check, a caller can claim to be from that practice and request operational data — claim status, eligibility, authorization details — and the payer's system has no mechanism to refuse.</p>
-          <p>NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just <em>that</em> they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes <strong>1840 passing tests</strong> to ensure deterministic policy evaluation.</p>
+          <p>NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just <em>that</em> they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes <strong>1916 passing tests</strong> to ensure deterministic policy evaluation.</p>
             </div>
           </div>
           <div class="faq-item" id="q-can-i-get-feedback-on-my-implementation">
@@ -350,7 +462,6 @@ GitHub:  github.com/NHID-Clinical/NHID-Clinical/discussions</pre>
 
 <footer id="contact" class="site-footer">
   <div class="container footer-inner">
-    <p>© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0</p>
     <div>
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:contact@nhid-clinical.org">Contact</a>

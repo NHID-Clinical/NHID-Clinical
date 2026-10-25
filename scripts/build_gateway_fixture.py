@@ -51,6 +51,15 @@ from synthetic_eval_loop import (  # noqa: E402
 CORPUS = ROOT / "tests" / "evaluation_corpus_v1.json"
 OUT = ROOT / "assets" / "data" / "gateway-trace.json"
 PAGE = ROOT / "specification.html"
+
+#: Headings shown on the page for two corpus scenarios. The corpus titles are
+#: internal labels ("Quadruple: ...", "Fully Compliant: ...") and the corpus is
+#: pinned data, so the rename lives here rather than in the fixture: the
+#: scenario ids, turns and engine output are untouched.
+DISPLAY_TITLES = {
+    "nhid_ec_comp_001": "Compliant call: disclosure, wait gate, then data",
+    "nhid_ec_combo_008": "Four controls fire: IDG-01 + PDX-01 + DBC-01 + EIT-01",
+}
 BEGIN = "<!-- BEGIN GENERATED trust-gateway -->"
 END = "<!-- END GENERATED trust-gateway -->"
 
@@ -128,7 +137,7 @@ def build() -> dict:
             })
         out["scenarios"].append({
             "id": scenario_id,
-            "title": scenario.get("title", scenario_id),
+            "title": DISPLAY_TITLES.get(scenario_id, scenario.get("title", scenario_id)),
             "expected_violations": scenario.get("expected_violations") or [],
             "note": SPEAKER_NOTE[scenario_id],
             "turns": turns,
