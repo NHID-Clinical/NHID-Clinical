@@ -24,7 +24,7 @@
     "speaker": {
       "type": "string",
       "enum": ["agent", "caller"],
-      "description": "Who spoke this turn. 'agent' = the (possibly AI) calling agent under evaluation."
+      "description": "Who spoke this turn. 'agent' = the (possibly AI) calling agent under evaluation \u2014 the party that PLACED the call, claiming to be or to act for a provider, and whose identity and authority have not yet been established. 'caller' = the party on the other end, the payer's customer service agent or medical claims associate who RECEIVED the request. The 'caller' label reads backwards, since the agent is the one calling; it is retained because this schema ships in a downloaded kit and adapters already read it. See docs/canonical-threat-model.md."
     },
     "speech_text": {
       "type": "string",

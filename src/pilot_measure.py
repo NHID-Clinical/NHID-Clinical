@@ -507,6 +507,17 @@ def print_summary(summary: dict) -> None:
 # member ID is a MOCK- placeholder, and no part of this is derived from a real
 # call. It exists so `--demo` proves the kit runs before any real traffic is
 # mapped.
+#
+# WHO IS WHO. `speaker: "agent"` is the calling agent under evaluation: it
+# placed the call to the payer, claims to act for a provider, and its identity
+# and authority are what the controls exist to establish. `speaker: "caller"`
+# is the party it reached — the payer's customer service agent or medical
+# claims associate. That label reads backwards, since the agent is the one
+# calling; it is the published schema's value and is retained because the Tier
+# 0 kit ships it and adapters read it. Protected data moves in both directions
+# on a real eligibility call — the requester supplies identifiers, the payer
+# returns status — which is why PDX-01 gates *exchange* rather than one
+# direction. See docs/canonical-threat-model.md.
 
 _DEMO_RECORDS = [
     # Call 1: conformant — first-turn disclosure, PHI only afterwards.

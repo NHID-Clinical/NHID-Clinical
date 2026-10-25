@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **1792** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **1818** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **1792 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **1818 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1520,7 +1520,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 1792 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 1818 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1791,7 +1791,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 1792 passing tests · machine-readable traces · open implementation
+> 5 controls · 1818 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1821,7 +1821,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-1792%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-1818%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2489,6 +2489,77 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.18 The threat model was right everywhere except where a session would read it — 2026-10-21
+
+The canonical scenario, written down and guarded: **a caller-agent telephones a payer and
+asks for a patient's PHI, claiming to be or to act for a provider; the payer's customer
+service agent or claims associate receives the request and applies the controls.** Five
+actors — requesting caller-agent, receiving payer employee, patient, provider or
+represented organization, protected asset. The roles are never reversed.
+
+**What the inspection actually found.** The prose was already correct. `README.md`,
+`index.html`, `faq.html` ("the B2B scenario where an AI agent calls a payer office on
+behalf of a provider"), the traces, `app.py`'s ingress layer and
+`claim-boundaries.md`'s "receiver-side on inbound calls" all describe the canonical
+direction accurately, and `docs/payer-initiated-calls.md` names that direction first
+before extending the controls to the reverse one. There was no patient-as-caller framing
+anywhere. Two real gaps:
+
+1. **No project-level instructions existed at all.** No `CLAUDE.md`, no `.claude/`
+   instruction file, nothing. The model was correct in the documents a reader browses and
+   absent from the one place a tooling session loads automatically.
+2. **The published capture schema left `"caller"` undefined, and it means the receiver.**
+   `docs/pilot-kit/minimal-event-schema.json` declares `speaker: ["agent", "caller"]` and
+   documented only `"agent"`. `"caller"` denotes the payer-side human —
+   `adapters/fabricate_adapter.py` attributes an escalation request to it — so a reader
+   meeting `speaker: "caller"` would reasonably conclude the human placed the call and the
+   agent answered. Exactly backwards, in the one artifact a pilot copies.
+
+The enum values are **unchanged**: the schema ships in a downloaded kit and two modules
+read it, so renaming would break captures already in the field. Both values are now
+defined in the schema text, in the pilot kit's field table, and in the header of
+`_DEMO_RECORDS`, which is the first place a reader meets them.
+`ParticipantRole` in `src/safety_evaluation/synthetic_scenarios.py` already had the
+unambiguous vocabulary (`AI_AGENT` requesting, `CLAIMS_REP` receiving) and is now
+documented as the preferred one where there is a choice.
+
+**Recorded conflict, not corrected.** `fixtures/fabricate/conversations.csv` labels
+`caller_role` as `provider_office_staff` 141, `member_representative` 139,
+`prior_auth_coordinator` 128, `billing_specialist` 107, **`payer_staff` 35**. `payer_staff`
+inverts the direction and `member_representative` is the patient side, which the canonical
+model places outside its scope — 174 of 550 rows. They are retained: this is pinned
+baseline data, and rewriting it would move a measured baseline and falsify a corpus that
+was authored and evaluated as it stands. What follows is stated in both
+`fixtures/fabricate/README.md` and `docs/canonical-threat-model.md`: the detection and
+false-positive figures are valid measurements of the engine on these transcripts, but they
+are not all measurements of the canonical scenario, and a claim narrowed to it would need
+a subset that has not been separately evaluated.
+
+**The principle.** Identity disclosure is not identity verification; identity verification
+is not authorization; an asserted provider affiliation establishes neither. `terminology.md`
+already stated this for Impersonation Latency ("a disclosed agent may still be unauthorized; an
+undisclosed one may be perfectly authorized"); it is now stated as the control objective
+and the older sentence is asserted so it cannot be dropped on the grounds that CLAUDE.md
+covers it.
+
+**The guard, and what it caught first.** `tests/test_canonical_threat_model.py` asserts the
+instructions exist and name every actor, that `CLAUDE.md` and
+`docs/canonical-threat-model.md` do not drift on the actor set, that the schema defines
+both speaker values and says which party placed the call, and that no watched surface
+asserts the reversed shape. Its first run **failed on its own documentation**: the pattern
+matched the prohibition in `CLAUDE.md` ("Never describe the scenario as a patient calling a
+voice agent"). A guard that cannot tell a prohibition from an assertion makes the model
+harder to write down, so the scan now skips a match whose own sentence carries a negation —
+and reads back only to the sentence start, so one "never" at the top of a file cannot
+exempt the rest of it. Verified in both directions: a reversal injected into
+`docs/terminology.md` failed the guard naming the file and the phrase, and passed again on
+revert. `docs/payer-initiated-calls.md` is the single exemption and is itself asserted to
+keep naming the canonical direction and labelling itself an extension, following
+`check_number_drift.py`'s convention that an exemption states its reason.
+
+**No control semantics changed.** No new control, outcome, metric or guarantee. Both pinned
+baselines unmoved. Suite 1792 → 1818.
 
 ### 19.17 The guards were keyed on the old scorer's name, so a new one walked past them — 2026-10-21
 
