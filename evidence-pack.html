@@ -154,17 +154,19 @@
         <details class="doc-rail-fold" open>
         <summary class="doc-rail-label">Contents</summary>
         <ol>
-          <li><a href="#evidence-lifecycle"><span>How evidence is produced</span></a></li>
-          <li><a href="#guarantees"><span>System behavior guarantees</span></a></li>
-          <li><a href="#detection-rates"><span>Real-corpus detection rates</span></a></li>
-          <li><a href="#failure-trace"><span>Anonymized failure trace</span></a></li>
-          <li><a href="#simulation-coverage"><span>Failure &amp; attack simulation coverage</span></a></li>
-          <li><a href="#audit-readiness"><span>Audit readiness model</span></a></li>
-          <li><a href="#architecture-notes"><span>Architecture &amp; scale notes</span></a></li>
-          <li><a href="#risk-register"><span>Risk register</span></a></li>
-          <li><a href="#architecture-summary"><span>One-page architecture summary</span></a></li>
-          <li><a href="#trust-stack"><span>The trust stack in cross-section</span></a></li>
-          <li><a href="#conformance-suite"><span>Conformance test suite</span></a></li>
+          <li class="doc-rail-band">Guarantees</li>
+          <li class="is-sub"><a href="#guarantees"><span>System behavior guarantees</span></a></li>
+          <li class="is-sub"><a href="#audit-readiness"><span>Audit readiness model</span></a></li>
+          <li class="doc-rail-band">Results</li>
+          <li class="is-sub"><a href="#evidence-lifecycle"><span>How evidence is produced</span></a></li>
+          <li class="is-sub"><a href="#detection-rates"><span>Real-corpus detection rates</span></a></li>
+          <li class="is-sub"><a href="#failure-trace"><span>Anonymized failure trace</span></a></li>
+          <li class="is-sub"><a href="#simulation-coverage"><span>Failure &amp; attack simulation coverage</span></a></li>
+          <li class="is-sub"><a href="#conformance-suite"><span>Conformance test suite</span></a></li>
+          <li class="doc-rail-band">Operations</li>
+          <li class="is-sub"><a href="#architecture-notes"><span>Architecture &amp; scale notes</span></a></li>
+          <li class="is-sub"><a href="#risk-register"><span>Risk register</span></a></li>
+          <li class="is-sub"><a href="#trust-stack"><span>The trust stack in cross-section</span></a></li>
         </ol>
         </details>
       </nav>
@@ -178,13 +180,72 @@
           <p>This describes the reference implementation's technical properties. NHID-Clinical does not issue certifications, conduct audits, or validate vendor implementations. Everything here is self-attested and open for community review.</p>
         </div>
 
+      <div class="doc-band" id="band-guarantees">
+        <p class="section-kicker">What it promises</p>
+        <h2>Guarantees</h2>
+        <p>What the engine is built to do on every call, and what an auditor can reconstruct afterwards.</p>
+      </div>
+      <section class="act" id="guarantees" aria-labelledby="guarantees-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Guarantees</p>
+            <h2 id="guarantees-h">System behavior guarantees</h2>
+            <p class="act-lead">Four properties of the engine, each one a test.</p>
+          </div>
+          <span class="act-index">01 / 10</span>
+        </div>
+        <div class="act-body">
+
+          <div class="card-grid">
+            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>01</span></div><h3>Deterministic output</h3><p>Identical input event + identical policy version → identical trace output. The policy engine is a pure function with no side effects.</p></div>
+            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>02</span></div><h3>Replay guarantee</h3><p>Any stored trace can be replayed. Policy version is embedded in each event header; version mismatches are flagged.</p></div>
+            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>03</span></div><h3>Failure invariants</h3><p>The engine never raises an unhandled exception. Malformed input returns a deterministic error trace; the caller always gets a response.</p></div>
+            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>04</span></div><h3>Idempotency</h3><p>Submitting the same request_id twice produces the same policy decision. The event store deduplicates at PERSIST.</p></div>
+          </div>
+        </div>
+      </section>
+      <section class="act" id="audit-readiness" aria-labelledby="audit-readiness-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Audit</p>
+            <h2 id="audit-readiness-h">Audit readiness model</h2>
+            <p class="act-lead">What an external auditor can reconstruct from the event store.</p>
+          </div>
+          <span class="act-index">02 / 10</span>
+        </div>
+        <div class="act-body">
+
+          <p>An external auditor reconstructing a session from the event store can determine:</p>
+          <ul>
+            <li>When the call started and when the first disclosure statement was made</li>
+            <li>Whether disclosure preceded any PHI or credential exchange</li>
+            <li>Whether opt-out or escalation was requested and how it was handled</li>
+            <li>Which policy engine version processed each event</li>
+            <li>Whether any partial failures or boundary violations were recorded</li>
+          </ul>
+          <div class="console-bar"><span><b>Example</b> · correlation ID lifecycle</span></div>
+          <pre>correlation_id: "auth-2026-05-26-001"
+
+t=00:00.000  INGEST     POST /voice/process received
+t=00:00.123  VALIDATE   SpeechResult normalized
+t=00:00.131  STATE      Session reconstructed: turn_count=0, disclosure=null
+t=00:00.140  POLICY     IDG-01: DISCLOSE_IDENTITY triggered (turn_count=0)
+t=00:00.145  EXEC       TwiML disclosure message rendered
+t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
+        </div>
+      </section>
+      <div class="doc-band" id="band-results">
+        <p class="section-kicker">What was measured</p>
+        <h2>Results</h2>
+        <p>Where the figures come from, what they measure, and a worked trace of a call that fails. Each figure answers one question; none is combined with another.</p>
+      </div>
       <section class="act" id="evidence-lifecycle" aria-labelledby="evidence-lifecycle-h">
         <div class="act-head">
           <div>
             <p class="section-kicker">Method</p>
             <h2 id="evidence-lifecycle-h">How evidence is produced &mdash; and why there are four figures</h2>
           </div>
-          <span class="act-index">01 / 11</span>
+          <span class="act-index">03 / 10</span>
         </div>
         <div class="act-body">
 
@@ -286,8 +347,8 @@
           </tr>
           <tr>
             <th scope="row">Conformance suite<span class="sc-measures">Implementation correctness against the specification</span></th>
-            <td class="sc-size">1983 tests</td>
-            <td>1983/1983 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
+            <td class="sc-size">1992 tests</td>
+            <td>1992/1992 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
             <td><code>python -m pytest tests/ -q</code><span class="sc-src">tests/</span></td>
           </tr>
           </tbody>
@@ -296,28 +357,9 @@
 
       <aside class="visual-provenance">
         <p><strong>Separation:</strong> Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>7e96abb</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>e32a371</code></p>
       </aside>
       <!-- END GENERATED evidence-scorecard -->
-        </div>
-      </section>
-      <section class="act" id="guarantees" aria-labelledby="guarantees-h">
-        <div class="act-head">
-          <div>
-            <p class="section-kicker">Guarantees</p>
-            <h2 id="guarantees-h">System behavior guarantees</h2>
-            <p class="act-lead">Four properties of the engine, each one a test.</p>
-          </div>
-          <span class="act-index">02 / 11</span>
-        </div>
-        <div class="act-body">
-
-          <div class="card-grid">
-            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>01</span></div><h3>Deterministic output</h3><p>Identical input event + identical policy version → identical trace output. The policy engine is a pure function with no side effects.</p></div>
-            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>02</span></div><h3>Replay guarantee</h3><p>Any stored trace can be replayed. Policy version is embedded in each event header; version mismatches are flagged.</p></div>
-            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>03</span></div><h3>Failure invariants</h3><p>The engine never raises an unhandled exception. Malformed input returns a deterministic error trace; the caller always gets a response.</p></div>
-            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>04</span></div><h3>Idempotency</h3><p>Submitting the same request_id twice produces the same policy decision. The event store deduplicates at PERSIST.</p></div>
-          </div>
         </div>
       </section>
       <section class="act" id="detection-rates" aria-labelledby="detection-rates-h">
@@ -327,7 +369,7 @@
             <h2 id="detection-rates-h">Real-corpus detection rates</h2>
             <p class="act-lead">Per-control detection and false positives on disjoint populations, per conversation.</p>
           </div>
-          <span class="act-index">03 / 11</span>
+          <span class="act-index">04 / 10</span>
         </div>
         <div class="act-body">
 
@@ -353,6 +395,26 @@
           <div class="note" role="note" data-label="Self-reported">
             <p>Self-reported and not independently audited. These are replay measurements against a fixed corpus, not a conformance claim and not evidence of field accuracy. DBC-01 misses 17 of 200 declared cases and fires on 5 of 127 compliant ones; deception heuristics remain the least precise of the controls and an active area of work.</p>
           </div>
+          <h3>What a pass does and does not mean</h3>
+          <p>A pass on the conformance suite, like a detection figure in the table above, is evidence of how the engine behaved on a fixed corpus. It is not evidence about a deployment.</p>
+          <div class="pass-fail">
+            <div class="pass-box">
+              <strong>A pass means</strong>
+              <ul>
+                <li>Your implementation produced the expected verdict on every published case</li>
+                <li>Someone else can reproduce that result from the same inputs</li>
+                <li>You have evidence to show a counterparty during procurement</li>
+              </ul>
+            </div>
+            <div class="fail-box">
+              <strong>A pass does not mean</strong>
+              <ul>
+                <li>Certification — there is no certifying body and no accreditation</li>
+                <li>Regulatory compliance in any jurisdiction</li>
+                <li>That your production agents behave this way on live calls</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
       <section class="act" id="failure-trace" aria-labelledby="failure-trace-h">
@@ -362,64 +424,26 @@
             <h2 id="failure-trace-h">Anonymized failure trace example</h2>
             <p class="act-lead">What an IDG-01 late-disclosure violation looks like in the audit trace.</p>
           </div>
-          <span class="act-index">04 / 11</span>
+          <span class="act-index">05 / 10</span>
         </div>
         <div class="act-body">
 
           <p>The example below is synthetic — constructed from observed behavior patterns, with all identifying information removed. It shows what an IDG-01 (late disclosure) violation looks like in the NHID-Clinical audit trace, and what a payer auditor would see when reviewing it.</p>
           <div class="console-bar"><span><b>Trace</b> · synthetic, anonymized</span><code>policy nhid-clinical-v1.3</code></div>
-          <pre>Anonymized Failure Trace — IDG-01 Violation
-Source: Synthetic example based on observed behavior patterns. No real PHI, no real provider data.
-Generated: 2026-06-07 | Policy version: nhid-clinical-v1.3 | Correlation ID: [REDACTED]
-
-t=00:00.000  INGEST      POST /voice/process received
-             session_id: [REDACTED]
-             call_sid:   [REDACTED]
-             caller_type: ai_agent
-
-t=00:00.084  VALIDATE    SpeechResult normalized
-             turn_count: 0
-             content_hash: [REDACTED]
-
-t=00:00.091  STATE       Session reconstructed
-             turn_count: 0
-             disclosure_timestamp: null
-             disclosure_confirmed: false
-
-t=00:00.098  POLICY      IDG-01 evaluated
-             rule: "Disclose AI identity before any data exchange"
-             turn_count: 0
-             disclosure_confirmed: false
-             trigger: FIRST_TURN_NO_DISCLOSURE
-             action: DISCLOSE_IDENTITY
-<span class="trace-violation">── Violation recorded ──────────────────────────────────────────────
-t=00:00.103  VIOLATION   IDG-01
-             severity: critical
-             message: "AI identity not disclosed at call start"
-             action_taken: DISCLOSE_IDENTITY (forced)
-             data_exchanged_before_disclosure: false
-             recoverable: true
-────────────────────────────────────────────────────────────────────</span>
-t=00:00.109  EXEC        TwiML rendered — forced disclosure statement
-             text: "This call is being handled by an automated system on behalf of [Provider Name Redacted]."
-             disclosure_forced: true
-
-t=00:00.114  PERSIST     Event written
-             disclosure_timestamp: 00:00.109
-             boundary_violations: ["IDG-01"]
-             partial_failure: true
-             deterministic_hash: [REDACTED]
-
-── What this means ─────────────────────────────────────────────────
-The AI agent did not disclose its automated nature at call start.
-The policy engine detected a turn_count=0 exchange with no prior
-disclosure and forced a disclosure statement before any data could
-be shared. The violation is logged as critical but recoverable.
-A payer auditing this session would see:
-  - disclosure_timestamp set 109ms into the call (forced, not voluntary)
-  - partial_failure: true
-  - boundary_violations: ["IDG-01"]
-────────────────────────────────────────────────────────────────────</pre>
+          <p class="trace-meta"><strong>Source:</strong> synthetic example based on observed behavior patterns. No real PHI, no real provider data. <strong>Generated:</strong> 2026-06-07 &middot; <strong>Policy version:</strong> nhid-clinical-v1.3 &middot; <strong>Correlation ID:</strong> [REDACTED]</p>
+          <ol class="trace-timeline" aria-label="IDG-01 violation trace, stage by stage">
+            <li><time>t=00:00.000</time><div><b>INGEST</b><span>POST /voice/process received</span><dl><dt>session_id</dt><dd>[REDACTED]</dd><dt>call_sid</dt><dd>[REDACTED]</dd><dt>caller_type</dt><dd>ai_agent</dd></dl></div></li>
+            <li><time>t=00:00.084</time><div><b>VALIDATE</b><span>SpeechResult normalized</span><dl><dt>turn_count</dt><dd>0</dd><dt>content_hash</dt><dd>[REDACTED]</dd></dl></div></li>
+            <li><time>t=00:00.091</time><div><b>STATE</b><span>Session reconstructed</span><dl><dt>turn_count</dt><dd>0</dd><dt>disclosure_timestamp</dt><dd>null</dd><dt>disclosure_confirmed</dt><dd>false</dd></dl></div></li>
+            <li><time>t=00:00.098</time><div><b>POLICY</b><span>IDG-01 evaluated</span><dl><dt>rule</dt><dd>&ldquo;Disclose AI identity before any data exchange&rdquo;</dd><dt>turn_count</dt><dd>0</dd><dt>disclosure_confirmed</dt><dd>false</dd><dt>trigger</dt><dd>FIRST_TURN_NO_DISCLOSURE</dd><dt>action</dt><dd>DISCLOSE_IDENTITY</dd></dl></div></li>
+            <li class="is-violation"><time>t=00:00.103</time><div><b>VIOLATION</b><span>IDG-01 &middot; violation recorded</span><dl><dt>severity</dt><dd>critical</dd><dt>message</dt><dd>&ldquo;AI identity not disclosed at call start&rdquo;</dd><dt>action_taken</dt><dd>DISCLOSE_IDENTITY (forced)</dd><dt>data_exchanged_before_disclosure</dt><dd>false</dd><dt>recoverable</dt><dd>true</dd></dl></div></li>
+            <li><time>t=00:00.109</time><div><b>EXEC</b><span>TwiML rendered &mdash; forced disclosure statement</span><dl><dt>text</dt><dd>&ldquo;This call is being handled by an automated system on behalf of [Provider Name Redacted].&rdquo;</dd><dt>disclosure_forced</dt><dd>true</dd></dl></div></li>
+            <li><time>t=00:00.114</time><div><b>PERSIST</b><span>Event written</span><dl><dt>disclosure_timestamp</dt><dd>00:00.109</dd><dt>boundary_violations</dt><dd>["IDG-01"]</dd><dt>partial_failure</dt><dd>true</dd><dt>deterministic_hash</dt><dd>[REDACTED]</dd></dl></div></li>
+          </ol>
+          <div class="note" role="note" data-label="What this means">
+            <p>The AI agent did not disclose its automated nature at call start. The policy engine detected a turn_count=0 exchange with no prior disclosure and forced a disclosure statement before any data could be shared. The violation is logged as critical but recoverable.</p>
+            <p>A payer auditing this session would see: <code>disclosure_timestamp</code> set 109ms into the call (forced, not voluntary); <code>partial_failure: true</code>; <code>boundary_violations: ["IDG-01"]</code>.</p>
+          </div>
         </div>
       </section>
       <section class="act" id="simulation-coverage" aria-labelledby="simulation-coverage-h">
@@ -429,7 +453,7 @@ A payer auditing this session would see:
             <h2 id="simulation-coverage-h">Failure &amp; attack simulation coverage</h2>
             <p class="act-lead">What the failure injection harness exercises.</p>
           </div>
-          <span class="act-index">05 / 11</span>
+          <span class="act-index">06 / 10</span>
         </div>
         <div class="act-body">
 
@@ -453,43 +477,18 @@ A payer auditing this session would see:
           </div>
         </div>
       </section>
-      <section class="act" id="audit-readiness" aria-labelledby="audit-readiness-h">
-        <div class="act-head">
-          <div>
-            <p class="section-kicker">Audit</p>
-            <h2 id="audit-readiness-h">Audit readiness model</h2>
-            <p class="act-lead">What an external auditor can reconstruct from the event store.</p>
-          </div>
-          <span class="act-index">06 / 11</span>
-        </div>
-        <div class="act-body">
-
-          <p>An external auditor reconstructing a session from the event store can determine:</p>
-          <ul>
-            <li>When the call started and when the first disclosure statement was made</li>
-            <li>Whether disclosure preceded any PHI or credential exchange</li>
-            <li>Whether opt-out or escalation was requested and how it was handled</li>
-            <li>Which policy engine version processed each event</li>
-            <li>Whether any partial failures or boundary violations were recorded</li>
-          </ul>
-          <div class="console-bar"><span><b>Example</b> · correlation ID lifecycle</span></div>
-          <pre>correlation_id: "auth-2026-05-26-001"
-
-t=00:00.000  INGEST     POST /voice/process received
-t=00:00.123  VALIDATE   SpeechResult normalized
-t=00:00.131  STATE      Session reconstructed: turn_count=0, disclosure=null
-t=00:00.140  POLICY     IDG-01: DISCLOSE_IDENTITY triggered (turn_count=0)
-t=00:00.145  EXEC       TwiML disclosure message rendered
-t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
-        </div>
-      </section>
+      <div class="doc-band" id="band-operations">
+        <p class="section-kicker">How it runs</p>
+        <h2>Operations</h2>
+        <p>What the reference implementation runs on today, what could break replay, and where it sits among the standards it emits into.</p>
+      </div>
       <section class="act" id="architecture-notes" aria-labelledby="architecture-notes-h">
         <div class="act-head">
           <div>
             <p class="section-kicker">Architecture</p>
             <h2 id="architecture-notes-h">Architecture &amp; scale notes</h2>
           </div>
-          <span class="act-index">07 / 11</span>
+          <span class="act-index">07 / 10</span>
         </div>
         <div class="act-body">
 
@@ -506,7 +505,7 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
             <p class="section-kicker">Risks</p>
             <h2 id="risk-register-h">Risk register</h2>
           </div>
-          <span class="act-index">08 / 11</span>
+          <span class="act-index">08 / 10</span>
         </div>
         <div class="act-body">
 
@@ -524,26 +523,6 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
           </div>
         </div>
       </section>
-      <section class="act" id="architecture-summary" aria-labelledby="architecture-summary-h">
-        <div class="act-head">
-          <div>
-            <p class="section-kicker">Summary</p>
-            <h2 id="architecture-summary-h">One-page architecture summary</h2>
-          </div>
-          <span class="act-index">09 / 11</span>
-        </div>
-        <div class="act-body">
-
-          <p><strong>What it is:</strong> A lightweight, stateless service that logs AI voice agent disclosure behavior. Input: call events from Twilio or equivalent. Output: tamper-evident, deterministically reproducible trace with policy decision and boundary violations.</p>
-          <p><strong>What it is not:</strong> A caller identity verifier, a certification body, or a compliance guarantor. Adoption does not confer HIPAA or TCPA compliance.</p>
-          <div class="console-bar"><span><b>Event flow</b></span></div>
-          <pre>[AI Voice Agent] → INGEST → VALIDATE → STATE → POLICY → EXEC → PERSIST
-                                                        ↓
-                                               [Event Store]
-                                                        ↓
-                                          [Auditor / Payer System]</pre>
-        </div>
-      </section>
       <section class="act" id="trust-stack" aria-labelledby="trust-stack-h">
         <div class="act-head">
           <div>
@@ -551,7 +530,7 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
             <h2 id="trust-stack-h">The trust stack in cross-section</h2>
             <p class="act-lead">Where this framework sits among the standards it emits into.</p>
           </div>
-          <span class="act-index">10 / 11</span>
+          <span class="act-index">09 / 10</span>
         </div>
         <div class="act-body">
 
@@ -610,7 +589,7 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
             <h2 id="conformance-suite-h">Conformance test suite</h2>
             <p class="act-lead">A conformance claim you cannot verify is marketing. This suite makes the claim checkable by anyone, including people with no reason to trust the claimant.</p>
           </div>
-          <span class="act-index">11 / 11</span>
+          <span class="act-index">10 / 10</span>
         </div>
       <div class="act-body">
         <h3><span class="sub-index">A</span>What it is</h3>
@@ -642,25 +621,6 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
           <p class="console-note">Illustrative output — not a live test run.</p>
         </div>
       </div>
-        <h3><span class="sub-index">D</span>What a pass does and does not mean</h3>
-        <div class="pass-fail">
-          <div class="pass-box">
-            <strong>A pass means</strong>
-            <ul>
-              <li>Your implementation produced the expected verdict on every published case</li>
-              <li>Someone else can reproduce that result from the same inputs</li>
-              <li>You have evidence to show a counterparty during procurement</li>
-            </ul>
-          </div>
-          <div class="fail-box">
-            <strong>A pass does not mean</strong>
-            <ul>
-              <li>Certification — there is no certifying body and no accreditation</li>
-              <li>Regulatory compliance in any jurisdiction</li>
-              <li>That your production agents behave this way on live calls</li>
-            </ul>
-          </div>
-        </div>
         <div class="note" role="note" data-label="Self-attestation only">
           <p>The <a href="/developers.html#registry">Implementation Registry</a> lists implementations that report their own results. NHID-Clinical does not verify, audit, or certify entries.</p>
         </div>

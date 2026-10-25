@@ -158,20 +158,72 @@
           <span class="act-index">01 / 01</span>
         </div>
         <div class="act-body">
-          <ul class="ledger-list">
-            <li><span class="ledger-index">PLAYBOOK</span><div><h3>NHID-Clinical Playbook &mdash; Evaluation, Implementation &amp; Evidence</h3><p>The comprehensive operational reference: the five canonical controls in detail, the observe-only shadow-evaluation method, implementation architecture with maturity labels, and the full evidence and regulatory-mapping picture including what is <em>not</em> established. Start here if you are actually going to do this.</p><p class="ledger-meta"><a href="/specs/NHID-Clinical-Playbook.pdf" class="download-link" download>Download PDF &rarr;</a><span>CC BY 4.0</span><span>NHID-Clinical-Playbook.pdf</span></p></div></li>
-            <li><span class="ledger-index">SPEC</span><div><h3>v1.3 Core Specification</h3><p>The normative reference: the five canonical controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) plus the supplemental bot&#8209;to&#8209;bot rule, the 18-case CTS conformance suite, and the scoring rubric used to evaluate an agent's behavioral trace.</p><p class="ledger-meta"><a href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" class="download-link" download>Download PDF &rarr;</a><span>CC BY 4.0</span><span>NHID-Clinical-v1.3-Core-Specification.pdf</span></p></div></li>
-            <li><span class="ledger-index">GUIDE</span><div><h3>Shadow Evaluation Guide</h3><p>A practical guide for running NHID-Clinical's conformance checks alongside an existing voice AI deployment without changing production behavior — observe first, enforce later.</p><p class="ledger-meta"><a href="/specs/NHID-Clinical-Shadow-Evaluation-Guide.pdf" class="download-link" download>Download PDF &rarr;</a><span>CC BY 4.0</span><span>NHID-Clinical-Shadow-Evaluation-Guide.pdf</span></p></div></li>
-          </ul>
-          <p class="section-kicker" id="archived">Archived</p>
-          <p>Earlier documents, kept for the record. They are not maintained and may predate corrections recorded in the documents above; the current reference is the Playbook.</p>
-          <ul class="ledger-list">
-            <li><span class="ledger-index">PROPOSAL</span><div><h3>NHID-Clinical v1.3 — Full Proposal</h3><p>The complete open proposal document: the impersonation latency problem, the five canonical controls for AI voice agents in healthcare payer–provider workflows, scope and rationale, and background context.</p><p class="ledger-meta"><a href="/specs/archive/NHID-Clinical-v1.3-Overview.pdf" class="download-link" download>Download PDF &rarr;</a><span>CC BY 4.0</span><span>NHID-Clinical-v1.3-Overview.pdf</span></p></div></li>
-            <li><span class="ledger-index">EVIDENCE</span><div><h3>Evidence Pack</h3><p>A procurement- and security-facing summary of the deterministic guarantees, real-corpus detection evidence, an anonymized failure trace, and the audit-readiness model behind the reference implementation. Everything is self-attested and open for community review.</p><p class="ledger-meta"><a href="/specs/archive/NHID-Clinical-Evidence-Pack.pdf" class="download-link" download>Download PDF &rarr;</a><span>CC BY 4.0</span><span>NHID-Clinical-Evidence-Pack.pdf</span></p></div></li>
-            <li><span class="ledger-index">BLUEPRINT</span><div><h3>Operational Blueprint</h3><p>A deployment-oriented walkthrough for engineering and compliance teams: integration tiers, adapter coverage, and the FHIR AuditEvent export. Predates the withdrawal of the composite score; read with <a href="/evidence-pack.html">the current evidence page</a>.</p><p class="ledger-meta"><a href="/specs/archive/NHID-Clinical-Operational-Blueprint-v1.3.pdf" class="download-link" download>Download PDF &rarr;</a><span>CC BY 4.0</span><span>NHID-Clinical-Operational-Blueprint-v1.3.pdf</span></p></div></li>
-            <li><span class="ledger-index">AUTH</span><div><h3>NHID-Auth v2 Technical Reference</h3><p>The reference implementation guide for NHID-Auth v2: Ed25519 agent passports, NPI binding, scoped delegation, and how it composes with the v1.3 behavioral baseline.</p><p class="ledger-meta"><a href="/specs/archive/NHID-Auth-v2-Technical-Reference.pdf" class="download-link" download>Download PDF &rarr;</a><span>CC BY 4.0</span><span>NHID-Auth-v2-Technical-Reference.pdf</span></p></div></li>
-            <li><span class="ledger-index">ARCHIVE</span><div><h3>Knowledge Archive</h3><p>A public-safe distillation of the project's full knowledge base: executive vision, governance, identity and trust, technical architecture, and regulatory alignment in one document.</p><p class="ledger-meta"><a href="/specs/archive/NHID-Clinical-Knowledge-Archive.pdf" class="download-link" download>Download PDF &rarr;</a><span>CC BY 4.0</span><span>NHID-Clinical-Knowledge-Archive.pdf</span></p></div></li>
-          </ul>
+          <h3 class="dl-group" id="core">Core <small>The normative text and the proposal it came from.</small></h3>
+          <div class="download-cards dl-grid">
+            <article class="download-card dl-card">
+              <div class="dl-head"><span class="ledger-index">SPEC</span><span class="state-chip">v1.3 &middot; maintained</span></div>
+              <h4>v1.3 Core Specification</h4>
+              <p>The normative reference: the five canonical controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) plus the supplemental bot&#8209;to&#8209;bot rule and the 18-case CTS conformance suite.</p>
+              <p class="dl-meta"><span class="pdf-meta" data-pdf="/specs/NHID-Clinical-v1.3-Core-Specification.pdf">PDF</span><span>CC BY 4.0</span></p>
+              <a class="download-link" href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download>Download PDF &rarr;</a>
+            </article>
+            <article class="download-card dl-card">
+              <div class="dl-head"><span class="ledger-index">PROPOSAL</span><span class="state-chip is-muted">Archived &middot; not maintained</span></div>
+              <h4>NHID-Clinical v1.3 Full Proposal</h4>
+              <p>The complete open proposal document: the impersonation latency problem, the five canonical controls for AI voice agents in healthcare payer&ndash;provider workflows, scope and rationale, and background context.</p>
+              <p class="dl-meta"><span class="pdf-meta" data-pdf="/specs/archive/NHID-Clinical-v1.3-Overview.pdf">PDF</span><span>CC BY 4.0</span></p>
+              <a class="download-link" href="/specs/archive/NHID-Clinical-v1.3-Overview.pdf" download>Download PDF &rarr;</a>
+            </article>
+          </div>
+          <h3 class="dl-group" id="evaluate">Evaluate <small>For running it against your own traffic and reading what comes back.</small></h3>
+          <div class="download-cards dl-grid">
+            <article class="download-card dl-card">
+              <div class="dl-head"><span class="ledger-index">PLAYBOOK</span><span class="state-chip">v1.3 &middot; maintained</span></div>
+              <h4>NHID-Clinical Playbook: Evaluation, Implementation &amp; Evidence</h4>
+              <p>The comprehensive operational reference: the five canonical controls in detail, the observe-only shadow-evaluation method, implementation architecture with maturity labels, and the full evidence and regulatory-mapping picture including what is <em>not</em> established. Start here if you are actually going to do this.</p>
+              <p class="dl-meta"><span class="pdf-meta" data-pdf="/specs/NHID-Clinical-Playbook.pdf">PDF</span><span>CC BY 4.0</span></p>
+              <a class="download-link" href="/specs/NHID-Clinical-Playbook.pdf" download>Download PDF &rarr;</a>
+            </article>
+            <article class="download-card dl-card">
+              <div class="dl-head"><span class="ledger-index">GUIDE</span><span class="state-chip">v1.3 &middot; maintained</span></div>
+              <h4>Shadow Evaluation Guide</h4>
+              <p>A practical guide for running NHID-Clinical&rsquo;s conformance checks alongside an existing voice AI deployment without changing production behavior: observe first, enforce later.</p>
+              <p class="dl-meta"><span class="pdf-meta" data-pdf="/specs/NHID-Clinical-Shadow-Evaluation-Guide.pdf">PDF</span><span>CC BY 4.0</span></p>
+              <a class="download-link" href="/specs/NHID-Clinical-Shadow-Evaluation-Guide.pdf" download>Download PDF &rarr;</a>
+            </article>
+            <article class="download-card dl-card">
+              <div class="dl-head"><span class="ledger-index">EVIDENCE</span><span class="state-chip is-muted">Archived &middot; not maintained</span></div>
+              <h4>Evidence Pack</h4>
+              <p>A procurement- and security-facing summary of the deterministic guarantees, real-corpus detection evidence, an anonymized failure trace, and the audit-readiness model behind the reference implementation. Self-attested. The current figures are on <a href="/evidence-pack.html">the Evidence pack page</a>.</p>
+              <p class="dl-meta"><span class="pdf-meta" data-pdf="/specs/archive/NHID-Clinical-Evidence-Pack.pdf">PDF</span><span>CC BY 4.0</span></p>
+              <a class="download-link" href="/specs/archive/NHID-Clinical-Evidence-Pack.pdf" download>Download PDF &rarr;</a>
+            </article>
+          </div>
+          <h3 class="dl-group" id="reference">Reference <small>Architecture, the optional identity layer, and the project's knowledge base.</small></h3>
+          <div class="download-cards dl-grid">
+            <article class="download-card dl-card">
+              <div class="dl-head"><span class="ledger-index">BLUEPRINT</span><span class="state-chip is-muted">Archived &middot; not maintained</span></div>
+              <h4>Operational Blueprint</h4>
+              <p>A deployment-oriented walkthrough for engineering and compliance teams: integration tiers, adapter coverage, and the FHIR AuditEvent export. Predates the withdrawal of the composite score; read with <a href="/evidence-pack.html">the current evidence page</a>.</p>
+              <p class="dl-meta"><span class="pdf-meta" data-pdf="/specs/archive/NHID-Clinical-Operational-Blueprint-v1.3.pdf">PDF</span><span>CC BY 4.0</span></p>
+              <a class="download-link" href="/specs/archive/NHID-Clinical-Operational-Blueprint-v1.3.pdf" download>Download PDF &rarr;</a>
+            </article>
+            <article class="download-card dl-card">
+              <div class="dl-head"><span class="ledger-index">AUTH</span><span class="state-chip is-muted">Archived &middot; not maintained</span></div>
+              <h4>NHID-Auth v2 Technical Reference</h4>
+              <p>The reference implementation guide for NHID-Auth v2: Ed25519 agent passports, NPI binding, scoped delegation, and how it composes with the v1.3 behavioral baseline.</p>
+              <p class="dl-meta"><span class="pdf-meta" data-pdf="/specs/archive/NHID-Auth-v2-Technical-Reference.pdf">PDF</span><span>CC BY 4.0</span></p>
+              <a class="download-link" href="/specs/archive/NHID-Auth-v2-Technical-Reference.pdf" download>Download PDF &rarr;</a>
+            </article>
+            <article class="download-card dl-card">
+              <div class="dl-head"><span class="ledger-index">ARCHIVE</span><span class="state-chip is-muted">Archived &middot; not maintained</span></div>
+              <h4>Knowledge Archive</h4>
+              <p>A public-safe distillation of the project&rsquo;s full knowledge base: executive vision, governance, identity and trust, technical architecture, and regulatory alignment in one document.</p>
+              <p class="dl-meta"><span class="pdf-meta" data-pdf="/specs/archive/NHID-Clinical-Knowledge-Archive.pdf">PDF</span><span>CC BY 4.0</span></p>
+              <a class="download-link" href="/specs/archive/NHID-Clinical-Knowledge-Archive.pdf" download>Download PDF &rarr;</a>
+            </article>
+          </div>
+          <p class="disclaimer-small" id="archived">Archived documents are kept for the record. They are not maintained and may predate corrections recorded in the maintained documents; the current reference is the Playbook. Pages, size and date are read from each file at build time.</p>
           <p>Questions about the proposal: <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a></p>
         </div>
       </div>

@@ -641,3 +641,48 @@ window.NHIDDemoStatus = (function () {
     });
   });
 })();
+
+/* ── Code tabs ──────────────────────────────────────────────────────────────
+   One block of markup, several ways to read it (shell, curl, Python). The
+   panels are all in the page; this only chooses which one is shown. Without
+   JavaScript the stylesheet hides the tab row and shows every panel. */
+(function () {
+  document.querySelectorAll('[data-code-tabs]').forEach(function (root) {
+    var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+    var panels = Array.prototype.slice.call(root.querySelectorAll('[role="tabpanel"]'));
+    if (!tabs.length || !panels.length) return;
+    function show(tab) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach(function (p) { p.hidden = p.id !== tab.getAttribute('aria-controls'); });
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { show(t); });
+      t.addEventListener('keydown', function (e) {
+        var n = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : null;
+        if (n === null) return;
+        e.preventDefault();
+        var next = tabs[(n + tabs.length) % tabs.length];
+        show(next); next.focus();
+      });
+    });
+  });
+})();
+
+/* ── A closed <details> that is the link target opens ─────────────────────
+   The FAQ is an accordion; a link to #q-… from the rail or another page
+   should land on an open answer, not a closed row. */
+(function () {
+  function openTarget() {
+    var id = location.hash.slice(1);
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (el && el.tagName === 'DETAILS') el.open = true;
+  }
+  openTarget();
+  window.addEventListener('hashchange', openTarget);
+})();

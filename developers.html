@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Technical Reference — JSON Schema, policy engine, conformance test suite, failure injection harness, and trace generator for the v1.3 specification."/>
-  <title>Technical Reference – NHID-Clinical</title>
+  <meta name="description" content="NHID-Clinical Developers — JSON Schema, policy engine, conformance test suite, failure injection harness, and trace generator for the v1.3 specification."/>
+  <title>Developers | NHID-Clinical</title>
   <link rel="canonical" href="https://nhid-clinical.org/developers.html"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="NHID-Clinical"/>
   <meta property="og:url" content="https://nhid-clinical.org/developers.html"/>
-  <meta property="og:title" content="Technical Reference – NHID-Clinical"/>
-  <meta property="og:description" content="NHID-Clinical Technical Reference — JSON Schema, policy engine, conformance test suite, failure injection harness, and trace generator for the v1.3 specification."/>
+  <meta property="og:title" content="Developers – NHID-Clinical"/>
+  <meta property="og:description" content="NHID-Clinical Developers — JSON Schema, policy engine, conformance test suite, failure injection harness, and trace generator for the v1.3 specification."/>
   <meta property="og:image" content="https://nhid-clinical.org/assets/og/default.png"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
   <meta property="og:image:alt" content="NHID-Clinical: five open controls for AI voice agents on healthcare payer calls"/>
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="Technical Reference – NHID-Clinical"/>
-  <meta name="twitter:description" content="NHID-Clinical Technical Reference — JSON Schema, policy engine, conformance test suite, failure injection harness, and trace generator for the v1.3 specification."/>
+  <meta name="twitter:title" content="Developers – NHID-Clinical"/>
+  <meta name="twitter:description" content="NHID-Clinical Developers — JSON Schema, policy engine, conformance test suite, failure injection harness, and trace generator for the v1.3 specification."/>
   <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/default.png"/>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -121,8 +121,8 @@
     <div class="container hero-grid">
       <div>
         <div class="crumbs"><a href="/">Home</a><span class="sep">/</span><span>Developers</span></div>
-        <p class="eyebrow meta-label">Technical reference · v1.3 · open source</p>
-        <h1 class="reveal page-heading" id="page-h">Technical Reference</h1>
+        <p class="eyebrow meta-label">Developers · v1.3 · open source</p>
+        <h1 class="reveal page-heading" id="page-h">Developers</h1>
         <p class="lede reveal lede-text">Reference implementation artifacts for the NHID-Clinical v1.3 specification. These tools demonstrate that the specification can be implemented, replayed, and evaluated through deterministic trace artifacts and conformance testing.</p>
         <ul class="hero-meta reveal">
           <li><b>Updated</b><span>June 2026</span></li>
@@ -143,7 +143,7 @@
           <li><span class="verb">POST</span><span class="path">/v1/adapters/{vapi|twilio|vonage|retell|connect}/check<small>Your platform's native payload in; no NHID schema, no key.</small></span></li>
         </ul>
         <p>Base: <code>https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod</code></p>
-        <div class="card-foot"><a class="action-button action-button-secondary" href="#hosted-api">How to call it &rarr;</a></div>
+        <div class="card-foot"><a class="action-button action-button-secondary" href="#quick-start">How to call it &rarr;</a></div>
       </aside>
     </div>
   </section>
@@ -159,9 +159,7 @@
           <li><a href="#reference-architecture"><span>What the reference implementation is</span></a></li>
           <li><a href="#artifacts"><span>Reference artifacts</span></a></li>
           <li><a href="#quick-start"><span>Quick start</span></a></li>
-          <li><a href="#hosted-api"><span>Hosted API</span></a></li>
           <li><a href="#dlg-01"><span>Delegated authority (DLG-01)</span></a></li>
-          <li><a href="#vendor-quick-start"><span>Vendor quick-start</span></a></li>
           <li><a href="#reference-implementation"><span>Reference implementation</span></a></li>
           <li><a href="#interoperability"><span>Interoperability</span></a></li>
           <li><a href="#registry"><span>Implementation registry</span></a></li>
@@ -185,7 +183,7 @@
             <h2 id="integration-ladder-h">Staged integration — stop at any rung</h2>
             <p class="act-lead">A ladder, not an all-or-nothing commitment.</p>
           </div>
-          <span class="act-index">01 / 11</span>
+          <span class="act-index">01 / 09</span>
         </div>
         <div class="act-body">
 
@@ -221,7 +219,7 @@
             <h2 id="readout-h">See the controls run: the readout</h2>
             <p class="act-lead">What the engine returns on a call, turn by turn.</p>
           </div>
-          <span class="act-index">02 / 11</span>
+          <span class="act-index">02 / 09</span>
         </div>
         <div class="act-body">
 
@@ -278,7 +276,7 @@
             <h2 id="reference-architecture-h">What the reference implementation actually is</h2>
             <p class="act-lead">One path, drawn end to end, each part labelled by what it is today.</p>
           </div>
-          <span class="act-index">03 / 11</span>
+          <span class="act-index">03 / 09</span>
         </div>
         <div class="act-body">
 
@@ -376,7 +374,7 @@
             <h2 id="artifacts-h">Reference artifacts</h2>
             <p class="act-lead">Seven files, each one runnable or readable in the repository.</p>
           </div>
-          <span class="act-index">04 / 11</span>
+          <span class="act-index">04 / 09</span>
         </div>
         <div class="act-body">
 
@@ -397,39 +395,141 @@
           <div>
             <p class="section-kicker">Run</p>
             <h2 id="quick-start-h">Quick start</h2>
+            <p class="act-lead">Three ways in: run the suite locally, call the hosted routes with curl, or call them from Python. Synthetic data only.</p>
           </div>
-          <span class="act-index">05 / 11</span>
+          <span class="act-index">05 / 09</span>
         </div>
         <div class="act-body">
 
-          <div class="console-bar"><span><b>Shell</b> · from a clean checkout</span><code>python 3.11+</code></div>
-          <pre>git clone https://github.com/NHID-Clinical/NHID-Clinical.git
+          <div class="code-tabs" data-code-tabs>
+            <div class="film-tabs" role="tablist" aria-label="Quick start, three ways">
+              <button type="button" role="tab" class="film-tab is-active" id="qs-tab-local" aria-selected="true" aria-controls="qs-local" tabindex="0">Local</button>
+              <button type="button" role="tab" class="film-tab" id="qs-tab-curl" aria-selected="false" aria-controls="qs-curl" tabindex="-1">Hosted API &middot; curl</button>
+              <button type="button" role="tab" class="film-tab" id="qs-tab-python" aria-selected="false" aria-controls="qs-python" tabindex="-1">Python</button>
+            </div>
+            <div class="code-panel" id="qs-local" role="tabpanel" aria-labelledby="qs-tab-local">
+              <div class="console-bar"><span><b>Shell</b> &middot; from a clean checkout</span><code>python 3.11+</code></div>
+              <pre>git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-python -m pytest tests/ -q
-python -m pytest tests/test_schema_conformance.py -q</pre>
-          <p>The second line enforces the two published schemas; it is what the suite runs, not a standalone validator (the <code>jsonschema</code> command-line tool is deprecated and, given only a schema, validates nothing). The integration tests in <code>tests/failure_injection_harness.py</code> need the API running locally &mdash; <code>python -m uvicorn app:app --port 8000</code> in a second shell. Without it they are skipped and the summary reports skipped &gt; 0; CI starts the server and requires 0 skipped.</p>
-        </div>
-      </section>
-      <section class="act" id="hosted-api" aria-labelledby="hosted-api-h">
-        <div class="act-head">
-          <div>
-            <p class="section-kicker">API</p>
-            <h2 id="hosted-api-h">Hosted API</h2>
-            <p class="act-lead">A public conformance endpoint for integration testing without self-hosting.</p>
-          </div>
-          <span class="act-index">06 / 11</span>
-        </div>
-        <div class="act-body">
+python -m uvicorn app:app --port 8000 &amp;    # integration tests need it
+python -m pytest tests/ -q</pre>
+              <div class="console-bar"><span><b>Python</b> &middot; one turn through the engine</span><code>src.nhid_policy_engine_v1</code></div>
+              <pre><code>from src.nhid_policy_engine_v1 import evaluate_all
+from src.synthetic_eval_loop import build_event, build_session
 
-          <p>Send any NHID-Clinical v1.3 event and receive a structured policy decision. Requests require an <code>x-api-key</code> header. The playground uses a rate-limited demo key automatically. To obtain a key for your integration, contact <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a>.</p>
-          <div class="console-bar"><span><b>Endpoint</b></span><code>POST /v1/conformance/check</code></div>
-          <pre>curl -s -X POST \
+turn = {"turn_count": 0, "phi_accessed": ["member_id"],
+        "speech_text": "Hi, this is Morgan from provider services. Can I get the member ID?"}
+decision = evaluate_all(build_session(turn), build_event("demo-call", 0, turn))
+decision.action.value, decision.reason_code   # ('DENY_DATA', 'PDX01_PHI_GATE_TRIGGERED')</code></pre>
+              <p>The schema tests in <code>tests/test_schema_conformance.py</code> are part of the suite; there is no standalone validator to run. CI starts the API and requires 0 skipped.</p>
+            </div>
+            <div class="code-panel" id="qs-curl" role="tabpanel" aria-labelledby="qs-tab-curl" hidden>
+              <p>Base URL <code>https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod</code>. The conformance route takes a v1.3 event and needs an <code>x-api-key</code> (write to <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a> for one). The adapter routes take your platform&rsquo;s native payload and need no key.</p>
+              <div class="console-bar"><span><b>Endpoint</b> &middot; a v1.3 event in</span><code>POST /v1/conformance/check</code></div>
+              <pre>curl -s -X POST \
   https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/conformance/check \
-  -H "x-api-key: YOUR_KEY" \
+  -H "x-api-key: YOUR_KEY" -H "Content-Type: application/json" \
+  -d @tests/sample_request.json</pre>
+              <div class="console-bar"><span><b>Endpoint</b> &middot; your platform&rsquo;s payload in</span><code>POST /v1/adapters/{vapi|twilio|vonage|retell|connect}/check</code></div>
+              <pre>curl -s -X POST \
+  https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
   -H "Content-Type: application/json" \
-  -d '{"session":{"turn_count":1,"escalation_path_available":true},"event":{...}}'</pre>
-          <p>Returns: <code>{"conformant": true/false, "action": "...", "violations": [...], "next_state": "...", "evidence_completeness": {"present": ..., "expected": ..., ...}, ...}</code>. See <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/tests/sample_request.json">sample_request.json</a> for a complete example.</p>
+  -d '{"call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
+       "messages": [
+         {"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
+         {"role": "user", "message": "NPI is 1234567890.", "secondsFromStart": 3.1},
+         {"role": "bot",  "message": "Thanks. I am an automated system.", "secondsFromStart": 5.8}]}'</pre>
+              <p>Five adapters are wired to hosted routes: <code>vapi</code>, <code>twilio</code>, <code>vonage</code>, <code>retell</code> and <code>connect</code> (Amazon Connect Contact Lens). Each returns the same decision shape as the conformance route plus a <code>vendor</code> field. The answer to exactly this request is recorded below.</p>
+            </div>
+            <div class="code-panel" id="qs-python" role="tabpanel" aria-labelledby="qs-tab-python" hidden>
+              <div class="console-bar"><span><b>Python</b> &middot; requests</span><code>POST /v1/adapters/vapi/check</code></div>
+              <pre><code>import requests
+
+BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
+payload = {"call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
+           "messages": [{"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
+                        {"role": "user", "message": "NPI is 1234567890.", "secondsFromStart": 3.1},
+                        {"role": "bot",  "message": "Thanks. I am an automated system.", "secondsFromStart": 5.8}]}
+r = requests.post(f"{BASE}/v1/adapters/vapi/check", json=payload, timeout=10)
+r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</code></pre>
+            </div>
+          </div>
+
+          <div class="live-panel" id="try-the-live-api">
+            <p class="section-kicker">Try the live API</p>
+            <h3>One request, the engine&rsquo;s answer</h3>
+            <p>Synthetic data only, never PHI: the transcript is invented and the identifiers are not real. The response is not typed by hand. <code>scripts/build_api_sample.py</code> runs this exact request through the same handler the hosted route calls, and CI fails if the recorded answer drifts from the engine.</p>
+            <!-- BEGIN GENERATED api-sample -->
+            <div class="console-bar"><span><b>Request</b> &middot; synthetic transcript</span><code>POST /v1/adapters/vapi/check</code></div>
+            <pre><code>{
+  "call": {
+    "id": "call_demo",
+    "startedAt": "2026-06-09T10:00:00Z"
+  },
+  "messages": [
+    {
+      "role": "bot",
+      "message": "Hi, can I get the member ID and NPI?",
+      "secondsFromStart": 0.3
+    },
+    {
+      "role": "user",
+      "message": "NPI is 1234567890.",
+      "secondsFromStart": 3.1
+    },
+    {
+      "role": "bot",
+      "message": "Thanks. I am an automated system.",
+      "secondsFromStart": 5.8
+    }
+  ]
+}</code></pre>
+            <div class="console-bar"><span><b>Response</b> &middot; recorded from the handler</span><code>HTTP 200</code></div>
+            <pre><code>{
+  "conformant": false,
+  "action": "DENY_DATA",
+  "reason_code": "PDX01_PHI_GATE_TRIGGERED",
+  "policy_version": "1.0.0",
+  "violations": [
+    {
+      "rule_id": "IDG-01",
+      "description": "AI agent has not disclosed non-human identity. Turn count: 3. ",
+      "severity": "critical"
+    },
+    {
+      "rule_id": "PDX-01",
+      "description": "PHI exchange attempted before identity disclosure. Speech PHI signal: True. PHI fields: none.",
+      "severity": "critical"
+    }
+  ],
+  "next_state": "GATE_BLOCKED",
+  "twiml_fallback": "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n&lt;Response&gt;\n  &lt;Gather input=\"speech\" speechTimeout=\"auto\" action=\"/voice/process\"&gt;\n    &lt;Say&gt;Before we continue, I need to confirm: I am an automated system, not a human representative. Can you confirm you understand?&lt;/Say&gt;\n  &lt;/Gather&gt;\n&lt;/Response&gt;",
+  "gather_speech": true,
+  "evidence_completeness": {
+    "present": 4,
+    "expected": 4,
+    "fraction": 1.0,
+    "fields": [
+      "event_id",
+      "timestamp",
+      "session_id",
+      "event_type"
+    ]
+  },
+  "human_review": {
+    "queued": false,
+    "trigger_reason": null,
+    "queue_id": null
+  },
+  "vendor": "vapi"
+}</code></pre>
+            <p class="case-result is-fail"><span class="state-chip is-red">DENY_DATA</span> <code>PDX01_PHI_GATE_TRIGGERED</code> is the engine&rsquo;s composite decision for this transcript.</p>
+            <!-- END GENERATED api-sample -->
+          </div>
+          <div class="note is-amber" role="note" data-label="Important">
+            <p>These tools are experimental and not for production use. NHID&#8209;Clinical does not issue certifications, conduct audits, or provide legal advice. Conformance testing is self&#8209;administered and no external authority validates results. Adoption of these artifacts does not confer HIPAA or TCPA compliance.</p>
+          </div>
         </div>
       </section>
       <section class="act" id="dlg-01" aria-labelledby="dlg-01-h">
@@ -439,66 +539,16 @@ python -m pytest tests/test_schema_conformance.py -q</pre>
             <h2 id="dlg-01-h">Delegated Authority (DLG-01)</h2>
             <p class="act-lead">Pass a delegation context and the verified scope constrains the data boundary.</p>
           </div>
-          <span class="act-index">07 / 11</span>
+          <span class="act-index">06 / 09</span>
         </div>
         <div class="act-body">
 
-          <p>Pass a <code>DelegationContext</code> to <code>evaluate_all()</code> and put the agent&rsquo;s passport on the session. The engine verifies the provider and agent signatures, expiry, revocation, call binding, and — for a delegation chain — that scope narrows monotonically at every hop. The verified scope then constrains PDX-01: a delegation for <code>eligibility</code> causes a request for a claim number to be denied.</p>
-          <p>Pass nothing and the control is not evaluated at all, so existing integrations are unaffected. Verification resolves the provider key through a trust anchor <em>you</em> configure; there is no directory, no discovery service, and no NPPES check. An NPI you have not configured is refused, not accepted.</p>
+          <p>Pass a <code>DelegationContext</code> to <code>evaluate_all()</code> and put the agent&rsquo;s passport on the session; the engine verifies the delegation against a trust anchor <em>you</em> configure, and the verified scope constrains PDX-01. Pass nothing and the control is not evaluated at all, so existing integrations are unaffected. The normative text and the four claim boundaries live on <a href="/specification.html#dlg-01">the specification</a>; the delegation flow is drawn on <a href="/framework/nhid-auth.html#how-it-works">NHID-Auth</a>.</p>
           <div class="console-bar"><span><b>Python</b></span><code>src.nhid_policy_engine_v1</code></div>
-          <pre><code>from src.nhid_policy_engine_v1 import DelegationContext, evaluate_all
-from src.trust_anchor import StaticTrustAnchorResolver
-
-resolver = StaticTrustAnchorResolver({"1234567890": provider_public_key_b64})
+          <pre><code>resolver = StaticTrustAnchorResolver({"1234567890": provider_public_key_b64})
 session["agent_passport"] = passport          # or a list, for a chain
 decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
 # decision.reason_code == "PDX01_SCOPE_NOT_AUTHORIZED" when out of scope</code></pre>
-        </div>
-      </section>
-      <section class="act" id="vendor-quick-start" aria-labelledby="vendor-quick-start-h">
-        <div class="act-head">
-          <div>
-            <p class="section-kicker">Adapters</p>
-            <h2 id="vendor-quick-start-h">Vendor quick-start</h2>
-            <p class="act-lead">POST your platform's native call payload — no NHID schema required.</p>
-          </div>
-          <span class="act-index">08 / 11</span>
-        </div>
-        <div class="act-body">
-
-          <p>The adapter translates and evaluates automatically.</p>
-          <div class="register restack">
-            <table>
-              <thead><tr><th scope="col">Vendor</th><th scope="col">Endpoint</th><th scope="col">Auth</th><th scope="col">Status</th></tr></thead>
-              <tbody>
-                <tr><th scope="row">VAPI</th><td data-label="Endpoint"><code>/v1/adapters/vapi/check</code></td><td data-label="Auth">None</td><td data-label="Status"><span class="state-chip">Live</span></td></tr>
-                <tr><th scope="row">Twilio</th><td data-label="Endpoint"><code>/v1/adapters/twilio/check</code></td><td data-label="Auth">None</td><td data-label="Status"><span class="state-chip">Live</span></td></tr>
-                <tr><th scope="row">Vonage</th><td data-label="Endpoint"><code>/v1/adapters/vonage/check</code></td><td data-label="Auth">None</td><td data-label="Status"><span class="state-chip">Live</span></td></tr>
-                <tr><th scope="row">Retell AI</th><td data-label="Endpoint"><code>/v1/adapters/retell/check</code></td><td data-label="Auth">None</td><td data-label="Status"><span class="state-chip">Live</span></td></tr>
-                <tr><th scope="row">Amazon Connect</th><td data-label="Endpoint"><code>/v1/adapters/connect/check</code></td><td data-label="Auth">None</td><td data-label="Status"><span class="state-chip">Live</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p><strong>Example — VAPI non-compliant call</strong> (bot requests PHI before disclosing identity):</p>
-          <div class="console-bar"><span><b>Shell</b></span><code>POST /v1/adapters/vapi/check</code></div>
-          <pre>curl -s -X POST \
-  https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
-  -H "Content-Type: application/json" \
-  -d '{
-    "call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
-    "messages": [
-      {"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
-      {"role": "user", "message": "NPI is 1234567890.", "secondsFromStart": 3.1},
-      {"role": "bot",  "message": "Thanks. I am an automated system.", "secondsFromStart": 5.8}
-    ]
-  }'</pre>
-          <p>Returns <code>"conformant": false</code> with an <code>IDG-01</code> violation. Move the disclosure to the first message and re-run — result flips to <code>"conformant": true</code>. See <a href="#interoperability">interoperability demo →</a> for full examples.</p>
-          <div class="note" role="note" data-label="Vendor interoperability">
-            <p>The <code>adapters/</code> directory contains format adapters that convert vendor-specific call transcripts to NHID-Clinical event traces. Available: VAPI, Twilio Voice Intelligence, Vonage, Retell AI, Amazon Connect Contact Lens. See the <a href="#interoperability">interoperability demo →</a></p>
-          </div>
-          <div class="note is-amber" role="note" data-label="Important">
-            <p>These tools are experimental and not for production use. NHID&#8209;Clinical does not issue certifications, conduct audits, or provide legal advice. Conformance testing is self&#8209;administered. No external authority validates results. Adoption of these artifacts does not confer HIPAA compliance, TCPA compliance, or any regulatory approval.</p>
-          </div>
         </div>
       </section>
       </div>
@@ -513,7 +563,7 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
             <h2 id="reference-implementation-h">Reference implementation</h2>
             <p class="act-lead">A working implementation of every control in the specification — so &ldquo;conformant&rdquo; means something you can run, not something you can claim.</p>
           </div>
-          <span class="act-index">09 / 11</span>
+          <span class="act-index">07 / 09</span>
         </div>
       <div class="act-body">
         <h3><span class="sub-index">A</span>What ships</h3>
@@ -552,12 +602,6 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
         <h3><span class="sub-index">B</span>Determinism is the point</h3>
         <p>The engine contains no model calls and no scoring heuristics in the control path. The same session and event produce the same verdict on every machine, every run. That is what makes a conformance claim checkable by someone who does not trust you — including a regulator, an auditor, or a competitor.</p>
         <p>It is also what lets the same control logic run in three places without drift: in the test suite, in the simulator, and in production enforcement.</p>
-        <h3><span class="sub-index">C</span>Getting started</h3>
-        <ol class="steps">
-          <li><h3>Clone and run the tests</h3><p>The repository ships with its full test suite. Run it before you write a line of integration code. <a href="https://github.com/NHID-Clinical/NHID-Clinical">Get the repository &rarr;</a></p></li>
-          <li><h3>Try the live API</h3><p>Demo routes require no key. Send a VAPI or Twilio payload and read the verdict. <a href="#vendor-quick-start">Vendor quick-start &rarr;</a></p></li>
-          <li><h3>Wire it into your stack</h3><p>This reference covers architecture, the event schema, and the failure-injection harness. <a href="#reference-architecture">Read the architecture &rarr;</a></p></li>
-        </ol>
       </div>
     </div>
   </section>
@@ -570,7 +614,7 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
             <h2 id="interoperability-h">Interoperability</h2>
             <p class="act-lead">A real vendor's call transcript format, mapped to an NHID-Clinical v1.3 event trace and evaluated for conformance.</p>
           </div>
-          <span class="act-index">10 / 11</span>
+          <span class="act-index">08 / 09</span>
         </div>
       <div class="act-body">
         <p>The adapter is open source — replace the sample input with real logs to test your own vendor.</p>
@@ -670,7 +714,7 @@ python -m pytest tests/ -v</pre>
             <h2 id="registry-h">Implementation registry</h2>
             <p class="act-lead">A self-attestation list of NHID-Clinical implementations. NHID-Clinical does not score, rate, certify, or verify the entries.</p>
           </div>
-          <span class="act-index">11 / 11</span>
+          <span class="act-index">09 / 09</span>
         </div>
       <div class="act-body">
         <div class="note" role="note" data-label="Self-attestation">
@@ -678,13 +722,13 @@ python -m pytest tests/ -v</pre>
         </div>
         <h3><span class="sub-index">A</span>Listed implementations</h3>
         <div id="registry-list">
-          <p>Loading…</p>
+          <p class="registry-empty"><strong>No implementations are listed yet.</strong> This is a self-attestation list, not a certification; the first entry will be the first vendor to run the suite against its own integration and open a pull request.</p>
         </div>
         <h3><span class="sub-index">B</span>How to get listed</h3>
         <p>Run the conformance test suite against your integration, then complete the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md">vendor trust questionnaire</a> and open a pull request adding your entry to <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/content/registry_entries.json">content/registry_entries.json</a>. Each entry needs a <code>vendor_id</code>. Listing publishes what you attest to; it does not add any assessment by this project.</p>
         <p class="hero-actions" style="margin-top:1rem">
           <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/vendor-trust-questionnaire.md" class="action-button action-button-secondary">Vendor Trust Questionnaire →</a>
-          <a href="#vendor-quick-start" class="action-button action-button-secondary">Adapter Reference →</a>
+          <a href="#quick-start" class="action-button action-button-secondary">Quick start →</a>
         </p>
       </div>
     </div>

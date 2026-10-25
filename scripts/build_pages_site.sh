@@ -120,6 +120,10 @@ copy_tree "$ROOT/specs" "$OUT/specs" \
   --exclude='__pycache__' \
   --exclude='.DS_Store'
 
+# The Downloads page ships placeholders; pages, size and date come from the PDFs
+# actually in the build, so the repository page never drifts when they regenerate.
+python3 "$ROOT/scripts/fill_download_meta.py" "$OUT"
+
 # Ensure Jekyll does not run on Pages
 touch "$OUT/.nojekyll"
 
