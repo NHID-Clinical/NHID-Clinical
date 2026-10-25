@@ -168,6 +168,114 @@ def test_chunks_are_800_chars_with_100_overlap():
     assert pieces[0][-overlap:] == pieces[1][:overlap]
 
 
+def test_the_fixed_width_splitter_is_still_the_fallback_not_the_default():
+    assert rag.CHUNKING == "heading"
+
+
+_DOC = """Preamble line before any heading, long enough to stand as its own section.
+
+# Title
+
+Intro paragraph under the title. """ + ("Words about the title section. " * 20) + """
+
+## Alert Thresholds
+
+| Metric | Threshold (Alert) | Action |
+| --- | --- | --- |
+| False-positive rate | > 0.2% | Review |
+
+```bash
+# this is a shell comment, not a heading
+echo ok
+```
+""" + ("More words inside the alert thresholds section. " * 15) + """
+
+### Future Compliance
+
+- HITRUST CSF certification
+
+## Long section
+
+""" + ("A sentence that keeps going so the section must be windowed. " * 60)
+
+
+def test_no_chunk_spans_two_headings():
+    for body, _ in rag.chunk_document(_DOC, min_chars=0):
+        headings, in_fence = [], False
+        for ln in body.splitlines():
+            if ln.startswith("```"):
+                in_fence = not in_fence
+            elif not in_fence and re.match(r"^#{1,6} ", ln):
+                headings.append(ln)
+        # at most one heading line, and only as the first line of the body
+        assert len(headings) <= 1
+        if headings:
+            assert body.splitlines()[0] == headings[0]
+
+
+def test_a_hash_inside_a_code_fence_is_not_a_heading():
+    paths = [path for _, path in rag.chunk_document(_DOC, min_chars=0)]
+    assert not any("shell comment" in p for p in paths)
+    alert = [b for b, p in rag.chunk_document(_DOC, min_chars=0)
+             if p == "Title > Alert Thresholds"]
+    assert alert and "# this is a shell comment" in alert[0]
+
+
+def test_the_heading_path_is_carried_and_the_heading_line_kept():
+    pieces = rag.chunk_document(_DOC, min_chars=0)
+    paths = [p for _, p in pieces]
+    assert paths[0] == ""                       # the preamble
+    assert "Title > Alert Thresholds" in paths
+    assert "Title > Alert Thresholds > Future Compliance" in paths
+    body = dict((p, b) for b, p in pieces)["Title > Alert Thresholds"]
+    assert body.startswith("## Alert Thresholds")
+
+
+def test_a_short_section_is_folded_into_the_one_before_it():
+    folded = rag.chunk_document(_DOC, min_chars=400)
+    paths = [p for _, p in folded]
+    assert "Title > Alert Thresholds > Future Compliance" not in paths
+    alert = dict((p, b) for b, p in folded)["Title > Alert Thresholds"]
+    assert "HITRUST CSF certification" in alert
+
+
+def test_a_long_section_is_capped_inside_itself_on_word_boundaries():
+    long_pieces = [b for b, p in rag.chunk_document(_DOC, min_chars=0)
+                   if p == "Title > Long section"]
+    assert len(long_pieces) > 1
+    assert all(len(b) <= rag.SECTION_CAP for b in long_pieces)
+    source = _DOC
+    for b in long_pieces[1:]:
+        at = source.index(b[:60])
+        assert source[at - 1].isspace()          # starts on a word boundary
+    # consecutive windows overlap
+    assert long_pieces[0][-40:].split()[-1] in long_pieces[1]
+
+
+def test_stemming_is_for_ranking_and_never_reaches_the_gate():
+    assert rag._stem("milestones") == rag._stem("milestone")
+    assert rag._stem("mapping") == rag._stem("map") == "map"
+    assert rag._stem("policies") == "policy"
+    assert rag._stem("process") == "process"
+    assert rag._stem("pdx01_phi_gate_triggered") == "pdx01_phi_gate_triggered"
+    # The refusal gate reads unstemmed words: "milestones" asserts itself only.
+    assert "milestones" in rag.asserted_tokens("Mapped per conformance milestones and events")
+    assert "mileston" not in rag.asserted_tokens("Mapped per conformance milestones and events")
+
+
+def test_a_heading_line_is_scored_but_never_quoted(index):
+    for chunk in index.chunks:
+        if chunk.text.startswith("#") and chunk.section:
+            hit = rag.Hit(chunk=chunk, score=1.0, cosine=1.0, overlap=1.0,
+                          control_boost=0.0)
+            question = chunk.text.splitlines()[0].lstrip("# ")
+            for _, passage in rag._best_excerpts(index, question, [hit]):
+                assert not passage.startswith("#")
+            break
+    else:
+        pytest.fail("no chunk starts with its heading line")
+
+
 def test_chunks_record_source_and_index(index):
     assert index.chunks
     for chunk in index.chunks[:20]:

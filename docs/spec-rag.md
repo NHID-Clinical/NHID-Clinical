@@ -20,11 +20,11 @@ this repeats the error faithfully.
 | | |
 |---|---|
 | Source | `docs/*.md`, top level only. Subdirectories (`docs/validation/`, `docs/pilot-kit/`) are not indexed |
-| Indexed | **47 files, 959 chunks** (measured 2026-10-25 at `b53ad3b`; `/spec/health` reports the live figure) |
+| Indexed | **48 files, 843 chunks** (measured 2026-10-25 on `75acd1d` plus the Phase 2 chunker; `/spec/health` reports the live figure) |
 | Skipped | `docs/MASTER-KNOWLEDGE-ARCHIVE.md` — over the 200 KB cap |
 | Skipped | `docs/spec-rag.md` — this file; the aid does not read its own manual |
 | Skipped | `docs/maintainer-checklist-github.md` — a maintainer note, not specification (`EXCLUDED_FILES`) |
-| Chunking | 800 characters, 100-character overlap, source path and chunk index stored |
+| Chunking | split at markdown headings (never across one); sections under 400 characters folded into the previous one; sections over 1,200 characters windowed inside themselves with 120 characters of overlap on word boundaries. Each chunk stores its source path, index and heading path (`H1 > H2 > H3`). The fixed 800/100 splitter remains as the fallback (`CHUNKING = "fixed"`) |
 | Provenance | the index records a `corpus_hash` (sha256 over indexed paths and contents) and the `commit` it was built from; both are on `/spec/health` and in every eval report |
 | Freshness | `load_index` rebuilds when the corpus hash or the backend differs from what the saved index recorded, so an edited document is never quoted stale |
 
@@ -56,6 +56,11 @@ Top 4 by `0.60 × cosine + 0.40 × token_overlap`, plus a `0.15` boost when a
 control id named in the question also appears in the chunk. The boost is large
 enough to reorder near-ties and too small to float an irrelevant chunk into the
 top 4.
+
+Both terms are computed over the chunk's body **plus its heading path**, with
+light stemming ("milestones" meets "milestone", "mapping" meets "map"). The
+heading path is scored, never quoted, and the stemming never reaches the
+refusal gate; the reasons are measured below under *Phase 2*.
 
 ## Answering, and refusing
 
@@ -141,18 +146,67 @@ Refusing a question a denial would have answered is the cheaper error.
 
 Measured by `eval/run_spec_rag_eval.py` against the 35 questions in
 `eval/spec_rag_questions.jsonl` (20 answerable, 15 unanswerable), on the
-**local** backend (no API key set), 2026-10-25, commit `b53ad3b`, corpus hash
-`619a9317…`. The same numbers are recorded in `eval/baseline-local.json`, which
-CI checks every run.
+**local** backend (no API key set), 2026-10-25, on `75acd1d` plus the Phase 2
+chunker, corpus hash `b0129698…`. The same numbers are recorded in
+`eval/baseline-local.json`, which CI checks every run.
 
-| Metric | Result | What it measures |
-|---|---|---|
-| **File hit @ k=4** | **18/20** | `expected_source` in the top 4. Unchanged since 2026-10-10, same two misses |
-| **Accepted hit @ k=4** | **19/20** | any of `accepted_sources` in the top 4 (q14 has five documents that define EIT-01) |
-| **Passage hit** | **11/20** | the answer contains `expected_passage_contains`. New; first measure of whether the quoted text is the useful part. Two answerable questions (q08, q17) are refused outright, seven quote the right file's wrong passage |
-| **MRR** | **0.79** | rank of `expected_source` within the top 4 |
-| **Refusals** | **15/15** | the original 5 plus 10 denial-shaped questions added 2026-10-25 |
-| **Unsupported answers** | **0/15** | the number that must stay at zero |
+| Metric | Result | Phase 1 | What it measures |
+|---|---|---|---|
+| **File hit @ k=4** | **20/20** | 18/20 | `expected_source` in the top 4 |
+| **Accepted hit @ k=4** | **20/20** | 19/20 | any of `accepted_sources` in the top 4 |
+| **Passage hit** | **11/20** | 11/20 | the answer contains `expected_passage_contains`. Three answerable questions (q08, q11, q17) are refused outright, six quote the right file's wrong passage |
+| **MRR** | **0.98** | 0.79 | rank of `expected_source` within the top 4 |
+| **Refusals** | **15/15** | 15/15 | the original 5 plus 10 denial-shaped questions added 2026-10-25 |
+| **Unsupported answers** | **0/15** | 0/15 | the number that must stay at zero |
+
+Retrieval now finds the right file for every answerable question. What it
+quotes from that file is unchanged in count and is the open problem.
+
+### Phase 2: chunking, measured (2026-10-25)
+
+Every row is an in-memory index scored by the same `evaluate()` CI runs; the
+harness is `eval/experiments/chunking_ablation.py` and reproduces this table.
+Local backend. "q11 rank" is where `docs/claim-boundaries.md` first appears in
+the full ranking for q11.
+
+| Variant | chunks | file | passage | MRR | refusals | unsupported | q11 rank |
+| :-- | --: | :-- | :-- | :-- | :-- | :-- | :-- |
+| A. fixed 800/100 windows (Phase 1) | 970 | 18/20 | 11/20 | 0.79 | 15/15 | 0 | 36 |
+| B. heading-aware, heading path **prefixed into the quoted body** | 938 | 18/20 | 8/20 | 0.88 | 13/15 | 2 | 9 |
+| G. heading-aware, heading line out of the body, path scored not quoted, stemmed ranking | 938 | 20/20 | 8/20 | 0.94 | 13/15 | 2 | 1 |
+| K. G with the heading line kept in the body | 1025 | 20/20 | 10/20 | 0.97 | 13/15 | 2 | 1 |
+| N. K with short sections folded, **unstemmed** ranking | 843 | 19/20 | 11/20 | 0.86 | 15/15 | 0 | 9 |
+| **F. K with sections under 400 characters folded (shipped)** | **843** | **20/20** | **11/20** | **0.97** | **15/15** | **0** | **1** |
+
+(The runner reports MRR to four places, 0.975; the table rounds.)
+
+Four design rules came out of it, each one a measurement:
+
+1. **The heading is scored, not quoted.** Prefixed into the body (B), the
+   heading became the quoted answer and passage hits fell 11 → 8. Heading lines
+   are now skipped by passage selection outright.
+2. **The heading line stays where the gate can read it.** With it removed (G)
+   the gate lost words such as "Alert Thresholds" and refused three answerable
+   questions that Phase 1 answered.
+3. **A tiny section is not a chunk.** Unfolded (G, K), a three-line list under
+   its own heading ranked first for any question sharing two of its words, and
+   *"Future Compliance (Phase 6B): … HITRUST CSF certification"* answered
+   "What is NHID-Clinical's HITRUST certification score?". Folding sections
+   under 400 characters closed it; 300–500 measure the same, 600 lets r09
+   through.
+4. **Stemming ranks; it does not judge.** It is what moved q11 from rank 36 to
+   1 and MRR from 0.86 to 0.97 (N vs F). The gate stays unstemmed: stemming it
+   was measured before this work and let three unanswerable questions through.
+
+Tried and removed because no number moved: judging the gate over a chunk's
+whole section (folded sections almost always fit in one chunk), and a heading
+tie-break in passage selection. A tokenizer fix that drops trailing periods
+("milestones." is a different token from "milestones" today) also changed
+nothing at F and let r09 through on the old chunking, so it waits for a
+measured reason.
+
+Not changed by this work: the embedding backends, the weights, the 0.55 gate,
+`/spec/ask`'s response, and the eval dataset.
 
 The OpenAI backend has never been measured. Running the eval with
 `OPENAI_API_KEY` set reports it separately; the two are not comparable and are
@@ -164,7 +218,14 @@ Same questions, same backend, same day, before the polarity rule: file hit
 18/20, refusals **4/5** of the original five (r02 answered), passage hit 11/20.
 The fix changed refusals only; no hit moved in either direction.
 
-### The two misses, not buried
+### The two Phase 1 misses (both found since; q11 still refused)
+
+Phase 2 retrieves both. q14's expected file is now in the top 4, and q11's is
+ranked first, but q11 is still **refused**: the best chunk covers 0.39 of the
+question's weighted words, under the 0.55 gate, because the section says
+"Avoid (overclaim)" while the question says "should be avoided". That is a
+passage-selection and gate question for the hybrid-retrieval PR, not a
+retrieval miss. The original write-up follows for the record.
 
 **q14 — "What does the EIT-01 escalation implementation test check?"**
 Expected `docs/CONTROL_DECISION_TABLE.md`; retrieved
@@ -260,8 +321,8 @@ free-text endpoint that writes a log line per call.
 ```json
 {
   "status": "ok",
-  "chunks": 915,
-  "sources": 45,
+  "chunks": 843,
+  "sources": 48,
   "backend": "local",
   "skipped_files": [
     {"source": "docs/MASTER-KNOWLEDGE-ARCHIVE.md", "bytes": 209598, "reason": "over the size cap"},

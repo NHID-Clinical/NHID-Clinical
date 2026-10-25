@@ -2490,6 +2490,37 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.21 The reading aid finds every file; what it quotes has not improved — 2026-10-25
+
+Phase 2 of the RAG roadmap, first PR. The reading aid now splits `docs/*.md` at markdown
+headings instead of every 800 characters, scores each chunk with its heading path, and
+ranks with light stemming. On the 35-question eval (local backend) file hit went 18/20 →
+20/20 and MRR 0.79 → 0.97, with refusals held at 15/15 and unsupported answers at 0.
+Passage hit, the measure of whether the quoted text is the useful part, stayed at 11/20.
+Retrieval was not the bottleneck; passage selection is.
+
+**Decisions.**
+- **Stemming ranks; it never judges.** Stemmed ranking moved q11 from rank 36 to 1. A
+  stemmed refusal gate, measured before this work, let three unanswerable questions
+  through. The gate reads unstemmed, polarity-aware words, as §19.19 left it.
+- **A heading is scored, never quoted.** Prefixed into the body it became the quoted
+  answer (passage hit 11 → 8). Removed from the body, the gate lost the heading's words and
+  refused three answerable questions. It stays in the body; passage selection skips it.
+- **A tiny section is not a chunk.** A three-line "Future Compliance" list under its own
+  heading answered "What is NHID-Clinical's HITRUST certification score?". Sections under
+  400 characters fold into the previous one.
+- **Only measured changes ship.** A section-level refusal gate and a heading tie-break in
+  passage selection were built, measured, changed no number, and were removed. A tokenizer
+  fix for trailing periods changed nothing on the new chunking and leaked a denial on the
+  old one; it waits.
+- **BM25 alone does not ship** (measured during planning: three denial-shaped questions
+  answered). The next PR fuses it with the dense score by reciprocal rank, where it held
+  15/15.
+
+The harness that produced every figure is `eval/experiments/chunking_ablation.py`; the
+table is in `docs/spec-rag.md`. No control, outcome, baseline or published test count
+moved: the reading aid's tests live in `eval/`.
+
 ### 19.20 A voice model cannot be gated by a tool it calls after speaking — 2026-10-25
 
 The xAI Realtime docs state that a tool the model invokes during a spoken response
