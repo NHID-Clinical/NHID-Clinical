@@ -156,7 +156,6 @@
           <li><a href="#mapping"><span>How NHID-Clinical maps to current requirements</span></a></li>
           <li><a href="#fhir"><span>FHIR R4 AuditEvent emission</span></a></li>
           <li><a href="#stir-shaken"><span>STIR/SHAKEN</span></a></li>
-          <li><a href="#cms-0057-f"><span>CMS-0057-F</span></a></li>
           <li><a href="#nist-ai-agent-standards"><span>NIST AI agent standards</span></a></li>
           <li><a href="#vendor-evidence-pack"><span>Vendor evidence pack</span></a></li>
           <li><a href="#jurisdictions"><span>Different jurisdictions</span></a></li>
@@ -175,24 +174,36 @@
             <h2 id="mapping-h">How NHID-Clinical maps to current requirements</h2>
             <p class="act-lead">Not legal advice. NHID-Clinical is voluntary.</p>
           </div>
-          <span class="act-index">01 / 07</span>
+          <span class="act-index">01 / 06</span>
         </div>
         <div class="act-body">
 
           <p>The table below shows how the controls relate to key regulations and guidance as of June 2026. Fairness and clinical-safety governance are intentionally out of scope — see the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/scope-boundary-fairness-clinical.md">scope boundary note</a>.</p>
-          <div class="register restack">
-            <table>
-              <thead><tr><th scope="col">Regulatory driver</th><th scope="col">Specific requirement</th><th scope="col">NHID-Clinical control</th></tr></thead>
+          <div class="register">
+            <table class="matrix">
+              <caption><b>Mapped, not certified. Not legal advice.</b> Each cell says how directly a control&rsquo;s evidence speaks to a requirement, for the voice-call channel only. It is not a compliance determination.</caption>
+              <thead><tr>
+                <th scope="col">Control</th>
+                <th scope="col" id="cms-0057-f">CMS-0057-F<br><small>Prior Auth Final Rule</small></th>
+                <th scope="col">MACPAC<br><small>May 2026</small></th>
+                <th scope="col">DOJ FCA<br><small>2026 enforcement focus</small></th>
+                <th scope="col">State AI laws<br><small>CA, TX, MD and others</small></th>
+                <th scope="col">NIST AI RMF 1.0<br><small><a href="#nist-ai-rmf">crosswalk below</a></small></th>
+                <th scope="col">EU AI Act<br><small>Art. 50(1)</small></th>
+              </tr></thead>
               <tbody>
-                <tr><th scope="row">CMS-0057-F Prior Auth Final Rule</th><td data-label="Specific requirement">FHIR API, 72-hour turnaround, 5-year retention</td><td data-label="NHID-Clinical control">HL7 FHIR R4 AuditEvent (validated) + session trace (<span class="control-id">ATR-01</span>) — <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/fhir-auditevent-mapping.md">mapping spec</a></td></tr>
-                <tr><th scope="row">MACPAC May 2026</th><td data-label="Specific requirement">AI transparency in prior auth, human review pathway</td><td data-label="NHID-Clinical control"><span class="control-id">IDG-01</span> + <span class="control-id">EIT-01</span> (escalation) + <span class="control-id">ATR-01</span></td></tr>
-                <tr><th scope="row">DOJ FCA 2026 Enforcement Focus</th><td data-label="Specific requirement">Explainability + audit trail for AI-assisted billing</td><td data-label="NHID-Clinical control">Structured trace + CTS conformance (<span class="control-id">ATR-01</span>)</td></tr>
-                <tr><th scope="row">State AI Laws (CA, TX, MD, etc.)</th><td data-label="Specific requirement">Inspectable, auditable AI decisions</td><td data-label="NHID-Clinical control"><span class="control-id">IDG-01</span> + <span class="control-id">DBC-01</span></td></tr>
-                <tr><th scope="row">NIST CAISI RFI (docket NIST-2025-0035)</th><td data-label="Specific requirement">Security considerations for AI agents, including cross-org agent identity + authorization</td><td data-label="NHID-Clinical control">NHID-Auth v2 + <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a> comment</td></tr>
-                <tr><th scope="row">NIST AI RMF 1.0 (voluntary)</th><td data-label="Specific requirement">Subcategory outcomes across Govern, Map, Measure, Manage</td><td data-label="NHID-Clinical control">Evidence toward specific subcategories — <a href="#nist-ai-rmf">crosswalk below</a> (mapped, not certified)</td></tr>
+                <tr><th scope="row"><span class="control-id">IDG-01</span> Identity Disclosure Gate</th><td class="is-direct">Direct</td><td class="is-direct">Direct</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-direct">Direct</td><td class="is-direct">Direct</td><td class="is-partial">Partial<sup>1</sup></td></tr>
+                <tr><th scope="row"><span class="control-id">PDX-01</span> Pre-Data Exchange Gate</th><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-partial">Partial</td><td class="is-blank" aria-label="no mapping">&middot;</td></tr>
+                <tr><th scope="row"><span class="control-id">DBC-01</span> Deceptive Behavior Check</th><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-direct">Direct</td><td class="is-direct">Direct</td><td class="is-blank" aria-label="no mapping">&middot;</td></tr>
+                <tr><th scope="row"><span class="control-id">EIT-01</span> Escalation Implementation Test</th><td class="is-direct">Direct</td><td class="is-direct">Direct</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-direct">Direct</td><td class="is-blank" aria-label="no mapping">&middot;</td></tr>
+                <tr><th scope="row"><span class="control-id">ATR-01</span> Audit Trail Requirements</th><td class="is-direct">Direct</td><td class="is-direct">Direct</td><td class="is-direct">Direct</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-direct">Direct</td><td class="is-blank" aria-label="no mapping">&middot;</td></tr>
+                <tr><th scope="row"><span class="control-id">DLG-01</span> Delegated Authority <span class="control-table-optional">opt-in</span></th><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-blank" aria-label="no mapping">&middot;</td><td class="is-partial">Partial</td><td class="is-blank" aria-label="no mapping">&middot;</td></tr>
               </tbody>
             </table>
           </div>
+          <p class="matrix-legend"><span><b class="is-direct">Direct</b> the control&rsquo;s artifact is the evidence the requirement asks for</span><span><b>Partial</b> the control contributes evidence toward the outcome</span><span><b>&middot;</b> no mapping claimed</span></p>
+          <p class="disclaimer-small"><sup>1</sup> IDG-01 is designed to support the disclosure obligation described in EU AI Act Article 50(1). Nothing more is claimed. Where the rows come from: CMS-0057-F &mdash; FHIR API for PA transactions (ATR-01, FHIR R4 AuditEvent), AI transparency in decisions (IDG-01), human review availability (EIT-01). MACPAC May 2026 &mdash; AI transparency in prior auth and a human review pathway (IDG-01, EIT-01, ATR-01). DOJ FCA 2026 &mdash; explainability and an audit trail for AI-assisted billing (ATR-01, with the conformance test suite). State AI laws &mdash; inspectable, auditable AI decisions (IDG-01, DBC-01). NIST AI RMF &mdash; MEASURE 2.8 Direct for IDG-01, DBC-01, EIT-01, ATR-01; MAP 4.2 Partial for all five plus opt-in DLG-01; MEASURE 2.7 Partial for DLG-01.</p>
+          <p class="disclaimer-small">The NIST CAISI request for information on AI agent security (docket NIST-2025-0035) is answered by NHID-Auth v2 rather than by a v1.3 control; <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a> is a public comment, not an endorsement. STIR/SHAKEN is a carrier-layer attestation that a number is legitimate, not a control mapping; see below. FHIR output is validated against the R4 base specification (4.0.1) only; no Implementation Guide conformance is claimed.</p>
         </div>
       </section>
       <section class="act" id="fhir" aria-labelledby="fhir-h">
@@ -202,21 +213,151 @@
             <h2 id="fhir-h">FHIR R4 AuditEvent emission</h2>
             <p class="act-lead">One AuditEvent per conformance milestone, validated in CI.</p>
           </div>
-          <span class="act-index">02 / 07</span>
+          <span class="act-index">02 / 06</span>
         </div>
         <div class="act-body">
 
           <p>Every NHID-Clinical conformance test suite (CTS) execution produces a HL7 FHIR R4 <code>Bundle</code> of <code>AuditEvent</code> resources — one per conformance milestone. These Bundles are validated against the FHIR R4 base specification (version 4.0.1) in CI before every merge.</p>
           <h3><span class="sub-index">A</span>What is emitted per call</h3>
-          <ol class="steps">
-            <li><h3>nhid-session-start</h3><p>Call session initialised (DCM Application Activity).</p></li>
-            <li><h3>nhid-identity-disclosure</h3><p>IDG-01 gate evaluated; outcome reflects pass/fail (DCM Security Alert).</p></li>
-            <li><h3>nhid-auth-verification</h3><p>Provider NPI authorization recorded, when present (DCM User Authentication).</p></li>
-            <li><h3>nhid-phi-gate</h3><p>PDX-01 pre-data-exchange gate decision (DCM Security Alert).</p></li>
-            <li><h3>nhid-phi-exchange</h3><p>PHI exchange begins, when gate cleared (DCM Patient Record).</p></li>
-            <li><h3>nhid-escalation</h3><p>EIT-01 escalation event, when triggered (DCM Application Activity).</p></li>
-            <li><h3>nhid-call-end</h3><p>Session terminated; outcome reflects aggregate policy decision (DCM Application Activity).</p></li>
+          <ol class="timeline" aria-label="The seven AuditEvent subtypes, in the order they fire on one call">
+            <li><code>nhid-session-start</code><span>Call session initialized (DCM Application Activity).</span></li>
+            <li><code>nhid-identity-disclosure</code><span>IDG-01 evaluated; outcome reflects pass or fail (DCM Security Alert).</span></li>
+            <li><code>nhid-auth-verification</code><span>Provider authorization recorded, when present (DCM User Authentication).</span></li>
+            <li><code>nhid-phi-gate</code><span>PDX-01 decision (DCM Security Alert).</span></li>
+            <li><code>nhid-phi-exchange</code><span>PHI exchange begins, when the gate cleared (DCM Patient Record).</span></li>
+            <li><code>nhid-escalation</code><span>EIT-01 escalation event, when triggered (DCM Application Activity).</span></li>
+            <li><code>nhid-call-end</code><span>Session ends; outcome reflects the aggregate decision (DCM Application Activity).</span></li>
           </ol>
+          <details class="json-sample">
+            <summary>One AuditEvent from the example Bundle: <code>nhid-identity-disclosure</code></summary>
+            <pre><code>{
+  &quot;resourceType&quot;: &quot;AuditEvent&quot;,
+  &quot;id&quot;: &quot;nhid-ae-a54cc51015487d44&quot;,
+  &quot;type&quot;: {
+    &quot;system&quot;: &quot;http://dicom.nema.org/resources/ontology/DCM&quot;,
+    &quot;code&quot;: &quot;110113&quot;,
+    &quot;display&quot;: &quot;Security Alert&quot;
+  },
+  &quot;subtype&quot;: [
+    {
+      &quot;system&quot;: &quot;https://nhid-clinical.org/fhir/CodeSystem/audit-event-subtype&quot;,
+      &quot;code&quot;: &quot;nhid-identity-disclosure&quot;,
+      &quot;display&quot;: &quot;NHID Identity Disclosure&quot;
+    }
+  ],
+  &quot;action&quot;: &quot;E&quot;,
+  &quot;recorded&quot;: &quot;2026-06-09T14:30:05.000Z&quot;,
+  &quot;outcome&quot;: &quot;0&quot;,
+  &quot;outcomeDesc&quot;: &quot;AI identity disclosed and assertion text confirmed&quot;,
+  &quot;agent&quot;: [
+    {
+      &quot;type&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://dicom.nema.org/resources/ontology/DCM&quot;,
+            &quot;code&quot;: &quot;110153&quot;,
+            &quot;display&quot;: &quot;Source Role ID&quot;
+          }
+        ]
+      },
+      &quot;who&quot;: {
+        &quot;identifier&quot;: {
+          &quot;system&quot;: &quot;https://nhid-clinical.org/fhir/agents&quot;,
+          &quot;value&quot;: &quot;agent_4001krn32nmwe5t8mqzgee0w84rj&quot;
+        },
+        &quot;display&quot;: &quot;agent_4001krn32nmwe5t8mqzgee0w84rj&quot;
+      },
+      &quot;requestor&quot;: true
+    },
+    {
+      &quot;type&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;http://dicom.nema.org/resources/ontology/DCM&quot;,
+            &quot;code&quot;: &quot;110152&quot;,
+            &quot;display&quot;: &quot;Destination Role ID&quot;
+          }
+        ]
+      },
+      &quot;who&quot;: {
+        &quot;display&quot;: &quot;Payer Organization&quot;
+      },
+      &quot;requestor&quot;: false
+    },
+    {
+      &quot;type&quot;: {
+        &quot;coding&quot;: [
+          {
+            &quot;system&quot;: &quot;https://nhid-clinical.org/fhir/CodeSystem/agent-role&quot;,
+            &quot;code&quot;: &quot;principal&quot;,
+            &quot;display&quot;: &quot;Principal Organization (on behalf of)&quot;
+          }
+        ]
+      },
+      &quot;who&quot;: {
+        &quot;identifier&quot;: {
+          &quot;system&quot;: &quot;http://hl7.org/fhir/sid/us-npi&quot;,
+          &quot;value&quot;: &quot;1234567890&quot;
+        },
+        &quot;display&quot;: &quot;Sunny Dental Group&quot;
+      },
+      &quot;requestor&quot;: false
+    }
+  ],
+  &quot;source&quot;: {
+    &quot;site&quot;: &quot;nhid-clinical.org&quot;,
+    &quot;observer&quot;: {
+      &quot;identifier&quot;: {
+        &quot;system&quot;: &quot;https://nhid-clinical.org/fhir/systems&quot;,
+        &quot;value&quot;: &quot;nhid-policy-engine-v1&quot;
+      },
+      &quot;display&quot;: &quot;NHID-Clinical Policy Engine v1&quot;
+    },
+    &quot;type&quot;: [
+      {
+        &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/security-source-type&quot;,
+        &quot;code&quot;: &quot;4&quot;,
+        &quot;display&quot;: &quot;Application Server&quot;
+      }
+    ]
+  },
+  &quot;entity&quot;: [
+    {
+      &quot;what&quot;: {
+        &quot;identifier&quot;: {
+          &quot;system&quot;: &quot;https://nhid-clinical.org/fhir/sessions&quot;,
+          &quot;value&quot;: &quot;CA1234567890abcdef1234567890abcd&quot;
+        }
+      },
+      &quot;type&quot;: {
+        &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/audit-entity-type&quot;,
+        &quot;code&quot;: &quot;2&quot;,
+        &quot;display&quot;: &quot;System Object&quot;
+      },
+      &quot;role&quot;: {
+        &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/object-role&quot;,
+        &quot;code&quot;: &quot;20&quot;,
+        &quot;display&quot;: &quot;Job&quot;
+      },
+      &quot;description&quot;: &quot;NHID-Clinical call session&quot;
+    },
+    {
+      &quot;what&quot;: {
+        &quot;identifier&quot;: {
+          &quot;system&quot;: &quot;https://nhid-clinical.org/fhir/sessions&quot;,
+          &quot;value&quot;: &quot;CA1234567890abcdef1234567890abcd&quot;
+        }
+      },
+      &quot;type&quot;: {
+        &quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/audit-entity-type&quot;,
+        &quot;code&quot;: &quot;4&quot;,
+        &quot;display&quot;: &quot;Other&quot;
+      },
+      &quot;description&quot;: &quot;Hi, this is Beacon, an AI assistant calling from a provider office on behalf of a dental facility. I am not a human.&quot;
+    }
+  ]
+}</code></pre>
+          </details>
           <div class="note" role="note" data-label="Conformance scope">
             <p>Validated against HL7 FHIR R4 base specification only. No conformance to any named HL7 Implementation Guide is claimed or implied. DICOM audit event type codes (DCM 110100, 110110, 110113, 110114) are used for <code>AuditEvent.type</code>. Three agent slices capture the AI voice agent (requestor), payer system (destination), and provider organization (on-behalf-of, when NPI is present).</p>
           </div>
@@ -234,7 +375,7 @@
             <h2 id="stir-shaken-h">STIR/SHAKEN</h2>
             <p class="act-lead">STIR/SHAKEN attests that a number is legitimate — not that the caller is authorized to access protected health information.</p>
           </div>
-          <span class="act-index">03 / 07</span>
+          <span class="act-index">03 / 06</span>
         </div>
         <div class="act-body">
 
@@ -251,30 +392,6 @@
           </div>
         </div>
       </section>
-      <section class="act" id="cms-0057-f" aria-labelledby="cms-0057-f-h">
-        <div class="act-head">
-          <div>
-            <p class="section-kicker">Prior authorization</p>
-            <h2 id="cms-0057-f-h">CMS-0057-F</h2>
-            <p class="act-lead">How the v1.3 controls map to the CMS Prior Authorization Final Rule (CMS-0057-F) requirements for AI transparency in prior authorization workflows.</p>
-          </div>
-          <span class="act-index">04 / 07</span>
-        </div>
-        <div class="act-body">
-
-          <h3><span class="sub-index">A</span>NHID-Clinical alignment</h3>
-          <div class="register restack">
-            <table>
-              <thead><tr><th scope="col">CMS-0057-F requirement</th><th scope="col">NHID-Clinical control</th><th scope="col">Artifact</th></tr></thead>
-              <tbody>
-                <tr><th scope="row">FHIR API for PA transactions</th><td data-label="Control"><span class="control-id">ATR-01</span></td><td data-label="Artifact">FHIR AuditEvent R4 mapping</td></tr>
-                <tr><th scope="row">AI transparency in decisions</th><td data-label="Control"><span class="control-id">IDG-01</span></td><td data-label="Artifact">CTS conformance test suite</td></tr>
-                <tr><th scope="row">Human review availability</th><td data-label="Control"><span class="control-id">EIT-01</span></td><td data-label="Artifact">Safe escalation phrases</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
       <section class="act" id="nist-ai-agent-standards" aria-labelledby="nist-ai-agent-standards-h">
         <div class="act-head">
           <div>
@@ -282,7 +399,7 @@
             <h2 id="nist-ai-agent-standards-h">NIST AI agent standards</h2>
             <p class="act-lead">An open proposal submitted to NIST docket NIST-2025-0035-0026.</p>
           </div>
-          <span class="act-index">05 / 07</span>
+          <span class="act-index">04 / 06</span>
         </div>
         <div class="act-body">
 
@@ -313,17 +430,11 @@
             <h2 id="vendor-evidence-pack-h">Vendor evidence pack</h2>
             <p class="act-lead">Minimum evidence a voice AI vendor should produce to demonstrate NHID-Clinical conformance.</p>
           </div>
-          <span class="act-index">06 / 07</span>
+          <span class="act-index">05 / 06</span>
         </div>
         <div class="act-body">
 
-          <ul class="ledger-list">
-            <li><span class="ledger-index">01</span><div><h3>CTS conformance test results</h3><p>Pass/fail for all 5 tests.</p></div></li>
-            <li><span class="ledger-index">02</span><div><h3>Sample disclosure transcript</h3><p>What the agent says, and when.</p></div></li>
-            <li><span class="ledger-index">03</span><div><h3>Escalation phrase list</h3><p>How a request for a human is recognized and honoured.</p></div></li>
-            <li><span class="ledger-index">04</span><div><h3>FHIR AuditEvent sample</h3><p>One Bundle, validated against R4.</p></div></li>
-            <li><span class="ledger-index">05</span><div><h3>NPI binding documentation</h3><p>How the agent's credential names the provider it acts for.</p></div></li>
-          </ul>
+          <p>The minimum evidence a voice-AI vendor should produce &mdash; conformance test results, a disclosure transcript, the escalation phrase list, a FHIR AuditEvent sample and the NPI binding documentation &mdash; is specified once, on the <a href="/evidence-pack.html">Evidence pack</a>. Ask for it by that name.</p>
         </div>
       </section>
       <section class="act" id="jurisdictions" aria-labelledby="jurisdictions-h">
@@ -333,7 +444,7 @@
             <h2 id="jurisdictions-h">Different jurisdictions are approaching synthetic voice from different directions</h2>
             <p class="act-lead">These are separate instruments with separate scopes, triggers and legal mechanisms. They do not add up to one healthcare AI voice rule, and none of them requires NHID-Clinical. What they share is a direction of travel: when a person is dealing with an automated system, they are increasingly entitled to know.</p>
           </div>
-          <span class="act-index">07 / 07</span>
+          <span class="act-index">06 / 06</span>
         </div>
         <div class="act-body">
           <div class="register">
@@ -344,19 +455,19 @@
         </thead>
         <tbody>
           <tr>
-            <th scope="row"><a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240AB2905" target="_blank" rel="noopener noreferrer">California AB&nbsp;2905</a><br><span class="regulatory-subnote">Cal. Pub. Util. Code &sect;2874</span></th>
+            <th scope="row"><a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240AB2905" target="_blank" rel="noopener noreferrer">California AB&nbsp;2905</a><br><span class="regulatory-subnote">Cal. Pub. Util. Code &sect;2874</span><br><span class="regulatory-subnote">Accessed 25 Oct 2026</span></th>
             <td>1 Jan 2025</td>
             <td>Covered automatic dialing-announcing devices must tell the called person when a prerecorded message uses an artificial voice.</td>
             <td>Does not govern every conversational AI call, and is not healthcare-specific.</td>
           </tr>
           <tr>
-            <th scope="row"><a href="https://docs.fcc.gov/public/attachments/FCC-24-17A1.pdf" target="_blank" rel="noopener noreferrer">FCC&nbsp;24&#8209;17</a><br><span class="regulatory-subnote">TCPA declaratory ruling</span></th>
+            <th scope="row"><a href="https://docs.fcc.gov/public/attachments/FCC-24-17A1.pdf" target="_blank" rel="noopener noreferrer">FCC&nbsp;24&#8209;17</a><br><span class="regulatory-subnote">TCPA declaratory ruling</span><br><span class="regulatory-subnote">Accessed 25 Oct 2026</span></th>
             <td>8 Feb 2024</td>
             <td>AI-generated voices fall within the TCPA's existing restrictions on artificial or prerecorded voice calls.</td>
             <td>Does not create a disclosure standard for provider&ndash;payer administrative calls.</td>
           </tr>
           <tr>
-            <th scope="row"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener noreferrer">EU AI Act Art.&nbsp;50(1)</a><br><span class="regulatory-subnote">Disclosure of AI interaction</span></th>
+            <th scope="row"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener noreferrer">EU AI Act Art.&nbsp;50(1)</a><br><span class="regulatory-subnote">Disclosure of AI interaction</span><br><span class="regulatory-subnote">Accessed 25 Oct 2026</span></th>
             <td>2 Aug 2026</td>
             <td>People must be informed when they are interacting directly with an AI system, unless that is obvious in the circumstances.</td>
             <td>Does not specify how disclosure is verified, scoped, or evidenced on a call. Article&nbsp;50(2), on machine-readable marking of synthetic content, is a separate obligation on a separate timetable and is not what NHID-Clinical addresses.</td>

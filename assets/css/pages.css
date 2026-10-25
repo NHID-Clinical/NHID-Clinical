@@ -37,6 +37,7 @@
 .page-doc .act-body ul, .page-doc .act-body ol,
 .page-doc .doc-body ul, .page-doc .doc-body ol { max-width: var(--measure); padding-left: 1.25rem; }
 .page-doc .act-body .steps, .page-doc .act-body .ledger-list, .page-doc .act-body .endpoint-strip,
+.page-doc .act-body .flow, .page-doc .act-body .timeline,
 .page-doc .doc-body .steps, .page-doc .doc-body .ledger-list { max-width: none; padding-left: 0; }
 .page-doc .act-body li + li, .page-doc .doc-body li + li { margin-top: .35rem; }
 .page-doc li { line-height: 1.7; }

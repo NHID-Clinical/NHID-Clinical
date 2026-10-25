@@ -290,10 +290,10 @@
         <div class="act-body">
 
           <p>The stages run in this order because each depends on the one before it; how long each takes is yours to decide, and an evaluation can stop after any of them.</p>
-          <ol class="steps">
-            <li><h3>Behavioral baseline</h3><p>Log incoming calls. Identify which callers are AI voice agents. Record disclosure timing, escalation behavior, and audit trail presence.</p></li>
-            <li><h3>Gap analysis</h3><p>Evaluate identified AI calls against the five v1.3 controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01), plus the supplemental bot&#8209;to&#8209;bot rule. Quantify what passes, what fails, what is ambiguous.</p></li>
-            <li><h3>Written assessment</h3><p>Compile findings into a short written assessment. Share the anonymized results with the community to help inform the next version of the proposal.</p></li>
+          <ol class="flow flow-3" aria-label="The three stages of a shadow evaluation">
+            <li class="flow-step"><span class="flow-kicker">Stage 1</span><b>Behavioral baseline</b><span>Log incoming calls. Identify which callers are AI voice agents. Record disclosure timing, escalation behavior, and audit-trail presence.</span></li>
+            <li class="flow-step"><span class="flow-kicker">Stage 2</span><b>Gap analysis</b><span>Evaluate the identified AI calls against the five v1.3 controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) plus the supplemental bot&#8209;to&#8209;bot rule. Quantify what passes, what fails, what is ambiguous.</span></li>
+            <li class="flow-step"><span class="flow-kicker">Stage 3</span><b>Written assessment</b><span>Compile the findings into a short written assessment. Share the anonymized results if you choose; they inform the next version of the proposal.</span></li>
           </ol>
         </div>
       </section>
@@ -454,8 +454,10 @@
 
           <p><a href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation"><strong>Email us</strong></a> &mdash; or open a <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer">GitHub Discussion</a>. Email <a href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation">contact@nhid-clinical.org</a> with the subject line <strong>"Shadow Evaluation"</strong>. Either way, include your role and the workflows you want to observe.</p>
           <ul class="ledger-list" style="margin-top:1.25rem">
-            <li><span class="ledger-index">KIT</span><div><h3><a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit">Tier 0 Shadow Pilot Kit &rarr;</a></h3><p>Capture schema, measurement script, 2&#8209;4 week plan, report template.</p></div></li>
-            <li><span class="ledger-index">PACK</span><div><h3><a href="/evidence-pack.html">Evidence Pack &rarr;</a></h3><p>Guarantees, failure trace, audit model.</p></div></li>
+            <li><span class="ledger-index">KIT</span><div><h3><a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit">Tier 0 Shadow Pilot Kit &rarr;</a></h3><p>Capture schema, measurement script, report template. Runs on your own call logs; nothing touches production.</p></div></li>
+            <li><span class="ledger-index">BRIEF</span><div><h3><a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md">Executive Brief &rarr;</a></h3><p>One-page overview for leadership and procurement.</p></div></li>
+            <li><span class="ledger-index">PACK</span><div><h3><a href="/evidence-pack.html">Evidence Pack &rarr;</a></h3><p>Guarantees, a worked failure trace, the audit model.</p></div></li>
+            <li><span class="ledger-index">REG</span><div><h3><a href="/regulatory-alignment.html">Regulatory alignment &rarr;</a></h3><p>Controls mapped to CMS-0057-F, MACPAC, DOJ FCA, state AI laws. Mapped, not certified.</p></div></li>
             <li><span class="ledger-index">LINE</span><div><h3><a href="#demo">Reference demonstration line &rarr;</a></h3><p>Hear the disclosure controls in a real call.</p></div></li>
           </ul>
           <div class="note" role="note" data-label="In one sentence">
@@ -483,15 +485,8 @@
           <p>No payer has adopted NHID-Clinical in production yet. It is a voluntary reference model, not an accredited standard, certification, or regulatory requirement.</p>
         </div>
 
-        <h3><span class="sub-index">A</span>Start here — a pilot in three steps</h3>
-        <p>The Tier 0 Shadow Pilot Kit runs on your own call logs. Observe-only, no vendor changes, and it produces usable numbers without altering the production call flow.</p>
-        <ol class="steps">
-          <li><h3>Get the kit</h3><p>Download the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/README.md">Tier 0 Shadow Pilot Kit</a> — a minimal event schema, a measurement script, and a report template.</p></li>
-          <li><h3>Run it on your logs</h3><p>Map a sample of your call records to the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/minimal-event-schema.json">minimal event schema</a>, then run <code>measure_pilot.py</code>. Nothing touches production.</p></li>
-          <li><h3>Read your numbers</h3><p>You get impersonation-latency and disclosure metrics on your own traffic in a <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/pilot-kit/pilot-report-template.md">ready-to-share report</a>. Use it to decide what to require of vendors.</p></li>
-        </ol>
 
-        <h3><span class="sub-index">B</span>What you gain</h3>
+        <h3><span class="sub-index">A</span>What you gain</h3>
         <div class="register restack">
           <table>
             <thead><tr><th scope="col">Metric</th><th scope="col">Today (typical)</th><th scope="col">Target with NHID-Clinical</th></tr></thead>
@@ -504,7 +499,7 @@
           </table>
         </div>
 
-        <h3><span class="sub-index">C</span>How a payer-side evaluation works</h3>
+        <h3><span class="sub-index">B</span>How a payer-side evaluation works</h3>
         <ol class="steps">
           <li>
             <h3>Add RFP language</h3>
@@ -538,13 +533,6 @@ python -m pytest tests/ -v</pre>
           <p>v1.3 covers disclosure behavior and audit trails — suitable for shadow evaluations today. v2 adds cryptographic agent identity (NHID-Auth v2) for when you must verify the agent was authorized by the provider it claims to represent. NPIs are public; v1.3 alone does not prove authorization. <a href="/framework/nhid-auth.html#v2"><strong>Read the v2 roadmap →</strong></a></p>
         </div>
 
-        <h3><span class="sub-index">D</span>Evaluation resources</h3>
-        <ul class="ledger-list">
-          <li><span class="ledger-index">BRIEF</span><div><h3><a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/executive-brief.md">Executive Brief →</a></h3><p>One-page overview for leadership and procurement.</p></div></li>
-          <li><span class="ledger-index">PACK</span><div><h3><a href="/evidence-pack.html">Evidence Pack →</a></h3><p>Guarantees, failure trace, audit model.</p></div></li>
-          <li><span class="ledger-index">REG</span><div><h3><a href="/regulatory-alignment.html">Regulatory Alignment →</a></h3><p>CMS-0057-F, MACPAC, DOJ FCA, state AI laws.</p></div></li>
-          <li><span class="ledger-index">LINE</span><div><h3><a href="#demo">Reference demonstration line →</a></h3><p>Hear the disclosure controls in a real call.</p></div></li>
-        </ul>
       </div>
     </div>
   </section>

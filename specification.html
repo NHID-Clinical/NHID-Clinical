@@ -155,7 +155,6 @@
         <ol>
           <li><a href="#problem"><span>The problem this addresses</span></a></li>
           <li><a href="#core-idea"><span>The core idea</span></a></li>
-          <li><a href="#behaviors"><span>Suggested behaviors</span></a></li>
           <li><a href="#control-model"><span>The five-control model</span></a></li>
           <li><a href="#trust-gateway"><span>The Trust Gateway, running</span></a></li>
           <li><a href="#sequence"><span>Sequence of interaction</span></a></li>
@@ -190,7 +189,7 @@
             <h2 id="problem-h">The problem this addresses</h2>
           <p class="act-lead">Staff share operational data before realizing they are talking to a machine.</p>
           </div>
-          <span class="act-index">01 / 14</span>
+          <span class="act-index">01 / 13</span>
         </div>
         <div class="act-body">
 
@@ -290,7 +289,7 @@
             <p class="section-kicker">Principle</p>
             <h2 id="core-idea-h">The core idea</h2>
           </div>
-          <span class="act-index">02 / 14</span>
+          <span class="act-index">02 / 13</span>
         </div>
         <div class="act-body">
 
@@ -299,52 +298,6 @@
         </div>
       </section>
 
-      <section class="act" id="behaviors" aria-labelledby="behaviors-h">
-        <div class="act-head">
-          <div>
-            <p class="section-kicker">Controls</p>
-            <h2 id="behaviors-h">Suggested behaviors</h2>
-          <p class="act-lead">Four deterministic behavioral controls and one audit control.</p>
-          </div>
-          <span class="act-index">03 / 14</span>
-        </div>
-        <div class="act-body">
-
-          <p>The proposal defines <strong>five controls</strong> for AI voice agents in these workflows. Four are deterministic <em>behavioral</em> controls governing what the agent does on the call &mdash; IDG-01, PDX-01, DBC-01 and EIT-01. The fifth, ATR-01, is the <em>audit and evidence</em> control: it does not change the agent&rsquo;s behavior, it records what the other four did. These are not mandatory requirements &mdash; they are a starting point for shared expectations.</p>
-          <div class="feature-grid">
-        <div class="feature-card reveal">
-          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3M6 6v11M10 3v18M14 8v7M18 5v13M22 10v3"/></svg></div>
-          <span class="code">IDG-01</span>
-          <h3>Identify as automated before any data exchange.</h3>
-          <p>The first meaningful act of the call.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12h6"/></svg></div>
-          <span class="code">PDX-01</span>
-          <h3>No protected health information before disclosure is confirmed.</h3>
-          <p>No PHI &mdash; member ID, NPI, date of birth, claim number &mdash; until IDG-01 disclosure is confirmed.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5a3 3 0 0 1 6 0v2M12 12v3"/></svg></div>
-          <span class="code">DBC-01</span>
-          <h3>Behave like a machine, not a person.</h3>
-          <p>No claim of human status or licensed-professional standing, judged on the agent&rsquo;s own words. Acoustic-artifact detection was withdrawn in v1.3.2 and is not evaluated.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M21 3l-7 7M8 21H3v-5M3 21l7-7"/><circle cx="12" cy="12" r="1.5"/></svg></div>
-          <span class="code">EIT-01</span>
-          <h3>Provide a clear path to a human.</h3>
-          <p>When requested, the transition should be immediate and unambiguous.</p>
-        </div>
-        <div class="feature-card reveal">
-          <div class="feature-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13l2 2 4-4"/></svg></div>
-          <span class="code">ATR-01</span>
-          <h3>Maintain a basic record.</h3>
-          <p>Sufficient logging to establish what happened, and when. <span style="opacity:.75">The audit control &mdash; evidence rather than behavior.</span></p>
-        </div>
-      </div>
-        </div>
-      </section>
 
       <section class="act" id="control-model" aria-labelledby="control-model-h">
         <div class="act-head">
@@ -353,11 +306,24 @@
             <h2 id="control-model-h">The five-control model</h2>
           <p class="act-lead">Four act on the call. The fifth records what the four decided.</p>
           </div>
-          <span class="act-index">04 / 14</span>
+          <span class="act-index">03 / 13</span>
         </div>
         <div class="act-body">
 
-          <p>Four of the five controls act on the call. The fifth does not &mdash; it records what the other four did. That difference is structural, not a matter of emphasis, and it is the distinction this diagram exists to make.</p>
+          <p>Four of the five controls act on the call. The fifth does not &mdash; it records what the other four did. That difference is structural, not a matter of emphasis, and it is the distinction this diagram exists to make. These are suggested behaviors and a testable baseline, not mandatory requirements.</p>
+          <div class="register restack">
+            <table>
+              <caption class="sr-only-text">The five controls, one line each, and whether each acts on the call</caption>
+              <thead><tr><th scope="col">Control</th><th scope="col">One line</th><th scope="col">Acts on the call</th></tr></thead>
+              <tbody>
+                <tr><th scope="row"><span class="control-id">IDG-01</span> Identity Disclosure Gate</th><td data-label="One line">Identify as automated before any data exchange. A disclosure counts only if it was heard.</td><td data-label="Acts on the call">Yes</td></tr>
+                <tr><th scope="row"><span class="control-id">PDX-01</span> Pre-Data Exchange Gate</th><td data-label="One line">No protected health information &mdash; member ID, NPI, date of birth, claim number &mdash; until disclosure is confirmed.</td><td data-label="Acts on the call">Yes</td></tr>
+                <tr><th scope="row"><span class="control-id">DBC-01</span> Deceptive Behavior Check</th><td data-label="One line">No claim of human status or licensed-professional standing, judged on the agent&rsquo;s own words. Acoustic-artifact detection was withdrawn in v1.3.2 and is not evaluated.</td><td data-label="Acts on the call">Yes</td></tr>
+                <tr><th scope="row"><span class="control-id">EIT-01</span> Escalation Implementation Test</th><td data-label="One line">A clear path to a human, honored on request; the handoff counts only when it is recorded.</td><td data-label="Acts on the call">Yes</td></tr>
+                <tr><th scope="row"><span class="control-id">ATR-01</span> Audit Trail Requirements</th><td data-label="One line">A machine-readable record of what happened and when.</td><td data-label="Acts on the call">No. Records what the four decided.</td></tr>
+              </tbody>
+            </table>
+          </div>
           <figure class="control-model">
         <svg viewBox="0 0 880 380" role="img" aria-labelledby="cm-title cm-desc" style="width:100%;height:auto;display:block">
           <title id="cm-title">The NHID-Clinical five-control model</title>
@@ -424,7 +390,7 @@
             <h2 id="trust-gateway-h">The Trust Gateway &mdash; the controls, actually running</h2>
           <p class="act-lead">Two corpus scenarios, replayed through the engine, recorded verbatim.</p>
           </div>
-          <span class="act-index">05 / 14</span>
+          <span class="act-index">04 / 13</span>
         </div>
         <div class="act-body">
 
@@ -550,15 +516,15 @@
             <h2 id="sequence-h">Sequence of interaction</h2>
           <p class="act-lead">The disclosure gate in a standard eligibility workflow.</p>
           </div>
-          <span class="act-index">06 / 14</span>
+          <span class="act-index">05 / 13</span>
         </div>
         <div class="act-body">
 
           <p>The following diagram illustrates the disclosure gate in a standard eligibility workflow.</p>
           <figure class="sequence-model">
-        <svg viewBox="0 0 880 430" role="img" aria-labelledby="sq-title sq-desc" style="width:100%;height:auto;display:block">
+        <svg viewBox="0 0 880 600" role="img" aria-labelledby="sq-title sq-desc" style="width:100%;height:auto;display:block">
           <title id="sq-title">The disclosure gate in a standard eligibility workflow</title>
-          <desc id="sq-desc">A sequence across four lanes. The AI voice agent opens the call by stating that it is an automated system. The payer representative acknowledges and asks for the NPI. The agent submits the turn to the NHID-Clinical policy engine, which evaluates IDG-01 and returns CONTINUE_AI with the reason code IDG01_DISCLOSURE_CONFIRMED. Only after that decision does the interaction cross the disclosure gate into the operational workflow, where the NPI is supplied and the administrative exchange proceeds. Every turn, before and after the gate, is written to the ATR-01 audit trail.</desc>
+          <desc id="sq-desc">A sequence across four lanes: the AI voice agent calling on behalf of a provider, the payer representative receiving the call, the NHID-Clinical policy engine, and the operational workflow. Step 1: the agent opens the call by stating that it is an automated system. Step 2: the representative acknowledges and asks for the NPI. Step 3: the turn is submitted to the engine as evaluate_all(session, event). Step 4: the engine returns CONTINUE_AI with the reason code IDG01_DISCLOSURE_CONFIRMED. Only after that decision does the interaction cross the disclosure gate into the operational workflow, where in step 5 the NPI is supplied and the exchange proceeds. Below the gate, two branches are drawn dashed to show what happens instead when the gate does not clear: a request for protected data before disclosure returns DENY_DATA with PDX01_PHI_GATE_TRIGGERED, and a disclosure the representative interrupted before it was heard returns DISCLOSE_IDENTITY with IDG01_DISCLOSURE_INTERRUPTED; in both the gate stays closed. A dashed ATR-01 band along the bottom spans every lane: every turn above, before and after the gate, is written to the audit trail, and ATR-01 changes no behavior. Labeled Reference, a conceptual model, not a recording of a call.</desc>
 
           <!-- Lanes -->
           <g class="sq-lane">
@@ -577,10 +543,10 @@
           <text x="770" y="50" text-anchor="middle" class="sq-lane-role">Eligibility, claims, prior auth</text>
 
           <!-- Lifelines -->
-          <line x1="106" y1="60" x2="106" y2="412" class="sq-life"/>
-          <line x1="326" y1="60" x2="326" y2="412" class="sq-life"/>
-          <line x1="546" y1="60" x2="546" y2="412" class="sq-life"/>
-          <line x1="770" y1="60" x2="770" y2="412" class="sq-life"/>
+          <line x1="106" y1="60" x2="106" y2="520" class="sq-life"/>
+          <line x1="326" y1="60" x2="326" y2="520" class="sq-life"/>
+          <line x1="546" y1="60" x2="546" y2="520" class="sq-life"/>
+          <line x1="770" y1="60" x2="770" y2="520" class="sq-life"/>
 
           <!-- 1. Disclosure -->
           <text x="16" y="86" class="sq-step">1</text>
@@ -629,6 +595,32 @@
           <line x1="326" y1="380" x2="762" y2="380" class="sq-msg"/>
           <polygon points="770,380 758,375 758,385" class="sq-msg-head"/>
           <text x="548" y="374" text-anchor="middle" class="sq-label">Administrative exchange proceeds</text>
+
+          <!-- If instead: two branches where the gate stays closed, drawn dashed -->
+          <line x1="8" y1="412" x2="872" y2="412" class="sq-alt"/>
+          <text x="8" y="406" class="sq-alt-label">IF INSTEAD &#183; THE GATE STAYS CLOSED</text>
+
+          <text x="16" y="436" class="sq-step">A</text>
+          <line x1="106" y1="448" x2="318" y2="448" class="sq-alt"/>
+          <polygon points="326,448 314,443 314,453" class="sq-alt-head"/>
+          <text x="216" y="442" text-anchor="middle" class="sq-label">&#8220;Can I get the member ID?&#8221; &#8212; before any disclosure</text>
+          <g class="sq-out is-deny"><rect x="452" y="428" width="300" height="38" rx="6"/></g>
+          <text x="466" y="444" class="sq-out-key">action:</text><text x="520" y="444" class="sq-out-val">DENY_DATA</text>
+          <text x="466" y="459" class="sq-out-key">reason_code:</text><text x="548" y="459" class="sq-out-val">PDX01_PHI_GATE_TRIGGERED</text>
+
+          <text x="16" y="486" class="sq-step">B</text>
+          <line x1="106" y1="498" x2="206" y2="498" class="sq-alt"/>
+          <line x1="326" y1="498" x2="226" y2="498" class="sq-alt"/>
+          <polygon points="218,498 230,493 230,503" class="sq-alt-head"/>
+          <text x="216" y="492" text-anchor="middle" class="sq-label">Disclosure interrupted before it was heard</text>
+          <g class="sq-out is-deny"><rect x="452" y="478" width="300" height="38" rx="6"/></g>
+          <text x="466" y="494" class="sq-out-key">action:</text><text x="520" y="494" class="sq-out-val">DISCLOSE_IDENTITY</text>
+          <text x="466" y="509" class="sq-out-key">reason_code:</text><text x="548" y="509" class="sq-out-val">IDG01_DISCLOSURE_INTERRUPTED</text>
+
+          <!-- ATR-01: the band every turn is written to -->
+          <g class="sq-audit"><rect x="8" y="540" width="864" height="44" rx="8"/></g>
+          <text x="24" y="558" class="sq-audit-label">ATR-01 &#183; AUDIT TRAIL REQUIREMENTS</text>
+          <text x="24" y="574" class="sq-audit-note">Every turn above, before and after the gate, is written to the audit trail. Records what the other four decided. Changes no behavior.</text>
         </svg>
       </figure>
 
@@ -639,6 +631,7 @@
         <li>The engine returns a <code>PolicyDecision</code>: <code>CONTINUE_AI</code>, reason code <code>IDG01_DISCLOSURE_CONFIRMED</code>.</li>
         <li>Only then does the interaction cross the disclosure gate. The NPI is supplied and the administrative exchange proceeds.</li>
       </ol>
+      <p>Two branches are drawn beneath the gate for the cases where it does not clear: a request for protected data before any disclosure (<code>DENY_DATA</code>, <code>PDX01_PHI_GATE_TRIGGERED</code>) and a disclosure the representative interrupted before it was heard (<code>DISCLOSE_IDENTITY</code>, <code>IDG01_DISCLOSURE_INTERRUPTED</code>). ATR-01 runs beneath all of it and records every turn without changing any of them.</p>
 
       <p class="disclaimer-small" style="margin-top:.85rem"><span class="maturity-reference">Reference</span> Conceptual model of the control in a standard workflow, drawn in the site&#8217;s own diagram system. It is not a recording of a specific call &mdash; for engine output replayed from real corpus scenarios, see the Trust Gateway above.</p>
         </div>
@@ -651,7 +644,7 @@
             <h2 id="decisions-h">How five decisions become one</h2>
           <p class="act-lead">Every control evaluates the same turn; the most restrictive result wins.</p>
           </div>
-          <span class="act-index">07 / 14</span>
+          <span class="act-index">06 / 13</span>
         </div>
         <div class="act-body">
 
@@ -763,7 +756,7 @@
             <p class="section-kicker">Rationale</p>
             <h2 id="why-five-h">Why these five</h2>
           </div>
-          <span class="act-index">08 / 14</span>
+          <span class="act-index">07 / 13</span>
         </div>
         <div class="act-body">
 
@@ -778,7 +771,7 @@
             <p class="section-kicker">Boundary</p>
             <h2 id="scope-h">Scope</h2>
           </div>
-          <span class="act-index">09 / 14</span>
+          <span class="act-index">08 / 13</span>
         </div>
         <div class="act-body">
 
@@ -792,7 +785,7 @@
             <p class="section-kicker">Boundary</p>
             <h2 id="what-this-is-not-h">What this is not</h2>
           </div>
-          <span class="act-index">10 / 14</span>
+          <span class="act-index">09 / 13</span>
         </div>
         <div class="act-body">
 
@@ -807,7 +800,7 @@
             <h2 id="known-gaps-h">Known gaps (v1.3)</h2>
           <p class="act-lead">Observable behavior, not caller authorization.</p>
           </div>
-          <span class="act-index">11 / 14</span>
+          <span class="act-index">10 / 13</span>
         </div>
         <div class="act-body">
 
@@ -825,7 +818,7 @@
             <h2 id="document-family-h">Document family</h2>
           <p class="act-lead">Where this document sits beside its companions.</p>
           </div>
-          <span class="act-index">12 / 14</span>
+          <span class="act-index">11 / 13</span>
         </div>
         <div class="act-body">
 
@@ -854,7 +847,7 @@
           <h2 id="controls-h">The five controls in detail</h2>
           <p class="act-lead">Each control is observable on a real call, checkable against a machine-readable trace, and produces the same verdict for the same inputs every time.</p>
         </div>
-        <span class="act-index">13 / 14</span>
+        <span class="act-index">12 / 13</span>
       </div>
       <div class="note" role="note" data-label="Index" style="margin:0 0 1.25rem">
         <p>This section is the navigable index. The normative control text — including RFC 2119 language and the exact conditions of conformance — is the specification above. Where this index and the specification differ, the specification governs.</p>
@@ -952,7 +945,7 @@
           <h2 id="dlg-h">Delegated Authority (DLG-01)</h2>
           <p class="act-lead">A signed delegation that constrains the data boundary, off unless a deployment turns it on.</p>
         </div>
-        <span class="act-index">14 / 14</span>
+        <span class="act-index">13 / 13</span>
       </div>
       <div class="act-body">
         <p>An agent asserting it acts for a provider organization can present a cryptographically signed delegation naming that organization&rsquo;s NPI, the scope it grants, and when it expires. When a deployment opts in, the engine verifies the signatures, expiry, revocation and call binding, and refuses any delegation whose scope widens across a sub-delegation. The verified scope then constrains the data boundary: a delegation for eligibility does not authorize requesting a claim number.</p>
