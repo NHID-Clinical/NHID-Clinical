@@ -47,6 +47,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# `sam build` looks for template.yaml in the current directory. The script was
+# run from scripts\ once (2026-10-25) and failed with "Template file not found",
+# so it now anchors itself to the repository root wherever it is invoked from.
+Set-Location (Split-Path $PSScriptRoot -Parent)
+
 # --- Prerequisite checks -----------------------------------------------------
 # `make` was missing on this machine, so the SAM/AWS CLIs may be too. Fail early
 # with actionable guidance instead of a cryptic command-not-found mid-deploy.

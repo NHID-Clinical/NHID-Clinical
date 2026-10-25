@@ -102,9 +102,9 @@
 .page-heading {
   font-family: var(--sans);
   font-weight: 700;
-  font-size: clamp(2rem, 3.2vw, 3.25rem);
-  line-height: 1.08;
-  letter-spacing: -0.018em;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
   text-wrap: balance;
   color: var(--panel-text-strong);
   margin: 0;
@@ -307,7 +307,7 @@ code.data-text {
   /* Brand gradient, consistent with the nav CTA (.primary-pill) and the brand
      marks. Fixed deep brand hues (not theme-swapped) so white text keeps AA
      contrast in both light and dark. */
-  background: linear-gradient(135deg, #0b6ebc 0%, #14778f 100%);
+  background: #0b6ebc;
   color: #ffffff;
   box-shadow: 0 10px 24px rgba(13, 108, 166, 0.22);
 }
@@ -600,7 +600,7 @@ button.action-button:focus-visible,
 .phase-state-title { font-weight: 700; color: var(--panel-text-strong); margin: 0 0 0.35rem; }
 
 .skeleton {
-  background: linear-gradient(90deg, var(--panel-mist), var(--panel-canvas), var(--panel-mist));
+  background: var(--panel-mist);
   border-radius: var(--radius);
   height: 0.9rem;
   margin-block: 0.4rem;
@@ -1085,7 +1085,7 @@ caption.visually-hidden {
   margin: 1.75rem 0 0;
   padding: 1.5rem 1.25rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--paper);
   min-width: 0;
   overflow-x: auto;
@@ -1195,7 +1195,7 @@ caption.visually-hidden {
   margin: 1.75rem 0 0;
   padding: 1.5rem 1.25rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--paper);
   min-width: 0;
   overflow-x: auto;
@@ -1325,7 +1325,7 @@ caption.visually-hidden {
   margin: 1.5rem 0 0;
   padding: 1.5rem 1.25rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--paper);
   min-width: 0;
   overflow-x: auto;
@@ -1387,7 +1387,7 @@ caption.visually-hidden {
   margin: 1.25rem 0 2rem;
   padding: 1.5rem 1.25rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--paper);
   min-width: 0;
   overflow-x: auto;
@@ -1451,7 +1451,7 @@ caption.visually-hidden {
   margin: 1.25rem 0 2rem;
   padding: 1.5rem 1.25rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--paper);
   min-width: 0;
   overflow-x: auto;
@@ -1506,7 +1506,7 @@ caption.visually-hidden {
   margin: 1.5rem 0 0;
   padding: 1.25rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--paper);
   min-width: 0;
 }
@@ -1742,7 +1742,7 @@ caption.visually-hidden {
   margin: 1.75rem 0 0;
   padding: 1.5rem 1.25rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--paper);
   min-width: 0;
   overflow-x: auto;
@@ -1866,7 +1866,7 @@ caption.visually-hidden {
   margin: 1.75rem 0 0;
   padding: 1.5rem 1.25rem;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--paper);
   min-width: 0;
   overflow-x: auto;
@@ -2243,3 +2243,48 @@ caption.visually-hidden {
 }
 .imp-steps li { margin-bottom: .4rem; }
 .imp-steps code { font-family: var(--mono); font-size: .85em; }
+
+/* ── Control card ───────────────────────────────────────────────────────────
+   One control, four facts: the ID as a mono chip, the canonical name, the rule
+   in one line, and what the control does NOT cover in one line. The last row
+   is part of the component, not an afterthought: a control described without
+   its boundary reads as a guarantee (docs/claim-boundaries.md). Markup:
+
+     <article class="control-card">
+       <span class="control-card-id">PDX-01</span>
+       <h3 class="control-card-name">Pre-Disclosure PHI Exchange Gate</h3>
+       <p class="control-card-rule">…one sentence…</p>
+       <p class="control-card-not"><span>Does not cover</span> …one sentence…</p>
+     </article>                                                             */
+.control-card {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  padding: 1.25rem 1.25rem 1.125rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  min-width: 0;
+}
+.control-card-id {
+  display: inline-flex; align-items: center; align-self: flex-start;
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--teal);
+  background: var(--mist);
+}
+.control-card-name { margin: 0.125rem 0 0; font-size: 1.0625rem; line-height: 1.3; color: var(--ink); }
+.control-card-rule { margin: 0; font-size: 0.9375rem; line-height: 1.6; color: var(--ink-soft); }
+.control-card-not {
+  margin: 0.25rem 0 0; padding-top: 0.625rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.875rem; line-height: 1.55; color: var(--body);
+}
+.control-card-not > span {
+  font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--body); margin-right: 0.375rem;
+}
+[data-theme="dark"] .control-card { background: var(--surface); }

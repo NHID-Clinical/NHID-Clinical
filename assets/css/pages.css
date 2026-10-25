@@ -85,7 +85,7 @@
 .page-doc .inner-hero h1,
 .page-doc .inner-hero .page-heading {
   font-family: var(--display); font-weight: 800;
-  font-size: clamp(2.1rem, 4.2vw, 3.4rem); line-height: 1.04; letter-spacing: -.03em;
+  font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.02; letter-spacing: -.035em;
   color: var(--inst-text-strong); margin: 0; max-width: 18ch; text-wrap: balance;
 }
 .page-doc .inner-hero .lede,
@@ -128,7 +128,7 @@
 /* The instrument card on the right of a hero */
 .page-doc .hero-instrument-card,
 .page-doc .inner-hero .hero-summary-card {
-  min-width: 0; padding: 1.25rem 1.3rem 1.35rem; border: 1px solid var(--inst-line); border-radius: 12px;
+  min-width: 0; padding: 1.25rem 1.3rem 1.35rem; border: 1px solid var(--inst-line); border-radius: var(--radius);
   background: var(--inst-ink-2); color: var(--inst-text);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 18px 40px -24px rgba(0,0,0,.7);
 }
@@ -202,7 +202,7 @@
 .page-doc .doc-body > .act + .act { margin-top: clamp(2.5rem, 5vw, 4rem); padding-top: clamp(2.5rem, 5vw, 4rem); border-top: 1px solid var(--line); }
 @media (max-width: 1060px) {
   .page-doc .doc { grid-template-columns: 1fr; gap: 1.5rem; }
-  .page-doc .doc-rail { position: static; max-height: none; border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; background: var(--mist); }
+  .page-doc .doc-rail { position: static; max-height: none; border: 1px solid var(--line); border-radius: var(--radius); padding: .9rem 1rem; background: var(--mist); }
   .page-doc .doc-rail ol { grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: .1rem .75rem; }
   .page-doc .doc-rail a:hover, .page-doc .doc-rail a.is-current { background: var(--paper); }
 }
@@ -258,7 +258,7 @@
 .page-doc .band-ink .note::before, .page-doc .band-ink .hero-notice::before { color: var(--inst-teal-bright); border-color: var(--inst-teal); }
 
 /* ── Registers: every table ────────────────────────────────────────────────── */
-.page-doc .register { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); box-shadow: var(--soft-shadow); }
+.page-doc .register { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); box-shadow: var(--soft-shadow); }
 .page-doc .register table,
 .page-doc .act-body > table,
 .page-doc .doc-body > table { width: 100%; border-collapse: collapse; font-size: .9rem; }
@@ -293,7 +293,7 @@
 @media (max-width: 900px) {
   .page-doc .register.restack { border: 0; border-radius: 0; background: transparent; overflow: visible; }
   .page-doc .register.restack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-  .page-doc .register.restack tr { display: block; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); padding: .35rem 0; }
+  .page-doc .register.restack tr { display: block; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); padding: .35rem 0; }
   .page-doc .register.restack tr + tr { margin-top: .75rem; }
   .page-doc .register.restack th, .page-doc .register.restack td { display: block; border-top: 0; padding: .4rem .95rem; }
   .page-doc .register.restack td[data-label]::before {
@@ -305,7 +305,7 @@
 /* ── Stat tiles (light): a measured value, its label, and where it came from ── */
 .page-doc .stat-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: .9rem; }
 .page-doc .stat-tile {
-  padding: 1.05rem 1.15rem 1.1rem; border: 1px solid var(--line); border-radius: 14px; background: var(--paper);
+  padding: 1.05rem 1.15rem 1.1rem; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper);
   box-shadow: var(--soft-shadow); min-width: 0; display: grid; gap: .3rem; align-content: start;
 }
 .page-doc .stat-tile .stat-label { font-family: var(--mono); font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--body); }
@@ -317,7 +317,7 @@
 .page-doc .stat-tile .stat-delta.is-flat { color: var(--body); }
 
 /* ── Ledgers: numbered lists of parts ──────────────────────────────────────── */
-.page-doc .ledger-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); overflow: hidden; box-shadow: var(--soft-shadow); }
+.page-doc .ledger-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); overflow: hidden; box-shadow: var(--soft-shadow); }
 .page-doc .ledger-list > li { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 1rem 1.25rem; padding: 1.1rem 1.25rem; min-width: 0; }
 .page-doc .ledger-list > li + li { border-top: 1px solid var(--line); }
 .page-doc .ledger-list > li > .ledger-index { font-family: var(--mono); font-size: .78rem; letter-spacing: .06em; color: var(--teal); padding-top: .2rem; }
@@ -340,7 +340,7 @@
 }
 .page-doc .content-card, .page-doc .download-card, .page-doc .faq-item, .page-doc .pilot-card,
 .page-doc .guarantee-card, .page-doc .page-cta-card, .page-doc .card {
-  padding: 1.35rem 1.45rem; border: 1px solid var(--line); border-radius: 14px; background: var(--paper);
+  padding: 1.35rem 1.45rem; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper);
   box-shadow: var(--soft-shadow); transform: none; min-width: 0;
   transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
 }
@@ -368,7 +368,7 @@
 .page-doc .band-ink .card-meta b { color: var(--inst-teal-bright); }
 
 /* FAQ as a ledger of questions */
-.page-doc .faq-ledger { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); overflow: hidden; box-shadow: var(--soft-shadow); }
+.page-doc .faq-ledger { display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); overflow: hidden; box-shadow: var(--soft-shadow); }
 .page-doc .faq-ledger .faq-item { border: 0; border-radius: 0; padding: 1.35rem 1.5rem; display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); gap: .5rem 1.25rem; }
 .page-doc .faq-ledger .faq-item + .faq-item { border-top: 1px solid var(--line); }
 .page-doc .faq-ledger .faq-index { font-family: var(--mono); font-size: .78rem; letter-spacing: .06em; color: var(--teal); padding-top: .3rem; }
@@ -380,7 +380,7 @@
 
 /* ── Consoles: every code block ────────────────────────────────────────────── */
 .page-doc pre, .page-doc .console {
-  margin: 1rem 0 0; padding: 1rem 1.1rem; border: 1px solid var(--inst-line); border-radius: 10px;
+  margin: 1rem 0 0; padding: 1rem 1.1rem; border: 1px solid var(--inst-line); border-radius: var(--radius);
   background: var(--inst-ink-2); color: #cfe2f7; font-family: var(--mono); font-size: .8rem; line-height: 1.7;
   overflow-x: auto; white-space: pre; tab-size: 2; max-width: 100%;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
@@ -389,7 +389,7 @@
 .page-doc pre code { background: transparent; padding: 0; color: inherit; font-size: inherit; font-family: inherit; border: 0; }
 .page-doc .console-bar {
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; align-items: center;
-  margin: 1rem 0 0; padding: .5rem .9rem; border: 1px solid var(--inst-line); border-bottom: 0; border-radius: 10px 10px 0 0;
+  margin: 1rem 0 0; padding: .5rem .9rem; border: 1px solid var(--inst-line); border-bottom: 0; border-radius: var(--radius) 10px 0 0;
   background: var(--inst-ink); font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--inst-text-muted);
 }
 .page-doc .console-bar b { color: var(--inst-teal-bright); font-weight: 600; }
@@ -423,7 +423,7 @@
 
 /* ── Forms (sms-opt-in) ────────────────────────────────────────────────────── */
 .page-doc .instrument-form {
-  border: 1px solid var(--line); border-radius: 12px; background: var(--paper); padding: 1.5rem 1.6rem 1.6rem; max-width: 40rem;
+  border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); padding: 1.5rem 1.6rem 1.6rem; max-width: 40rem;
 }
 .page-doc .instrument-form h2 { font-size: 1.25rem; margin: 0 0 .35rem; }
 .page-doc .instrument-form .form-note { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; color: var(--body); margin: 0 0 1.1rem; }
@@ -436,7 +436,7 @@
 /* ── Closing: the page ends on ink ─────────────────────────────────────────── */
 .page-doc .page-close { padding-block: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 3vw, 2.5rem); border-bottom: 0; }
 .page-doc .page-close .closing-panel {
-  min-height: 0; padding: clamp(1.5rem, 3.5vw, 2.5rem); border-radius: 14px; box-shadow: none;
+  min-height: 0; padding: clamp(1.5rem, 3.5vw, 2.5rem); border-radius: var(--radius-lg); box-shadow: none;
   background: var(--inst-ink-2); border: 1px solid var(--inst-line); align-items: center;
 }
 .page-doc .page-close .closing-panel::after { display: none; }
@@ -448,7 +448,7 @@
 .page-doc .page-close .page-cta { border-top: 0; padding: clamp(2rem, 4vw, 3rem) 0 0; }
 .page-doc .page-close .page-cta h2, .page-doc .page-close .page-cta h3 { color: var(--inst-text-strong); font-size: 1.2rem; margin: 0 0 .3rem; }
 .page-doc .page-close .page-cta > .container > p, .page-doc .page-close .page-cta p { color: var(--inst-text); }
-.page-doc .page-close .page-cta-card { background: var(--inst-ink-2); border-color: var(--inst-line); color: var(--inst-text-strong); border-radius: 10px; }
+.page-doc .page-close .page-cta-card { background: var(--inst-ink-2); border-color: var(--inst-line); color: var(--inst-text-strong); border-radius: var(--radius); }
 .page-doc .page-close .page-cta-card:hover { border-color: var(--inst-teal); }
 .page-doc .page-close .page-cta-card span { color: var(--inst-text); }
 .page-doc .page-close .page-cta-card .arr { color: var(--inst-teal-bright); }
@@ -476,7 +476,7 @@
 /* ── Ink panel: an instrument surface inside a light document ──────────────── */
 .page-doc .ink-panel {
   position: relative; overflow: clip; margin: 1.25rem 0 0; padding: 1.35rem 1.4rem 1.5rem;
-  border: 1px solid var(--inst-line); border-radius: 14px; background: var(--inst-ink); color: var(--inst-text);
+  border: 1px solid var(--inst-line); border-radius: var(--radius-lg); background: var(--inst-ink); color: var(--inst-text);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 24px 48px -32px rgba(0,0,0,.7);
 }
 .page-doc .ink-panel::before {
@@ -513,7 +513,7 @@
 .page-doc .ink-panel .tg-scenario + .tg-scenario { border-top-color: var(--inst-line); }
 .page-doc .ink-panel .tg-scenario-title { color: var(--inst-text-strong); }
 .page-doc .ink-panel .tg-scenario-note { color: var(--inst-text); }
-.page-doc .ink-panel .tg-turn { background: var(--inst-ink-2); border: 1px solid var(--inst-line); border-radius: 10px; }
+.page-doc .ink-panel .tg-turn { background: var(--inst-ink-2); border: 1px solid var(--inst-line); border-radius: var(--radius); }
 .page-doc .ink-panel .tg-turn-no { color: var(--inst-teal-bright); font-family: var(--mono); font-weight: 500; }
 .page-doc .ink-panel .tg-said q { color: var(--inst-text-strong); }
 .page-doc .ink-panel .tg-reason { color: #cfe2f7; font-family: var(--mono); }
@@ -530,13 +530,13 @@
 
 /* Feature cards and pass/fail boxes join the unified card language */
 .page-doc .feature-grid { gap: 1rem; }
-.page-doc .feature-card { padding: 1.35rem 1.45rem; border-radius: 14px; box-shadow: var(--soft-shadow); }
+.page-doc .feature-card { padding: 1.35rem 1.45rem; border-radius: var(--radius-lg); box-shadow: var(--soft-shadow); }
 .page-doc .feature-card:hover { transform: translateY(-2px); box-shadow: var(--soft-shadow-hover); border-color: rgba(20,119,143,.45); }
 .page-doc .feature-card .code { font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .1em; color: var(--teal); padding: .18rem .45rem; border: 1px solid var(--line); border-radius: 4px; background: var(--mist); }
 .page-doc .feature-ico { margin-bottom: .8rem; }
 .page-doc .feature-ico svg { color: var(--teal); }
 .page-doc .pass-fail { gap: .9rem; }
-.page-doc .pass-box, .page-doc .fail-box { padding: .95rem 1.05rem; border-radius: 10px; background: var(--mist); border: 1px solid var(--line); }
+.page-doc .pass-box, .page-doc .fail-box { padding: .95rem 1.05rem; border-radius: var(--radius); background: var(--mist); border: 1px solid var(--line); }
 .page-doc .pass-box { border-left: 2px solid var(--teal); }
 .page-doc .fail-box { border-left: 2px solid #b4423a; }
 .page-doc .pass-box strong, .page-doc .fail-box strong { font-family: var(--mono); font-weight: 600; font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .5rem; }
@@ -561,21 +561,21 @@
 
 /* ── Script examples: two columns, good beside problematic ─────────────────── */
 .page-doc .script-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
-.page-doc .script-column { min-width: 0; padding: 1.35rem 1.45rem; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); box-shadow: var(--soft-shadow); }
+.page-doc .script-column { min-width: 0; padding: 1.35rem 1.45rem; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); box-shadow: var(--soft-shadow); }
 .page-doc .script-column > .section-kicker { margin: 0 0 .35rem; font-size: .7rem; letter-spacing: .14em; }
 .page-doc .script-column > h3 { margin: 0 0 .5rem; }
 .page-doc .script-column > p { font-size: .92rem; margin: 0 0 1rem; }
 .page-doc .script-example-block { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); }
 .page-doc .script-example-block h4 { margin: 0 0 .5rem; font-family: var(--mono); font-weight: 500; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--body); }
 .page-doc .script-note { font-size: .84rem; color: var(--body); margin: .5rem 0 0; line-height: 1.6; }
-.page-doc .script-quote { border-radius: 10px; }
+.page-doc .script-quote { border-radius: var(--radius); }
 @media (max-width: 900px) { .page-doc .script-columns { grid-template-columns: 1fr; } }
 
 /* ── Demo line on ink ──────────────────────────────────────────────────────── */
 .page-doc .demo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
 .page-doc .demo-grid > * + * { margin-top: 0; }
 @media (max-width: 1000px) { .page-doc .demo-grid { grid-template-columns: 1fr; } }
-.page-doc .band-ink .card { background: var(--inst-ink-2); border: 1px solid var(--inst-line); border-radius: 14px; padding: 1.35rem 1.45rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); min-width: 0; }
+.page-doc .band-ink .card { background: var(--inst-ink-2); border: 1px solid var(--inst-line); border-radius: var(--radius-lg); padding: 1.35rem 1.45rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); min-width: 0; }
 .page-doc .band-ink .card h3 { margin: 0 0 .5rem; font-size: 1.05rem; color: var(--inst-text-strong); }
 .page-doc .band-ink .card .sub { color: var(--inst-text); font-size: .9rem; margin: 0 0 .9rem; }
 .page-doc .band-ink .card p { color: var(--inst-text); font-size: .9rem; }
@@ -598,7 +598,7 @@
 .page-doc .act-body > h3 .sub-index { color: var(--teal); }
 
 /* ── Developers: readout frame, interoperability cases ─────────────────────── */
-.page-doc .readout-frame { border: 1px solid var(--inst-line); border-radius: 12px; overflow: hidden; background: var(--inst-ink-2); box-shadow: var(--soft-shadow); margin-top: 1rem; }
+.page-doc .readout-frame { border: 1px solid var(--inst-line); border-radius: var(--radius); overflow: hidden; background: var(--inst-ink-2); box-shadow: var(--soft-shadow); margin-top: 1rem; }
 .page-doc .readout-frame iframe { display: block; width: 100%; border: 0; }
 .page-doc .case-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
 .page-doc .case { min-width: 0; }
@@ -612,17 +612,17 @@
 .page-doc .ledger-list .ledger-meta code { background: var(--mist); border: 1px solid var(--line); padding: .08em .4em; border-radius: 4px; font-size: .78rem; color: var(--ink); overflow-wrap: anywhere; }
 .page-doc .ledger-list h3 .state-chip { margin-left: .5rem; vertical-align: .15em; font-size: .62rem; }
 .page-doc .module-grid { margin-top: 1rem; }
-.page-doc .module-card { border-radius: 14px; box-shadow: var(--soft-shadow); }
+.page-doc .module-card { border-radius: var(--radius-lg); box-shadow: var(--soft-shadow); }
 .page-doc .module-card .module-num { font-family: var(--mono); letter-spacing: .12em; color: var(--teal); }
 
 /* ── Evidence pack: trace highlight, scorecard, console panel ──────────────── */
 .page-doc pre .trace-violation { display: block; background: rgba(255,170,164,.08); border-left: 2px solid var(--inst-red); border-right: 2px solid var(--inst-red); padding: .1rem .5rem; margin: 0 -.5rem; }
 .page-doc .register .row-name { font-weight: 500; color: var(--ink-soft); margin-left: .35rem; }
-.page-doc .sc-wrap { border: 1px solid var(--line); border-radius: 14px; background: var(--paper); box-shadow: var(--soft-shadow); margin-top: 1rem; }
+.page-doc .sc-wrap { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper); box-shadow: var(--soft-shadow); margin-top: 1rem; }
 .page-doc .scorecard-table { border: 0; }
 .page-doc .scorecard-table caption { padding: .9rem 1rem .5rem; text-align: left; font-size: .85rem; color: var(--body); }
 .page-doc .scorecard-table thead th { font-family: var(--mono); font-weight: 500; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--body); background: var(--mist); }
-.page-doc .console-panel { border-radius: 14px; overflow: hidden; border: 1px solid var(--inst-line); background: var(--inst-ink-2); box-shadow: var(--soft-shadow); margin-top: 1rem; }
+.page-doc .console-panel { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--inst-line); background: var(--inst-ink-2); box-shadow: var(--soft-shadow); margin-top: 1rem; }
 .page-doc .console-panel .console-bar { margin: 0; border: 0; border-bottom: 1px solid var(--inst-line); border-radius: 0; background: var(--inst-ink); justify-content: flex-start; }
 .page-doc .console-panel .console-title { color: #cfe2f7; text-transform: none; letter-spacing: 0; margin-left: .5rem; }
 .page-doc .console-panel .mock-dot { background: var(--inst-line-strong); }
@@ -640,3 +640,41 @@
 .page-doc .check-strip .verb { color: var(--inst-teal-bright); }
 .page-doc .maturity { vertical-align: .1em; }
 .page-doc .register .maturity { font-size: .62rem; }
+
+/* ── Contents fold and the short version ───────────────────────────────────
+   The section rail is a <details> so a phone gets a "Contents" fold instead of
+   a full list before the first paragraph. Desktop keeps it open and hides the
+   marker; site.js closes it under 1060px on load. Without JavaScript the
+   `open` attribute in the markup keeps it visible everywhere.                  */
+.page-doc .doc-rail-fold { margin: 0; }
+.page-doc .doc-rail-fold > summary { list-style: none; cursor: default; display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.page-doc .doc-rail-fold > summary::-webkit-details-marker { display: none; }
+.page-doc .doc-rail-fold > summary::after {
+  content: ""; width: .5rem; height: .5rem; flex: none;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px); opacity: 0; transition: transform 200ms ease;
+}
+@media (max-width: 1060px) {
+  .page-doc .doc-rail-fold > summary { cursor: pointer; }
+  .page-doc .doc-rail-fold > summary::after { opacity: .7; }
+  .page-doc .doc-rail-fold[open] > summary::after { transform: rotate(225deg) translateY(-2px); }
+  .page-doc .doc-rail-fold:not([open]) > summary { margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
+}
+
+/* The short version: two or three sentences a reader can take instead of the
+   page. Plain words, no counts, no promises the page does not make. */
+.page-doc .tldr {
+  max-width: var(--measure);
+  margin: 0 0 2rem;
+  padding: 1.125rem 1.25rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--radius);
+  background: var(--mist);
+}
+.page-doc .tldr-label {
+  display: block; margin: 0 0 .5rem;
+  font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--teal);
+}
+.page-doc .tldr p { margin: 0; font-size: 1rem; line-height: 1.65; color: var(--ink-soft); max-width: none; }
+.page-doc .tldr p + p { margin-top: .5rem; }

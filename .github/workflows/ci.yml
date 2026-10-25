@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 1963 passed, 0 skipped, 0 xfailed"
+    name: "Unit invariant: 1976 passed, 0 skipped, 0 xfailed"
     runs-on: ubuntu-latest
 
     steps:
@@ -109,6 +109,11 @@ jobs:
       # Nine pages carrying a generated arc cannot be kept in order by hand.
       - name: Journey wayfinder is current
         run: python scripts/add_journey_wayfinder.py --check
+
+      # Header, drawer and footer are one generated block on twelve pages. The
+      # footer had drifted into six variants before this existed.
+      - name: Shared header, drawer and footer are current
+        run: python scripts/ia/build_site_chrome.py --check
 
   # The suite had only ever executed on Ubuntu / Python 3.11. The first run on
   # Windows / Python 3.14 (a contributor's laptop, 2026-10-25) failed 21 tests:
