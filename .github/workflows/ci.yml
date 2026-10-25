@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 1983 passed, 0 skipped, 0 xfailed"
+    name: "Unit invariant: 1992 passed, 0 skipped, 0 xfailed"
     runs-on: ubuntu-latest
 
     steps:
@@ -114,6 +114,11 @@ jobs:
       # footer had drifted into six variants before this existed.
       - name: Shared header, drawer and footer are current
         run: python scripts/ia/build_site_chrome.py --check
+
+      # The Developers page shows one hosted-API request and its answer. The
+      # answer is recorded from the handler, never typed, and must still match.
+      - name: Developers page API sample is the handler's answer
+        run: python scripts/build_api_sample.py --check
 
   # The suite had only ever executed on Ubuntu / Python 3.11. The first run on
   # Windows / Python 3.14 (a contributor's laptop, 2026-10-25) failed 21 tests:

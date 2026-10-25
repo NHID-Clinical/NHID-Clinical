@@ -57,7 +57,7 @@
       "name": "Who created this?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Brianna Baynard , after working in healthcare payer operations and personally experiencing these calls from AI systems that presented as human. It is an individual volunteer effort, not backed by any organization or standards body."
+        "text": "Brianna Baynard, after working in healthcare payer operations and personally experiencing these calls from AI systems that presented as human. It is an individual volunteer effort, not backed by any organization or standards body."
       }
     },
     {
@@ -66,6 +66,38 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "No. Completely voluntary. Payers, providers, and vendors can choose to reference it, adapt it, or ignore it entirely."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this a certification?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. There is no certifying body, no accreditation and no badge. A pass on the conformance suite means your implementation produced the expected verdict on every published case and that someone else can reproduce the result from the same inputs. It does not mean anyone has certified you, and the implementation registry is a self-attestation list."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does using it make us compliant?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The controls are mapped to CMS-0057-F, the NIST AI RMF and other instruments, but mapping is not compliance and compliance is not certification. Nothing here confers HIPAA, TCPA or any other compliance status, and nothing on this site is legal advice. The mapping tells a compliance team which control produces which kind of evidence; the determination stays theirs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who has deployed it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No one. NHID-Clinical has no adopters, no customers, no completed pilots and no production deployments. The first step for any organization is an observe-only shadow evaluation on its own call traces, and we are looking for the first partners. When that changes it will be said here, with names."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it in the live call path?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not in a shadow evaluation. The engine evaluates call traces you already hold, after the fact; nothing is inserted into the call and no caller is blocked. A vendor may choose to run the same engine inside its own call path, and the hosted API exists for integration testing with synthetic data, but that is a deployment decision made by the deployer. This project operates nothing in anyone’s live traffic."
       }
     },
     {
@@ -97,7 +129,7 @@
       "name": "Why are NPIs a security risk in voice calls?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "NPIs are public identifiers. Anyone can find a provider's NPI in the NPPES registry and use it when calling a payer. Without a real-time authorization check, a caller can claim to be from that practice and request operational data — claim status, eligibility, authorization details — and the payer's system has no mechanism to refuse. NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just that they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes 1983 passing tests to ensure deterministic policy evaluation."
+        "text": "NPIs are public identifiers. Anyone can find a provider's NPI in the NPPES registry and use it when calling a payer. Without a real-time authorization check, a caller can claim to be from that practice and request operational data — claim status, eligibility, authorization details — and the payer's system has no mechanism to refuse. NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just that they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes 1992 passing tests to ensure deterministic policy evaluation."
       }
     },
     {
@@ -113,7 +145,7 @@
       "name": "What is the NIST connection?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security) in January 2026. Comment ID: NIST-2025-0035-0026 . This is a public comment — it does not imply NIST endorsement or recognition."
+        "text": "NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security) in January 2026. Comment ID: NIST-2025-0035-0026. This is a public comment — it does not imply NIST endorsement or recognition."
       }
     },
     {
@@ -121,7 +153,7 @@
       "name": "How can I give feedback or get involved?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Email: contact@nhid-clinical.org GitHub: github.com/NHID-Clinical/NHID-Clinical/discussions Real-world experience from payers and implementers is what this proposal most needs. Read the evaluation guide →"
+        "text": "Email: contact@nhid-clinical.org GitHub: github.com/NHID-Clinical/NHID-Clinical/discussions Real-world experience from payers and implementers is what this proposal most needs. Read the evaluation guide → The Discussions, Issues, the status labels and how to contribute are on the About page."
       }
     }
   ]
@@ -254,6 +286,10 @@
           <li><a href="#q-what-problem-does-it-address"><span>What problem does it address?</span></a></li>
           <li><a href="#q-who-created-this"><span>Who created this?</span></a></li>
           <li><a href="#q-is-this-mandatory"><span>Is this mandatory?</span></a></li>
+          <li><a href="#q-is-this-a-certification"><span>Is this a certification?</span></a></li>
+          <li><a href="#q-does-using-it-make-us-compliant"><span>Does using it make us compliant?</span></a></li>
+          <li><a href="#q-who-has-deployed-it"><span>Who has deployed it?</span></a></li>
+          <li><a href="#q-is-it-in-the-live-call-path"><span>Is it in the live call path?</span></a></li>
           <li><a href="#q-what-does-the-proposal-actually-suggest"><span>What does the proposal actually suggest?</span></a></li>
           <li><a href="#q-who-is-this-for"><span>Who is this for?</span></a></li>
           <li><a href="#q-how-is-this-different-from-hipaa-or-tcpa"><span>How is this different from HIPAA or TCPA?</span></a></li>
@@ -261,47 +297,65 @@
           <li><a href="#q-can-i-get-feedback-on-my-implementation"><span>Can I get feedback on my implementation?</span></a></li>
           <li><a href="#q-what-is-the-nist-connection"><span>What is the NIST connection?</span></a></li>
           <li><a href="#q-how-can-i-give-feedback-or-get-involved"><span>How can I give feedback or get involved?</span></a></li>
-          <li><a href="#community"><span>Community</span></a></li>
         </ol>
         </details>
       </nav>
       <div class="doc-body">
         <div class="faq-ledger faq-list">
-          <div class="faq-item" id="q-what-is-nhid-clinical">
-            <span class="faq-index">Q01</span>
+          <details class="faq-item" id="q-what-is-nhid-clinical">
+            <summary><span class="faq-index">Q01</span><h2 class="faq-q">What is NHID-Clinical?</h2></summary>
             <div>
-              <h2 class="faq-q">What is NHID-Clinical?</h2>
               <p>NHID-Clinical is a voluntary, practitioner-led open framework (v1.3) that addresses a specific problem in healthcare payer–provider voice workflows: AI voice agents that interact with payer staff without disclosing they are automated systems.</p>
           <p>It is <strong>not</strong> an official standard, certification program, or regulatory requirement. It is an independent, practitioner-led effort to name the problem and define a testable baseline for shared expectations.</p>
           <p>It also does <strong>not</strong> evaluate model fairness, clinical safety, or output quality — those remain separate governance responsibilities. See the <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/scope-boundary-fairness-clinical.md">scope boundary note</a> for what stays out of scope and how NHID-Clinical integrates underneath those programs.</p>
             </div>
-          </div>
-          <div class="faq-item" id="q-what-problem-does-it-address">
-            <span class="faq-index">Q02</span>
+          </details>
+          <details class="faq-item" id="q-what-problem-does-it-address">
+            <summary><span class="faq-index">Q02</span><h2 class="faq-q">What problem does it address?</h2></summary>
             <div>
-              <h2 class="faq-q">What problem does it address?</h2>
               <p><strong>Impersonation latency</strong> — the gap between when an AI voice agent begins a call and when the person on the other end realizes they are not speaking to a human.</p>
           <p>An AI calls as "Sarah from Dr. Smith's office," handles several minutes of normal workflow conversation, and only admits "I'm an automated system" when challenged. By then, sensitive operational data has already been exchanged — without clear consent or accountability.</p>
             </div>
-          </div>
-          <div class="faq-item" id="q-who-created-this">
-            <span class="faq-index">Q03</span>
+          </details>
+          <details class="faq-item" id="q-who-created-this">
+            <summary><span class="faq-index">Q03</span><h2 class="faq-q">Who created this?</h2></summary>
             <div>
-              <h2 class="faq-q">Who created this?</h2>
               <p><strong>Brianna Baynard</strong>, after working in healthcare payer operations and personally experiencing these calls from AI systems that presented as human. It is an individual volunteer effort, not backed by any organization or standards body.</p>
             </div>
-          </div>
-          <div class="faq-item" id="q-is-this-mandatory">
-            <span class="faq-index">Q04</span>
+          </details>
+          <details class="faq-item" id="q-is-this-mandatory">
+            <summary><span class="faq-index">Q04</span><h2 class="faq-q">Is this mandatory?</h2></summary>
             <div>
-              <h2 class="faq-q">Is this mandatory?</h2>
               <p>No. Completely voluntary. Payers, providers, and vendors can choose to reference it, adapt it, or ignore it entirely.</p>
             </div>
-          </div>
-          <div class="faq-item" id="q-what-does-the-proposal-actually-suggest">
-            <span class="faq-index">Q05</span>
+          </details>
+          <details class="faq-item" id="q-is-this-a-certification">
+            <summary><span class="faq-index">Q05</span><h2 class="faq-q">Is this a certification?</h2></summary>
             <div>
-              <h2 class="faq-q">What does the proposal actually suggest?</h2>
+              <p>No. There is no certifying body, no accreditation and no badge. A pass on the conformance suite means your implementation produced the expected verdict on every published case and that someone else can reproduce the result from the same inputs. It does not mean anyone has certified you, and the <a href="/developers.html#registry">implementation registry</a> is a self-attestation list.</p>
+            </div>
+          </details>
+          <details class="faq-item" id="q-does-using-it-make-us-compliant">
+            <summary><span class="faq-index">Q06</span><h2 class="faq-q">Does using it make us compliant?</h2></summary>
+            <div>
+              <p>No. The controls are <a href="/regulatory-alignment.html">mapped</a> to CMS-0057-F, the NIST AI RMF and other instruments, but mapping is not compliance and compliance is not certification. Nothing here confers HIPAA, TCPA or any other compliance status, and nothing on this site is legal advice. The mapping tells a compliance team which control produces which kind of evidence; the determination stays theirs.</p>
+            </div>
+          </details>
+          <details class="faq-item" id="q-who-has-deployed-it">
+            <summary><span class="faq-index">Q07</span><h2 class="faq-q">Who has deployed it?</h2></summary>
+            <div>
+              <p>No one. NHID-Clinical has no adopters, no customers, no completed pilots and no production deployments. The first step for any organization is an <a href="/shadow-evaluation-guide.html">observe-only shadow evaluation</a> on its own call traces, and we are looking for the first partners. When that changes it will be said here, with names.</p>
+            </div>
+          </details>
+          <details class="faq-item" id="q-is-it-in-the-live-call-path">
+            <summary><span class="faq-index">Q08</span><h2 class="faq-q">Is it in the live call path?</h2></summary>
+            <div>
+              <p>Not in a shadow evaluation. The engine evaluates call traces you already hold, after the fact; nothing is inserted into the call and no caller is blocked. A vendor may choose to run the same engine inside its own call path, and the hosted API exists for integration testing with synthetic data, but that is a deployment decision made by the deployer. This project operates nothing in anyone&rsquo;s live traffic.</p>
+            </div>
+          </details>
+          <details class="faq-item" id="q-what-does-the-proposal-actually-suggest">
+            <summary><span class="faq-index">Q09</span><h2 class="faq-q">What does the proposal actually suggest?</h2></summary>
+            <div>
               <p>Four behaviors for AI voice agents in B2B healthcare administrative calls:</p>
           <ul>
             <li>Identify as an automated system before any operational data is exchanged</li>
@@ -311,11 +365,10 @@
           </ul>
           <p>The full proposal document has detailed discussion of each. <a href="/specs/archive/NHID-Clinical-v1.3-Overview.pdf" download>Download the PDF →</a></p>
             </div>
-          </div>
-          <div class="faq-item" id="q-who-is-this-for">
-            <span class="faq-index">Q06</span>
+          </details>
+          <details class="faq-item" id="q-who-is-this-for">
+            <summary><span class="faq-index">Q10</span><h2 class="faq-q">Who is this for?</h2></summary>
             <div>
-              <h2 class="faq-q">Who is this for?</h2>
               <ul>
             <li>Payers receiving AI calls from providers or vendors</li>
             <li>Providers and vendors building AI voice agents</li>
@@ -323,97 +376,44 @@
           </ul>
           <p>It does <strong>not</strong> apply to patient-facing calls, internal tools, or clinical decision AI.</p>
             </div>
-          </div>
-          <div class="faq-item" id="q-how-is-this-different-from-hipaa-or-tcpa">
-            <span class="faq-index">Q07</span>
+          </details>
+          <details class="faq-item" id="q-how-is-this-different-from-hipaa-or-tcpa">
+            <summary><span class="faq-index">Q11</span><h2 class="faq-q">How is this different from HIPAA or TCPA?</h2></summary>
             <div>
-              <h2 class="faq-q">How is this different from HIPAA or TCPA?</h2>
               <p>Those regulations cover patient data privacy and consumer call consent. Neither specifically addresses the B2B scenario where an AI agent calls a payer office on behalf of a provider — which is where the impersonation latency problem actually occurs.</p>
           <p>This proposal is designed to address a gap, not replace existing rules.</p>
             </div>
-          </div>
-          <div class="faq-item" id="q-why-are-npis-a-security-risk-in-voice-ca">
-            <span class="faq-index">Q08</span>
+          </details>
+          <details class="faq-item" id="q-why-are-npis-a-security-risk-in-voice-ca">
+            <summary><span class="faq-index">Q12</span><h2 class="faq-q">Why are NPIs a security risk in voice calls?</h2></summary>
             <div>
-              <h2 class="faq-q">Why are NPIs a security risk in voice calls?</h2>
               <p>NPIs are public identifiers. Anyone can find a provider's NPI in the NPPES registry and use it when calling a payer. Without a real-time authorization check, a caller can claim to be from that practice and request operational data — claim status, eligibility, authorization details — and the payer's system has no mechanism to refuse.</p>
-          <p>NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just <em>that</em> they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes <strong>1983 passing tests</strong> to ensure deterministic policy evaluation.</p>
+          <p>NHID-Clinical v1.3 addresses the disclosure side: did the caller identify as an AI? v2 addresses the authorization side: is this AI actually delegated by the provider it claims to represent? The goal is that a payer can know not just <em>that</em> they're talking to an AI, but that the AI truly represents the provider it claims to. The reference implementation includes <strong>1992 passing tests</strong> to ensure deterministic policy evaluation.</p>
             </div>
-          </div>
-          <div class="faq-item" id="q-can-i-get-feedback-on-my-implementation">
-            <span class="faq-index">Q09</span>
+          </details>
+          <details class="faq-item" id="q-can-i-get-feedback-on-my-implementation">
+            <summary><span class="faq-index">Q13</span><h2 class="faq-q">Can I get feedback on my implementation?</h2></summary>
             <div>
-              <h2 class="faq-q">Can I get feedback on my implementation?</h2>
               <p>Informal peer feedback is available on a limited basis. Email <a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a> with your context. This is not certification or formal assessment.</p>
             </div>
-          </div>
-          <div class="faq-item" id="q-what-is-the-nist-connection">
-            <span class="faq-index">Q10</span>
+          </details>
+          <details class="faq-item" id="q-what-is-the-nist-connection">
+            <summary><span class="faq-index">Q14</span><h2 class="faq-q">What is the NIST connection?</h2></summary>
             <div>
-              <h2 class="faq-q">What is the NIST connection?</h2>
               <p>NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security) in January 2026. Comment ID: <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026" target="_blank" rel="noopener noreferrer">NIST-2025-0035-0026</a>. This is a public comment — it does not imply NIST endorsement or recognition.</p>
             </div>
-          </div>
-          <div class="faq-item" id="q-how-can-i-give-feedback-or-get-involved">
-            <span class="faq-index">Q11</span>
+          </details>
+          <details class="faq-item" id="q-how-can-i-give-feedback-or-get-involved">
+            <summary><span class="faq-index">Q15</span><h2 class="faq-q">How can I give feedback or get involved?</h2></summary>
             <div>
-              <h2 class="faq-q">How can I give feedback or get involved?</h2>
               <pre class="faq-code">Email:   contact@nhid-clinical.org
 GitHub:  github.com/NHID-Clinical/NHID-Clinical/discussions</pre>
           <p>Real-world experience from payers and implementers is what this proposal most needs.</p>
           <p><a href="/shadow-evaluation-guide.html">Read the evaluation guide →</a></p>
+          <p>The Discussions, Issues, the status labels and how to contribute are on <a href="/about.html#community">the About page</a>.</p>
             </div>
-          </div>
+          </details>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="page-section band-mist act" id="community" aria-labelledby="community-h">
-    <div class="container">
-        <div class="act-head">
-          <div>
-            <p class="section-kicker">Community</p>
-            <h2 id="community-h">Community</h2>
-            <p class="act-lead">NHID-Clinical is an open proposal, not a finished standard. The most useful thing you can do is tell us where it is wrong.</p>
-          </div>
-          <span class="act-index">12 / 12</span>
-        </div>
-      <div class="act-body">
-        <h3><span class="sub-index">A</span>Where the conversation happens</h3>
-        <p>Everything is public. There is no mailing list to join and nothing gated behind a form.</p>
-        <div class="card-grid">
-          <div class="card"><div class="card-meta"><b>GitHub</b><span>Discussions</span></div><h3>Discussions</h3><p>Open questions, disagreements about the controls, and "has anyone seen this in the wild" reports.</p><div class="card-foot"><a href="/shadow-evaluation-guide.html" target="_blank" rel="noopener noreferrer">Open Discussions &#x2197;</a></div></div>
-          <div class="card"><div class="card-meta"><b>GitHub</b><span>Issues</span></div><h3>Issues</h3><p>Specification defects, reference-implementation bugs, and concrete change proposals.</p><div class="card-foot"><a href="/shadow-evaluation-guide.html" target="_blank" rel="noopener noreferrer">Open Issues &#x2197;</a></div></div>
-        </div>
-        <h3><span class="sub-index">B</span>Run a shadow evaluation</h3>
-        <p>The single most valuable contribution is measurement against real traffic. A Tier&#8209;0 shadow evaluation is observe&#8209;only: nothing is enforced, no vendor changes are required, and you keep your own data. It is a 90&#8209;day engagement whose technical core is a 2&#8209;4 week measurement sprint using the <a href="https://github.com/NHID-Clinical/NHID-Clinical/tree/main/docs/pilot-kit" target="_blank" rel="noopener noreferrer">Shadow Pilot Kit</a>.</p>
-        <p>We are actively looking for the first partners. If that might be your organization, book a conversation &mdash; it is the fastest way to find out whether this is a fit.</p>
-        <p class="hero-actions" style="margin-top:1rem">
-          <a class="action-button action-button-primary" href="/shadow-evaluation-guide.html" target="_blank" rel="noopener noreferrer">Open a GitHub Discussion &rarr;</a>
-          <a class="action-button action-button-secondary" href="/shadow-evaluation-guide.html">Read the payer guide</a>
-        </p>
-        <h3><span class="sub-index">C</span>Contribute to the specification</h3>
-        <ul class="ledger-list">
-          <li><span class="ledger-index">01</span><div><h3>Challenge a control</h3><p>If IDG&#8209;01, PDX&#8209;01, DBC&#8209;01, EIT&#8209;01 or ATR&#8209;01 does not survive contact with your workflow, that is worth an Issue.</p></div></li>
-          <li><span class="ledger-index">02</span><div><h3>Bring counter-examples</h3><p>Call patterns the heuristics misclassify are more useful than agreement.</p></div></li>
-          <li><span class="ledger-index">03</span><div><h3>Port an adapter</h3><p>Six vendor adapters exist; a seventh for your platform is a self-contained contribution.</p></div></li>
-          <li><span class="ledger-index">04</span><div><h3>Review the claim boundaries</h3><p>If anything on this site overclaims, say so &mdash; see <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>.</p></div></li>
-        </ul>
-        <div class="note" role="note" data-label="Honest status">
-          <p>NHID-Clinical is a practitioner-led open proposal under CC BY 4.0. It is not an accredited standard, a certification program, or a regulatory requirement, and there is no external certification authority. Conformance testing is self-administered.</p>
-        </div>
-        <h3><span class="sub-index">D</span>How to read a status label</h3>
-        <p>Not everything here stands in the same place. A deterministic engine with a passing test suite and a registry that does not yet exist are both described on this site, and the difference matters more than any feature list. Six labels are used, and they mean exactly this:</p>
-        <ul class="maturity-legend">
-          <li><span class="maturity maturity-verified">Verified</span> <span>Measured evidence exists and the measurement can be re-run.</span></li>
-          <li><span class="maturity maturity-implemented">Implemented</span> <span>Code exists, runs, and the conformance suite covers it.</span></li>
-          <li><span class="maturity maturity-reference">Reference</span> <span>A working primitive, deliberately not deployed infrastructure.</span></li>
-          <li><span class="maturity maturity-conceptual">Conceptual</span> <span>A documented production path that has not been built.</span></li>
-          <li><span class="maturity maturity-research">Research</span> <span>A research component, explicitly not a product capability.</span></li>
-          <li><span class="maturity maturity-future">Future</span> <span>Does not exist. Named so it cannot be mistaken for shipped.</span></li>
-        </ul>
-        <p class="disclaimer-small">The labels are not marketing tiers. Each one corresponds to a standing recorded in <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>, and a test fails if the two ever disagree.</p>
       </div>
     </div>
   </section>

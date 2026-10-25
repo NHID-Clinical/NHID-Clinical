@@ -679,3 +679,59 @@
 }
 .page-doc .tldr p { margin: 0; font-size: 1rem; line-height: 1.65; color: var(--ink-soft); max-width: none; }
 .page-doc .tldr p + p { margin-top: .5rem; }
+
+/* ── PR 3b: bands, trace timeline, code tabs, FAQ fold, download cards ───── */
+.page-doc .doc-band { margin: 0 0 1.5rem; padding: 0 0 1rem; border-bottom: 2px solid var(--ink); }
+.page-doc .doc-body > .act + .doc-band { margin-top: clamp(3rem, 6vw, 5rem); }
+.page-doc .doc-band h2 { margin: .35rem 0 .35rem; font-size: clamp(1.75rem, 3vw, 2.25rem); letter-spacing: -.02em; }
+.page-doc .doc-band p:last-child { margin: 0; color: var(--body); max-width: var(--measure); }
+.page-doc .doc-rail-band { font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--body); padding: .75rem .5rem .25rem .6rem; }
+.page-doc .doc-rail-band:first-child { padding-top: 0; }
+.page-doc .doc-rail .is-sub a { padding-left: 1rem; }
+
+.page-doc .trace-timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; max-width: none; }
+.page-doc .trace-timeline > li { position: relative; display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: .5rem 1rem; padding: .875rem 0 .875rem 1.25rem; border-left: 2px solid var(--line); min-width: 0; }
+.page-doc .trace-timeline > li::before { content: ""; position: absolute; left: -.4rem; top: 1.1rem; width: .625rem; height: .625rem; border-radius: 999px; background: var(--paper); border: 2px solid var(--teal); }
+.page-doc .trace-timeline > li.is-violation { border-left-color: var(--inst-red, #c0392b); background: rgba(192, 57, 43, .04); }
+.page-doc .trace-timeline > li.is-violation::before { border-color: var(--inst-red, #c0392b); }
+.page-doc .trace-timeline time { font-family: var(--mono); font-size: .75rem; color: var(--body); padding-top: .15rem; }
+.page-doc .trace-timeline b { font-family: var(--mono); font-size: .75rem; letter-spacing: .08em; color: var(--ink); }
+.page-doc .trace-timeline b + span { display: block; margin-top: .125rem; font-size: .9rem; color: var(--ink-soft); }
+.page-doc .trace-timeline dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: .125rem .75rem; margin: .5rem 0 0; font-family: var(--mono); font-size: .72rem; }
+.page-doc .trace-timeline dt { color: var(--body); }
+.page-doc .trace-timeline dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+@media (max-width: 640px) { .page-doc .trace-timeline > li { grid-template-columns: 1fr; } }
+
+.page-doc .code-tabs { margin: 0 0 1.5rem; }
+.page-doc .code-panel > .console-bar + .console-bar, .page-doc .code-panel > pre + .console-bar { margin-top: 1rem; }
+html:not(.js) .code-tabs [role="tablist"] { display: none; }
+html:not(.js) .code-panel[hidden] { display: block; }
+.page-doc .live-panel { margin: 0 0 1.25rem; padding: 1.25rem 1.5rem 1.5rem; border: 1px solid var(--line); border-left: 3px solid var(--teal); border-radius: var(--radius); background: var(--mist); }
+.page-doc .live-panel h3 { margin: .25rem 0 .5rem; font-size: 1.2rem; }
+.page-doc .live-panel > p { max-width: var(--measure); }
+.page-doc .live-panel pre { max-height: 26rem; overflow: auto; }
+.page-doc .registry-empty { padding: 1rem 1.25rem; border: 1px dashed var(--line); border-radius: var(--radius); color: var(--ink-soft); }
+
+.page-doc .faq-ledger details.faq-item { display: block; padding: 0; }
+.page-doc .faq-ledger details.faq-item > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 3.5rem minmax(0, 1fr) 1.25rem; gap: .5rem 1.25rem; align-items: start; padding: 1.25rem 1.5rem; }
+.page-doc .faq-ledger details.faq-item > summary::-webkit-details-marker { display: none; }
+.page-doc .faq-ledger details.faq-item > summary::after { content: ""; width: .55rem; height: .55rem; margin-top: .5rem; justify-self: end; border-right: 1.5px solid var(--body); border-bottom: 1.5px solid var(--body); transform: rotate(45deg); transition: transform 200ms ease; }
+.page-doc .faq-ledger details.faq-item[open] > summary::after { transform: rotate(225deg); margin-top: .75rem; }
+.page-doc .faq-ledger details.faq-item > summary .faq-q { margin: 0; }
+.page-doc .faq-ledger details.faq-item > summary:hover .faq-q { color: var(--teal); }
+.page-doc .faq-ledger details.faq-item > summary:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
+.page-doc .faq-ledger details.faq-item > div { padding: 0 1.5rem 1.5rem 6.25rem; min-width: 0; }
+.page-doc .faq-ledger details.faq-item > div > :first-child { margin-top: 0; }
+@media (max-width: 640px) { .page-doc .faq-ledger details.faq-item > summary { grid-template-columns: minmax(0, 1fr) 1.25rem; } .page-doc .faq-ledger details.faq-item > summary .faq-index { display: none; } .page-doc .faq-ledger details.faq-item > div { padding: 0 1.1rem 1.25rem; } }
+
+.page-doc .dl-group { margin: 2rem 0 1rem; font-size: 1.3rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1rem; }
+.page-doc .dl-group:first-child { margin-top: 0; }
+.page-doc .dl-group small { font-size: .9rem; font-weight: 400; color: var(--body); }
+.page-doc .dl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: 1rem; }
+.page-doc .dl-card { display: flex; flex-direction: column; gap: .625rem; padding: 1.25rem 1.25rem 1.125rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: none; min-width: 0; }
+.page-doc .dl-card:hover { transform: none; box-shadow: var(--soft-shadow); }
+.page-doc .dl-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.page-doc .dl-card h4 { margin: 0; font-size: 1.05rem; line-height: 1.3; }
+.page-doc .dl-card > p { margin: 0; font-size: .9rem; color: var(--ink-soft); flex: 1; }
+.page-doc .dl-meta { display: flex; flex-wrap: wrap; gap: .25rem .75rem; font-family: var(--mono); font-size: .72rem; color: var(--body); }
+.page-doc .dl-card .download-link { font-weight: 600; }

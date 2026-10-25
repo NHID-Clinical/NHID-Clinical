@@ -1,0 +1,68 @@
+{
+  "generated_by": "scripts/build_api_sample.py",
+  "handler": "functions/handler.py :: lambda_handler",
+  "note": "Synthetic request; recorded response. No real call data and no PHI.",
+  "route": "/v1/adapters/vapi/check",
+  "request": {
+    "call": {
+      "id": "call_demo",
+      "startedAt": "2026-06-09T10:00:00Z"
+    },
+    "messages": [
+      {
+        "role": "bot",
+        "message": "Hi, can I get the member ID and NPI?",
+        "secondsFromStart": 0.3
+      },
+      {
+        "role": "user",
+        "message": "NPI is 1234567890.",
+        "secondsFromStart": 3.1
+      },
+      {
+        "role": "bot",
+        "message": "Thanks. I am an automated system.",
+        "secondsFromStart": 5.8
+      }
+    ]
+  },
+  "status": 200,
+  "response": {
+    "conformant": false,
+    "action": "DENY_DATA",
+    "reason_code": "PDX01_PHI_GATE_TRIGGERED",
+    "policy_version": "1.0.0",
+    "violations": [
+      {
+        "rule_id": "IDG-01",
+        "description": "AI agent has not disclosed non-human identity. Turn count: 3. ",
+        "severity": "critical"
+      },
+      {
+        "rule_id": "PDX-01",
+        "description": "PHI exchange attempted before identity disclosure. Speech PHI signal: True. PHI fields: none.",
+        "severity": "critical"
+      }
+    ],
+    "next_state": "GATE_BLOCKED",
+    "twiml_fallback": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Gather input=\"speech\" speechTimeout=\"auto\" action=\"/voice/process\">\n    <Say>Before we continue, I need to confirm: I am an automated system, not a human representative. Can you confirm you understand?</Say>\n  </Gather>\n</Response>",
+    "gather_speech": true,
+    "evidence_completeness": {
+      "present": 4,
+      "expected": 4,
+      "fraction": 1.0,
+      "fields": [
+        "event_id",
+        "timestamp",
+        "session_id",
+        "event_type"
+      ]
+    },
+    "human_review": {
+      "queued": false,
+      "trigger_reason": null,
+      "queue_id": null
+    },
+    "vendor": "vapi"
+  }
+}
