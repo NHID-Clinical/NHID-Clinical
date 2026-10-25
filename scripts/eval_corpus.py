@@ -287,7 +287,9 @@ def build_report(corpus_path, scenarios, stats, false_positives, unexpected,
         f"     Regenerate with: {regen_cmd}",
         f"     Verified in CI by: {check_cmd} -->",
         "",
-        f"**Corpus**: `{corpus_path}`  ",
+        # as_posix(): the report is committed and byte-compared; str(Path) is
+        # backslashed on Windows, which made the check report it as stale there.
+        f"**Corpus**: `{corpus_path.as_posix()}`  ",
         f"**Scenarios**: {len(scenarios)} ({len(clean)} compliant, "
         f"{len(scenarios) - len(clean)} declaring violations)  ",
         f"**Turns**: {n_turns}  ",

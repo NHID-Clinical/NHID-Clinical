@@ -33,7 +33,7 @@ def _guard():
 
 def test_guard_passes_on_the_current_tree():
     r = subprocess.run([sys.executable, str(GUARD)], cwd=ROOT,
-                       capture_output=True, text=True)
+                       capture_output=True, text=True, encoding="utf-8")
     assert r.returncode == 0, f"control-set guard failed:\n{r.stdout}\n{r.stderr}"
 
 
@@ -118,7 +118,10 @@ def test_the_fixture_is_the_real_pre_fix_file_when_history_is_available():
     """
     original = subprocess.run(
         ["git", "show", "ba93e21:specification.html"],
-        cwd=ROOT, capture_output=True, text=True,
+        # encoding: without it the bytes `git show` emits are decoded with the
+        # locale codec -- cp1252 on Windows -- and the file's UTF-8 BOM and
+        # em-dashes come back as mojibake that cannot equal the utf-8 read.
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
     )
     if original.returncode != 0:
         pytest.skip("shallow checkout: ba93e21 not reachable, nothing to compare")
