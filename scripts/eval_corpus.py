@@ -55,7 +55,7 @@ REPORT = ROOT / "docs" / "EVALUATION_CORPUS_REPORT_v1.md"
 
 def load_corpus(path):
     """Load evaluation corpus (structured with metadata + scenario types)."""
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 

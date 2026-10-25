@@ -2,6 +2,7 @@
 
 import pytest
 import os
+import sqlite3
 import tempfile
 import json
 from datetime import datetime, timedelta
@@ -614,3 +615,76 @@ class TestEphemeralSigningKeyIsAnnounced:
             is_valid, error = second.verify_chain("sess-1")
             assert is_valid is False
             assert "signature verification failed" in error
+
+
+class TestConnectionsCloseOnEveryPath:
+    """Every connection the store opens is closed, including on failure.
+
+    Each method opened its own connection and closed it at the end of the happy
+    path only, so an exception -- a duplicate event id, a deleted file -- left
+    the handle open until garbage collection. Linux unlinks open files without
+    complaint, which is why nothing here noticed; the first run on Windows
+    failed seven tests with WinError 32 on `os.remove`. The portable assertion
+    is the one Windows enforces by accident: after the error path, no
+    connection the store opened is still open.
+    """
+
+    @staticmethod
+    def _tracking(monkeypatch):
+        opened = []
+        real_connect = sqlite3.connect
+
+        def tracking_connect(*args, **kwargs):
+            conn = real_connect(*args, **kwargs)
+            opened.append(conn)
+            return conn
+
+        monkeypatch.setattr(sqlite3, "connect", tracking_connect)
+        return opened
+
+    @staticmethod
+    def _still_open(connections):
+        leaked = []
+        for conn in connections:
+            try:
+                conn.execute("SELECT 1")
+            except sqlite3.ProgrammingError:
+                continue  # "Cannot operate on a closed database" -- closed
+            leaked.append(conn)
+        return leaked
+
+    _EVENT = dict(
+        session_id="sess-close", event_type="POLICY_DECISION",
+        timestamp="2026-08-01T10:00:01Z", agent_id="agent-demo",
+        organization_id="org-demo", payload={"step": 1},
+    )
+
+    def test_a_failed_write_does_not_leak_its_connection(self, monkeypatch, tmp_path):
+        opened = self._tracking(monkeypatch)
+        store = AuditStore(db_path=str(tmp_path / "t.db"), secret_key=b"k" * 32)
+        assert store.write_event(event_id="evt-1", **self._EVENT) is True
+        # Same id again: UNIQUE constraint -> the error path.
+        assert store.write_event(event_id="evt-1", **self._EVENT) is False
+        assert len(opened) >= 3, "the tracker did not see the store's connections"
+        assert self._still_open(opened) == []
+
+    def test_a_failed_read_does_not_leak_its_connection(self, monkeypatch, tmp_path):
+        opened = self._tracking(monkeypatch)
+        db_path = tmp_path / "t.db"
+        store = AuditStore(db_path=str(db_path), secret_key=b"k" * 32)
+        assert store.write_event(event_id="evt-1", **self._EVENT) is True
+        os.remove(db_path)
+        with pytest.raises(AuditStoreUnavailable):
+            store.read_event("evt-1")
+        with pytest.raises(AuditStoreUnavailable):
+            store.query_events(session_id="sess-close")
+        with pytest.raises(AuditStoreUnavailable):
+            store.cleanup_expired()
+        assert self._still_open(opened) == []
+
+    def test_the_tracker_can_tell_an_open_connection_from_a_closed_one(self, tmp_path):
+        """A leak check that cannot see a leak has not been tested."""
+        conn = sqlite3.connect(str(tmp_path / "probe.db"))
+        assert self._still_open([conn]) == [conn]
+        conn.close()
+        assert self._still_open([conn]) == []

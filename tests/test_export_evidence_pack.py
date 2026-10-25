@@ -248,14 +248,14 @@ def test_write_creates_missing_directories(tmp_path):
     target = tmp_path / "nested" / "deeper"
     path = write_bundle(build_bundle(include_conformance=False), str(target))
     assert path.exists()
-    assert json.loads(path.read_text())["manifest"]["export_format_version"]
+    assert json.loads(path.read_text(encoding="utf-8"))["manifest"]["export_format_version"]
 
 
 def test_checksum_matches_the_written_bundle(tmp_path):
     import hashlib
 
     path = write_bundle(build_bundle(include_conformance=False), str(tmp_path))
-    recorded = (tmp_path / "evidence-pack.sha256").read_text().split()[0]
+    recorded = (tmp_path / "evidence-pack.sha256").read_text(encoding="utf-8").split()[0]
     actual = hashlib.sha256(path.read_bytes()).hexdigest()
     assert recorded == actual
 
@@ -263,7 +263,7 @@ def test_checksum_matches_the_written_bundle(tmp_path):
 def test_rewrite_to_same_directory_overwrites_cleanly(tmp_path):
     write_bundle(build_bundle(include_conformance=False), str(tmp_path))
     write_bundle(build_bundle(include_conformance=False), str(tmp_path))
-    assert json.loads((tmp_path / "evidence-pack.json").read_text())
+    assert json.loads((tmp_path / "evidence-pack.json").read_text(encoding="utf-8"))
 
 
 def test_cli_entry_point_writes_a_bundle(tmp_path, capsys):

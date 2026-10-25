@@ -107,7 +107,9 @@ def _executed_suite_path() -> str:
     try:
         from src.cts_runner import _YAML_PATH
 
-        return str(Path(_YAML_PATH).relative_to(Path(__file__).resolve().parent.parent))
+        # as_posix(): the recorded path is an identifier, not a filesystem
+        # handle, and str() of a relative Path is backslashed on Windows.
+        return Path(_YAML_PATH).relative_to(Path(__file__).resolve().parent.parent).as_posix()
     except Exception:
         return "unknown"
 
