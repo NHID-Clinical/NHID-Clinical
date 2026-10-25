@@ -165,7 +165,7 @@ all four.
 | **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **23 of 32 = 71.9%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
 
-**These are four different denominators.** 1916/1916 is a *test pass rate*, not
+**These are four different denominators.** 1939/1939 is a *test pass rate*, not
 a detection rate. 71.9% is a *detection rate*, not a test pass rate. Neither is
 an accuracy figure for the framework as a whole.
 
@@ -752,7 +752,7 @@ produce a number that describes nothing.
 
 | Body | Population | Question it answers |
 |---|---|---|
-| **Conformance suite** | 1916 tests | Does the implementation behave as specified? |
+| **Conformance suite** | 1939 tests | Does the implementation behave as specified? |
 | **Fabricate Battle-Test Corpus** | 550 real conversations, 127 compliant | Does it detect violations in real-world phrasing? |
 | **Governance Evaluation Corpus** | 25 scenarios, 55 turns | Does it detect labelled governance conditions? |
 | **Adversarial corpus** | 40 hostile scenarios | Does it survive deliberate evasion? |
@@ -782,9 +782,9 @@ detection rate and not an accuracy figure.
 
 | | |
 |---|---|
-| **Collected** | 1916 |
-| **Executed** | 1916 |
-| **Passed** | 1916 |
+| **Collected** | 1939 |
+| **Executed** | 1939 |
+| **Passed** | 1939 |
 | **Failed / skipped / xfailed / xpassed** | 0 / 0 / 0 / 0 |
 | **Verified** | fresh clone at `e68a65d`, fresh virtualenv, `requirements.txt` only, live API |
 

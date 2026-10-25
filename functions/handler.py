@@ -48,6 +48,7 @@ def lambda_handler(event: dict, context) -> dict:
       POST /v1/adapters/retell/check         — accepts native Retell AI payload, no API key
       POST /v1/adapters/connect/check        — accepts Amazon Connect Contact Lens payload
       POST /v1/webhooks/call-progress        — turn-by-turn evaluation, no API key required
+      POST /v1/gate/turn                     — pre-utterance gate for a CALLING agent: query params in, the engine's decision out, no API key required
       GET  /v1/vendor/metrics/summary        — per-vendor metrics, API key required
       POST /v1/pilot/enroll                  — pilot enrollment, no API key required
       POST /v1/cts/evaluate                  — run conformance test suite, no API key required
@@ -109,6 +110,10 @@ def lambda_handler(event: dict, context) -> dict:
     # Hosted CTS evaluation
     if "/cts/evaluate" in path:
         return _handle_cts_evaluate(event)
+
+    # Pre-utterance gate for a calling agent (no DB writes, stateless)
+    if "/gate/turn" in path:
+        return _handle_gate_turn(event)
 
     # Turn-by-turn call-progress webhook (no DB writes, stateless)
     if "/webhooks/call-progress" in path:
@@ -204,6 +209,160 @@ def _handle_call_progress(event: dict) -> dict:
     result = _decision_to_dict(decision, policy_event)
     result["turn_index"] = body.get("turn_index", 0)
     result["session_id"] = body.get("session_id", "")
+    return _ok(result)
+
+
+
+#: Query-parameter spellings accepted for a boolean. The xAI agent tool form
+#: sends strings only, so "true"/"false" is the contract; the rest are mercy.
+_TRUE = frozenset({"true", "1", "yes", "y"})
+_FALSE = frozenset({"false", "0", "no", "n", ""})
+
+#: What the agent should do for each action. Derived from the enforcement
+#: ladder; adds no outcome. The agent speaks `say_instead` only when the
+#: decision is about disclosure.
+_GATE_INSTRUCTION = {
+    "DENY_DATA": "Do not ask for or accept protected information on this turn. "
+                 "Identify yourself as an automated AI assistant first, then ask again.",
+    "ESCALATE_HUMAN": "Transfer the call to a human now. Do not continue the request.",
+    "DISCLOSE_IDENTITY": "State that you are an automated AI assistant before saying anything else.",
+    "LOG_ONLY": "Proceed. A non-blocking finding was recorded for human review.",
+    "CONTINUE_AI": "Proceed.",
+}
+
+
+def _parse_bool(raw, name: str) -> bool:
+    value = str(raw if raw is not None else "").strip().lower()
+    if value in _TRUE:
+        return True
+    if value in _FALSE:
+        return False
+    raise ValueError(f"{name} must be true or false, got {raw!r}")
+
+
+def _handle_gate_turn(event: dict) -> dict:
+    """Pre-utterance gate for an agent that is the CALLER.
+
+    The call-progress webhook was written receiver-side: the human asks, the
+    agent discloses, so it runs PHI detection only on ``speaker == "user"``
+    turns. An agent that places the call is the one asking. Labelling its
+    turns honestly as ``agent`` meant PDX-01 never saw the request — the gate
+    caught a missing disclosure but not the data request it exists to stop.
+
+    This route takes what the agent is *about to say*, as query parameters so a
+    voice-platform tool with no JSON body can call it, and runs the agent's own
+    planned utterance through the same PHI detection a human's turn gets. The
+    decision is ``evaluate_all``'s; this function reshapes the request and the
+    response and computes nothing of its own.
+
+    Parameters (query string, or a JSON body with the same keys):
+      session_id             call identifier (required)
+      turn                   the agent's planned utterance (required)
+      disclosed              has the agent already identified itself on an
+                             EARLIER turn of this call: true/false (default false)
+      turn_index             0-based turn number (default 0)
+      heard                  what the other party just said (optional). EIT-01
+                             reads the request for a human from here; PDX-01 reads
+                             protected data the other party volunteers from here.
+      disclosed_at           ISO 8601 time of the earlier disclosure (optional;
+                             defaults to one second ago when disclosed=true)
+
+    Field mapping, so the engine sees the right party in each slot:
+      input_payload.speech_text                  <- heard   (the counterparty)
+      healthcare_governance.identity_assertion_text <- turn  (the agent's own words; DBC-01)
+      healthcare_governance.phi_accessed         <- fields the agent's turn asks for,
+                                                    in the engine's own field names
+      session.disclosure_established_prior       <- disclosed (the same-turn PDX-01 rule
+                                                    needs the harness to say so)
+
+    As with the call-progress route, prior-disclosure state is the caller's
+    own report. The gate records what the agent asserts and judges this turn.
+    """
+    params = dict(event.get("queryStringParameters") or {})
+    if not params:
+        body, parse_error = _parse_json_body(event, allow_empty=True)
+        if parse_error:
+            return parse_error
+        params = body or {}
+
+    session_id = str(params.get("session_id") or "").strip()
+    turn = str(params.get("turn") or "").strip()
+    if not session_id:
+        return _error(400, "session_id is required")
+    if not turn:
+        return _error(400, "turn is required: the text the agent is about to say")
+    if len(turn) > 4000:
+        return _error(400, "turn is longer than 4000 characters")
+    heard = str(params.get("heard") or "").strip()
+    if len(heard) > 4000:
+        return _error(400, "heard is longer than 4000 characters")
+    try:
+        disclosed = _parse_bool(params.get("disclosed"), "disclosed")
+        turn_index = int(params.get("turn_index") or 0)
+    except (TypeError, ValueError) as exc:
+        return _error(400, f"Invalid gate parameters: {exc}")
+    if turn_index < 0 or turn_index > 10_000:
+        return _error(400, "turn_index must be between 0 and 10000")
+
+    from datetime import datetime, timedelta, timezone
+    from adapters.call_progress_adapter import to_nhid_event
+    from src.nhid_policy_engine_v1 import _phi_fields_requested
+
+    now = datetime.now(timezone.utc)
+    disclosed_at = None
+    if disclosed:
+        disclosed_at = str(params.get("disclosed_at") or (now - timedelta(seconds=1)).isoformat())
+
+    try:
+        session, policy_event = to_nhid_event({
+            "session_id": session_id,
+            "turn_index": turn_index,
+            "speaker": "agent",
+            "text": turn,
+            "session_state": {
+                "turn_count": turn_index + 1,
+                "disclosure_timestamp": disclosed_at,
+                "escalation_available": True,
+            },
+        })
+    except (KeyError, ValueError) as exc:
+        return _error(400, f"Invalid gate payload: {exc}")
+    except Exception as exc:  # noqa: BLE001
+        return _error(400, f"Adapter conversion failed: {exc}")
+
+    # Caller-side orientation. The adapter fills these for a receiving agent;
+    # here the agent is the caller, so each slot gets the party it describes.
+    governance = policy_event["healthcare_governance"]
+    # The agent's planned words are the data request, in the engine's own
+    # field names (the adapter's phrase list is not what PDX-01 compares).
+    governance["phi_accessed"] = sorted(_phi_fields_requested(turn, []))
+    # DBC-01 judges the agent's own words, disclosure keyword or not.
+    governance["identity_assertion_text"] = turn
+    # The counterparty's words: EIT-01 finds the request for a human here, and
+    # PDX-01 finds protected data the counterparty volunteers.
+    policy_event["input_payload"]["speech_text"] = heard
+    # PDX-01's same-turn rule only fires when the harness says the disclosure
+    # was NOT already established. The gate is the harness.
+    session["disclosure_established_prior"] = disclosed
+
+    try:
+        decision = evaluate_all(session, policy_event)
+    except Exception as exc:  # noqa: BLE001
+        return _error(500, f"Policy evaluation failed: {exc}")
+
+    result = _decision_to_dict(decision, policy_event)
+    action = result["action"]
+    result["allowed"] = action in ("CONTINUE_AI", "LOG_ONLY")
+    result["instruction"] = _GATE_INSTRUCTION.get(action, "Do not proceed.")
+    if action in ("DENY_DATA", "DISCLOSE_IDENTITY"):
+        from functions.demo_scripts import COMPLIANT_SCRIPT
+        result["say_instead"] = COMPLIANT_SCRIPT[0]["text"]
+    else:
+        result["say_instead"] = None
+    result["session_id"] = session_id
+    result["turn_index"] = turn_index
+    result["disclosed"] = disclosed
+    result["phi_requested"] = governance["phi_accessed"]
     return _ok(result)
 
 

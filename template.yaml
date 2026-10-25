@@ -124,6 +124,12 @@ Resources:
             RestApiId: !Ref NHIDApi
             Path: /v1/webhooks/call-progress
             Method: POST
+        GateTurnPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/gate/turn
+            Method: POST
         BadgeGet:
           Type: Api
           Properties:
