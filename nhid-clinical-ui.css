@@ -51,8 +51,9 @@
   --bg-2: #eaf5fb;
   --surface: var(--paper);
   --border: var(--line);
-  --radius: 6px;
-  --radius-sm: 3px;
+  --radius: 12px;        /* cards, panels, notes */
+  --radius-lg: 16px;     /* hero figures, large panels */
+  --radius-sm: 6px;      /* chips, inputs, small controls */
   --font-display: var(--display);
   --font-body: var(--sans);
   --nav-h: 5rem;
@@ -193,8 +194,8 @@ p { margin: 0; }
   transform: scaleX(0);
   transform-origin: left;
   border-radius: 999px 999px 0 0;
-  background: linear-gradient(90deg, var(--blue), var(--teal));
-  transition: transform 260ms ease;
+  background: var(--teal);
+  transition: transform 200ms ease;
 }
 
 .nav-links a:hover,
@@ -244,7 +245,7 @@ p { margin: 0; }
   padding: 0 1.45rem;
   border-radius: 999px;
   color: white;
-  background: linear-gradient(135deg, var(--blue), var(--teal));
+  background: var(--blue);
   font-weight: 700;
   box-shadow: 0 18px 45px rgba(13, 108, 166, 0.23);
   transition: transform 240ms ease, box-shadow 240ms ease;
@@ -490,7 +491,7 @@ p { margin: 0; }
   background: white;
   border-left: 1px solid rgba(203, 213, 225, 0.75);
   box-shadow: -8px 0 40px rgba(8, 42, 91, 0.12);
-  transition: right 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: right 200ms cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
 }
 
@@ -520,7 +521,7 @@ p { margin: 0; }
   background: rgba(8, 42, 91, 0.35);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 300ms ease;
+  transition: opacity 200ms ease;
   backdrop-filter: blur(2px);
 }
 
@@ -787,7 +788,7 @@ body, .site-header, .mobile-nav, .site-footer, .content-card, .news-card, .downl
 
 /* ── Inner page hero ─────────────────────────────────────────────────────── */
 .inner-hero {
-  background: linear-gradient(135deg, #f4f9fd 0%, #edf5fb 100%);
+  background: var(--mist);
   border-bottom: 1px solid var(--line);
   padding-block: 4rem 3rem;
 }
@@ -808,8 +809,10 @@ body, .site-header, .mobile-nav, .site-footer, .content-card, .news-card, .downl
 .inner-hero h1 {
   color: var(--ink);
   font-family: var(--display);
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
-  letter-spacing: -0.05em;
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  text-wrap: balance;
   margin: 0.5rem 0 0;
 }
 
@@ -1286,7 +1289,7 @@ input[type="radio"] {
   border: 1px solid rgba(11, 110, 188, 0.28);
   border-left: 4px solid var(--blue);
   border-radius: 1rem;
-  background: linear-gradient(135deg, var(--blue-soft) 0%, rgba(248,252,254,0.5) 100%);
+  background: var(--blue-soft);
   box-shadow: 0 8px 30px rgba(11, 110, 188, 0.07);
 }
 
@@ -1297,7 +1300,7 @@ input[type="radio"] {
   width: 3.6rem;
   height: 3.6rem;
   border-radius: 0.85rem;
-  background: linear-gradient(135deg, var(--blue), var(--teal));
+  background: var(--blue);
   color: white;
   font-family: var(--display);
   font-size: 0.72rem;
@@ -1321,7 +1324,7 @@ input[type="radio"] {
   font-size: 0.95rem;
   line-height: 1.75;
   margin: 0 0 0.65rem;
-  max-width: 72ch;
+  max-width: 68ch;
 }
 
 .nist-meta {
@@ -1603,7 +1606,7 @@ input[type="radio"] {
 
 /* Pilot partner banner */
 .pilot-banner {
-  background: linear-gradient(135deg, var(--blue-soft), var(--teal-soft));
+  background: var(--blue-soft);
   border: 1px solid var(--line);
   border-radius: 1rem;
   padding: 1.25rem 1.75rem;
@@ -1679,7 +1682,7 @@ iframe[src*="elevenlabs.io"] {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+  background: rgba(255,255,255,.18);
   pointer-events: none;
 }
 
@@ -1744,7 +1747,7 @@ h1 { font-weight: 800; }
 h2 { font-weight: 700; }
 
 /* Airier rhythm */
-.page-section { padding-block: clamp(3rem, 6vw, 5.5rem); }
+.page-section { padding-block: clamp(6rem, 9vw, 8rem); }
 
 /* Scroll-entrance motion (fade + slight rise) — progressively enhanced.
    The default state is VISIBLE. The hidden start state applies only under
@@ -1761,8 +1764,10 @@ h2 { font-weight: 700; }
    (a block below the fold in a full-page capture, a crawler, print) used to leave
    the block at opacity 0 for good -- the 25 Oct audit found two such blocks on
    the home page. The entrance is now a 10px rise only; the content is always there. */
-html.js .reveal { opacity: 1; transform: translateY(10px); transition: transform .5s ease; }
-html.js .reveal.in { transform: none; }
+@media (prefers-reduced-motion: no-preference) {
+  html.js .reveal { opacity: 1; transform: translateY(10px); transition: transform 200ms ease; }
+  html.js .reveal.in { transform: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   html.js .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
@@ -1794,7 +1799,7 @@ html.js .reveal.in { transform: none; }
 .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16.5rem, 1fr)); gap: 1.1rem; }
 .feature-card { padding: 1.5rem 1.5rem; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease; }
 .feature-card:hover { transform: translateY(-4px); box-shadow: 0 18px 42px -24px rgba(15,23,42,.30); border-color: rgba(20,184,166,.45); }
-.feature-ico { width: auto; max-width: 140px; height: auto; border-radius: 12px; display: grid; place-items: center; margin-bottom: .95rem; }
+.feature-ico { width: auto; max-width: 140px; height: auto; border-radius: var(--radius); display: grid; place-items: center; margin-bottom: .95rem; }
 .feature-ico svg { width: 23px; height: 23px; color: var(--teal-bright); }
 .feature-ico img { width: 100%; height: auto; display: block; border-radius: 8px; }
 .feature-card .code { font-family: "IBM Plex Mono", monospace; font-size: .72rem; font-weight: 600; color: var(--teal-bright); letter-spacing: .04em; }
@@ -1838,7 +1843,7 @@ main p { line-height: 1.75; }
 .page-cta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
 .page-cta-card {
   display: flex; flex-direction: column; gap: .3rem;
-  border: 1px solid var(--line); border-radius: 14px; background: var(--paper);
+  border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--paper);
   padding: 1.15rem 1.25rem; text-decoration: none; color: var(--ink);
   transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
 }
@@ -1970,7 +1975,7 @@ main p { line-height: 1.75; }
   top: -1.35rem;
   height: 1.1rem;
   width: 2px;
-  background: linear-gradient(180deg, var(--teal), rgba(20, 184, 166, .25));
+  background: var(--teal);
 }
 .gateway-step + .gateway-step::after {
   content: "";

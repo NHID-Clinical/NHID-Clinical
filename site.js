@@ -574,7 +574,13 @@ window.NHIDDemoStatus = (function () {
    whose section is nearest the top of the viewport is marked current. Without
    JavaScript the rail is a plain list of anchors, which is all it needs to be. */
 (function () {
-  if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+  if (typeof window === 'undefined') return;
+  /* On a phone the rail opens closed, as a "Contents" fold; the markup carries
+     `open` so a reader without JavaScript still sees the list. */
+  if (window.matchMedia && window.matchMedia('(max-width: 1060px)').matches) {
+    document.querySelectorAll('.doc-rail-fold[open]').forEach(function (d) { d.removeAttribute('open'); });
+  }
+  if (!('IntersectionObserver' in window)) return;
   var rails = document.querySelectorAll('.doc-rail');
   if (!rails.length) return;
   rails.forEach(function (rail) {

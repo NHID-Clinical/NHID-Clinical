@@ -197,7 +197,7 @@
   margin: 0;
   padding: 1.25rem 1.1rem 1rem;
   border: 1px solid var(--inst-line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--inst-ink-2);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 18px 40px -24px rgba(0,0,0,.7);
   min-width: 0;
@@ -303,7 +303,7 @@
 .standards-strip b small { font-weight: 400; font-size: .72rem; color: var(--inst-text-muted); }
 
 /* ── Control register (light) ──────────────────────────────────────────────── */
-.control-register .control-table { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--paper); }
+.control-register .control-table { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--paper); }
 .control-register .control-table thead th { background: var(--mist); padding: .7rem .9rem; opacity: .8; }
 .control-register .control-table-id {
   font-family: var(--mono); font-size: .8125rem; padding: .15rem .45rem;
@@ -322,7 +322,7 @@
 /* ── Evidence trace console (ink) ──────────────────────────────────────────── */
 .trace {
   border: 1px solid var(--inst-line);
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--inst-ink-2);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 18px 40px -24px rgba(0,0,0,.7);
   overflow: hidden;
@@ -410,7 +410,7 @@
   margin-top: 2rem;
   background: var(--inst-line);
   border: 1px solid var(--inst-line);
-  border-radius: 10px;
+  border-radius: var(--radius);
   overflow: hidden;
 }
 .proof-cell { background: var(--inst-ink-2); padding: 1.05rem 1.15rem 1.1rem; min-width: 0; }
@@ -424,7 +424,7 @@
 .record-note { margin: 1rem 0 0; font-size: .85rem; color: var(--body); }
 
 /* ── What it is / is not: a two-column ledger (light) ──────────────────────── */
-.ledger { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--paper); }
+.ledger { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--paper); }
 .ledger > div { padding: 1.5rem 1.65rem; min-width: 0; }
 .ledger > div + div { border-left: 1px solid var(--line); background: var(--mist); }
 .ledger h2 { font-size: 1.1rem; margin: 0 0 1rem; display: flex; align-items: center; gap: .6rem; }
@@ -466,7 +466,7 @@ html:not(.js) .film-tabs { display: none; }
 html:not(.js) .film[hidden] { display: block; }
 .film-stage { display: grid; gap: 1.25rem; }
 .film {
-  margin: 0; min-width: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  margin: 0; min-width: 0; border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden;
   background: var(--mist); box-shadow: 0 28px 56px -40px rgba(8, 42, 91, .4);
 }
 .film-video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #eef0f3; }
@@ -476,6 +476,6 @@ html:not(.js) .film[hidden] { display: block; }
   list-style: none; padding: 0; margin: 1.5rem 0 0;
   display: grid; grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr)); gap: .6rem;
 }
-.film-rules li { display: flex; flex-direction: column; gap: .3rem; min-width: 0; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); font-size: .9rem; line-height: 1.4; }
+.film-rules li { display: flex; flex-direction: column; gap: .3rem; min-width: 0; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); font-size: .9rem; line-height: 1.4; }
 .film-rules li > span { font-weight: 700; color: var(--ink); }
 .film-rules code { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: var(--teal); white-space: normal; }

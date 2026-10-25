@@ -58,9 +58,10 @@ def test_the_audit_control_is_not_a_gate(figure):
     assert audit and AUDIT in audit.group(1), "ATR-01 is not in the audit band"
 
 
-def test_the_audit_band_says_it_changes_no_behaviour(figure):
+def test_the_audit_band_says_it_changes_no_behavior(figure):
+    """US spelling since 25 Oct 2026; the claim is the same: ATR-01 records, it does not gate."""
     audit = re.search(r'<g class="cm-audit">(.*?)</g>', figure, re.S).group(1)
-    assert "Changes no behaviour" in audit
+    assert "Changes no behavior" in audit
 
 
 def test_all_five_controls_appear(figure):

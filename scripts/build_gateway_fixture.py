@@ -57,8 +57,8 @@ PAGE = ROOT / "specification.html"
 #: pinned data, so the rename lives here rather than in the fixture: the
 #: scenario ids, turns and engine output are untouched.
 DISPLAY_TITLES = {
-    "nhid_ec_comp_001": "Compliant call: disclosure, wait gate, then data",
-    "nhid_ec_combo_008": "Four controls fire: IDG-01 + PDX-01 + DBC-01 + EIT-01",
+    "nhid_ec_comp_001": "Scenario A: disclosed call, no violations",
+    "nhid_ec_combo_008": "Scenario B: four controls fire",
 }
 BEGIN = "<!-- BEGIN GENERATED trust-gateway -->"
 END = "<!-- END GENERATED trust-gateway -->"

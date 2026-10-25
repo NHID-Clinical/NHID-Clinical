@@ -6,7 +6,7 @@
   "scenarios": [
     {
       "id": "nhid_ec_comp_001",
-      "title": "Compliant call: disclosure, wait gate, then data",
+      "title": "Scenario A: disclosed call, no violations",
       "expected_violations": [],
       "note": "A compliant call. The agent discloses, waits, and only then asks.",
       "turns": [
@@ -50,7 +50,7 @@
     },
     {
       "id": "nhid_ec_combo_008",
-      "title": "Four controls fire: IDG-01 + PDX-01 + DBC-01 + EIT-01",
+      "title": "Scenario B: four controls fire",
       "expected_violations": [
         "IDG-01",
         "PDX-01",
@@ -117,5 +117,5 @@
       ]
     }
   ],
-  "source_commit": "e2888b8"
+  "source_commit": "df4ea14"
 }
