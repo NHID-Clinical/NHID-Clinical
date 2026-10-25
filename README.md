@@ -9,313 +9,149 @@
 </p>
 
 <p align="center">
-  <b>NHID-Clinical is an open policy-and-evidence layer for healthcare administrative AI voice interactions.</b><br>
-  It records which agent acted, under whose delegated authority, within what scope, whether it disclosed
-  itself before requesting protected data, whether escalation was honored, and what auditable evidence
-  remains — deterministically, and in a form the receiving organization can verify without trusting the
-  caller. It governs conduct at the interaction boundary, not the AI model itself.
-</p>
-
-<p align="center">
-  <sub>
-    The engine evaluates observable conduct and does not care who runs it. A payer or provider can run it
-    <b>receiver-side</b> on inbound calls; a voice-AI vendor can run it <b>sender-side</b> in their own call
-    path to produce evidence for their customers. Both use the same controls and the same artifacts.
-    Sender-side operation is supported by the engine, the adapters and the evidence export today; it is
-    not a packaged product, and no vendor has deployed it.
-  </sub>
-</p>
-
-<p align="center">
-  Built from direct payer operations experience — the <strong>impersonation latency</strong> problem, seen firsthand on live eligibility, claims, and prior-authorization lines.<br>
-  <strong>Not a standard. Not a certification. Not a product.</strong> An open, testable reference for the ecosystem.
-</p>
-
-<p align="center">
-  <a href="https://nhid-clinical.org"><strong>Website</strong></a> ·
-  <a href="https://nhid-clinical.org/developers.html">Simulator</a> ·
-  <a href="https://nhid-clinical.org/specification.html">Specification</a> ·
-  <a href="https://nhid-clinical.org/framework/nhid-auth.html#v2">v2 Identity</a> ·
-  <a href="https://github.com/NHID-Clinical/NHID-Clinical/discussions">Discussions</a> ·
-  <a href="https://x.com/NHIDClinical">@NHIDClinical</a>
+  <b>An operational AI governance framework for AI agents calling payers: disclosure before data, evidence per call.</b>
 </p>
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-1992%20passing-brightgreen?style=flat-square">
-  <img alt="Middleware Tests" src="https://img.shields.io/badge/middleware%20tests-66%20passing-brightgreen?style=flat-square">
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-1996%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
   <img alt="Code license" src="https://img.shields.io/badge/code-Apache--2.0-lightgrey?style=flat-square">
   <img alt="Spec license" src="https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey?style=flat-square">
-  <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026"><img alt="NIST" src="https://img.shields.io/badge/NIST-2025--0035--0026-0b6ebc?style=flat-square"></a>
+  <a href="https://nhid-clinical.org"><img alt="Website" src="https://img.shields.io/badge/website-nhid--clinical.org-0b6ebc?style=flat-square"></a>
+  <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026"><img alt="NIST public comment" src="https://img.shields.io/badge/NIST-2025--0035--0026-0b6ebc?style=flat-square"></a>
 </p>
 
 <p align="center">
-  <sub>The NIST badge links to a public comment submitted to a NIST RFI docket — not a NIST endorsement, adoption, or certification.</sub>
+  <a href="https://nhid-clinical.org"><img alt="Website" src="https://img.shields.io/badge/Website-0d2846?style=for-the-badge"></a>&nbsp;
+  <a href="https://nhid-clinical.org/specification.html"><img alt="Specification" src="https://img.shields.io/badge/Specification-0d2846?style=for-the-badge"></a>&nbsp;
+  <a href="https://nhid-clinical.org/shadow-evaluation-guide.html"><img alt="Shadow evaluation" src="https://img.shields.io/badge/Shadow%20evaluation-14778f?style=for-the-badge"></a>
+</p>
+
+<p align="center">
+  <sub>Not a standard, a certification or a product. Mapped, not certified. NIST-2025-0035-0026 is a public comment, not an endorsement.</sub>
 </p>
 
 ---
 
-**Designed to support the disclosure obligation described in EU AI Act Article 50(1); mapped to NIST AI RMF 1.0 at the subcategory level ([Playbook crosswalk](docs/nist-ai-rmf-playbook-crosswalk.md)) — mapped, not certified.**
+## What it is
 
-NHID-Clinical targets one specific failure: an AI voice agent begins operating and requesting sensitive information **before the receiving party can verify it is non-human and properly authorized**. That window is **impersonation latency** — and in payer–provider calls it routinely covers member IDs, NPIs, dates of birth, and claim data. It delivers five concrete, testable controls, an optional delegated-authority gate (DLG-01) that verifies a cryptographically signed, scoped delegation and constrains what protected data an agent may request, and machine-readable audit evidence for what happened. It does **not** address fairness, clinical safety, or model quality — [those stay separate by design](docs/scope-boundary-fairness-clinical.md).
+An AI voice agent phones a payer, says it is calling for a provider, and asks for a patient's eligibility, claim status or other protected health information. The payer's representative receives the call and has to decide what to disclose. NHID-Clinical is the open specification, the deterministic reference implementation and the evidence format for that moment: five testable controls, evaluated on every turn, with a machine-readable record of what the agent said and when. A payer can run it on the receiving side; a voice-AI vendor can run it in its own call path to produce evidence for its customers. Same controls, same artifacts. It governs conduct at the interaction boundary, not the AI model, and disclosing, logging or passing every control never by itself authorizes a disclosure.
 
-## Start here
-
-**Who it's for:** security reviewers · healthcare compliance teams · AI voice vendors · payer / provider pilot teams.
-
-Pick your path — each is runnable today:
-
-**🔍 Reviewers & security teams** — read the boundaries, then run the tests.
-1. Skim [what it is / is not](#what-nhid-clinical-is--is-not) and the [claim boundaries](docs/claim-boundaries.md)
-2. `pip install -r requirements.txt && python -m pytest tests/ -v` → everything passes except **21 skipped** integration tests, which need the local server: start `uvicorn app:app --port 8000` in a second terminal (same Python environment) and re-run for **1992 passing**, none skipped (see [Quick Start](#quick-start))
-3. Inspect the five controls in [`src/nhid_policy_engine_v1.py`](src/nhid_policy_engine_v1.py) and the [Enforcement Profile](docs/enforcement-profile.md)
-4. Read the [Conformance Test Suite](conformance/nhid_conformance_test_suite_v1.yaml) — each case asserts an expected policy action
-
-**🛠 AI voice vendors** — see the controls fire, then find your integration points.
-1. Run the [Governance Simulator](https://nhid-clinical.org/developers.html)
-2. Send a native call payload to a demo adapter — no key required (see [Live API](#live-api--try-it-now))
-3. Map your call flow to the controls via the [Developer guide](https://nhid-clinical.org/developers.html)
-
-**🏥 Payers & providers** — review the controls, then scope a shadow pilot.
-1. Read [the controls](#the-four-behavioral-controls-v13) and the [For Payers](https://nhid-clinical.org/shadow-evaluation-guide.html) framing
-2. Pick one workflow (eligibility, claim status, prior auth)
-3. Run the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) on your own logs — observe-only, 2–4 weeks
-
-## What NHID-Clinical is / is not
-
-**NHID-Clinical is an operational AI governance framework for disclosed non-human
-actors operating under delegated authority across healthcare organizational
-boundaries.**
-
-**Is** — that framework, in two layers:
-
-- a **governance / accountability layer** — AI-caller disclosure (IDG-01, DBC-01), no-data-before-disclosure sequencing (PDX-01), human escalation (EIT-01), and machine-readable audit (ATR-01), evaluated by a deterministic conformance test suite; and
-- a **non-human-actor identity and delegated-authorization layer** — NHID-Auth v2: NPI-anchored, scoped, revocable delegation with per-call binding (reference design).
-
-**Is not** — it does **not** govern the AI model (accuracy, bias, drift, clinical safety, output quality — [out of scope by design](docs/scope-boundary-fairness-clinical.md)). It is **not** a universal AI-identity system, an autonomous-agent framework, an accredited standard, or a certification.
-
-See [docs/positioning.md](docs/positioning.md) for the full category thesis, [docs/terminology.md](docs/terminology.md) for controlled vocabulary, and [docs/claim-boundaries.md](docs/claim-boundaries.md) for what may and may not be claimed.
-
-## Evidence and limitations
-
-The framework produces machine-readable governance evidence from healthcare
-voice-AI interactions. Everything it concludes is bounded by the evidence reaching
-the evaluation path, so the limits below are properties of the design, not caveats
-bolted onto it.
-
-**It evaluates transcript and event evidence.** Controls read text. A disclosure
-that was spoken but mis-transcribed reads as a missing disclosure; an escalation
-request that was mis-transcribed produces **no finding at all**, and the record
-then attests to a compliant interaction — the one failure mode the evidence cannot
-reveal on its own.
-
-**Transcription accuracy is not established here.** NHID-Clinical does not perform
-speech recognition and does not independently establish ASR accuracy. An event may
-carry a `transcription_attestation` of `measured`, `attested` or `unattested`, so
-the dependency travels with the record instead of being assumed away. Assuring
-transcription quality, including across speaker groups, is the deploying
-organization's job. See the [dependency declaration](docs/scope-boundary-fairness-clinical.md).
-
-**Population-level fairness stratification is not implemented.** `language` and
-`interpreter_present` are recorded so an organization can run its own reporting;
-the framework does not stratify, and no code here computes a per-population
-figure.
-
-**It is not** a clinical safety validation system, a certification, a compliance
-badge, or a universal measure of AI safety. Standards work is **mapped, not
-certified**.
-
-**[Impersonation Latency](docs/terminology.md)** measures the elapsed time between
-interaction start and the point at which a non-human actor discloses its non-human
-identity to the human recipient. It measures disclosure timing. It does *not*
-determine that impersonation occurred, determine intent, detect an impersonator,
-prevent impersonation, establish authentication, or establish authorization. And
-because disclosure is observed through a transcript, a reported figure is only as
-accurate as the transcription path that produced it.
-
-## Composes with — does not replace
-
-NHID-Clinical sits beside the healthcare and identity stack; it replaces none of it:
-
-- **FHIR / SMART on FHIR** — audit substrate. NHID-Clinical emits FHIR R4 `AuditEvent`; FHIR carries the data, NHID-Clinical governs the AI actor exchanging or requesting it.
-- **OAuth 2.x / OIDC** — transport/client authorization ("may this client call this API"); NHID-Auth authorizes the specific interaction ("was this call delegated, in this scope"). Two separate checks; neither substitutes for the other.
-- **IAM platforms** — govern actors *you* provision; NHID-Clinical governs a *counterparty's* agent you never provisioned, arriving with no login step.
-- **AI governance frameworks** (NIST AI RMF, ISO/IEC 42001) — meta-frameworks NHID-Clinical maps to as evidence targets, not competitors.
-
-NHID-Clinical evaluates declared identity, authorization context, and interaction policy; it does **not** replace an underlying identity provider or cryptographic identity infrastructure.
-
-**Healthcare differentiation** — three load-bearing design choices: **NPI-anchored delegation** (the provider's NPI is the delegation trust root), **FHIR-compatible audit evidence**, and a **risk model validated against payer–provider operational workflows**.
-
-The governance gap is well documented; large-scale production evidence is still limited. The strongest next step for most organizations is a focused shadow pilot on their own traffic — the [**Tier 0 Shadow Pilot Kit**](docs/pilot-kit/README.md) makes that a 2–4 week exercise.
-
-For a one-page overview aimed at hospital, payer, compliance, and procurement leaders, see the [**Executive Brief**](docs/executive-brief.md).
-
-**Standards alignment (mapped, not certified):** Explicitly supports the EU AI Act Article 50(1) obligation to inform people that they are interacting with an AI system. Mapped to NIST AI RMF 1.0 at the subcategory level: direct evidence toward MEASURE 2.8 (transparency and accountability) for the voice-call channel, partial evidence toward MAP 3.5, MAP 4.2, MEASURE 1.1, MEASURE 2.3, MEASURE 2.7, MANAGE 2.4 and MANAGE 3.1, and most subcategories left to the deploying organization — see the [Playbook crosswalk](docs/nist-ai-rmf-playbook-crosswalk.md). Aligns with ISO/IEC 42001 Annex A controls on system transparency and auditability.
+## The disclosure gate
 
 <p align="center">
-  <img alt="NHID-Clinical trust verification pathway: payer and provider bridged by conformance verification" src="assets/images/3d-svg/nexus.svg" width="760">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/diagrams/disclosure-before-phi-dark.svg">
+    <img alt="Four lanes: the AI voice agent calling for a provider, the payer representative, the policy engine and the operational workflow. The agent discloses, the engine returns CONTINUE_AI with IDG01_DISCLOSURE_CONFIRMED, and only then does the NPI exchange cross the disclosure gate. Two dashed branches show the gate staying closed: a PHI request before disclosure returns DENY_DATA with PDX01_PHI_GATE_TRIGGERED, and an interrupted disclosure returns DISCLOSE_IDENTITY with IDG01_DISCLOSURE_INTERRUPTED. An ATR-01 band spans every lane." src="assets/diagrams/disclosure-before-phi.svg" width="880">
+  </picture>
   <br>
-  <sub><em>Clean vector visualization of the trust verification pathway — conceptual, not a product diagram.</em></sub>
+  <sub>Reference, a conceptual model. The same figure is on the <a href="https://nhid-clinical.org/specification.html#sequence">specification page</a>.</sub>
 </p>
 
-## Status
+<p align="center">
+  <a href="https://nhid-clinical.org/specification.html#trust-gateway"><img alt="The Trust Gateway on the specification page, Scenario B: an agent calling as a human persona asks for a member ID with no disclosure and the engine returns DENY_DATA with PDX01_PHI_GATE_TRIGGERED; the representative asks for a supervisor and the engine returns ESCALATE_HUMAN; the agent refuses and the engine records EIT01_ESCALATION_NOT_HONORED." src="assets/images/trust-gateway.png" width="760"></a>
+  <br>
+  <sub>The <a href="https://nhid-clinical.org/specification.html#trust-gateway">Trust Gateway</a>: corpus scenarios replayed through the engine and recorded verbatim. Shown here, Scenario B (<code>nhid_ec_combo_008</code>): a caller-agent with a human persona asks for protected data before disclosing. A still from the page; <code>scripts/build_gateway_fixture.py</code> regenerates it and CI fails if the page stops matching the engine.</sub>
+</p>
 
-An honest maturity snapshot. NHID-Clinical is a working reference implementation, not a production-scale product.
+## Five controls
 
-**Available today**
-- Deterministic policy engine with 1222 tests, all passing, across all phases
-- Live v1.3 conformance API — demo and vendor routes need no key; VAPI and Twilio adapters accept native call payloads
-- Tier 0 [Shadow Pilot Kit](docs/pilot-kit/README.md) — measure impersonation latency on your own call logs in 2–4 weeks
-- Conformance Test Suite, plus an evidence pack export a vendor can hand to a reviewer
-- Documented **[Enforcement Profile](docs/enforcement-profile.md)** — how each control's `PolicyDecision` maps to a receiver action (a documented layer over the five controls, **not a sixth control**)
-- NHID-Auth v2 cryptographic authorization layer, published as public reference code
-- Figures generated from the engine and the committed corpora, not drawn by hand — the [visual system](docs/visual-system.md) is normative, and CI fails if a published figure stops matching its source
-- **Dual-licensed:** Apache-2.0 code, CC BY 4.0 specification — your counsel can clear the reference implementation without a Creative Commons licence sitting on software
-- A documented **validation path** — a [verified dataset inventory](docs/validation/data-sources-inventory.md) (four of six commonly cited call corpora do not exist as described; the two that do are named, with their access terms), an [evidence-provenance matrix](docs/validation/evidence-provenance-matrix.md) stating what each kind of evidence can and cannot prove, a consented-volunteer call protocol, and an [evaluation corpus v2](docs/validation/EVALUATION_CORPUS_V2_FINDINGS.md) built from the cases the engine is known to miss, scored honestly (5/10)
-- **DBC-01 scoped in writing** — [transcript-based detection of explicit or implied human-status claims](docs/validation/DBC-01-SCOPE-AND-LIMITATIONS.md), with the 17 misses and 5 false positives on the 550-call corpus examined one by one; acoustic artifact detection is not claimed
+Four act on the call. One records it.
 
-**In progress**
-- First shadow-evaluation partners (observe-only, no vendor changes)
-- An independent review of DBC-01 against its intended threat model
-- Raster brand assets
+| ID | Control | Rule | Limit |
+| :-- | :-- | :-- | :-- |
+| **IDG-01** | Identity Disclosure Gate | Disclose non-human identity before any PHI exchange. A disclosure counts only if it was heard. | Shows the agent *said* it is automated, not that its claims are true. |
+| **PDX-01** | Pre-Data Exchange Gate | No protected data until identity is disclosed. | Closes the impersonation-latency window. Same-turn disclosure plus a request still fails. |
+| **DBC-01** | Deceptive Behavior Check | No claim of human status or licensed-professional standing. | Judged on the agent's own words. Non-blocking (`LOG_ONLY`) and routed to human review. |
+| **EIT-01** | Escalation Implementation Test | A clear human-handoff path, honored on request. | A handoff counts only when it is recorded with a timestamp and an outcome. |
+| **ATR-01** | Audit Trail Requirements | Every interaction produces a machine-readable trace. | Records what the other four decided. Changes no behavior. |
 
-**Not yet**
-- Production-scale deployments (see [Phase 5 findings](#phase-5--architecture-review-findings) below)
-- A certification, accreditation, or standard
-- Any regulatory endorsement
+**DLG-01, Delegated Authority**, is optional and opt-in, not a sixth control: a signed, scoped, unexpired, unrevoked delegation from the provider, checked against a trust anchor the deployer configures (no registry; the NPI is not checked against NPPES; it constrains what the agent may ask for on the call, and is not database or API authorization). Normative text: [specification](https://nhid-clinical.org/specification.html#dlg-01).
 
-This is a voluntary framework — **not an accredited standard, certification, or regulatory requirement.**
+Every control evaluates the same turn independently through `evaluate_all`, and the most restrictive outcome wins: `DENY_DATA > ESCALATE_HUMAN > DISCLOSE_IDENTITY > LOG_ONLY > CONTINUE_AI`. There is no composite score, tier or badge ([enforcement profile](docs/enforcement-profile.md)). [Impersonation latency](docs/terminology.md) is the number of turns between connect and disclosure, target zero; it measures timing and does not detect or prevent impersonation.
 
-> **Earlier review.** A dated architecture review and evidence-hardening sprint from
-> July 2026 — detection rates, readiness gaps, and the corpus work — is preserved in
-> [`docs/review-2026-07-30.md`](docs/review-2026-07-30.md). Its figures were measured
-> against a control tier since withdrawn, so it is history rather than current state.
+## Run it
 
-## The five controls (v1.3)
+Python 3.10 or later.
 
-| | Control | Requirement |
-| :--: | :--- | :--- |
-| 🪪 | **IDG-01** · Identity Disclosure Gate | Disclose non-human identity **before** any PHI exchange — and it counts only if it was heard: a disclosure the caller cut off is not a disclosure |
-| 🔒 | **PDX-01** · Pre-Data Exchange Gate | No protected data until identity is disclosed |
-| 🎭 | **DBC-01** · Deceptive Behavior Check | No claim of human status or licensed-professional standing, judged on the agent's own identity assertion |
-| 🙋 | **EIT-01** · Escalation Implementation Test | A human handoff path that exists and is honored on request |
-| 📜 | **ATR-01** · Audit Trail | Every call produces a machine-readable trace |
-
-Plus **DLG-01**, opt-in: verifies a cryptographically signed, scoped delegation and
-constrains what protected data an agent may request.
-
-Each returns one of four results — `pass`, `exception`, `unknown`, `not_assessable`.
-The last two exist because forcing a binary verdict onto an interaction that cannot
-support one is how a governance record becomes fiction.
-
-Deterministic · same inputs → identical output · **1992 passing**, every collected test executed when the local server is running (see [Quick Start](#quick-start))
-
-[**Try the Governance Simulator →**](https://nhid-clinical.org/developers.html)
-
-## Enforcement Profile
-
-The controls don't just detect — they emit a **receiver action**. Each call turn evaluates to a single `PolicyDecision`, and when several controls fire at once a fixed **Enforcement Ladder** selects the most-protective action for the receiving system to execute. This is documented behavior of the deterministic engine, **not a sixth control** — full spec in [docs/enforcement-profile.md](docs/enforcement-profile.md).
-
-```mermaid
-flowchart LR
-    C["Five controls<br/>IDG-01 · PDX-01 · DBC-01<br/>EIT-01 · ATR-01"] --> D["PolicyDecision<br/>evaluate_all()"]
-    D --> L["Enforcement Ladder<br/>DENY_DATA → ESCALATE_HUMAN →<br/>DISCLOSE_IDENTITY → LOG_ONLY → CONTINUE_AI"]
-    L --> A(["Receiver action"])
-    D --> E["Evidence<br/>ATR-01 · FHIR AuditEvent"]
-
-    classDef box fill:#0F172A,stroke:#14B8A6,stroke-width:2px,color:#F1F5F9
-    classDef acc fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#D1FAE5
-    class C,D,L,E box
-    class A acc
+```bash
+git clone https://github.com/NHID-Clinical/NHID-Clinical.git && cd NHID-Clinical
+pip install -r requirements.txt
+python -m uvicorn app:app --port 8000 &    # the integration tests need it
+python -m pytest tests/ -q
 ```
 
-<sub>Precedence: `DENY_DATA > ESCALATE_HUMAN > DISCLOSE_IDENTITY > LOG_ONLY > CONTINUE_AI`. There is no composite score. The former Call Authorization Score, its "Verified Trust" / "Conditional Trust" tiers and its badges were **withdrawn**, and nothing replaces them under another name — a per-control result stands on its own evidence or it does not stand. Guarded structurally: `test_no_composite_score_survives_under_any_name` fails on any module under `src/` that defines a risk-tier ladder, keyed on its shape rather than on a filename or a choice of tier words, because two earlier guards keyed that way were walked past.</sub>
-
-## Five-Layer Trust Stack
-
-<p align="center">
-  <img alt="Five-layer trust stack: STIR/SHAKEN, NHID-Clinical v1.3, NHID-Auth v2, FHIR AuditEvent R4, OpenTelemetry" src="assets/images/3d-svg/trust-stack.svg" width="680">
-
-</p>
-
-| Layer | Standard | Role |
-| :--- | :--- | :--- |
-| **0** | NPI Gap | The problem — no cross-org NPI authorization for AI agents |
-| **1** | STIR/SHAKEN (RFC 8224) | Carrier number authentication |
-| **2** | **NHID-Clinical v1.3** | Behavioral disclosure baseline — 4 controls + ATR-01 |
-| **3** | NHID-Auth v2 | Cryptographic authorization — reference implementation live |
-| **4** | FHIR AuditEvent R4 (base spec) | Healthcare-native audit logging |
-| **5** | OpenTelemetry | Enterprise observability export |
-
-[Full technical architecture →](https://nhid-clinical.org/evidence-pack.html#trust-stack)
-
-## The Impersonation Latency Problem
-
-<p align="center">
-  <img alt="Contrast between unverified caller path and NHID-Clinical verified pathway" src="assets/images/3d-svg/latency-split.svg" width="760">
-
-  <br>
-  <sub><em>Without a baseline: disclosure after PHI moves, no audit trail. With v1.3: early disclosure, verification checkpoint, human escalation, sealed audit.</em></sub>
-</p>
-
-## Conformance Flow
-
-How the controls play out on a real call — the same sequence the CTS suite and live adapters evaluate.
-
-```mermaid
-flowchart TD
-    Start(["Call Starts"]) --> Disclosure{"IDG-01<br/>Identity disclosed<br/>before any PHI?"}
-    
-    Disclosure -->|No| Deny["DENY_DATA<br/>IDG-01 + PDX-01"]
-    Deny --> Escalate{"EIT-01<br/>Human escalation<br/>requested?"}
-    
-    Disclosure -->|Yes| PHI["PHI exchange allowed<br/>PDX-01 + DBC-01 checks"]
-    PHI --> HumanCheck{"EIT-01<br/>Human handoff<br/>requested?"}
-    
-    HumanCheck -->|Yes| Escalate
-    HumanCheck -->|No| Complete(["Call Completes"])
-    
-    Escalate -->|Honored| Handoff["Human handoff<br/>path available"]
-    Escalate -->|Not honored| FailEsc["EIT-01 Fail"]
-    
-    Handoff --> Audit
-    FailEsc --> Audit
-    Complete --> Audit["ATR-01<br/>Machine-readable<br/>audit trail sealed"]
-    
-    Audit --> End(["End of Call"])
-
-    classDef start fill:#0F172A,stroke:#14B8A6,stroke-width:2px,color:#F1F5F9
-    classDef decision fill:#1E2937,stroke:#67E8F9,stroke-width:2px,color:#F1F5F9
-    classDef deny fill:#7F1D1D,stroke:#EF4444,stroke-width:2px,color:#FEE2E2
-    classDef ok fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#D1FAE5
-    classDef audit fill:#0F172A,stroke:#14B8A6,stroke-width:2px,color:#A5F3FC
-
-    class Start,End start
-    class Disclosure,Escalate,HumanCheck decision
-    class Deny,FailEsc deny
-    class PHI,Handoff,Complete ok
-    class Audit audit
-```
-
-## Sequence of Interaction (Disclosure Gate)
-
-<p align="center">
-  <img alt="Sequence of Interaction - Disclosure Gate" src="assets/diagrams/sequence-of-interaction.svg" width="800">
-</p>
-
-## Live API — Try It Now
-
-No signup or API key required for demo and vendor adapter routes.
+Expected: **1996 passing**, 0 skipped. Without the API the server-dependent integration tests skip themselves; CI starts it and requires zero skips. One request to the hosted adapter route, synthetic payload, no key:
 
 ```bash
 curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
-  -H "Content-Type: application/json" \
-  -d @tests/demo_scenarios/vapi_noncompliant.json | python -m json.tool
+  -H "Content-Type: application/json" -d @tests/demo_scenarios/vapi_noncompliant.json
 ```
 
+## Three paths
+
+- **Payers and health plans** (the receiving side): run an observe-only [shadow evaluation](https://nhid-clinical.org/shadow-evaluation-guide.html) on call traces you already hold. Nothing is inserted into the call.
+- **Voice-AI vendors** (the calling side): produce the [vendor evidence pack](https://nhid-clinical.org/evidence-pack.html): conformance results, disclosure transcript, escalation phrases, a FHIR R4 `AuditEvent` sample.
+- **Developers**: check one turn against the hosted API or run the engine locally, from the [developers page](https://nhid-clinical.org/developers.html).
+
 <details>
-<summary><b>Full endpoint reference</b></summary>
+<summary><b>Evidence and limitations</b></summary>
+
+The framework produces machine-readable governance evidence from healthcare voice-AI interactions. Everything it concludes is bounded by the evidence reaching the evaluation path, so the limits below are properties of the design, not caveats bolted onto it.
+
+**It evaluates transcript and event evidence.** Controls read text. A disclosure that was spoken but mis-transcribed reads as a missing disclosure; an escalation request that was mis-transcribed produces **no finding at all**, and the record then attests to a compliant interaction, the one failure mode the evidence cannot reveal on its own.
+
+**Transcription accuracy is not established here.** NHID-Clinical does not perform speech recognition and does not independently establish ASR accuracy. An event may carry a `transcription_attestation` of `measured`, `attested` or `unattested`, so the dependency travels with the record instead of being assumed away. Assuring transcription quality, including across speaker groups, is the deploying organization's job. See the [dependency declaration](docs/scope-boundary-fairness-clinical.md).
+
+**Population-level fairness stratification is not implemented.** `language` and `interpreter_present` are recorded so an organization can run its own reporting; the framework does not stratify, and no code here computes a per-population figure.
+
+**It is not** a clinical safety validation system, a certification, a compliance badge, or a universal measure of AI safety. It does not govern the AI model (accuracy, bias, drift, clinical safety, output quality are [out of scope by design](docs/scope-boundary-fairness-clinical.md)), does not detect covert agents, and does not verify that the agent's reported results are true. Standards work is **mapped, not certified**.
+
+Detection figures, their corpora and denominators, and the four evidence populations that are never combined are on the [evidence pack page](https://nhid-clinical.org/evidence-pack.html). Pinned baselines: `scripts/check_baseline.py`.
+
+</details>
+
+<details>
+<summary><b>Composes with, does not replace</b></summary>
+
+- **FHIR / SMART on FHIR**: audit substrate. NHID-Clinical emits FHIR R4 `AuditEvent` (base v4.0.1, no implementation guide claimed); FHIR carries the data, NHID-Clinical governs the AI actor requesting it.
+- **OAuth 2.x / OIDC**: transport and client authorization ("may this client call this API"); NHID-Auth authorizes the specific interaction ("was this call delegated, in this scope"). Two separate checks; neither substitutes for the other.
+- **IAM platforms**: govern actors *you* provision; NHID-Clinical governs a *counterparty's* agent you never provisioned, arriving with no login step.
+- **AI governance frameworks** (NIST AI RMF, ISO/IEC 42001): meta-frameworks NHID-Clinical maps to as evidence targets, not competitors.
+
+NHID-Clinical evaluates declared identity, authorization context and interaction policy; it does not replace an identity provider or cryptographic identity infrastructure. Category thesis: [docs/positioning.md](docs/positioning.md). Controlled vocabulary: [docs/terminology.md](docs/terminology.md). What may be claimed: [docs/claim-boundaries.md](docs/claim-boundaries.md).
+
+</details>
+
+<details>
+<summary><b>Status</b></summary>
+
+A working reference implementation, not a production-scale product. The measured record is [docs/project-state.md](docs/project-state.md).
+
+**Available today**
+- Deterministic policy engine and the conformance test suite; every published figure is measured from `src/nhid_policy_engine_v1.py` and no other module
+- Hosted v1.3 conformance API; demo and adapter routes need no key
+- [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md): measure impersonation latency on your own call logs, offline, observe-only
+- Evidence pack export a vendor can hand to a reviewer
+- [Enforcement Profile](docs/enforcement-profile.md): how each `PolicyDecision` maps to a receiver action (a documented layer over the five controls, not a sixth control)
+- NHID-Auth v2 delegated-authority layer, published as reference code
+- Figures generated from the engine and the committed corpora, not drawn by hand; the [visual system](docs/visual-system.md) is normative and CI fails if a published figure stops matching its source
+- A documented validation path: a [verified dataset inventory](docs/validation/data-sources-inventory.md), an [evidence-provenance matrix](docs/validation/evidence-provenance-matrix.md), and an [evaluation corpus v2](docs/validation/EVALUATION_CORPUS_V2_FINDINGS.md) built from the cases the engine is known to miss
+- [DBC-01 scoped in writing](docs/validation/DBC-01-SCOPE-AND-LIMITATIONS.md): transcript-based detection of explicit or implied human-status claims; acoustic artifact detection is not claimed
+
+**In progress**: first shadow-evaluation partners (observe-only, no vendor changes); an independent review of DBC-01 against its intended threat model.
+
+**Not yet**: production deployments; a certification, accreditation or standard; any regulatory endorsement. **No design partners, pilot partners, customers or deployments exist today**, and none are represented as existing.
+
+A dated architecture review from July 2026 is preserved in [docs/review-2026-07-30.md](docs/review-2026-07-30.md); its figures were measured against a control tier since withdrawn, so it is history rather than current state.
+
+</details>
+
+<details>
+<summary><b>Hosted API endpoints</b></summary>
+
+Base URL `https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod`. Synthetic data only, never PHI.
 
 | Endpoint | Auth | Purpose |
 | :--- | :--- | :--- |
@@ -326,191 +162,99 @@ curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/a
 | `POST /v1/adapters/retell/check` | none | Native Retell AI payload → result |
 | `POST /v1/adapters/connect/check` | none | Amazon Connect → result |
 | `POST /v1/webhooks/call-progress` | none | Turn-by-turn in-call evaluation |
-| `POST /v1/cts/evaluate` | none | Run CTS YAML suite |
-| `POST /v1/conformance/check` | `x-api-key` | Production conformance check |
+| `POST /v1/cts/evaluate` | none | Run the CTS YAML suite |
+| `POST /v1/conformance/check` | `x-api-key` | Conformance check |
 
-</details>
-
-**New here?** [5-minute quickstart](docs/5-minute-quickstart.md) · [v2 integration guide](docs/v2-integration-guide.md) (Tier 0 → Tier 2)
-
-## Quick Start
-
-Python 3.10 or later.
-
-```bash
-git clone https://github.com/NHID-Clinical/NHID-Clinical.git
-cd NHID-Clinical
-python -m venv .venv && . .venv/bin/activate
-pip install -r requirements.txt
-
-# Unit, conformance and invariant tests — no server needed
-python -m pytest tests/ -v
-```
-
-Expected: everything passes except **21 skipped**. The 21 skips are the failure-injection integration tests in `tests/failure_injection_harness.py`, which call a running server and skip themselves when there isn't one.
-
-To run them too, start the server in a second terminal — activating the same environment there, or `uvicorn` will not be found — then re-run the suite in the first:
-
-```bash
-cd NHID-Clinical && . .venv/bin/activate
-uvicorn app:app --port 8000
-```
-
-```bash
-python -m pytest tests/ -v
-```
-
-Expected: **1992 passing**, with no skips and no xfails. Start the server with `app:app` as shown: the integration harness exercises `/voice/process` and `/debug/replay`, which `app.py` serves.
-
-Live demos and full docs on [nhid-clinical.org](https://nhid-clinical.org).
-
-<details>
-<summary><b>Repository structure</b></summary>
-
-```
-NHID-Clinical/
-├── schema/          # Event schema (JSON Schema Draft 2020-12)
-├── src/             # Policy engine + NHID-Auth v2 non-human-actor identity/delegation layer
-├── tests/           # CTS (YAML) + pytest harness + demo scenarios
-├── traces/          # 10 canonical failure traces
-├── adapters/        # VAPI, Twilio, Vonage, Retell, Amazon Connect
-├── functions/       # AWS Lambda handler
-├── docs/            # Quickstart, integration guides, knowledge archive
-└── specs/           # PDF artifacts (Overview, Core Spec, Blueprint)
-```
+Guides: [5-minute quickstart](docs/5-minute-quickstart.md) · [v2 integration guide](docs/v2-integration-guide.md).
 
 </details>
 
 <details>
-<summary><b>Regulatory alignment (summary)</b></summary>
+<summary><b>Regulatory alignment (mapped, not certified; not legal advice)</b></summary>
 
-| Driver | Requirement | NHID-Clinical Control |
+| Driver | Requirement | NHID-Clinical control |
 | :--- | :--- | :--- |
 | CMS-0057-F | FHIR API, audit retention | FHIR AuditEvent + ATR-01 |
 | MACPAC 2026 | AI transparency, human review | EIT-01 + ATR-01 |
 | State AI laws | Auditable AI decisions | IDG-01 + DBC-01 |
 | NIST CAISI RFI | Cross-org agent identity | NHID-Auth v2 |
-| EU AI Act Art. 50(1) | Informing people they are interacting with an AI system | IDG-01 + DBC-01 |
+| EU AI Act Art. 50(1) | Designed to support the obligation to inform people they are interacting with an AI system | IDG-01 + DBC-01 |
 | ISO/IEC 42001 | AI management system transparency controls | Full control set + ATR-01 |
-| NIST AI RMF 1.0 | Subcategory outcomes — evidence toward, not certification | IDG-01, DBC-01, EIT-01, ATR-01 + CTS ([crosswalk](docs/nist-ai-rmf-playbook-crosswalk.md)) |
+| NIST AI RMF 1.0 | Subcategory outcomes, evidence toward, not certification | IDG-01, DBC-01, EIT-01, ATR-01 + CTS ([crosswalk](docs/nist-ai-rmf-playbook-crosswalk.md)) |
 
 [Full matrix →](https://nhid-clinical.org/regulatory-alignment.html)
 
 </details>
 
-## NHID-Auth v2
+<details>
+<summary><b>Repository layout</b></summary>
 
-v1.3 verifies disclosure behavior. v2 verifies authorization: Ed25519 agent passports, NPI binding, scoped delegation (max 3 hops), revocation, and call-SID nonce binding. Reference code in `src/agent_identity.py`.
+| Path | What's there |
+| :-- | :-- |
+| `*.html` (root) | The public website, served by GitHub Pages: `index.html` plus the section pages. |
+| `src/nhid_policy_engine_v1.py` | **The conformance engine.** The five controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) plus the opt-in DLG-01 gate. Every published detection figure, baseline and CI guard measures this module and no other. |
+| `functions/handler.py` | The conformance API, and the only HTTP surface that runs the engine above. Deployed as AWS Lambda from `template.yaml`. |
+| `app.py`, `nhid_policy.py`, `llm.py`, `twilio_helper.py` (root) | A separate reference **voice pipeline**: Twilio webhooks, turn handling, LLM routing. It uses its own small state machine (`nhid_policy.py`, actions `DISCLOSE`/`ESCALATE`/`BLOCK`/`ROUTE_LLM`), **not the conformance engine**, and implements none of the five controls. A call-handling example; not the thing the conformance claims are about. |
+| `main.py`, `nhid_api_*.py`, `nhid_attest.py`, `nhid_payer.py`, `nhid_audit_export.py` (root) | A third surface: the authenticated API routers, mounted behind an API key. `src/voice_policy.py` is the rule evaluator these use. |
+| `nhid_event_store.py` (root) | Durable event and revocation storage (SQLite). |
+| `src/` | Packaged modules: the conformance engine, agent identity and the trust anchor (`agent_identity.py`, `trust_anchor.py`, `udap_agent_extension.py`, `udap_jws.py`), the audit store, the CLI, and the [specification reading aid](docs/spec-rag.md) (`nhid_spec_rag.py`, a retrieval index over `docs/`; it returns quotations, never a control decision). |
+| `adapters/` | Vendor call-payload adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect). |
+| `middleware/` | TypeScript middleware and its test suite. |
+| `tests/` | The Python conformance and invariant tests (1996 passing, all phases: foundations, adversarial, synthetic, hardening). |
+| `eval/` | The reading aid's question set, scorer and tests, deliberately outside `tests/`, which is the conformance suite the published count describes. |
+| `scripts/` | CI guards (`validate_ci.py`, `check_baseline.py`, `check_number_drift.py`, `check_control_set.py`) and the generators that write engine output into the pages. |
+| `schema/` | Event and audit-trace schemas. |
+| `conformance/` | The CTS YAML suite. |
+| `docs/` | Specification docs, the [Executive Brief](docs/executive-brief.md), the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md), the [payer brief](docs/payer-brief.md), and the knowledge archive. |
+| `specs/` | The published PDFs (maintained and archived). |
+| `assets/` | Brand SVGs, diagrams, images, and site CSS. |
+
+</details>
+
+<details>
+<summary><b>NHID-Auth v2 and related repositories</b></summary>
+
+**NHID-Auth v2** verifies authorization where v1.3 verifies disclosure behavior: Ed25519 agent passports, NPI binding, scoped delegation (at most three hops, narrowing only), revocation, and call-SID binding, verified offline against a trust anchor the receiver configures. Reference code in `src/agent_identity.py`; no adapter or SIP path carries a passport today. [Details →](https://nhid-clinical.org/framework/nhid-auth.html)
 
 ```bash
 python -m pytest tests/test_identity.py -v
 python examples/issue_and_verify.py
 ```
 
-[Details →](https://nhid-clinical.org/framework/nhid-auth.html#v2)
-
-## Specification reading aid (`/spec`)
-
-A retrieval index over `docs/*.md` that answers "where does the specification
-say this?" by quoting the passage back with its file path. **It is not the
-policy engine.** It returns no control decision, no conformance result and no
-certification — `src/nhid_policy_engine_v1.py` decides whether an interaction
-passed, against the five controls. An answer here is a quotation carrying
-exactly the authority of the document it came from. When the retrieved
-excerpts do not contain the answer, it says so rather than approximating.
-
-```bash
-python -m src.nhid_spec_rag                       # build the index (45 files, 915 chunks)
-python -m src.nhid_spec_rag --ask "What is the pass condition for PDX-01?"
-python -m pytest eval/ -v                         # the reading aid's own tests
-```
-
-Two routes, mounted in `main.py` behind the same API-key dependency as every
-other router: `GET /spec/health` (chunk count, backend, skipped files) and
-`POST /spec/ask` (`{"question": "..."}` → answer, citations, refused). Files
-over 200 KB are skipped whole and named by `/spec/health`. Without
-`OPENAI_API_KEY` it falls back to a deterministic local hash and states that
-the score is not the `text-embedding-3-small` score.
-
-[Measured hit rate, refusal count and both known misses →](docs/spec-rag.md)
-
-## Repository layout
-
-| Path | What's there |
-| :-- | :-- |
-| `*.html` (root) | The public website, served by GitHub Pages — `index.html` plus the section pages (about, specification, for-payers, and so on). |
-| `src/nhid_policy_engine_v1.py` | **The conformance engine.** The five controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) plus the opt-in DLG-01 gate. Every published detection figure, baseline and CI guard measures this module and no other. |
-| `functions/handler.py` | The conformance API, and the only HTTP surface that runs the engine above. Deployed as AWS Lambda from `template.yaml`. |
-| `app.py`, `nhid_policy.py`, `llm.py`, `twilio_helper.py` (root) | A separate reference **voice pipeline** — Twilio webhooks, turn handling, LLM routing. It uses its own small state machine (`nhid_policy.py`, actions `DISCLOSE`/`ESCALATE`/`BLOCK`/`ROUTE_LLM`), **not** the conformance engine, and implements none of the five controls. Useful as a call-handling example; not the thing the conformance claims are about. |
-| `main.py`, `nhid_api_*.py`, `nhid_attest.py`, `nhid_payer.py`, `nhid_audit_export.py` (root) | A third surface: the authenticated API routers, mounted behind an API key. `src/voice_policy.py` is the rule evaluator these use. |
-| `nhid_event_store.py` (root) | Durable event and revocation storage (SQLite). |
-| `src/` | Packaged modules: the conformance engine, agent identity and the trust anchor (`agent_identity.py`, `trust_anchor.py`, `udap_agent_extension.py`, `udap_jws.py`), the audit store, and the CLI. |
-| `adapters/` | Vendor call-payload adapters (VAPI, Twilio). |
-| `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (1992 passing, all phases: foundations, adversarial, synthetic, hardening). |
-| `eval/` | The specification reading aid's question set, its scorer and its tests — deliberately outside `tests/`, which is the conformance suite the published count describes. |
-| `scripts/` | CI guards — `validate_ci.py`, `check_baseline.py`, `check_number_drift.py` — and tooling. |
-| `schema/` | Event and audit-trace schemas. |
-| `docs/` | Specification docs, the [Executive Brief](docs/executive-brief.md), the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md), and the knowledge archive. |
-| `assets/` | Brand SVGs, diagrams, images, and site CSS. |
-
-## Related repositories
-
-Three public repositories, three jobs. They share one vocabulary — the controls,
-the four result states, and the [Impersonation Latency](docs/terminology.md)
-definition are the same in all three.
+Three public repositories, three jobs, one vocabulary:
 
 | Repository | What it is |
 | :-- | :-- |
 | **[NHID-Clinical](https://github.com/NHID-Clinical/NHID-Clinical)** (this one) | The open framework: control definitions, the deterministic engine, the conformance suite, the event schema, the shadow-evaluation method. Apache-2.0 code, CC BY 4.0 specification. Free, and the governance verdict is never paywalled. |
-| **[NHID-Clinical-SaaS](https://github.com/NHID-Clinical/NHID-Clinical-SaaS)** | The commercial product: a healthcare voice-AI governance monitoring and evidence platform, built on these controls. Hosted ingestion, cross-vendor normalization, retained evidence, a findings workflow and reporting — the costs of running a service, not capabilities withheld from the framework. Organization auth is an API key, a magic-link session for people, or an RFC 8693 token exchange so a backend can trade its own IdP's token for a short-lived scoped one; every pilot run carries a data classification (synthetic · de-identified · production-derived). **Zero deployments, zero pilots, zero validated willingness-to-pay.** |
-| **[Simulator](https://github.com/NHID-Clinical/Simulator)** | *Zero Latency* — a five-module interactive course that teaches the controls by making you run them: catch a missed disclosure, inspect a delegation, build a finding from evidence, decide what ships. Static HTML, no build. A learning tool — not the framework, not the product, and not a certification. |
+| **[NHID-Clinical-SaaS](https://github.com/NHID-Clinical/NHID-Clinical-SaaS)** | The commercial product: a healthcare voice-AI governance monitoring and evidence platform built on these controls. Hosted ingestion, cross-vendor normalization, retained evidence, a findings workflow and reporting. **Zero deployments, zero pilots, zero validated willingness-to-pay.** |
+| **[Simulator](https://github.com/NHID-Clinical/Simulator)** | *Zero Latency*, a five-module interactive course that teaches the controls by making you run them. Static HTML, no build. A learning tool: not the framework, not the product, and not a certification. |
 
-## Contributing & Pilot Partners
+</details>
 
-We are seeking the first **shadow evaluation partners** — 90 days, observe-only, no vendor changes required. Start small: the [Tier 0 Shadow Pilot Kit](docs/pilot-kit/README.md) produces usable impersonation-latency data from your own call logs in 2–4 weeks.
+## Contributing
 
-**If you are on the payer side**, the two-page [payer brief](docs/payer-brief.md) says what a representative can and cannot verify on an automated call today, and offers the measurement at no cost. The analysis is an **offline batch on de-identified transcripts, run in your environment** — there is no hosted endpoint and no request for your call audio, because a public scorer would create the exposure it exists to measure.
+We are looking for the first **shadow-evaluation partners**: observe-only, no vendor changes, on call traces you already hold. If you are on the payer side, the [payer brief](docs/payer-brief.md) says what a representative can and cannot verify on an automated call today. The analysis is an offline batch on de-identified transcripts, run in your environment; there is no hosted scorer and no request for call audio.
 
-**No design partners, pilot partners, customers or deployments exist today**, and none are represented as existing.
+Code contributions: [CONTRIBUTING](.github/CONTRIBUTING.md) · [Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org). Repository settings only the owner can change are listed in [docs/maintainer-checklist-github.md](docs/maintainer-checklist-github.md).
 
-[**For Payers →**](https://nhid-clinical.org/shadow-evaluation-guide.html) · [GitHub Discussions](https://github.com/NHID-Clinical/NHID-Clinical/discussions) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
+## Creator and project lead
 
-## Creator & Project Lead
+<img src="assets/maintainer/brianna-baynard.jpg" width="96" align="left" alt="Brianna Baynard" />
 
-<img src="assets/maintainer/brianna-baynard.jpg" width="120" align="left" alt="Brianna Baynard" />
+**Brianna Baynard**, AI Governance & Security Researcher · AIGP · ISC² CC · WGU Cybersecurity. Background in healthcare payer operations, identity-verification workflows and regulated-data environments; NHID-Clinical grew out of the impersonation-latency problem seen firsthand on live eligibility, claims and prior-authorization lines. Maintained as an open reference implementation for technical review; criticism is welcome.
 
-**Brianna Baynard**
-AI Governance & Security Researcher · AIGP · ISC² CC · WGU Cybersecurity
-
-Creator and project lead for NHID-Clinical. Background in healthcare payer operations, identity-verification workflows, and regulated-data environments. NHID-Clinical grew out of direct experience observing operational gaps in healthcare AI voice workflows, and is maintained as an open reference implementation for technical review — feedback and criticism are welcome.
-
-**Public profiles** — [LinkedIn](https://www.linkedin.com/in/brianna-baynard) · [X @baynardmalone](https://x.com/baynardmalone) · [GitHub @thankcheeses](https://github.com/thankcheeses)
-
-**The project** — [nhid-clinical.org](https://nhid-clinical.org) · [X @NHIDClinical](https://x.com/NHIDClinical) · [GitHub organization](https://github.com/NHID-Clinical) · [NIST public comment](https://www.regulations.gov/comment/NIST-2025-0035-0026) · [contact@nhid-clinical.org](mailto:contact@nhid-clinical.org)
+[LinkedIn](https://www.linkedin.com/in/brianna-baynard) · [X @baynardmalone](https://x.com/baynardmalone) · [X @NHIDClinical](https://x.com/NHIDClinical) · [NIST public comment](https://www.regulations.gov/comment/NIST-2025-0035-0026)
 
 <br clear="left"/>
 
----
-
 ## License
-
-This repository is licensed in two parts, because it holds two kinds of work.
 
 | Part | License | What it covers |
 |---|---|---|
 | **Software** | [Apache-2.0](LICENSE) | `src/`, `adapters/`, `scripts/`, `tests/`, `tools/`, `functions/`, `middleware/`, `simulator/`, top-level Python modules |
 | **Specification & docs** | [CC BY 4.0](LICENSE-DOCS) | `docs/`, `specs/`, `schema/`, conformance suite definitions, `content/`, website pages |
 
-The code is Apache-2.0 rather than Creative Commons because Creative Commons
-advises against applying CC licenses to software — they carry no patent grant
-and no warranty disclaimer written for code, which makes them hard for an
-organization's counsel to clear. The specification prose stays CC BY 4.0, which
-is the right license for text meant to be quoted, adapted and cited.
-
-See [NOTICE](NOTICE) for the full statement.
-
----
+Code is Apache-2.0 rather than Creative Commons because CC licenses carry no patent grant and no warranty disclaimer written for software. See [NOTICE](NOTICE).
 
 <div align="center">
   <sub>Code Apache-2.0 · Spec &amp; docs CC BY 4.0 · Brianna Baynard · <a href="https://www.regulations.gov/comment/NIST-2025-0035-0026">NIST-2025-0035-0026</a> · <a href="https://nhid-clinical.org">nhid-clinical.org</a></sub>
