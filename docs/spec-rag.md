@@ -53,7 +53,9 @@ and the eval script all state which backend produced a number.
 ## Retrieval
 
 Top 4 by `0.60 × cosine + 0.40 × token_overlap`, plus a `0.15` boost when a
-control id named in the question also appears in the chunk. The boost is large
+control id named in the question also appears in the chunk. (A hybrid mode,
+BM25 fused with this score by reciprocal rank, exists and is off; see
+*Phase 2: hybrid retrieval* below.) The boost is large
 enough to reorder near-ties and too small to float an irrelevant chunk into the
 top 4.
 
@@ -207,6 +209,37 @@ measured reason.
 
 Not changed by this work: the embedding backends, the weights, the 0.55 gate,
 `/spec/ask`'s response, and the eval dataset.
+
+### Phase 2: hybrid retrieval, measured and left off (2026-10-25)
+
+The roadmap's second retrieval step fuses BM25 with the dense score. It is in
+the module, tested, and **off by default** (`RETRIEVAL = "dense"`), because on
+the backend that can be measured it improved nothing:
+
+| Variant | file | passage | MRR | refusals | unsupported |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| F. dense, heading-aware chunks (the default) | 20/20 | 11/20 | 0.975 | 15/15 | 0 |
+| R. F + BM25, fused by reciprocal rank (k=60, top 50 of each) | 20/20 | 11/20 | 0.975 | 15/15 | 0 |
+| X. R + an exact-identifier list in place of the control-id boost | 20/20 | 11/20 | 0.975 | 15/15 | 0 |
+| Z. BM25 alone | 20/20 | 11/20 | 0.95 | **13/15** | **2** |
+
+R changed the top four chunks for 10 of the 20 answerable questions and the
+citations for 5, and no metric moved in either direction. The refusal margin
+was the same, with one denial question (r10) a little closer to the line
+(0.43 → 0.47 against the 0.55 gate). Z, BM25 by itself, answered r02 and r06,
+the HIPAA and HITRUST certification questions, exactly as planning predicted.
+It is implemented in the harness only, not in the module.
+
+Why it is kept rather than removed: the local backend's "dense" score is a
+hashed bag of words, so it already matches exact terms and BM25 has little to
+add. A semantic embedding misses exact terms (reason codes, control ids,
+numbers), which is where lexical fusion usually earns its place. That case is
+the OpenAI backend, which has never been measured. The switch exists for that
+measurement; it is not turned on until that measurement says so. Two tests
+make sure that switching it on cannot switch the refusals off.
+
+A cross-encoder reranker was not built: with the right file already first for
+19 of 20 questions there is no ranking gap for it to close.
 
 The OpenAI backend has never been measured. Running the eval with
 `OPENAI_API_KEY` set reports it separately; the two are not comparable and are

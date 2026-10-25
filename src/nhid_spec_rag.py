@@ -113,6 +113,23 @@ CHUNKING = "heading"     # "heading" or "fixed"
 STEM_RANKING = True      # light suffix stripping, for ranking only
 HEADING_IN_BODY = True   # the heading line stays in the body the gate reads
 MIN_SECTION_CHARS = 400  # fold shorter sections into the previous one
+RETRIEVAL = "dense"      # "dense", or "hybrid" (dense + BM25 fused by RRF)
+EXACT_ID = False         # hybrid only: a third ranked list for identifiers named in the question
+
+# Hybrid retrieval (Phase 2, PR B) is built, tested and OFF. On the local
+# backend it changed which chunks came back for 10 of 20 answerable questions
+# and moved no metric (docs/spec-rag.md). Its expected value is with the
+# OpenAI backend, whose dense score is semantic and misses exact terms; turn it
+# on only when that backend has been measured with it. BM25 by itself is never
+# an option: alone it answered two denial-shaped questions.
+#
+# BM25 is the textbook Okapi form. RRF is reciprocal-rank fusion, which needs
+# ranks rather than comparable scores: the dense score and BM25 live on
+# different scales, and fusing by rank sidesteps that.
+BM25_K1 = 1.5
+BM25_B = 0.75
+RRF_K = 60
+RRF_DEPTH = 50           # each list contributes its top 50
 
 CONTROL_IDS = ("IDG-01", "PDX-01", "DBC-01", "EIT-01", "ATR-01")
 
@@ -524,6 +541,29 @@ class Index:
     skipped: List[Dict[str, Any]] = field(default_factory=list)
     corpus_hash: str = ""
     commit: str = "unknown"
+    _bm25: Optional[Tuple[List[Counter], List[int], float, Dict[str, float]]] = field(
+        default=None, repr=False, compare=False)
+
+    def bm25_stats(self) -> Tuple[List[Counter], List[int], float, Dict[str, float]]:
+        """Per-chunk term counts, lengths, mean length and BM25 idf.
+
+        Computed once per loaded index from ``_rank_tokens(scoring_text)``, a
+        fraction of a second for the whole corpus, rather than stored in the
+        index file: the file's shape does not change and an index built by an
+        older version still loads.
+        """
+        if self._bm25 is None:
+            tfs = [Counter(_rank_tokens(c.scoring_text)) for c in self.chunks]
+            lens = [sum(tf.values()) for tf in tfs]
+            avg = (sum(lens) / len(lens)) if lens else 0.0
+            df: Counter = Counter()
+            for tf in tfs:
+                df.update(tf.keys())
+            n = len(tfs)
+            idf = {t: math.log(1.0 + (n - d + 0.5) / (d + 0.5)) for t, d in df.items()}
+            self._bm25 = (tfs, lens, avg, idf)
+        return self._bm25
+
     @property
     def chunk_count(self) -> int:
         return len(self.chunks)
@@ -666,10 +706,43 @@ def controls_in(text: str) -> List[str]:
 @dataclass
 class Hit:
     chunk: Chunk
-    score: float
+    score: float          # the dense score: 0.60 cosine + 0.40 overlap (+ boost)
     cosine: float
     overlap: float
     control_boost: float
+    bm25: float = 0.0     # hybrid only
+    rrf: float = 0.0      # hybrid only: the fused score the ranking used
+
+
+# An identifier a reader would quote exactly: a control id (IDG-01), a reason
+# code or outcome (PDX01_PHI_GATE_TRIGGERED, DENY_DATA). Upper case with at
+# least one hyphen or underscore, matched case-sensitively.
+_IDENTIFIER_RE = re.compile(r"\b[A-Z][A-Z0-9]*(?:[-_][A-Z0-9]+)+\b")
+
+
+def identifiers_in(text: str) -> List[str]:
+    return sorted(set(_IDENTIFIER_RE.findall(text)))
+
+
+def bm25_scores(index: Index, question: str) -> List[float]:
+    tfs, lens, avg, idf = index.bm25_stats()
+    q = set(_rank_tokens(question))
+    out: List[float] = []
+    for tf, length in zip(tfs, lens):
+        s = 0.0
+        norm = BM25_K1 * (1.0 - BM25_B + BM25_B * (length / avg if avg else 0.0))
+        for t in q:
+            f = tf.get(t)
+            if f:
+                s += idf[t] * f * (BM25_K1 + 1.0) / (f + norm)
+        out.append(s)
+    return out
+
+
+def _ranks(scores: Sequence[float], depth: int) -> Dict[int, int]:
+    """Chunk position -> 1-based rank, for the top ``depth`` positive scores."""
+    order = sorted((i for i, v in enumerate(scores) if v > 0.0), key=lambda i: -scores[i])
+    return {i: r for r, i in enumerate(order[:depth], 1)}
 
 
 def retrieve(index: Index, question: str, k: int = TOP_K) -> List[Hit]:
@@ -681,11 +754,16 @@ def retrieve(index: Index, question: str, k: int = TOP_K) -> List[Hit]:
     else:
         q_vec = embed_local([question])[0]
 
+    hybrid = RETRIEVAL == "hybrid"
+    exact = hybrid and EXACT_ID
     hits: List[Hit] = []
     for chunk in index.chunks:
         cos = cosine(q_vec, chunk.embedding)
         ov = token_overlap(q_tokens, chunk.scoring_text)
-        boost = CONTROL_BOOST if (q_controls & set(controls_in(chunk.text))) else 0.0
+        # With the exact-ID list in the fusion the boost would count the same
+        # evidence twice, so it is off there.
+        boost = 0.0 if exact else (
+            CONTROL_BOOST if (q_controls & set(controls_in(chunk.text))) else 0.0)
         hits.append(Hit(
             chunk=chunk,
             score=W_COSINE * cos + W_OVERLAP * ov + boost,
@@ -694,7 +772,23 @@ def retrieve(index: Index, question: str, k: int = TOP_K) -> List[Hit]:
             control_boost=boost,
         ))
 
-    hits.sort(key=lambda h: (-h.score, h.chunk.source, h.chunk.index))
+    if not hybrid:
+        hits.sort(key=lambda h: (-h.score, h.chunk.source, h.chunk.index))
+        return hits[:k]
+
+    lists = [_ranks([h.score for h in hits], RRF_DEPTH)]
+    bm = bm25_scores(index, question)
+    for h, v in zip(hits, bm):
+        h.bm25 = v
+    lists.append(_ranks(bm, RRF_DEPTH))
+    if exact:
+        ids = identifiers_in(question)
+        if ids:
+            named = [h.score if any(i in h.chunk.text for i in ids) else 0.0 for h in hits]
+            lists.append(_ranks(named, RRF_DEPTH))
+    for pos, h in enumerate(hits):
+        h.rrf = sum(1.0 / (RRF_K + ranks[pos]) for ranks in lists if pos in ranks)
+    hits.sort(key=lambda h: (-h.rrf, -h.score, h.chunk.source, h.chunk.index))
     return hits[:k]
 
 
