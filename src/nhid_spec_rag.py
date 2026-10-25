@@ -16,8 +16,8 @@ this will faithfully repeat the error.
 
 WHAT IT DOES
 ------------
-Reads ``docs/*.md`` (top level, skipping any file over 200 KB), splits each into
-800-character chunks with 100 characters of overlap, embeds them, and answers a
+Reads ``docs/*.md`` (top level, skipping any file over 200 KB), splits each at
+its markdown headings (sections capped at 1,200 characters), embeds them, and answers a
 question by quoting the retrieved text back with citations. When the retrieved
 excerpts do not contain the answer it says so, in those words, rather than
 assembling something plausible from adjacent material.
@@ -101,6 +101,19 @@ EXCLUDED_FILES: Dict[str, str] = {
 CHUNK_CHARS = 800
 CHUNK_OVERLAP = 100
 
+# Heading-aware chunking (Phase 2). A chunk never spans two headings; a section
+# longer than SECTION_CAP is windowed inside itself with SECTION_OVERLAP. The
+# fixed-width splitter above stays as the fallback and for comparison.
+SECTION_CAP = 1200
+SECTION_OVERLAP = 120
+
+# Switches the ablation harness (eval/experiments/chunking_ablation.py) flips.
+# The defaults are the measured configuration; docs/spec-rag.md has the table.
+CHUNKING = "heading"     # "heading" or "fixed"
+STEM_RANKING = True      # light suffix stripping, for ranking only
+HEADING_IN_BODY = True   # the heading line stays in the body the gate reads
+MIN_SECTION_CHARS = 400  # fold shorter sections into the previous one
+
 CONTROL_IDS = ("IDG-01", "PDX-01", "DBC-01", "EIT-01", "ATR-01")
 
 # Dimensionality of the local hashed embedding. 1024 keeps collisions rare
@@ -150,16 +163,66 @@ def _tokens(text: str) -> List[str]:
     return [t for t in _TOKEN_RE.findall(text.lower()) if t not in _STOPWORDS]
 
 
+def _stem(token: str) -> str:
+    """Strip one common English inflection from a word longer than four letters.
+
+    Deliberately small: enough that "milestones" meets "milestone", "mapping"
+    meets "map" and "policies" meets "policy", not enough to need a dependency.
+    "-es" comes off only after s, x, z, ch or sh ("classes", not "milestones");
+    a doubled final consonant left by "-ing"/"-ed" is undoubled ("mapping");
+    "-ss" words keep their s ("process"). Identifiers such as IDG-01 or
+    PDX01_PHI_GATE_TRIGGERED contain digits, hyphens or underscores and are
+    left alone.
+    """
+    if len(token) <= 4 or not token.isalpha():
+        return token
+    if token.endswith("ies") and len(token) > 5:
+        return token[:-3] + "y"
+    if token.endswith("es") and token[:-2].endswith(("s", "x", "z", "ch", "sh")):
+        return token[:-2]
+    for suffix in ("ing", "ed"):
+        if token.endswith(suffix) and len(token) - len(suffix) >= 3:
+            stem = token[: -len(suffix)]
+            if stem[-1] == stem[-2] and stem[-1] not in "lsz":
+                stem = stem[:-1]
+            return stem
+    if token.endswith("s") and not token.endswith("ss"):
+        return token[:-1]
+    return token
+
+
+def _rank_tokens(text: str) -> List[str]:
+    """Tokens for *ranking*: stemmed when STEM_RANKING is on.
+
+    Never used by the refusal gate. Stemming the gate was measured and let three
+    unanswerable questions through (r03, r09, r12): a looser match is what
+    retrieval wants and exactly what the gate must not have.
+    """
+    toks = _tokens(text)
+    return [_stem(t) for t in toks] if STEM_RANKING else toks
+
+
 @dataclass
 class Chunk:
     source: str          # repo-relative path, e.g. "docs/terminology.md"
     index: int           # 0-based position of this chunk within its source
-    text: str
+    text: str            # the body: what is quoted
     embedding: List[float] = field(default_factory=list)
+    section: str = ""    # heading path, "H1 > H2 > H3"; "" for a preamble
 
     @property
     def chunk_id(self) -> str:
         return f"{self.source}#{self.index}"
+
+    @property
+    def scoring_text(self) -> str:
+        """What ranking sees: the body plus its heading path.
+
+        The heading is scored, not quoted. Prefixed into the body it became the
+        quoted answer and passage hits fell 11 -> 8; scored alongside the body
+        it lifted file hits instead.
+        """
+        return f"{self.text}\n{self.section}" if self.section else self.text
 
 
 def iter_corpus_files() -> List[Path]:
@@ -228,8 +291,11 @@ def repo_commit() -> str:
 def chunk_text(text: str) -> List[str]:
     """Fixed 800-character windows with 100 characters of overlap.
 
-    Fixed-width rather than paragraph-aware on purpose: the corpus mixes prose,
-    tables and fenced code, and a splitter tuned for one mangles the others.
+    The Phase 1 splitter, kept as the fallback (``CHUNKING = "fixed"``) and as
+    variant A of the ablation. ``chunk_document`` replaced it as the default
+    because heading boundaries are structure every file already has; see
+    docs/spec-rag.md for the measurements. Fixed-width rather than
+    paragraph-aware: the corpus mixes prose, tables and fenced code.
     The overlap is what stops a definition that straddles a boundary from being
     invisible to both neighbours.
     """
@@ -248,13 +314,130 @@ def chunk_text(text: str) -> List[str]:
     return out
 
 
+_HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
+_FENCE_RE = re.compile(r"^\s*(```|~~~)")
+
+
+def _window(text: str, cap: int, overlap: int) -> List[str]:
+    """Split one section into windows of at most ``cap`` characters.
+
+    Windows end at the last line break (or, failing that, space) in their second
+    half and the next one starts ``overlap`` characters back, moved forward to a
+    word boundary — so a window neither starts nor ends mid-word unless a single
+    word is longer than the window.
+    """
+    text = text.strip()
+    if len(text) <= cap:
+        return [text] if text else []
+    out: List[str] = []
+    pos = 0
+    while pos < len(text):
+        end = min(pos + cap, len(text))
+        if end < len(text):
+            cut = text.rfind("\n", pos + cap // 2, end)
+            if cut == -1:
+                cut = text.rfind(" ", pos + cap // 2, end)
+            if cut != -1:
+                end = cut
+        piece = text[pos:end].strip()
+        if piece:
+            out.append(piece)
+        if end >= len(text):
+            break
+        nxt = max(end - overlap, pos + 1)
+        space = text.find(" ", nxt, end)
+        pos = space + 1 if space != -1 else nxt
+    return out
+
+
+def chunk_document(text: str, *, cap: int = SECTION_CAP,
+                   overlap: int = SECTION_OVERLAP,
+                   keep_heading: Optional[bool] = None,
+                   min_chars: Optional[int] = None) -> List[Tuple[str, str]]:
+    """Split markdown at its headings: ``[(body, section_path), ...]``.
+
+    A heading line starts a new section and its path ``"H1 > H2 > H3"`` is
+    carried with every chunk of it. ``#`` lines inside a fenced code block are
+    code, not headings. A long section is windowed inside itself and never
+    across a heading. Text before the first heading has an empty path.
+
+    Two measured choices (docs/spec-rag.md, eval/experiments/):
+
+    * The heading line stays in the body (``keep_heading``). Without it the
+      refusal gate lost the heading's words and refused three answerable
+      questions whose vocabulary lives in the heading ("Alert Thresholds").
+      It is still never *quoted*: ``_best_excerpts`` skips heading lines.
+    * A section shorter than ``min_chars`` is folded into the one before it
+      (``min_chars``). A three-line list under its own heading is a tiny, dense
+      chunk that out-ranks everything for any question sharing two of its
+      words; "Future Compliance: HITRUST CSF certification" answered "what is
+      NHID-Clinical's HITRUST certification score?" until it was folded.
+
+    Structure-aware rather than sentence-aware on purpose: the corpus carries
+    about 1,800 table rows and 160 code fences, and a sentence splitter breaks
+    both.
+    """
+    keep_heading = HEADING_IN_BODY if keep_heading is None else keep_heading
+    min_chars = MIN_SECTION_CHARS if min_chars is None else min_chars
+    sections: List[Tuple[str, str]] = []
+    stack: List[Tuple[int, str]] = []
+    body: List[str] = []
+    in_fence = False
+
+    def flush() -> None:
+        path = " > ".join(title for _, title in stack)
+        joined = "\n".join(body).strip()
+        if joined:
+            sections.append((joined, path))
+        body.clear()
+
+    for line in text.splitlines():
+        if _FENCE_RE.match(line):
+            in_fence = not in_fence
+            body.append(line)
+            continue
+        m = None if in_fence else _HEADING_RE.match(line)
+        if m:
+            flush()
+            level, title = len(m.group(1)), m.group(2).strip()
+            while stack and stack[-1][0] >= level:
+                stack.pop()
+            stack.append((level, title))
+            if keep_heading:
+                body.append(line)
+        else:
+            body.append(line)
+    flush()
+
+    # A section shorter than min_chars is folded into the one before it in the
+    # same file (keeping the earlier path), so a three-line list under its own
+    # heading is not a chunk on its own.
+    merged: List[Tuple[str, str]] = []
+    for text_, path in sections:
+        if merged and len(text_) < min_chars:
+            prev_text, prev_path = merged[-1]
+            merged[-1] = (prev_text + "\n\n" + text_, prev_path)
+        else:
+            merged.append((text_, path))
+
+    out: List[Tuple[str, str]] = []
+    for text_, path in merged:
+        for piece in _window(text_, cap, overlap):
+            out.append((piece, path))
+    return out
+
+
 def build_chunks() -> List[Chunk]:
     chunks: List[Chunk] = []
     for path in iter_corpus_files():
         rel = str(path.relative_to(REPO_ROOT))
         body = path.read_text(encoding="utf-8", errors="replace")
-        for i, piece in enumerate(chunk_text(body)):
-            chunks.append(Chunk(source=rel, index=i, text=piece))
+        if CHUNKING == "fixed":
+            pieces = [(piece, "") for piece in chunk_text(body)]
+        else:
+            pieces = chunk_document(body)
+        for i, (piece, section) in enumerate(pieces):
+            chunks.append(Chunk(source=rel, index=i, text=piece, section=section))
     return chunks
 
 
@@ -282,7 +465,7 @@ def embed_local(texts: Sequence[str]) -> List[List[float]]:
     vectors: List[List[float]] = []
     for text in texts:
         vec = [0.0] * LOCAL_DIM
-        counts = Counter(_tokens(text))
+        counts = Counter(_rank_tokens(text))
         for token, n in counts.items():
             digest = hashlib.sha1(token.encode("utf-8")).digest()
             bucket = int.from_bytes(digest[:4], "big") % LOCAL_DIM
@@ -341,7 +524,6 @@ class Index:
     skipped: List[Dict[str, Any]] = field(default_factory=list)
     corpus_hash: str = ""
     commit: str = "unknown"
-
     @property
     def chunk_count(self) -> int:
         return len(self.chunks)
@@ -383,7 +565,7 @@ def build_index(*, verbose: bool = True) -> Index:
     if not chunks:
         raise RuntimeError(f"no markdown found under {CORPUS_DIR}")
 
-    vectors, backend = embed([c.text for c in chunks])
+    vectors, backend = embed([c.scoring_text for c in chunks])
     for chunk, vec in zip(chunks, vectors):
         chunk.embedding = vec
 
@@ -466,11 +648,14 @@ def cosine(a: Sequence[float], b: Sequence[float]) -> float:
 
 
 def token_overlap(question_tokens: Sequence[str], chunk_text_: str) -> float:
-    """Fraction of the question's distinct content words present in the chunk."""
+    """Fraction of the question's distinct content words present in the chunk.
+
+    Both sides go through ``_rank_tokens``; pass the question that way too.
+    """
     q = set(question_tokens)
     if not q:
         return 0.0
-    return len(q & set(_tokens(chunk_text_))) / len(q)
+    return len(q & set(_rank_tokens(chunk_text_))) / len(q)
 
 
 def controls_in(text: str) -> List[str]:
@@ -488,7 +673,7 @@ class Hit:
 
 
 def retrieve(index: Index, question: str, k: int = TOP_K) -> List[Hit]:
-    q_tokens = _tokens(question)
+    q_tokens = _rank_tokens(question)
     q_controls = set(controls_in(question))
 
     if index.backend == "openai":
@@ -499,7 +684,7 @@ def retrieve(index: Index, question: str, k: int = TOP_K) -> List[Hit]:
     hits: List[Hit] = []
     for chunk in index.chunks:
         cos = cosine(q_vec, chunk.embedding)
-        ov = token_overlap(q_tokens, chunk.text)
+        ov = token_overlap(q_tokens, chunk.scoring_text)
         boost = CONTROL_BOOST if (q_controls & set(controls_in(chunk.text))) else 0.0
         hits.append(Hit(
             chunk=chunk,
@@ -615,7 +800,7 @@ def _best_excerpts(index: Index, question: str, hits: Sequence[Hit],
     """Pick the passages inside the retrieved chunks that address the question.
 
     Returns ``(source, passage)`` pairs. Quoting the chunk whole would bury the
-    answer in 800 characters of neighbouring text; quoting nothing would make
+    answer in up to 1,200 characters of neighbouring text; quoting nothing would make
     the citation unverifiable. This quotes the fragments that carry the
     question's own words.
 
@@ -631,8 +816,8 @@ def _best_excerpts(index: Index, question: str, hits: Sequence[Hit],
     for h in hits:
         for raw in _SENTENCE_RE.split(h.chunk.text):
             passage = raw.strip()
-            if len(passage) < 25:
-                continue
+            if len(passage) < 25 or passage.startswith("#"):
+                continue  # a heading line is scored with its section, never quoted
             toks = set(_tokens(passage))
             if len(toks) < MIN_PASSAGE_TOKENS:
                 continue
