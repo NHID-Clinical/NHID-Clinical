@@ -60,7 +60,7 @@ def _unit_published() -> str:
     across sixty-four places and this assertion was not one of them.
     """
     import ast
-    src = (ROOT / "scripts" / "validate_ci.py").read_text()
+    src = (ROOT / "scripts" / "validate_ci.py").read_text(encoding="utf-8")
     for node in ast.walk(ast.parse(src)):
         if isinstance(node, ast.Assign):
             for target in node.targets:
@@ -168,7 +168,7 @@ def test_pdf_matches_the_source_on_every_heading():
     from pdfminer.high_level import extract_text
 
     flat = re.sub(r"[*`]", "", re.sub(r"\s+", " ", extract_text(str(PDF))))
-    heads = [h.strip("# ").strip() for h in re.findall(r"^#{1,2} .+$", SRC.read_text(), re.M)]
+    heads = [h.strip("# ").strip() for h in re.findall(r"^#{1,2} .+$", SRC.read_text(encoding="utf-8"), re.M)]
     missing = [h for h in heads if re.sub(r"[*`]", "", re.sub(r"\s+", " ", h)) not in flat]
     assert not missing, f"headings absent from the rendered PDF: {missing}"
 

@@ -275,14 +275,16 @@ class HealthChecker:
         """
         try:
             # Check audit store connectivity
-            start_time = time.time()
+            # perf_counter, not the wall clock: that ticks at ~15.6 ms on Windows,
+            # so a sub-millisecond store round-trip measured 0.0 there.
+            start_time = time.perf_counter()
             try:
                 # Try a simple read operation
                 self.audit_store.read_event("_health_check_")
-                store_latency_ms = (time.time() - start_time) * 1000
+                store_latency_ms = (time.perf_counter() - start_time) * 1000
                 store_status = "connected"
             except Exception as e:
-                store_latency_ms = (time.time() - start_time) * 1000
+                store_latency_ms = (time.perf_counter() - start_time) * 1000
                 store_status = "disconnected"
                 self.logger.warning(
                     "Audit store health check failed",

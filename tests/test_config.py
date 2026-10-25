@@ -85,12 +85,14 @@ class TestDeploymentModes:
         assert config.deployment_mode == DeploymentMode.STAGING
         assert config.debug is False
 
-    def test_production_mode(self, monkeypatch):
+    def test_production_mode(self, monkeypatch, tmp_path):
         """Production mode should require keys and deny debug."""
         key = base64.b64encode(os.urandom(32)).decode()
         monkeypatch.setenv("DEPLOYMENT_MODE", "production")
         monkeypatch.setenv("AUDIT_SECRET_KEY_B64", key)
-        monkeypatch.setenv("AUDIT_STORE_PATH", "/tmp/audit.db")
+        # tmp_path, not /tmp: production mode checks the parent exists, and
+        # Windows has no /tmp.
+        monkeypatch.setenv("AUDIT_STORE_PATH", str(tmp_path / "audit.db"))
 
         config = load_config()
         assert config.deployment_mode == DeploymentMode.PRODUCTION

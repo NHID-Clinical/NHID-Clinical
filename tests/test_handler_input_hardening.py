@@ -148,3 +148,46 @@ def test_a_well_formed_request_is_unaffected():
     assert response["statusCode"] == 400
     # Reached the route's own field validation, not the parser.
     assert "Missing required fields" in body["error"]
+
+
+# ── The depth limit is the handler's, not the interpreter's ──────────────────
+#
+# The two tests above passed on CPython 3.11 because `json.loads` raised
+# `RecursionError` at those depths and the handler caught it. On Python 3.14
+# the same bodies parsed, and five routes answered 200 to a request the guard
+# exists to refuse. A fail-closed check that depends on an interpreter detail
+# is not a check. These pin the handler's own limit.
+
+def test_the_depth_limit_fires_before_the_parser_is_consulted(monkeypatch):
+    """Even a parser that would accept the body must not be reached."""
+    import functions.handler as handler
+
+    real_loads = json.loads  # the handler and this test share the json module
+
+    def parser_that_accepts_anything(*args, **kwargs):
+        raise AssertionError("json.loads was reached for an over-deep body")
+
+    monkeypatch.setattr(handler.json, "loads", parser_that_accepts_anything)
+    response = _post("/v1/demo/check", _deeply_nested_object(depth=handler.MAX_JSON_DEPTH + 1))
+    monkeypatch.undo()
+    # Had the handler reached the parser, the fake would have raised and this
+    # would be the 500 the internal-error path returns, not a 400.
+    assert response["statusCode"] == 400
+    assert "nesting depth" in real_loads(response["body"])["error"]
+
+
+def test_a_body_at_the_depth_limit_is_still_parsed():
+    """The limit is a ceiling on attackers, not on the events the API serves."""
+    from functions.handler import MAX_JSON_DEPTH, _json_nesting_depth
+    at_limit = '{"a":' * (MAX_JSON_DEPTH - 1) + '{"ok":true}' + "}" * (MAX_JSON_DEPTH - 1)
+    assert _json_nesting_depth(at_limit) == MAX_JSON_DEPTH
+    response = _post("/v1/demo/check", at_limit)
+    # Parsed and judged on its content: a missing 'event' is a 400 from the
+    # route's own validation, not the depth guard.
+    assert response["statusCode"] == 400
+    assert "nesting depth" not in json.loads(response["body"])["error"]
+
+
+def test_brackets_inside_strings_do_not_count_toward_depth():
+    from functions.handler import _json_nesting_depth
+    assert _json_nesting_depth(json.dumps({"note": "[" * 500 + '\\"{' * 50})) == 1

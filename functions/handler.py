@@ -827,6 +827,40 @@ _CORS = {
 #: kilobytes. A body larger than this is refused before `json.loads` sees it.
 MAX_BODY_BYTES = 2 * 1024 * 1024
 
+#: Deepest JSON nesting a request body may carry. The real events are four or
+#: five levels deep; sixty-four is generous. The limit is enforced by counting
+#: brackets before parsing, not by catching `RecursionError` from the parser:
+#: on Python 3.14 a 5,000-level object no longer raises it, so a guard that
+#: relied on it returned 200 to the exact request it existed to refuse.
+MAX_JSON_DEPTH = 64
+
+
+def _json_nesting_depth(raw) -> int:
+    """Maximum bracket depth of a JSON text, ignoring brackets inside strings."""
+    if isinstance(raw, bytes):
+        raw = raw.decode("utf-8", errors="replace")
+    depth = deepest = 0
+    in_string = escaped = False
+    for ch in raw:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                in_string = False
+        elif ch == '"':
+            in_string = True
+        elif ch in "[{":
+            depth += 1
+            if depth > deepest:
+                deepest = depth
+                if deepest > MAX_JSON_DEPTH:
+                    return deepest  # no need to read the rest
+        elif ch in "]}":
+            depth -= 1
+    return deepest
+
 
 def _parse_json_body(
     event: dict, *, require_object: bool = True, allow_empty: bool = False
@@ -865,6 +899,14 @@ def _parse_json_body(
             f"Request body is {len(raw_body)} bytes; the limit is "
             f"{MAX_BODY_BYTES}",
         )
+
+    if isinstance(raw_body, (str, bytes)):
+        depth = _json_nesting_depth(raw_body)
+        if depth > MAX_JSON_DEPTH:
+            return None, _error(
+                400,
+                f"Invalid JSON: nesting depth exceeds {MAX_JSON_DEPTH}",
+            )
 
     try:
         parsed = json.loads(raw_body) if isinstance(raw_body, (str, bytes)) else raw_body

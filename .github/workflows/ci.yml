@@ -8,7 +8,7 @@ on:
 
 jobs:
   unit-invariant:
-    name: "Unit invariant: 1834 passed, 0 skipped, 0 xfailed"
+    name: "Unit invariant: 1840 passed, 0 skipped, 0 xfailed"
     runs-on: ubuntu-latest
 
     steps:
@@ -109,3 +109,70 @@ jobs:
       # Nine pages carrying a generated arc cannot be kept in order by hand.
       - name: Journey wayfinder is current
         run: python scripts/add_journey_wayfinder.py --check
+
+  # The suite had only ever executed on Ubuntu / Python 3.11. The first run on
+  # Windows / Python 3.14 (a contributor's laptop, 2026-10-25) failed 21 tests:
+  # SQLite handles not closed on error paths, CRLF checkouts breaking byte
+  # compares, reads without an encoding, a backslash in a recorded path, and a
+  # JSON depth guard that relied on CPython raising RecursionError -- which 3.14
+  # no longer does at that depth, so a fail-closed control had silently opened.
+  # None of it was a control defect, and none of it was visible to CI. This job
+  # runs the suite where it broke. It asserts pass/fail only; the published
+  # count stays keyed to the 3.11 leg above.
+  portability:
+    name: "Portability: ${{ matrix.os }} / Python ${{ matrix.python }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            python: "3.12"
+          - os: ubuntu-latest
+            python: "3.14"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # bash on both runners (Git Bash on Windows), so the server lifecycle is
+      # one script rather than two.
+      - name: Unit suite against a live API
+        shell: bash
+        env:
+          NHID_REQUIRE_SERVER: "1"
+        run: |
+          python -m uvicorn app:app --host 127.0.0.1 --port 8000 \
+            > nhid-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+
+          for i in $(seq 1 45); do
+            if curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+              echo "API ready after ${i}s"
+              break
+            fi
+            if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+              echo "::error::API process exited during startup"
+              cat nhid-server.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          if ! curl -sf -o /dev/null http://127.0.0.1:8000/openapi.json; then
+            echo "::error::API did not become ready within 45s"
+            cat nhid-server.log
+            exit 1
+          fi
+
+          python -m pytest tests/ -q -p no:cacheprovider

@@ -28,6 +28,7 @@ one the log reports as fine.
 """
 
 import sqlite3
+from contextlib import contextmanager
 import json
 import logging
 import os
@@ -88,73 +89,92 @@ class AuditStore:
         self._integrity = AuditIntegrity(self.secret_key)
         self._init_db()
 
+
+    @contextmanager
+    def _connect(self):
+        """Open a connection and close it on every exit path.
+
+        Each method used to open its own connection and call `close()` at the
+        end of the happy path only. On an exception -- a duplicate event id, a
+        deleted or corrupt file -- the handle stayed open until garbage
+        collection. Linux lets you unlink an open file so nothing noticed; the
+        first run on Windows failed seven tests with `WinError 32: the process
+        cannot access the file because it is being used by another process`.
+        An audit store that cannot release its own file is not a portability
+        nit; it is a handle leak on exactly the paths that matter.
+        """
+        conn = sqlite3.connect(self.db_path)
+        try:
+            yield conn
+        finally:
+            conn.close()
+
     def _init_db(self):
         """Create database schema if it doesn't exist."""
         os.makedirs(os.path.dirname(self.db_path) if os.path.dirname(self.db_path) else ".", exist_ok=True)
 
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
+        with self._connect() as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
 
-        # Audit events table
-        cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS audit_events (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                event_id TEXT UNIQUE NOT NULL,
-                session_id TEXT NOT NULL,
-                event_type TEXT NOT NULL,
-                timestamp TEXT NOT NULL,
-                agent_id TEXT NOT NULL,
-                organization_id TEXT NOT NULL,
-                payload JSON NOT NULL,
-                previous_event_id TEXT,
-                evidence_hash TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                expires_at TIMESTAMP
+            # Audit events table
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS audit_events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    event_id TEXT UNIQUE NOT NULL,
+                    session_id TEXT NOT NULL,
+                    event_type TEXT NOT NULL,
+                    timestamp TEXT NOT NULL,
+                    agent_id TEXT NOT NULL,
+                    organization_id TEXT NOT NULL,
+                    payload JSON NOT NULL,
+                    previous_event_id TEXT,
+                    evidence_hash TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    expires_at TIMESTAMP
+                )
+                """
             )
-            """
-        )
 
-        # Audit sessions table (metadata about sessions)
-        cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS audit_sessions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT UNIQUE NOT NULL,
-                agent_id TEXT NOT NULL,
-                organization_id TEXT NOT NULL,
-                event_count INTEGER DEFAULT 0,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                closed_at TIMESTAMP,
-                retention_days INTEGER DEFAULT 90
+            # Audit sessions table (metadata about sessions)
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS audit_sessions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id TEXT UNIQUE NOT NULL,
+                    agent_id TEXT NOT NULL,
+                    organization_id TEXT NOT NULL,
+                    event_count INTEGER DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    closed_at TIMESTAMP,
+                    retention_days INTEGER DEFAULT 90
+                )
+                """
             )
-            """
-        )
 
-        # Verification records (for tracking chain verification results)
-        cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS verification_records (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                session_id TEXT NOT NULL,
-                verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                is_valid INTEGER NOT NULL,
-                error_message TEXT,
-                event_count INTEGER,
-                FOREIGN KEY (session_id) REFERENCES audit_sessions(session_id)
+            # Verification records (for tracking chain verification results)
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS verification_records (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id TEXT NOT NULL,
+                    verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    is_valid INTEGER NOT NULL,
+                    error_message TEXT,
+                    event_count INTEGER,
+                    FOREIGN KEY (session_id) REFERENCES audit_sessions(session_id)
+                )
+                """
             )
-            """
-        )
 
-        # Create indices for common queries
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_session_id ON audit_events(session_id)")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_event_type ON audit_events(event_type)")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON audit_events(timestamp)")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_expires_at ON audit_events(expires_at)")
+            # Create indices for common queries
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_session_id ON audit_events(session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_event_type ON audit_events(event_type)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON audit_events(timestamp)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_expires_at ON audit_events(expires_at)")
 
-        conn.commit()
-        conn.close()
+            conn.commit()
 
     def write_event(
         self,
@@ -187,59 +207,58 @@ class AuditStore:
             True if write succeeded, False otherwise
         """
         try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
+            with self._connect() as conn:
+                cursor = conn.cursor()
 
-            expires_at = (datetime.utcnow() + timedelta(days=retention_days)).isoformat()
+                expires_at = (datetime.utcnow() + timedelta(days=retention_days)).isoformat()
 
-            cursor.execute(
-                """
-                INSERT INTO audit_events
-                (event_id, session_id, event_type, timestamp, agent_id, organization_id,
-                 payload, previous_event_id, evidence_hash, expires_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    event_id,
-                    session_id,
-                    event_type,
-                    timestamp,
-                    agent_id,
-                    organization_id,
-                    json.dumps(payload),
-                    previous_event_id,
-                    evidence_hash or "",
-                    expires_at,
-                ),
-            )
-
-            # Update session event count
-            cursor.execute(
-                "UPDATE audit_sessions SET event_count = event_count + 1 WHERE session_id = ?",
-                (session_id,),
-            )
-
-            if cursor.rowcount == 0:
-                # Session doesn't exist, create it — counting this event.
-                #
-                # `event_count` defaults to 0 in the schema, so inserting
-                # without it left the first event of every session uncounted
-                # and the anchor permanently one short. That was invisible
-                # while nothing read the column; `verify_chain` now compares
-                # against it, where an off-by-one would let exactly one deleted
-                # event slip through.
                 cursor.execute(
                     """
-                    INSERT INTO audit_sessions
-                    (session_id, agent_id, organization_id, retention_days,
-                     event_count)
-                    VALUES (?, ?, ?, ?, 1)
+                    INSERT INTO audit_events
+                    (event_id, session_id, event_type, timestamp, agent_id, organization_id,
+                     payload, previous_event_id, evidence_hash, expires_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (session_id, agent_id, organization_id, retention_days),
+                    (
+                        event_id,
+                        session_id,
+                        event_type,
+                        timestamp,
+                        agent_id,
+                        organization_id,
+                        json.dumps(payload),
+                        previous_event_id,
+                        evidence_hash or "",
+                        expires_at,
+                    ),
                 )
 
-            conn.commit()
-            conn.close()
+                # Update session event count
+                cursor.execute(
+                    "UPDATE audit_sessions SET event_count = event_count + 1 WHERE session_id = ?",
+                    (session_id,),
+                )
+
+                if cursor.rowcount == 0:
+                    # Session doesn't exist, create it — counting this event.
+                    #
+                    # `event_count` defaults to 0 in the schema, so inserting
+                    # without it left the first event of every session uncounted
+                    # and the anchor permanently one short. That was invisible
+                    # while nothing read the column; `verify_chain` now compares
+                    # against it, where an off-by-one would let exactly one deleted
+                    # event slip through.
+                    cursor.execute(
+                        """
+                        INSERT INTO audit_sessions
+                        (session_id, agent_id, organization_id, retention_days,
+                         event_count)
+                        VALUES (?, ?, ?, ?, 1)
+                        """,
+                        (session_id, agent_id, organization_id, retention_days),
+                    )
+
+                conn.commit()
             return True
         except Exception as exc:
             # False is the honest answer to "did this write land?", but an
@@ -260,13 +279,12 @@ class AuditStore:
             Event dict or None if not found
         """
         try:
-            conn = sqlite3.connect(self.db_path)
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
+            with self._connect() as conn:
+                conn.row_factory = sqlite3.Row
+                cursor = conn.cursor()
 
-            cursor.execute("SELECT * FROM audit_events WHERE event_id = ?", (event_id,))
-            row = cursor.fetchone()
-            conn.close()
+                cursor.execute("SELECT * FROM audit_events WHERE event_id = ?", (event_id,))
+                row = cursor.fetchone()
 
             if not row:
                 return None
@@ -309,29 +327,28 @@ class AuditStore:
             List of events matching criteria
         """
         try:
-            conn = sqlite3.connect(self.db_path)
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
+            with self._connect() as conn:
+                conn.row_factory = sqlite3.Row
+                cursor = conn.cursor()
 
-            query = "SELECT * FROM audit_events WHERE 1=1"
-            params = []
+                query = "SELECT * FROM audit_events WHERE 1=1"
+                params = []
 
-            if session_id:
-                query += " AND session_id = ?"
-                params.append(session_id)
-            if event_type:
-                query += " AND event_type = ?"
-                params.append(event_type)
-            if agent_id:
-                query += " AND agent_id = ?"
-                params.append(agent_id)
+                if session_id:
+                    query += " AND session_id = ?"
+                    params.append(session_id)
+                if event_type:
+                    query += " AND event_type = ?"
+                    params.append(event_type)
+                if agent_id:
+                    query += " AND agent_id = ?"
+                    params.append(agent_id)
 
-            query += " ORDER BY timestamp ASC LIMIT ?"
-            params.append(limit)
+                query += " ORDER BY timestamp ASC LIMIT ?"
+                params.append(limit)
 
-            cursor.execute(query, params)
-            rows = cursor.fetchall()
-            conn.close()
+                cursor.execute(query, params)
+                rows = cursor.fetchall()
 
             return [
                 {
@@ -366,14 +383,13 @@ class AuditStore:
         guarantee: the counter shares a file with the events it describes.
         """
         try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT event_count FROM audit_sessions WHERE session_id = ?",
-                (session_id,),
-            )
-            row = cursor.fetchone()
-            conn.close()
+            with self._connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT event_count FROM audit_sessions WHERE session_id = ?",
+                    (session_id,),
+                )
+                row = cursor.fetchone()
             return None if row is None else int(row[0])
         except Exception as exc:
             raise AuditStoreUnavailable(
@@ -437,18 +453,17 @@ class AuditStore:
 
         # Record verification result
         try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
-            cursor.execute(
-                """
-                INSERT INTO verification_records
-                (session_id, is_valid, error_message, event_count)
-                VALUES (?, ?, ?, ?)
-                """,
-                (session_id, 1 if is_valid else 0, error, len(events)),
-            )
-            conn.commit()
-            conn.close()
+            with self._connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    """
+                    INSERT INTO verification_records
+                    (session_id, is_valid, error_message, event_count)
+                    VALUES (?, ?, ?, ?)
+                    """,
+                    (session_id, 1 if is_valid else 0, error, len(events)),
+                )
+                conn.commit()
         except Exception as exc:
             # Non-fatal: failing to *record* the verification must not change
             # the verification's answer. But it was silent, which meant a store
@@ -467,14 +482,13 @@ class AuditStore:
             Number of events deleted
         """
         try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
+            with self._connect() as conn:
+                cursor = conn.cursor()
 
-            cursor.execute("DELETE FROM audit_events WHERE expires_at < datetime('now')")
-            count = cursor.rowcount
+                cursor.execute("DELETE FROM audit_events WHERE expires_at < datetime('now')")
+                count = cursor.rowcount
 
-            conn.commit()
-            conn.close()
+                conn.commit()
             return count
         except Exception as exc:
             # 0 means "nothing was due for pruning". A failed prune is not that,
@@ -494,14 +508,13 @@ class AuditStore:
             True if successful
         """
         try:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
-            cursor.execute(
-                "UPDATE audit_sessions SET closed_at = datetime('now') WHERE session_id = ?",
-                (session_id,),
-            )
-            conn.commit()
-            conn.close()
+            with self._connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "UPDATE audit_sessions SET closed_at = datetime('now') WHERE session_id = ?",
+                    (session_id,),
+                )
+                conn.commit()
             return True
         except Exception:
             return False

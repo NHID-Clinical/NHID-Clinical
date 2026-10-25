@@ -136,7 +136,7 @@ WORD_TO_INT = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
 
 
 def _visible_text(path: Path) -> str:
-    raw = path.read_text(errors="replace")
+    raw = path.read_text(encoding="utf-8", errors="replace")
     if path.suffix == ".html":
         m = re.search(r"<main\b.*?</main>", raw, re.S | re.I)
         raw = m.group(0) if m else raw
@@ -187,6 +187,11 @@ def check_count_claims() -> list[str]:
     surfaces.extend(sorted(glob.glob("specs/*.pdf")))
 
     for surface in surfaces:
+        # glob returns native separators, and COUNT_CLAIM_EXEMPT is written with
+        # forward slashes. On Windows "docs\\project-state.md" never matched its
+        # exemption, so the three exempt documents were reported as failures
+        # there while passing everywhere else. Compare in one spelling.
+        surface = Path(surface).as_posix()
         if surface in seen or surface in COUNT_CLAIM_EXEMPT:
             continue
         seen.add(surface)

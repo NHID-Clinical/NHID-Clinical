@@ -70,10 +70,13 @@ def test_no_external_project_links_in_published_pages():
     """
     import pathlib
     root = pathlib.Path(__file__).resolve().parent.parent
-    skip = {"_site", ".git", "node_modules", "docs", "vendor"}
+    skip = {"_site", "node_modules", "docs", "vendor"}
     offenders = []
     for path in root.rglob("*.html"):
-        if skip & set(path.parts):
+        # Dot-directories are tool output, never published pages: .git, a local
+        # .aws-sam/build/ holding copies of every page, a .venv. One of those
+        # copies was reported as a live offender on a Windows checkout.
+        if skip & set(path.parts) or any(part.startswith(".") for part in path.parts):
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
         if "ai-governance-map" in text or "vercel.app" in text:

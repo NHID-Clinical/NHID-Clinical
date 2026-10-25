@@ -107,7 +107,9 @@ def _executed_suite_path() -> str:
     try:
         from src.cts_runner import _YAML_PATH
 
-        return str(Path(_YAML_PATH).relative_to(Path(__file__).resolve().parent.parent))
+        # as_posix(): the recorded path is an identifier, not a filesystem
+        # handle, and str() of a relative Path is backslashed on Windows.
+        return Path(_YAML_PATH).relative_to(Path(__file__).resolve().parent.parent).as_posix()
     except Exception:
         return "unknown"
 
@@ -417,7 +419,9 @@ def write_bundle(bundle: dict[str, Any], out_dir: str) -> Path:
 
     payload = _canonical_json(bundle)
     bundle_path = out / "evidence-pack.json"
-    bundle_path.write_text(payload, encoding="utf-8")
+    # Bytes, not text: text mode translates \n to \r\n on Windows, and the
+    # recorded sha256 is over `payload` exactly as encoded here.
+    bundle_path.write_bytes(payload.encode("utf-8"))
 
     digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()
     (out / "evidence-pack.sha256").write_text(

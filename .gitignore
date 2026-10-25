@@ -41,6 +41,10 @@ _site/
 # Internal, development-only material (kept locally, out of the public repo)
 _internal/
 
+# AWS SAM build output (`sam build`). It holds copies of the published pages
+# and the Lambda tree, which the repository-wide scanners otherwise read.
+.aws-sam/
+
 # Python packaging build artifacts
 *.egg-info/
 build/

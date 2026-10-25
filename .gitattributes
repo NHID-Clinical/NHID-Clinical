@@ -1,0 +1,20 @@
+# Line endings are part of what the guards compare. Several tests byte-compare a
+# committed file against `git show <sha>:<path>` or against a freshly generated
+# copy, and the evidence pack records a sha256 of a written file. Git for
+# Windows checks out CRLF by default, so on a Windows clone every one of those
+# comparisons failed while the content was identical. Text is LF everywhere.
+* text=auto eol=lf
+
+# Binary assets are never normalised.
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.mp4  binary
+*.mp3  binary
+*.wav  binary
+*.woff binary
+*.woff2 binary
+*.db   binary
