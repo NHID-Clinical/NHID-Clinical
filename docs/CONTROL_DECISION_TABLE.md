@@ -178,7 +178,7 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 | ATR-01 | `test_atr01_audit_trail.py` (12), `test_atr01_persistence.py` (5) | **not measured by transcript replay** — the harness synthesizes the audit envelope, so detecting its absence would be tautological. Covered by the CTS envelope tests only. | `adapters/fabricate_adapter.py` notes 2–3 |
 | DLG-01 | `test_dlg01_delegated_authority.py` (48 functions / 51 collected), `test_identity.py` (43 / 44), `test_trust_anchor.py` (18 / 31), `test_call_bind_experiment.py` (10 / 34) | **not corpus-measured** — opt-in cryptographic authorization, exercised by unit tests including expiry, bad signatures, unknown NPI, revocation, scope narrowing, empty-scope narrowing, per-hop call binding and proof of possession; plus a 14-case receiver-side matrix in `experiments/call_bind/`. Counts are given as *functions / collected* because parametrization makes them differ and a bare number invites the wrong reading | `pytest tests/test_dlg01_delegated_authority.py` |
 
-Suite totals: **1996 passing, 0 skipped, 0 xfailed** across 78 test files.
+Suite totals: **2017 passing, 0 skipped, 0 xfailed** across 78 test files.
 
 **Two corpora produce the figures above, and they are not interchangeable:**
 
@@ -211,4 +211,4 @@ have dedicated regression files (`test_engine_disclosure_hardening.py`,
 
 ---
 
-**Status**: Tier 0 Ready (1996 passing, 0 skipped, 0 xfailed; audit trail operational)
+**Status**: Tier 0 Ready (2017 passing, 0 skipped, 0 xfailed; audit trail operational)

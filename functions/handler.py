@@ -241,6 +241,30 @@ def _parse_bool(raw, name: str) -> bool:
 
 
 def _handle_gate_turn(event: dict) -> dict:
+    """POST /v1/gate/turn: parse the Lambda event, then hand the parameters to
+    ``gate_turn``, which is the whole gate. The split exists so an in-process
+    caller (the Grok realtime bridge) runs exactly the code the route runs,
+    with no HTTP in between and nothing duplicated."""
+    params = dict(event.get("queryStringParameters") or {})
+    if not params:
+        body, parse_error = _parse_json_body(event, allow_empty=True)
+        if parse_error:
+            return parse_error
+        params = body or {}
+    status, result = gate_turn(params)
+    if status != 200:
+        return _error(status, result["error"])
+    return _ok(result)
+
+
+#: escalation_outcome values the gate accepts, taken from the engine so the
+#: vocabulary cannot drift. Anything else is a 400, not a silent None.
+def _escalation_outcomes() -> frozenset:
+    from src.nhid_policy_engine_v1 import _ESCALATION_HONORED, _NOT_HONORED_OUTCOMES
+    return frozenset(_ESCALATION_HONORED) | frozenset(_NOT_HONORED_OUTCOMES)
+
+
+def gate_turn(params: dict) -> tuple[int, dict]:
     """Pre-utterance gate for an agent that is the CALLER.
 
     The call-progress webhook was written receiver-side: the human asks, the
@@ -249,11 +273,17 @@ def _handle_gate_turn(event: dict) -> dict:
     turns honestly as ``agent`` meant PDX-01 never saw the request — the gate
     caught a missing disclosure but not the data request it exists to stop.
 
-    This route takes what the agent is *about to say*, as query parameters so a
-    voice-platform tool with no JSON body can call it, and runs the agent's own
+    This takes what the agent is *about to say* and runs the agent's own
     planned utterance through the same PHI detection a human's turn gets. The
     decision is ``evaluate_all``'s; this function reshapes the request and the
     response and computes nothing of its own.
+
+    Returns ``(status, body)``: 200 with the decision, or 4xx/5xx with
+    ``{"error": reason}``. A caller that is not an HTTP route (the Grok
+    realtime bridge) calls this directly and must treat anything other than
+    ``(200, body with action in CONTINUE_AI/LOG_ONLY and allowed True)`` as
+    DENY_DATA. That rule lives in the caller, because the gate cannot know
+    whether its answer arrived.
 
     Parameters (query string, or a JSON body with the same keys):
       session_id             call identifier (required)
@@ -266,43 +296,53 @@ def _handle_gate_turn(event: dict) -> dict:
                              protected data the other party volunteers from here.
       disclosed_at           ISO 8601 time of the earlier disclosure (optional;
                              defaults to one second ago when disclosed=true)
+      actor_id               stable identifier of the agent (optional; the audit
+                             trail's actor; defaults to ``agent-<session_id>``).
+                             An identifier, never evidence of authority.
+      escalation_outcome     result of an escalation the other party requested on
+                             an earlier turn: one of the engine's honored or
+                             not-honored outcomes (optional). This is how a failed
+                             transfer becomes visible to EIT-01; without it the
+                             engine can only say the outcome is unknown.
 
     Field mapping, so the engine sees the right party in each slot:
       input_payload.speech_text                  <- heard   (the counterparty)
       healthcare_governance.identity_assertion_text <- turn  (the agent's own words; DBC-01)
       healthcare_governance.phi_accessed         <- fields the agent's turn asks for,
                                                     in the engine's own field names
+      healthcare_governance.escalation_outcome   <- escalation_outcome
       session.disclosure_established_prior       <- disclosed (the same-turn PDX-01 rule
                                                     needs the harness to say so)
 
     As with the call-progress route, prior-disclosure state is the caller's
     own report. The gate records what the agent asserts and judges this turn.
     """
-    params = dict(event.get("queryStringParameters") or {})
-    if not params:
-        body, parse_error = _parse_json_body(event, allow_empty=True)
-        if parse_error:
-            return parse_error
-        params = body or {}
-
+    params = dict(params or {})
     session_id = str(params.get("session_id") or "").strip()
     turn = str(params.get("turn") or "").strip()
     if not session_id:
-        return _error(400, "session_id is required")
+        return 400, {"error": "session_id is required"}
     if not turn:
-        return _error(400, "turn is required: the text the agent is about to say")
+        return 400, {"error": "turn is required: the text the agent is about to say"}
     if len(turn) > 4000:
-        return _error(400, "turn is longer than 4000 characters")
+        return 400, {"error": "turn is longer than 4000 characters"}
     heard = str(params.get("heard") or "").strip()
     if len(heard) > 4000:
-        return _error(400, "heard is longer than 4000 characters")
+        return 400, {"error": "heard is longer than 4000 characters"}
+    actor_id = str(params.get("actor_id") or "").strip() or f"agent-{session_id}"
+    if len(actor_id) > 200:
+        return 400, {"error": "actor_id is longer than 200 characters"}
+    escalation_outcome = str(params.get("escalation_outcome") or "").strip().lower() or None
+    if escalation_outcome is not None and escalation_outcome not in _escalation_outcomes():
+        return 400, {"error": f"escalation_outcome must be one of "
+                              f"{sorted(_escalation_outcomes())}, got {escalation_outcome!r}"}
     try:
         disclosed = _parse_bool(params.get("disclosed"), "disclosed")
         turn_index = int(params.get("turn_index") or 0)
     except (TypeError, ValueError) as exc:
-        return _error(400, f"Invalid gate parameters: {exc}")
+        return 400, {"error": f"Invalid gate parameters: {exc}"}
     if turn_index < 0 or turn_index > 10_000:
-        return _error(400, "turn_index must be between 0 and 10000")
+        return 400, {"error": "turn_index must be between 0 and 10000"}
 
     from datetime import datetime, timedelta, timezone
     from adapters.call_progress_adapter import to_nhid_event
@@ -319,6 +359,7 @@ def _handle_gate_turn(event: dict) -> dict:
             "turn_index": turn_index,
             "speaker": "agent",
             "text": turn,
+            "actor_id": actor_id,
             "session_state": {
                 "turn_count": turn_index + 1,
                 "disclosure_timestamp": disclosed_at,
@@ -326,9 +367,9 @@ def _handle_gate_turn(event: dict) -> dict:
             },
         })
     except (KeyError, ValueError) as exc:
-        return _error(400, f"Invalid gate payload: {exc}")
+        return 400, {"error": f"Invalid gate payload: {exc}"}
     except Exception as exc:  # noqa: BLE001
-        return _error(400, f"Adapter conversion failed: {exc}")
+        return 400, {"error": f"Adapter conversion failed: {exc}"}
 
     # Caller-side orientation. The adapter fills these for a receiving agent;
     # here the agent is the caller, so each slot gets the party it describes.
@@ -341,6 +382,12 @@ def _handle_gate_turn(event: dict) -> dict:
     # The counterparty's words: EIT-01 finds the request for a human here, and
     # PDX-01 finds protected data the counterparty volunteers.
     policy_event["input_payload"]["speech_text"] = heard
+    # A reported transfer result. The engine reads the outcome before anything
+    # else on the turn, so a failed transfer is a CRITICAL EIT-01 finding here
+    # and an honored one settles the request.
+    if escalation_outcome is not None:
+        governance["escalation_outcome"] = escalation_outcome
+        governance["escalation_timestamp"] = governance.get("escalation_timestamp") or now.isoformat()
     # PDX-01's same-turn rule only fires when the harness says the disclosure
     # was NOT already established. The gate is the harness.
     session["disclosure_established_prior"] = disclosed
@@ -348,7 +395,7 @@ def _handle_gate_turn(event: dict) -> dict:
     try:
         decision = evaluate_all(session, policy_event)
     except Exception as exc:  # noqa: BLE001
-        return _error(500, f"Policy evaluation failed: {exc}")
+        return 500, {"error": f"Policy evaluation failed: {exc}"}
 
     result = _decision_to_dict(decision, policy_event)
     action = result["action"]
@@ -362,8 +409,14 @@ def _handle_gate_turn(event: dict) -> dict:
     result["session_id"] = session_id
     result["turn_index"] = turn_index
     result["disclosed"] = disclosed
+    result["actor_id"] = actor_id
     result["phi_requested"] = governance["phi_accessed"]
-    return _ok(result)
+    # The HMAC over the ATR-01 record for this turn, when the engine built one.
+    # None means ATR-01 found the envelope incomplete and no trail was signed.
+    trail = getattr(decision, "audit_trail", None)
+    events = getattr(trail, "events", None) or []
+    result["evidence_hash"] = getattr(events[-1], "evidence_hash", None) if events else None
+    return 200, result
 
 
 def _handle_metrics_summary(event: dict) -> dict:
