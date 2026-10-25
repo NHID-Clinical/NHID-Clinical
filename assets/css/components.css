@@ -1139,7 +1139,9 @@ caption.visually-hidden {
 .cm-name {
   fill: var(--ink-soft);
   font-family: var(--sans);
-  font-size: 14px;
+  /* 12px, not 14: the gates now carry the full canonical names, and
+     "Deceptive Behavior Check" at 14px overran its 180px box. */
+  font-size: 12px;
   font-weight: 600;
 }
 

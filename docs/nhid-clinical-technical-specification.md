@@ -79,7 +79,7 @@ bot-to-bot variants are implemented in `src/nhid_policy_engine_v1.py` — summar
 | :-- | :-- | :-- | :-- |
 | **IDG-01** | Identity Disclosure Gate | AI agent must identify itself as automated before any data is requested or exchanged. The disclosure must be heard: if playback is interrupted (`disclosure_interrupted`), it counts only when `disclosure_heard_text` states a non-human identity | CRITICAL |
 | **PDX-01** | Pre-Data Exchange Gate | No PHI/operational data field (`member_id`, `npi`, `date_of_birth`, `claim_number`, `prior_auth_number`, `diagnosis_code`, `procedure_code`, `provider_tin`, `group_number`) may be exchanged until IDG-01 disclosure is confirmed | CRITICAL |
-| **DBC-01** | Deceptive Behavior Check | No synthetic voice artifacts (breathing, hesitation, laughter) implying human presence (Tier A, CRITICAL); no explicit human-status claims via text heuristic (Tier B, MAJOR, non-blocking) | CRITICAL (Tier A) / MAJOR, LOG_ONLY (Tier B) |
+| **DBC-01** | Deceptive Behavior Check | No claim of human status or licensed-professional standing, judged on the agent's own identity-assertion text. Acoustic-artifact detection (breathing, hesitation, laughter) was withdrawn in v1.3.2: the engine performs no audio analysis and a self-reported `deceptive_artifact_flags` value produces no finding | MAJOR, LOG_ONLY (routed to human review) |
 | **EIT-01** | Escalation Implementation Test | A human escalation path must be communicated and, when requested, honored | CRITICAL |
 
 Note the canonical control names: **PDX-01 is "Pre-Data Exchange Gate,"** not "PHI Data Exchange
@@ -129,8 +129,10 @@ do not relax, extend, or override the control.
 
 ATR-01 (Audit Trail Requirements) is enforced structurally rather than behaviorally: every NHID
 event must carry a fixed set of top-level fields plus a nested `execution_context` block.
-Missing or null fields are a CRITICAL ATR-01 violation regardless of how the other four controls
-score.
+A missing or null field is recorded as a CRITICAL-severity ATR-01 finding
+(`ATR01_AUDIT_FIELDS_MISSING`) regardless of how the other four controls score; the engine's
+*action* for it is `LOG_ONLY` — the event is marked incomplete and nothing on the call is
+blocked, because an incomplete record is a defect in the evidence, not in the call.
 
 **Required top-level fields:** `event_id`, `timestamp`, `session_id`, `request_id`, `event_type`,
 `actor_id`, `state_before`, `state_after`, `replay_mode`, `external_calls_cached`,

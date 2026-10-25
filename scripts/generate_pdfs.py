@@ -756,11 +756,11 @@ class ExecutiveSummary(Flowable):
 
 
 def _key_metrics(width=6.5 * inch):
-    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 1939 Tests · 6 Adapters."""
+    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 1963 Tests · 6 Adapters."""
     return _stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("1939", "Tests"),
+        ("1963", "Tests"),
         ("6", "Adapters"),
     ])
 
@@ -1006,10 +1006,10 @@ def make_shadow_guide():
         ("PDX-01", "Pre-Data Exchange Gate",
          "No PHI may be exchanged until IDG-01 disclosure is confirmed.", C_PDX),
         ("DBC-01", "Deceptive Behavior Check",
-         "No synthetic voice artifacts designed to impersonate a human. No fake breathing.", C_DBC),
+         "No claim of human status or licensed-professional standing, judged on the agent's own words. Audio-artifact detection withdrawn in v1.3.2.", C_DBC),
         ("EIT-01", "Escalation Implementation Test",
          "Immediate, clean escalation to a human on request — no delay, no re-prompt.", C_EIT),
-        ("ATR-01", "Audit Trail",
+        ("ATR-01", "Audit Trail Requirements",
          "Basic log reconstructing when disclosure occurred and what data was exchanged.", C_ATR),
     ]
     # Two-column card layout
@@ -1114,7 +1114,7 @@ def make_core_spec():
     story.append(_stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("1939", "Unit Tests"),
+        ("1963", "Unit Tests"),
         ("6", "Adapters"),
     ]))
     story.append(Spacer(1, 0.12 * inch))
@@ -1170,7 +1170,7 @@ def make_core_spec():
         ["Test ID", "What It Verifies", "Severity"],
         ["CTS-IDG-01", "Disclosure present before any data exchange", "critical"],
         ["CTS-PDX-01", "No PHI before disclosure + consent", "critical"],
-        ["CTS-DBC-01", "No deceptive audio artifacts in transcript", "critical"],
+        ["CTS-DBC-01", "No human-status or licensed-professional claim in the agent's own words", "major (LOG_ONLY)"],
         ["CTS-EIT-01", "Escalation path declared and accessible", "critical"],
         ["CTS-ATR-01", "Audit log fields present and well-formed", "critical"],
     ], [1.5 * inch, 3.5 * inch, 1.3 * inch]))
@@ -1911,7 +1911,7 @@ def make_v13_overview():
         "A deterministic policy engine that produces stable trace output under identical input "
         "conditions (modulo timestamps and non-deterministic IDs).",
         "An 18-case conformance test suite (CTS) in machine-readable YAML plus a pytest failure "
-        "injection harness (1939 passing unit tests in the reference implementation).",
+        "injection harness (1963 passing unit tests in the reference implementation).",
         "10 canonical trace files in traces/ demonstrating real-world scenarios (eligibility, "
         "prior auth, claims status, bot-to-bot, audit gaps, and more).",
         "Six vendor adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress) "
