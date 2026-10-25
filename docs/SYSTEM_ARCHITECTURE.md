@@ -2,7 +2,7 @@
 
 **Date**: 2026-08-11  
 **Version**: v1.3-shadow-ready  
-**Status**: Pilot Ready (1840 tests passing, 0 skipped, 0 xfailed; schema adapter operational)
+**Status**: Pilot Ready (1916 tests passing, 0 skipped, 0 xfailed; schema adapter operational)
 
 ---
 
@@ -456,7 +456,7 @@ capability statement (tier 1), not a detection rate.
 ### 5.1 Shadow Pilot (Tier 0, Current)
 
 **Status**: Production Ready  
-**Test Coverage**: 1840 passing tests, 0 skipped, 0 xfailed  
+**Test Coverage**: 1916 passing tests, 0 skipped, 0 xfailed  
 **Release Tag**: v1.3-shadow-ready  
 
 **Deployment**:
@@ -500,7 +500,7 @@ Receiver obligations for each action are specified normatively in
 ```
 NHID-Clinical/
 ├─ src/
-│   └─ nhid_policy_engine_v1.py (1840 tests passing)
+│   └─ nhid_policy_engine_v1.py (1916 tests passing)
 │       ├─ evaluate_all(session, event) → PolicyDecision
 │       ├─ IDG-01, PDX-01, DBC-01, EIT-01, ATR-01 implementations
 │       └─ No I/O, no external calls, pure functional
@@ -558,5 +558,5 @@ that regenerates it. They are **not** uniform: against Fabricate (CSV-550,
 CI-gated) IDG-01 is 70/70 and PDX-01 41/41, but DBC-01 is 183/200 with 5 false
 positives and EIT-01 169/171 with 5; against voice-stress DBC-01 is **0/28** and
 EIT-01 12/25 with 6. A synthetic corpus is a floor, not a validation, which is
-why Tier 0 remains observe-only. The unit suite is green: 1840 passing, 0
+why Tier 0 remains observe-only. The unit suite is green: 1916 passing, 0
 skipped, 0 xfailed.
