@@ -487,3 +487,63 @@ def test_conflicting_sources_are_each_cited_inline(poisoned_index):
     assert lines
     for line in lines:
         assert re.search(r"\[[^\]]+\.md\]$", line), line
+
+
+# ── hybrid retrieval (built, tested, off by default) ────────────────────────
+
+def _mini_index(texts):
+    chunks = [rag.Chunk(source=f"docs/t{i}.md", index=0, text=t) for i, t in enumerate(texts)]
+    return rag.Index(chunks=chunks, backend="local", built_at=0.0)
+
+
+def test_retrieval_defaults_to_dense_and_the_exact_id_list_is_off():
+    assert rag.RETRIEVAL == "dense"
+    assert rag.EXACT_ID is False
+
+
+def test_bm25_prefers_the_shorter_chunk_and_scores_absent_terms_zero():
+    filler = " ".join(f"word{i}" for i in range(200))
+    idx = _mini_index([
+        "escalation path honored by a human",
+        f"escalation path honored {filler}",
+        "nothing relevant here at all",
+    ])
+    short, long_, none = rag.bm25_scores(idx, "escalation honored")
+    assert short > long_ > 0.0
+    assert none == 0.0
+
+
+def test_rank_fusion_counts_only_positive_scores_within_depth():
+    ranks = rag._ranks([0.0, 0.9, 0.5, 0.7], depth=2)
+    assert ranks == {1: 1, 3: 2}
+
+
+def test_identifiers_are_matched_exactly_and_case_sensitively():
+    q = "Why did PDX01_PHI_GATE_TRIGGERED fire before IDG-01, and what is deny_data?"
+    assert rag.identifiers_in(q) == ["IDG-01", "PDX01_PHI_GATE_TRIGGERED"]
+
+
+def _unanswerable_questions():
+    path = REPO_ROOT / "eval" / "spec_rag_questions.jsonl"
+    rows = [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    return [r["question"] for r in rows if not r["answerable"]]
+
+
+@pytest.mark.parametrize("exact_id", [False, True])
+def test_switching_hybrid_on_still_refuses_every_unanswerable_question(index, monkeypatch, exact_id):
+    # The switch exists for the OpenAI backend. Whoever turns it on must not
+    # be able to turn the refusals off with it.
+    monkeypatch.setattr(rag, "RETRIEVAL", "hybrid")
+    monkeypatch.setattr(rag, "EXACT_ID", exact_id)
+    for question in _unanswerable_questions():
+        result = rag.ask(index, question)
+        assert result.refused and result.answer == rag.REFUSAL, question
+
+
+def test_the_exact_id_list_surfaces_a_chunk_naming_the_identifier(index, monkeypatch):
+    monkeypatch.setattr(rag, "RETRIEVAL", "hybrid")
+    monkeypatch.setattr(rag, "EXACT_ID", True)
+    hits = rag.retrieve(index, "When is PDX01_PHI_GATE_TRIGGERED returned?")
+    assert any("PDX01_PHI_GATE_TRIGGERED" in h.chunk.text for h in hits)
+    assert all(h.rrf > 0.0 for h in hits)
+    assert all(h.control_boost == 0.0 for h in hits)

@@ -18,7 +18,10 @@ Variants (local hashed backend unless OPENAI_API_KEY is set):
      stemmed ranking
   K  G with the heading line kept in the body
   N  K with short sections folded, ranking unstemmed
-  F  K with sections under 400 chars folded into the previous one (shipped)
+  F  K with sections under 400 chars folded into the previous one (PR A)
+  R  F with dense and BM25 fused by reciprocal rank (RRF, k=60, top 50 each)
+  X  R plus an exact-identifier list, replacing the control-id boost
+  Z  BM25 alone on F's chunks (implemented here only; it must not ship)
 
 Also measured while building Phase 2 and removed because they changed no
 number: judging the refusal gate over a chunk's whole section (folded sections
@@ -53,10 +56,19 @@ VARIANTS = {
     "N": dict(CHUNKING="heading", STEM_RANKING=False, HEADING_IN_BODY=True,
               MIN_SECTION_CHARS=MIN),
     "F": dict(CHUNKING="heading", STEM_RANKING=True, HEADING_IN_BODY=True,
-              MIN_SECTION_CHARS=MIN),
+              MIN_SECTION_CHARS=MIN, RETRIEVAL="dense", EXACT_ID=False),
+    "R": dict(CHUNKING="heading", STEM_RANKING=True, HEADING_IN_BODY=True,
+              MIN_SECTION_CHARS=MIN, RETRIEVAL="hybrid", EXACT_ID=False),
+    "X": dict(CHUNKING="heading", STEM_RANKING=True, HEADING_IN_BODY=True,
+              MIN_SECTION_CHARS=MIN, RETRIEVAL="hybrid", EXACT_ID=True),
+    "Z": dict(CHUNKING="heading", STEM_RANKING=True, HEADING_IN_BODY=True,
+              MIN_SECTION_CHARS=MIN, RETRIEVAL="dense", EXACT_ID=False,
+              _bm25_only=True),
 }
 
-SWITCHES = ("CHUNKING", "STEM_RANKING", "HEADING_IN_BODY", "MIN_SECTION_CHARS")
+SWITCHES = ("CHUNKING", "STEM_RANKING", "HEADING_IN_BODY", "MIN_SECTION_CHARS",
+            "RETRIEVAL", "EXACT_ID")
+DEFAULTS = {"RETRIEVAL": "dense", "EXACT_ID": False}
 
 
 @contextmanager
@@ -64,7 +76,7 @@ def configured(settings):
     saved = {k: getattr(rag, k) for k in SWITCHES}
     try:
         for k in SWITCHES:
-            setattr(rag, k, settings[k])
+            setattr(rag, k, settings.get(k, DEFAULTS.get(k)))
         yield
     finally:
         for k, v in saved.items():
@@ -97,12 +109,38 @@ def q11_rank(index) -> str:
     return "-"
 
 
+@contextmanager
+def bm25_only():
+    """Rank by BM25 alone. Lives here, not in the module: it must never ship."""
+    original = rag.retrieve
+
+    def retrieve(index, question, k=rag.TOP_K):
+        hits = original(index, question, k=len(index.chunks))
+        scores = rag.bm25_scores(index, question)
+        by_pos = {id(c): v for c, v in zip(index.chunks, scores)}
+        for h in hits:
+            h.bm25 = by_pos[id(h.chunk)]
+        hits.sort(key=lambda h: (-h.bm25, -h.score, h.chunk.source, h.chunk.index))
+        return hits[:k]
+
+    rag.retrieve = retrieve
+    try:
+        yield
+    finally:
+        rag.retrieve = original
+
+
 def run(name):
     settings = VARIANTS[name]
     with configured(settings):
         index = build_in_memory(settings)
-        report = evaluate(index, load_questions())
-        report["q11_rank"] = q11_rank(index)
+        if settings.get("_bm25_only"):
+            with bm25_only():
+                report = evaluate(index, load_questions())
+                report["q11_rank"] = q11_rank(index)
+        else:
+            report = evaluate(index, load_questions())
+            report["q11_rank"] = q11_rank(index)
     return report
 
 

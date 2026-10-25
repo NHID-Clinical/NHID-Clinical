@@ -2490,6 +2490,29 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.22 Hybrid retrieval is built and left off — 2026-10-25
+
+Phase 2 of the RAG roadmap, second PR. BM25 fused with the dense score by reciprocal rank,
+with an optional exact-identifier list, was implemented and measured on the 35-question
+eval (local backend). It changed the retrieved chunks for 10 of 20 answerable questions and
+moved no metric: file 20/20, passage 11/20, MRR 0.975, refusals 15/15, unsupported 0, the
+same as dense retrieval. BM25 alone answered two denial-shaped questions.
+
+**Decisions.**
+- **Default stays dense** (`RETRIEVAL = "dense"`). The rule from §19.21 holds: only
+  measured changes ship as behavior.
+- **The hybrid code stays**, tested, because its expected benefit is with the OpenAI
+  backend, whose semantic score misses exact terms, and that backend has never been
+  measured. Turning it on is a decision for when that measurement exists.
+- **BM25 alone is not an option in the module.** It lives in the ablation harness only.
+- **No reranker.** The right file is first for 19 of 20 questions; there is no ranking gap.
+- Two tests assert that switching hybrid on, with or without the exact-identifier list,
+  still refuses every unanswerable question.
+
+The remaining weakness is passage selection (6 wrong passages, 3 refusals of answerable
+questions), not retrieval. That is where the next measured change belongs. No control,
+outcome, baseline or published test count moved.
+
 ### 19.21 The reading aid finds every file; what it quotes has not improved — 2026-10-25
 
 Phase 2 of the RAG roadmap, first PR. The reading aid now splits `docs/*.md` at markdown
