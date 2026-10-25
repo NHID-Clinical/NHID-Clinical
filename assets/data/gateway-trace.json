@@ -117,5 +117,99 @@
       ]
     }
   ],
-  "source_commit": "df4ea14"
+  "hero_transcript": {
+    "id": "hero_disclosed_call",
+    "label": "A conceptual model, not a recorded call.",
+    "turns": [
+      {
+        "position": 0,
+        "speaker": "agent",
+        "speech": "Hi, this is an automated AI assistant calling on behalf of Dr. Patel's office about the status of a claim.",
+        "evaluated": true,
+        "controls": [
+          {
+            "rule_id": "IDG-01",
+            "action": "CONTINUE_AI",
+            "reason_code": "IDG01_DISCLOSURE_CONFIRMED",
+            "quiet": false
+          },
+          {
+            "rule_id": "PDX-01",
+            "action": "CONTINUE_AI",
+            "reason_code": "PDX01_NO_PHI_REQUESTED",
+            "quiet": true
+          },
+          {
+            "rule_id": "DBC-01",
+            "action": "CONTINUE_AI",
+            "reason_code": "DBC01_NO_ARTIFACTS",
+            "quiet": true
+          },
+          {
+            "rule_id": "EIT-01",
+            "action": "CONTINUE_AI",
+            "reason_code": "EIT01_NO_ESCALATION_REQUESTED",
+            "quiet": true
+          }
+        ],
+        "audit": {
+          "rule_id": "ATR-01",
+          "action": "CONTINUE_AI",
+          "reason_code": "ATR01_AUDIT_COMPLETE"
+        },
+        "composite": {
+          "action": "CONTINUE_AI",
+          "reason_code": "ATR01_AUDIT_COMPLETE"
+        }
+      },
+      {
+        "position": 1,
+        "speaker": "representative",
+        "speech": "Thanks for letting me know. What do you need today?",
+        "evaluated": false
+      },
+      {
+        "position": 2,
+        "speaker": "agent",
+        "speech": "Can you confirm the member ID on claim 48213 so I can check its status?",
+        "evaluated": true,
+        "controls": [
+          {
+            "rule_id": "IDG-01",
+            "action": "CONTINUE_AI",
+            "reason_code": "IDG01_DISCLOSURE_CONFIRMED",
+            "quiet": false
+          },
+          {
+            "rule_id": "PDX-01",
+            "action": "CONTINUE_AI",
+            "reason_code": "PDX01_GATE_CLEARED",
+            "quiet": false
+          },
+          {
+            "rule_id": "DBC-01",
+            "action": "CONTINUE_AI",
+            "reason_code": "DBC01_NO_ARTIFACTS",
+            "quiet": true
+          },
+          {
+            "rule_id": "EIT-01",
+            "action": "CONTINUE_AI",
+            "reason_code": "EIT01_NO_ESCALATION_REQUESTED",
+            "quiet": true
+          }
+        ],
+        "audit": {
+          "rule_id": "ATR-01",
+          "action": "CONTINUE_AI",
+          "reason_code": "ATR01_AUDIT_COMPLETE"
+        },
+        "composite": {
+          "action": "CONTINUE_AI",
+          "reason_code": "ATR01_AUDIT_COMPLETE"
+        }
+      }
+    ]
+  },
+  "source_commit": "7e96abb"
 }

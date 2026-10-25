@@ -41,7 +41,14 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from src.nhid_policy_engine_v1 import evaluate_all  # noqa: E402
+from src.nhid_policy_engine_v1 import (  # noqa: E402
+    evaluate_all,
+    evaluate_atr01,
+    evaluate_dbc01,
+    evaluate_eit01,
+    evaluate_idg01,
+    evaluate_pdx01,
+)
 from synthetic_eval_loop import (  # noqa: E402
     build_event,
     build_session,
@@ -74,6 +81,46 @@ SPEAKER_NOTE = {
                          "request that goes unhonoured.",
 }
 
+# ── The home-page hero transcript ────────────────────────────────────────────
+# The brief asked for the hero to replay nhid_ec_comp_001. Its first turn is
+# "Thank you for calling... your member information": the agent ANSWERING a
+# member's call, the reversed direction CLAUDE.md §1 forbids on any published
+# surface. So the hero uses a three-turn caller-side script written here, and
+# keeps the part that matters true: every chip is the engine's own output for
+# exactly these words, from the same evaluators the suite and the API call.
+# The representative's turn is display only; the controls judge the agent.
+HOME = ROOT / "index.html"
+HERO_BEGIN = "<!-- BEGIN GENERATED hero-transcript -->"
+HERO_END = "<!-- END GENERATED hero-transcript -->"
+HERO_ID = "hero_disclosed_call"
+HERO_LABEL = "A conceptual model, not a recorded call."
+HERO_TURNS = (
+    {"speaker": "agent",
+     "speech_text": "Hi, this is an automated AI assistant calling on behalf of Dr. Patel's "
+                    "office about the status of a claim.",
+     "identity_assertion_text": "automated AI assistant",
+     "disclosure_timestamp": "2026-06-01T00:00:00Z",
+     "turn_count": 0, "phi_accessed": []},
+    {"speaker": "representative",
+     "speech_text": "Thanks for letting me know. What do you need today?"},
+    {"speaker": "agent",
+     "speech_text": "Can you confirm the member ID on claim 48213 so I can check its status?",
+     "turn_count": 2, "phi_accessed": ["member_id"]},
+)
+#: Reason codes that mean "this control had nothing to judge on this turn".
+#: They render as a muted "no finding" chip; the code itself stays in the markup.
+QUIET_CODES = {
+    "PDX01_NO_PHI_REQUESTED",
+    "DBC01_NO_ARTIFACTS",
+    "EIT01_NO_ESCALATION_REQUESTED",
+}
+PER_CONTROL = (
+    ("IDG-01", evaluate_idg01),
+    ("PDX-01", evaluate_pdx01),
+    ("DBC-01", evaluate_dbc01),
+    ("EIT-01", evaluate_eit01),
+)
+
 
 def _load_scenarios() -> dict:
     corpus = json.loads(CORPUS.read_text(encoding="utf-8"))
@@ -96,6 +143,40 @@ def _commit() -> str:
         ).stdout.strip()
     except Exception:
         return "unknown"
+
+
+def build_hero() -> dict:
+    """Run the hero script's agent turns through the engine, one control at a time.
+
+    Disclosure is carried forward exactly as the corpus replay does it, so the
+    second agent turn is judged as "disclosed before this turn" and PDX-01 can
+    report the gate as cleared rather than tripped.
+    """
+    agent_turns = [dict(t) for t in HERO_TURNS if t["speaker"] == "agent"]
+    carried = iter(carry_disclosure_forward(agent_turns))
+    turns = []
+    for position, spoken in enumerate(HERO_TURNS):
+        if spoken["speaker"] != "agent":
+            turns.append({"position": position, "speaker": "representative",
+                          "speech": spoken["speech_text"], "evaluated": False})
+            continue
+        turn = next(carried)
+        session, event = build_session(turn), build_event(HERO_ID, position, turn)
+        composite = evaluate_all(session, event)
+        controls = []
+        for rule_id, evaluator in PER_CONTROL:
+            d = evaluator(session, event)
+            controls.append({"rule_id": rule_id, "action": d.action.name,
+                             "reason_code": d.reason_code,
+                             "quiet": d.reason_code in QUIET_CODES})
+        atr = evaluate_atr01(session, event)
+        turns.append({
+            "position": position, "speaker": "agent", "speech": spoken["speech_text"],
+            "evaluated": True, "controls": controls,
+            "audit": {"rule_id": "ATR-01", "action": atr.action.name, "reason_code": atr.reason_code},
+            "composite": {"action": composite.action.name, "reason_code": composite.reason_code},
+        })
+    return {"id": HERO_ID, "label": HERO_LABEL, "turns": turns}
 
 
 def build() -> dict:
@@ -142,6 +223,7 @@ def build() -> dict:
             "note": SPEAKER_NOTE[scenario_id],
             "turns": turns,
         })
+    out["hero_transcript"] = build_hero()
     return out
 
 
@@ -218,6 +300,67 @@ def inject(data: dict) -> bool:
     return True
 
 
+def render_hero(hero: dict) -> str:
+    """The home-page transcript: three turns, chips per control, ATR-01 band.
+
+    Server-rendered like the Trust Gateway. The label says what it is; the
+    caption says what the chips do not mean.
+    """
+    out = [HERO_BEGIN,
+           '          <figure class="hero-transcript" aria-labelledby="ht-label">',
+           '            <figcaption class="ht-label" id="ht-label">'
+           f'<span class="maturity-reference">Reference</span> {_esc(hero["label"])} '
+           'Every chip is the reference engine&rsquo;s own output for the words shown.</figcaption>',
+           '            <ol class="ht-turns">']
+    audit_codes: list[str] = []
+    for turn in hero["turns"]:
+        if not turn["evaluated"]:
+            out.append(f'              <li class="ht-turn ht-rep" data-turn="{turn["position"]}">')
+            out.append('                <span class="ht-who">Payer representative</span>')
+            out.append(f'                <q>{_esc(turn["speech"])}</q>')
+            out.append('                <span class="ht-note">Not evaluated: the controls judge the agent&rsquo;s turns.</span>')
+            out.append('              </li>')
+            continue
+        out.append(f'              <li class="ht-turn ht-agent" data-turn="{turn["position"]}">')
+        out.append('                <span class="ht-who">AI agent &middot; calling for a provider</span>')
+        out.append(f'                <q>{_esc(turn["speech"])}</q>')
+        out.append('                <ul class="ht-chips" aria-label="What each control returned for this turn">')
+        for c in turn["controls"]:
+            state = "is-quiet" if c["quiet"] else "is-lit"
+            shown = "no finding" if c["quiet"] else c["reason_code"]
+            out.append(f'                  <li class="ht-chip {state}" data-control="{c["rule_id"]}" '
+                       f'data-reason="{_esc(c["reason_code"])}"><b>{c["rule_id"]}</b>'
+                       f'<code>{_esc(shown)}</code></li>')
+        out.append(f'                  <li class="ht-composite"><span>composite</span>'
+                   f'<code>{_esc(turn["composite"]["action"])}</code></li>')
+        out.append('                </ul>')
+        out.append('              </li>')
+        if turn["audit"]["reason_code"] not in audit_codes:
+            audit_codes.append(turn["audit"]["reason_code"])
+    out.append('            </ol>')
+    out.append('            <p class="ht-audit"><b>ATR-01</b><span>Records every turn. Changes no behavior.</span>'
+               f'<code>{_esc(" · ".join(audit_codes))}</code></p>')
+    out.append('            <p class="ht-caption">Disclosure is not authorization: the chips show what the agent '
+               'said and when, not that it may receive the data.</p>')
+    out.append('          </figure>')
+    out.append(f'          {HERO_END}')
+    return "\n".join(out)
+
+
+def inject_hero(data: dict) -> bool:
+    """Replace the generated hero block in index.html. Returns True if changed."""
+    page = HOME.read_text(encoding="utf-8")
+    if HERO_BEGIN not in page or HERO_END not in page:
+        raise SystemExit(f"{HOME.name} has no generated hero block; add {HERO_BEGIN} / {HERO_END} markers first")
+    start = page.index(HERO_BEGIN)
+    finish = page.index(HERO_END) + len(HERO_END)
+    fresh = render_hero(data["hero_transcript"])
+    if page[start:finish] == fresh:
+        return False
+    HOME.write_text(page[:start] + fresh + page[finish:], encoding="utf-8")
+    return True
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--check", action="store_true",
@@ -233,7 +376,8 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         committed = json.loads(OUT.read_text(encoding="utf-8"))
         # `generated_at`-style fields would churn; compare only what the page shows.
-        if committed.get("scenarios") != fresh["scenarios"]:
+        if (committed.get("scenarios") != fresh["scenarios"]
+                or committed.get("hero_transcript") != fresh["hero_transcript"]):
             print("GATEWAY FAIL: assets/data/gateway-trace.json no longer matches what "
                   "the engine produces. Re-run scripts/build_gateway_fixture.py and "
                   "commit the result.", file=sys.stderr)
@@ -248,14 +392,25 @@ def main(argv: list[str] | None = None) -> int:
                   "matches the engine's output. Re-run scripts/build_gateway_fixture.py "
                   "and commit the result.", file=sys.stderr)
             return 1
+        home = HOME.read_text(encoding="utf-8")
+        if HERO_BEGIN not in home or HERO_END not in home:
+            print(f"GATEWAY FAIL: {HOME.name} has lost its generated hero block.", file=sys.stderr)
+            return 1
+        hero_block = home[home.index(HERO_BEGIN):home.index(HERO_END) + len(HERO_END)]
+        if hero_block != render_hero(fresh["hero_transcript"]):
+            print("GATEWAY FAIL: the hero transcript in index.html no longer matches the "
+                  "engine's output. Re-run scripts/build_gateway_fixture.py and commit the "
+                  "result.", file=sys.stderr)
+            return 1
         turns = sum(len(s["turns"]) for s in fresh["scenarios"])
         print(f"GATEWAY PASS: fixture and page match the engine "
-              f"({len(fresh['scenarios'])} scenarios, {turns} turns)")
+              f"({len(fresh['scenarios'])} scenarios, {turns} turns; hero transcript current)")
         return 0
 
     fresh["source_commit"] = _commit()
     OUT.write_text(json.dumps(fresh, indent=2) + "\n", encoding="utf-8")
     changed = inject(fresh)
+    inject_hero(fresh)
     turns = sum(len(s["turns"]) for s in fresh["scenarios"])
     print(f"Wrote {OUT.relative_to(ROOT)} — {len(fresh['scenarios'])} scenarios, {turns} turns")
     print(f"{PAGE.name}: generated block " + ("updated" if changed else "already current"))

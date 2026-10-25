@@ -254,6 +254,7 @@
         <ol>
           <li><a href="#what-it-is"><span>What NHID-Clinical is</span></a></li>
           <li><a href="#five-questions"><span>The five questions at the boundary</span></a></li>
+          <li><a href="#how-it-works"><span>How it works, in plain terms</span></a></li>
           <li><a href="#who"><span>Who created it</span></a></li>
           <li><a href="#terminology"><span>Terminology: what is ours and what is not</span></a></li>
           <li><a href="#what-it-is-not"><span>What NHID-Clinical is not</span></a></li>
@@ -270,7 +271,7 @@
             <h2 id="what-it-is-h">What NHID-Clinical is</h2>
             <p class="act-lead">NHID stands for Non-Human Identity Disclosure.</p>
           </div>
-          <span class="act-index">01 / 06</span>
+          <span class="act-index">01 / 07</span>
         </div>
         <div class="act-body">
 
@@ -285,7 +286,7 @@
             <h2 id="five-questions-h">The five questions at the boundary</h2>
             <p class="act-lead">At that crossing, the framework asks five questions of the interaction.</p>
           </div>
-          <span class="act-index">02 / 06</span>
+          <span class="act-index">02 / 07</span>
         </div>
         <div class="act-body">
 
@@ -297,6 +298,83 @@
             <li><h3>What record exists of what happened?</h3><p>An auditable trail the receiving organization can review.</p></li>
           </ol>
           <p><em>Who authorized the agent?</em> is the question the framework is organized around. A disclosed agent may still be unauthorized; an undisclosed one may be perfectly authorized. The two are separate properties, and the framework keeps them separate.</p>
+          <figure class="figure-frame obligation-map" style="margin-top:1.5rem">
+          <svg viewBox="0 0 468 280" role="img" aria-labelledby="ob-title ob-desc" style="width:100%;height:auto;display:block">
+            <title id="ob-title">The five trust obligations, and what carries each</title>
+            <desc id="ob-desc">Five obligations mapped to what actually carries each one. DISCLOSE — State non-human identity before operational exchange — is carried by IDG-01. AUTHORIZE — Prove the caller was permitted to act — is carried by NHID-Auth v2. SCOPE — Keep protected data inside what was disclosed and granted — is carried by PDX-01 · DBC-01. AUDIT — Record every turn, whatever the outcome — is carried by ATR-01. OBSERVE — Measure before enforcing — is carried by Shadow evaluation. Three map to controls in this specification, drawn solid. Two do not: AUTHORIZE is addressed by NHID-Auth v2, a separate optional document, and OBSERVE is a deployment practice rather than a control. Both are drawn with a dashed edge so the gap between the vocabulary and the implemented control set is visible rather than implied.</desc>
+            <text x="14" y="24" class="ob-zone">OBLIGATION</text>
+            <text x="196" y="24" class="ob-zone">CARRIED BY</text>
+            <g class="ob-row" data-kind="control"><rect x="14" y="44" width="140" height="34" rx="6"/></g>
+            <text x="84" y="66" text-anchor="middle" class="ob-name">DISCLOSE</text>
+            <path d="M160 61 H184" class="ob-flow"/><polygon points="188,61 178,56 178,66" class="ob-flow-head"/>
+            <text x="196" y="66" class="ob-control" data-kind="control">IDG-01</text>
+            <g class="ob-row" data-kind="adjacent"><rect x="14" y="88" width="140" height="34" rx="6"/></g>
+            <text x="84" y="110" text-anchor="middle" class="ob-name">AUTHORIZE</text>
+            <path d="M160 105 H184" class="ob-flow"/><polygon points="188,105 178,100 178,110" class="ob-flow-head"/>
+            <text x="196" y="110" class="ob-control" data-kind="adjacent">NHID-Auth v2</text>
+            <g class="ob-row" data-kind="control"><rect x="14" y="132" width="140" height="34" rx="6"/></g>
+            <text x="84" y="154" text-anchor="middle" class="ob-name">SCOPE</text>
+            <path d="M160 149 H184" class="ob-flow"/><polygon points="188,149 178,144 178,154" class="ob-flow-head"/>
+            <text x="196" y="154" class="ob-control" data-kind="control">PDX-01 · DBC-01</text>
+            <g class="ob-row" data-kind="control"><rect x="14" y="176" width="140" height="34" rx="6"/></g>
+            <text x="84" y="198" text-anchor="middle" class="ob-name">AUDIT</text>
+            <path d="M160 193 H184" class="ob-flow"/><polygon points="188,193 178,188 178,198" class="ob-flow-head"/>
+            <text x="196" y="198" class="ob-control" data-kind="control">ATR-01</text>
+            <g class="ob-row" data-kind="adjacent"><rect x="14" y="220" width="140" height="34" rx="6"/></g>
+            <text x="84" y="242" text-anchor="middle" class="ob-name">OBSERVE</text>
+            <path d="M160 237 H184" class="ob-flow"/><polygon points="188,237 178,232 178,242" class="ob-flow-head"/>
+            <text x="196" y="242" class="ob-control" data-kind="adjacent">Shadow evaluation</text>
+          </svg>
+          </figure>
+          <p class="visual-caption">The five obligations and what carries each. AUTHORIZE and OBSERVE are dashed: no v1.3 control carries them; NHID-Auth v2 and the shadow evaluation do.</p>
+        </div>
+      </section>
+      <section class="act film-band" id="how-it-works" aria-labelledby="how-it-works-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">How it works, in plain terms</p>
+            <h2 id="how-it-works-h">Five rules a robot has to follow before it can talk about a patient.</h2>
+            <p class="act-lead">The same five rules, told in three settings anyone can follow. Each rule in the films is one control in the specification, and the label under each station names it. The films are an analogy for the conduct the controls check, not a picture of the architecture.</p>
+          </div>
+          <span class="act-index">03 / 07</span>
+        </div>
+        <div class="act-body">
+          <div class="film-tabs" role="tablist" aria-label="Choose a setting">
+        <button type="button" role="tab" class="film-tab is-active" aria-selected="true" aria-controls="film-front-desk" id="film-tab-front-desk" tabindex="0">Clinic front desk</button>
+        <button type="button" role="tab" class="film-tab" aria-selected="false" aria-controls="film-airport" id="film-tab-airport" tabindex="-1">Airport checkpoint</button>
+        <button type="button" role="tab" class="film-tab" aria-selected="false" aria-controls="film-school" id="film-tab-school" tabindex="-1">School pickup line</button>
+      </div>
+      <div class="film-stage">
+        <figure class="film" id="film-front-desk" role="tabpanel" aria-labelledby="film-tab-front-desk">
+          <video class="film-video" controls preload="none" playsinline width="960" height="540" poster="/assets/media/how-it-works/front-desk.jpg" aria-label="How NHID-Clinical works, told as clinic front desk. 44 seconds, captions on screen.">
+            <source src="/assets/media/how-it-works/front-desk.mp4" type="video/mp4"/>
+            Your browser does not play this video. <a href="/assets/media/how-it-works/front-desk.mp4">Download the film</a>.
+          </video>
+          <figcaption><strong>Clinic front desk.</strong> A robot calls the clinic to talk about a patient. It has to say it is a robot before the gate opens, the folder stays locked until it does, the scanner catches a borrowed face, a button brings a nurse, and every step is stamped in the sign-in book. Only then is the folder handed over.</figcaption>
+        </figure>
+        <figure class="film" id="film-airport" role="tabpanel" aria-labelledby="film-tab-airport" hidden>
+          <video class="film-video" controls preload="none" playsinline width="960" height="540" poster="/assets/media/how-it-works/airport.jpg" aria-label="How NHID-Clinical works, told as airport checkpoint. 44 seconds, captions on screen.">
+            <source src="/assets/media/how-it-works/airport.mp4" type="video/mp4"/>
+            Your browser does not play this video. <a href="/assets/media/how-it-works/airport.mp4">Download the film</a>.
+          </video>
+          <figcaption><strong>Airport checkpoint.</strong> The same five rules at a checkpoint: passport booth, locked suitcase on the belt, body scanner, an officer on call, and a stamp for every step. The suitcase comes through only after all five.</figcaption>
+        </figure>
+        <figure class="film" id="film-school" role="tabpanel" aria-labelledby="film-tab-school" hidden>
+          <video class="film-video" controls preload="none" playsinline width="960" height="540" poster="/assets/media/how-it-works/school.jpg" aria-label="How NHID-Clinical works, told as school pickup line. 44 seconds, captions on screen.">
+            <source src="/assets/media/how-it-works/school.mp4" type="video/mp4"/>
+            Your browser does not play this video. <a href="/assets/media/how-it-works/school.mp4">Download the film</a>.
+          </video>
+          <figcaption><strong>School pickup line.</strong> A robot drives up to collect a child. The driver says who it is, the yard gate stays locked until it does, a paper face is caught at the check, the office phone brings a teacher, and the pickup is written in the log. Only then does the child get picked up.</figcaption>
+        </figure>
+      </div>
+      <ol class="film-rules" aria-label="The five rules and the control each one stands for">
+        <li><span>1 &middot; Say who you are</span><code>IDG-01 &middot; Identity Disclosure Gate</code></li>
+        <li><span>2 &middot; Nothing moves until you do</span><code>PDX-01 &middot; Pre-Data Exchange Gate</code></li>
+        <li><span>3 &middot; No pretending</span><code>DBC-01 &middot; Deceptive Behavior Check</code></li>
+        <li><span>4 &middot; Ask for a person</span><code>EIT-01 &middot; Escalation Implementation Test</code></li>
+        <li><span>5 &middot; Write it down</span><code>ATR-01 &middot; Audit Trail</code></li>
+      </ol>
+      <p class="record-note">The gate, the scanner and the stamp are the receiving organization acting on what the controls report; NHID-Clinical evaluates the call and records the evidence. <a href="/specification.html#controls">Read the control definitions</a>. Not a standard, a certification or a product.</p>
         </div>
       </section>
       <section class="act" id="who" aria-labelledby="who-h">
@@ -305,7 +383,7 @@
             <p class="section-kicker">Maintainer</p>
             <h2 id="who-h">Who created it</h2>
           </div>
-          <span class="act-index">03 / 06</span>
+          <span class="act-index">04 / 07</span>
         </div>
         <div class="act-body">
 
@@ -321,7 +399,7 @@
             <h2 id="terminology-h">Terminology: what is ours and what is not</h2>
             <p class="act-lead">Some vocabulary originates here. Some is established work this project composes with.</p>
           </div>
-          <span class="act-index">04 / 06</span>
+          <span class="act-index">05 / 07</span>
         </div>
         <div class="act-body">
 
@@ -341,7 +419,7 @@
             <h2 id="what-it-is-not-h">What NHID-Clinical is not</h2>
             <p class="act-lead">Stated plainly, because governance work attracts the assumption of authority it has not earned.</p>
           </div>
-          <span class="act-index">05 / 06</span>
+          <span class="act-index">06 / 07</span>
         </div>
         <div class="act-body">
 
@@ -364,7 +442,7 @@
             <p class="section-kicker">License</p>
             <h2 id="licensing-h">Licensing</h2>
           </div>
-          <span class="act-index">06 / 06</span>
+          <span class="act-index">07 / 07</span>
         </div>
         <div class="act-body">
 
