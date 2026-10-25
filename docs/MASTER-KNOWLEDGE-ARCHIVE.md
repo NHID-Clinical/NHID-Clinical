@@ -2490,6 +2490,38 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.23 The reading aid quoted a retracted report — 2026-10-25
+
+Asked *"What detection rates did the Tonic Fabricate synthetic evaluation report per
+control?"*, the `/spec` reading aid answered from `docs/CORPUS_EVALUATION_SUMMARY.md` and
+quoted "150 sessions / 1,227 turns ... detection rates at or near 100%". That file's first
+line is *"This document is withdrawn in full. Do not cite any figure that was in it."*
+`docs/` was a glob: every file was evidence, and a retraction notice at the top of a file
+changed nothing about how it was quoted. Dated snapshots such as
+`review-2026-07-30.md` were quoted the same way, with nothing to say they were old.
+
+**Decisions.**
+- **`docs/source-registry.json` lists every top-level `docs/*.md` file** with a status
+  (`current`, `historical`, `superseded`, `draft`, `withdrawn`, `excluded`) and an authority
+  (`normative`, `informative`, `record`). Every non-current status quotes the file's own words
+  as its reason. A file the registry does not list is not indexed, and a test fails when a
+  document has no entry. It replaces the hard-coded exclusion list.
+- **Withdrawn and excluded files are never indexed.** The Tonic question is now answered by
+  the current retraction notice in `CONTROL_DECISION_TABLE.md`.
+- **Historical, superseded and draft files stay indexed, and every quote carries its status
+  inline**, e.g. `[docs/release-history.md · historical record]`. Ranking and the refusal
+  gate are unchanged: on the original twenty questions every metric is identical.
+- **The registry is part of the corpus hash**, so changing a status rebuilds the index.
+- **The eval checks attribution on every answer**: a quoted line must appear in the file it
+  cites, no withdrawn or unregistered file may be cited, and every non-current quote must
+  carry its label. All three are 0.
+- **Flagged for the maintainer:** `nhid-clinical-technical-specification.md` is registered
+  as `draft` because its own header says "Version: 1.0 (draft)". If that label is no longer
+  meant, change the header and the registry entry together.
+
+Five questions were added (category `retracted_or_historical`) and the baseline was
+regenerated deliberately. No control, outcome, pinned baseline or published test count moved.
+
 ### 19.22 Hybrid retrieval is built and left off — 2026-10-25
 
 Phase 2 of the RAG roadmap, second PR. BM25 fused with the dense score by reciprocal rank,

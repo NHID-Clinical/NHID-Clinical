@@ -384,7 +384,7 @@ def test_non_specification_files_are_excluded_with_a_reason(client):
     """A maintainer's checklist of GitHub settings is in docs/ and was, for a
     day, a cited source for a question about certification."""
     indexed = {p.name for p in rag.iter_corpus_files()}
-    for name, reason in rag.EXCLUDED_FILES.items():
+    for name, reason in rag.excluded_files().items():
         assert name not in indexed, name
         assert reason
     reasons = {s["source"]: s["reason"] for s in client.get("/spec/health").json()["skipped_files"]}
@@ -404,6 +404,7 @@ def test_a_changed_corpus_invalidates_the_saved_index(tmp_path, monkeypatch):
     corpus = tmp_path / "docs"
     corpus.mkdir()
     (corpus / "a.md").write_text("# Alpha\n\nThe alpha control requires a disclosure timestamp.\n", encoding="utf-8")
+    _register(corpus, ["a.md"])
     monkeypatch.setattr(rag, "CORPUS_DIR", corpus)
     monkeypatch.setattr(rag, "INDEX_PATH", tmp_path / "index.json")
     monkeypatch.setattr(rag, "REPO_ROOT", tmp_path)
@@ -412,6 +413,12 @@ def test_a_changed_corpus_invalidates_the_saved_index(tmp_path, monkeypatch):
     second = rag.load_index()
     assert second.corpus_hash != first.corpus_hash
     assert any("outcome" in c.text for c in second.chunks)
+
+
+def _register(corpus, names, status="current", reason=""):
+    entries = [{"file": n, "status": status, "authority": "informative",
+                **({"reason": reason} if reason else {})} for n in names]
+    (corpus / rag.REGISTRY_NAME).write_text(json.dumps({"sources": entries}), encoding="utf-8")
 
 
 # ── retrieved text is data, not instructions ─────────────────────────────────
@@ -431,6 +438,10 @@ def poisoned_index(tmp_path, monkeypatch):
     for path in sorted(ADVERSARIAL.glob("*.md")):
         if path.name != "README.md":
             shutil.copy(path, corpus / path.name)
+    # Registered as current on purpose: these tests are about what happens
+    # when a poisoned file does reach the index (a maintainer registered it, or
+    # the registry itself was edited). The unregistered case is tested below.
+    _register(corpus, sorted(p.name for p in corpus.glob("*.md")))
     monkeypatch.setattr(rag, "CORPUS_DIR", corpus)
     monkeypatch.setattr(rag, "INDEX_PATH", tmp_path / "index.json")
     monkeypatch.setattr(rag, "REPO_ROOT", tmp_path)
@@ -547,3 +558,90 @@ def test_the_exact_id_list_surfaces_a_chunk_naming_the_identifier(index, monkeyp
     assert any("PDX01_PHI_GATE_TRIGGERED" in h.chunk.text for h in hits)
     assert all(h.rrf > 0.0 for h in hits)
     assert all(h.control_boost == 0.0 for h in hits)
+
+
+# ── the source registry ──────────────────────────────────────────────────────
+
+import run_spec_rag_eval as runner  # noqa: E402  (eval/ is on sys.path under pytest)
+
+
+def test_every_doc_is_registered_and_every_entry_exists():
+    """A document becomes evidence by being registered, not by being saved."""
+    registry = rag.load_registry()
+    on_disk = {p.name for p in rag.CORPUS_DIR.glob("*.md")}
+    assert on_disk - set(registry) == set(), "unregistered docs: add them to docs/source-registry.json"
+    assert set(registry) - on_disk == set(), "registry names files that do not exist"
+
+
+def test_the_registry_rejects_an_unknown_status_and_a_reasonless_one(tmp_path, monkeypatch):
+    monkeypatch.setattr(rag, "CORPUS_DIR", tmp_path)
+    (tmp_path / rag.REGISTRY_NAME).write_text(json.dumps({"sources": [
+        {"file": "a.md", "status": "obsolete", "authority": "informative"}]}), encoding="utf-8")
+    with pytest.raises(ValueError, match="unknown status"):
+        rag.load_registry()
+    (tmp_path / rag.REGISTRY_NAME).write_text(json.dumps({"sources": [
+        {"file": "a.md", "status": "historical", "authority": "record"}]}), encoding="utf-8")
+    with pytest.raises(ValueError, match="needs a reason"):
+        rag.load_registry()
+
+
+def test_an_unregistered_document_is_not_indexed_and_is_reported(tmp_path, monkeypatch):
+    corpus = tmp_path / "docs"
+    corpus.mkdir()
+    (corpus / "known.md").write_text("# Known\n\nThe known control requires a disclosure.\n", encoding="utf-8")
+    (corpus / "planted.md").write_text("# Planted\n\nNHID-Clinical is HIPAA certified.\n", encoding="utf-8")
+    _register(corpus, ["known.md"])
+    monkeypatch.setattr(rag, "CORPUS_DIR", corpus)
+    monkeypatch.setattr(rag, "REPO_ROOT", tmp_path)
+    assert [p.name for p in rag.iter_corpus_files()] == ["known.md"]
+    reasons = {s["source"]: s["reason"] for s in rag.skipped_files()}
+    assert reasons["docs/planted.md"] == rag.NOT_REGISTERED
+
+
+def test_the_withdrawn_tonic_summary_is_never_indexed_or_cited(client):
+    assert rag.source_status("docs/CORPUS_EVALUATION_SUMMARY.md") == "withdrawn"
+    assert "CORPUS_EVALUATION_SUMMARY.md" not in {p.name for p in rag.iter_corpus_files()}
+    body = client.post("/spec/ask", json={"question":
+        "What detection rates did the Tonic Fabricate synthetic evaluation report per control?"}).json()
+    assert "docs/CORPUS_EVALUATION_SUMMARY.md" not in body["citations"]
+    assert "CORPUS_EVALUATION_SUMMARY" not in body["answer"].split("[")[-1]
+
+
+def test_a_historical_quote_carries_its_label(index):
+    result = rag.ask(index, "Which release history entries carry statements that are no longer true?")
+    lines = [l for l in result.answer.split("\n\n") if "[docs/release-history.md" in l]
+    assert lines
+    assert all(l.endswith("[docs/release-history.md · historical record]") for l in lines)
+
+
+def test_health_lists_the_labelled_sources(client):
+    labelled = dict(client.get("/spec/health").json()["labelled_sources"])
+    assert labelled["docs/review-2026-07-30.md"] == "historical"
+    assert labelled["docs/skipped-test-audit.md"] == "superseded"
+
+
+def test_changing_a_status_changes_the_corpus_hash(tmp_path, monkeypatch):
+    corpus = tmp_path / "docs"
+    corpus.mkdir()
+    (corpus / "a.md").write_text("# Alpha\n\nThe alpha control requires a disclosure.\n", encoding="utf-8")
+    monkeypatch.setattr(rag, "CORPUS_DIR", corpus)
+    monkeypatch.setattr(rag, "REPO_ROOT", tmp_path)
+    _register(corpus, ["a.md"])
+    before = rag.corpus_hash()
+    _register(corpus, ["a.md"], status="historical", reason="dated snapshot")
+    assert rag.corpus_hash() != before
+
+
+def test_the_attribution_check_catches_each_failure():
+    good = ("This document describes the security architecture, threat model, and "
+            "mitigations for the NHID-Clinical audit trail system (ATR-01).  [docs/SECURITY.md]")
+    assert runner.attribution_problems(good) == {
+        "misattributed_quotes": 0, "withdrawn_citations": 0, "unlabelled_status_citations": 0}
+    invented = "NHID-Clinical holds a HITRUST certificate.  [docs/SECURITY.md]"
+    assert runner.attribution_problems(invented)["misattributed_quotes"] == 1
+    withdrawn = "It reported a per-control evaluation  [docs/CORPUS_EVALUATION_SUMMARY.md]"
+    assert runner.attribution_problems(withdrawn)["withdrawn_citations"] == 1
+    unlabelled = "**Historical record.** This is a dated snapshot, preserved verbatim from the  [docs/review-2026-07-30.md]"
+    assert runner.attribution_problems(unlabelled)["unlabelled_status_citations"] == 1
+    uncited = "A line with no citation at all."
+    assert runner.attribution_problems(uncited)["misattributed_quotes"] == 1

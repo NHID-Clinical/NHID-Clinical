@@ -7,6 +7,7 @@ __pycache__/
 *.pdf
 docs/*
 !docs/*.md
+!docs/source-registry.json
 !docs/pilot-kit/
 !docs/pilot-kit/*.md
 !docs/pilot-kit/*.py

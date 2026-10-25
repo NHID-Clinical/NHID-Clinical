@@ -20,22 +20,28 @@ this repeats the error faithfully.
 | | |
 |---|---|
 | Source | `docs/*.md`, top level only. Subdirectories (`docs/validation/`, `docs/pilot-kit/`) are not indexed |
-| Indexed | **48 files, 843 chunks** (measured 2026-10-25 on `75acd1d` plus the Phase 2 chunker; `/spec/health` reports the live figure) |
+| Registry | `docs/source-registry.json` lists every top-level `docs/*.md` file with a status: `current`, `historical`, `superseded`, `draft`, `withdrawn` or `excluded`. **A file it does not list is not indexed** |
+| Indexed | **47 files, 838 chunks** (measured 2026-10-25 on `02036f5` plus the registry; `/spec/health` reports the live figure) |
+| Skipped | `docs/CORPUS_EVALUATION_SUMMARY.md` — **withdrawn**; its first line says not to cite any figure in it |
 | Skipped | `docs/MASTER-KNOWLEDGE-ARCHIVE.md` — over the 200 KB cap |
-| Skipped | `docs/spec-rag.md` — this file; the aid does not read its own manual |
-| Skipped | `docs/maintainer-checklist-github.md` — a maintainer note, not specification (`EXCLUDED_FILES`) |
+| Skipped | `docs/spec-rag.md` — excluded: this file; the aid does not read its own manual |
+| Skipped | `docs/maintainer-checklist-github.md` — excluded: a maintainer note, not specification |
+| Labelled | quotes from `historical` (`review-2026-07-30.md`, `release-history.md`), `superseded` (`skipped-test-audit.md`) and `draft` (`csa-ai-caiq-summary.md`, `nhid-clinical-technical-specification.md`) sources carry the status inline: `[docs/release-history.md · historical record]` |
 | Chunking | split at markdown headings (never across one); sections under 400 characters folded into the previous one; sections over 1,200 characters windowed inside themselves with 120 characters of overlap on word boundaries. Each chunk stores its source path, index and heading path (`H1 > H2 > H3`). The fixed 800/100 splitter remains as the fallback (`CHUNKING = "fixed"`) |
-| Provenance | the index records a `corpus_hash` (sha256 over indexed paths and contents) and the `commit` it was built from; both are on `/spec/health` and in every eval report |
-| Freshness | `load_index` rebuilds when the corpus hash or the backend differs from what the saved index recorded, so an edited document is never quoted stale |
+| Provenance | the index records a `corpus_hash` (sha256 over the registry and the indexed paths and contents) and the `commit` it was built from; both are on `/spec/health` and in every eval report |
+| Freshness | `load_index` rebuilds when the corpus hash or the backend differs from what the saved index recorded, so an edited document, or a changed status, is never quoted stale |
 
 Files over 200 KB are skipped whole rather than truncated. A half-read document
 is worse than an absent one: it answers confidently from whichever part
 happened to fit. `GET /spec/health` names what it skipped, and why.
 
-Anything else placed in `docs/` is indexed as evidence. That is a glob, not a
-trusted-source registry, and it bit once (below). The registry is the roadmap's
-Phase 3; until then `EXCLUDED_FILES` is the list, and every entry carries a
-reason that `/spec/health` repeats.
+Until Phase 3 anything placed in `docs/` was indexed as evidence: a glob, not
+a registry. It bit twice. A maintainer checklist became a cited source for a
+certification question, and a **retracted** report was quoted, figures and all,
+under its own name. The registry replaced the glob: every file is listed with a
+status taken from the file's own words, and a test fails when a document in
+`docs/` has no entry. `/spec/health` lists every skipped file with its reason
+and every labelled source with its status.
 
 ## Embedding backends
 
@@ -146,20 +152,31 @@ Refusing a question a denial would have answered is the cheaper error.
 
 ## Results
 
-Measured by `eval/run_spec_rag_eval.py` against the 35 questions in
-`eval/spec_rag_questions.jsonl` (20 answerable, 15 unanswerable), on the
-**local** backend (no API key set), 2026-10-25, on `75acd1d` plus the Phase 2
-chunker, corpus hash `b0129698…`. The same numbers are recorded in
+Measured by `eval/run_spec_rag_eval.py` against the 40 questions in
+`eval/spec_rag_questions.jsonl` (25 answerable, 15 unanswerable), on the
+**local** backend (no API key set), 2026-10-25, on `02036f5` plus the source
+registry, corpus hash `2564f890…`. The same numbers are recorded in
 `eval/baseline-local.json`, which CI checks every run.
 
-| Metric | Result | Phase 1 | What it measures |
-|---|---|---|---|
-| **File hit @ k=4** | **20/20** | 18/20 | `expected_source` in the top 4 |
-| **Accepted hit @ k=4** | **20/20** | 19/20 | any of `accepted_sources` in the top 4 |
-| **Passage hit** | **11/20** | 11/20 | the answer contains `expected_passage_contains`. Three answerable questions (q08, q11, q17) are refused outright, six quote the right file's wrong passage |
-| **MRR** | **0.98** | 0.79 | rank of `expected_source` within the top 4 |
-| **Refusals** | **15/15** | 15/15 | the original 5 plus 10 denial-shaped questions added 2026-10-25 |
-| **Unsupported answers** | **0/15** | 0/15 | the number that must stay at zero |
+| Metric | All 25 / 15 | Original 20 (Phase 2) | Phase 1 | What it measures |
+|---|---|---|---|---|
+| **File hit @ k=4** | **25/25** | 20/20 | 18/20 | `expected_source` in the top 4 |
+| **Accepted hit @ k=4** | **25/25** | 20/20 | 19/20 | any of `accepted_sources` in the top 4 |
+| **Passage hit** | **12/25** | 11/20 | 11/20 | the answer contains `expected_passage_contains`. Four answerable questions are refused outright (q08, q11, q17, h02), nine quote the right file's wrong passage |
+| **MRR** | **0.95** | 0.975 | 0.79 | rank of `expected_source` within the top 4 |
+| **Refusals** | **15/15** | 15/15 | 15/15 | the original 5 plus 10 denial-shaped questions added 2026-10-25 |
+| **Unsupported answers** | **0/15** | 0/15 | 0/15 | the number that must stay at zero |
+| **Misattributed quotes** | **0** | – | – | a quoted line absent from the file it cites, or a line with no citation |
+| **Withdrawn citations** | **0** | – | – | a citation of a withdrawn, excluded or unregistered file |
+| **Unlabelled status citations** | **0** | – | – | a historical, superseded or draft quote without its label, or a current one with a label |
+
+The last three are checked over every answer the aid gives, answerable or not.
+The five questions added with the registry (category `retracted_or_historical`)
+are h01 to h05. h01 asks for the retracted Tonic figures and is answered by the
+current retraction notice in `CONTROL_DECISION_TABLE.md`. h02 to h05 can only be
+answered from labelled sources: one passes, h02 is refused, and three quote the
+right file's wrong passage. That is the same passage-selection weakness as the
+original twenty, not a new one, and every one of those quotes carries its label.
 
 Retrieval now finds the right file for every answerable question. What it
 quotes from that file is unchanged in count and is the open problem.
