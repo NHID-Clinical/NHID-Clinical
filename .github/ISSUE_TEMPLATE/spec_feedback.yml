@@ -16,8 +16,9 @@ body:
         - PDX-01 — Pre-Data Exchange Gate
         - DBC-01 — Deceptive Behavior Check
         - EIT-01 — Escalation Implementation Test
-        - ATR-01 — Audit Trail
-        - CAS — Call Authorization Score
+        - ATR-01 — Audit Trail Requirements
+        - DLG-01 — Delegated Authority (optional, opt-in)
+        - Enforcement ladder / policy outcomes
         - Scope / applicability
         - Other
     validations:
