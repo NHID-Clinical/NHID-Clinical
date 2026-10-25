@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -208,3 +209,173 @@ def test_empty_question_refuses_rather_than_matching_everything(index):
     result = rag.ask(index, "   ")
     assert result.refused is True
     assert result.answer == rag.REFUSAL
+
+
+# ── a denial is not evidence ─────────────────────────────────────────────────
+
+def test_a_negated_clause_asserts_nothing():
+    """The failure of 2026-10-25: a footer saying "Nothing here claims ... HIPAA
+    certification" covered the question "What is the HIPAA certification
+    number?" at 0.69 and the aid answered it. The same sentence, hard-wrapped
+    across lines the way the markdown is, must still read as one denial."""
+    denial = ("*NHID-Clinical is an independent research project. Nothing\n"
+              "here claims production deployment, healthcare-provider adoption, "
+              "HIPAA certification or\nindependent validation.*")
+    asserted = rag.asserted_tokens(denial)
+    assert "certification" not in asserted
+    assert "hipaa" not in asserted
+    assert "deployment" not in asserted
+    # The first sentence is an assertion and keeps its words.
+    assert "independent" in asserted and "research" in asserted
+
+
+def test_an_assertion_keeps_its_words_and_a_list_item_is_its_own_clause():
+    text = ("Compliant with HIPAA audit trail requirements.\n"
+            "- Write once, never modify\n"
+            "- No deletion of audit events\n"
+            "| **Pass Condition** | No protected-data exchange, OR disclosure was established |")
+    asserted = rag.asserted_tokens(text)
+    assert {"compliant", "hipaa", "audit", "trail"} <= asserted
+    assert "write" in asserted            # before the cue
+    assert "modify" not in asserted       # after "never"
+    assert "deletion" not in asserted     # after "No"
+    assert "pass" in asserted and "condition" in asserted   # its own cell
+
+
+def test_the_negation_cues_cover_the_claim_vocabulary_guards_negations():
+    """tests/test_claim_vocabulary.py keeps a negation list so that a sentence
+    forbidding a phrase is not read as asserting it. The reading aid's cues
+    must include every plain negation word that list uses, so the two guards
+    do not drift into different ideas of what "not" means. Judgement words in
+    that list ("withdrawn", "wrong") are deliberately not cues here."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "claim_vocab", REPO_ROOT / "tests" / "test_claim_vocabulary.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    plain = {"never", "not", "no", "nor"}
+    for word in plain:
+        assert re.search(rf"\b{word}\b", module.NEGATIONS.pattern), word
+        assert word in rag.NEGATION_CUES, word
+
+
+def test_denial_shaped_questions_are_refused(client):
+    for question in (
+        "What is NHID-Clinical's HIPAA certification number?",
+        "Which accreditation body certified the conformance test suite?",
+        "Which health plan is NHID-Clinical's launch customer?",
+    ):
+        body = client.post("/spec/ask", json={"question": question}).json()
+        assert body["refused"] is True, question
+        assert body["answer"] == rag.REFUSAL
+
+
+# ── declared exclusions, provenance, freshness ───────────────────────────────
+
+def test_non_specification_files_are_excluded_with_a_reason(client):
+    """A maintainer's checklist of GitHub settings is in docs/ and was, for a
+    day, a cited source for a question about certification."""
+    indexed = {p.name for p in rag.iter_corpus_files()}
+    for name, reason in rag.EXCLUDED_FILES.items():
+        assert name not in indexed, name
+        assert reason
+    reasons = {s["source"]: s["reason"] for s in client.get("/spec/health").json()["skipped_files"]}
+    assert reasons.get("docs/maintainer-checklist-github.md") == "maintainer note, not specification"
+
+
+def test_health_carries_corpus_hash_and_commit(client):
+    body = client.get("/spec/health").json()
+    assert re.fullmatch(r"[0-9a-f]{64}", body["corpus_hash"])
+    assert body["corpus_hash"] == rag.corpus_hash()
+    assert body["commit"]  # a short sha, or "unknown" where git is absent
+
+
+def test_a_changed_corpus_invalidates_the_saved_index(tmp_path, monkeypatch):
+    """Edit docs/, forget to rebuild, and the old index used to quote stale text
+    under current paths. load_index now rebuilds when the corpus hash moved."""
+    corpus = tmp_path / "docs"
+    corpus.mkdir()
+    (corpus / "a.md").write_text("# Alpha\n\nThe alpha control requires a disclosure timestamp.\n", encoding="utf-8")
+    monkeypatch.setattr(rag, "CORPUS_DIR", corpus)
+    monkeypatch.setattr(rag, "INDEX_PATH", tmp_path / "index.json")
+    monkeypatch.setattr(rag, "REPO_ROOT", tmp_path)
+    first = rag.build_index(verbose=False)
+    (corpus / "a.md").write_text("# Alpha\n\nThe alpha control requires a disclosure timestamp and an outcome.\n", encoding="utf-8")
+    second = rag.load_index()
+    assert second.corpus_hash != first.corpus_hash
+    assert any("outcome" in c.text for c in second.chunks)
+
+
+# ── retrieved text is data, not instructions ─────────────────────────────────
+
+ADVERSARIAL = REPO_ROOT / "eval" / "adversarial"
+
+
+@pytest.fixture()
+def poisoned_index(tmp_path, monkeypatch):
+    """The real corpus plus the three planted documents, indexed in a temp dir.
+    Nothing here touches the repository's own index."""
+    import shutil
+    corpus = tmp_path / "docs"
+    corpus.mkdir()
+    for path in rag.iter_corpus_files():
+        shutil.copy(path, corpus / path.name)
+    for path in sorted(ADVERSARIAL.glob("*.md")):
+        if path.name != "README.md":
+            shutil.copy(path, corpus / path.name)
+    monkeypatch.setattr(rag, "CORPUS_DIR", corpus)
+    monkeypatch.setattr(rag, "INDEX_PATH", tmp_path / "index.json")
+    monkeypatch.setattr(rag, "REPO_ROOT", tmp_path)
+    return rag.build_index(verbose=False)
+
+
+def _whole_corpus(index) -> str:
+    text = " ".join(c.text for c in index.chunks)
+    return re.sub(r"\s+", " ", text)
+
+
+def test_adversarial_documents_are_never_indexed_by_default():
+    indexed = {p.name for p in rag.iter_corpus_files()}
+    for path in ADVERSARIAL.glob("*.md"):
+        assert path.name not in indexed, path.name
+
+
+def test_embedded_instructions_are_quoted_not_followed(poisoned_index):
+    """Every line the aid returns is a verbatim quotation of some corpus text.
+    An instruction inside a document can therefore be *shown* but can change
+    nothing: there is no step that could obey it. If a generative step is ever
+    added, this is the test that must still pass."""
+    result = rag.ask(poisoned_index, "What is the pass condition for PDX-01?")
+    assert not result.refused
+    corpus = _whole_corpus(poisoned_index)
+    for line in result.answer.split("\n\n"):
+        passage = re.sub(r"\s+\[docs/[^\]]+\]$", "", line)
+        passage = re.sub(r"\s+\[[^\]]+\.md\]$", "", passage)
+        assert re.sub(r"\s+", " ", passage) in corpus, line
+    # The instruction text, if it surfaces at all, surfaces with its source
+    # named, never as the aid's own voice.
+    for line in result.answer.split("\n\n"):
+        assert re.search(r"\[[^\]]+\.md\]$", line), line
+
+
+def test_a_poisoned_source_is_quoted_with_its_name_on_it(poisoned_index):
+    """A planted certification record IS answered from: a quotation carries the
+    authority of its source and no more, and the retriever cannot know the file
+    is false. What it can do is name the file. The defense against a poisoned
+    source is a trusted-source registry, not the retriever; this test records
+    that boundary rather than pretending the retriever provides it."""
+    result = rag.ask(poisoned_index, "What is NHID-Clinical's HIPAA certification number?")
+    assert not result.refused
+    assert any(c.endswith("fake-certification.md") for c in result.citations), result.citations
+    assert "HC-2026-0042" in result.answer
+
+
+def test_conflicting_sources_are_each_cited_inline(poisoned_index):
+    """Two documents state different PDX-01 pass conditions. Whatever is quoted,
+    each passage carries its own citation, so a conflict is attributable to a
+    file instead of blended into one answer."""
+    result = rag.ask(poisoned_index, "What is the pass condition for PDX-01?")
+    lines = [l for l in result.answer.split("\n\n") if l.strip()]
+    assert lines
+    for line in lines:
+        assert re.search(r"\[[^\]]+\.md\]$", line), line

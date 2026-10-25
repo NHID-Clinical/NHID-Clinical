@@ -1,0 +1,587 @@
+{
+  "backend": "local",
+  "score_is_openai_score": false,
+  "chunks": 959,
+  "sources": 47,
+  "corpus_hash": "619a9317dbfdb6cd789b6e82cbbc3dfe76ebb67a02da184c69dbb449f024cbae",
+  "commit": "b53ad3b",
+  "k": 4,
+  "answerable": 20,
+  "unanswerable": 15,
+  "file_hits": 18,
+  "accepted_hits": 19,
+  "passage_hits": 11,
+  "mrr": 0.7917,
+  "refusals": 15,
+  "unsupported_answers": 0,
+  "per_question": [
+    {
+      "id": "q01",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 2,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/SYSTEM_ARCHITECTURE.md",
+        "docs/CONTROL_DECISION_TABLE.md",
+        "docs/CONTROL_DECISION_TABLE.md",
+        "docs/CONTROL_DECISION_TABLE.md"
+      ],
+      "cited": [
+        "docs/CONTROL_DECISION_TABLE.md"
+      ],
+      "ms": 77.8
+    },
+    {
+      "id": "q02",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 1,
+      "coverage": 0.7747,
+      "retrieved": [
+        "docs/terminology.md",
+        "docs/NHID-Clinical-Playbook.md",
+        "docs/playbook-structure.md",
+        "docs/nhid-clinical-technical-specification.md"
+      ],
+      "cited": [
+        "docs/playbook-structure.md",
+        "docs/terminology.md",
+        "docs/NHID-Clinical-Playbook.md"
+      ],
+      "ms": 77.2
+    },
+    {
+      "id": "q03",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 1,
+      "coverage": 0.8159,
+      "retrieved": [
+        "docs/enforcement-profile.md",
+        "docs/fhir-auditevent-mapping.md",
+        "docs/enforcement-profile.md",
+        "docs/SYSTEM_ARCHITECTURE.md"
+      ],
+      "cited": [
+        "docs/SYSTEM_ARCHITECTURE.md",
+        "docs/enforcement-profile.md"
+      ],
+      "ms": 77.5
+    },
+    {
+      "id": "q04",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 1,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/dbc01-human-review-sop.md",
+        "docs/SYSTEM_ARCHITECTURE.md",
+        "docs/nhid-clinical-technical-specification.md",
+        "docs/dbc01-human-review-sop.md"
+      ],
+      "cited": [
+        "docs/dbc01-human-review-sop.md"
+      ],
+      "ms": 78.1
+    },
+    {
+      "id": "q05",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 3,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/nhid-clinical-technical-specification.md",
+        "docs/review-2026-07-30.md",
+        "docs/terminology.md",
+        "docs/NHID-Clinical-Playbook.md"
+      ],
+      "cited": [
+        "docs/nhid-clinical-technical-specification.md",
+        "docs/review-2026-07-30.md",
+        "docs/terminology.md"
+      ],
+      "ms": 89.0
+    },
+    {
+      "id": "q06",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": false,
+      "rank": 1,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/ATR-01-IMPLEMENTATION.md",
+        "docs/ATR-01-IMPLEMENTATION.md",
+        "docs/nhid-clinical-technical-specification.md",
+        "docs/ATR-01-IMPLEMENTATION.md"
+      ],
+      "cited": [
+        "docs/ATR-01-IMPLEMENTATION.md"
+      ],
+      "ms": 117.0
+    },
+    {
+      "id": "q07",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 1,
+      "coverage": 0.7076,
+      "retrieved": [
+        "docs/NHID_AUDIT_EVENT_SPEC_v1.0.md",
+        "docs/NHID_AUDIT_EVENT_SPEC_v1.0.md",
+        "docs/NHID_AUDIT_EVENT_SPEC_v1.0.md",
+        "docs/SECURITY.md"
+      ],
+      "cited": [
+        "docs/NHID_AUDIT_EVENT_SPEC_v1.0.md"
+      ],
+      "ms": 76.9
+    },
+    {
+      "id": "q08",
+      "category": "paraphrase_or_terminology_mismatch",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": true,
+      "rank": 2,
+      "coverage": 0.4991,
+      "retrieved": [
+        "docs/fhir-auditevent-standardization-for-ai-agents.md",
+        "docs/fhir-auditevent-mapping.md",
+        "docs/vendor-trust-questionnaire.md",
+        "docs/positioning.md"
+      ],
+      "cited": [],
+      "ms": 77.8
+    },
+    {
+      "id": "q09",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 1,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/scope-boundary-fairness-clinical.md",
+        "docs/scope-boundary-fairness-clinical.md",
+        "docs/nist-ai-rmf-playbook-crosswalk.md",
+        "docs/NHID-Clinical-Playbook.md"
+      ],
+      "cited": [
+        "docs/scope-boundary-fairness-clinical.md",
+        "docs/nist-ai-rmf-playbook-crosswalk.md"
+      ],
+      "ms": 78.9
+    },
+    {
+      "id": "q10",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": false,
+      "rank": 1,
+      "coverage": 0.7099,
+      "retrieved": [
+        "docs/v2-integration-guide.md",
+        "docs/nhid-auth-pki-and-oauth2-integration.md",
+        "docs/nhid-clinical-technical-specification.md",
+        "docs/visuals-and-graph-recommendations.md"
+      ],
+      "cited": [
+        "docs/v2-integration-guide.md",
+        "docs/nhid-clinical-technical-specification.md",
+        "docs/nhid-auth-pki-and-oauth2-integration.md"
+      ],
+      "ms": 79.4
+    },
+    {
+      "id": "q11",
+      "category": "paraphrase_or_terminology_mismatch",
+      "answerable": true,
+      "file_hit": false,
+      "accepted_hit": false,
+      "passage_hit": false,
+      "refused": true,
+      "rank": 0,
+      "coverage": 0.2711,
+      "retrieved": [
+        "docs/claims-register.md",
+        "docs/canonical-threat-model.md",
+        "docs/nist-ai-rmf-playbook-crosswalk.md",
+        "docs/canonical-threat-model.md"
+      ],
+      "cited": [],
+      "ms": 78.9
+    },
+    {
+      "id": "q12",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": false,
+      "rank": 1,
+      "coverage": 0.7213,
+      "retrieved": [
+        "docs/payer-initiated-calls.md",
+        "docs/sip-header-integration-feedback.md",
+        "docs/claim-boundaries.md",
+        "docs/payer-initiated-calls.md"
+      ],
+      "cited": [
+        "docs/payer-initiated-calls.md",
+        "docs/sip-header-integration-feedback.md",
+        "docs/claim-boundaries.md"
+      ],
+      "ms": 80.3
+    },
+    {
+      "id": "q13",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": false,
+      "rank": 1,
+      "coverage": 0.8017,
+      "retrieved": [
+        "docs/NHID_METRICS_AND_OBSERVABILITY_v1.md",
+        "docs/NHID_METRICS_AND_OBSERVABILITY_v1.md",
+        "docs/review-2026-07-30.md",
+        "docs/review-2026-07-30.md"
+      ],
+      "cited": [
+        "docs/review-2026-07-30.md"
+      ],
+      "ms": 77.4
+    },
+    {
+      "id": "q14",
+      "category": "multi_document",
+      "answerable": true,
+      "file_hit": false,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 0,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/SYSTEM_ARCHITECTURE.md",
+        "docs/nhid-clinical-technical-specification.md",
+        "docs/NHID-Clinical-Playbook.md",
+        "docs/executive-brief.md"
+      ],
+      "cited": [
+        "docs/NHID-Clinical-Playbook.md",
+        "docs/executive-brief.md",
+        "docs/nhid-clinical-technical-specification.md"
+      ],
+      "ms": 79.3
+    },
+    {
+      "id": "q15",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 1,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/SECURITY.md",
+        "docs/canonical-threat-model.md",
+        "docs/claim-boundaries.md",
+        "docs/SECURITY.md"
+      ],
+      "cited": [
+        "docs/SECURITY.md",
+        "docs/canonical-threat-model.md",
+        "docs/claim-boundaries.md"
+      ],
+      "ms": 79.5
+    },
+    {
+      "id": "q16",
+      "category": "multi_document",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 1,
+      "coverage": 0.5978,
+      "retrieved": [
+        "docs/DOCKER-DEPLOYMENT.md",
+        "docs/DOCKER-DEPLOYMENT.md",
+        "docs/DOCKER-DEPLOYMENT.md",
+        "docs/DOCKER-DEPLOYMENT.md"
+      ],
+      "cited": [
+        "docs/DOCKER-DEPLOYMENT.md"
+      ],
+      "ms": 92.8
+    },
+    {
+      "id": "q17",
+      "category": "paraphrase_or_terminology_mismatch",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": true,
+      "rank": 1,
+      "coverage": 0.5318,
+      "retrieved": [
+        "docs/5-minute-quickstart.md",
+        "docs/nhid-auth-pki-and-oauth2-integration.md",
+        "docs/vendor-trust-questionnaire.md",
+        "docs/nhid-auth-pki-and-oauth2-integration.md"
+      ],
+      "cited": [],
+      "ms": 81.2
+    },
+    {
+      "id": "q18",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": false,
+      "rank": 1,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/enforcement-profile.md",
+        "docs/enforcement-profile.md",
+        "docs/enforcement-profile.md",
+        "docs/nist-ai-rmf-playbook-crosswalk.md"
+      ],
+      "cited": [
+        "docs/nist-ai-rmf-playbook-crosswalk.md",
+        "docs/enforcement-profile.md"
+      ],
+      "ms": 98.6
+    },
+    {
+      "id": "q19",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": false,
+      "rank": 2,
+      "coverage": 0.6846,
+      "retrieved": [
+        "docs/nhid-clinical-technical-specification.md",
+        "docs/vendor-trust-questionnaire.md",
+        "docs/vendor-trust-questionnaire.md",
+        "docs/NHID-Clinical-Playbook.md"
+      ],
+      "cited": [
+        "docs/nhid-clinical-technical-specification.md",
+        "docs/NHID-Clinical-Playbook.md",
+        "docs/vendor-trust-questionnaire.md"
+      ],
+      "ms": 143.6
+    },
+    {
+      "id": "q20",
+      "category": "direct_single_passage",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 1,
+      "coverage": 0.7001,
+      "retrieved": [
+        "docs/decision-gate-G1-G4.md",
+        "docs/governance-corpus-remediation.md",
+        "docs/governance-corpus-remediation.md",
+        "docs/NHID-Clinical-Playbook.md"
+      ],
+      "cited": [
+        "docs/governance-corpus-remediation.md",
+        "docs/decision-gate-G1-G4.md"
+      ],
+      "ms": 90.3
+    },
+    {
+      "id": "r01",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.0882,
+      "cited": [],
+      "ms": 108.4
+    },
+    {
+      "id": "r02",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.3056,
+      "cited": [],
+      "ms": 121.1
+    },
+    {
+      "id": "r03",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.5311,
+      "cited": [],
+      "ms": 83.7
+    },
+    {
+      "id": "r04",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.177,
+      "cited": [],
+      "ms": 88.9
+    },
+    {
+      "id": "r05",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.3651,
+      "cited": [],
+      "ms": 81.6
+    },
+    {
+      "id": "r06",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.2116,
+      "cited": [],
+      "ms": 99.4
+    },
+    {
+      "id": "r07",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.4921,
+      "cited": [],
+      "ms": 81.4
+    },
+    {
+      "id": "r08",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.3065,
+      "cited": [],
+      "ms": 102.2
+    },
+    {
+      "id": "r09",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.2166,
+      "cited": [],
+      "ms": 83.2
+    },
+    {
+      "id": "r10",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.535,
+      "cited": [],
+      "ms": 78.8
+    },
+    {
+      "id": "r11",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.1,
+      "cited": [],
+      "ms": 79.8
+    },
+    {
+      "id": "r12",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.1033,
+      "cited": [],
+      "ms": 79.1
+    },
+    {
+      "id": "r13",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.3272,
+      "cited": [],
+      "ms": 79.6
+    },
+    {
+      "id": "r14",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.0882,
+      "cited": [],
+      "ms": 81.5
+    },
+    {
+      "id": "r15",
+      "category": "unsupported_ambiguous_out_of_scope",
+      "answerable": false,
+      "refused": true,
+      "coverage": 0.3317,
+      "cited": [],
+      "ms": 150.5
+    }
+  ],
+  "measured_at": "2026-10-25T10:30:57Z"
+}

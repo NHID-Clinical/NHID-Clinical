@@ -33,6 +33,24 @@ EMBEDDING BACKENDS
 
 The local backend exists so the index builds, the tests run and the eval
 reproduces on a machine with no API key. It is a fallback, not a second opinion.
+
+RETRIEVED TEXT IS DATA, NOT INSTRUCTIONS
+----------------------------------------
+Everything this module returns is a quotation. There is no generative step, so
+nothing in a document can steer an answer today; the rule is written down now
+because the day a generative step is added, every file in ``docs/`` becomes an
+instruction channel. Retrieved content is untrusted input to be quoted and
+cited, never executed, summarised into a claim, or allowed to change how the
+next question is handled. ``eval/test_spec_rag.py`` plants adversarial documents
+and asserts exactly this.
+
+A DENIAL IS NOT EVIDENCE
+------------------------
+A sentence written to deny a claim ("nothing here claims HIPAA certification")
+carries exactly the vocabulary of the question that asks for it ("what is the
+HIPAA certification number?"). Coverage therefore counts a question word only
+where a retrieved chunk asserts it: a word that appears solely inside a negated
+clause does not count. See ``asserted_tokens`` for the rule and its limits.
 """
 from __future__ import annotations
 
@@ -69,6 +87,16 @@ MAX_FILE_BYTES = 200 * 1024
 # collapses — the write-up of the failure mode becomes the thing that causes it.
 # A reading aid for the specification does not read its own manual.
 SELF_DOCUMENTATION = ("spec-rag.md",)
+
+# Files under docs/ that are not specification. Anything dropped into docs/ is
+# otherwise indexed as evidence, and on 2026-10-25 a maintainer's checklist of
+# GitHub settings became a cited source for a question about certification.
+# Each exclusion names its reason, and /spec/health reports every one, so an
+# exclusion that quietly stopped excluding anything would be visible.
+EXCLUDED_FILES: Dict[str, str] = {
+    "spec-rag.md": "this module's own documentation",
+    "maintainer-checklist-github.md": "maintainer note, not specification",
+}
 
 CHUNK_CHARS = 800
 CHUNK_OVERLAP = 100
@@ -141,7 +169,7 @@ def iter_corpus_files() -> List[Path]:
         return []
     return [
         p for p in sorted(CORPUS_DIR.glob("*.md"))
-        if p.stat().st_size <= MAX_FILE_BYTES and p.name not in SELF_DOCUMENTATION
+        if p.stat().st_size <= MAX_FILE_BYTES and p.name not in EXCLUDED_FILES
     ]
 
 
@@ -157,11 +185,44 @@ def skipped_files() -> List[Dict[str, Any]]:
     ]
     out += [
         {"source": str(p.relative_to(REPO_ROOT)), "bytes": p.stat().st_size,
-         "reason": "this module's own documentation"}
+         "reason": EXCLUDED_FILES[p.name]}
         for p in sorted(CORPUS_DIR.glob("*.md"))
-        if p.stat().st_size <= MAX_FILE_BYTES and p.name in SELF_DOCUMENTATION
+        if p.stat().st_size <= MAX_FILE_BYTES and p.name in EXCLUDED_FILES
     ]
     return out
+
+
+def corpus_hash() -> str:
+    """sha256 over the indexed files' paths and contents.
+
+    Stored in the index and reported by ``/spec/health`` and the eval, so a
+    number can be tied to the exact corpus it was measured on. Also what tells
+    ``load_index`` that ``docs/`` changed since the index was built: before this,
+    an edited document was quoted stale, under its current path, until someone
+    remembered to rebuild.
+    """
+    h = hashlib.sha256()
+    for path in iter_corpus_files():
+        h.update(str(path.relative_to(REPO_ROOT)).encode("utf-8"))
+        h.update(b"\0")
+        h.update(hashlib.sha256(path.read_bytes()).digest())
+    return h.hexdigest()
+
+
+def repo_commit() -> str:
+    """Short commit of the checkout the index was built from, or ``unknown``."""
+    sha = os.environ.get("GITHUB_SHA", "").strip()
+    if sha:
+        return sha[:7]
+    try:
+        import subprocess
+        out = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"], cwd=REPO_ROOT,
+            capture_output=True, text=True, timeout=5, check=False,
+        )
+        return out.stdout.strip() or "unknown"
+    except (OSError, subprocess.SubprocessError):
+        return "unknown"
 
 
 def chunk_text(text: str) -> List[str]:
@@ -278,6 +339,8 @@ class Index:
     built_at: float
     idf: Dict[str, float] = field(default_factory=dict)
     skipped: List[Dict[str, Any]] = field(default_factory=list)
+    corpus_hash: str = ""
+    commit: str = "unknown"
 
     @property
     def chunk_count(self) -> int:
@@ -330,6 +393,8 @@ def build_index(*, verbose: bool = True) -> Index:
         built_at=time.time(),
         idf=_compute_idf(chunks),
         skipped=skipped_files(),
+        corpus_hash=corpus_hash(),
+        commit=repo_commit(),
     )
     save_index(index)
 
@@ -341,6 +406,7 @@ def build_index(*, verbose: bool = True) -> Index:
                       if s["reason"] == "over the size cap" else s["reason"])
             print(f"  skipped {s['source']} ({detail})")
         print(f"  embedding backend: {backend}")
+        print(f"  corpus hash: {index.corpus_hash[:12]}  commit: {index.commit}")
         if backend == "local":
             print("  NOTE: the local hashed backend matches words, not meaning. "
                   "This score is NOT the OpenAI score — set OPENAI_API_KEY to use "
@@ -355,23 +421,40 @@ def save_index(index: Index) -> None:
         "built_at": index.built_at,
         "idf": index.idf,
         "skipped": index.skipped,
+        "corpus_hash": index.corpus_hash,
+        "commit": index.commit,
         "chunks": [asdict(c) for c in index.chunks],
     }), encoding="utf-8")
 
 
 def load_index(*, rebuild_if_missing: bool = True) -> Index:
+    """Load the saved index, rebuilding it when it is missing or stale.
+
+    Stale means the corpus hash recorded in the index differs from the hash of
+    ``docs/`` now, or the index was built by the other embedding backend. An
+    index that quotes an edited document under its current path is the quiet
+    failure this prevents; rebuilding takes about two seconds on the local
+    backend.
+    """
     if not INDEX_PATH.exists():
         if not rebuild_if_missing:
             raise FileNotFoundError(f"{INDEX_PATH} missing; run python -m src.nhid_spec_rag")
         return build_index(verbose=False)
     raw = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
-    return Index(
+    index = Index(
         chunks=[Chunk(**c) for c in raw["chunks"]],
         backend=raw["backend"],
         built_at=raw["built_at"],
         idf=raw.get("idf", {}),
         skipped=raw.get("skipped", []),
+        corpus_hash=raw.get("corpus_hash", ""),
+        commit=raw.get("commit", "unknown"),
     )
+    if rebuild_if_missing and (
+        index.corpus_hash != corpus_hash() or index.backend != active_backend()
+    ):
+        return build_index(verbose=False)
+    return index
 
 
 # ── Retrieval ────────────────────────────────────────────────────────────────
@@ -432,6 +515,60 @@ def retrieve(index: Index, question: str, k: int = TOP_K) -> List[Hit]:
 
 # ── Answering ────────────────────────────────────────────────────────────────
 
+# Words that negate the clause they open. Kept short on purpose: "withdrawn",
+# "wrong" and "incorrect" are judgements, not negations, and a question about
+# why something was withdrawn needs the clause that says so to count.
+NEGATION_CUES = frozenset(
+    "not no never nothing none neither nor cannot".split()
+)
+
+# A clause ends at sentence punctuation, a blank line, a table cell, or a line
+# break that starts a list item, heading, quote or table row. A plain line break
+# does not end one: the markdown is hard-wrapped at ~90 columns, so "Nothing
+# here claims production deployment, ... HIPAA certification or\nindependent
+# validation" is one denial spread over three lines, and splitting at the wraps
+# turned its tail into an assertion (found by the eval, not by reading). Commas
+# do not end a clause either, for the same reason.
+_CLAUSE_RE = re.compile(r"[.;:!?]\s+|\n\s*\n|\n(?=\s*[-*|#>\d])|\|")
+_RAW_TOKEN_RE = re.compile(r"[a-z0-9][a-z0-9\-_.]*")
+
+
+def asserted_tokens(text: str) -> set:
+    """Content words the text asserts, as opposed to merely mentions.
+
+    A word counts as asserted when some clause contains it with no negation cue
+    earlier in that clause. "Nothing here claims HIPAA certification" asserts
+    none of *claims*, *hipaa*, *certification*; "Compliant with HIPAA audit
+    trail requirements" asserts all of its words.
+
+    Used by the answer-or-refuse gate only. Once a question clears the gate,
+    passage selection quotes the best fragments whatever their polarity, because
+    much of what a specification says is a limit ("does not perform speech
+    recognition", "write once, never modify") and those are the answers.
+    Applying the rule to passage selection too was tried first and removed the
+    right sentences from eight answers; the eval caught it.
+
+    Known limit, accepted for now: a question whose honest answer *is* a denial
+    ("does NHID-Clinical claim HIPAA certification?") loses the clause that
+    answers it at the gate and may be refused. Refusing a question that a denial
+    would have answered is the cheaper error; answering a question with a denial
+    read as an assertion is the one this module exists to avoid.
+    """
+    out: set = set()
+    lowered = text.lower().replace("n't", " not")
+    for clause in _CLAUSE_RE.split(lowered):
+        negated = False
+        for token in _RAW_TOKEN_RE.findall(clause):
+            if token in NEGATION_CUES:
+                negated = True
+                continue
+            if token in _STOPWORDS:
+                continue
+            if not negated:
+                out.add(token)
+    return out
+
+
 def _coverage(index: Index, question: str, hits: Sequence[Hit]) -> float:
     """Best single-chunk IDF-weighted coverage of the question's content words.
 
@@ -458,7 +595,7 @@ def _coverage(index: Index, question: str, hits: Sequence[Hit]) -> float:
         return 0.0
     best = 0.0
     for h in hits:
-        present = set(_tokens(h.chunk.text))
+        present = asserted_tokens(h.chunk.text)
         found = sum(idf_of(index, t) for t in q_tokens if t in present)
         best = max(best, found / total)
     return best
@@ -649,6 +786,8 @@ try:
             "sources": idx.source_count,
             "backend": idx.backend,
             "skipped_files": idx.skipped,
+            "corpus_hash": idx.corpus_hash,
+            "commit": idx.commit,
             "score_is_openai_score": idx.backend == "openai",
             "note": (
                 "Reading aid for docs/. Not the policy engine, not a conformance "

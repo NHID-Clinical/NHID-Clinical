@@ -120,6 +120,19 @@ jobs:
       - name: Developers page API sample is the handler's answer
         run: python scripts/build_api_sample.py --check
 
+      # The specification reading aid (/spec) has its own eval under eval/,
+      # kept outside tests/ so the published unit-test count describes the
+      # engine alone. Until 2026-10-25 nothing ran it: a denial sentence
+      # entering docs/ made the aid answer "what is the HIPAA certification
+      # number?" for four merges before anyone looked. The baseline is the
+      # local backend's numbers; a drop in hits or refusals, or any unsupported
+      # answer, fails the job.
+      - name: Specification reading aid holds its baseline
+        run: |
+          python -m src.nhid_spec_rag
+          python -m pytest eval/ -q -p no:cacheprovider
+          python eval/run_spec_rag_eval.py --quiet --check eval/baseline-local.json
+
   # The suite had only ever executed on Ubuntu / Python 3.11. The first run on
   # Windows / Python 3.14 (a contributor's laptop, 2026-10-25) failed 21 tests:
   # SQLite handles not closed on error paths, CRLF checkouts breaking byte
