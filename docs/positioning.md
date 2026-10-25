@@ -263,7 +263,7 @@ NHID-Clinical is a **voluntary, open proposal** — not an accredited standard,
 a certification, or a regulatory requirement, and **not an "emerging
 standard"** in the formal sense (which implies multi-stakeholder convergence
 and competing implementations already underway). The accurate current label
-is a **standards candidate / input to a potential work item.**
+is a **voluntary open proposal with standards-oriented artifacts / input to a potential work item** (`claim-boundaries.md` rules out "standards candidate": no standards-body process has been opened).
 
 The gating deficiency for standards-track credibility is a **second,
 independent implementation that passes the conformance test suite.** In the

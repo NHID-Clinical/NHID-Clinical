@@ -127,3 +127,30 @@ def test_the_audit_band_is_drawn_differently_from_the_gates():
 def test_both_themes_are_grounded():
     assert re.search(r'\[data-theme="dark"\]\s*\.cm-gate rect', CSS)
     assert re.search(r'\[data-theme="dark"\]\s*\.cm-audit rect', CSS)
+
+
+# ── The labels are the canonical names ───────────────────────────────────────
+
+#: The names the specification gives the controls. The diagram carried
+#: "Escalation Integrity" and "Audit & Evidence" — neither is a control name —
+#: for as long as nothing compared the label to the id beside it.
+CANONICAL_NAMES = {
+    "IDG-01": "Identity Disclosure Gate",
+    "PDX-01": "Pre-Data Exchange Gate",
+    "DBC-01": "Deceptive Behavior Check",
+    "EIT-01": "Escalation Implementation Test",
+    "ATR-01": "Audit Trail Requirements",
+}
+
+
+def test_every_id_in_the_diagram_is_labelled_with_its_canonical_name(figure):
+    pairs = re.findall(
+        r'class="cm-id">\s*([A-Z]{3}-01)\s*</text>\s*<text[^>]*class="cm-name">\s*(.*?)\s*</text>',
+        figure, re.S,
+    )
+    assert len(pairs) == 5, f"expected five id/name pairs in the figure, found {len(pairs)}"
+    # A name may wrap across <tspan>s; compare the words, not the markup.
+    def words(label):
+        return " ".join(re.sub(r"<[^>]+>", " ", label).replace("&amp;", "&").split())
+    wrong = {cid: words(name) for cid, name in pairs if words(name) != CANONICAL_NAMES[cid]}
+    assert not wrong, f"diagram labels are not the canonical control names: {wrong}"
