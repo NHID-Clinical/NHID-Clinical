@@ -393,10 +393,9 @@
           <pre>git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
-python -m pytest tests/ -v
-python -m jsonschema schema/nhid_trace_schema_v1.json
-python tests/trace_generator.py --offline</pre>
-          <p>Unit tests run without a server. Integration tests require a FastAPI instance at <code>https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod</code> and will be automatically skipped if the server is not reachable.</p>
+python -m pytest tests/ -q
+python -m pytest tests/test_schema_conformance.py -q</pre>
+          <p>The second line enforces the two published schemas; it is what the suite runs, not a standalone validator (the <code>jsonschema</code> command-line tool is deprecated and, given only a schema, validates nothing). The integration tests in <code>tests/failure_injection_harness.py</code> need the API running locally &mdash; <code>python -m uvicorn app:app --port 8000</code> in a second shell. Without it they are skipped and the summary reports skipped &gt; 0; CI starts the server and requires 0 skipped.</p>
         </div>
       </section>
       <section class="act" id="hosted-api" aria-labelledby="hosted-api-h">
