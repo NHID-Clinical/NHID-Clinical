@@ -2490,6 +2490,39 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.19 The reading aid answered a question the specification denies — 2026-10-25
+
+The `/spec` reading aid's most important refusal regressed and no check noticed for
+four merges. Asked *"What is NHID-Clinical's HIPAA certification number?"*, it answered,
+citing the footer of `docs/canonical-threat-model.md`: *"Nothing here claims production
+deployment, healthcare-provider adoption, HIPAA certification or independent validation."*
+A sentence written to deny a claim carries exactly the vocabulary of the question that asks
+for it, and the aid matched words. A maintainer checklist that landed in `docs/` the same
+day crossed the threshold independently. The eval that would have caught it ran in no CI
+job, by design (it lives in `eval/`, outside the published count) and by omission (nothing
+else invoked it).
+
+**Decisions.**
+- Coverage counts a question word only where a retrieved chunk asserts it; a word that
+  appears solely inside a negated clause does not count. Clauses end at sentence
+  punctuation, blank lines, table cells and list items, not at the hard wraps the markdown
+  uses. The rule applies to the answer-or-refuse gate only: applied to passage selection it
+  removed the right sentence from eight answers, and was reverted before it shipped.
+- `docs/` is a glob, not a registry. `EXCLUDED_FILES` names non-specification files with a
+  reason that `/spec/health` repeats. The registry proper is Phase 3 of the RAG roadmap.
+- The eval runs in CI against `eval/baseline-local.json` with the roadmap's acceptance rule:
+  any drop in file, accepted or passage hits, any drop in refusals, any unsupported answer
+  fails. The dataset grew from 25 to 35 (10 denial-shaped negatives); ids are unchanged and
+  `expected_source` was not relabeled. q14 gained `accepted_sources` because five documents
+  define EIT-01; the historical figure stays comparable.
+- The index records `corpus_hash` and `commit` and rebuilds when the corpus changes.
+- Retrieved text is data, not instructions: written into the module, and tested with
+  planted adversarial documents that are never indexed by default.
+
+**Measured, local backend, before → after:** refusals 4/5 → 15/15 (original five 5/5);
+unsupported answers 1 → 0; file hit 18/20 → 18/20; passage hit (new) 11/20 → 11/20.
+The OpenAI backend remains unmeasured.
+
 ### 19.18 The threat model was right everywhere except where a session would read it — 2026-10-21
 
 The canonical scenario, written down and guarded: **a caller-agent telephones a payer and
