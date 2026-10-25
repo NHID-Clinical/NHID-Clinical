@@ -419,7 +419,10 @@ def main(argv=None):
             report_rel = report_path.resolve().relative_to(ROOT)
         except ValueError:
             report_rel = report_path
-        suffix = f"{rel} --report {report_rel}"
+        # as_posix() on both: these commands are embedded in the committed report
+        # and byte-compared, and str(Path) is backslashed on Windows. This was
+        # the last Windows CI failure after the Corpus line got the same fix.
+        suffix = f"{Path(rel).as_posix()} --report {Path(report_rel).as_posix()}"
         regen_cmd = f"python scripts/eval_corpus.py {suffix} --write-report"
         check_cmd = f"python scripts/eval_corpus.py {suffix} --check"
 
