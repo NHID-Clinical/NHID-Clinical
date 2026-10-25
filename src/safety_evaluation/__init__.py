@@ -55,11 +55,6 @@ from src.safety_evaluation.adversarial_metrics import (
     AdversarialMetrics,
     SeverityLevel,
 )
-from src.safety_evaluation.safety_scorer import (
-    SafetyScore,
-    RiskTier,
-    SafetyScoreReport,
-)
 from src.safety_evaluation.safety_logger import (
     ShadowModeLogger,
     SafetyEvent,
@@ -112,10 +107,6 @@ __all__ = [
     "SafetyMetrics",
     "Tier0Thresholds",
     "MetricThreshold",
-    # Phase 1: Scoring
-    "SafetyScore",
-    "RiskTier",
-    "SafetyScoreReport",
     # Phase 1: Logging
     "ShadowModeLogger",
     "SafetyEvent",

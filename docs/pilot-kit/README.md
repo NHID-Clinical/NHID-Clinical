@@ -165,6 +165,7 @@ read a nested block, and flat fields are silently ignored:
 | `phi_accessed` | `event.healthcare_governance.phi_accessed` | Copied per turn |
 | `escalation_requested` + `escalation_honored` | `session.escalation_path_available` | `False` only when a request was explicitly not honored |
 | `speech_text` | `event.input_payload.speech_text` | Drives text heuristics (DBC-01 Tier B, EIT-01 triggers, PHI speech signals) |
+| `speaker` | selects which turns the agent spoke | `agent` is the calling agent under evaluation; `caller` is the payer's customer service agent or claims associate who received the call. The label reads backwards and is retained for compatibility — see [canonical threat model](../canonical-threat-model.md) |
 
 ## The evaluation workflow
 

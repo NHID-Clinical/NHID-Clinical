@@ -50,6 +50,12 @@ reportlab>=4.0.0,<6.0.0
 # A missing pdfminer makes check_number_drift.py fail rather than skip.
 pdfminer.six>=20231228
 
+# ── Web platform (webplatform/) ──────────────────────────────────────────────
+# Templates for the self-hosted web platform. webplatform/requirements.txt has
+# always said this file is required alongside it; the reverse was never true, so
+# `pytest` from the root died collecting webplatform/tests on a clean install.
+jinja2>=3.1.0,<4.0.0
+
 # ── Test tooling ─────────────────────────────────────────────────────────────
 pytest>=8.0.0,<10.0.0
 pytest-asyncio>=0.23.0,<2.0.0

@@ -29,7 +29,20 @@ class WorkflowType(str, Enum):
 
 
 class ParticipantRole(str, Enum):
-    """Participant in healthcare interaction."""
+    """Participant in a healthcare interaction.
+
+    This is the repository's unambiguous actor vocabulary, and it maps onto the
+    canonical threat model directly: `AI_AGENT` is the requesting caller-agent
+    whose identity and authority must be established, and `CLAIMS_REP` is the
+    payer's claims associate who receives the request and applies the controls.
+    `MEMBER` is the patient side, which the canonical model places outside its
+    scope.
+
+    The Tier 0 capture schema names the same two parties `agent` and `caller`,
+    where `caller` is the payer-side human despite the agent being the one who
+    placed the call. Prefer these names where there is a choice.
+    See docs/canonical-threat-model.md.
+    """
     AI_AGENT = "ai_agent"
     MEMBER = "member"
     PROVIDER_STAFF = "provider_staff"

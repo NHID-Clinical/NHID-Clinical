@@ -88,6 +88,31 @@ above is the expected way to reach a wrong conclusion about this corpus.
 - Carries vendor-supplied `cas_score` / `cas_band` fields. **NHID-Clinical ignores them**: the composite score is withdrawn, and these are the corpus author's values, not a measurement by this framework
 - Metadata: caller_role, agent_type, emotional_state, scenario_type, impersonation_latency_ms
 
+#### `caller_role` conflicts with the canonical threat model — flagged, not corrected
+
+The canonical scenario is a caller-agent telephoning a **payer** and requesting a
+patient's PHI while claiming to be or to act for a **provider**
+([docs/canonical-threat-model.md](../../docs/canonical-threat-model.md)). Two of the five
+`caller_role` values in this corpus do not fit it:
+
+| `caller_role` | n | |
+| :-- | --: | :-- |
+| `provider_office_staff` | 141 | consistent |
+| `member_representative` | 139 | **outside canonical scope** — patient-side, not a provider or its agent |
+| `prior_auth_coordinator` | 128 | consistent |
+| `billing_specialist` | 107 | consistent |
+| `payer_staff` | 35 | **inverts the direction** — the payer receives in this model, it does not call |
+
+These rows are **retained unchanged**. The corpus is pinned baseline data
+(`scripts/check_baseline.py`), so rewriting 174 of 550 rows would move a measured
+baseline and falsify a corpus that was authored and evaluated as it stands.
+
+What follows: detection and false-positive figures from this corpus are measured over a
+population that includes 174 conversations whose caller is not a provider or a provider's
+agent. They are valid measurements of the engine's behaviour on the authored transcripts.
+They are not all measurements of the canonical scenario, and a claim narrowed to that
+scenario needs the subset — which has not been separately evaluated.
+
 **Validation Status**: ✅ 100% schema-compatible, zero transformation required
 
 **Usage**:

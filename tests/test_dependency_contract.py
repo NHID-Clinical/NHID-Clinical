@@ -33,6 +33,10 @@ REQUIREMENTS = ROOT / "requirements.txt"
 _NOT_IMPORTED_DIRECTLY = {
     # FastAPI needs it to parse the Twilio form posts app.py receives.
     "python-multipart",
+    # Reached through fastapi.templating.Jinja2Templates in webplatform/app.py,
+    # never imported by name. It was declared only in webplatform/requirements.txt,
+    # so a clean root install collected webplatform/tests and ran nothing.
+    "jinja2",
     # A pytest plugin, activated by the asyncio marker rather than imported.
     # It was dead weight until tests/test_llm_client.py gave the suite its
     # first async tests; pytest.ini had set asyncio_mode for a suite with none.

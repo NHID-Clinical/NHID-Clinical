@@ -125,7 +125,7 @@
         </ul>
         <div class="hero-actions reveal">
           <a class="action-button action-button-primary" href="/specs/NHID-Clinical-v1.3-Core-Specification.pdf" download>Core specification (PDF) &rarr;</a>
-          <a class="action-button action-button-secondary" href="/specs/NHID-Clinical-Operational-Blueprint-v1.3.pdf" download>Operational blueprint (PDF)</a>
+          <a class="action-button action-button-secondary" href="/specs/archive/NHID-Clinical-Operational-Blueprint-v1.3.pdf" download>Operational blueprint (PDF)</a>
         </div>
       </div>
       <aside class="hero-instrument-card reveal" aria-label="The four bodies of evidence">
@@ -273,8 +273,8 @@
           </tr>
           <tr>
             <th scope="row">Conformance suite<span class="sc-measures">Implementation correctness against the specification</span></th>
-            <td class="sc-size">1796 tests</td>
-            <td>1796/1796 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
+            <td class="sc-size">1834 tests</td>
+            <td>1834/1834 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
             <td><code>python -m pytest tests/ -q</code><span class="sc-src">tests/</span></td>
           </tr>
           </tbody>
@@ -283,7 +283,7 @@
 
       <aside class="visual-provenance">
         <p><strong>Separation:</strong> Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>e9edd77</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>8ad3e09</code></p>
       </aside>
       <!-- END GENERATED evidence-scorecard -->
         </div>
@@ -672,7 +672,7 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
           <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical"><b>Get the suite <span class="arr">&rarr;</span></b><span>YAML definitions and the runner.</span></a>
           <a class="page-cta-card" href="/developers.html"><b>Developers reference <span class="arr">&rarr;</span></b><span>API, traces, test suite.</span></a>
           <a class="page-cta-card" href="/shadow-evaluation-guide.html"><b>Shadow Evaluation Guide <span class="arr">&rarr;</span></b><span>The payer observation process.</span></a>
-          <a class="page-cta-card" href="/specs/NHID-Clinical-Operational-Blueprint-v1.3.pdf"><b>Operational Blueprint <span class="arr">&rarr;</span></b><span>The deployment model, as a PDF.</span></a>
+          <a class="page-cta-card" href="/specs/archive/NHID-Clinical-Operational-Blueprint-v1.3.pdf"><b>Operational Blueprint <span class="arr">&rarr;</span></b><span>The deployment model, as a PDF.</span></a>
           <a class="page-cta-card" href="https://github.com/NHID-Clinical/NHID-Clinical/discussions" target="_blank" rel="noopener noreferrer"><b>Join the Community <span class="arr">&#x2197;</span></b><span>Questions and feedback on GitHub.</span></a>
         </div>
         <p class="disclaimer-small" style="margin-top:1.5rem">NHID-Clinical is a voluntary open framework — not an accredited standard, certification, or regulatory requirement. Everything on this page is published under CC BY 4.0. Going further: <a href="/specs/NHID-Clinical-Playbook.pdf" download><strong>Part V of the NHID-Clinical Playbook</strong></a> covers evidence methodology, the four separate evidence bodies, regulatory mapping and the open questions.</p>

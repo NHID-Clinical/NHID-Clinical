@@ -306,3 +306,61 @@ def test_published_adapter_claims_match_the_repository():
     assert "adapters are planned" not in page, (
         "developers.html still describes implemented adapters as planned"
     )
+
+
+# ── Every local link resolves ────────────────────────────────────────────────
+#
+# Five PDFs moved into specs/archive/ and ten links on five published pages kept
+# pointing at /specs/. Every download 404ed for as long as nobody clicked one —
+# the same shape as the retired-route guard above, a published claim with nothing
+# reproducing it. This reads what a visitor can reach and checks it is there.
+
+_SCHEME = re.compile(r"^(?:[a-z][a-z0-9+.-]*:|//)", re.I)
+_LOCAL_REF = re.compile(r'(?:href|src)="([^"]+)"')
+
+
+def dead_local_links(html, page_dir):
+    """Local href/src targets in `html` that do not exist on disk.
+
+    `page_dir` is the directory the page is served from, relative to the repo
+    root, for resolving links that do not start with `/`.
+    """
+    dead = []
+    for ref in _LOCAL_REF.findall(html):
+        ref = ref.strip()
+        if not ref or ref.startswith("#") or _SCHEME.match(ref):
+            continue
+        if "'+" in ref or "{{" in ref:  # a script or template fragment, not a URL
+            continue
+        path = ref.split("#", 1)[0].split("?", 1)[0]
+        if not path:
+            continue
+        if path.startswith("/"):
+            target = os.path.join(REPO_ROOT, path.lstrip("/"))
+        else:
+            target = os.path.normpath(os.path.join(REPO_ROOT, page_dir, path))
+        if os.path.isdir(target):
+            target = os.path.join(target, "index.html")
+        if not os.path.exists(target):
+            dead.append(ref)
+    return dead
+
+
+@pytest.mark.parametrize("page", PUBLISHED)
+def test_every_local_link_target_exists(page):
+    dead = dead_local_links(read(page), os.path.dirname(page))
+    assert not dead, (
+        f"{page} links to files that are not in the repository: {dead}. "
+        f"A visitor clicking these gets a 404."
+    )
+
+
+def test_the_dead_link_check_actually_fails_on_a_dead_link():
+    """A guard that has never failed has not been tested."""
+    html = ('<a href="/specs/does-not-exist.pdf">x</a>'
+            '<a href="/specs/index.html">ok</a>'
+            '<a href="https://example.org/x.pdf">external</a>'
+            '<a href="mailto:contact@nhid-clinical.org">mail</a>'
+            '<a href="#top">anchor</a>'
+            '<a href="/specs/">dir</a>')
+    assert dead_local_links(html, "") == ["/specs/does-not-exist.pdf"]

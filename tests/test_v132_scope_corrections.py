@@ -12,6 +12,7 @@ behaviour claimed something the framework could not support:
 4. EIT-01 can distinguish escalation requested / completed / not completed /
    outcome unknown, with unknown as a first-class answer rather than a guess.
 """
+import ast
 import json
 import os
 import sys
@@ -49,9 +50,136 @@ def _event(**gov):
 
 # ── 1. The score, the tiers and the badges stay gone ────────────────────────
 
-def test_no_composite_score_module_exists():
+#: The traffic-light ladder a withdrawn score is shaped like, whatever it is
+#: called. AMBER is here because it is the other common fourth rung.
+TIER_COLOURS = frozenset({"GREEN", "YELLOW", "AMBER", "ORANGE", "RED"})
+
+#: Enum bases worth inspecting. `class RiskTier(str, Enum)` carries both.
+ENUM_BASES = frozenset({"Enum", "StrEnum", "IntEnum", "IntFlag", "Flag"})
+
+
+def _tier_shaped(tree: ast.AST) -> list[str]:
+    """Every tier-ladder-shaped definition in one parsed module.
+
+    Two shapes, both independent of what anything is named:
+
+      * an Enum whose member NAMES include two or more tier colours, and
+      * a function returning two or more tier colours as string literals.
+
+    Deliberately not a scan for the words. `src/pilot_pdf.py` imports AMBER as
+    a PDF colour and has every right to; a bare name reference is not a ladder.
+    """
+    found: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef):
+            bases = {b.id for b in node.bases if isinstance(b, ast.Name)}
+            bases |= {b.attr for b in node.bases if isinstance(b, ast.Attribute)}
+            if not bases & ENUM_BASES:
+                continue
+            members: set[str] = set()
+            for stmt in node.body:
+                targets = (
+                    [stmt.target] if isinstance(stmt, ast.AnnAssign)
+                    else stmt.targets if isinstance(stmt, ast.Assign)
+                    else []
+                )
+                members |= {t.id for t in targets if isinstance(t, ast.Name)}
+            if len(members & TIER_COLOURS) >= 2:
+                found.append(f"enum {node.name}")
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            returned = {
+                sub.value.value.upper()
+                for sub in ast.walk(node)
+                if isinstance(sub, ast.Return)
+                and isinstance(sub.value, ast.Constant)
+                and isinstance(sub.value.value, str)
+            }
+            if len(returned & TIER_COLOURS) >= 2:
+                found.append(f"function {node.name}()")
+    return found
+
+
+def test_no_composite_score_survives_under_any_name():
+    """The withdrawn score must not come back, whatever it is called.
+
+    This replaces a check that asserted two FILENAMES were absent -- 
+    `src/nhid_cas.py` and `src/nhid_badge_generator.py` -- alongside a scan for
+    three literal PHRASES ("Verified Trust", "Conditional Trust",
+    "badge_eligible"). Both passed while
+    `src/safety_evaluation/safety_scorer.py` sat in the package's public API
+    computing a composite 0-100 score with GREEN/YELLOW/ORANGE/RED tiers, and
+    `adversarial_metrics.assess_robustness_tier` returned the same four colours
+    on its own cutoffs. A different filename cleared the first check; four
+    colours the phrase list had never heard of cleared the second.
+
+    The guards were keyed on the previous scorer's name and vocabulary rather
+    than on what makes a scorer a scorer. This one keys on the shape, so the
+    next one cannot evade it by renaming.
+    """
+    offenders = []
+    for path in sorted((ROOT / "src").rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        for shape in _tier_shaped(ast.parse(path.read_text(encoding="utf-8"))):
+            offenders.append(f"{path.relative_to(ROOT)}: {shape}")
+    assert not offenders, (
+        "a risk-tier ladder is back in src/, which README says nothing "
+        f"replaces under another name: {offenders}"
+    )
+    # The two originals, kept so their specific return is still asserted.
     assert not (ROOT / "src" / "nhid_cas.py").exists()
     assert not (ROOT / "src" / "nhid_badge_generator.py").exists()
+
+
+def test_the_tier_guard_recognises_a_ladder_it_is_meant_to_catch():
+    """A guard that has never failed has not been tested.
+
+    Both shapes, written out as the deleted code wrote them.
+    """
+    as_enum = ast.parse(
+        "import enum\n"
+        "class RiskTier(str, enum.Enum):\n"
+        "    GREEN = 'green'\n"
+        "    YELLOW = 'yellow'\n"
+        "    RED = 'red'\n"
+    )
+    assert _tier_shaped(as_enum) == ["enum RiskTier"]
+
+    as_function = ast.parse(
+        "def assess(robustness, coverage):\n"
+        "    if robustness < 0.5:\n"
+        "        return 'RED'\n"
+        "    if robustness < 0.85:\n"
+        "        return 'YELLOW'\n"
+        "    return 'GREEN'\n"
+    )
+    assert _tier_shaped(as_function) == ["function assess()"]
+
+
+def test_the_tier_guard_leaves_a_single_colour_and_a_palette_alone():
+    """It must not fire on one status word, nor on a colour constant.
+
+    `src/pilot_pdf.py` imports AMBER for PDF styling. A name reference is not
+    a ladder, and neither is a lone return value.
+    """
+    one_colour = ast.parse("def ok():\n    return 'GREEN'\n")
+    assert _tier_shaped(one_colour) == []
+
+    palette = ast.parse(
+        "from reportlab.lib import colors\n"
+        "AMBER = colors.HexColor('#ffbf00')\n"
+        "RED = colors.HexColor('#d7263d')\n"
+        "def style():\n"
+        "    return AMBER\n"
+    )
+    assert _tier_shaped(palette) == []
+
+    plain_class = ast.parse(
+        "class Palette:\n"
+        "    GREEN = '#0f0'\n"
+        "    RED = '#f00'\n"
+    )
+    assert _tier_shaped(plain_class) == [], "not an Enum, so not a ladder"
 
 
 def test_no_trust_tier_vocabulary_in_source():

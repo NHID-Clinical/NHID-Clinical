@@ -160,18 +160,16 @@ class MetricsCalculator:
         This was named `calculate_false_positive_rate`, which it is not. The
         false positive rate is FP / (FP + TN) — a share of the genuinely
         compliant population — and it is what `safety_metrics.py` computes as
-        `false_positives / compliant`, what `scripts/confusion_matrix.py`
-        reports as `fp / clean`, and what `safety_scorer.calculate_score`
-        documents its `false_positive_rate` argument to be ("fraction of
-        compliant calls rejected").
+        `false_positives / compliant` and what `scripts/confusion_matrix.py`
+        reports as `fp / clean`, over the disjoint compliant population.
 
         This quantity has a different denominator — everything the engine
         flagged — so it is a share of predictions, not of the negative class.
         The two coincide only when prevalence is 50%, and under the low
         prevalence these corpora are built with they differ by a lot. Having
         both in one package under one name meant a value from here could be
-        passed to a function expecting the other with no type error and no
-        unit mismatch to notice.
+        passed where the other was expected with no type error and no unit
+        mismatch to notice.
 
         Range: 0.0 (nothing flagged was spurious) to 1.0 (everything was).
         Lower is better.
@@ -297,31 +295,6 @@ class MetricsCalculator:
         )
 
     @staticmethod
-    def assess_robustness_tier(metrics: AdversarialMetrics) -> str:
-        """Assess overall robustness tier based on metrics.
-
-        Returns:
-            One of: "RED", "ORANGE", "YELLOW", "GREEN"
-        """
-        robustness = metrics.control_robustness_score
-        coverage = metrics.coverage_ratio
-
-        # RED: <50% robustness or <30% coverage
-        if robustness < 0.5 or coverage < 0.3:
-            return "RED"
-
-        # ORANGE: 50-70% robustness or 30-60% coverage
-        if robustness < 0.7 or coverage < 0.6:
-            return "ORANGE"
-
-        # YELLOW: 70-85% robustness or 60-80% coverage
-        if robustness < 0.85 or coverage < 0.8:
-            return "YELLOW"
-
-        # GREEN: >85% robustness and >80% coverage
-        return "GREEN"
-
-    @staticmethod
     def generate_report(
         metrics: AdversarialMetrics,
         campaign_name: str = "Adversarial Robustness Assessment"
@@ -335,10 +308,7 @@ class MetricsCalculator:
         Returns:
             Formatted report string
         """
-        tier = MetricsCalculator.assess_robustness_tier(metrics)
-
         report = f"# {campaign_name}\n\n"
-        report += f"## Robustness Tier: {tier}\n\n"
 
         report += "## Core Metrics\n"
         report += f"- **Attack Success Rate (ASR):** {metrics.attack_success_rate*100:.1f}%\n"
@@ -360,22 +330,36 @@ class MetricsCalculator:
         report += f"- **False Positive Rate:** {_rate(metrics.false_positive_rate)}\n"
         report += f"- **Severity-Weighted Bypass Score:** {metrics.severity_weighted_bypass_score:.3f}\n\n"
 
-        report += "## Recommendations\n"
-        if tier == "RED":
-            report += "- **CRITICAL:** Significant robustness gaps detected. Immediate remediation required.\n"
-            report += "- Focus on highest-success-rate attack tactics\n"
-            report += "- Expand detection rules for missed violations\n"
-        elif tier == "ORANGE":
-            report += "- **WARNING:** Notable robustness gaps in specific areas.\n"
-            report += "- Target medium-success-rate tactics for fixes\n"
-            report += "- Increase test coverage to 80%+\n"
-        elif tier == "YELLOW":
-            report += "- **MONITOR:** Minor robustness issues identified.\n"
-            report += "- Continue monitoring attack patterns\n"
-            report += "- Ensure coverage remains above 80%\n"
-        else:  # GREEN
-            report += "- **APPROVED:** Robustness metrics within acceptable range.\n"
-            report += "- Continue regular adversarial testing\n"
-            report += "- Maintain coverage at current levels\n"
+        # No tier and no verdict. This block used to key off
+        # assess_robustness_tier, a second traffic-light ladder reached from two
+        # measured quantities by way of six unjustified cutoffs, and its GREEN
+        # branch printed "APPROVED: Robustness metrics within acceptable range"
+        # -- a deployment verdict this project does not issue. README states
+        # the composite score and its tiers are withdrawn and that nothing
+        # replaces them under another name; a second ladder in a different
+        # module is another name.
+        #
+        # What replaces it is what replaced the composite score elsewhere in
+        # this repository: the measurements, each with the denominator it is
+        # over. What to do about them is the reader's call, not this function's.
+        report += "## Reading these numbers\n"
+        report += (
+            f"- {metrics.successful_bypasses} of {metrics.total_attacks} attacks "
+            f"bypassed a control outright; {metrics.partial_bypasses} did so "
+            f"partially\n"
+        )
+        report += (
+            f"- Coverage is {metrics.coverage_ratio*100:.1f}% of the scenarios "
+            f"this campaign was scoped against, so the robustness score above "
+            f"describes that fraction and not the whole attack surface\n"
+        )
+        report += (
+            "- Detection quality appears above only where it was measured; "
+            "\"not measured\" is not zero\n"
+        )
+        report += (
+            "- This is an adversarial replay against an authored corpus. It is "
+            "not a conformance result and not a deployment decision\n"
+        )
 
         return report
