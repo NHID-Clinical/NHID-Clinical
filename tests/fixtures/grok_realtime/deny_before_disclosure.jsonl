@@ -1,0 +1,4 @@
+{"type": "session.created", "session": {"id": "sess_synthetic_001"}}
+{"type": "conversation.item.input_audio_transcription.completed", "item_id": "item_001", "transcript": "Claims department, this is Dana. How can I help you?"}
+{"type": "response.function_call_arguments.done", "response_id": "resp_001", "call_id": "call_001", "name": "nhid_evaluate_turn", "arguments": "{\"planned_utterance\": \"Hi Dana, can I get the member ID and date of birth for the claim I'm calling about?\", \"intent\": \"request_data\"}"}
+{"type": "response.done", "response": {"id": "resp_001", "status": "completed"}}

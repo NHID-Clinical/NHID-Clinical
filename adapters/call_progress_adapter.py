@@ -13,6 +13,7 @@ Webhook body format:
     "session_id": "call_abc123",
     "turn_index": 3,
     "speaker": "agent",          # "agent" or "user"
+    "actor_id": "agent-vendor-7", # optional: stable agent id for the audit trail
     "text": "...",
     "interrupted": false,        # optional: playback cut off by the other party
     "heard_text": null,          # optional: the part actually played, if interrupted
@@ -87,6 +88,9 @@ def to_nhid_event(body: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]
     session_id = body.get("session_id")
     if not session_id:
         raise ValueError("session_id is required")
+    # ATR-01 requires an actor. A stable agent identifier when the caller has
+    # one; otherwise derived from the session, so the field is never empty.
+    actor_id = str(body.get("actor_id") or "").strip() or f"agent-{session_id}"
 
     speaker = body.get("speaker", "user")
     text = body.get("text", "") or ""
@@ -132,6 +136,14 @@ def to_nhid_event(body: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]
         "session_id": session_id,
         "request_id": f"req-{session_id}-t{turn_index}",
         "event_type": "POLICY",
+        # The three envelope fields ATR-01 requires that this adapter used to
+        # omit. Without them every turn through the webhook and the gate came
+        # back LOG_ONLY / ATR01_AUDIT_FIELDS_MISSING and no signed audit trail
+        # was ever built for a live call (found 2026-10-25). A webhook turn is
+        # live by definition: nothing is replayed and nothing is cached.
+        "actor_id": actor_id,
+        "replay_mode": "live",
+        "external_calls_cached": False,
         "state_before": "ACTIVE",
         "state_after": "ACTIVE",
         "counterparty_type": "human_operator",
