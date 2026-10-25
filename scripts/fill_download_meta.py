@@ -39,7 +39,13 @@ def pdf_meta(path: Path) -> str:
     size = len(data)
     size_text = f"{size / 1024 / 1024:.1f} MB" if size >= 1024 * 1024 else f"{size // 1024} KB"
     m = re.search(rb"/CreationDate\s*\(D:(\d{8})", data)
-    date_text = datetime.strptime(m.group(1).decode(), "%Y%m%d").strftime("%-d %b %Y") if m else None
+    # strftime("%-d") is a glibc extension; Windows raises "Invalid format string",
+    # which is how the portability leg caught it. Format the day by hand.
+    if m:
+        d = datetime.strptime(m.group(1).decode(), "%Y%m%d")
+        date_text = f"{d.day} {d.strftime('%b %Y')}"
+    else:
+        date_text = None
     parts = [f"{pages} page{'s' if pages != 1 else ''}" if pages else None, size_text, date_text]
     return " · ".join(p for p in parts if p)
 
