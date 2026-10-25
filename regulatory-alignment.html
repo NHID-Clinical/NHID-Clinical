@@ -159,6 +159,7 @@
           <li><a href="#cms-0057-f"><span>CMS-0057-F</span></a></li>
           <li><a href="#nist-ai-agent-standards"><span>NIST AI agent standards</span></a></li>
           <li><a href="#vendor-evidence-pack"><span>Vendor evidence pack</span></a></li>
+          <li><a href="#jurisdictions"><span>Different jurisdictions</span></a></li>
         </ol>
         </details>
       </nav>
@@ -174,7 +175,7 @@
             <h2 id="mapping-h">How NHID-Clinical maps to current requirements</h2>
             <p class="act-lead">Not legal advice. NHID-Clinical is voluntary.</p>
           </div>
-          <span class="act-index">01 / 06</span>
+          <span class="act-index">01 / 07</span>
         </div>
         <div class="act-body">
 
@@ -201,7 +202,7 @@
             <h2 id="fhir-h">FHIR R4 AuditEvent emission</h2>
             <p class="act-lead">One AuditEvent per conformance milestone, validated in CI.</p>
           </div>
-          <span class="act-index">02 / 06</span>
+          <span class="act-index">02 / 07</span>
         </div>
         <div class="act-body">
 
@@ -233,7 +234,7 @@
             <h2 id="stir-shaken-h">STIR/SHAKEN</h2>
             <p class="act-lead">STIR/SHAKEN attests that a number is legitimate — not that the caller is authorized to access protected health information.</p>
           </div>
-          <span class="act-index">03 / 06</span>
+          <span class="act-index">03 / 07</span>
         </div>
         <div class="act-body">
 
@@ -257,7 +258,7 @@
             <h2 id="cms-0057-f-h">CMS-0057-F</h2>
             <p class="act-lead">How the v1.3 controls map to the CMS Prior Authorization Final Rule (CMS-0057-F) requirements for AI transparency in prior authorization workflows.</p>
           </div>
-          <span class="act-index">04 / 06</span>
+          <span class="act-index">04 / 07</span>
         </div>
         <div class="act-body">
 
@@ -281,7 +282,7 @@
             <h2 id="nist-ai-agent-standards-h">NIST AI agent standards</h2>
             <p class="act-lead">An open proposal submitted to NIST docket NIST-2025-0035-0026.</p>
           </div>
-          <span class="act-index">05 / 06</span>
+          <span class="act-index">05 / 07</span>
         </div>
         <div class="act-body">
 
@@ -312,7 +313,7 @@
             <h2 id="vendor-evidence-pack-h">Vendor evidence pack</h2>
             <p class="act-lead">Minimum evidence a voice AI vendor should produce to demonstrate NHID-Clinical conformance.</p>
           </div>
-          <span class="act-index">06 / 06</span>
+          <span class="act-index">06 / 07</span>
         </div>
         <div class="act-body">
 
@@ -323,6 +324,50 @@
             <li><span class="ledger-index">04</span><div><h3>FHIR AuditEvent sample</h3><p>One Bundle, validated against R4.</p></div></li>
             <li><span class="ledger-index">05</span><div><h3>NPI binding documentation</h3><p>How the agent's credential names the provider it acts for.</p></div></li>
           </ul>
+        </div>
+      </section>
+      <section class="act" id="jurisdictions" aria-labelledby="jurisdictions-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Regulatory pressure</p>
+            <h2 id="jurisdictions-h">Different jurisdictions are approaching synthetic voice from different directions</h2>
+            <p class="act-lead">These are separate instruments with separate scopes, triggers and legal mechanisms. They do not add up to one healthcare AI voice rule, and none of them requires NHID-Clinical. What they share is a direction of travel: when a person is dealing with an automated system, they are increasingly entitled to know.</p>
+          </div>
+          <span class="act-index">07 / 07</span>
+        </div>
+        <div class="act-body">
+          <div class="register">
+          <table class="regulatory-index">
+        <caption class="sr-only-text">Regulatory reference points, what each establishes, and what it does not</caption>
+        <thead>
+          <tr><th scope="col">Instrument</th><th scope="col">In force</th><th scope="col">What it establishes</th><th scope="col">What it does not</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240AB2905" target="_blank" rel="noopener noreferrer">California AB&nbsp;2905</a><br><span class="regulatory-subnote">Cal. Pub. Util. Code &sect;2874</span></th>
+            <td>1 Jan 2025</td>
+            <td>Covered automatic dialing-announcing devices must tell the called person when a prerecorded message uses an artificial voice.</td>
+            <td>Does not govern every conversational AI call, and is not healthcare-specific.</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://docs.fcc.gov/public/attachments/FCC-24-17A1.pdf" target="_blank" rel="noopener noreferrer">FCC&nbsp;24&#8209;17</a><br><span class="regulatory-subnote">TCPA declaratory ruling</span></th>
+            <td>8 Feb 2024</td>
+            <td>AI-generated voices fall within the TCPA's existing restrictions on artificial or prerecorded voice calls.</td>
+            <td>Does not create a disclosure standard for provider&ndash;payer administrative calls.</td>
+          </tr>
+          <tr>
+            <th scope="row"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener noreferrer">EU AI Act Art.&nbsp;50(1)</a><br><span class="regulatory-subnote">Disclosure of AI interaction</span></th>
+            <td>2 Aug 2026</td>
+            <td>People must be informed when they are interacting directly with an AI system, unless that is obvious in the circumstances.</td>
+            <td>Does not specify how disclosure is verified, scoped, or evidenced on a call. Article&nbsp;50(2), on machine-readable marking of synthetic content, is a separate obligation on a separate timetable and is not what NHID-Clinical addresses.</td>
+          </tr>
+        </tbody>
+      </table>
+          </div>
+          <p class="boundary-note" style="margin-top:1.1rem">
+        <span aria-hidden="true">&#9679;</span>
+        <span>NHID-Clinical addresses the operational control point these instruments leave open: establishing identity, disclosure, authorization and evidence before sensitive workflow actions occur. It does not make any system legally compliant, and nothing here is legal advice.</span>
+      </p>
         </div>
       </section>
       </div>
