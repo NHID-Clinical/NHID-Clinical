@@ -88,15 +88,77 @@ MAX_FILE_BYTES = 200 * 1024
 # A reading aid for the specification does not read its own manual.
 SELF_DOCUMENTATION = ("spec-rag.md",)
 
-# Files under docs/ that are not specification. Anything dropped into docs/ is
-# otherwise indexed as evidence, and on 2026-10-25 a maintainer's checklist of
-# GitHub settings became a cited source for a question about certification.
-# Each exclusion names its reason, and /spec/health reports every one, so an
-# exclusion that quietly stopped excluding anything would be visible.
-EXCLUDED_FILES: Dict[str, str] = {
-    "spec-rag.md": "this module's own documentation",
-    "maintainer-checklist-github.md": "maintainer note, not specification",
+# ── The source registry ──────────────────────────────────────────────────────
+#
+# docs/source-registry.json declares, for every top-level docs/*.md file, the
+# standing this aid gives it. Before it existed docs/ was a glob and every file
+# was evidence of equal weight: on 2026-10-25 the aid quoted the figures of a
+# document whose first line reads "This document is withdrawn in full. Do not
+# cite any figure that was in it", and dated snapshots were quoted as if they
+# described the engine today. Status words cannot be scraped from the files
+# ("withdrawn" appears in twenty of them, nearly always about the withdrawn
+# score), so status is declared once, per file, with the file's own words as the
+# reason. A file the registry does not list is not indexed: a new document
+# becomes evidence by being registered, not by being saved into docs/.
+REGISTRY_NAME = "source-registry.json"
+
+SOURCE_STATUSES = ("current", "historical", "superseded", "draft", "withdrawn", "excluded")
+SOURCE_AUTHORITIES = ("normative", "informative", "record")
+
+# Indexed and quotable. Everything else in SOURCE_STATUSES is never indexed.
+QUOTED_STATUSES = frozenset({"current", "historical", "superseded", "draft"})
+
+# What a quotation from a non-current source carries inline, after its path.
+STATUS_LABELS: Dict[str, str] = {
+    "historical": "historical record",
+    "superseded": "superseded",
+    "draft": "draft",
 }
+
+NOT_REGISTERED = f"not in docs/{REGISTRY_NAME}"
+
+
+def registry_path() -> Path:
+    return CORPUS_DIR / REGISTRY_NAME
+
+
+def load_registry() -> Dict[str, Dict[str, Any]]:
+    """``{file name: entry}`` from the registry; ``{}`` when it is absent.
+
+    An absent registry indexes nothing, which is the fail-closed reading of
+    "a file the registry does not list is not indexed". A malformed one raises:
+    an unknown status or a duplicate entry is a maintainer's typo, and guessing
+    what it meant would be worse than stopping.
+    """
+    path = registry_path()
+    if not path.is_file():
+        return {}
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    out: Dict[str, Dict[str, Any]] = {}
+    for entry in raw.get("sources", []):
+        name = entry.get("file", "")
+        if not name or "/" in name or name in out:
+            raise ValueError(f"{REGISTRY_NAME}: bad or duplicate file entry {name!r}")
+        if entry.get("status") not in SOURCE_STATUSES:
+            raise ValueError(f"{REGISTRY_NAME}: {name}: unknown status {entry.get('status')!r}")
+        if entry.get("authority") not in SOURCE_AUTHORITIES:
+            raise ValueError(f"{REGISTRY_NAME}: {name}: unknown authority {entry.get('authority')!r}")
+        if entry["status"] != "current" and not entry.get("reason"):
+            raise ValueError(f"{REGISTRY_NAME}: {name}: a {entry['status']} entry needs a reason")
+        out[name] = entry
+    return out
+
+
+def excluded_files() -> Dict[str, str]:
+    """Registered files that are never indexed, with their reasons."""
+    return {name: e["reason"] for name, e in load_registry().items()
+            if e["status"] not in QUOTED_STATUSES}
+
+
+def source_status(source: str) -> str:
+    """Status of a repo-relative source path such as ``docs/terminology.md``."""
+    entry = load_registry().get(Path(source).name)
+    return entry["status"] if entry else "unregistered"
 
 CHUNK_CHARS = 800
 CHUNK_OVERLAP = 100
@@ -226,6 +288,7 @@ class Chunk:
     text: str            # the body: what is quoted
     embedding: List[float] = field(default_factory=list)
     section: str = ""    # heading path, "H1 > H2 > H3"; "" for a preamble
+    status: str = "current"  # the source's registry status (see STATUS_LABELS)
 
     @property
     def chunk_id(self) -> str:
@@ -243,32 +306,35 @@ class Chunk:
 
 
 def iter_corpus_files() -> List[Path]:
-    """Top-level ``docs/*.md``, sorted, excluding oversized files and this
-    module's own documentation (see ``SELF_DOCUMENTATION``)."""
+    """Top-level ``docs/*.md``, sorted: registered with a quotable status and
+    under the size cap. Everything else is reported by ``skipped_files``."""
     if not CORPUS_DIR.is_dir():
         return []
+    registry = load_registry()
     return [
         p for p in sorted(CORPUS_DIR.glob("*.md"))
-        if p.stat().st_size <= MAX_FILE_BYTES and p.name not in EXCLUDED_FILES
+        if p.stat().st_size <= MAX_FILE_BYTES
+        and p.name in registry and registry[p.name]["status"] in QUOTED_STATUSES
     ]
 
 
 def skipped_files() -> List[Dict[str, Any]]:
-    """Files excluded by the size cap, reported rather than silently dropped."""
+    """Every docs/*.md file not indexed, with the reason, so nothing is dropped
+    silently: over the size cap, withdrawn or excluded by the registry, or not
+    registered at all."""
     if not CORPUS_DIR.is_dir():
         return []
-    out = [
-        {"source": str(p.relative_to(REPO_ROOT)), "bytes": p.stat().st_size,
-         "reason": "over the size cap"}
-        for p in sorted(CORPUS_DIR.glob("*.md"))
-        if p.stat().st_size > MAX_FILE_BYTES
-    ]
-    out += [
-        {"source": str(p.relative_to(REPO_ROOT)), "bytes": p.stat().st_size,
-         "reason": EXCLUDED_FILES[p.name]}
-        for p in sorted(CORPUS_DIR.glob("*.md"))
-        if p.stat().st_size <= MAX_FILE_BYTES and p.name in EXCLUDED_FILES
-    ]
+    registry = load_registry()
+    out: List[Dict[str, Any]] = []
+    for p in sorted(CORPUS_DIR.glob("*.md")):
+        entry = registry.get(p.name)
+        row = {"source": str(p.relative_to(REPO_ROOT)), "bytes": p.stat().st_size}
+        if entry is None:
+            out.append({**row, "status": "unregistered", "reason": NOT_REGISTERED})
+        elif entry["status"] not in QUOTED_STATUSES:
+            out.append({**row, "status": entry["status"], "reason": entry["reason"]})
+        elif p.stat().st_size > MAX_FILE_BYTES:
+            out.append({**row, "status": entry["status"], "reason": "over the size cap"})
     return out
 
 
@@ -282,6 +348,10 @@ def corpus_hash() -> str:
     remembered to rebuild.
     """
     h = hashlib.sha256()
+    # The registry is part of the corpus: changing a file's status changes what
+    # may be quoted and how, exactly as editing the file does.
+    reg = registry_path()
+    h.update(hashlib.sha256(reg.read_bytes() if reg.is_file() else b"").digest())
     for path in iter_corpus_files():
         h.update(str(path.relative_to(REPO_ROOT)).encode("utf-8"))
         h.update(b"\0")
@@ -446,15 +516,18 @@ def chunk_document(text: str, *, cap: int = SECTION_CAP,
 
 def build_chunks() -> List[Chunk]:
     chunks: List[Chunk] = []
+    registry = load_registry()
     for path in iter_corpus_files():
         rel = str(path.relative_to(REPO_ROOT))
+        status = registry[path.name]["status"]
         body = path.read_text(encoding="utf-8", errors="replace")
         if CHUNKING == "fixed":
             pieces = [(piece, "") for piece in chunk_text(body)]
         else:
             pieces = chunk_document(body)
         for i, (piece, section) in enumerate(pieces):
-            chunks.append(Chunk(source=rel, index=i, text=piece, section=section))
+            chunks.append(Chunk(source=rel, index=i, text=piece, section=section,
+                                status=status))
     return chunks
 
 
@@ -935,6 +1008,12 @@ def _best_excerpts(index: Index, question: str, hits: Sequence[Hit],
     return out
 
 
+def cite_label(source: str, status: str) -> str:
+    """``docs/x.md`` for a current source, ``docs/x.md · historical record`` otherwise."""
+    label = STATUS_LABELS.get(status)
+    return f"{source} · {label}" if label else source
+
+
 @dataclass
 class Answer:
     answer: str
@@ -986,7 +1065,12 @@ def ask(index: Index, question: str, k: int = TOP_K) -> Answer:
 
     # One citation per claim, inline, because a trailing source list lets a
     # reader attach the wrong path to the wrong sentence.
-    lines = [f"{passage}  [{source}]" for source, passage in excerpts]
+    # A quotation from a historical, superseded or draft source says so where
+    # it stands, not in a footnote: the reader of one line must not take a
+    # dated snapshot for a description of the engine today.
+    status_of = {h.chunk.source: h.chunk.status for h in hits}
+    lines = [f"{passage}  [{cite_label(source, status_of.get(source, 'current'))}]"
+             for source, passage in excerpts]
     citations: List[str] = []
     for source, _ in excerpts:
         if source not in citations:
@@ -1065,6 +1149,8 @@ try:
             "sources": idx.source_count,
             "backend": idx.backend,
             "skipped_files": idx.skipped,
+            "labelled_sources": sorted(
+                {c.source: c.status for c in idx.chunks if c.status != "current"}.items()),
             "corpus_hash": idx.corpus_hash,
             "commit": idx.commit,
             "score_is_openai_score": idx.backend == "openai",

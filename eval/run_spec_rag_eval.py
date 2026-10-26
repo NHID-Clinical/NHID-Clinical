@@ -22,6 +22,17 @@ commit it was measured on, because a score without those three is a rumour.
   unsupported answers  unanswerable questions that were answered: the number
                        that must stay at zero
 
+Three checks over every answer the aid gives, answerable or not; each must be 0:
+
+  misattributed quotes         a quoted line that does not appear, whitespace-
+                               collapsed, in the file it cites (or a line with
+                               no citation at all)
+  withdrawn citations          a citation of a file the source registry
+                               withdraws, excludes, or does not list
+  unlabelled status citations  a quotation from a historical, superseded or
+                               draft source without its label, or a current
+                               source carrying one
+
     python eval/run_spec_rag_eval.py                    # table + totals
     python eval/run_spec_rag_eval.py --quiet            # totals only
     python eval/run_spec_rag_eval.py --json out.json    # machine-readable
@@ -45,14 +56,21 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-from src.nhid_spec_rag import REFUSAL, TOP_K, ask, load_index  # noqa: E402
+from src.nhid_spec_rag import (  # noqa: E402
+    QUOTED_STATUSES, REFUSAL, STATUS_LABELS, TOP_K, ask, load_index, source_status,
+)
 
 QUESTIONS = REPO_ROOT / "eval" / "spec_rag_questions.jsonl"
 
 # The figures --check compares. Higher is better for the first five, lower for
 # the last; a change in the dataset size invalidates the baseline outright.
 HIGHER_IS_BETTER = ("file_hits", "accepted_hits", "passage_hits", "refusals")
-LOWER_IS_BETTER = ("unsupported_answers",)
+LOWER_IS_BETTER = ("unsupported_answers", "misattributed_quotes",
+                   "withdrawn_citations", "unlabelled_status_citations")
+
+# One answer line: the quoted passage, two spaces, then [docs/x.md] or
+# [docs/x.md · historical record].
+_LINE_RE = re.compile(r"^(?P<passage>.*?)  \[(?P<source>docs/[^\]\s]+)(?: · (?P<label>[^\]]+))?\]$", re.S)
 
 
 def load_questions():
@@ -68,11 +86,44 @@ def _norm(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip().lower()
 
 
+def attribution_problems(answer: str) -> dict:
+    """Count the three attribution failures in one answer's text."""
+    counts = {"misattributed_quotes": 0, "withdrawn_citations": 0,
+              "unlabelled_status_citations": 0}
+    for line in answer.split("\n\n"):
+        m = _LINE_RE.match(line)
+        if not m:
+            counts["misattributed_quotes"] += 1
+            continue
+        source, label = m.group("source"), m.group("label")
+        path = REPO_ROOT / source
+        if not path.is_file() or _norm(m.group("passage")) not in _norm(
+                path.read_text(encoding="utf-8", errors="replace")):
+            counts["misattributed_quotes"] += 1
+        status = source_status(source)
+        if status not in QUOTED_STATUSES:
+            counts["withdrawn_citations"] += 1
+        if label != STATUS_LABELS.get(status):
+            counts["unlabelled_status_citations"] += 1
+    return counts
+
+
 def evaluate(index, rows):
     answerable = [r for r in rows if r["answerable"]]
     refusals = [r for r in rows if not r["answerable"]]
 
     per_question = []
+    attribution = {"misattributed_quotes": 0, "withdrawn_citations": 0,
+                   "unlabelled_status_citations": 0}
+
+    def tally(result):
+        if result.refused:
+            return {}
+        found = attribution_problems(result.answer)
+        for key, n in found.items():
+            attribution[key] += n
+        return {k: v for k, v in found.items() if v}
+
     file_hits = accepted_hits = passage_hits = 0
     rr_sum = 0.0
     for row in answerable:
@@ -87,6 +138,7 @@ def evaluate(index, rows):
         rr_sum += (1.0 / rank) if rank else 0.0
         needle = row.get("expected_passage_contains")
         passage_ok = bool(needle) and not result.refused and _norm(needle) in _norm(result.answer)
+        problems = tally(result)
         file_hits += file_ok
         accepted_hits += accepted_ok
         passage_hits += passage_ok
@@ -95,6 +147,7 @@ def evaluate(index, rows):
             "file_hit": file_ok, "accepted_hit": accepted_ok, "passage_hit": passage_ok,
             "refused": result.refused, "rank": rank, "coverage": result.coverage,
             "retrieved": retrieved, "cited": result.citations, "ms": round(ms, 1),
+            **({"attribution": problems} if problems else {}),
         })
 
     refused = unsupported = 0
@@ -103,12 +156,14 @@ def evaluate(index, rows):
         result = ask(index, row["question"])
         ms = (time.perf_counter() - t0) * 1000.0
         ok = result.refused and result.answer == REFUSAL
+        problems = tally(result)
         refused += ok
         unsupported += (not ok)
         per_question.append({
             "id": row["id"], "category": row.get("category"), "answerable": False,
             "refused": ok, "coverage": result.coverage,
             "cited": result.citations, "ms": round(ms, 1),
+            **({"attribution": problems} if problems else {}),
         })
 
     n_a, n_r = len(answerable), len(refusals)
@@ -128,6 +183,7 @@ def evaluate(index, rows):
         "mrr": round(rr_sum / n_a, 4) if n_a else 0.0,
         "refusals": refused,
         "unsupported_answers": unsupported,
+        **attribution,
         "per_question": per_question,
     }
 
@@ -161,6 +217,9 @@ def print_report(report, *, quiet: bool) -> None:
     print(f"MRR:                  {report['mrr']}")
     print(f"refusals:             {report['refusals']}/{r}")
     print(f"unsupported answers:  {report['unsupported_answers']}/{r}")
+    print(f"misattributed quotes:         {report['misattributed_quotes']}")
+    print(f"withdrawn citations:          {report['withdrawn_citations']}")
+    print(f"unlabelled status citations:  {report['unlabelled_status_citations']}")
 
 
 def _display(path: Path) -> str:
@@ -184,15 +243,16 @@ def check(report, baseline_path: Path) -> int:
         if report[key] < base[key]:
             problems.append(f"{key} fell {base[key]} -> {report[key]}")
     for key in LOWER_IS_BETTER:
-        if report[key] > base[key]:
-            problems.append(f"{key} rose {base[key]} -> {report[key]}")
+        # A metric the baseline predates was zero by definition then.
+        if report[key] > base.get(key, 0):
+            problems.append(f"{key} rose {base.get(key, 0)} -> {report[key]}")
     if problems:
         print("\nEVAL FAIL against", _display(baseline_path))
         for p in problems:
             print("  -", p)
         return 1
     better = [k for k in HIGHER_IS_BETTER if report[k] > base[k]] + \
-             [k for k in LOWER_IS_BETTER if report[k] < base[k]]
+             [k for k in LOWER_IS_BETTER if report[k] < base.get(k, 0)]
     tail = f"; improved: {', '.join(better)} (update the baseline to lock it in)" if better else ""
     print(f"\nEVAL PASS: no regression against {_display(baseline_path)}{tail}")
     return 0

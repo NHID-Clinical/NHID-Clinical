@@ -1,19 +1,22 @@
 {
   "backend": "local",
   "score_is_openai_score": false,
-  "chunks": 843,
-  "sources": 48,
-  "corpus_hash": "b012969887d4bada9a37581083a3abf9626f550c3f36e1d918efcc95982df142",
-  "commit": "75acd1d",
+  "chunks": 838,
+  "sources": 47,
+  "corpus_hash": "2564f8909b634c8420b32b5f2d1d7c72777032d87660bea490e927e5103ba045",
+  "commit": "02036f5",
   "k": 4,
-  "answerable": 20,
+  "answerable": 25,
   "unanswerable": 15,
-  "file_hits": 20,
-  "accepted_hits": 20,
-  "passage_hits": 11,
-  "mrr": 0.975,
+  "file_hits": 25,
+  "accepted_hits": 25,
+  "passage_hits": 12,
+  "mrr": 0.95,
   "refusals": 15,
   "unsupported_answers": 0,
+  "misattributed_quotes": 0,
+  "withdrawn_citations": 0,
+  "unlabelled_status_citations": 0,
   "per_question": [
     {
       "id": "q01",
@@ -35,7 +38,7 @@
         "docs/CONTROL_DECISION_TABLE.md",
         "docs/nist-ai-rmf-playbook-crosswalk.md"
       ],
-      "ms": 173.2
+      "ms": 144.3
     },
     {
       "id": "q02",
@@ -58,7 +61,7 @@
         "docs/terminology.md",
         "docs/NHID-Clinical-Playbook.md"
       ],
-      "ms": 103.7
+      "ms": 144.1
     },
     {
       "id": "q03",
@@ -80,7 +83,7 @@
         "docs/SYSTEM_ARCHITECTURE.md",
         "docs/enforcement-profile.md"
       ],
-      "ms": 112.8
+      "ms": 142.6
     },
     {
       "id": "q04",
@@ -102,7 +105,7 @@
         "docs/dbc01-human-review-sop.md",
         "docs/enforcement-profile.md"
       ],
-      "ms": 115.5
+      "ms": 147.6
     },
     {
       "id": "q05",
@@ -118,14 +121,14 @@
         "docs/terminology.md",
         "docs/review-2026-07-30.md",
         "docs/nhid-clinical-technical-specification.md",
-        "docs/CORPUS_EVALUATION_SUMMARY.md"
+        "docs/review-2026-07-30.md"
       ],
       "cited": [
         "docs/nhid-clinical-technical-specification.md",
         "docs/review-2026-07-30.md",
         "docs/terminology.md"
       ],
-      "ms": 150.0
+      "ms": 224.0
     },
     {
       "id": "q06",
@@ -147,7 +150,7 @@
         "docs/ATR-01-IMPLEMENTATION.md",
         "docs/NHID-Clinical-Playbook.md"
       ],
-      "ms": 155.3
+      "ms": 190.4
     },
     {
       "id": "q07",
@@ -168,7 +171,7 @@
       "cited": [
         "docs/NHID_AUDIT_EVENT_SPEC_v1.0.md"
       ],
-      "ms": 107.3
+      "ms": 132.9
     },
     {
       "id": "q08",
@@ -179,7 +182,7 @@
       "passage_hit": false,
       "refused": true,
       "rank": 1,
-      "coverage": 0.5039,
+      "coverage": 0.5038,
       "retrieved": [
         "docs/fhir-auditevent-mapping.md",
         "docs/fhir-auditevent-mapping.md",
@@ -187,7 +190,7 @@
         "docs/fhir-auditevent-mapping.md"
       ],
       "cited": [],
-      "ms": 105.2
+      "ms": 136.6
     },
     {
       "id": "q09",
@@ -210,7 +213,7 @@
         "docs/nist-ai-rmf-playbook-crosswalk.md",
         "docs/NHID-Clinical-Playbook.md"
       ],
-      "ms": 112.3
+      "ms": 140.6
     },
     {
       "id": "q10",
@@ -232,7 +235,7 @@
         "docs/nhid-auth-pki-and-oauth2-integration.md",
         "docs/nhid-clinical-technical-specification.md"
       ],
-      "ms": 103.9
+      "ms": 138.2
     },
     {
       "id": "q11",
@@ -243,7 +246,7 @@
       "passage_hit": false,
       "refused": true,
       "rank": 1,
-      "coverage": 0.3921,
+      "coverage": 0.3922,
       "retrieved": [
         "docs/claim-boundaries.md",
         "docs/terminology.md",
@@ -251,7 +254,7 @@
         "docs/claim-boundaries.md"
       ],
       "cited": [],
-      "ms": 110.3
+      "ms": 133.6
     },
     {
       "id": "q12",
@@ -262,7 +265,7 @@
       "passage_hit": false,
       "refused": false,
       "rank": 1,
-      "coverage": 0.5942,
+      "coverage": 0.5944,
       "retrieved": [
         "docs/payer-initiated-calls.md",
         "docs/payer-initiated-calls.md",
@@ -273,7 +276,7 @@
         "docs/sip-header-integration-feedback.md",
         "docs/payer-initiated-calls.md"
       ],
-      "ms": 108.2
+      "ms": 292.2
     },
     {
       "id": "q13",
@@ -294,7 +297,7 @@
       "cited": [
         "docs/NHID_METRICS_AND_OBSERVABILITY_v1.md"
       ],
-      "ms": 169.8
+      "ms": 222.8
     },
     {
       "id": "q14",
@@ -316,7 +319,7 @@
         "docs/nhid-clinical-technical-specification.md",
         "docs/claims-register.md"
       ],
-      "ms": 149.0
+      "ms": 136.0
     },
     {
       "id": "q15",
@@ -338,7 +341,7 @@
         "docs/SECURITY.md",
         "docs/canonical-threat-model.md"
       ],
-      "ms": 108.0
+      "ms": 133.8
     },
     {
       "id": "q16",
@@ -359,7 +362,7 @@
       "cited": [
         "docs/DOCKER-DEPLOYMENT.md"
       ],
-      "ms": 112.1
+      "ms": 135.4
     },
     {
       "id": "q17",
@@ -370,7 +373,7 @@
       "passage_hit": false,
       "refused": true,
       "rank": 1,
-      "coverage": 0.4258,
+      "coverage": 0.4255,
       "retrieved": [
         "docs/5-minute-quickstart.md",
         "docs/5-minute-quickstart.md",
@@ -378,7 +381,7 @@
         "docs/vendor-trust-questionnaire.md"
       ],
       "cited": [],
-      "ms": 106.2
+      "ms": 134.5
     },
     {
       "id": "q18",
@@ -400,7 +403,7 @@
         "docs/nist-ai-rmf-playbook-crosswalk.md",
         "docs/enforcement-profile.md"
       ],
-      "ms": 106.7
+      "ms": 135.3
     },
     {
       "id": "q19",
@@ -411,7 +414,7 @@
       "passage_hit": false,
       "refused": false,
       "rank": 1,
-      "coverage": 0.6793,
+      "coverage": 0.6791,
       "retrieved": [
         "docs/vendor-trust-questionnaire.md",
         "docs/vendor-trust-questionnaire.md",
@@ -422,7 +425,7 @@
         "docs/nhid-clinical-technical-specification.md",
         "docs/vendor-trust-questionnaire.md"
       ],
-      "ms": 103.1
+      "ms": 148.7
     },
     {
       "id": "q20",
@@ -433,7 +436,7 @@
       "passage_hit": true,
       "refused": false,
       "rank": 1,
-      "coverage": 0.7042,
+      "coverage": 0.7041,
       "retrieved": [
         "docs/decision-gate-G1-G4.md",
         "docs/decision-gate-G1-G4.md",
@@ -443,52 +446,158 @@
       "cited": [
         "docs/decision-gate-G1-G4.md"
       ],
-      "ms": 107.9
+      "ms": 195.7
+    },
+    {
+      "id": "h01",
+      "category": "retracted_or_historical",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": true,
+      "refused": false,
+      "rank": 4,
+      "coverage": 0.6817,
+      "retrieved": [
+        "docs/claim-boundaries.md",
+        "docs/NHID-Clinical-Playbook.md",
+        "docs/SYSTEM_ARCHITECTURE.md",
+        "docs/CONTROL_DECISION_TABLE.md"
+      ],
+      "cited": [
+        "docs/NHID-Clinical-Playbook.md",
+        "docs/CONTROL_DECISION_TABLE.md",
+        "docs/claim-boundaries.md"
+      ],
+      "ms": 134.3
+    },
+    {
+      "id": "h02",
+      "category": "retracted_or_historical",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": true,
+      "rank": 1,
+      "coverage": 0.5098,
+      "retrieved": [
+        "docs/review-2026-07-30.md",
+        "docs/review-2026-07-30.md",
+        "docs/review-2026-07-30.md",
+        "docs/review-2026-07-30.md"
+      ],
+      "cited": [],
+      "ms": 132.5
+    },
+    {
+      "id": "h03",
+      "category": "retracted_or_historical",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": false,
+      "rank": 1,
+      "coverage": 0.7451,
+      "retrieved": [
+        "docs/release-history.md",
+        "docs/release-history.md",
+        "docs/project-state.md",
+        "docs/SYSTEM_ARCHITECTURE.md"
+      ],
+      "cited": [
+        "docs/release-history.md",
+        "docs/project-state.md"
+      ],
+      "ms": 135.1
+    },
+    {
+      "id": "h04",
+      "category": "retracted_or_historical",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": false,
+      "rank": 1,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/skipped-test-audit.md",
+        "docs/skipped-test-audit.md",
+        "docs/skipped-test-audit.md",
+        "docs/skipped-test-audit.md"
+      ],
+      "cited": [
+        "docs/skipped-test-audit.md"
+      ],
+      "ms": 131.8
+    },
+    {
+      "id": "h05",
+      "category": "retracted_or_historical",
+      "answerable": true,
+      "file_hit": true,
+      "accepted_hit": true,
+      "passage_hit": false,
+      "refused": false,
+      "rank": 1,
+      "coverage": 1.0,
+      "retrieved": [
+        "docs/csa-ai-caiq-summary.md",
+        "docs/csa-ai-caiq-summary.md",
+        "docs/csa-ai-caiq-summary.md",
+        "docs/csa-ai-caiq-summary.md"
+      ],
+      "cited": [
+        "docs/csa-ai-caiq-summary.md"
+      ],
+      "ms": 133.5
     },
     {
       "id": "r01",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.3005,
+      "coverage": 0.3006,
       "cited": [],
-      "ms": 104.2
+      "ms": 131.8
     },
     {
       "id": "r02",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.2097,
+      "coverage": 0.21,
       "cited": [],
-      "ms": 104.5
+      "ms": 131.0
     },
     {
       "id": "r03",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.5374,
+      "coverage": 0.5372,
       "cited": [],
-      "ms": 100.9
+      "ms": 130.3
     },
     {
       "id": "r04",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.1685,
+      "coverage": 0.1683,
       "cited": [],
-      "ms": 104.4
+      "ms": 130.5
     },
     {
       "id": "r05",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.2685,
+      "coverage": 0.2684,
       "cited": [],
-      "ms": 106.2
+      "ms": 139.2
     },
     {
       "id": "r06",
@@ -497,7 +606,7 @@
       "refused": true,
       "coverage": 0.2794,
       "cited": [],
-      "ms": 108.5
+      "ms": 154.5
     },
     {
       "id": "r07",
@@ -506,80 +615,80 @@
       "refused": true,
       "coverage": 0.4918,
       "cited": [],
-      "ms": 106.3
+      "ms": 130.4
     },
     {
       "id": "r08",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.2973,
+      "coverage": 0.2971,
       "cited": [],
-      "ms": 108.7
+      "ms": 136.0
     },
     {
       "id": "r09",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.3708,
+      "coverage": 0.3707,
       "cited": [],
-      "ms": 106.3
+      "ms": 146.1
     },
     {
       "id": "r10",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.4304,
+      "coverage": 0.4303,
       "cited": [],
-      "ms": 107.5
+      "ms": 139.3
     },
     {
       "id": "r11",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.0996,
+      "coverage": 0.0997,
       "cited": [],
-      "ms": 158.5
+      "ms": 135.2
     },
     {
       "id": "r12",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.1028,
+      "coverage": 0.1029,
       "cited": [],
-      "ms": 105.2
+      "ms": 139.4
     },
     {
       "id": "r13",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.3277,
+      "coverage": 0.3275,
       "cited": [],
-      "ms": 143.1
+      "ms": 145.4
     },
     {
       "id": "r14",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.3005,
+      "coverage": 0.3006,
       "cited": [],
-      "ms": 116.7
+      "ms": 135.7
     },
     {
       "id": "r15",
       "category": "unsupported_ambiguous_out_of_scope",
       "answerable": false,
       "refused": true,
-      "coverage": 0.3313,
+      "coverage": 0.331,
       "cited": [],
-      "ms": 102.7
+      "ms": 137.6
     }
   ],
-  "measured_at": "2026-10-25T11:44:25Z"
+  "measured_at": "2026-10-25T20:59:36Z"
 }

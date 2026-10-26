@@ -1,0 +1,276 @@
+{
+  "_comment": "Every top-level docs/*.md file, with the standing the specification reading aid (src/nhid_spec_rag.py) gives it. A file not listed here is not indexed. Non-current statuses quote the file's own words in 'reason'. See docs/spec-rag.md.",
+  "statuses": {
+    "current": "indexed and quoted plainly",
+    "historical": "a dated record kept verbatim; indexed, every quote labelled",
+    "superseded": "replaced in part or whole; indexed, every quote labelled",
+    "draft": "self-described draft; indexed, every quote labelled",
+    "withdrawn": "retracted; never indexed or quoted",
+    "excluded": "not specification; never indexed or quoted"
+  },
+  "sources": [
+    {
+      "file": "5-minute-quickstart.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "ATR-01-IMPLEMENTATION.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "CONTROL_DECISION_TABLE.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "CORPUS_EVALUATION_SUMMARY.md",
+      "status": "withdrawn",
+      "authority": "record",
+      "reason": "Its first line: \"This document is withdrawn in full. Do not cite any figure that was in it.\" Retracted 2026-10-21; the retraction is explained in CONTROL_DECISION_TABLE.md."
+    },
+    {
+      "file": "DEPLOYMENT-SECURITY-CHECKLIST.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "DOCKER-DEPLOYMENT.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "EVALUATION_CORPUS_REPORT_v1.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "EVALUATION_CORPUS_REPORT_v2.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "MASTER-KNOWLEDGE-ARCHIVE.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "NHID-Clinical-Playbook.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "NHID_AUDIT_EVENT_SPEC_v1.0.md",
+      "status": "current",
+      "authority": "normative"
+    },
+    {
+      "file": "NHID_METRICS_AND_OBSERVABILITY_v1.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "SECURITY.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "SYSTEM_ARCHITECTURE.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "canonical-threat-model.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "claim-boundaries.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "claims-register.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "conformance-run-record.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "csa-ai-caiq-summary.md",
+      "status": "draft",
+      "authority": "informative",
+      "reason": "\"DRAFT INTERNAL SELF-ASSESSMENT - NOT a CSA STAR registry submission.\""
+    },
+    {
+      "file": "dbc01-human-review-sop.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "decision-gate-G1-G4.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "enforcement-profile.md",
+      "status": "current",
+      "authority": "normative"
+    },
+    {
+      "file": "executive-brief.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "fhir-auditevent-mapping.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "fhir-auditevent-standardization-for-ai-agents.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "governance-corpus-remediation.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "grok-realtime-bridge.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "ia-disposition.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "maintainer-checklist-github.md",
+      "status": "excluded",
+      "authority": "informative",
+      "reason": "maintainer note, not specification"
+    },
+    {
+      "file": "nhid-auth-pki-and-oauth2-integration.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "nhid-clinical-technical-specification.md",
+      "status": "draft",
+      "authority": "normative",
+      "reason": "Its header reads \"Version: 1.0 (draft)\", and \"where this document and the code disagree, the code wins\". Flagged for the maintainer: change to current if the draft label is no longer meant."
+    },
+    {
+      "file": "nist-ai-rmf-playbook-crosswalk.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "payer-brief.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "payer-initiated-calls.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "playbook-source-inventory.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "playbook-structure.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "positioning.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "project-state.md",
+      "status": "current",
+      "authority": "record"
+    },
+    {
+      "file": "release-history.md",
+      "status": "historical",
+      "authority": "record",
+      "reason": "\"The entries themselves are a dated record and are preserved verbatim below.\""
+    },
+    {
+      "file": "repository-architecture.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "review-2026-07-30.md",
+      "status": "historical",
+      "authority": "record",
+      "reason": "\"Historical record. This is a dated snapshot ... It is not a current description of the engine.\""
+    },
+    {
+      "file": "scope-boundary-fairness-clinical.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "sip-header-integration-feedback.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "skipped-test-audit.md",
+      "status": "superseded",
+      "authority": "record",
+      "reason": "\"Superseded in part on 2026-09-03. The 18 now run.\" Sections 1-5 are preserved as written; section 6 was replaced."
+    },
+    {
+      "file": "spec-rag.md",
+      "status": "excluded",
+      "authority": "informative",
+      "reason": "this module's own documentation"
+    },
+    {
+      "file": "terminology.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "twilio-demo-line.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "v2-integration-guide.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "vendor-trust-questionnaire.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
+      "file": "visual-system.md",
+      "status": "current",
+      "authority": "normative"
+    },
+    {
+      "file": "visuals-and-graph-recommendations.md",
+      "status": "current",
+      "authority": "informative"
+    }
+  ]
+}
