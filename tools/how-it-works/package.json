@@ -1,0 +1,10 @@
+{
+  "name": "nhid-how-it-works",
+  "private": true,
+  "description": "Source for the interactive how-it-works diorama on about.html. Build: ./build.sh",
+  "type": "module",
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "three": "0.186.1"
+  }
+}
