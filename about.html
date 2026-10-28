@@ -335,7 +335,7 @@
           <div>
             <p class="section-kicker">How it works, in plain terms</p>
             <h2 id="how-it-works-h">Five rules a robot has to follow before it can talk about a patient.</h2>
-            <p class="act-lead">The same five rules, told in three settings anyone can follow. Each rule in the films is one control in the specification, and the label under each station names it. The films are an analogy for the conduct the controls check, not a picture of the architecture.</p>
+            <p class="act-lead">The same five rules, told in three settings anyone can follow. Step through them one rule at a time, drag to turn the scene, or watch the 44-second film. Each rule is one control in the specification, and the label at each station names it. The scenes are an analogy for the conduct the controls check, not a picture of the architecture.</p>
           </div>
           <span class="act-index">03 / 08</span>
         </div>
@@ -541,6 +541,21 @@
   </div>
 </footer>
 
+<script type="module">
+/* Interactive how-it-works diorama. Loaded only as the section approaches, and
+   only where WebGL works; otherwise the films below stay as they are.
+   Source: tools/how-it-works/. */
+(function () {
+  var band = document.getElementById('how-it-works');
+  if (!band || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (es) {
+    if (!es.some(function (e) { return e.isIntersecting; })) return;
+    io.disconnect();
+    import('/assets/js/how-it-works/player.js').then(function (m) { m.mount(band); }).catch(function () {});
+  }, { rootMargin: '900px 0px' });
+  io.observe(band);
+})();
+</script>
 <script src="/site.js"></script>
 </body>
 </html>

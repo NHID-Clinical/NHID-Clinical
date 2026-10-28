@@ -479,3 +479,111 @@ html:not(.js) .film[hidden] { display: block; }
 .film-rules li { display: flex; flex-direction: column; gap: .3rem; min-width: 0; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); font-size: .9rem; line-height: 1.4; }
 .film-rules li > span { font-weight: 700; color: var(--ink); }
 .film-rules code { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: var(--teal); white-space: normal; }
+
+/* ── How-it-works: the interactive diorama ─────────────────────────────────
+   Mounted by assets/js/how-it-works/player.js (source: tools/how-it-works/)
+   when WebGL is available. The films stay in the page; .hiw-on hides them and
+   the switch buttons move between the two. The stage is a lit display case, so
+   it keeps its clay-white surface in the dark theme too. */
+.hiw { display: none; }
+.film-band.hiw-on .hiw { display: grid; gap: .75rem; }
+.film-band.hiw-on .film-stage { display: none; }
+.hiw-alt-film { display: none; margin: .75rem 0 0; }
+.film-band:not(.hiw-on):not(.hiw-failed) .hiw-alt-film { display: block; }
+.hiw-stage {
+  position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius);
+  border: 1px solid var(--line); background: #eef0f3; touch-action: pan-y; cursor: grab; outline: none;
+  user-select: none; -webkit-user-select: none;
+}
+.hiw-stage:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+.hiw-stage.is-dragging { cursor: grabbing; }
+.hiw-stage.is-over-station { cursor: pointer; }
+.hiw-canvas { display: block; width: 100%; height: 100%; }
+.hiw-labels { position: absolute; inset: 0; pointer-events: none; }
+.hiw-loading {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: .875rem; color: #6b7891; background: #eef0f3;
+}
+.hiw-loading[hidden] { display: none; }
+.hiw-hint {
+  position: absolute; left: .75rem; top: .75rem; margin: 0; padding: .35rem .65rem; border-radius: 999px;
+  font-size: .75rem; color: #4f5d78; background: rgba(255, 255, 255, .86); box-shadow: 0 0 0 1px rgba(36, 48, 73, .08);
+  pointer-events: none; transition: opacity .4s;
+}
+.hiw-hint.is-gone { opacity: 0; }
+.hiw-reset {
+  position: absolute; right: .75rem; top: .75rem; padding: .35rem .7rem; border-radius: 999px; border: 0;
+  font: inherit; font-size: .75rem; font-weight: 600; color: #243049; background: rgba(255, 255, 255, .92);
+  box-shadow: 0 0 0 1px rgba(36, 48, 73, .1); cursor: pointer;
+}
+.hiw-reset[hidden] { display: none; }
+.hiw-reset:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.hiw-pill, .hiw-tag { position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; will-change: transform, opacity; }
+.hiw-pill {
+  display: flex; align-items: center; gap: .5rem; padding: .3rem .7rem .3rem .3rem; border-radius: 999px;
+  background: rgba(255, 255, 255, .94); box-shadow: 0 10px 26px -14px rgba(36, 48, 73, .45), 0 0 0 1px rgba(36, 48, 73, .07);
+}
+.hiw-pill b {
+  display: flex; align-items: center; justify-content: center; width: 1.6rem; height: 1.6rem; border-radius: 999px;
+  background: #e6e9ee; color: #6b7891; font-size: .78rem; font-weight: 700;
+}
+.hiw-pill.is-on b { background: #14b8a6; color: #fff; }
+.hiw-pill.is-done b { background: #cfeee8; color: #0e9484; }
+.hiw-pill em { display: block; font-style: normal; font-weight: 700; font-size: .82rem; line-height: 1.15; color: #1b2540; }
+.hiw-pill small { display: block; margin-top: .1rem; font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; color: #6b7891; }
+.hiw-tag {
+  padding: .25rem .5rem; border-radius: 6px; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #fff; background: #0e9484; box-shadow: 0 8px 18px -10px rgba(14, 148, 132, .7);
+}
+.hiw-tag.is-warn { background: #f5b840; color: #3b2a06; }
+.hiw-tag.is-soft { background: rgba(255, 255, 255, .92); color: #6b7891; font-weight: 600; box-shadow: 0 0 0 1px rgba(36, 48, 73, .08); }
+.hiw-stage.is-compact .hiw-pill { padding: .2rem; }
+.hiw-stage.is-compact .hiw-pill span, .hiw-stage.is-compact .hiw-tag.is-soft, .hiw-stage.is-compact .hiw-hint { display: none; }
+.hiw-stage.is-compact .hiw-pill b { width: 1.3rem; height: 1.3rem; font-size: .7rem; }
+.hiw-stage.is-compact .hiw-tag { font-size: .58rem; padding: .18rem .35rem; }
+
+.hiw-bar { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.hiw-play {
+  flex: none; width: 2.5rem; height: 2.5rem; border-radius: 999px; border: 1px solid var(--line); background: var(--paper);
+  color: var(--ink); cursor: pointer; display: grid; place-items: center;
+}
+.hiw-play::before { content: ""; width: 0; height: 0; margin-left: 3px; border-style: solid; border-width: 7px 0 7px 11px; border-color: transparent transparent transparent currentColor; }
+.hiw-play.is-playing::before { margin: 0; width: 10px; height: 13px; border: 0; border-left: 3.5px solid currentColor; border-right: 3.5px solid currentColor; }
+.hiw-play:hover { border-color: var(--teal); color: var(--teal); }
+.hiw-steps { list-style: none; margin: 0; padding: 0; display: flex; gap: .35rem; flex: none; }
+.hiw-step {
+  min-width: 2.5rem; height: 2.5rem; padding: 0 .65rem; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--paper); color: var(--body); font: inherit; font-size: .82rem; font-weight: 700; cursor: pointer;
+}
+.hiw-step:hover { border-color: var(--teal); color: var(--teal); }
+.hiw-step.is-done { color: var(--teal); background: rgba(20, 184, 166, .08); border-color: rgba(20, 184, 166, .35); }
+.hiw-step.is-current { color: #fff; background: #0e9484; border-color: #0e9484; }
+.hiw-play:focus-visible, .hiw-step:focus-visible, .hiw-switch:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.hiw-scrub {
+  flex: 1 1 10rem; min-width: 8rem; height: 2.5rem; margin: 0; background: transparent; accent-color: #0e9484; cursor: pointer;
+}
+.hiw-caption {
+  display: flex; gap: .9rem; align-items: flex-start; min-height: 6.2rem; padding: .9rem 1.1rem;
+  border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper);
+}
+.hiw-n {
+  flex: none; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 10px;
+  background: #14b8a6; color: #fff; font-weight: 800;
+}
+.hiw-n[hidden] { display: none; }
+.hiw-line { margin: 0; font-weight: 800; font-size: 1.15rem; letter-spacing: -.01em; color: var(--ink); }
+.hiw-tell { margin: .3rem 0 0; color: var(--body); line-height: 1.6; max-width: 70ch; }
+.hiw-id { margin: .45rem 0 0; font-family: var(--mono); font-size: .7rem; letter-spacing: .08em; color: var(--teal); }
+.hiw-id[hidden] { display: none; }
+.hiw-alt { margin: 0; }
+.hiw-switch {
+  padding: 0; border: 0; background: none; font: inherit; font-size: .875rem; color: var(--teal);
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+@media (max-width: 640px) {
+  .hiw-steps { order: 3; flex: 1 1 100%; justify-content: space-between; }
+  .hiw-step { min-width: 2.25rem; height: 2.25rem; padding: 0 .4rem; }
+  .hiw-caption { padding: .8rem .9rem; }
+  .hiw-line { font-size: 1.05rem; }
+}
+@media (prefers-reduced-motion: reduce) { .hiw-hint { transition: none; } }
