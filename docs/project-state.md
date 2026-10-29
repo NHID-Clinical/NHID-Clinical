@@ -25,20 +25,20 @@ rather than inferring.
 |---|---|---|
 | `NHID_SPEC_VERSION` | `1.3` | `src/nhid_policy_engine_v1.py` |
 | `POLICY_ENGINE_VERSION` | `1.0.0` | `src/nhid_policy_engine_v1.py` |
-| `UNIT_PUBLISHED` | `2063` | `scripts/validate_ci.py` — published-number reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | `2065` | `scripts/validate_ci.py` — published-number reference, **not** a CI gate |
 | `SKIP_EXPECTED` | `0` | `scripts/validate_ci.py` — CI starts the API, so a skip means it did not come up |
 | `XFAIL_EXPECTED` | `0` | `scripts/validate_ci.py` — recorded divergences, see `skipped-test-audit.md` §8 |
 
 ## 2. Test suite
 
 ```
-2063 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
+2065 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
 1192 passed, 21 skipped             # ...the same command with no API listening (drift-ok: no-API measurement, not the published count)
-2063 collected                # python -m pytest tests/ --collect-only -q
+2065 collected                # python -m pytest tests/ --collect-only -q
 67 files                      # files under tests/ that pytest collects from
 ```
 
-2063 collected, 2063 passed. Every published surface stating these numbers must
+2065 collected, 2065 passed. Every published surface stating these numbers must
 satisfy that arithmetic; `scripts/check_number_drift.py` enforces the passed
 count, reads the text of every `specs/*.pdf`, and — as of `ed342b3` — also
 covers this file and `MASTER-KNOWLEDGE-ARCHIVE.md`. Those two were outside its
@@ -222,8 +222,8 @@ Recorded because they change what a session can verify:
 ```bash
 git rev-parse HEAD
 python -m uvicorn app:app --port 8000 &         # required, or 21 tests skip
-python -m pytest tests/ -q                      # 2063 passed, 0 skipped, 0 xfailed
-python -m pytest tests/ --collect-only -q       # 2063 collected
+python -m pytest tests/ -q                      # 2065 passed, 0 skipped, 0 xfailed
+python -m pytest tests/ --collect-only -q       # 2065 collected
 python scripts/validate_ci.py                   # CI PASS
 python scripts/check_baseline.py                # Fabricate baseline
 python scripts/check_number_drift.py            # drift + corpus + PDFs
@@ -247,10 +247,10 @@ that introduced no net change.
 
 | Figure | Value | Derived by |
 |---|---|---|
-| Suite passing | **2063** | `python -m pytest tests/ -q` with the API running |
+| Suite passing | **2065** | `python -m pytest tests/ -q` with the API running |
 | Recorded divergences | **0** | both contracts resolved; see `skipped-test-audit.md` §8 |
 | Skipped | **0** | same run |
-| Collected | **2063** | `--collect-only -q`; equals the passing count |
+| Collected | **2065** | `--collect-only -q`; equals the passing count |
 | IDG-01 | 70/70, 0 FP | `scripts/check_baseline.py` |
 | PDX-01 | 41/41, 0 FP | `scripts/check_baseline.py` |
 | DBC-01 | 183/200 = 91.5%, 5 FP | `scripts/check_baseline.py` |

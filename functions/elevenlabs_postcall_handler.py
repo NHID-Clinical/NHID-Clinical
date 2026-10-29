@@ -52,6 +52,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import time
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -75,6 +76,12 @@ SIGNATURE_TOLERANCE_SECS = 30 * 60
 
 #: The label every stored vendor grade carries, in the store and on the site.
 VENDOR_LABEL = "vendor self-evaluation (ElevenLabs), not NHID evidence"
+
+#: The event type as the first key of the envelope, read without parsing the
+#: body. A post_call_audio event carries the whole call as base64 MP3 and can
+#: exceed the parser's size cap; refusing it 413 would count as a failed
+#: delivery, and ElevenLabs disables a webhook that keeps failing.
+_LEADING_TYPE = re.compile(r'^\s*\{\s*"type"\s*:\s*"([A-Za-z_]{1,64})"')
 
 _MAX_VENDOR_ENTRIES = 20
 _MAX_VENDOR_TEXT = 500
@@ -276,7 +283,12 @@ def _handle_elevenlabs_postcall_webhook(event: dict[str, Any], *, status_table=N
     # same size cap and the same breadth of parse-failure handling. It parses
     # the body that was verified (already base64-decoded), so what is
     # evaluated is exactly what was signed.
-    from functions.handler import _parse_json_body
+    from functions.handler import MAX_BODY_BYTES, _parse_json_body
+
+    if len(raw.encode("utf-8")) > MAX_BODY_BYTES:
+        leading = _LEADING_TYPE.match(raw[:200])
+        if leading and leading.group(1) != TRANSCRIPTION_TYPE:
+            return _ok({"ignored": leading.group(1)})
 
     payload, parse_error = _parse_json_body({"body": raw})
     if parse_error:

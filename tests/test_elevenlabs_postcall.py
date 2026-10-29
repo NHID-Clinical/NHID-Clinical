@@ -138,6 +138,25 @@ def test_other_event_types_are_acknowledged_and_ignored(event_type):
     assert table.writes == 0
 
 
+def test_an_oversized_audio_event_is_acknowledged_not_refused():
+    """post_call_audio carries the call as base64 MP3. Over the 2 MB parse cap
+    it must still get 200, or ElevenLabs counts a failed delivery."""
+    from functions.handler import MAX_BODY_BYTES
+    table = FakeTable()
+    raw = json.dumps({"type": "post_call_audio", "event_timestamp": START,
+                      "data": {"conversation_id": "c", "full_audio": "A" * (MAX_BODY_BYTES + 10)}})
+    resp = post(None, table, raw=raw)
+    assert resp["statusCode"] == 200
+    assert json.loads(resp["body"]) == {"ignored": "post_call_audio"}
+    assert table.writes == 0
+
+
+def test_an_oversized_transcript_is_still_refused():
+    from functions.handler import MAX_BODY_BYTES
+    raw = json.dumps(envelope([{"role": "agent", "message": "a" * (MAX_BODY_BYTES + 10)}]))
+    assert post(None, FakeTable(), raw=raw)["statusCode"] == 413
+
+
 def test_the_flat_shape_still_parses():
     record = parse_postcall({"conversation_id": "c1", "transcript": []})
     assert record["type"] == "post_call_transcription"

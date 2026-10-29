@@ -140,7 +140,10 @@ have it shown on the public site as the latest result.
 
 Only `post_call_transcription` is evaluated. `post_call_audio`,
 `call_initiation_failure` and any other type get `200 {"ignored": "<type>"}`, so
-ElevenLabs does not retry them or disable the webhook. The adapter
+ElevenLabs does not retry them or disable the webhook. That holds for an audio
+event larger than the 2 MB parse cap too: its type is read from the start of the
+signed body and it is acknowledged without being parsed. Leaving "Send audio data"
+off avoids sending them at all. The adapter
 (`adapters/elevenlabs_postcall_adapter.py`) still reads the older flat shape.
 
 ### Timing

@@ -15,7 +15,7 @@
   (`ElevenLabsWebhookSecret`). The adapter moved out of `adapters/archive/`. The shadow-evaluation
   guide's demo section describes both lines accurately and is wired again. Setup:
   `docs/elevenlabs-demo.md`.
-  Suite 2017 -> 2063 passed, 0 skipped (46 new tests, `tests/test_elevenlabs_postcall.py` and one
+  Suite 2017 -> 2065 passed, 0 skipped (48 new tests, `tests/test_elevenlabs_postcall.py` and one
   in `tests/test_handler_input_hardening.py`), measured with the API running.
 - **IDG-01: a disclosure counts only if it was heard.** Platforms commonly log the full scripted
   disclosure even when the counterparty barged in and playback stopped before "automated". The
