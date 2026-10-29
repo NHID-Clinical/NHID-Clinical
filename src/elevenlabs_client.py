@@ -109,7 +109,8 @@ def _write_canonical_from_live(prompt_path: Path, agent_id: str, prompt: str, fi
     title = prompt_path.stem.replace("_system_prompt", "").replace("_", " ").title()
     header = textwrap.dedent(f"""\
         # {title} — NHID-Clinical Reference System Prompt
-        > Canonical source of truth for agent `{agent_id}`.
+        > Canonical source of truth for this agent. Its ID is not kept in the repo:
+        > it comes from the ELEVENLABS_AGENT_ID environment variable.
         > Last synced from live: {now}
         > Repo is source of truth. Push changes here; the sync CLI pushes to ElevenLabs.
 

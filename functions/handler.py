@@ -26,8 +26,23 @@ except ImportError:
 TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 TURNSTILE_SECRET_ENV = "CLOUDFLARE_TURNSTILE_SECRET"
 
-#: Beacon's live ElevenLabs agent (prompt and config maintained privately, outside the public repo).
-_BEACON_AGENT_ID = "agent_4001krn32nmwe5t8mqzgee0w84rj"
+#: Environment variable naming Beacon's ElevenLabs agent. It used to be a
+#: hard-coded ID; when that agent was deleted every outbound call failed with
+#: an upstream error instead of saying the service was not set up. The prompt
+#: and config are versioned in agents/beacon_system_prompt.md and
+#: agents/beacon.config.json.
+BEACON_AGENT_ID_ENV = "ELEVENLABS_AGENT_ID"
+
+
+def _outbound_call_config() -> Optional[tuple]:
+    """(api_key, phone_number_id, agent_id) when every piece is configured and
+    httpx is importable, else None."""
+    api_key = os.environ.get("ELEVENLABS_API_KEY", "").strip()
+    phone_number_id = os.environ.get("ELEVENLABS_PHONE_NUMBER_ID", "").strip()
+    agent_id = os.environ.get(BEACON_AGENT_ID_ENV, "").strip()
+    if not (api_key and phone_number_id and agent_id and _HTTPX_OK):
+        return None
+    return api_key, phone_number_id, agent_id
 
 #: Outbound demo calls cost real Twilio/ElevenLabs minutes, unlike every other
 #: demo-suffixed route — these limits exist to cap that cost, not just deter bots.
@@ -56,7 +71,7 @@ def lambda_handler(event: dict, context) -> dict:
       GET  /v1/demo/call-status              — live demo call status, no API key (website demo, not framework)
       POST /v1/demo/call                     — trigger Beacon outbound demo call, Turnstile+rate-limited (website demo, not framework)
       POST /v1/demo/sms-opt-in               — web opt-in to text the starter-pack link, consent+Turnstile+rate-limited (website demo, not framework)
-      POST /v1/webhooks/elevenlabs/postcall  — ElevenLabs post-call webhook for the Beacon demo, no API key (website demo, not framework)
+      POST /v1/webhooks/elevenlabs/postcall  — ElevenLabs post-call webhook for the Beacon demo, HMAC-signed (ElevenLabs-Signature), no API key (website demo, not framework)
       POST /v1/identity/verify-passport      — verify an agent passport against a CALLER-SUPPLIED provider key: a consistency check, not a trust decision, no API key required
       POST /v2/identity/verify-passport      — verify against a SERVER-CONFIGURED trust anchor, with durable revocation and optional proof of possession, API key required
       POST /v1/identity/revoke-passport      — durably revoke a delegation_id, API key required
@@ -542,6 +557,13 @@ def _handle_demo_call(event: dict) -> dict:
     if parse_error:
         return parse_error
 
+    # Configuration first: an unconfigured service answers 503 before the
+    # Turnstile check or the rate limiter makes any network call.
+    config = _outbound_call_config()
+    if config is None:
+        return _error(503, "Outbound call service not configured")
+    api_key, phone_number_id, agent_id = config
+
     if not _verify_turnstile(str(body.get("turnstile_token", ""))):
         return _error(400, "CAPTCHA verification failed")
 
@@ -566,18 +588,13 @@ def _handle_demo_call(event: dict) -> dict:
     ):
         return _error(429, "This phone number has received too many demo calls recently.")
 
-    api_key = os.environ.get("ELEVENLABS_API_KEY", "")
-    phone_number_id = os.environ.get("ELEVENLABS_PHONE_NUMBER_ID", "")
-    if not api_key or not phone_number_id or not _HTTPX_OK:
-        return _error(503, "Outbound call service not configured")
-
     url = f"https://api.elevenlabs.io/v1/convai/phone-numbers/{phone_number_id}/outbound-call"
 
     @retry_with_backoff(max_attempts=3)
     def _post():
         resp = httpx.post(
             url,
-            json={"agent_id": _BEACON_AGENT_ID, "to_number": e164},
+            json={"agent_id": agent_id, "to_number": e164},
             headers={"xi-api-key": api_key},
             timeout=10.0,
         )

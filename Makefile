@@ -9,6 +9,8 @@ PROFILE    ?=
 CLOUDFLARE_TURNSTILE_SECRET ?=
 ELEVENLABS_API_KEY         ?=
 ELEVENLABS_PHONE_NUMBER_ID ?=
+ELEVENLABS_AGENT_ID        ?=
+ELEVENLABS_WEBHOOK_SECRET  ?=
 
 AWS_ARGS := --region $(REGION)
 ifdef PROFILE
@@ -24,6 +26,12 @@ ifneq ($(strip $(ELEVENLABS_API_KEY)),)
 endif
 ifneq ($(strip $(ELEVENLABS_PHONE_NUMBER_ID)),)
   PARAM_OVERRIDES += ElevenLabsPhoneNumberId=$(ELEVENLABS_PHONE_NUMBER_ID)
+endif
+ifneq ($(strip $(ELEVENLABS_AGENT_ID)),)
+  PARAM_OVERRIDES += ElevenLabsAgentId=$(ELEVENLABS_AGENT_ID)
+endif
+ifneq ($(strip $(ELEVENLABS_WEBHOOK_SECRET)),)
+  PARAM_OVERRIDES += ElevenLabsWebhookSecret=$(ELEVENLABS_WEBHOOK_SECRET)
 endif
 
 .PHONY: build deploy destroy get-key get-url test-api test-demo logs help verify
@@ -44,7 +52,8 @@ help:
 	@echo "  destroy     delete the CloudFormation stack"
 	@echo ""
 	@echo "Overrides:  STACK_NAME, REGION, PROFILE, CLOUDFLARE_TURNSTILE_SECRET,"
-	@echo "            ELEVENLABS_API_KEY, ELEVENLABS_PHONE_NUMBER_ID (for /v1/demo/call)"
+	@echo "            ELEVENLABS_API_KEY, ELEVENLABS_PHONE_NUMBER_ID, ELEVENLABS_AGENT_ID"
+	@echo "            (for /v1/demo/call), ELEVENLABS_WEBHOOK_SECRET (post-call webhook HMAC)"
 
 # Everything CI checks, in one command. Run this before pushing: a green
 # `pytest` cannot see a stale generated fixture or a published PDF that is on
@@ -58,8 +67,11 @@ test-demo:
 build:
 	sam build $(AWS_ARGS)
 
+# The leading @ keeps make from echoing this command: its parameter overrides
+# carry secrets, and an echoed command line puts them in the terminal history.
 deploy: build
-	sam deploy \
+	@echo "sam deploy --stack-name $(STACK_NAME) (parameter overrides not echoed)"
+	@sam deploy \
 		--stack-name $(STACK_NAME) \
 		--capabilities CAPABILITY_IAM \
 		--resolve-s3 \

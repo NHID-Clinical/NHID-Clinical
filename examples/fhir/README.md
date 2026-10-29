@@ -20,7 +20,7 @@ No conformance to any named HL7 Implementation Guide is claimed.
 
 ### Scenario
 
-Beacon (an outbound AI voice agent, `agent_4001krn32nmwe5t8mqzgee0w84rj`) calls a payer
+Beacon (an outbound AI voice agent; see `docs/elevenlabs-demo.md`) calls a payer
 to check claim status on behalf of Sunny Dental Group (NPI 1234567890).
 
 | Milestone | Outcome | Notes |

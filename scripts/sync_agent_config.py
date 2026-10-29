@@ -20,6 +20,12 @@ Adding a new agent
      and the dashboard default (voice-only) does not match a text-chat-widget agent.
   3. python scripts/sync_agent_config.py --agent <name> --pull   # populate voice_id/llm once
   4. python scripts/sync_agent_config.py --agent <name>          # push going forward
+
+Agent IDs
+---------
+  ELEVENLABS_AGENT_ID, when set, is the agent ID and takes priority over the
+  config file, whose "agent_id" may stay the placeholder "agent_REPLACE_ME".
+  The ID is never printed and never written back into the repo.
 """
 
 from __future__ import annotations
@@ -35,6 +41,20 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.elevenlabs_client import ElevenLabsClient, pull_prompt, sync_prompt  # noqa: E402
 
 AGENTS_DIR = Path(__file__).parent.parent / "agents"
+
+#: The committed config's agent_id when the real one lives in the environment.
+PLACEHOLDER_AGENT_ID = "agent_REPLACE_ME"
+AGENT_ID_ENV = "ELEVENLABS_AGENT_ID"
+
+
+def resolve_agent_id(config: dict) -> str:
+    """ELEVENLABS_AGENT_ID when set, else the config's agent_id unless it is
+    the placeholder. Empty string when neither gives a real ID."""
+    from_env = os.environ.get(AGENT_ID_ENV, "").strip()
+    if from_env:
+        return from_env
+    from_file = str(config.get("agent_id") or "").strip()
+    return "" if from_file == PLACEHOLDER_AGENT_ID else from_file
 
 
 def _config_path(agent_name: str) -> Path:
@@ -146,9 +166,10 @@ def main() -> int:
         return 2
 
     config = _load_config(args.agent)
-    agent_id = config.get("agent_id")
+    agent_id = resolve_agent_id(config)
     if not agent_id:
-        print(f'ERROR: {_config_path(args.agent)} is missing "agent_id".', file=sys.stderr)
+        print(f"ERROR: set {AGENT_ID_ENV}, or a real \"agent_id\" in {_config_path(args.agent)}.",
+              file=sys.stderr)
         return 2
 
     client = ElevenLabsClient(api_key)
@@ -168,7 +189,7 @@ def main() -> int:
               f"{workflow_report['node_count']} node(s), {workflow_report['edge_count']} edge(s)")
         return 0
 
-    print(f"Syncing {args.agent} ({agent_id})...")
+    print(f"Syncing {args.agent} (agent ID not printed)...")
     prompt_report = sync_prompt(client, agent_id, prompt_path, dry_run=args.dry_run)
     if prompt_report["divergences"]:
         for d in prompt_report["divergences"]:

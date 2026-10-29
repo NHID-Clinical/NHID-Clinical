@@ -16,6 +16,8 @@ Webhook body format:
     "actor_id": "agent-vendor-7", # optional: stable agent id for the audit trail
     "text": "...",
     "interrupted": false,        # optional: playback cut off by the other party
+    "timestamp": null,           # optional: ISO 8601 time this turn happened, when the
+                                 # caller knows it (a post-call transcript does); else now
     "heard_text": null,          # optional: the part actually played, if interrupted
     "session_state": {
       "turn_count": 3,
@@ -101,7 +103,22 @@ def to_nhid_event(body: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]
     disclosure_ts = state.get("disclosure_timestamp")
     escalation_available = bool(state.get("escalation_available", True))
 
-    now = datetime.now(timezone.utc).isoformat()
+    # The time this turn happened. A live webhook turn is happening now; a
+    # post-call transcript replays turns that happened earlier, and stamping
+    # them with processing time made disclosure timing unmeasurable (every turn
+    # of a 90-second call landed in the same second). A caller that knows the
+    # real time passes it; anything unparseable is an error, not "now".
+    supplied_ts = body.get("timestamp")
+    if supplied_ts:
+        try:
+            parsed = datetime.fromisoformat(str(supplied_ts).replace("Z", "+00:00"))
+        except ValueError as exc:
+            raise ValueError(f"timestamp must be ISO 8601, got {supplied_ts!r}") from exc
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        now = parsed.isoformat()
+    else:
+        now = datetime.now(timezone.utc).isoformat()
 
     # Derive disclosure state from session_state or detect in agent speech
     identity_assertion_text = ""

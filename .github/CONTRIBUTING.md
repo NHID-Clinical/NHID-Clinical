@@ -10,7 +10,7 @@ product. Contributions that keep it honest are the most useful kind.
 3. Run the suite with the API up, which is how CI runs it:
    ```bash
    python -m uvicorn app:app --port 8000 &   # the integration tests need it
-   python -m pytest tests/ -q                 # (2017 expected), 0 skipped
+   python -m pytest tests/ -q                 # (2063 expected), 0 skipped
    ```
    Without the API the server-dependent integration tests skip themselves; CI
    requires zero skips.

@@ -1021,6 +1021,16 @@ body, .site-header, .mobile-nav, .site-footer, .content-card, .news-card, .downl
 .nhid-demo-log { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem; }
 .nhid-demo-turn { font-size: 0.85rem; color: var(--body); line-height: 1.5; }
 .nhid-demo-turn code { font-family: "IBM Plex Mono", "Fira Code", "Courier New", monospace; font-size: 0.8rem; }
+/* Beacon post-call: the NHID engine's column and the vendor's self-evaluation, side by side */
+.nhid-demo-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 1rem; margin-top: 0.5rem; }
+.nhid-demo-col { min-width: 0; border: 1px solid var(--line, rgba(127,127,127,0.3)); border-radius: 12px; padding: 0.75rem 1rem; }
+.nhid-demo-col-vendor { border-style: dashed; }
+.nhid-demo-col-title { font-size: 0.9rem; margin: 0 0 0.5rem; }
+.nhid-demo-col-tag { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-left: 0.35rem; }
+.nhid-demo-timing { font-size: 0.85rem; margin: 0.25rem 0 0.5rem; }
+.nhid-demo-vendor-list { margin: 0.25rem 0 0.5rem; padding-left: 1.1rem; font-size: 0.85rem; line-height: 1.5; overflow-wrap: anywhere; }
+.nhid-demo-vendor-why { opacity: 0.8; }
+.nhid-demo-vendor-note { font-size: 0.8rem; opacity: 0.8; margin: 0.5rem 0 0; }
 
 /* ── Download section (homepage + specs page) ───────────────────────────── */
 

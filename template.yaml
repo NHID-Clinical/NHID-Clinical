@@ -20,6 +20,16 @@ Parameters:
     NoEcho: true
     Default: ""
     Description: ElevenLabs provisioned phone number ID for Beacon outbound calls.
+  ElevenLabsAgentId:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: ElevenLabs agent ID for Beacon. Unset means /v1/demo/call answers 503.
+  ElevenLabsWebhookSecret:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: HMAC secret for the ElevenLabs post-call webhook. Unset means every post-call request is refused (401).
   TwilioAccountSid:
     Type: String
     NoEcho: true
@@ -69,6 +79,8 @@ Resources:
           CLOUDFLARE_TURNSTILE_SECRET: !Ref CloudflareTurnstileSecret
           ELEVENLABS_API_KEY: !Ref ElevenLabsApiKey
           ELEVENLABS_PHONE_NUMBER_ID: !Ref ElevenLabsPhoneNumberId
+          ELEVENLABS_AGENT_ID: !Ref ElevenLabsAgentId
+          ELEVENLABS_WEBHOOK_SECRET: !Ref ElevenLabsWebhookSecret
           TWILIO_ACCOUNT_SID: !Ref TwilioAccountSid
           TWILIO_AUTH_TOKEN: !Ref TwilioAuthToken
           TWILIO_SMS_FROM: !Ref TwilioSmsFrom

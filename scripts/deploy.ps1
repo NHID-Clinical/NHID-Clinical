@@ -12,10 +12,11 @@
     ElevenLabs webhook configuration both need.
 
 .EXAMPLE
-    .\deploy.ps1 `
-      -CloudflareTurnstileSecret "0x4AAA..." `
-      -ElevenLabsApiKey "sk_..." `
-      -ElevenLabsPhoneNumberId "phnum_1801kttwq450ewrsm1qzhe110zj6"
+    # The four ElevenLabs values default to the matching environment variables
+    # (ELEVENLABS_API_KEY, ELEVENLABS_PHONE_NUMBER_ID, ELEVENLABS_AGENT_ID,
+    # ELEVENLABS_WEBHOOK_SECRET), so with those set in the shell no secret is
+    # typed on the command line or kept in history:
+    .\deploy.ps1 -CloudflareTurnstileSecret $env:CLOUDFLARE_TURNSTILE_SECRET
 
 .EXAMPLE
     # Baseline deploy with no secrets (just stand the stack up):
@@ -32,8 +33,12 @@ param(
     # Website demo feature secrets (NOT the governance framework). Each is
     # forwarded as a SAM --parameter-override only when non-empty.
     [string]$CloudflareTurnstileSecret = "",
-    [string]$ElevenLabsApiKey          = "",
-    [string]$ElevenLabsPhoneNumberId   = "",
+    [string]$ElevenLabsApiKey          = $env:ELEVENLABS_API_KEY,
+    [string]$ElevenLabsPhoneNumberId   = $env:ELEVENLABS_PHONE_NUMBER_ID,
+    # Beacon's agent ID (unset: /v1/demo/call answers 503) and the post-call
+    # webhook's HMAC secret (unset: every post-call request is refused, 401).
+    [string]$ElevenLabsAgentId         = $env:ELEVENLABS_AGENT_ID,
+    [string]$ElevenLabsWebhookSecret   = $env:ELEVENLABS_WEBHOOK_SECRET,
 
     # Twilio SMS for the inbound demo line's "text me the starter pack" option.
     # Leave empty to keep that option hidden (offered only when all three are set).
@@ -98,6 +103,8 @@ $overrides = @()
 if ($CloudflareTurnstileSecret) { $overrides += "CloudflareTurnstileSecret=$CloudflareTurnstileSecret" }
 if ($ElevenLabsApiKey)          { $overrides += "ElevenLabsApiKey=$ElevenLabsApiKey" }
 if ($ElevenLabsPhoneNumberId)   { $overrides += "ElevenLabsPhoneNumberId=$ElevenLabsPhoneNumberId" }
+if ($ElevenLabsAgentId)         { $overrides += "ElevenLabsAgentId=$ElevenLabsAgentId" }
+if ($ElevenLabsWebhookSecret)   { $overrides += "ElevenLabsWebhookSecret=$ElevenLabsWebhookSecret" }
 if ($TwilioAccountSid)          { $overrides += "TwilioAccountSid=$TwilioAccountSid" }
 if ($TwilioAuthToken)           { $overrides += "TwilioAuthToken=$TwilioAuthToken" }
 if ($TwilioSmsFrom)             { $overrides += "TwilioSmsFrom=$TwilioSmsFrom" }
@@ -108,6 +115,8 @@ $setNames = @()
 if ($CloudflareTurnstileSecret) { $setNames += "CloudflareTurnstileSecret" }
 if ($ElevenLabsApiKey)          { $setNames += "ElevenLabsApiKey" }
 if ($ElevenLabsPhoneNumberId)   { $setNames += "ElevenLabsPhoneNumberId" }
+if ($ElevenLabsAgentId)         { $setNames += "ElevenLabsAgentId" }
+if ($ElevenLabsWebhookSecret)   { $setNames += "ElevenLabsWebhookSecret" }
 if ($TwilioAccountSid)          { $setNames += "TwilioAccountSid" }
 if ($TwilioAuthToken)           { $setNames += "TwilioAuthToken" }
 if ($TwilioSmsFrom)             { $setNames += "TwilioSmsFrom" }
