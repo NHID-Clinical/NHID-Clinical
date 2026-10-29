@@ -65,3 +65,6 @@ logs/
 # Its figures were published and retracted 2026-10-21 because nothing could
 # reproduce them; never commit these again (see that script's docstring).
 corpus_evaluation_output/
+
+# Interactive how-it-works build dependencies
+tools/how-it-works/node_modules/
