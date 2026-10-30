@@ -113,7 +113,7 @@ def webhook_secret(monkeypatch):
     monkeypatch.setenv("ELEVENLABS_WEBHOOK_SECRET", SECRET)
 
 
-DISCLOSE = "Hi, this is Beacon, an automated AI assistant calling for Ridgeview Family Dental about a claim status."
+DISCLOSE = "Hi, this is Beacon, an automated AI assistant calling for a demonstration dental practice about a claim status."
 
 
 # ── 1. The real envelope ─────────────────────────────────────────────────────
@@ -219,7 +219,7 @@ def test_disclosure_after_10_seconds_is_flagged_late(seconds):
 
 def test_no_disclosure_fails():
     _t, status = _timing([
-        {"role": "agent", "message": "Hi, calling from Ridgeview Family Dental about a claim.", "time_in_call_secs": 1},
+        {"role": "agent", "message": "Hi, calling from a dental practice about a claim.", "time_in_call_secs": 1},
         {"role": "user", "message": "Sure, what's the member ID?", "time_in_call_secs": 5},
     ])
     timing = status["disclosure_timing"]
@@ -280,7 +280,7 @@ def test_a_tampered_body_is_rejected():
     table = FakeTable()
     raw = json.dumps(GOOD)
     signature = sign(raw)
-    tampered = raw.replace("Ridgeview", "Elsewhere")
+    tampered = raw.replace("demonstration", "elsewhere")
     _rejected(post(None, table, raw=tampered, signature=signature), table)
 
 

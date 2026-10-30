@@ -9,7 +9,7 @@ the agent, and nothing here establishes that any production call is governed.
 ## What happens on a call
 
 Beacon is an ElevenLabs agent that **places** a call to a payer's provider line on
-behalf of a fictional dental practice (Ridgeview Family Dental) and asks for a
+behalf of an unnamed, fictional dental practice and asks for a
 claim status. That is the canonical scenario (`docs/canonical-threat-model.md`):
 the agent is the caller, the person who answers plays the payer's representative,
 and the patient is not on the call.
