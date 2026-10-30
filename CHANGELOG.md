@@ -1,6 +1,14 @@
 # Changelog
 
-## [Unreleased] - 2026-09
+## [Unreleased] - 2026-09 to 2026-10
+
+- **Records brought up to date, 2026-10-30.** The privacy policy now says that ElevenLabs places
+  and answers the demonstration calls over Twilio, records and transcribes them, and keeps the
+  recording and transcript until deleted; that NHID-Clinical keeps only per-call results without
+  the phone number or transcript; and that the demonstration uses fictional details only. Its
+  summary no longer says data is "never" shared. `docs/project-state.md` re-measured at `0ef59fc`
+  (2065 passed with the API running, 2044 passed and 21 skipped without it, 87 test files) with a
+  §14 state-change entry for #407–#435.
 
 - **ElevenLabs demonstration revived; the agent is renamed Ida.** The post-call webhook reads ElevenLabs' real
   `{type, event_timestamp, data}` envelope (every real call was answered 400 before), ignores
