@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="/assets/css/pages.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
 </head>
 <body>
@@ -341,7 +342,7 @@
         <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/shadow_pilot.jsonl</code> — 60 conversations, 301 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Classification:</strong> <span class="maturity-research">Research</span> Reference corpus results, not operational performance. This is a committed synthetic corpus, not production call data, and it says nothing about how any deployment would behave.</p>
         <p><strong>Known limitation:</strong> DBC-01 evaluates the agent's own identity assertion text: claims of human status or licensed-professional standing. Its former artifact tier, which read a deceptive_artifact_flags field the agent supplied about itself, is withdrawn. This count is therefore what the transcript says, not a measurement of how much deception the corpus contains.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>7a0a8d0</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>1380e7d</code></p>
       </aside>
       <!-- END GENERATED shadow-outcomes -->
         </div>
@@ -411,7 +412,7 @@
         <p><strong>Censoring:</strong> 23 of 550 conversations record no disclosure interval; 21 of those 23 also carry an IDG-01 violation, and none is labelled PASS. They are treated as right-censored above every observed value, so percentiles are taken over all 550 conversations and are identifiable only up to p95.8. Anything beyond that is reported as a lower bound, not as a value.</p>
         <p><strong>Percentile convention:</strong> nearest-rank, rank = ceil(p/100 × N), no interpolation</p>
         <p><strong>How to read the split:</strong> expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>7a0a8d0</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>1380e7d</code></p>
       </aside>
       <!-- END GENERATED latency-distribution -->
         </div>
@@ -654,27 +655,26 @@ python -m pytest tests/ -v</pre>
           <div>
             <p class="section-kicker">Live</p>
             <h2 id="demo-h">The demo line</h2>
-            <p class="act-lead">A scripted, deterministic phone call — no AI variance — run through the exact same NHID-Clinical evaluation pipeline that production traffic goes through. Only the speech is fake.</p>
+            <p class="act-lead">Two phone demonstrations of the NHID controls. One is a fixed script with no AI in it; the other is Ida, an AI voice agent that calls you the way it would call a payer. Neither involves a real patient: every detail is fictional.</p>
           </div>
           <span class="act-index">11 / 11</span>
         </div>
       <div class="act-body demo-grid">
         <div class="card">
-        <h3>1. Call the Live Demo Line (Beacon)</h3>
+        <h3>1. Call the scripted demo line</h3>
         <p class="sub">Dial <a class="demo-line-phone" href="tel:+17176706772"><strong id="demo-phone-number">+1 (717) 670-6772</strong></a> from any phone.</p>
         <div class="callout" role="note">
-          This is the public <strong>Grok Voice / Beacon</strong> inbound demo line — a website demo feature, not a personal contact number.
-          Say something like <em>&ldquo;I am an automated assistant&hellip;&rdquo;</em> to exercise disclosure controls (IDG-01, DBC-01, and related gates).
+          A deterministic Twilio line, not an AI: a keypad menu plays a scripted call (press 1 for one that discloses before asking for data, 2 for one that does not). It is a website demonstration, not a personal contact number.
         </div>
-        <p>After the call ends, evaluation results appear below in real time through the same pipeline production traffic uses.</p>
+        <p>Each scripted turn runs through the NHID-Clinical engine as it plays, and the decisions appear below while the call is in progress.</p>
       </div>
 
       <div class="card">
-        <h3>2. Or get a call directly from Beacon</h3>
-        <p class="sub">Beacon — our outbound demo agent — calls your phone and the conversation is evaluated against the same five controls once the call ends. This costs us real calling minutes per request, so it's CAPTCHA- and rate-limited.</p>
+        <h3>2. Or let Ida call you</h3>
+        <p class="sub">Ida is an ElevenLabs AI voice agent placing a call on behalf of a fictional dental practice to check a claim. You play the payer&rsquo;s representative. Ida is instructed to ask the NHID gate (<code>POST /v1/gate/turn</code>) mid-call before it says any patient identifier, and not to say it unless the gate allows it. An instruction is not a guarantee, so when the call ends the whole transcript is graded against the controls, and a turn where it did not follow the gate shows up there. Each call costs real calling minutes, so it is CAPTCHA- and rate-limited.</p>
         <div class="call-demo-form" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
           <input type="tel" id="demo-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your phone number" style="flex:1;min-width:200px"/>
-          <button class="cta-button" id="demo-call-btn" type="button">Receive a Call from Beacon</button>
+          <button class="cta-button" id="demo-call-btn" type="button">Receive a call from Ida</button>
         </div>
         <!-- Cloudflare Turnstile site key (public). The matching secret key is never committed — it's passed only at deploy time via `make deploy CLOUDFLARE_TURNSTILE_SECRET=...` and verified server-side in handler._verify_turnstile(). -->
         <div class="cf-turnstile" id="demo-call-turnstile" data-sitekey="0x4AAAAAADoOpjQr1DAbFwwY" data-callback="nhidOnTurnstileSuccess"></div>
@@ -682,12 +682,12 @@ python -m pytest tests/ -v</pre>
       </div>
 
       <div class="card">
-        <h3>3. Watch it evaluated live</h3>
-        <p class="sub">Every turn of the call — disclosure, PHI requests, escalation — is run through <code>adapters/call_progress_adapter.py</code> + <code>src/nhid_policy_engine_v1.py</code> exactly like a real vendor webhook, and shown below as it happens.</p>
+        <h3>3. See how the call was evaluated</h3>
+        <p class="sub">The most recent demonstration call, from either line. Scripted turns appear as they play; an Ida call appears a few seconds after it ends. For an Ida call, the NHID-Clinical engine&rsquo;s result is shown beside ElevenLabs&rsquo; own grading of the same call, and only the engine&rsquo;s column is NHID evidence.</p>
         <div id="nhid-demo-status-container"></div>
       </div>
       </div>
-      <p class="disclaimer-small">This is the same evaluation pipeline production traffic uses. The two call scripts are the only fake part. The conformance evaluation — IDG-01, PDX-01, DBC-01, EIT-01 — is real. <a href="/developers.html">Read the developer docs →</a></p>
+      <p class="disclaimer-small">A demonstration of the NHID controls, not a certification of either line. The calls are scripted or simulated and the patient is fictional; the engine that evaluates them is the same one the API runs. <a href="/developers.html">Read the developer docs →</a></p>
     </div>
   </section>
 
@@ -741,5 +741,62 @@ python -m pytest tests/ -v</pre>
   </div>
 </footer>
 <script src="/site.js"></script>
+<script>
+  // Demonstration lines (website demo feature, not the framework). Restored
+  // from the retired demo.html: the section kept its markup when the page
+  // merged here, but lost the script, so the button did nothing and the panel
+  // never loaded.
+  window.nhidTurnstileToken = "";
+  window.nhidOnTurnstileSuccess = function (token) { window.nhidTurnstileToken = token; };
+
+  (function () {
+    var API_BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod";
+    var container = document.getElementById("nhid-demo-status-container");
+    if (container && window.NHIDDemoStatus) {
+      window.NHIDDemoStatus.poll(container, API_BASE + "/v1/demo/call-status?session_id=latest", 3000);
+    }
+
+    var btn = document.getElementById("demo-call-btn");
+    var input = document.getElementById("demo-phone");
+    var status = document.getElementById("demo-call-status");
+    if (!btn || !input || !status) return;
+
+    function setStatus(msg, ok) {
+      status.textContent = msg;
+      status.hidden = false;
+      status.style.color = ok === false ? "var(--red, #c0392b)" : "inherit";
+    }
+
+    btn.addEventListener("click", function () {
+      if (!window.nhidTurnstileToken) {
+        setStatus("Please complete the CAPTCHA first.", false);
+        return;
+      }
+      var digits = input.value.replace(/\D/g, "");
+      if (digits.indexOf("1") !== 0) digits = "1" + digits;
+      if (digits.length !== 11) {
+        setStatus("Please enter a valid US phone number.", false);
+        return;
+      }
+      btn.disabled = true;
+      setStatus("Dialing…");
+      fetch(API_BASE + "/v1/demo/call", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: "+" + digits, turnstile_token: window.nhidTurnstileToken })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.status === "dialing") {
+            setStatus("Ida is calling you now. The evaluation appears above a few seconds after the call ends.");
+          } else {
+            setStatus("Could not place the call: " + (d.error || "unknown error"), false);
+          }
+        })
+        .catch(function () { setStatus("Network error. Please try again.", false); })
+        .then(function () { btn.disabled = false; });
+    });
+  })();
+</script>
 </body>
 </html>

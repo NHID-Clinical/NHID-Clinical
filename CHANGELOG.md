@@ -2,6 +2,23 @@
 
 ## [Unreleased] - 2026-09
 
+- **ElevenLabs demonstration revived; the agent is renamed Ida.** The post-call webhook reads ElevenLabs' real
+  `{type, event_timestamp, data}` envelope (every real call was answered 400 before), ignores
+  non-transcript event types, and is HMAC-authenticated (`ElevenLabs-Signature`, the official
+  SDK's scheme and 30-minute tolerance; constant-time compare; fails closed on a missing secret).
+  Turns are stamped call start + `time_in_call_secs`, so Impersonation Latency is measured in the
+  call's own seconds, and missing timing is reported as not recorded rather than zero. Ida's
+  own words are checked for patient identifiers, because it is the caller. ElevenLabs' evaluation
+  criteria and data collection are stored beside the engine's result as vendor self-evaluation
+  and never read by the engine. The agent ID comes from `ELEVENLABS_AGENT_ID`
+  (`ElevenLabsAgentId`), and the webhook secret from `ELEVENLABS_WEBHOOK_SECRET`
+  (`ElevenLabsWebhookSecret`). The adapter moved out of `adapters/archive/`. The shadow-evaluation
+  guide's demo section describes both lines accurately and is wired again. Setup:
+  `docs/elevenlabs-demo.md`. The agent was called Beacon, a name a real behavioral-health company
+  used, and it now calls for an unnamed demonstration dental practice, because its old
+  fictional practice name belonged to real dental offices (`agents/ida_system_prompt.md`).
+  Suite 2017 -> 2065 passed, 0 skipped (48 new tests, `tests/test_elevenlabs_postcall.py` and one
+  in `tests/test_handler_input_hardening.py`), measured with the API running.
 - **IDG-01: a disclosure counts only if it was heard.** Platforms commonly log the full scripted
   disclosure even when the counterparty barged in and playback stopped before "automated". The
   engine now reads two optional `healthcare_governance` fields, `disclosure_interrupted` and

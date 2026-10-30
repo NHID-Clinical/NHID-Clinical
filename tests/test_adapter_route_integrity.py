@@ -79,10 +79,14 @@ def test_the_adapter_file_is_present_on_disk(vendor):
 
 
 def test_the_elevenlabs_webhook_adapter_imports():
-    """A fourth archived adapter, reached from its own handler rather than
-    through _handle_vendor."""
-    module = importlib.import_module("adapters.archive.elevenlabs_postcall_adapter")
+    """Reached from its own handler rather than through _handle_vendor.
+    Un-archived 2026-10-29 when the Ida demo was revived, so it is
+    maintained against ElevenLabs' current post-call envelope."""
+    module = importlib.import_module("adapters.elevenlabs_postcall_adapter")
     assert hasattr(module, "iter_turns")
+    assert hasattr(module, "parse_postcall")
+    assert not (ROOT / "adapters" / "archive" / "elevenlabs_postcall_adapter.py").exists(), \
+        "the archived copy must not linger beside the maintained one"
 
 
 # ── Adversarial vendor payloads ───────────────────────────────────────────────

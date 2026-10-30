@@ -77,7 +77,7 @@ agent_priv, agent_pub = m.generate_agent_keys()
 # 2. Issue a scoped, NPI-bound delegation for the AI agent and sign it
 delegation = m.create_delegation(
     provider_priv,
-    agent_id="agent_beacon_001",
+    agent_id="agent_ida_001",
     agent_pub=agent_pub,
     scope=["claim_status_inquiry"],
     provider_npi="1234567890",

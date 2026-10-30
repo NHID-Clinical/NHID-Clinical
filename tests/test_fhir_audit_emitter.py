@@ -42,7 +42,7 @@ def conformant_event():
         "healthcare_governance": {
             "disclosure_timestamp": "2026-06-12T14:30:05.000Z",
             "identity_assertion_text": (
-                "Hi, this is Beacon, an AI assistant calling from a provider's office. "
+                "Hi, this is Ida, an AI assistant calling from a provider's office. "
                 "I am not a human."
             ),
             "deceptive_artifact_flags": [],
@@ -113,7 +113,7 @@ def escalation_event():
         "boundary_violations": [],
         "healthcare_governance": {
             "disclosure_timestamp": "2026-06-12T16:00:01.000Z",
-            "identity_assertion_text": "Hi, this is Beacon, an AI assistant.",
+            "identity_assertion_text": "Hi, this is Ida, an AI assistant.",
             "deceptive_artifact_flags": [],
             "escalation_timestamp": "2026-06-12T16:01:00.000Z",
             "escalation_outcome": "connected",

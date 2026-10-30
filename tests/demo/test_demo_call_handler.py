@@ -1,5 +1,5 @@
 """
-Tests for functions/handler.py::_handle_demo_call() — triggers a Beacon
+Tests for functions/handler.py::_handle_demo_call() — triggers an Ida
 outbound ElevenLabs call. The one demo route with real per-call
 Twilio/ElevenLabs cost, so it's gated by Cloudflare Turnstile + per-IP/
 per-number rate limits before any network call is made. Website demo
@@ -48,6 +48,7 @@ def _allow_everything(monkeypatch) -> None:
     monkeypatch.setattr(rate_limiter, "check_and_increment", lambda *a, **k: True)
     monkeypatch.setenv("ELEVENLABS_API_KEY", "test-key")
     monkeypatch.setenv("ELEVENLABS_PHONE_NUMBER_ID", "phone-123")
+    monkeypatch.setenv("ELEVENLABS_AGENT_ID", "agent_test_ida")
 
 
 def test_missing_body_rejected():
@@ -56,6 +57,9 @@ def test_missing_body_rejected():
 
 
 def test_failed_turnstile_rejected_before_any_other_work(monkeypatch):
+    monkeypatch.setenv("ELEVENLABS_API_KEY", "test-key")
+    monkeypatch.setenv("ELEVENLABS_PHONE_NUMBER_ID", "phone-123")
+    monkeypatch.setenv("ELEVENLABS_AGENT_ID", "agent_test_ida")
     monkeypatch.setattr(handler, "_verify_turnstile", lambda token: False)
     called = []
     monkeypatch.setattr(rate_limiter, "check_and_increment", lambda *a, **k: called.append(1) or True)
@@ -80,6 +84,7 @@ def test_ip_rate_limit_exceeded_returns_429(monkeypatch):
     monkeypatch.setattr(handler, "_verify_turnstile", lambda token: True)
     monkeypatch.setenv("ELEVENLABS_API_KEY", "test-key")
     monkeypatch.setenv("ELEVENLABS_PHONE_NUMBER_ID", "phone-123")
+    monkeypatch.setenv("ELEVENLABS_AGENT_ID", "agent_test_ida")
 
     def _fake_limit(key, limit, window_seconds, table=None):
         return not key.startswith("ip:")
@@ -93,6 +98,7 @@ def test_phone_rate_limit_exceeded_returns_429(monkeypatch):
     monkeypatch.setattr(handler, "_verify_turnstile", lambda token: True)
     monkeypatch.setenv("ELEVENLABS_API_KEY", "test-key")
     monkeypatch.setenv("ELEVENLABS_PHONE_NUMBER_ID", "phone-123")
+    monkeypatch.setenv("ELEVENLABS_AGENT_ID", "agent_test_ida")
 
     def _fake_limit(key, limit, window_seconds, table=None):
         return not key.startswith("phone:")
@@ -109,6 +115,23 @@ def test_missing_env_config_returns_503(monkeypatch):
     monkeypatch.delenv("ELEVENLABS_PHONE_NUMBER_ID", raising=False)
     resp = handler._handle_demo_call(_event())
     assert resp["statusCode"] == 503
+
+
+def test_missing_agent_id_returns_503_before_any_network_call(monkeypatch):
+    """The agent ID used to be hard-coded; when that agent was deleted every
+    call failed upstream. Unset now means 503, before Turnstile or the rate
+    limiter (both network calls) run."""
+    monkeypatch.setenv("ELEVENLABS_API_KEY", "test-key")
+    monkeypatch.setenv("ELEVENLABS_PHONE_NUMBER_ID", "phone-123")
+    monkeypatch.delenv("ELEVENLABS_AGENT_ID", raising=False)
+    calls = []
+    monkeypatch.setattr(handler, "_verify_turnstile", lambda token: calls.append("turnstile") or True)
+    monkeypatch.setattr(rate_limiter, "check_and_increment", lambda *a, **k: calls.append("rate") or True)
+    monkeypatch.setattr(handler.httpx, "post", lambda *a, **k: calls.append("post"))
+    resp = handler._handle_demo_call(_event())
+    assert resp["statusCode"] == 503
+    assert json.loads(resp["body"])["error"] == "Outbound call service not configured"
+    assert calls == []
 
 
 def test_successful_call_returns_call_id(monkeypatch):
@@ -158,6 +181,6 @@ def test_posts_correct_agent_id_and_phone_to_elevenlabs(monkeypatch):
     handler._handle_demo_call(_event(phone="(202) 555-1234"))
 
     assert "phone-123" in captured["url"]
-    assert captured["json"]["agent_id"] == handler._BEACON_AGENT_ID
+    assert captured["json"]["agent_id"] == "agent_test_ida"
     assert captured["json"]["to_number"] == "+12025551234"
     assert captured["headers"]["xi-api-key"] == "test-key"

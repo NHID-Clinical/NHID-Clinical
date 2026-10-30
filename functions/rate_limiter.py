@@ -1,5 +1,5 @@
 """
-Best-effort rate limiter for public website demo forms (e.g. the Beacon
+Best-effort rate limiter for public website demo forms (e.g. the Ida
 outbound-call demo) — backed by DynamoDB with a TTL so windows self-clean.
 
 This is abuse deterrence for a free demo form, not a security boundary:

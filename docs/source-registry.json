@@ -117,6 +117,11 @@
       "authority": "record"
     },
     {
+      "file": "elevenlabs-demo.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
       "file": "enforcement-profile.md",
       "status": "current",
       "authority": "normative"

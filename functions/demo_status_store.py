@@ -1,6 +1,6 @@
 """
 Live status store for the website demo features (Twilio scripted inbound demo,
-Beacon outbound demo) — backed by DynamoDB with a TTL so sessions self-clean.
+Ida outbound demo) — backed by DynamoDB with a TTL so sessions self-clean.
 
 This is infrastructure for the demo website feature, NOT the NHID-Clinical
 governance framework itself. Boto3 is provided by the Lambda runtime; it is
@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import os
 import time
+from decimal import Decimal
 from typing import Any, Optional
 
 DEMO_CALL_STATUS_TABLE_ENV = "DEMO_CALL_STATUS_TABLE"
@@ -22,6 +23,34 @@ TTL_SECONDS = 60 * 60  # 1 hour — sessions self-clean via DynamoDB TTL
 #: Twilio CallSid, so polling this fixed key shows "whichever call is
 #: live right now" without requiring any caller-to-browser correlation.
 LATEST_SESSION_KEY = "_latest_demo_call"
+
+
+def to_dynamo(value: Any) -> Any:
+    """Make a value storable: DynamoDB rejects Python floats ("Float types are
+    not supported. Use Decimal types instead"). The Ida post-call record
+    carries call-time seconds, the first floats this store has held."""
+    if isinstance(value, bool) or value is None:
+        return value
+    if isinstance(value, float):
+        return Decimal(str(value))
+    if isinstance(value, dict):
+        return {k: to_dynamo(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [to_dynamo(v) for v in value]
+    return value
+
+
+def from_dynamo(value: Any) -> Any:
+    """Make a stored value JSON-serialisable: boto3 returns every DynamoDB
+    number as Decimal, which json.dumps rejects. Whole numbers come back as
+    int, the rest as float."""
+    if isinstance(value, Decimal):
+        return int(value) if value == value.to_integral_value() else float(value)
+    if isinstance(value, dict):
+        return {k: from_dynamo(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [from_dynamo(v) for v in value]
+    return value
 
 
 def _table():
@@ -60,8 +89,8 @@ def put_turn(
     if extra:
         item.update(extra)
 
-    table.put_item(Item=item)
-    return item
+    table.put_item(Item=to_dynamo(item))
+    return from_dynamo(item)
 
 
 def reset_session(session_id: str, *, table=None) -> dict[str, Any]:
@@ -85,7 +114,7 @@ def get_status(session_id: str, *, table=None) -> dict[str, Any]:
     """Return the session's accumulated status, or {} if the session is unknown/expired."""
     table = table if table is not None else _table()
     item = table.get_item(Key={"session_id": session_id}).get("Item")
-    return item or {}
+    return from_dynamo(item) if item else {}
 
 
 def set_latest(item: dict[str, Any], *, table=None) -> None:
@@ -95,4 +124,4 @@ def set_latest(item: dict[str, Any], *, table=None) -> None:
     table = table if table is not None else _table()
     mirrored = dict(item)
     mirrored["session_id"] = LATEST_SESSION_KEY
-    table.put_item(Item=mirrored)
+    table.put_item(Item=to_dynamo(mirrored))

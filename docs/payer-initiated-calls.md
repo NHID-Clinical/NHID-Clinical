@@ -2,7 +2,7 @@
 
 NHID-Clinical's controls (IDG-01, PDX-01, DBC-01, EIT-01, ATR-01) were specified
 and tested against one call direction: a **provider's** AI voice agent calling
-**outbound to a payer** (the shape Beacon — the reference implementation —
+**outbound to a payer** (the shape Ida — the reference implementation —
 demonstrates). This document extends the same controls to the reverse direction:
 a **payer's** AI voice agent calling **outbound to a provider** — e.g. to
 request additional documentation, confirm eligibility, or follow up on a prior
@@ -45,7 +45,7 @@ the payer's agent exactly as it applies to a provider's agent.
 **EIT-01 — Escalation Implementation Test.** When the provider's office (human
 or AI) requests a human, the payer's agent must acknowledge immediately and
 either execute a real transfer or say plainly that none is configured and offer
-an alternative contact path — the same rule Beacon implements for inbound
+an alternative contact path — the same rule Ida implements for inbound
 escalation requests, applied symmetrically to outbound calls.
 
 ## Bot-to-bot identity verification (the open gap)
@@ -55,7 +55,7 @@ agent and a provider's office's inbound or outbound agent) should verify each
 other's identity beyond IDG-01 spoken disclosure. NHID-Auth v2
 (`src/agent_identity.py`) already provides the building block — an Ed25519
 agent passport with NPI binding and delegation-chain scope — but it is
-currently used as a one-way disclosure ("Beacon discloses its own credential
+currently used as a one-way disclosure ("Ida discloses its own credential
 when asked"), not as a mutual, machine-verifiable handshake between two
 deployed agents before either exchanges PHI. Closing that gap fully is out of
 scope for this pass; the recommended next step is to extend the

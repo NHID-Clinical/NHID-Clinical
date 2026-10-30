@@ -756,11 +756,11 @@ class ExecutiveSummary(Flowable):
 
 
 def _key_metrics(width=6.5 * inch):
-    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 2017 Tests · 6 Adapters."""
+    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 2065 Tests · 6 Adapters."""
     return _stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("2017", "Tests"),
+        ("2065", "Tests"),
         ("6", "Adapters"),
     ])
 
@@ -1114,7 +1114,7 @@ def make_core_spec():
     story.append(_stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("2017", "Unit Tests"),
+        ("2065", "Unit Tests"),
         ("6", "Adapters"),
     ]))
     story.append(Spacer(1, 0.12 * inch))
@@ -1911,7 +1911,7 @@ def make_v13_overview():
         "A deterministic policy engine that produces stable trace output under identical input "
         "conditions (modulo timestamps and non-deterministic IDs).",
         "An 18-case conformance test suite (CTS) in machine-readable YAML plus a pytest failure "
-        "injection harness (2017 passing unit tests in the reference implementation).",
+        "injection harness (2065 passing unit tests in the reference implementation).",
         "10 canonical trace files in traces/ demonstrating real-world scenarios (eligibility, "
         "prior auth, claims status, bot-to-bot, audit gaps, and more).",
         "Six vendor adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress) "

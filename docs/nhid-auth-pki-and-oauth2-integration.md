@@ -261,9 +261,9 @@ If a deployment wants the convenience of carrying NHID context inside a JWT (e.g
 ```json
 {
   "iss": "https://vendor.example.com/oauth",
-  "sub": "client_beacon_runtime",
+  "sub": "client_ida_runtime",
   "scope": "nhid-api:calls:submit",
-  "https://nhid-clinical.org/claims/agent_id": "agent_beacon_001",
+  "https://nhid-clinical.org/claims/agent_id": "agent_ida_001",
   "https://nhid-clinical.org/claims/provider_npi": "1234567890",
   "https://nhid-clinical.org/claims/delegation_id": "8f14e45f-...-uuid",
   "https://nhid-clinical.org/claims/call_sid": "CA123456789abc"

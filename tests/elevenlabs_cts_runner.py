@@ -1,7 +1,7 @@
 """
 NHID-Clinical Conformance Test Suite — ElevenLabs Live Agent Runner
 ====================================================================
-Evaluates Beacon (agent_4001krn32nmwe5t8mqzgee0w84rj) against NHID-Clinical
+Evaluates Ida (agent ID from the ELEVENLABS_AGENT_ID environment variable) against NHID-Clinical
 v1.3 + NHID-Auth v2 controls by running structured test conversations via the
 ElevenLabs Conversational AI API.
 
@@ -62,8 +62,8 @@ except ImportError:
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-AGENT_ID              = "agent_4001krn32nmwe5t8mqzgee0w84rj"
-CANONICAL_PROMPT_PATH = Path(__file__).parent.parent / "agents" / "beacon_system_prompt.md"
+AGENT_ID              = os.environ.get("ELEVENLABS_AGENT_ID", "")
+CANONICAL_PROMPT_PATH = Path(__file__).parent.parent / "agents" / "ida_system_prompt.md"
 WS_CONV               = f"wss://api.elevenlabs.io/v1/convai/conversation?agent_id={AGENT_ID}"
 
 INSUFFICIENT_CREDITS_STATUS = {402, 429}
@@ -104,7 +104,7 @@ class ScenarioResult:
 # ── Test scenarios ────────────────────────────────────────────────────────────
 # Each scenario is a script of (role, text) turns.
 # "user"  = payer staff (Acme Health)
-# "agent" = Beacon (evaluated)
+# "agent" = Ida (evaluated)
 # EIT-01 escalation persona: "Sarah Johnson, benefits coordinator" (fix for 2/15 EIT-01 failure)
 
 SCENARIOS: list[dict[str, Any]] = [
@@ -532,7 +532,7 @@ def evaluate_scenario(scenario: dict, transcript: list[dict]) -> ScenarioResult:
 
 async def _run_conversation_ws(turns: list[tuple[str, str]], api_key: str) -> list[dict]:
     """
-    Run a scripted conversation with Beacon over WebSocket (text mode).
+    Run a scripted conversation with Ida over WebSocket (text mode).
     Returns the transcript as a list of {role, message, time_in_call_secs} dicts.
 
     ATR-01 NOTE: we record `time.monotonic()` as `time_in_call_secs` for every
@@ -623,7 +623,7 @@ async def run_scenario(
     dry_run: bool = False,
 ) -> ScenarioResult:
     """
-    Run a single scenario against Beacon.
+    Run a single scenario against Ida.
     Returns NOT_EXECUTED (not FAIL) on credit exhaustion.
     """
     if dry_run:
@@ -672,7 +672,7 @@ def print_report(results: list[ScenarioResult]) -> int:
 
     print("\n" + "=" * 70)
     print("NHID-Clinical Conformance Test Suite — ElevenLabs Live Agent")
-    print(f"Agent:   Beacon  ({AGENT_ID})")
+    print(f"Agent:   Ida  ({AGENT_ID})")
     print(f"Date:    {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
     print("=" * 70)
 
@@ -716,7 +716,7 @@ async def _main() -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--dry-run",     action="store_true", help="Show scenarios without calling API")
-    parser.add_argument("--sync-prompt", action="store_true", help="Sync canonical prompt to Beacon first")
+    parser.add_argument("--sync-prompt", action="store_true", help="Sync canonical prompt to Ida first")
     parser.add_argument("--runs",        type=int,            help="Run only the first N scenarios")
     parser.add_argument("--run-id",      nargs="+",           help="Run specific scenario ID(s)")
     args = parser.parse_args()
@@ -745,7 +745,7 @@ async def _main() -> int:
 
     # Optional prompt sync
     if args.sync_prompt and not args.dry_run:
-        print("Syncing canonical prompt to Beacon…")
+        print("Syncing canonical prompt to Ida…")
         client = ElevenLabsClient(api_key)
         sync_report = sync_prompt(client, AGENT_ID, CANONICAL_PROMPT_PATH, dry_run=False)
         print(f"  Agent:   {sync_report['live_name']}")

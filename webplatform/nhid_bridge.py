@@ -280,7 +280,7 @@ def adapter_check(vendor: str, payload: dict) -> dict:
 
 # ── NHID-Auth v2 passport verification (reuses the real identity manager) ────
 def mint_demo_passport(provider_npi: str = "1234567890",
-                       agent_id: str = "beacon-demo-agent",
+                       agent_id: str = "ida-demo-agent",
                        scope: list[str] | None = None,
                        tamper: bool = False) -> dict:
     """Mint a real, cryptographically valid demo passport via the existing

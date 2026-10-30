@@ -345,7 +345,15 @@
 /* ── Demo line live status (website demo feature, not the framework) ───────
    Renders a session_id's accumulated status from GET /v1/demo/call-status
    into a container element. Shared between the Twilio scripted inbound demo
-   (demo.html) and, later, the Beacon outbound demo. */
+   and the Ida outbound demo (ElevenLabs).
+
+   For an Ida call the record can also carry the vendor's own grades of the
+   call (ElevenLabs evaluation criteria and data collection). They are shown in
+   a second column, labelled as vendor self-evaluation, beside the NHID engine's
+   column, which is the authoritative one. The engine never reads them.
+
+   Class names here must not contain "elevenlabs" or "convai": the widget purge
+   further down this file deletes any element whose class or id does. */
 window.NHIDDemoStatus = (function () {
   var GATE_RULE_IDS = ['IDG-01', 'PDX-01', 'DBC-01', 'EIT-01'];
 
@@ -383,7 +391,9 @@ window.NHIDDemoStatus = (function () {
           (d.critical_violation_count || 0) + ' critical control violation(s) detected.</div>';
       }
       var ruleIds = (d.violations || []).map(function (v) { return v.rule_id; }).join(', ') || 'none';
-      return '<div class="nhid-demo-turn">Turn ' + escapeHtml(t.turn_index) + ': <code>' +
+      var at = (d.time_in_call_secs !== undefined && d.time_in_call_secs !== null)
+        ? ' (' + escapeHtml(d.time_in_call_secs) + ' s)' : '';
+      return '<div class="nhid-demo-turn">Turn ' + escapeHtml(t.turn_index) + at + ': <code>' +
         escapeHtml(d.action || '') + '</code> — violations: ' + escapeHtml(ruleIds) + '</div>';
     }).join('');
 
@@ -393,12 +403,59 @@ window.NHIDDemoStatus = (function () {
         (statusJson.completed ? ' (completed)' : ' (in progress)') + '</p>'
       : '<p class="sub">Waiting for a call…</p>';
 
-    containerEl.innerHTML =
-      '<div class="card nhid-demo-status-card">' +
-      statusLine +
+    var engineHtml =
       '<div class="nhid-demo-badges">' + badgesHtml + '</div>' +
-      '<div class="nhid-demo-log">' + (logHtml || '<p class="sub">No turns yet.</p>') + '</div>' +
-      '</div>';
+      timingHtml(statusJson && statusJson.disclosure_timing) +
+      '<div class="nhid-demo-log">' + (logHtml || '<p class="sub">No turns yet.</p>') + '</div>';
+
+    var vendor = statusJson && statusJson.vendor_self_evaluation;
+    var body = vendor
+      ? '<div class="nhid-demo-columns">' +
+          '<section class="nhid-demo-col nhid-demo-col-engine" aria-label="NHID-Clinical engine">' +
+            '<h4 class="nhid-demo-col-title">NHID-Clinical engine <span class="nhid-demo-col-tag">authoritative</span></h4>' +
+            engineHtml +
+          '</section>' +
+          '<section class="nhid-demo-col nhid-demo-col-vendor" aria-label="Vendor self-evaluation">' +
+            '<h4 class="nhid-demo-col-title">' + escapeHtml(vendor.label || 'vendor self-evaluation, not NHID evidence') + '</h4>' +
+            vendorHtml(vendor) +
+          '</section>' +
+        '</div>'
+      : engineHtml;
+
+    containerEl.innerHTML =
+      '<div class="card nhid-demo-status-card">' + statusLine + body + '</div>';
+  }
+
+  function timingHtml(timing) {
+    if (!timing) return '';
+    var latency;
+    if (!timing.disclosed) {
+      latency = 'no disclosure heard';
+    } else if (timing.timing_recorded) {
+      latency = escapeHtml(timing.impersonation_latency_seconds) + ' s, turn ' +
+        escapeHtml(timing.impersonation_latency_turns);
+    } else {
+      latency = 'turn ' + escapeHtml(timing.impersonation_latency_turns) + ' (seconds not recorded)';
+    }
+    return '<p class="nhid-demo-timing">Impersonation Latency: ' + latency +
+      ' · <span title="' + escapeHtml(timing.disclosure_band_meaning || '') + '">' +
+      escapeHtml(timing.disclosure_band || '') + '</span></p>';
+  }
+
+  function vendorHtml(vendor) {
+    function rows(obj, field) {
+      return Object.keys(obj || {}).map(function (key) {
+        var entry = obj[key] || {};
+        return '<li><code>' + escapeHtml(key) + '</code>: ' + escapeHtml(entry[field]) +
+          (entry.rationale ? '<span class="nhid-demo-vendor-why"> — ' + escapeHtml(entry.rationale) + '</span>' : '') +
+          '</li>';
+      }).join('');
+    }
+    var criteria = rows(vendor.evaluation_criteria, 'result');
+    var collected = rows(vendor.data_collection, 'value');
+    return (criteria ? '<p class="sub">Evaluation criteria</p><ul class="nhid-demo-vendor-list">' + criteria + '</ul>' : '') +
+      (collected ? '<p class="sub">Data collection</p><ul class="nhid-demo-vendor-list">' + collected + '</ul>' : '') +
+      '<p class="nhid-demo-vendor-note">Graded by the vendor about its own agent. Shown for comparison; the NHID engine does not read it.</p>';
   }
 
   function poll(containerEl, statusUrl, intervalMs) {

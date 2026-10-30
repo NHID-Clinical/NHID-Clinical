@@ -1,8 +1,11 @@
 # Twilio scripted inbound demo line — setup
 
-This is infrastructure for the **website demo feature** (the scripted
-compliant/non-compliant call you can dial in to from `demo.html`), not part
-of the NHID-Clinical governance framework itself.
+This is infrastructure for the **website demo feature** (the scripted call you
+can dial in to from the shadow-evaluation guide, `shadow-evaluation-guide.html#demo`),
+not part of the NHID-Clinical governance framework itself. It is a deterministic
+Twilio line with a keypad menu and no AI. The other demonstration on that page,
+Ida, is an ElevenLabs agent that calls you; its setup, including importing a
+Twilio number into ElevenLabs, is in [`elevenlabs-demo.md`](elevenlabs-demo.md).
 
 Provisioning the actual phone number is a manual step in the Twilio Console —
 it is not managed by `template.yaml` / CloudFormation, because Twilio doesn't
@@ -25,8 +28,9 @@ expose phone number purchase via SAM/CFN resources.
    in `template.yaml` for this feature — the webhook endpoint has no
    authentication, matching the rest of the public demo routes
    (`/v1/demo/check`, etc.).
-5. Update the phone number shown on `demo.html` (`#demo-phone-number`) to the
-   number you purchased.
+5. Update the phone number shown in the guide's demo section
+   (`shadow-evaluation-guide.html`, `#demo-phone-number`) and in the site footer
+   (`scripts/ia/build_site_chrome.py`) to the number you purchased.
 
 ## How a call flows
 
@@ -71,15 +75,15 @@ starter-pack text. `privacy.html` carries the required mobile-messaging clause
 ("we do not share or sell mobile opt-in data"). Register `sms-opt-in.html` as
 the campaign's opt-in URL and `privacy.html` as the privacy policy URL.
 3. Every turn is evaluated through the same `adapters/call_progress_adapter.py`
-   + `src/nhid_policy_engine_v1.py` pipeline production traffic uses — only
+   + `src/nhid_policy_engine_v1.py` pipeline the hosted API uses — only
    the scripted speech is fake.
 4. Each turn's decision is written to a DynamoDB table
    (`DemoCallStatusTable` in `template.yaml`) keyed by `CallSid`, with a
    1-hour TTL so sessions self-clean. It's also mirrored under a fixed key
-   (`_latest_demo_call`) so anyone watching `demo.html` sees live status for
+   (`_latest_demo_call`) so anyone watching the guide's demo panel sees live status for
    whichever call is currently in progress, without needing to know their
    own `CallSid`.
-5. `demo.html` polls `GET /v1/demo/call-status?session_id=latest` every ~2s
+5. The guide's demo section polls `GET /v1/demo/call-status?session_id=latest` every ~3s
    and renders the live pass/fail state via `NHIDDemoStatus.render()` in
    `site.js`.
 
@@ -87,5 +91,5 @@ the campaign's opt-in URL and `privacy.html` as the privacy policy URL.
 
 Twilio voice minutes for inbound calls to the demo number. No AI/LLM usage —
 the call content is fully scripted and deterministic, so there is no
-per-call variance or ElevenLabs/LLM cost for this feature (unlike the Beacon
+per-call variance or ElevenLabs/LLM cost for this feature (unlike the Ida
 outbound demo).

@@ -18,11 +18,33 @@ Both are fixed centrally in `functions.handler._parse_json_body`, so these
 tests sweep the routes rather than testing the helper in isolation — the helper
 being right is worth nothing if a route still parses its own body.
 """
+import hashlib
+import hmac
 import json
+import time
 
 import pytest
 
 from functions.handler import MAX_BODY_BYTES, lambda_handler
+
+#: The ElevenLabs post-call route authenticates before it parses (it answers
+#: 401 to an unsigned body, malformed or not), so these tests sign their
+#: requests to it: the parser behind the signature is what they exercise.
+SIGNED_ROUTE = "/v1/webhooks/elevenlabs/postcall"
+_TEST_SECRET = "hardening-test-secret"
+
+
+@pytest.fixture(autouse=True)
+def _webhook_secret(monkeypatch):
+    monkeypatch.setenv("ELEVENLABS_WEBHOOK_SECRET", _TEST_SECRET)
+
+
+def _headers(path, body):
+    if path != SIGNED_ROUTE:
+        return {}
+    ts = str(int(time.time()))
+    digest = hmac.new(_TEST_SECRET.encode(), f"{ts}.{body}".encode(), hashlib.sha256).hexdigest()
+    return {"ElevenLabs-Signature": f"t={ts},v0={digest}"}
 
 #: Routes that accept a JSON object body and are reachable in the test harness.
 #: Deliberately includes the no-API-key routes, which are the exposed surface.
@@ -44,12 +66,9 @@ OBJECT_BODY_ROUTES = [
 
 
 def _post(path, body):
+    body = body if isinstance(body, str) else json.dumps(body)
     return lambda_handler(
-        {
-            "httpMethod": "POST",
-            "path": path,
-            "body": body if isinstance(body, str) else json.dumps(body),
-        },
+        {"httpMethod": "POST", "path": path, "body": body, "headers": _headers(path, body)},
         None,
     )
 
@@ -125,7 +144,7 @@ def test_ordinary_malformed_json_still_returns_400(path, body):
 
 @pytest.mark.parametrize("path", [p for p in OBJECT_BODY_ROUTES if p != "/v1/cts/evaluate"])
 def test_an_empty_body_is_refused(path):
-    response = lambda_handler({"httpMethod": "POST", "path": path, "body": ""}, None)
+    response = _post(path, "")
     assert response["statusCode"] == 400
     assert "required" in json.loads(response["body"])["error"].lower()
 
@@ -191,3 +210,12 @@ def test_a_body_at_the_depth_limit_is_still_parsed():
 def test_brackets_inside_strings_do_not_count_toward_depth():
     from functions.handler import _json_nesting_depth
     assert _json_nesting_depth(json.dumps({"note": "[" * 500 + '\\"{' * 50})) == 1
+
+
+def test_the_signed_route_refuses_an_unsigned_body_before_parsing_it():
+    """Authentication first: an unsigned malformed body is a 401, not a 400,
+    so nothing about the parser is reachable without the shared secret."""
+    response = lambda_handler(
+        {"httpMethod": "POST", "path": SIGNED_ROUTE, "body": "[" * 60_000 + "]" * 60_000}, None
+    )
+    assert response["statusCode"] == 401

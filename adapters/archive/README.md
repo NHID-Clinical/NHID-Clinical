@@ -1,13 +1,17 @@
 # Archived adapters
 
-These four adapters are no longer actively maintained. They are kept here rather than
+These three adapters are no longer actively maintained. They are kept here rather than
 deleted because they are working reference implementations, and someone integrating the
 corresponding platform will want to start from them.
 
 - `vonage_adapter.py`
 - `retell_adapter.py`
 - `amazon_connect_adapter.py`
-- `elevenlabs_postcall_adapter.py`
+
+`elevenlabs_postcall_adapter.py` was here until 2026-10-29. It was moved back to
+`adapters/` when the Ida demonstration was revived and the adapter had to read
+ElevenLabs' current post-call envelope: the first un-archiving, for the reason the
+last line of this file gives.
 
 ## Why they were archived
 
@@ -31,14 +35,13 @@ starting point rather than a guarantee.
 
 ## They are still served, which "archived" does not convey on its own
 
-Three of these four are imported by live code and reachable over HTTP:
+All three are imported by live code and reachable over HTTP:
 
 | adapter | imported by | route |
 | :-- | :-- | :-- |
 | `vonage_adapter.py` | `functions/handler.py` | `POST /v1/adapters/vonage/check` |
 | `retell_adapter.py` | `functions/handler.py` | `POST /v1/adapters/retell/check` |
 | `amazon_connect_adapter.py` | `functions/handler.py` | `POST /v1/adapters/connect/check` |
-| `elevenlabs_postcall_adapter.py` | `functions/elevenlabs_postcall_handler.py` | `POST /v1/webhooks/elevenlabs/postcall` |
 
 So "archived" here means **unmaintained against the vendor's API**, not
 unreachable. Deleting one of these files breaks a published route; that is why
