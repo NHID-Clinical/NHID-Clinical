@@ -22,12 +22,13 @@
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
   <link rel="stylesheet" href="/assets/css/instrument.css"/>
   <link rel="stylesheet" href="/assets/css/pages.css"/>
+  <link rel="stylesheet" href="/assets/css/drafting.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <!-- Mermaid CDN -->
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
@@ -744,7 +745,7 @@
       <aside class="visual-provenance">
         <p><strong>Evidence basis:</strong> <code>tests/evaluation_corpus_v1.json</code> — 25 scenarios, 55 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI)</p>
-        <p><strong>Version:</strong> policy engine v1.3 · commit <code>1380e7d</code></p>
+        <p><strong>Version:</strong> policy engine v1.3 · commit <code>cf95962</code></p>
       </aside>
       <!-- END GENERATED enforcement-ladder -->
         </div>
@@ -1004,6 +1005,7 @@
     <p class="footer-copy"><span class="footer-demo-line"><strong>Reference demonstration line</strong> &mdash; <a href="tel:+17176706772">+1 (717) 670-6772</a> <span class="footer-demo-note">(website demo, not personal contact)</span></span></p>
     <p class="footer-copy">This is an open, actively maintained framework &mdash; feedback and contributions welcome on <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a>.</p>
   </div>
+  <div class="container footer-wordmark" aria-hidden="true">NHID-Clinical</div>
 </footer>
 
 <script src="/site.js"></script>

@@ -22,12 +22,13 @@
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
   <link rel="stylesheet" href="/assets/css/instrument.css"/>
   <link rel="stylesheet" href="/assets/css/pages.css"/>
+  <link rel="stylesheet" href="/assets/css/drafting.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -342,7 +343,7 @@
         <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/shadow_pilot.jsonl</code> — 60 conversations, 301 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Classification:</strong> <span class="maturity-research">Research</span> Reference corpus results, not operational performance. This is a committed synthetic corpus, not production call data, and it says nothing about how any deployment would behave.</p>
         <p><strong>Known limitation:</strong> DBC-01 evaluates the agent's own identity assertion text: claims of human status or licensed-professional standing. Its former artifact tier, which read a deceptive_artifact_flags field the agent supplied about itself, is withdrawn. This count is therefore what the transcript says, not a measurement of how much deception the corpus contains.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>1380e7d</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>cf95962</code></p>
       </aside>
       <!-- END GENERATED shadow-outcomes -->
         </div>
@@ -412,7 +413,7 @@
         <p><strong>Censoring:</strong> 23 of 550 conversations record no disclosure interval; 21 of those 23 also carry an IDG-01 violation, and none is labelled PASS. They are treated as right-censored above every observed value, so percentiles are taken over all 550 conversations and are identifiable only up to p95.8. Anything beyond that is reported as a lower bound, not as a value.</p>
         <p><strong>Percentile convention:</strong> nearest-rank, rank = ceil(p/100 × N), no interpolation</p>
         <p><strong>How to read the split:</strong> expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>1380e7d</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>cf95962</code></p>
       </aside>
       <!-- END GENERATED latency-distribution -->
         </div>
@@ -739,6 +740,7 @@ python -m pytest tests/ -v</pre>
     <p class="footer-copy"><span class="footer-demo-line"><strong>Reference demonstration line</strong> &mdash; <a href="tel:+17176706772">+1 (717) 670-6772</a> <span class="footer-demo-note">(website demo, not personal contact)</span></span></p>
     <p class="footer-copy">This is an open, actively maintained framework &mdash; feedback and contributions welcome on <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a>.</p>
   </div>
+  <div class="container footer-wordmark" aria-hidden="true">NHID-Clinical</div>
 </footer>
 <script src="/site.js"></script>
 <script>

@@ -151,6 +151,7 @@ FOOTER = f'''<footer id="contact" class="site-footer">
     <p class="footer-copy">{DEMO_LINE}</p>
     <p class="footer-copy">This is an open, actively maintained framework &mdash; feedback and contributions welcome on <a href="{GITHUB_REPO}">GitHub</a>.</p>
   </div>
+  <div class="container footer-wordmark" aria-hidden="true">NHID-Clinical</div>
 </footer>'''
 
 # Each region is replaced between anchors that every published page carries once.

@@ -153,6 +153,7 @@ def test_no_ctl_prefix_survives_in_published_css_or_markup():
 
 @pytest.mark.parametrize("sheet", [
     "nhid-clinical-ui.css", "assets/css/premium.css", "assets/css/components.css",
+    "assets/css/drafting.css",
 ])
 def test_stylesheet_is_structurally_intact(sheet):
     """
@@ -409,12 +410,29 @@ def test_the_reveal_animation_never_hides_content():
         assert op is None or float(op.group(1)) >= 1, f"a .reveal rule sets opacity {op.group(1)}: {body.strip()}"
 
 
-def test_one_display_family():
-    """Three fonts loaded (Raleway, Inter, Plex Mono). Inter does display and
-    body; Plex Mono is for code and control IDs."""
+def test_font_families():
+    """Three families, each with one job. Space Grotesk sets headings (the
+    30 Oct 2026 drafting redesign, assets/css/drafting.css), Inter sets body
+    text, IBM Plex Mono sets code and control IDs. The 25 Oct audit had cut
+    the site to Inter alone; headings were reopened on purpose, body text was
+    not. Raleway, the family the audit removed, stays out."""
     assert "Raleway" not in read("nhid-clinical-ui.css")
     for page in PUBLISHED:
-        assert "Raleway" not in read(page), f"{page} still loads Raleway"
+        html = read(page)
+        assert "Raleway" not in html, f"{page} still loads Raleway"
+        m = re.search(r'fonts\.googleapis\.com/css2\?([^"]+)"', html)
+        assert m, f"{page} loads no Google Fonts stylesheet"
+        families = sorted(f.split(":")[0].replace("+", " ") for f in re.findall(r"family=([^&]+)", m.group(1)))
+        assert families == ["IBM Plex Mono", "Inter", "Space Grotesk"], f"{page} loads {families}"
+
+
+@pytest.mark.parametrize("page", PUBLISHED)
+def test_every_page_loads_the_drafting_layer_last(page):
+    """drafting.css restyles shared components site-wide. It must be on every
+    published page, after every other site stylesheet, or a page silently
+    renders in the previous design."""
+    sheets = re.findall(r'<link rel="stylesheet" href="(/[^"]+\.css)"', read(page))
+    assert sheets and sheets[-1] == "/assets/css/drafting.css", f"{page}: stylesheets end with {sheets[-1:]}"
 
 
 @pytest.mark.parametrize("page", PUBLISHED)
