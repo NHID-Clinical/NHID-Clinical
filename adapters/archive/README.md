@@ -9,7 +9,7 @@ corresponding platform will want to start from them.
 - `amazon_connect_adapter.py`
 
 `elevenlabs_postcall_adapter.py` was here until 2026-10-29. It was moved back to
-`adapters/` when the Beacon demonstration was revived and the adapter had to read
+`adapters/` when the Ida demonstration was revived and the adapter had to read
 ElevenLabs' current post-call envelope: the first un-archiving, for the reason the
 last line of this file gives.
 

@@ -35,7 +35,7 @@ param(
     [string]$CloudflareTurnstileSecret = "",
     [string]$ElevenLabsApiKey          = $env:ELEVENLABS_API_KEY,
     [string]$ElevenLabsPhoneNumberId   = $env:ELEVENLABS_PHONE_NUMBER_ID,
-    # Beacon's agent ID (unset: /v1/demo/call answers 503) and the post-call
+    # Ida's agent ID (unset: /v1/demo/call answers 503) and the post-call
     # webhook's HMAC secret (unset: every post-call request is refused, 401).
     [string]$ElevenLabsAgentId         = $env:ELEVENLABS_AGENT_ID,
     [string]$ElevenLabsWebhookSecret   = $env:ELEVENLABS_WEBHOOK_SECRET,

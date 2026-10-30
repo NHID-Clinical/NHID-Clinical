@@ -1,5 +1,5 @@
 """
-ElevenLabs post-call webhook handler for the Beacon outbound demo.
+ElevenLabs post-call webhook handler for the Ida outbound demo.
 
 ElevenLabs delivers the full transcript once a call ends (not turn-by-turn
 like Twilio), so this handler evaluates every turn in one pass: thread
@@ -29,10 +29,10 @@ Order of work, and why:
    than the true one). Latency in seconds is time_in_call_secs of the
    disclosure turn and does not depend on that estimate. Missing timing is
    reported as not recorded, never as zero.
-4. **Orient the turns for a calling agent.** Beacon is the CALLER (the
+4. **Orient the turns for a calling agent.** Ida is the CALLER (the
    canonical scenario: an agent phones a payer). The call-progress adapter was
    written receiver-side and looks for protected data only in the human's
-   words, so Beacon speaking a member ID was invisible to PDX-01. Agent turns
+   words, so Ida speaking a member ID was invisible to PDX-01. Agent turns
    get the same orientation /v1/gate/turn applies (functions.handler.gate_turn).
 5. **Store the vendor's own grades beside, never into, the evaluation.**
    ElevenLabs' evaluation_criteria_results and data_collection_results are
@@ -64,7 +64,7 @@ from functions.twilio_demo_handler import _DEMO_GATE_RULE_IDS, _decision_summary
 from src.nhid_policy_engine_v1 import _phi_fields_requested, evaluate_all
 from src.pilot_measure import DISCLOSURE_BANDS, classify_disclosure_band
 
-_SCRIPT_LABEL = "Beacon outbound call"
+_SCRIPT_LABEL = "Ida outbound call"
 
 #: Environment variable holding the post-call webhook's HMAC secret.
 WEBHOOK_SECRET_ENV = "ELEVENLABS_WEBHOOK_SECRET"

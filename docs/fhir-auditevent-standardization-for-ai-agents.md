@@ -49,7 +49,7 @@ The schema below is the **pre-FHIR canonical form** — what `fhir_audit_emitter
   "session_id": "CA123456789",
   "request_id": "req-001",
   "event_type": "POLICY",
-  "actor_id": "agent_beacon_001",
+  "actor_id": "agent_ida_001",
   "state_before": "ACTIVE",
   "state_after": "ACTIVE",
   "replay_mode": "live",

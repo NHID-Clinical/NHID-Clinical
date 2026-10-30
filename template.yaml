@@ -14,17 +14,17 @@ Parameters:
     Type: String
     NoEcho: true
     Default: ""
-    Description: ElevenLabs API key for the Beacon outbound call demo.
+    Description: ElevenLabs API key for the Ida outbound call demo.
   ElevenLabsPhoneNumberId:
     Type: String
     NoEcho: true
     Default: ""
-    Description: ElevenLabs provisioned phone number ID for Beacon outbound calls.
+    Description: ElevenLabs provisioned phone number ID for Ida outbound calls.
   ElevenLabsAgentId:
     Type: String
     NoEcho: true
     Default: ""
-    Description: ElevenLabs agent ID for Beacon. Unset means /v1/demo/call answers 503.
+    Description: ElevenLabs agent ID for Ida. Unset means /v1/demo/call answers 503.
   ElevenLabsWebhookSecret:
     Type: String
     NoEcho: true
@@ -228,7 +228,7 @@ Resources:
               ApiKeyRequired: true
 
   # ── Website demo feature: live status store (NOT the governance framework) ─
-  # Backs the Twilio scripted inbound demo line and (later) the Beacon
+  # Backs the Twilio scripted inbound demo line and (later) the Ida
   # outbound demo. TTL self-cleans sessions ~1hr after their last write.
   DemoCallStatusTable:
     Type: AWS::DynamoDB::Table
@@ -247,7 +247,7 @@ Resources:
 
   # ── Website demo feature: rate-limit counters (NOT the governance framework) ─
   # Backs functions/rate_limiter.py — abuse deterrence for public demo forms
-  # (e.g. the Beacon outbound-call demo). TTL self-cleans windows.
+  # (e.g. the Ida outbound-call demo). TTL self-cleans windows.
   RateLimitTable:
     Type: AWS::DynamoDB::Table
     Properties:

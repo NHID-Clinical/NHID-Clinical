@@ -655,7 +655,7 @@ python -m pytest tests/ -v</pre>
           <div>
             <p class="section-kicker">Live</p>
             <h2 id="demo-h">The demo line</h2>
-            <p class="act-lead">Two phone demonstrations of the NHID controls. One is a fixed script with no AI in it; the other is Beacon, an AI voice agent that calls you the way it would call a payer. Neither involves a real patient: every detail is fictional.</p>
+            <p class="act-lead">Two phone demonstrations of the NHID controls. One is a fixed script with no AI in it; the other is Ida, an AI voice agent that calls you the way it would call a payer. Neither involves a real patient: every detail is fictional.</p>
           </div>
           <span class="act-index">11 / 11</span>
         </div>
@@ -670,11 +670,11 @@ python -m pytest tests/ -v</pre>
       </div>
 
       <div class="card">
-        <h3>2. Or let Beacon call you</h3>
-        <p class="sub">Beacon is an ElevenLabs AI voice agent placing a call on behalf of a fictional dental practice to check a claim. You play the payer&rsquo;s representative. Beacon is instructed to ask the NHID gate (<code>POST /v1/gate/turn</code>) mid-call before it says any patient identifier, and not to say it unless the gate allows it. An instruction is not a guarantee, so when the call ends the whole transcript is graded against the controls, and a turn where it did not follow the gate shows up there. Each call costs real calling minutes, so it is CAPTCHA- and rate-limited.</p>
+        <h3>2. Or let Ida call you</h3>
+        <p class="sub">Ida is an ElevenLabs AI voice agent placing a call on behalf of a fictional dental practice to check a claim. You play the payer&rsquo;s representative. Ida is instructed to ask the NHID gate (<code>POST /v1/gate/turn</code>) mid-call before it says any patient identifier, and not to say it unless the gate allows it. An instruction is not a guarantee, so when the call ends the whole transcript is graded against the controls, and a turn where it did not follow the gate shows up there. Each call costs real calling minutes, so it is CAPTCHA- and rate-limited.</p>
         <div class="call-demo-form" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
           <input type="tel" id="demo-phone" placeholder="+1 (555) 000-0000" autocomplete="tel" aria-label="Your phone number" style="flex:1;min-width:200px"/>
-          <button class="cta-button" id="demo-call-btn" type="button">Receive a call from Beacon</button>
+          <button class="cta-button" id="demo-call-btn" type="button">Receive a call from Ida</button>
         </div>
         <!-- Cloudflare Turnstile site key (public). The matching secret key is never committed — it's passed only at deploy time via `make deploy CLOUDFLARE_TURNSTILE_SECRET=...` and verified server-side in handler._verify_turnstile(). -->
         <div class="cf-turnstile" id="demo-call-turnstile" data-sitekey="0x4AAAAAADoOpjQr1DAbFwwY" data-callback="nhidOnTurnstileSuccess"></div>
@@ -683,7 +683,7 @@ python -m pytest tests/ -v</pre>
 
       <div class="card">
         <h3>3. See how the call was evaluated</h3>
-        <p class="sub">The most recent demonstration call, from either line. Scripted turns appear as they play; a Beacon call appears a few seconds after it ends. For a Beacon call, the NHID-Clinical engine&rsquo;s result is shown beside ElevenLabs&rsquo; own grading of the same call, and only the engine&rsquo;s column is NHID evidence.</p>
+        <p class="sub">The most recent demonstration call, from either line. Scripted turns appear as they play; an Ida call appears a few seconds after it ends. For an Ida call, the NHID-Clinical engine&rsquo;s result is shown beside ElevenLabs&rsquo; own grading of the same call, and only the engine&rsquo;s column is NHID evidence.</p>
         <div id="nhid-demo-status-container"></div>
       </div>
       </div>
@@ -788,7 +788,7 @@ python -m pytest tests/ -v</pre>
         .then(function (r) { return r.json(); })
         .then(function (d) {
           if (d.status === "dialing") {
-            setStatus("Beacon is calling you now. The evaluation appears above a few seconds after the call ends.");
+            setStatus("Ida is calling you now. The evaluation appears above a few seconds after the call ends.");
           } else {
             setStatus("Could not place the call: " + (d.error || "unknown error"), false);
           }

@@ -1,5 +1,5 @@
 """
-The Beacon demonstration's ElevenLabs integration, end to end, in the suite
+The Ida demonstration's ElevenLabs integration, end to end, in the suite
 CI runs (tests/demo/ is excluded from it; see pytest.ini).
 
 One block per audit finding (2026-10-29), each written against the real
@@ -12,7 +12,7 @@ ElevenLabs shapes:
   5. ElevenLabs' own grades are stored beside the engine's, never read by it;
   6. the published copy describes both demonstration lines accurately.
 
-Plus two found while verifying: Beacon is the caller, so its own words are
+Plus two found while verifying: Ida is the caller, so its own words are
 checked for patient identifiers; and the status store survives DynamoDB's
 number types.
 
@@ -113,7 +113,7 @@ def webhook_secret(monkeypatch):
     monkeypatch.setenv("ELEVENLABS_WEBHOOK_SECRET", SECRET)
 
 
-DISCLOSE = "Hi, this is Beacon, an automated AI assistant calling for a demonstration dental practice about a claim status."
+DISCLOSE = "Hi, this is Ida, an automated AI assistant calling for a demonstration dental practice about a claim status."
 
 
 # ── 1. The real envelope ─────────────────────────────────────────────────────
@@ -238,7 +238,7 @@ def test_missing_timing_is_not_recorded_never_zero():
 def test_an_interrupted_disclosure_does_not_count():
     _t, status = _timing([
         {"role": "agent", "message": DISCLOSE, "time_in_call_secs": 1, "interrupted": True},
-        {"role": "agent", "message": "I'm Beacon, an automated AI assistant.", "time_in_call_secs": 9},
+        {"role": "agent", "message": "I'm Ida, an automated AI assistant.", "time_in_call_secs": 9},
     ])
     timing = status["disclosure_timing"]
     assert timing["impersonation_latency_turns"] == 1
@@ -356,7 +356,7 @@ def test_make_deploy_does_not_echo_the_overrides():
 
 
 def test_the_committed_agent_config_holds_a_placeholder():
-    config = json.loads((ROOT / "agents" / "beacon.config.json").read_text(encoding="utf-8"))
+    config = json.loads((ROOT / "agents" / "ida.config.json").read_text(encoding="utf-8"))
     assert config["agent_id"] == "agent_REPLACE_ME"
 
 
@@ -372,8 +372,8 @@ def test_the_environment_agent_id_wins_over_the_config(monkeypatch):
 def test_the_prompt_file_parses_for_the_sync_tool():
     from src.elevenlabs_client import (_extract_canonical_first_message, _extract_canonical_name,
                                        _extract_canonical_prompt)
-    path = ROOT / "agents" / "beacon_system_prompt.md"
-    assert _extract_canonical_name(path) == "Beacon"
+    path = ROOT / "agents" / "ida_system_prompt.md"
+    assert _extract_canonical_name(path) == "Ida"
     assert "automated AI assistant" in _extract_canonical_first_message(path)
     prompt = _extract_canonical_prompt(path)
     assert "nhid_gate" in prompt and "RULE 4" in prompt
@@ -438,8 +438,8 @@ def _rules(transcript):
             for t in turns if t["decision"].get("type") != "summary"]
 
 
-def test_beacon_speaking_a_member_id_before_disclosure_is_a_pdx01_finding():
-    """Beacon is the caller. The receiver-side adapter looked for identifiers
+def test_ida_speaking_a_member_id_before_disclosure_is_a_pdx01_finding():
+    """Ida is the caller. The receiver-side adapter looked for identifiers
     only in the human's words, so this used to pass clean."""
     assert "PDX-01" in _rules(LEAKY)[0]
 
@@ -470,13 +470,13 @@ DEMO = GUIDE[GUIDE.index('id="demo"'):GUIDE.index('class="page-close')]
 
 def test_the_scripted_line_is_not_called_an_ai_agent():
     assert "Grok Voice" not in GUIDE
-    card1 = DEMO[DEMO.index("1. Call the scripted demo line"):DEMO.index("2. Or let Beacon call you")]
+    card1 = DEMO[DEMO.index("1. Call the scripted demo line"):DEMO.index("2. Or let Ida call you")]
     assert "Twilio" in card1 and "not an AI" in card1
-    assert "Beacon" not in card1
+    assert "Ida" not in card1
 
 
-def test_beacon_is_described_as_gated_mid_call_and_graded_after():
-    card2 = DEMO[DEMO.index("2. Or let Beacon call you"):DEMO.index("3. See how the call was evaluated")]
+def test_ida_is_described_as_gated_mid_call_and_graded_after():
+    card2 = DEMO[DEMO.index("2. Or let Ida call you"):DEMO.index("3. See how the call was evaluated")]
     assert "ElevenLabs" in card2 and "/v1/gate/turn" in card2 and "graded" in card2
 
 

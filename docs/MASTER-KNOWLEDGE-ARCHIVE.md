@@ -2490,7 +2490,7 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
-### 19.24 The Beacon demonstration, revived and authenticated — 2026-10-29
+### 19.24 The ElevenLabs demonstration, revived and authenticated — 2026-10-29
 
 An audit of the ElevenLabs integration behind the shadow-evaluation guide's "Receive a
 call from Beacon" found it could not have worked: the post-call adapter read the payload
@@ -2510,7 +2510,7 @@ that no longer existed; and the page's button and status panel had lost their sc
   has one seconds threshold (`pilot_measure.DISCLOSURE_DELAY_SECONDS`, 10 s, reporting only),
   so the existing pass/delayed/late/critical bands are used and a 15 s split waits for a
   recorded decision. No control reads seconds.
-- **The caller's own words.** Beacon is the calling agent, so its turns get the orientation
+- **The caller's own words.** The agent is the caller, so its turns get the orientation
   `/v1/gate/turn` already applies: an identifier it speaks before disclosure is a PDX-01
   finding. The receiver-side adapter used to miss it.
 - **Vendor grades beside, never into, the evaluation.** ElevenLabs' evaluation criteria and
@@ -2521,6 +2521,11 @@ that no longer existed; and the page's button and status panel had lost their sc
   NoEcho parameters; `make deploy` no longer echoes its overrides; the sync tool never prints
   or writes the agent ID. `agents/` returns to the public tree (moved out in `6d7dbf1`) at the
   maintainer's request, holding a placeholder ID and the fictional-data prompt.
+- **No real names.** The agent was called Beacon, also the name of a real behavioral-health
+  company (Beacon Health Options), and it called for "Ridgeview Family Dental", the name of
+  several real dental practices. The agent is renamed **Ida** (read as "I.D. agent", after
+  IDG-01) and calls for an unnamed demonstration dental practice. Earlier entries in this
+  archive keep the old name as the historical record.
 
 No control semantics, outcome, pinned baseline or reason code changed.
 

@@ -79,7 +79,7 @@ Five are wired to hosted routes, and the routes for the archived three still exi
 | Vonage | `archive/vonage_adapter.py` | archived | `/v1/adapters/vonage/check` |
 | Retell | `archive/retell_adapter.py` | archived | `/v1/adapters/retell/check` |
 | Amazon Connect | `archive/amazon_connect_adapter.py` | archived | `/v1/adapters/connect/check` |
-| ElevenLabs (post-call) | `elevenlabs_postcall_adapter.py` | active (un-archived 2026-10-29) | `/v1/webhooks/elevenlabs/postcall` (HMAC-signed; Beacon demonstration) |
+| ElevenLabs (post-call) | `elevenlabs_postcall_adapter.py` | active (un-archived 2026-10-29) | `/v1/webhooks/elevenlabs/postcall` (HMAC-signed; Ida demonstration) |
 | Fabricate | `fabricate_adapter.py` | active | internal — corpus ingestion, incl. the voice-stress JSONL (`convert_voice_stress`) |
 | Call progress | `call_progress_adapter.py` | active | internal — event type |
 

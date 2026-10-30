@@ -1,4 +1,4 @@
-# Beacon on ElevenLabs — setup for the demonstration line
+# Ida on ElevenLabs — setup for the demonstration line
 
 This is infrastructure for the **website demonstration** in the shadow-evaluation
 guide (`shadow-evaluation-guide.html#demo`), not part of the NHID-Clinical
@@ -8,7 +8,7 @@ the agent, and nothing here establishes that any production call is governed.
 
 ## What happens on a call
 
-Beacon is an ElevenLabs agent that **places** a call to a payer's provider line on
+Ida is an ElevenLabs agent that **places** a call to a payer's provider line on
 behalf of an unnamed, fictional dental practice and asks for a
 claim status. That is the canonical scenario (`docs/canonical-threat-model.md`):
 the agent is the caller, the person who answers plays the payer's representative,
@@ -37,10 +37,10 @@ Three parts, in this order, because the first produces the values the deploy nee
 
 ### Part A — ElevenLabs
 
-1. **Agents → Create agent → Blank**, named `Beacon`.
+1. **Agents → Create agent → Blank**, named `Ida`.
 2. **First message** and **System prompt**: copy them from
-   `agents/beacon_system_prompt.md` (the `first_message` and `prompt` blocks).
-   That file is the source of truth; `scripts/sync_agent_config.py --agent beacon`
+   `agents/ida_system_prompt.md` (the `first_message` and `prompt` blocks).
+   That file is the source of truth; `scripts/sync_agent_config.py --agent ida`
    pushes it to the agent once the agent ID is in the environment.
 3. **Analysis → Evaluation criteria**: one per control (IDG-01, PDX-01, DBC-01,
    EIT-01), in plain words. **Data collection**: `disclosure_heard`,
@@ -53,7 +53,7 @@ Three parts, in this order, because the first produces the values the deploy nee
    with **HMAC authentication** on. Copy the secret when it is shown; it is not
    shown again.
 6. **Phone Numbers → Import from Twilio**: the Twilio Account SID and Auth Token,
-   then pick the number and assign Beacon to it.
+   then pick the number and assign Ida to it.
 
 Three values come out of this: the agent ID, the webhook secret, and the phone
 number ID. Put them in your shell as environment variables, never in a file, a
@@ -179,9 +179,9 @@ new threshold and needs a recorded decision before it is added.
 ### The calling agent's own words
 
 The call-progress adapter was written for an agent that **receives** calls, so it
-looked for patient identifiers only in what the human said. Beacon is the caller:
+looked for patient identifiers only in what the human said. Ida is the caller:
 it is the one that says the member ID. The post-call handler gives agent turns the
-same orientation `/v1/gate/turn` does, so Beacon speaking an identifier before the
+same orientation `/v1/gate/turn` does, so Ida speaking an identifier before the
 disclosure is a PDX-01 finding.
 
 ## Checking a deploy
@@ -202,7 +202,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' -X POST "$B/v1/webhooks/elevenlabs/pos
 
 ## What this does not establish
 
-- That Beacon follows its prompt. The post-call evaluation is what checks it.
+- That Ida follows its prompt. The post-call evaluation is what checks it.
 - That ElevenLabs' grades are right. They are the vendor grading its own agent,
   shown for comparison.
 - Anything about a real patient or a real payer. All data is fictional.

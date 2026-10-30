@@ -345,9 +345,9 @@
 /* ── Demo line live status (website demo feature, not the framework) ───────
    Renders a session_id's accumulated status from GET /v1/demo/call-status
    into a container element. Shared between the Twilio scripted inbound demo
-   and the Beacon outbound demo (ElevenLabs).
+   and the Ida outbound demo (ElevenLabs).
 
-   For a Beacon call the record can also carry the vendor's own grades of the
+   For an Ida call the record can also carry the vendor's own grades of the
    call (ElevenLabs evaluation criteria and data collection). They are shown in
    a second column, labelled as vendor self-evaluation, beside the NHID engine's
    column, which is the authoritative one. The engine never reads them.

@@ -80,7 +80,7 @@ def test_the_adapter_file_is_present_on_disk(vendor):
 
 def test_the_elevenlabs_webhook_adapter_imports():
     """Reached from its own handler rather than through _handle_vendor.
-    Un-archived 2026-10-29 when the Beacon demo was revived, so it is
+    Un-archived 2026-10-29 when the Ida demo was revived, so it is
     maintained against ElevenLabs' current post-call envelope."""
     module = importlib.import_module("adapters.elevenlabs_postcall_adapter")
     assert hasattr(module, "iter_turns")

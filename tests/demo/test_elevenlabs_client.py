@@ -35,9 +35,9 @@ class _FakeResponse:
         return self._json
 
 
-def _live_config(prompt: str = "Hello, I am Beacon.", first_message: str = "Hi there.") -> dict:
+def _live_config(prompt: str = "Hello, I am Ida.", first_message: str = "Hi there.") -> dict:
     return {
-        "name": "Beacon",
+        "name": "Ida",
         "conversation_config": {
             "agent": {
                 "prompt": {"prompt": prompt},
@@ -64,7 +64,7 @@ class TestElevenLabsClient:
 
         assert captured["url"] == f"https://api.elevenlabs.io/v1/convai/agents/{AGENT_ID}"
         assert captured["headers"]["xi-api-key"] == "test-key"
-        assert result["name"] == "Beacon"
+        assert result["name"] == "Ida"
 
     def test_patch_agent_config_calls_correct_url(self, monkeypatch):
         captured = {}
@@ -297,7 +297,7 @@ class TestPullPrompt:
 
         report = pull_prompt(client, AGENT_ID, prompt_path)
 
-        assert report["live_name"] == "Beacon"
+        assert report["live_name"] == "Ida"
         assert report["prompt_chars"] == len("Fresh live prompt.")
         content = prompt_path.read_text(encoding="utf-8")
         assert "Fresh live prompt." in content

@@ -2,7 +2,7 @@
 NHID-Clinical — ElevenLabs Post-Call Webhook Adapter
 =======================================================
 Translates ElevenLabs' post-call webhook payload (the full conversation
-transcript, delivered once a Beacon outbound demo call ends) into the same
+transcript, delivered once an Ida outbound demo call ends) into the same
 per-turn shape adapters.call_progress_adapter.to_nhid_event() expects.
 
 This adapter only reshapes the payload -- it does not evaluate anything.
@@ -11,7 +11,7 @@ evaluate_all() calls happen in the caller
 (functions/elevenlabs_postcall_handler.py), exactly as they do for the
 Twilio scripted demo line in functions/twilio_demo_handler.py.
 
-Un-archived 2026-10-29: the Beacon demo is maintained again, so this adapter
+Un-archived 2026-10-29: the Ida demo is maintained again, so this adapter
 tracks ElevenLabs' current interface (adapters/archive/README.md: "un-archiving
 one is a reasonable response to a real integration request").
 

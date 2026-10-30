@@ -6,14 +6,14 @@ between this repo (source of truth) and the live ElevenLabs agent.
 Usage
 -----
   export ELEVENLABS_API_KEY=your_key
-  python scripts/sync_agent_config.py --agent beacon              # push prompt + config
-  python scripts/sync_agent_config.py --agent beacon --dry-run    # show diffs, push nothing
-  python scripts/sync_agent_config.py --agent beacon --pull       # pull live -> repo
+  python scripts/sync_agent_config.py --agent ida              # push prompt + config
+  python scripts/sync_agent_config.py --agent ida --dry-run    # show diffs, push nothing
+  python scripts/sync_agent_config.py --agent ida --pull       # pull live -> repo
 
 Adding a new agent
 -------------------
   1. Create the agent in the ElevenLabs dashboard (this script does not create agents).
-  2. Add agents/<name>_system_prompt.md (prompt, same format as beacon_system_prompt.md)
+  2. Add agents/<name>_system_prompt.md (prompt, same format as ida_system_prompt.md)
      and agents/<name>.config.json ({"agent_id": "agent_...", "voice_id": null, "llm": null,
      "text_only": true|false}) — text_only must be set explicitly: it's what determines
      whether the embedded widget shows a chat entry point or a voice-call entry point,

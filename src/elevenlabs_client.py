@@ -6,7 +6,7 @@ its voice/model config) against the live ElevenLabs API, with a file in this rep
 as the source of truth. Any agent can be synced this way instead of through the
 ElevenLabs dashboard — pass its agent_id and the path to its canonical prompt file.
 
-Relocated from tests/elevenlabs_cts_runner.py (which hardcoded these for Beacon)
+Relocated from tests/elevenlabs_cts_runner.py (which hardcoded these for Ida)
 so the conformance test runner and the agent-config sync CLI share one client.
 """
 

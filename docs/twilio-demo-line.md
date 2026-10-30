@@ -4,7 +4,7 @@ This is infrastructure for the **website demo feature** (the scripted call you
 can dial in to from the shadow-evaluation guide, `shadow-evaluation-guide.html#demo`),
 not part of the NHID-Clinical governance framework itself. It is a deterministic
 Twilio line with a keypad menu and no AI. The other demonstration on that page,
-Beacon, is an ElevenLabs agent that calls you; its setup, including importing a
+Ida, is an ElevenLabs agent that calls you; its setup, including importing a
 Twilio number into ElevenLabs, is in [`elevenlabs-demo.md`](elevenlabs-demo.md).
 
 Provisioning the actual phone number is a manual step in the Twilio Console —
@@ -91,5 +91,5 @@ the campaign's opt-in URL and `privacy.html` as the privacy policy URL.
 
 Twilio voice minutes for inbound calls to the demo number. No AI/LLM usage —
 the call content is fully scripted and deterministic, so there is no
-per-call variance or ElevenLabs/LLM cost for this feature (unlike the Beacon
+per-call variance or ElevenLabs/LLM cost for this feature (unlike the Ida
 outbound demo).

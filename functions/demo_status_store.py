@@ -1,6 +1,6 @@
 """
 Live status store for the website demo features (Twilio scripted inbound demo,
-Beacon outbound demo) — backed by DynamoDB with a TTL so sessions self-clean.
+Ida outbound demo) — backed by DynamoDB with a TTL so sessions self-clean.
 
 This is infrastructure for the demo website feature, NOT the NHID-Clinical
 governance framework itself. Boto3 is provided by the Lambda runtime; it is
@@ -27,7 +27,7 @@ LATEST_SESSION_KEY = "_latest_demo_call"
 
 def to_dynamo(value: Any) -> Any:
     """Make a value storable: DynamoDB rejects Python floats ("Float types are
-    not supported. Use Decimal types instead"). The Beacon post-call record
+    not supported. Use Decimal types instead"). The Ida post-call record
     carries call-time seconds, the first floats this store has held."""
     if isinstance(value, bool) or value is None:
         return value
