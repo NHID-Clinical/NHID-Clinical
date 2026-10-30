@@ -11,8 +11,8 @@ rather than inferring.
 
 | | |
 |---|---|
-| **Commit** | `e63b9840d7b949f4661e0bd8a2a2f8c112850ff7` (`e63b984`) |
-| **Measured** | 2026-10-16 (previously `ed342b3`, 2026-09-06 — see §13) |
+| **Commit** | `0ef59fcea541ed79a020e8c8cf4cbc2302c4c9a8` (`0ef59fc`) |
+| **Measured** | 2026-10-30 (previously `e63b984`, 2026-10-16 — see §14) |
 | **Method** | Commands in the "How to reproduce" section, run against a clean checkout |
 | **Branch** | `main` |
 | **Licence** | Apache-2.0 for code (`LICENSE`), CC BY 4.0 for specification and documentation prose (`LICENSE-DOCS`); split stated in `NOTICE` |
@@ -33,9 +33,9 @@ rather than inferring.
 
 ```
 2065 passed, 0 skipped, 0 xfailed   # python -m pytest tests/ -q (API running)
-1192 passed, 21 skipped             # ...the same command with no API listening (drift-ok: no-API measurement, not the published count)
+2044 passed, 21 skipped             # ...the same command with no API listening (drift-ok: no-API measurement, not the published count)
 2065 collected                # python -m pytest tests/ --collect-only -q
-67 files                      # files under tests/ that pytest collects from
+87 files                      # files under tests/ that pytest collects from
 ```
 
 2065 collected, 2065 passed. Every published surface stating these numbers must
@@ -364,6 +364,32 @@ checks; carries this file's count.
 production deployment, dataset access, or an independent review of DBC-01
 against its threat model. The corpus v2 figure (50%) measures hard cases chosen
 to be hard and is not comparable to §5.1 or §5.2.
+
+## 14. State change — 2026-10-30 (`0ef59fc`)
+
+Twenty-eight pull requests merged since §13 (#407–#435; #418 was not merged).
+The suite went 1213 → 2065 (API running), 87 collected files; the no-API run
+1192 → 2044 with the same 21 skips. No control definition, reason code or
+ladder position changed. Each row is verifiable from the repository.
+
+| PR | Change | Verifiable by |
+|---|---|---|
+| **#407, #409, #414, #421, #423–#428, #434** | Website rebuilt: one generated header/footer, six-section Home, diagrams, per-page dedupe, README rewrite | `scripts/ia/build_site_chrome.py --check`; `tests/test_site_navigation.py` |
+| **#412** | IDG-01: a disclosure counts only if it was heard | `tests/test_idg01_interrupted_disclosure.py` |
+| **#415, #416** | Two audits (NHID-Auth and repository-wide) and a percentile re-measured over the full population | `docs/MASTER-KNOWLEDGE-ARCHIVE.md` §19 |
+| **#417** | Canonical threat model stated; corpus rows outside it disclosed | `docs/canonical-threat-model.md`; `tests/test_canonical_threat_model.py` |
+| **#419, #420** | Windows and Python 3.14 portability; CI runs both | `.github/workflows/ci.yml` |
+| **#422** | `POST /v1/gate/turn`: a pre-utterance gate for an agent that places the call | `tests/test_gate_turn.py` |
+| **#429, #431–#433** | `/spec` reading aid: refusals, heading-aware chunks, hybrid retrieval (off), source registry | `eval/`; `docs/spec-rag.md` |
+| **#430** | Grok Realtime bridge, fail-closed | `tests/test_grok_realtime_bridge.py`; `docs/grok-realtime-bridge.md` |
+| **#435** | ElevenLabs demonstration revived; agent renamed Ida; signed post-call webhook | `agents/ida.config.json`; `tests/test_elevenlabs_postcall.py` |
+
+**Not deployed by any of the above.** `/v1/gate/turn` and the ElevenLabs
+post-call route are in the repository and tested; the live API stage does not
+serve them until the maintainer deploys.
+
+**Not established by any of the above:** a shadow-evaluation partner, a
+production deployment, dataset access, or an independent review of any control.
 
 ---
 

@@ -124,7 +124,7 @@
         <h1 class="reveal page-heading" id="page-h">Privacy Policy</h1>
         <p class="lede reveal lede-text">How NHID-Clinical handles the limited personal information collected through this website.</p>
         <ul class="hero-meta reveal">
-          <li><b>Last updated</b><span>June 20, 2026</span></li>
+          <li><b>Last updated</b><span>October 30, 2026</span></li>
           <li><b>Accounts</b><span>None</span></li>
           <li><b>Health data</b><span>None collected</span></li>
           <li><b>Analytics</b><span>Plausible, cookieless</span></li>
@@ -136,8 +136,8 @@
         <dl>
           <dt>Collected</dt><dd>A phone number when you ask for a demo call or the starter-pack text, and a CAPTCHA token</dd>
           <dt>Used for</dt><dd>Only the action you requested, with rate limits to prevent abuse</dd>
-          <dt>Kept</dt><dd>Transiently; rate-limit and demo-status records expire, typically within an hour</dd>
-          <dt>Shared</dt><dd>Never. Mobile opt-in information is not shared or sold</dd>
+          <dt>Kept</dt><dd>Transiently; rate-limit and demo-status records expire, typically within an hour. Call recordings at ElevenLabs are kept until deleted</dd>
+          <dt>Shared</dt><dd>Never sold. Demonstration calls are carried by ElevenLabs and Twilio, which record them; mobile opt-in information is not shared</dd>
           <dt>Contact</dt><dd><a href="mailto:contact@nhid-clinical.org">contact@nhid-clinical.org</a></dd>
         </dl>
       </aside>
@@ -189,6 +189,15 @@
           request a demo call or the starter-pack text, and a CAPTCHA token used solely to deter
           automated abuse. We do not require accounts and we do not collect health information
           through this website.</p>
+        <p>Demonstration calls with Ida, the automated demonstration agent, are placed and
+          answered by <a href="https://elevenlabs.io/">ElevenLabs</a> over Twilio. ElevenLabs
+          records and transcribes those calls, and the recording and transcript are kept in the
+          NHID-Clinical ElevenLabs account until they are deleted. NHID-Clinical itself keeps only
+          the results of each call (the policy decisions, reason codes, timing and ElevenLabs'
+          own grading), without the phone number or the transcript, and shows them on the public
+          demonstration panel until they expire, typically within one hour. The demonstration
+          uses fictional patient details only; do not say anything real about yourself or anyone
+          else on a demonstration call.</p>
         <p>We also use <a href="https://plausible.io/">Plausible Analytics</a> to understand
           aggregate website usage, including page views, referral sources, countries, devices,
           and entry and exit pages. Plausible is configured as a cookieless analytics script;
@@ -266,7 +275,10 @@
         </div>
         <div class="act-body">
 <p>Rate-limit and demo-status records are stored transiently and automatically expire
-          (typically within one hour). We do not maintain a marketing list from these requests.</p>
+          (typically within one hour). We do not maintain a marketing list from these requests.
+          Demonstration call recordings and transcripts held by ElevenLabs are kept until they
+          are deleted from the NHID-Clinical ElevenLabs account; to ask for a recording of your
+          call to be deleted, email contact@nhid-clinical.org.</p>
         </div>
       </section>
       <section class="act" id="p-your-choices" aria-labelledby="p-your-choices-h">
