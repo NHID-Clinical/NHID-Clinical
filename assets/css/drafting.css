@@ -1,0 +1,243 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   drafting.css: the site-wide visual layer, loaded last on every published page
+   ══════════════════════════════════════════════════════════════════════════
+   Direction (30 Oct 2026): a drafting-board look taken from the Modus Light
+   template's structure, not its content. What carries over:
+
+     1. thin vertical column rules behind bands, lined up with the content width
+     2. light, large headings in Space Grotesk; small uppercase labels
+     3. square tiles separated by a 2px hairline gap, instead of floating cards
+     4. spec-sheet rows: a label, a value, a hairline between rows
+     5. outlined pill tags for kickers and control IDs
+     6. a navy footer with a large wordmark
+
+   What deliberately does not: stock photography, a client-logo wall, headline
+   numbers, and the template's orange. Teal stays the one accent, because amber
+   already means "warning" on this site. Every colour below is written against
+   the existing tokens so the dark theme follows; the few fixed navy values are
+   the instrument palette's own (--inst-*).
+
+   Headings use Space Grotesk; body text stays Inter and code stays IBM Plex
+   Mono. That reverses the 25 Oct audit's one-font rule for headings only;
+   tests/test_site_navigation.py::test_font_families records it.             */
+
+:root {
+  --display: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: var(--display);
+  --radius: 3px;
+  --radius-lg: 3px;
+  --dr-rule: rgba(13, 40, 70, 0.075);        /* column rules on light bands */
+  --dr-rule-ink: rgba(176, 205, 235, 0.10);  /* column rules on navy bands  */
+  --dr-gap: 2px;
+  --dr-accent: #14778f;                      /* teal: white text is AA on it */
+  --dr-accent-hover: #0f5f73;
+  --dr-navy: #0d2846;
+  --dr-navy-2: #17406a;
+  --dr-tag-line: rgba(13, 40, 70, 0.28);
+  --dr-cols: 25%;                            /* four columns */
+  --dr-width: min(100% - 2rem, 1320px);      /* .container's width */
+}
+[data-theme="dark"] {
+  --dr-rule: rgba(160, 195, 230, 0.07);
+  --dr-rule-ink: rgba(160, 195, 230, 0.08);
+  --dr-tag-line: rgba(160, 195, 230, 0.32);
+  --dr-navy: #0e2340;
+  --dr-navy-2: #143456;
+}
+@media (max-width: 720px) { :root { --dr-cols: 50%; } }
+
+/* ── Type ─────────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4,
+.inner-hero h1, .page-doc .inner-hero h1, .page-doc .inner-hero .page-heading,
+.brand strong {
+  font-family: var(--display);
+}
+h1 { font-weight: 400; letter-spacing: -0.035em; }
+h2 { font-weight: 400; letter-spacing: -0.025em; }
+h3, h4 { font-weight: 500; letter-spacing: -0.015em; }
+.hero-band h1 { font-weight: 400; letter-spacing: -0.04em; line-height: 1.02; }
+.inner-hero h1, .page-doc .inner-hero h1, .page-doc .inner-hero .page-heading { font-weight: 400; letter-spacing: -0.035em; }
+.act-head h2, .cta-band h2, .page-doc .page-close .closing-panel h2 {
+  font-size: clamp(1.75rem, 3.1vw, 2.75rem); line-height: 1.08; font-weight: 400; letter-spacing: -0.03em;
+}
+
+/* ── Column rules ─────────────────────────────────────────────────────────── */
+/* Drawn as backgrounds on the band itself, sized to the container and centred,
+   so they line up with the content edge at every width and add no element to
+   the stacking order. The old 42px squared grid and its glows are removed.   */
+.band-ink::before, .hero-band::before, .hero-band.band-ink::before, .page-doc .inner-hero::before { display: none; }
+.band-ink, .page-doc .inner-hero, .site-footer {
+  background-image:
+    repeating-linear-gradient(to right, var(--dr-rule-ink) 0 1px, transparent 1px var(--dr-cols)),
+    linear-gradient(to left, var(--dr-rule-ink) 0 1px, transparent 1px);
+  background-size: var(--dr-width) 100%, var(--dr-width) 100%;
+  background-position: center top, center top;
+  background-repeat: no-repeat;
+}
+@media (min-width: 900px) {
+  .page-section.band-paper, .page-section.band-mist, .inner-hero:not(.band-ink) {
+    background-image:
+      repeating-linear-gradient(to right, var(--dr-rule) 0 1px, transparent 1px var(--dr-cols)),
+      linear-gradient(to left, var(--dr-rule) 0 1px, transparent 1px);
+    background-size: var(--dr-width) 100%, var(--dr-width) 100%;
+    background-position: center top, center top;
+    background-repeat: no-repeat;
+  }
+  .page-doc .inner-hero {
+    background-image:
+      repeating-linear-gradient(to right, var(--dr-rule-ink) 0 1px, transparent 1px var(--dr-cols)),
+      linear-gradient(to left, var(--dr-rule-ink) 0 1px, transparent 1px);
+  }
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.site-header { backdrop-filter: none; background: var(--paper); border-bottom: 1px solid var(--line); }
+[data-theme="dark"] .site-header { background: var(--mist); }
+.brand strong { font-weight: 500; letter-spacing: -0.02em; }
+.nav-links a, .nav-dropdown-trigger {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+}
+.primary-pill {
+  background: var(--dr-accent); color: #fff; box-shadow: none; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.primary-pill:hover { background: var(--dr-accent-hover); color: #fff; box-shadow: none; transform: none; }
+
+/* ── Tags ─────────────────────────────────────────────────────────────────── */
+.section-kicker, .page-doc .act-head .section-kicker, .page-doc .inner-hero .section-kicker,
+.page-doc .page-close .closing-panel .section-kicker {
+  display: inline-flex; align-items: center; width: max-content; max-width: 100%;
+  padding: 0.32rem 0.72rem; border: 1px solid var(--dr-tag-line); border-radius: 999px;
+  font-family: var(--sans); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.12em; line-height: 1.2;
+  text-transform: uppercase; color: var(--ink);
+}
+.band-ink .section-kicker, .page-doc .inner-hero .section-kicker, .page-doc .page-close .closing-panel .section-kicker,
+.hero-band .section-kicker {
+  color: var(--inst-text-strong); border-color: rgba(220, 235, 250, 0.28);
+}
+.act-index { border-radius: 999px; border-color: var(--dr-tag-line); }
+.control-card-id { border-radius: 999px; background: transparent; border-color: var(--dr-tag-line); }
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.action-button, .cta-button {
+  border-radius: 999px; box-shadow: none; transform: none;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.action-button:hover, .cta-button:hover { transform: none; box-shadow: none; }
+.action-button-primary, .cta-button, .page-doc .band-ink .cta-button {
+  background: var(--dr-accent); color: #fff; border-color: var(--dr-accent);
+}
+.action-button-primary:hover, .cta-button:hover, .page-doc .band-ink .cta-button:hover {
+  background: var(--dr-accent-hover); border-color: var(--dr-accent-hover); color: #fff;
+}
+.action-button-secondary { background: transparent; border-color: var(--dr-tag-line); color: var(--ink); }
+.band-ink .action-button-secondary, .band-ink .cta-button-secondary {
+  background: transparent; color: var(--inst-text-strong); border: 1px solid rgba(220, 235, 250, 0.32);
+}
+.band-ink .action-button-secondary:hover, .band-ink .cta-button-secondary:hover {
+  border-color: var(--inst-text-strong); color: #fff; background: transparent;
+}
+
+/* ── Tiles: square panels separated by a hairline gap ─────────────────────── */
+.card-grid, .pathway-grid, .flow { gap: var(--dr-gap); }
+.content-card, .card, .module-card, .download-card, .faq-item, .pilot-card, .guarantee-card,
+.page-cta-card, .pathway-card, .control-card, .flow-step, .ledger, .callout, .hero-notice, .note,
+.page-doc .content-card, .page-doc .download-card, .page-doc .faq-item, .page-doc .pilot-card,
+.page-doc .guarantee-card, .page-doc .page-cta-card, .page-doc .card, .page-doc .module-card,
+.page-doc .page-close .page-cta-card {
+  border-radius: var(--radius); box-shadow: none;
+}
+.page-doc .content-card:hover, .page-doc .download-card:hover, .page-doc .page-cta-card:hover, .page-doc .card:hover,
+.content-card:hover {
+  transform: none; box-shadow: none; border-color: var(--dr-accent);
+}
+.page-doc .card-grid { gap: var(--dr-gap); }
+
+/* Home: the three paths become one row of solid tiles, the receiving side in teal. */
+.pathway-grid { margin-top: 2rem; }
+.pathway-card {
+  display: flex; flex-direction: column; min-height: 19rem; padding: 1.6rem 1.6rem 1.5rem;
+  border: 0; border-radius: var(--radius); background: var(--dr-navy); color: #d6e3f1;
+}
+.pathway-card + .pathway-card { background: var(--dr-navy-2); }
+.pathway-card.is-enterprise { background: var(--dr-accent); }
+.pathway-card h3 { color: #fff; font-size: 1.5rem; font-weight: 400; letter-spacing: -0.02em; margin: auto 0 0.5rem; }
+.pathway-card > p { color: #d6e3f1; }
+.pathway-card .section-kicker { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+.pathway-card .cta-button { align-self: flex-start; background: #fff; color: var(--dr-navy); border-color: #fff; }
+.pathway-card .cta-button:hover { background: #e6eef6; color: var(--dr-navy); border-color: #e6eef6; }
+
+/* Home: control register as spec sheets. */
+.control-card { border: 0; padding: 1.4rem 1.3rem 1.25rem; gap: 0.7rem; }
+.control-card-name { font-family: var(--display); font-weight: 500; font-size: 1.2rem; letter-spacing: -0.015em; }
+.control-card-rule { padding-top: 0.7rem; border-top: 1px solid var(--line); }
+.control-card-not { margin-top: 0; }
+
+/* Home: how a call is evaluated. Tiles in a row; the order is already in the kickers. */
+.flow-step { border: 0; padding: 1.15rem 1.1rem; }
+.flow-step::after { display: none; }
+.band-paper .flow-step, .band-paper .control-card { background: var(--mist); }
+.band-mist .flow-step, .band-mist .control-card { background: var(--paper); }
+
+/* Is / is not ledger */
+.ledger { gap: var(--dr-gap); border: 0; background: transparent; }
+.ledger > div { background: var(--mist); }
+.ledger > div + div { border-left: 0; background: var(--mist); }
+.band-mist .ledger > div { background: var(--paper); }
+
+/* ── Closing bands ────────────────────────────────────────────────────────── */
+.cta-band h2 { font-size: clamp(2rem, 4vw, 3.25rem); }
+.page-doc .page-close .closing-panel { border-radius: var(--radius); box-shadow: none; }
+
+/* ── Footer: navy, with the wordmark across the bottom ────────────────────── */
+.site-footer, [data-theme="dark"] .site-footer {
+  background-color: var(--inst-ink); border-top: 0; color: var(--inst-text); padding-block: 3rem 0; overflow: hidden;
+}
+[data-theme="dark"] .site-footer { background-color: #050c17; }
+.footer-inner, [data-theme="dark"] .footer-inner { color: var(--inst-text-muted); }
+.footer-inner a, [data-theme="dark"] .footer-inner a { color: var(--inst-text-strong); }
+.footer-inner a:hover { color: var(--inst-teal-bright); }
+.footer-inner > div a {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+}
+.footer-copy .footer-demo-note, [data-theme="dark"] .footer-demo-note { color: var(--inst-text-muted); }
+.footer-wordmark {
+  margin-top: 2.5rem; padding-bottom: 0.5rem;
+  font-family: var(--display); font-weight: 500; letter-spacing: -0.05em; line-height: 0.78;
+  font-size: clamp(3rem, 12.6vw, 10.75rem); white-space: nowrap; color: #17365a;
+  user-select: none;
+}
+[data-theme="dark"] .footer-wordmark { color: #0f2744; }
+
+/* Kickers are <p> elements; band and tile paragraph rules otherwise resize them. */
+.band-ink p.section-kicker, .cta-band p.section-kicker, .pathway-card > p.section-kicker,
+.page-doc .band-ink p.section-kicker, .hero-band .meta-label {
+  font-size: 0.66rem; line-height: 1.2; letter-spacing: 0.12em; margin: 0 0 0.9rem;
+}
+.hero-band .meta-label {
+  display: inline-flex; width: max-content; max-width: 100%; padding: 0.32rem 0.72rem;
+  border: 1px solid rgba(220, 235, 250, 0.28); border-radius: 999px;
+  font-family: var(--sans); font-weight: 600; text-transform: uppercase; color: var(--inst-text-strong);
+}
+.ledger h3 .ledger-mark, .ledger h2 .ledger-mark {
+  display: inline-flex; padding: 0.18rem 0.55rem; border: 1px solid var(--dr-tag-line); border-radius: 999px;
+  font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; color: var(--teal);
+}
+.ledger h3 { display: flex; align-items: center; gap: 0.6rem; font-size: 1.15rem; margin: 0 0 1rem; }
+.page-doc .inner-hero .meta-label {
+  display: inline-flex; width: max-content; max-width: 100%; padding: 0.32rem 0.72rem;
+  border: 1px solid rgba(220, 235, 250, 0.28); border-radius: 999px;
+  font-size: 0.66rem; letter-spacing: 0.12em; line-height: 1.2; color: var(--inst-text-strong);
+}
+
+/* Closing bands on inner pages: the same teal pill as every other primary action. */
+.closing-button, .page-doc .page-close .closing-button {
+  background: var(--dr-accent); color: #fff; border-radius: 999px; box-shadow: none; transform: none;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.closing-button:hover, .page-doc .page-close .closing-button:hover { background: var(--dr-accent-hover); color: #fff; transform: none; box-shadow: none; }
+.page-doc .page-close .card-grid { gap: var(--dr-gap); }
+.pathway-card.is-enterprise, .pathway-card.is-enterprise > p { color: #fff; }   /* 5.2:1 on the teal tile; #d6e3f1 was 3.96:1 */
+/* Headings line up across the three path tiles; the buttons take the slack. */
+.pathway-card h3 { margin: 3rem 0 0.5rem; }
+.pathway-card .cta-button { margin-top: auto; }

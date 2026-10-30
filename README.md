@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-2065%20passing-brightgreen?style=flat-square">
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-2078%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
   <img alt="Code license" src="https://img.shields.io/badge/code-Apache--2.0-lightgrey?style=flat-square">
   <img alt="Spec license" src="https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey?style=flat-square">
@@ -82,7 +82,7 @@ python -m uvicorn app:app --port 8000 &    # the integration tests need it
 python -m pytest tests/ -q
 ```
 
-Expected: **2065 passing**, 0 skipped. Without the API the server-dependent integration tests skip themselves; CI starts it and requires zero skips. One request to the hosted adapter route, synthetic payload, no key:
+Expected: **2078 passing**, 0 skipped. Without the API the server-dependent integration tests skip themselves; CI starts it and requires zero skips. One request to the hosted adapter route, synthetic payload, no key:
 
 ```bash
 curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
@@ -200,7 +200,7 @@ Guides: [5-minute quickstart](docs/5-minute-quickstart.md) · [v2 integration gu
 | `src/` | Packaged modules: the conformance engine, agent identity and the trust anchor (`agent_identity.py`, `trust_anchor.py`, `udap_agent_extension.py`, `udap_jws.py`), the audit store, the CLI, and the [specification reading aid](docs/spec-rag.md) (`nhid_spec_rag.py`, a retrieval index over `docs/`; it returns quotations, never a control decision). |
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect). |
 | `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (2065 passing, all phases: foundations, adversarial, synthetic, hardening). |
+| `tests/` | The Python conformance and invariant tests (2078 passing, all phases: foundations, adversarial, synthetic, hardening). |
 | `eval/` | The reading aid's question set, scorer and tests, deliberately outside `tests/`, which is the conformance suite the published count describes. |
 | `scripts/` | CI guards (`validate_ci.py`, `check_baseline.py`, `check_number_drift.py`, `check_control_set.py`) and the generators that write engine output into the pages. |
 | `schema/` | Event and audit-trace schemas. |

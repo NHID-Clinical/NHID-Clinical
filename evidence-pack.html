@@ -22,12 +22,13 @@
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
   <link rel="stylesheet" href="/assets/css/premium.css"/>
   <link rel="stylesheet" href="/assets/css/components.css"/>
   <link rel="stylesheet" href="/assets/css/instrument.css"/>
   <link rel="stylesheet" href="/assets/css/pages.css"/>
+  <link rel="stylesheet" href="/assets/css/drafting.css"/>
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
@@ -347,8 +348,8 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
           </tr>
           <tr>
             <th scope="row">Conformance suite<span class="sc-measures">Implementation correctness against the specification</span></th>
-            <td class="sc-size">2065 tests</td>
-            <td>2065/2065 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
+            <td class="sc-size">2078 tests</td>
+            <td>2078/2078 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
             <td><code>python -m pytest tests/ -q</code><span class="sc-src">tests/</span></td>
           </tr>
           </tbody>
@@ -357,7 +358,7 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
 
       <aside class="visual-provenance">
         <p><strong>Separation:</strong> Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>1380e7d</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>cf95962</code></p>
       </aside>
       <!-- END GENERATED evidence-scorecard -->
         </div>
@@ -677,6 +678,7 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
     <p class="footer-copy"><span class="footer-demo-line"><strong>Reference demonstration line</strong> &mdash; <a href="tel:+17176706772">+1 (717) 670-6772</a> <span class="footer-demo-note">(website demo, not personal contact)</span></span></p>
     <p class="footer-copy">This is an open, actively maintained framework &mdash; feedback and contributions welcome on <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a>.</p>
   </div>
+  <div class="container footer-wordmark" aria-hidden="true">NHID-Clinical</div>
 </footer>
 
 <script src="/site.js"></script>
