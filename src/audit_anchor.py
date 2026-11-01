@@ -37,8 +37,14 @@ two rows in one file. That is the whole claim. It is still not a guarantee:
 * One writer process per anchor file. The lock here is per process.
 
 Format: one JSON object per line, in order, ``seq`` starting at 1. ``prev`` is
-the SHA-256 of the previous line's text (empty for the first); ``mac`` is
+the SHA-256 of the previous line's text (empty for the first); ``kid`` names
+the key that signed the line (``src.audit_integrity.key_id``); ``mac`` is
 HMAC-SHA256 over every other field.
+
+Key rotation: new lines are signed with the current key. Pass the old key in
+``retired_keys`` and lines it signed keep verifying, so the chain runs
+unbroken across a rotation. A retired key never signs. Lines written before
+``kid`` existed are checked against every configured key.
 """
 from __future__ import annotations
 
@@ -48,7 +54,9 @@ import json
 import os
 import threading
 from datetime import datetime, timezone
-from typing import Dict, Optional
+from typing import Dict, Iterable, Optional
+
+from src.audit_integrity import key_id
 
 #: The anchor file failed its own check: a line was edited, removed from the
 #: middle, reordered, or signed with another key.
@@ -69,11 +77,19 @@ def _canonical(fields: dict) -> bytes:
 class FileAuditAnchor:
     """Append-only, signed, hash-chained checkpoints in a file of their own."""
 
-    def __init__(self, path: str, key: bytes):
-        if len(key) != 32:
-            raise ValueError(f"anchor key must be 32 bytes, got {len(key)}")
+    def __init__(self, path: str, key: bytes, retired_keys: Iterable[bytes] = ()):
+        retired = list(retired_keys)
+        for k in [key, *retired]:
+            if len(k) != 32:
+                raise ValueError(f"anchor key must be 32 bytes, got {len(k)}")
+        if key in retired:
+            raise ValueError("the current anchor key cannot also be a retired key")
         self.path = path
         self._key = key
+        self._kid = key_id(key)
+        self._keys: Dict[str, bytes] = {self._kid: key}
+        for k in retired:
+            self._keys.setdefault(key_id(k), k)
         self._lock = threading.Lock()
         parent = os.path.dirname(path)
         if parent:
@@ -98,8 +114,13 @@ class FileAuditAnchor:
                 mac = rec.pop("mac")
             except (ValueError, KeyError, AttributeError) as exc:
                 raise AnchorInvalid(f"{ERR_AUDIT_ANCHOR_INVALID}: line {n} is not a checkpoint") from exc
-            expected = hmac.new(self._key, _canonical(rec), hashlib.sha256).hexdigest()
-            if not hmac.compare_digest(expected, str(mac)):
+            kid = rec.get("kid")
+            keys = [self._keys[kid]] if kid in self._keys else list(self._keys.values())
+            if not any(
+                hmac.compare_digest(
+                    hmac.new(k, _canonical(rec), hashlib.sha256).hexdigest(), str(mac))
+                for k in keys
+            ):
                 raise AnchorInvalid(f"{ERR_AUDIT_ANCHOR_INVALID}: line {n} signature does not verify")
             if rec.get("seq") != n:
                 raise AnchorInvalid(f"{ERR_AUDIT_ANCHOR_INVALID}: line {n} has seq {rec.get('seq')!r}")
@@ -152,6 +173,7 @@ class FileAuditAnchor:
                 "head_event_id": head_event_id,
                 "head_evidence_hash": head_evidence_hash,
                 "recorded_at": datetime.now(timezone.utc).isoformat(),
+                "kid": self._kid,
             }
             rec["mac"] = hmac.new(self._key, _canonical(rec), hashlib.sha256).hexdigest()
             line = json.dumps(rec, sort_keys=True, separators=(",", ":"))

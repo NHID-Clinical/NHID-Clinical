@@ -1,3 +1,6 @@
+import logging
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Security
 
 # Authentication lives in its own module so it can be imported without the
@@ -16,11 +19,24 @@ from src import nhid_spec_rag
 # Critical: Import the full voice policy + Twilio/VAPI proxy app
 from app import app as voice_app
 
+from src import preflight
+
+
+@asynccontextmanager
+async def lifespan(_app):
+    # Staging and production refuse to start with a security setting missing,
+    # listing all of them, rather than serving and failing route by route.
+    # Development is never blocked. See src/preflight.py.
+    for warning in preflight.enforce():
+        logging.getLogger(__name__).warning("preflight: %s", warning)
+    yield
+
 app = FastAPI(
     title="NHID-Clinical Conformance & Voice Policy API",
     description="Reference implementation - Non-Human Identity Disclosure + Voice Policy Engine",
     version="1.4.0",
     contact={"name": "Brianna Baynard", "url": "https://nhid-clinical.org"},
+    lifespan=lifespan,
 )
 
 # Mount the voice pipeline (this fixes /voice/process 404s for tests)

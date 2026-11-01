@@ -34,6 +34,16 @@ tenant ``default``, so an existing single-key deployment is unchanged.
 
 A malformed ``NHID_API_KEYS`` fails closed (``503``): a typo in the key table
 must not silently fall back to "no tenants" or to the legacy key alone.
+
+Rotation
+--------
+A tenant may hold up to ``MAX_KEYS_PER_TENANT`` keys at once, as a list::
+
+    NHID_API_KEYS='{"payer-a": ["sha256:<new>", "sha256:<old>"]}'
+
+Add the new hash, move the customer's clients over, then remove the old hash;
+the old key stops working on the next request. One hash listed under two
+tenants is refused, because a key must identify exactly one tenant.
 """
 
 import hashlib
@@ -42,7 +52,7 @@ import json
 import logging
 import os
 import re
-from typing import Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from fastapi import HTTPException, Request, Security
 from fastapi.security.api_key import APIKeyHeader
@@ -55,6 +65,7 @@ DEFAULT_TENANT = "default"
 
 _TENANT_ID = re.compile(r"^[a-z0-9][a-z0-9_-]{0,62}$")
 _HASH = re.compile(r"^sha256:[0-9a-f]{64}$")
+MAX_KEYS_PER_TENANT = 4
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
@@ -73,10 +84,12 @@ def configured_api_key() -> str:
     return (os.getenv(API_KEY_ENV) or "").strip()
 
 
-def configured_tenant_keys() -> Dict[str, str]:
-    """Tenant id -> stored key hash, from ``NHID_API_KEYS``.
+def configured_tenant_keys() -> Dict[str, List[str]]:
+    """Tenant id -> stored key hashes, from ``NHID_API_KEYS``.
 
-    Raises ``ValueError`` on anything malformed; callers fail closed on it.
+    A value may be one hash or a list of 1..MAX_KEYS_PER_TENANT hashes (for
+    rotation); either way it is returned as a list. Raises ``ValueError`` on
+    anything malformed; callers fail closed on it.
     """
     raw = (os.getenv(API_KEYS_ENV) or "").strip()
     if not raw:
@@ -84,18 +97,32 @@ def configured_tenant_keys() -> Dict[str, str]:
     table = json.loads(raw)
     if not isinstance(table, dict) or not table:
         raise ValueError(f"{API_KEYS_ENV} must be a non-empty JSON object")
-    for tenant, digest in table.items():
+    normalised: Dict[str, List[str]] = {}
+    owner: Dict[str, str] = {}
+    for tenant, value in table.items():
         if not isinstance(tenant, str) or not _TENANT_ID.match(tenant):
             raise ValueError(f"{API_KEYS_ENV}: invalid tenant id {tenant!r}")
-        if not isinstance(digest, str) or not _HASH.match(digest):
+        digests = [value] if isinstance(value, str) else value
+        if not isinstance(digests, list) or not 1 <= len(digests) <= MAX_KEYS_PER_TENANT:
             raise ValueError(
-                f"{API_KEYS_ENV}: tenant {tenant!r} must map to 'sha256:<64 hex>', "
-                "never a plaintext key")
-    if DEFAULT_TENANT in table and configured_api_key():
+                f"{API_KEYS_ENV}: tenant {tenant!r} must map to one hash or a list "
+                f"of 1 to {MAX_KEYS_PER_TENANT} hashes")
+        for digest in digests:
+            if not isinstance(digest, str) or not _HASH.match(digest):
+                raise ValueError(
+                    f"{API_KEYS_ENV}: tenant {tenant!r} must map to 'sha256:<64 hex>', "
+                    "never a plaintext key")
+            if digest in owner:
+                raise ValueError(
+                    f"{API_KEYS_ENV}: one key hash is listed under both "
+                    f"{owner[digest]!r} and {tenant!r}; a key must identify one tenant")
+            owner[digest] = tenant
+        normalised[tenant] = list(digests)
+    if DEFAULT_TENANT in normalised and configured_api_key():
         raise ValueError(
             f"{API_KEYS_ENV} defines tenant {DEFAULT_TENANT!r}, which {API_KEY_ENV} "
             "already authenticates as; use one or the other")
-    return table
+    return normalised
 
 
 def api_key_configured() -> bool:
@@ -138,9 +165,10 @@ def authenticate(api_key: Optional[str]) -> str:
     # first match, so timing does not reveal which tenant a key is close to.
     presented = hash_api_key(api_key)
     matched: Optional[str] = None
-    for tenant, digest in tenants.items():
-        if hmac.compare_digest(presented, digest):
-            matched = tenant
+    for tenant, digests in tenants.items():
+        for digest in digests:
+            if hmac.compare_digest(presented, digest):
+                matched = tenant
     if legacy and hmac.compare_digest(api_key, legacy):
         matched = DEFAULT_TENANT
     if matched is None:

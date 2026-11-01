@@ -1,17 +1,16 @@
-import os
-import sqlite3
 from datetime import datetime, timezone
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Request
 from pydantic import BaseModel
+
+from nhid_api_auth import tenant_of
+from nhid_attest import find_attestation
 
 router = APIRouter()
 
-DB_PATH = os.getenv("NHID_AUTH_DB", "nhid_auth.db")
-
-def _get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+# Screening reads the attestations table through nhid_attest, so the schema
+# migration runs and the lookup is scoped to the caller's tenant: a payer can
+# screen only references minted under its own key. Another tenant's reference
+# gets the same "not found" reject as one that does not exist.
 
 class PayerScreenRequest(BaseModel):
     caller_npi: str
@@ -19,13 +18,8 @@ class PayerScreenRequest(BaseModel):
     requested_scope: str
 
 @router.post("/v1/payer/screen")
-def screen_incoming_call(body: PayerScreenRequest):
-    db = _get_db()
-    row = db.execute(
-        "SELECT * FROM attestations WHERE reference_id = ?",
-        (body.reference_id,)
-    ).fetchone()
-    db.close()
+def screen_incoming_call(body: PayerScreenRequest, request: Request):
+    row = find_attestation(body.reference_id, tenant_of(request))
 
     if row is None:
         return {
