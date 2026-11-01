@@ -129,7 +129,13 @@ touch "$OUT/.nojekyll"
 
 BYTES="$(du -sb "$OUT" | cut -f1)"
 MB="$(awk "BEGIN {printf \"%.2f\", $BYTES/1024/1024}")"
+# Render-path optimizations on the published copy only: one stylesheet per page
+# and non-blocking web fonts. The repository's source pages are unchanged.
+python3 "$ROOT/scripts/seo/optimize_build.py" "$OUT"
 # Redirects for every retired route, emitted last so nothing overwrites them.
 python3 "$ROOT/scripts/ia/make_redirects.py" "$OUT"
+# The sitemap is generated from what was actually published, after the
+# redirects exist, so stubs and noindex pages are left out by rule.
+python3 "$ROOT/scripts/seo/build_sitemap.py" "$OUT"
 
 echo "Pages site assembled: $OUT (${MB} MB, $(find "$OUT" -type f | wc -l | tr -d ' ') files)"

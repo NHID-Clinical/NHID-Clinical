@@ -11,14 +11,15 @@
   <meta property="og:url" content="https://nhid-clinical.org/evidence-pack.html"/>
   <meta property="og:title" content="Evidence Pack | NHID-Clinical"/>
   <meta property="og:description" content="NHID-Clinical Evidence Pack — system behavior guarantees, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
-  <meta property="og:image" content="https://nhid-clinical.org/assets/og/default.png"/>
+  <meta property="og:image" content="https://nhid-clinical.org/assets/og/evidence-pack.png"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
-  <meta property="og:image:alt" content="NHID-Clinical: five open controls for AI voice agents on healthcare payer calls"/>
+  <meta property="og:image:alt" content="NHID-Clinical Evidence Pack: System behavior, failure traces, audit readiness and a risk register."/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Evidence Pack | NHID-Clinical"/>
   <meta name="twitter:description" content="NHID-Clinical Evidence Pack — system behavior guarantees, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
-  <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/default.png"/>
+  <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/evidence-pack.png"/>
+  <meta name="twitter:image:alt" content="NHID-Clinical Evidence Pack: System behavior, failure traces, audit readiness and a risk register."/>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -32,6 +33,76 @@
   <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
+  <!-- seo:structured-data -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://nhid-clinical.org/#organization",
+      "name": "NHID-Clinical",
+      "url": "https://nhid-clinical.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://nhid-clinical.org/assets/brand/renders/nhid-nmark.png",
+        "width": 655,
+        "height": 765
+      },
+      "description": "An independent research project and open reference implementation for disclosure and authorization of AI voice agents on healthcare payer calls. Not a standard, a certification or a product.",
+      "founder": {
+        "@id": "https://nhid-clinical.org/about.html#brianna-baynard"
+      },
+      "sameAs": [
+        "https://github.com/NHID-Clinical"
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://nhid-clinical.org/about.html#brianna-baynard",
+      "name": "Brianna Baynard",
+      "url": "https://nhid-clinical.org/about.html"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://nhid-clinical.org/evidence-pack.html#article",
+      "headline": "Evidence Pack",
+      "description": "NHID-Clinical Evidence Pack — system behavior guarantees, failure trace example, audit readiness model, and risk register for procurement and enterprise teams.",
+      "url": "https://nhid-clinical.org/evidence-pack.html",
+      "mainEntityOfPage": "https://nhid-clinical.org/evidence-pack.html",
+      "image": "https://nhid-clinical.org/assets/og/evidence-pack.png",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://nhid-clinical.org/about.html#brianna-baynard"
+      },
+      "publisher": {
+        "@id": "https://nhid-clinical.org/#organization"
+      },
+      "isPartOf": {
+        "@id": "https://nhid-clinical.org/#website"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://nhid-clinical.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Evidence Pack",
+          "item": "https://nhid-clinical.org/evidence-pack.html"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <!-- /seo:structured-data -->
 </head>
 <body>
 
@@ -348,8 +419,8 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
           </tr>
           <tr>
             <th scope="row">Conformance suite<span class="sc-measures">Implementation correctness against the specification</span></th>
-            <td class="sc-size">2132 tests</td>
-            <td>2132/2132 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
+            <td class="sc-size">2181 tests</td>
+            <td>2181/2181 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
             <td><code>python -m pytest tests/ -q</code><span class="sc-src">tests/</span></td>
           </tr>
           </tbody>
@@ -358,7 +429,7 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
 
       <aside class="visual-provenance">
         <p><strong>Separation:</strong> Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>c77849e</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>b4132f9</code></p>
       </aside>
       <!-- END GENERATED evidence-scorecard -->
         </div>

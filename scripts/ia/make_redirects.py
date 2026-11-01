@@ -22,7 +22,7 @@ TEMPLATE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Moved &mdash; NHID-Clinical</title>
-<link rel="canonical" href="{dest}">
+<link rel="canonical" href="{canonical}">
 <meta http-equiv="refresh" content="0; url={dest}">
 <meta name="robots" content="noindex,follow">
 <style>
@@ -44,6 +44,17 @@ TEMPLATE = """<!doctype html>
 """
 
 
+ORIGIN = "https://nhid-clinical.org"
+
+
+def canonical_for(dest: str) -> str:
+    """Absolute and fragment-free. Search engines resolve a relative canonical
+    against the stub's own URL and ignore the fragment of a canonical, so
+    "/faq.html#community" is better stated as the page it names."""
+    url = dest.split("#", 1)[0] or "/"
+    return url if url.startswith("http") else ORIGIN + url
+
+
 def main(out_dir: str) -> int:
     out = Path(out_dir)
     mapping = Path(__file__).with_name("redirects.txt")
@@ -59,7 +70,7 @@ def main(out_dir: str) -> int:
             return 1
         target = out / route
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(TEMPLATE.format(dest=dest))
+        target.write_text(TEMPLATE.format(dest=dest, canonical=canonical_for(dest)))
         written += 1
     print(f"  redirects written: {written}")
     return 0

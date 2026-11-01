@@ -3,22 +3,23 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Shadow Evaluation Guide — a no-cost behavioral baseline observation guide for payers assessing AI voice agent transparency in B2B administrative workflows."/>
+  <meta name="description" content="NHID-Clinical Shadow Evaluation Guide: a no-cost, observe-only baseline for payers assessing AI voice agent transparency on B2B administrative calls."/>
   <title>Shadow Evaluation Guide | NHID-Clinical</title>
   <link rel="canonical" href="https://nhid-clinical.org/shadow-evaluation-guide.html"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="NHID-Clinical"/>
   <meta property="og:url" content="https://nhid-clinical.org/shadow-evaluation-guide.html"/>
   <meta property="og:title" content="Shadow Evaluation Guide | NHID-Clinical"/>
-  <meta property="og:description" content="NHID-Clinical Shadow Evaluation Guide — a no-cost behavioral baseline observation guide for payers assessing AI voice agent transparency in B2B administrative workflows."/>
-  <meta property="og:image" content="https://nhid-clinical.org/assets/og/default.png"/>
+  <meta property="og:description" content="NHID-Clinical Shadow Evaluation Guide: a no-cost, observe-only baseline for payers assessing AI voice agent transparency on B2B administrative calls."/>
+  <meta property="og:image" content="https://nhid-clinical.org/assets/og/shadow-evaluation-guide.png"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
-  <meta property="og:image:alt" content="NHID-Clinical: five open controls for AI voice agents on healthcare payer calls"/>
+  <meta property="og:image:alt" content="NHID-Clinical Shadow Evaluation Guide: A no-cost, observe-only baseline for payers assessing AI voice agents."/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Shadow Evaluation Guide | NHID-Clinical"/>
-  <meta name="twitter:description" content="NHID-Clinical Shadow Evaluation Guide — a no-cost behavioral baseline observation guide for payers assessing AI voice agent transparency in B2B administrative workflows."/>
-  <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/default.png"/>
+  <meta name="twitter:description" content="NHID-Clinical Shadow Evaluation Guide: a no-cost, observe-only baseline for payers assessing AI voice agent transparency on B2B administrative calls."/>
+  <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/shadow-evaluation-guide.png"/>
+  <meta name="twitter:image:alt" content="NHID-Clinical Shadow Evaluation Guide: A no-cost, observe-only baseline for payers assessing AI voice agents."/>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -33,6 +34,76 @@
   <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
+  <!-- seo:structured-data -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://nhid-clinical.org/#organization",
+      "name": "NHID-Clinical",
+      "url": "https://nhid-clinical.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://nhid-clinical.org/assets/brand/renders/nhid-nmark.png",
+        "width": 655,
+        "height": 765
+      },
+      "description": "An independent research project and open reference implementation for disclosure and authorization of AI voice agents on healthcare payer calls. Not a standard, a certification or a product.",
+      "founder": {
+        "@id": "https://nhid-clinical.org/about.html#brianna-baynard"
+      },
+      "sameAs": [
+        "https://github.com/NHID-Clinical"
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://nhid-clinical.org/about.html#brianna-baynard",
+      "name": "Brianna Baynard",
+      "url": "https://nhid-clinical.org/about.html"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://nhid-clinical.org/shadow-evaluation-guide.html#article",
+      "headline": "Shadow Evaluation Guide",
+      "description": "NHID-Clinical Shadow Evaluation Guide: a no-cost, observe-only baseline for payers assessing AI voice agent transparency on B2B administrative calls.",
+      "url": "https://nhid-clinical.org/shadow-evaluation-guide.html",
+      "mainEntityOfPage": "https://nhid-clinical.org/shadow-evaluation-guide.html",
+      "image": "https://nhid-clinical.org/assets/og/shadow-evaluation-guide.png",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://nhid-clinical.org/about.html#brianna-baynard"
+      },
+      "publisher": {
+        "@id": "https://nhid-clinical.org/#organization"
+      },
+      "isPartOf": {
+        "@id": "https://nhid-clinical.org/#website"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://nhid-clinical.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Shadow Evaluation Guide",
+          "item": "https://nhid-clinical.org/shadow-evaluation-guide.html"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <!-- /seo:structured-data -->
 </head>
 <body>
 
@@ -343,7 +414,7 @@
         <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/shadow_pilot.jsonl</code> — 60 conversations, 301 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Classification:</strong> <span class="maturity-research">Research</span> Reference corpus results, not operational performance. This is a committed synthetic corpus, not production call data, and it says nothing about how any deployment would behave.</p>
         <p><strong>Known limitation:</strong> DBC-01 evaluates the agent's own identity assertion text: claims of human status or licensed-professional standing. Its former artifact tier, which read a deceptive_artifact_flags field the agent supplied about itself, is withdrawn. This count is therefore what the transcript says, not a measurement of how much deception the corpus contains.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>c77849e</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>b4132f9</code></p>
       </aside>
       <!-- END GENERATED shadow-outcomes -->
         </div>
@@ -413,7 +484,7 @@
         <p><strong>Censoring:</strong> 23 of 550 conversations record no disclosure interval; 21 of those 23 also carry an IDG-01 violation, and none is labelled PASS. They are treated as right-censored above every observed value, so percentiles are taken over all 550 conversations and are identifiable only up to p95.8. Anything beyond that is reported as a lower bound, not as a value.</p>
         <p><strong>Percentile convention:</strong> nearest-rank, rank = ceil(p/100 × N), no interpolation</p>
         <p><strong>How to read the split:</strong> expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>c77849e</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>b4132f9</code></p>
       </aside>
       <!-- END GENERATED latency-distribution -->
         </div>
