@@ -70,6 +70,12 @@
   reported Impersonation Latency is only as accurate as the transcription path
   that produced it. See the ASR dependency in
   [scope-boundary-fairness-clinical.md](scope-boundary-fairness-clinical.md).
+
+  **Verbal channel only.** A separate *notification latency* (connect to a rendered
+  notice on the representative's screen) is a CANDIDATE measure for a non-verbal
+  disclosure channel. It is reported beside Impersonation Latency, never merged with it,
+  and does not redefine it. See
+  [proposals/verification-and-nonverbal-disclosure.md](proposals/verification-and-nonverbal-disclosure.md).
 - **Delegated authority / delegation** — a provider organization granting a
   non-human actor scoped authority to act on its behalf, expressed as a
   signed, NPI-anchored, expiring, revocable object.
