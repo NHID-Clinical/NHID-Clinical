@@ -1,0 +1,7 @@
+# nhid-clinical.org: everything published is meant to be indexed.
+# Retired routes carry noindex and a canonical to their destination, so they
+# need no Disallow; blocking them would hide that canonical from crawlers.
+User-agent: *
+Allow: /
+
+Sitemap: https://nhid-clinical.org/sitemap.xml

@@ -1,0 +1,75 @@
+{
+  "_comment": "One row per published page. Read by build_og_images.cjs (the card) and seo_head.py (og:image, twitter:image, alt text, JSON-LD). Headlines restate each page's own description; no new claims.",
+  "index.html": {
+    "slug": "home",
+    "kicker": "NHID-Clinical v1.3",
+    "headline": "AI callers should say they’re automated before they ask a payer for patient data.",
+    "type": "home"
+  },
+  "about.html": {
+    "slug": "about",
+    "kicker": "About",
+    "headline": "An independent, open framework for AI agents acting for healthcare providers.",
+    "type": "about"
+  },
+  "developers.html": {
+    "slug": "developers",
+    "kicker": "Developers",
+    "headline": "Schema, policy engine, conformance suite and trace tools for v1.3.",
+    "type": "article"
+  },
+  "evidence-pack.html": {
+    "slug": "evidence-pack",
+    "kicker": "Evidence Pack",
+    "headline": "System behavior, failure traces, audit readiness and a risk register.",
+    "type": "article"
+  },
+  "faq.html": {
+    "slug": "faq",
+    "kicker": "FAQ",
+    "headline": "Questions about non-human identity disclosure for healthcare voice AI.",
+    "type": "faq"
+  },
+  "framework/nhid-auth.html": {
+    "slug": "nhid-auth",
+    "kicker": "NHID-Auth v2",
+    "headline": "Agent passports, provider-signed delegation and NPI binding.",
+    "type": "article"
+  },
+  "privacy.html": {
+    "slug": "privacy",
+    "kicker": "Privacy Policy",
+    "headline": "How NHID-Clinical handles data, including the starter-pack text program.",
+    "type": "page"
+  },
+  "regulatory-alignment.html": {
+    "slug": "regulatory-alignment",
+    "kicker": "Regulatory Alignment",
+    "headline": "How the proposal maps to CMS-0057-F, MACPAC, DOJ FCA enforcement and state AI laws.",
+    "type": "article"
+  },
+  "shadow-evaluation-guide.html": {
+    "slug": "shadow-evaluation-guide",
+    "kicker": "Shadow Evaluation Guide",
+    "headline": "A no-cost, observe-only baseline for payers assessing AI voice agents.",
+    "type": "article"
+  },
+  "sms-opt-in.html": {
+    "slug": "starter-pack",
+    "kicker": "Starter Pack",
+    "headline": "Get the shadow-evaluation guide by text.",
+    "type": "page"
+  },
+  "specification.html": {
+    "slug": "specification",
+    "kicker": "Specification v1.3",
+    "headline": "Five proposed requirements for transparent AI voice agents on payer calls.",
+    "type": "article"
+  },
+  "specs/index.html": {
+    "slug": "downloads",
+    "kicker": "Downloads",
+    "headline": "The v1.3 specification, playbook and shadow-evaluation guide as PDFs.",
+    "type": "page"
+  }
+}
