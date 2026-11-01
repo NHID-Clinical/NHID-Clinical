@@ -70,16 +70,17 @@ Results use the four values every control uses: `pass`, `exception`, `unknown`,
 ### 3.1 `patient_binding`, per operation
 
 The VER-01 prototype's `intent_hmac` covers a member reference and a claim reference.
-That does **not** automatically cover all three operations. Each operation binds its own
-resource:
+A claim binding is **not** a universal patient or record binding. Each operation binds
+its own resource (`resource_binding.type` in the trace):
 
-| Operation | Bound resource | Prototype today |
-| :-- | :-- | :-- |
-| `eligibility` | member | covered (member reference, empty claim reference) |
-| `claim_status` | member and claim | covered |
-| `prior_auth` | member and prior-authorization case identifier | **not covered**: needs a typed resource reference in place of the claim reference (§8) |
+| Operation | Required binding | `resource_binding.type` | Prototype today |
+| :-- | :-- | :-- | :-- |
+| `eligibility` | member ID + date of birth + eligibility request reference | `MEMBER_ELIGIBILITY_REQUEST` | **partial**: member only; no DOB or request reference |
+| `claim_status` | member ID + claim reference | `MEMBER_CLAIM` | covered |
+| `prior_auth` | member ID + authorization/case reference | `MEMBER_AUTH_CASE` | **not covered** |
 
-`patient_binding` passes when the resource the representative opens is the bound one.
+`patient_binding` passes when the resource the representative opens is the bound one. The
+binding reference is a keyed HMAC of these identifiers, never the identifiers.
 
 ### 3.2 `identifier_match`
 
@@ -92,24 +93,34 @@ Two different decisions must not be confused:
 
 * **member-level attribution**: "this provider is associated with this member", which
   is what Provider Access API attribution establishes (§7);
-* **record-level match**: "the provider on *this* claim or case is linked to the
-  delegating provider".
+* **record-level link**: "*this* claim or authorization is linked to the delegating
+  provider".
 
-ACC-01 makes the **record-level** decision for claim status and prior authorization, and
-neither for eligibility:
+The payer states which evidence it recognizes for each operation, and the trace records
+which one established the relationship (`relationship_basis`):
 
-| Operation | Decision | Evidence the payer may accept (its policy chooses) |
+| `relationship_basis` | Meaning |
+| :-- | :-- |
+| `CLAIM_BILLING_PROVIDER` | The delegating provider is the billing provider on the claim. |
+| `CLAIM_RENDERING_PROVIDER` | The delegating provider is the rendering provider on the claim. |
+| `PRIOR_AUTH_REQUESTING_PROVIDER` | The delegating provider requested the authorization. |
+| `PRIOR_AUTH_SERVICING_PROVIDER` | The delegating provider is the servicing provider on the authorization. |
+| `PAYER_ATTRIBUTION` | The payer attributes the member to the delegating provider (for example from historical claims). |
+| `ORGANIZATIONAL_MEMBERSHIP` | The payer's directory places the delegating provider in the organization on the record. |
+| `UPCOMING_APPOINTMENT` | The payer has **verified** an upcoming appointment with the delegating provider. |
+| `UNKNOWN` | The evidence could not be determined. Never a pass; escalates. |
+
+Exact NPI equality is not hardcoded. The decisions this proposal takes:
+
+| Operation | Question | Rule |
 | :-- | :-- | :-- |
-| `claim_status` | record-level match | billing NPI, rendering NPI, directory-resolved group membership |
-| `prior_auth` | record-level match | requesting NPI, servicing NPI, directory-resolved group membership |
-| `eligibility` | enrollment only | provider enrolled with this payer; no prior relationship required (drafted; see §9) |
+| `eligibility` | Is there an acceptable basis for this provider to check this patient's coverage? | Existing patient: `PAYER_ATTRIBUTION`. **New patient: `UPCOMING_APPOINTMENT`, verified by the payer.** An appointment the agent asserts is not evidence. No basis: `unknown`, escalate. |
+| `claim_status` | Is this specific claim linked to this provider? | **Linked claims only**: `CLAIM_BILLING_PROVIDER`, `CLAIM_RENDERING_PROVIDER` or `ORGANIZATIONAL_MEMBERSHIP`, as the payer's policy recognizes. Member attribution alone does **not** open the member's other claims. Evidence that the claim is someone else's: `exception`, deny. No evidence either way: `unknown`, escalate. |
+| `prior_auth` | Is this specific authorization linked to this provider? | `PRIOR_AUTH_REQUESTING_PROVIDER`, `PRIOR_AUTH_SERVICING_PROVIDER` or `ORGANIZATIONAL_MEMBERSHIP`. |
 
-Exact NPI equality is the **proposed initial policy**, not a universal definition of
-authorization. Claims carry billing, rendering, ordering and servicing providers, and
-practices bill under group NPIs. The payer states which evidence types it accepts
-(`relationship_policy` in the fixtures). The trace records which one established the
-relationship (`relationship_basis`). Evidence that is absent or unresolved gives
-`unknown`, never `pass`.
+The appointment rule is a **proposed payer policy**, following the CMS Provider Access
+FAQ's example that payers "could accept proof of an upcoming appointment" for new
+patients. It is not a CMS mandate.
 
 ### 3.4 `purpose`
 
@@ -192,9 +203,10 @@ establish that no equivalent implementation exists.
 Not started. When it is, it extends `src/call_verification.py`; it is not a parallel
 engine.
 
-1. **Typed resource binding.** Replace the claim reference in `intent_hmac` with a typed
-   resource reference (`member`, `member+claim`, `member+pa_case`), so prior authorization
-   binds its case identifier.
+1. **Typed resource binding.** Replace the member/claim pair in `intent_hmac` with a typed
+   resource binding (`MEMBER_ELIGIBILITY_REQUEST`, `MEMBER_CLAIM`, `MEMBER_AUTH_CASE`), so
+   eligibility binds the date of birth and request reference and prior authorization binds
+   its case.
 2. **Payer record lookup as an interface** (claim, case, member, directory), so the
    prototype is tested against fixtures without any payer system.
 3. **Relationship policy as data.** The accepted evidence types per operation are
@@ -202,18 +214,27 @@ engine.
 4. Every check runs before anything is released; there is no partial release.
 5. The delegating NPI comes only from the verified delegation.
 6. Results serialize to `access_authorization` and validate against the trace schema.
-7. Every fixture in `fixtures/patient-access/` is reproduced.
+7. Every fixture in `fixtures/patient-access/` is reproduced. The fixtures are generated by
+   `scripts/build_patient_access_fixtures.py`, which refuses to write a scenario that breaks
+   the binding, relationship-basis or upstream-minimum-necessary invariants
+   (`--check` verifies the committed copy).
 
-## 9. Open questions
+## 9. Decisions and open questions
 
-1. **Eligibility for new patients.** Drafted as enrollment only. CMS notes payers could
-   accept proof of an upcoming appointment for new patients; a payer may require it.
-2. **Accepted evidence types.** Which of billing, rendering, ordering and servicing NPI,
-   and directory group membership, a payer accepts per operation.
-3. **Member-level vs record-level.** Whether a payer that already attributes a member to a
-   provider should release any of that member's claims, or only claims linked to the
-   delegating provider. Drafted as record-level.
-4. **Where the evidence lives.** The trace field, the payer's own audit, or both.
+Decided for this proposal:
+
+1. **New-patient eligibility requires appointment proof the payer verifies.** Enrollment
+   alone is not enough; without it the result is `unknown` and escalates.
+2. **Claim status releases linked claims only.** A provider attributed to a member still
+   cannot read that member's unrelated claims.
+
+Still open:
+
+1. **Accepted evidence per operation.** The fixtures assume one example policy
+   (`payer_policy_assumed` in their metadata); each payer chooses its own.
+2. **How a payer verifies an appointment** (scheduling feed, prior-authorization record,
+   referral), and how far ahead it may be.
+3. **Where the evidence lives.** The trace field, the payer's own audit, or both.
 
 ---
 
