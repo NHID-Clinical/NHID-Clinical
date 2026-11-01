@@ -642,7 +642,7 @@
             "null"
           ],
           "additionalProperties": false,
-          "description": "Optional. Result of the candidate ACC-01 patient- and record-level access check. The payer decides from its own records; this field records the decision and its evidence, with no PHI in clear.",
+          "description": "Optional. Result of the candidate ACC-01 record-level access check. The payer decides from its own records under its own relationship policy; this field records the decision and its basis, with no PHI in clear. Minimum necessary is enforced by PDX-01 field scope, not here.",
           "properties": {
             "result": {
               "type": [
@@ -656,7 +656,7 @@
                 "not_assessable",
                 null
               ],
-              "description": "Overall ACC-01 result. not_assessable when VER-01 or DLG-01 has not passed: access is never evaluated for an unverified caller."
+              "description": "Overall ACC-01 result. not_assessable when a prerequisite has not passed (VER-01, DLG-01, or PDX-01 field scope): access is never evaluated for an unverified caller or an out-of-scope request."
             },
             "reason_code": {
               "type": [
@@ -698,7 +698,7 @@
                     "not_assessable",
                     null
                   ],
-                  "description": "The record opened matches the member/claim the call-scoped token was issued for (keyed intent HMAC)."
+                  "description": "The resource opened matches the one the call-scoped token was issued for, per operation: member for eligibility, member and claim for claim status, member and prior-authorization case for prior auth (keyed intent HMAC)."
                 },
                 "identifier_match": {
                   "type": [
@@ -726,7 +726,7 @@
                     "not_assessable",
                     null
                   ],
-                  "description": "Per operation: claim or case belongs to the delegating provider; for eligibility, the provider is enrolled with the payer."
+                  "description": "The payer's own relationship evidence, under its stated policy, links the delegating provider to the requested record (claim status, prior auth) or the provider is enrolled (eligibility)."
                 },
                 "purpose": {
                   "type": [
@@ -741,22 +741,15 @@
                     null
                   ],
                   "description": "The declared purpose is inside the delegated scope."
-                },
-                "minimum_necessary": {
-                  "type": [
-                    "string",
-                    "null"
-                  ],
-                  "enum": [
-                    "pass",
-                    "exception",
-                    "unknown",
-                    "not_assessable",
-                    null
-                  ],
-                  "description": "The fields requested are within what the operation needs (PDX-01 field scope)."
                 }
               }
+            },
+            "relationship_basis": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Which payer-defined evidence established record_relationship, e.g. billing_npi, rendering_npi, requesting_npi, directory_group_membership, enrollment. Null when it was not established."
             }
           }
         }
