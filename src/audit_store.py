@@ -17,8 +17,14 @@ to the file can edit both. **This raises the cost of tampering from one edit to
 two coordinated edits; it is not a cryptographic guarantee.** A deployment that
 needs one must anchor the count outside this file: an append-only or WORM store,
 a signed periodic checkpoint, or replication to a system the calling agent
-cannot write to. That is documented in docs/claim-boundaries.md and is not
-implemented here.
+cannot write to.
+
+Pass ``anchor=`` (a ``src.audit_anchor.FileAuditAnchor``) to do the first of
+those: every write then also appends a signed checkpoint to a separate file,
+and ``verify_chain`` checks the database against it, so lowering the counter
+in this file no longer hides a deletion. What that does and does not raise is
+stated in ``src/audit_anchor.py`` and docs/claim-boundaries.md. Without an
+anchor the store behaves exactly as described above.
 
 It cannot detect anything at all if the store is unreadable, which is why an
 unreadable store is reported as a verification **failure** rather than silently
@@ -33,7 +39,14 @@ import json
 import logging
 import os
 from datetime import datetime, timedelta
+import threading
 from typing import Optional
+from src.audit_anchor import (
+    KIND_APPEND,
+    KIND_PRUNE,
+    AnchorInvalid,
+    ERR_AUDIT_ANCHOR_INVALID,  # noqa: F401  (re-exported for callers)
+)
 from src.audit_integrity import AuditIntegrity
 
 logger = logging.getLogger(__name__)
@@ -45,6 +58,18 @@ ERR_AUDIT_STORE_UNREADABLE = "ERR_AUDIT_STORE_UNREADABLE"
 #: Reported when the session's declared event count exceeds what can be read,
 #: i.e. events that were written are no longer there.
 ERR_AUDIT_EVENTS_MISSING = "ERR_AUDIT_EVENTS_MISSING"
+
+#: Reported when more events are readable than the external anchor recorded:
+#: rows the anchor never saw were added, or the anchor's tail was cut off.
+ERR_AUDIT_UNANCHORED_EVENTS = "ERR_AUDIT_UNANCHORED_EVENTS"
+
+#: Reported when the event the anchor names as the session's latest is missing
+#: or carries a different evidence hash: the trail was rewritten.
+ERR_AUDIT_ANCHOR_MISMATCH = "ERR_AUDIT_ANCHOR_MISMATCH"
+
+#: Reported when a write landed in the database but its checkpoint could not be
+#: appended to the anchor. The event exists; it is not anchored.
+ERR_AUDIT_ANCHOR_WRITE_FAILED = "ERR_AUDIT_ANCHOR_WRITE_FAILED"
 
 
 class AuditStoreUnavailable(Exception):
@@ -59,14 +84,26 @@ class AuditStoreUnavailable(Exception):
 class AuditStore:
     """SQLite-based persistent audit event storage."""
 
-    def __init__(self, db_path: str = "/data/audit_events.db", secret_key: Optional[bytes] = None):
+    def __init__(
+        self,
+        db_path: str = "/data/audit_events.db",
+        secret_key: Optional[bytes] = None,
+        anchor=None,
+    ):
         """Initialize audit store.
 
         Args:
             db_path: Path to SQLite database file
             secret_key: HMAC secret key for verification (optional; generated if not provided)
+            anchor: optional ``FileAuditAnchor`` kept outside ``db_path``
         """
         self.db_path = db_path
+        self.anchor = anchor
+        if anchor is not None and os.path.abspath(anchor.path) == os.path.abspath(db_path):
+            raise ValueError("the audit anchor must not be the database it anchors")
+        # Write + checkpoint must be one step per process, or two writers could
+        # append checkpoints out of order.
+        self._write_lock = threading.Lock()
         if secret_key is None:
             # Ephemeral key, announced rather than assumed.
             #
@@ -206,6 +243,18 @@ class AuditStore:
         Returns:
             True if write succeeded, False otherwise
         """
+        with self._write_lock:
+            return self._write_event_locked(
+                event_id, session_id, event_type, timestamp, agent_id,
+                organization_id, payload, previous_event_id, evidence_hash,
+                retention_days,
+            )
+
+    def _write_event_locked(
+        self, event_id, session_id, event_type, timestamp, agent_id,
+        organization_id, payload, previous_event_id, evidence_hash,
+        retention_days,
+    ) -> bool:
         try:
             with self._connect() as conn:
                 cursor = conn.cursor()
@@ -258,8 +307,12 @@ class AuditStore:
                         (session_id, agent_id, organization_id, retention_days),
                     )
 
+                cursor.execute(
+                    "SELECT event_count FROM audit_sessions WHERE session_id = ?",
+                    (session_id,),
+                )
+                new_count = int(cursor.fetchone()[0])
                 conn.commit()
-            return True
         except Exception as exc:
             # False is the honest answer to "did this write land?", but an
             # audit write failing silently is worth a record of its own.
@@ -268,6 +321,23 @@ class AuditStore:
                 event_id, session_id, self.db_path, exc,
             )
             return False
+
+        if self.anchor is not None:
+            try:
+                self.anchor.record(session_id, new_count, event_id, evidence_hash or "")
+            except Exception as exc:
+                # The row is committed and cannot be un-written here. Reporting
+                # False says "this write did not fully land", and verify_chain
+                # will report the session as carrying an unanchored event until
+                # an operator looks — which is the point.
+                logger.error(
+                    "%s: event %r in session %r is in %s but its checkpoint "
+                    "could not be appended to %s: %s",
+                    ERR_AUDIT_ANCHOR_WRITE_FAILED, event_id, session_id,
+                    self.db_path, self.anchor.path, exc,
+                )
+                return False
+        return True
 
     def read_event(self, event_id: str) -> Optional[dict]:
         """Read a single event from storage.
@@ -344,7 +414,7 @@ class AuditStore:
                     query += " AND agent_id = ?"
                     params.append(agent_id)
 
-                query += " ORDER BY timestamp ASC LIMIT ?"
+                query += " ORDER BY timestamp ASC, id ASC LIMIT ?"
                 params.append(limit)
 
                 cursor.execute(query, params)
@@ -426,6 +496,11 @@ class AuditStore:
                 f"{declared} event(s), {len(events)} readable"
             )
 
+        if self.anchor is not None:
+            failure = self._check_anchor(session_id, events)
+            if failure:
+                return False, failure
+
         if not events:
             if declared is None:
                 # No session row and no events: this store has no record of the
@@ -475,21 +550,76 @@ class AuditStore:
 
         return is_valid, error
 
+    def _check_anchor(self, session_id: str, events: list) -> Optional[str]:
+        """Compare readable events with the external anchor. None means they agree."""
+        try:
+            anchored = self.anchor.latest(session_id)
+        except AnchorInvalid as exc:
+            return str(exc)
+        readable = len(events)
+        if anchored is None:
+            if readable:
+                return (
+                    f"{ERR_AUDIT_UNANCHORED_EVENTS}: session {session_id!r} has "
+                    f"{readable} readable event(s) and no checkpoint in {self.anchor.path}"
+                )
+            return None
+        count = int(anchored["event_count"])
+        if count > readable:
+            return (
+                f"{ERR_AUDIT_EVENTS_MISSING}: the anchor records {count} event(s) "
+                f"for session {session_id!r}, {readable} readable"
+            )
+        if readable > count:
+            return (
+                f"{ERR_AUDIT_UNANCHORED_EVENTS}: session {session_id!r} has "
+                f"{readable} readable event(s), the anchor records {count}"
+            )
+        head_id = anchored.get("head_event_id")
+        if head_id is not None:
+            head = next((e for e in events if e["event_id"] == head_id), None)
+            if head is None or head["evidence_hash"] != (anchored.get("head_evidence_hash") or ""):
+                return (
+                    f"{ERR_AUDIT_ANCHOR_MISMATCH}: the anchored latest event "
+                    f"{head_id!r} of session {session_id!r} is missing or altered"
+                )
+        return None
+
     def cleanup_expired(self) -> int:
         """Remove expired audit events.
 
         Returns:
             Number of events deleted
         """
+        with self._write_lock:
+            return self._cleanup_expired_locked()
+
+    def _cleanup_expired_locked(self) -> int:
         try:
             with self._connect() as conn:
                 cursor = conn.cursor()
 
+                cursor.execute(
+                    "SELECT session_id, COUNT(*) FROM audit_events "
+                    "WHERE expires_at < datetime('now') GROUP BY session_id"
+                )
+                pruned = {row[0]: int(row[1]) for row in cursor.fetchall()}
+
                 cursor.execute("DELETE FROM audit_events WHERE expires_at < datetime('now')")
                 count = cursor.rowcount
 
+                # Retention is not tampering: lower the declared count by what
+                # was pruned, so verify_chain does not report expired events as
+                # missing. Previously the counter kept them, and every session
+                # that had anything pruned failed verification afterwards.
+                for session_id, n in pruned.items():
+                    cursor.execute(
+                        "UPDATE audit_sessions SET event_count = MAX(event_count - ?, 0) "
+                        "WHERE session_id = ?",
+                        (n, session_id),
+                    )
+
                 conn.commit()
-            return count
         except Exception as exc:
             # 0 means "nothing was due for pruning". A failed prune is not that,
             # and reporting it as 0 would show a retention job as working.
@@ -497,6 +627,21 @@ class AuditStore:
                 f"{ERR_AUDIT_STORE_UNREADABLE}: prune failed on "
                 f"{self.db_path}: {exc}"
             ) from exc
+
+        if self.anchor is not None:
+            for session_id in pruned:
+                remaining = self.query_events(session_id=session_id, limit=10000)
+                declared = self.declared_event_count(session_id) or 0
+                head = remaining[-1] if remaining else None
+                # A prune checkpoint is the only way the anchor's count goes
+                # down, and it is signed and dated like any other.
+                self.anchor.record(
+                    session_id, declared,
+                    head["event_id"] if head else None,
+                    head["evidence_hash"] if head else None,
+                    kind=KIND_PRUNE,
+                )
+        return count
 
     def close_session(self, session_id: str) -> bool:
         """Mark a session as closed.
