@@ -2,15 +2,21 @@ import csv
 import io
 import json
 from datetime import datetime, timezone
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional
 
 router = APIRouter()
 
+from nhid_api_auth import tenant_of
+
 # In-memory audit log for demo purposes
 # In production this connects to your hash-chained audit DB
+#
+# Every entry carries the tenant that logged it, and export returns only the
+# requesting tenant's entries: with per-customer keys, one customer must never
+# be able to export another's session by guessing its id.
 _audit_log = []
 
 class AuditEvent(BaseModel):
@@ -22,15 +28,18 @@ class AuditEvent(BaseModel):
     timestamp: Optional[str] = None
 
 @router.post("/v1/audit/log")
-def log_audit_event(event: AuditEvent):
+def log_audit_event(event: AuditEvent, request: Request):
     entry = event.model_dump()
+    entry["tenant_id"] = tenant_of(request)
     entry["timestamp"] = datetime.now(timezone.utc).isoformat()
     _audit_log.append(entry)
     return {"logged": True, "timestamp": entry["timestamp"]}
 
 @router.get("/v1/audit/export/{session_id}")
-def export_audit_fhir(session_id: str, format: str = "fhir"):
-    events = [e for e in _audit_log if e["session_id"] == session_id]
+def export_audit_fhir(session_id: str, request: Request, format: str = "fhir"):
+    tenant = tenant_of(request)
+    events = [e for e in _audit_log
+              if e["session_id"] == session_id and e.get("tenant_id") == tenant]
     if not events:
         raise HTTPException(status_code=404, detail="No audit events found for session")
 

@@ -3,7 +3,7 @@ import logging
 import time
 import uuid
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import Response, JSONResponse
 
 from llm import call_llm
@@ -19,6 +19,7 @@ from nhid_event_store import (
 )
 from nhid_policy import NHIDPolicyEngine, PolicyAction
 from twilio_helper import twiml
+from src.webhook_security import require_debug_access, require_twilio_signature
 
 app = FastAPI()
 policy = NHIDPolicyEngine()
@@ -27,7 +28,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nhid-proxy")
 
 
-@app.post("/voice/incoming")
+@app.post("/voice/incoming", dependencies=[Depends(require_twilio_signature)])
 async def incoming(request: Request):
     """INGRESS LAYER: Accept incoming call.
 
@@ -296,7 +297,7 @@ async def process_pipeline(request: Request) -> str:
         raise HTTPException(status_code=500, detail="pipeline failure")
 
 
-@app.post("/voice/process")
+@app.post("/voice/process", dependencies=[Depends(require_twilio_signature)])
 async def process(request: Request):
     return Response(
         content=await process_pipeline(request),
@@ -304,7 +305,7 @@ async def process(request: Request):
     )
 
 
-@app.get("/debug/replay/{session_id}")
+@app.get("/debug/replay/{session_id}", dependencies=[Depends(require_debug_access)])
 async def debug_replay(session_id: str):
     """DEBUG ENDPOINT: Full forensic trace.
 
