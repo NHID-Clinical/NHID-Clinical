@@ -74,6 +74,7 @@ def client():
 def isolated_env(monkeypatch, tmp_path):
     """Start every test from no configuration at all."""
     monkeypatch.delenv("NHID_API_KEY", raising=False)
+    monkeypatch.delenv("NHID_API_KEYS", raising=False)
     monkeypatch.delenv("NHID_JWT_SECRET", raising=False)
     monkeypatch.delenv("NHID_ATTEST_ENABLED", raising=False)
     # DB_PATH is bound at import, so redirect the attribute rather than the env.
