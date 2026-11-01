@@ -104,6 +104,13 @@ authored transcripts; they are not all measurements of the canonical scenario. A
 that narrows to the canonical scenario needs the subset, not the whole, and the subset has
 not been separately evaluated.
 
+## Candidate proposal: patient- and record-level access
+
+[`proposals/patient-access-authorization.md`](proposals/patient-access-authorization.md)
+is a CANDIDATE / draft for the question the controls above do not answer: whether this
+verified agent may see *this* patient's record. The payer decides from its own records;
+ACC-01 is not part of the canonical control set and changes no engine semantics.
+
 ## Candidate proposal: call verification and non-verbal disclosure
 
 [`proposals/verification-and-nonverbal-disclosure.md`](proposals/verification-and-nonverbal-disclosure.md)

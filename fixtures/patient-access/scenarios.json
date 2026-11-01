@@ -1,0 +1,926 @@
+{
+  "metadata": {
+    "corpus_name": "NHID-Clinical Patient Access Fixtures (candidate)",
+    "version": "0.1-draft",
+    "generated_date": "2026-11-01",
+    "status": "CANDIDATE / draft. Expected results only; not yet measured.",
+    "denominator": "Own denominator. Not part of, and never pooled with, the v1 or v2 Governance Evaluation Corpus, the Voice-Stress corpus or the verification-nonverbal fixtures.",
+    "total_scenarios": 11,
+    "proposal": "docs/proposals/patient-access-authorization.md",
+    "result_vocabulary": [
+      "pass",
+      "exception",
+      "unknown",
+      "not_assessable"
+    ],
+    "outcome_ladder": [
+      "DENY_DATA",
+      "ESCALATE_HUMAN",
+      "DISCLOSE_IDENTITY",
+      "LOG_ONLY",
+      "CONTINUE_AI"
+    ],
+    "payer_record": "What the payer's own systems hold for the case. NHID never asserts these facts; the payer looks them up.",
+    "fictional_data": "All names, numbers and identifiers are fictional."
+  },
+  "scenarios": [
+    {
+      "scenario_id": "FIX-ACC-001",
+      "title": "Claim status, claim billed by the delegating provider",
+      "description": "Verified agent asks for the status of a claim the delegating NPI billed.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility",
+        "claim_status",
+        "prior_auth"
+      ],
+      "payer_record": {
+        "claim_billing_npi": "1234567893",
+        "claim_rendering_npi": "1234567893"
+      },
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "pass",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "pass"
+      },
+      "expected_outcome": "CONTINUE_AI",
+      "notes": "All bindings hold.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "pass",
+              "reason_code": null,
+              "operation": "claim_status",
+              "binding_checks": {
+                "patient_binding": "pass",
+                "identifier_match": "pass",
+                "record_relationship": "pass",
+                "purpose": "pass",
+                "minimum_necessary": "pass"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "Can you give me the status of claim CLM-48213 for member M-0042, date of birth March 3rd 1961?",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-002",
+      "title": "Claim billed by a different provider",
+      "description": "Verified agent, valid delegation and token, asks about a claim another practice billed.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility",
+        "claim_status",
+        "prior_auth"
+      ],
+      "payer_record": {
+        "claim_billing_npi": "1987654320",
+        "claim_rendering_npi": "1987654320"
+      },
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "pass",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "exception"
+      },
+      "expected_outcome": "DENY_DATA",
+      "notes": "The gap ACC-01 exists for: identity, delegation and token all pass, and the record is still not this provider's.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "exception",
+              "reason_code": "RECORD_NOT_PROVIDERS",
+              "operation": "claim_status",
+              "binding_checks": {
+                "patient_binding": "pass",
+                "identifier_match": "pass",
+                "record_relationship": "exception",
+                "purpose": "pass",
+                "minimum_necessary": "pass"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "Can you give me the status of claim CLM-77105 for member M-0042?",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-003",
+      "title": "Token issued for one member, record opened for another",
+      "description": "The call-scoped token was issued for member A; the agent asks about member B.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility",
+        "claim_status",
+        "prior_auth"
+      ],
+      "payer_record": {
+        "token_member_ref_matches": false
+      },
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "pass",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "exception"
+      },
+      "expected_outcome": "DENY_DATA",
+      "notes": "matches_intent() on the token's keyed intent HMAC fails for member B. A new token is needed for a new patient.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "exception",
+              "reason_code": "PATIENT_BINDING_MISMATCH",
+              "operation": "eligibility",
+              "binding_checks": {
+                "patient_binding": "exception",
+                "identifier_match": "pass",
+                "record_relationship": "pass",
+                "purpose": "pass",
+                "minimum_necessary": "pass"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "Actually, can you check member M-0099 instead, date of birth July 9th 1975?",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-004",
+      "title": "Eligibility for a prospective patient",
+      "description": "Eligibility check before a first visit. No prior relationship exists; identifiers match and the provider is enrolled with the payer.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility",
+        "claim_status",
+        "prior_auth"
+      ],
+      "payer_record": {
+        "provider_enrolled": true,
+        "member_dob_matches": true
+      },
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "pass",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "pass"
+      },
+      "expected_outcome": "CONTINUE_AI",
+      "notes": "Eligibility requires no prior provider-patient relationship: checking coverage before a first visit is normal. Enrollment is the relationship tested.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "pass",
+              "reason_code": null,
+              "operation": "eligibility",
+              "binding_checks": {
+                "patient_binding": "pass",
+                "identifier_match": "pass",
+                "record_relationship": "pass",
+                "purpose": "pass",
+                "minimum_necessary": "pass"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "I'd like to verify eligibility for member M-0310, date of birth January 22nd 1990, for an office visit.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-005",
+      "title": "Eligibility with identifiers that do not match",
+      "description": "The date of birth given does not match the member record.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility",
+        "claim_status",
+        "prior_auth"
+      ],
+      "payer_record": {
+        "provider_enrolled": true,
+        "member_dob_matches": false
+      },
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "pass",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "exception"
+      },
+      "expected_outcome": "DENY_DATA",
+      "notes": "Same handling a payer applies to a human caller whose identifiers do not match.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "exception",
+              "reason_code": "IDENTIFIER_MISMATCH",
+              "operation": "eligibility",
+              "binding_checks": {
+                "patient_binding": "pass",
+                "identifier_match": "exception",
+                "record_relationship": "pass",
+                "purpose": "pass",
+                "minimum_necessary": "pass"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "Eligibility for member M-0310, date of birth January 23rd 1990, please.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-006",
+      "title": "Prior authorization status, requesting provider matches",
+      "description": "Agent asks for the status of a prior authorization the delegating NPI requested.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility",
+        "claim_status",
+        "prior_auth"
+      ],
+      "payer_record": {
+        "case_requesting_npi": "1234567893"
+      },
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "pass",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "pass"
+      },
+      "expected_outcome": "CONTINUE_AI",
+      "notes": "All bindings hold.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "pass",
+              "reason_code": null,
+              "operation": "prior_auth",
+              "binding_checks": {
+                "patient_binding": "pass",
+                "identifier_match": "pass",
+                "record_relationship": "pass",
+                "purpose": "pass",
+                "minimum_necessary": "pass"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "What's the status of prior auth PA-55102 for member M-0042?",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-007",
+      "title": "Payer claim system unavailable",
+      "description": "The record cannot be looked up, so the relationship cannot be checked.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility",
+        "claim_status",
+        "prior_auth"
+      ],
+      "payer_record": {
+        "claim_system_available": false
+      },
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "pass",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "unknown"
+      },
+      "expected_outcome": "ESCALATE_HUMAN",
+      "notes": "unknown, never pass: no release on an unchecked relationship.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "unknown",
+              "reason_code": "PAYER_RECORD_UNAVAILABLE",
+              "operation": "claim_status",
+              "binding_checks": {
+                "patient_binding": "pass",
+                "identifier_match": "pass",
+                "record_relationship": "unknown",
+                "purpose": "pass",
+                "minimum_necessary": "pass"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "Can you give me the status of claim CLM-48213 for member M-0042?",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-008",
+      "title": "Claim billed under the group NPI, delegation from an individual NPI",
+      "description": "The claim was billed under the practice's group (type 2) NPI; the delegation was signed for an individual (type 1) NPI in that group.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility",
+        "claim_status",
+        "prior_auth"
+      ],
+      "payer_record": {
+        "claim_billing_npi": "1555555556",
+        "billing_npi_type": 2,
+        "delegation_npi_type": 1
+      },
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "pass",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "unknown"
+      },
+      "expected_outcome": "ESCALATE_HUMAN",
+      "notes": "Open question in the proposal: how a payer should relate individual and group NPIs (or a shared TIN). Until decided, unknown.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "unknown",
+              "reason_code": "GROUP_RELATIONSHIP_UNRESOLVED",
+              "operation": "claim_status",
+              "binding_checks": {
+                "patient_binding": "pass",
+                "identifier_match": "pass",
+                "record_relationship": "unknown",
+                "purpose": "pass",
+                "minimum_necessary": "pass"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "Status of claim CLM-48990 for member M-0042, please.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-009",
+      "title": "Delegation for eligibility only, asks for claim status",
+      "description": "The signed delegation covers eligibility; the agent asks for claim status.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility"
+      ],
+      "payer_record": null,
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "exception",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "exception"
+      },
+      "expected_outcome": "DENY_DATA",
+      "notes": "Layering: PDX-01 with DLG-01 already denies this (PDX01_SCOPE_NOT_AUTHORIZED). ACC-01 records the same purpose failure; it adds no second mechanism.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "exception",
+              "reason_code": "SCOPE_MISMATCH",
+              "operation": "claim_status",
+              "binding_checks": {
+                "patient_binding": "pass",
+                "identifier_match": "pass",
+                "record_relationship": "pass",
+                "purpose": "exception",
+                "minimum_necessary": "pass"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "Can you also give me the status of claim CLM-48213?",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-010",
+      "title": "Call verification failed",
+      "description": "The call-scoped token had expired. Access is never evaluated for an unverified caller.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility",
+        "claim_status",
+        "prior_auth"
+      ],
+      "payer_record": null,
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "pass",
+        "DBC-01": "pass",
+        "VER-01": "exception",
+        "DLG-01": "pass",
+        "ACC-01": "not_assessable"
+      },
+      "expected_outcome": "DENY_DATA",
+      "notes": "The DENY_DATA comes from VER-01. ACC-01 is not_assessable, not a pass.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "exception",
+              "reason_code": "TOKEN_EXPIRED",
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "exception",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "not_assessable",
+              "reason_code": "PREREQUISITE_NOT_MET",
+              "operation": "claim_status",
+              "binding_checks": {
+                "patient_binding": "not_assessable",
+                "identifier_match": "not_assessable",
+                "record_relationship": "not_assessable",
+                "purpose": "not_assessable",
+                "minimum_necessary": "not_assessable"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "Can you give me the status of claim CLM-48213 for member M-0042?",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    },
+    {
+      "scenario_id": "FIX-ACC-011",
+      "title": "Eligibility scope, asks for diagnosis codes",
+      "description": "Delegated for eligibility; asks for diagnosis codes on the member's recent claims.",
+      "measurement_status": "not_yet_measured",
+      "delegated_scope": [
+        "eligibility"
+      ],
+      "payer_record": null,
+      "expected": {
+        "IDG-01": "pass",
+        "PDX-01": "exception",
+        "DBC-01": "pass",
+        "VER-01": "pass",
+        "DLG-01": "pass",
+        "ACC-01": "exception"
+      },
+      "expected_outcome": "DENY_DATA",
+      "notes": "Minimum necessary is enforced field by field by PDX-01 scope (_SCOPE_PERMITTED_FIELDS: eligibility does not include diagnosis_code). ACC-01 records it.",
+      "turns": [
+        {
+          "turn_count": 0,
+          "speech_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:00Z",
+          "phi_requested": false,
+          "healthcare_governance": {
+            "disclosure_channel": "verbal",
+            "payer_optin": false,
+            "call_verification": {
+              "result": "pass",
+              "reason_code": null,
+              "delegation_id": "dlg-demo-0001",
+              "token_ref": "tok-ref-acc",
+              "redeemed_at": "2026-11-01T16:00:02Z",
+              "binding_checks": {
+                "originating_number": "pass",
+                "provider_npi": "pass",
+                "purpose": "pass",
+                "time_window": "pass",
+                "proof_of_possession": "pass",
+                "revocation": "pass",
+                "replay": "pass"
+              }
+            },
+            "access_authorization": {
+              "result": "exception",
+              "reason_code": "MINIMUM_NECESSARY",
+              "operation": "eligibility",
+              "binding_checks": {
+                "patient_binding": "pass",
+                "identifier_match": "pass",
+                "record_relationship": "pass",
+                "purpose": "pass",
+                "minimum_necessary": "exception"
+              }
+            }
+          }
+        },
+        {
+          "turn_count": 1,
+          "speech_text": "And what diagnosis codes are on her recent claims?",
+          "state": "ACTIVE",
+          "disclosure_timestamp": "2026-11-01T16:00:00Z",
+          "identity_assertion_text": "Hi, this is Ava, an automated AI assistant calling on behalf of Riverside Family Clinic, NPI 1234567893.",
+          "counterparty_type": "human_operator",
+          "escalation_path_available": true,
+          "deceptive_artifact_flags": [],
+          "timestamp": "2026-11-01T16:00:06Z",
+          "phi_requested": true
+        }
+      ]
+    }
+  ]
+}

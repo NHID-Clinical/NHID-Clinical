@@ -252,6 +252,8 @@ into unit tests.
 
 ## 13. Open questions
 
+0. **Next:** patient- and record-level access (whether a verified agent may see *this* record) is proposed separately in [`patient-access-authorization.md`](patient-access-authorization.md) (candidate ACC-01).
+
 1. FIX-VER-004 records IDG-01 as `exception` rather than `unknown`, on the reasoning that
    a missing rendered notice is observed, not missing data. Reviewers may prefer
    `unknown`.

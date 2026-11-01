@@ -634,6 +634,131 @@
               }
             }
           }
+        },
+        "access_authorization": {
+          "$comment": "CANDIDATE: docs/proposals/patient-access-authorization.md. Optional and not evaluated by the v1.3 policy engine; an event that omits it is evaluated exactly as before.",
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "description": "Optional. Result of the candidate ACC-01 patient- and record-level access check. The payer decides from its own records; this field records the decision and its evidence, with no PHI in clear.",
+          "properties": {
+            "result": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "pass",
+                "exception",
+                "unknown",
+                "not_assessable",
+                null
+              ],
+              "description": "Overall ACC-01 result. not_assessable when VER-01 or DLG-01 has not passed: access is never evaluated for an unverified caller."
+            },
+            "reason_code": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Machine-readable reason for a non-pass result, e.g. RECORD_NOT_PROVIDERS, PATIENT_BINDING_MISMATCH, IDENTIFIER_MISMATCH, PAYER_RECORD_UNAVAILABLE."
+            },
+            "operation": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "eligibility",
+                "claim_status",
+                "prior_auth",
+                null
+              ],
+              "description": "The administrative operation the request is for."
+            },
+            "binding_checks": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "additionalProperties": false,
+              "description": "Per-check results, each in the four-result vocabulary.",
+              "properties": {
+                "patient_binding": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "The record opened matches the member/claim the call-scoped token was issued for (keyed intent HMAC)."
+                },
+                "identifier_match": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "The member identifiers given match the payer's record."
+                },
+                "record_relationship": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "Per operation: claim or case belongs to the delegating provider; for eligibility, the provider is enrolled with the payer."
+                },
+                "purpose": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "The declared purpose is inside the delegated scope."
+                },
+                "minimum_necessary": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "The fields requested are within what the operation needs (PDX-01 field scope)."
+                }
+              }
+            }
+          }
         }
       }
     },
