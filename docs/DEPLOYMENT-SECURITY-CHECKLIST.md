@@ -31,6 +31,9 @@ This checklist ensures NHID-Clinical is deployed securely across development, st
 - [ ] Dockerfile uses multi-stage build (no build tools in production)
 - [ ] Dockerfile runs as non-root user (nhid:1000)
 - [ ] SQLite database file on encrypted volume
+- [ ] `AUDIT_ANCHOR_PATH` on **different storage** from `AUDIT_STORE_PATH`, append-only where the platform allows it (`chattr +a`, S3 Object Lock, WORM volume)
+- [ ] `AUDIT_ANCHOR_KEY_B64` set, different from `AUDIT_SECRET_KEY_B64`, and not readable by anything that can write the audit database
+- [ ] One writer process per anchor file (the anchor's lock is per process)
 - [ ] Database directory has restricted permissions (0755)
 - [ ] Database file has restricted permissions (0644)
 - [ ] Network isolation: no public S3 buckets
@@ -188,6 +191,7 @@ This checklist ensures NHID-Clinical is deployed securely across development, st
 - [ ] No unauthorized API calls (403/401 errors < 1%)
 
 ### Weekly Checks
+- [ ] Copy `FileAuditAnchor.head()` (`seq`, `line_hash`) somewhere the deployment cannot rewrite, to witness the anchor file itself
 - [ ] Security patches available for base image?
   ```bash
   docker pull python:3.13-slim

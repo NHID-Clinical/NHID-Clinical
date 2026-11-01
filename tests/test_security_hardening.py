@@ -46,11 +46,15 @@ TOKEN = "twilio-auth-token-under-test"
 
 
 @pytest.fixture(autouse=True)
-def clean_env(monkeypatch):
+def clean_env(monkeypatch, tmp_path):
     for var in ("NHID_API_KEY", "NHID_API_KEYS", "TWILIO_AUTH_TOKEN", "DEPLOYMENT_MODE",
-                "NHID_ENABLE_DEBUG_REPLAY", "NHID_PUBLIC_BASE_URL"):
+                "NHID_ENABLE_DEBUG_REPLAY", "NHID_PUBLIC_BASE_URL",
+                "AUDIT_SECRET_KEY_B64", "AUDIT_ANCHOR_PATH", "AUDIT_ANCHOR_KEY_B64"):
         monkeypatch.delenv(var, raising=False)
-    monkeypatch.setattr(nhid_audit_export, "_audit_log", [])
+    monkeypatch.setenv("AUDIT_STORE_PATH", str(tmp_path / "audit.db"))
+    nhid_audit_export.reset_stores()
+    yield
+    nhid_audit_export.reset_stores()
 
 
 @pytest.fixture
