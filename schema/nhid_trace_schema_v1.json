@@ -749,7 +749,48 @@
                 "string",
                 "null"
               ],
-              "description": "Which payer-defined evidence established record_relationship, e.g. billing_npi, rendering_npi, requesting_npi, directory_group_membership, enrollment. Null when it was not established."
+              "enum": [
+                "CLAIM_BILLING_PROVIDER",
+                "CLAIM_RENDERING_PROVIDER",
+                "PRIOR_AUTH_REQUESTING_PROVIDER",
+                "PRIOR_AUTH_SERVICING_PROVIDER",
+                "PAYER_ATTRIBUTION",
+                "ORGANIZATIONAL_MEMBERSHIP",
+                "UPCOMING_APPOINTMENT",
+                "UNKNOWN",
+                null
+              ],
+              "description": "The payer-recognized evidence that established record_relationship. UPCOMING_APPOINTMENT means an appointment the payer verified, never one the agent asserted. UNKNOWN means the evidence could not be determined; it never accompanies a pass and escalates. Null when evidence showed no link (exception) or the check was not reached."
+            },
+            "resource_binding": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "additionalProperties": false,
+              "description": "The operation-specific resource the call-scoped token is bound to. A claim binding is never treated as a universal patient binding.",
+              "properties": {
+                "type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "MEMBER_ELIGIBILITY_REQUEST",
+                    "MEMBER_CLAIM",
+                    "MEMBER_AUTH_CASE",
+                    null
+                  ],
+                  "description": "eligibility: member ID + DOB + eligibility request reference; claim_status: member ID + claim reference; prior_auth: member ID + authorization/case reference."
+                },
+                "ref": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "description": "Keyed HMAC of the bound identifiers (hmac-sha256:...). Never the identifiers themselves."
+                }
+              }
             }
           }
         }
