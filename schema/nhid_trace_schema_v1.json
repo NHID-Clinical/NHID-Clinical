@@ -434,6 +434,206 @@
             "null"
           ],
           "description": "Optional. Whether a human interpreter was on the interaction. Carried for the deploying organization's own reporting; not used by any control."
+        },
+        "disclosure_channel": {
+          "$comment": "CANDIDATE: docs/proposals/verification-and-nonverbal-disclosure.md. Optional and not evaluated by the v1.3 policy engine; an event that omits it is evaluated exactly as before.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "verbal",
+            "non_verbal",
+            null
+          ],
+          "description": "Optional. The IDG-01 disclosure channel this event records. 'verbal': the payer representative heard the agent identify as automated (existing heard semantics). 'non_verbal': a verified machine declaration was rendered on the representative's interface before protected data moved. Each channel has its own evidence requirement; a token exchange alone satisfies neither."
+        },
+        "notification_rendered_at": {
+          "$comment": "CANDIDATE: docs/proposals/verification-and-nonverbal-disclosure.md. Optional and not evaluated by the v1.3 policy engine; an event that omits it is evaluated exactly as before.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "Optional. Non-verbal channel only: UTC time the declaration was rendered on the representative's interface. Notification latency is measured from connect to this time. It is reported beside Impersonation Latency and never merged with it."
+        },
+        "notification_evidence": {
+          "$comment": "CANDIDATE: docs/proposals/verification-and-nonverbal-disclosure.md. Optional and not evaluated by the v1.3 policy engine; an event that omits it is evaluated exactly as before.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional. Non-verbal channel only: identifier of the payer-side record that the notice was rendered to this representative for this call. Contains no PHI."
+        },
+        "payer_optin": {
+          "$comment": "CANDIDATE: docs/proposals/verification-and-nonverbal-disclosure.md. Optional and not evaluated by the v1.3 policy engine; an event that omits it is evaluated exactly as before.",
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Optional. Whether the receiving payer has opted in to the non-verbal disclosure channel. Without opt-in the non-verbal channel is not_assessable and a verbal disclosure is required."
+        },
+        "call_verification": {
+          "$comment": "CANDIDATE: docs/proposals/verification-and-nonverbal-disclosure.md. Optional and not evaluated by the v1.3 policy engine; an event that omits it is evaluated exactly as before.",
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "description": "Optional. Result of the candidate VER-01 call-scoped verification. Verification is not authorization and is not disclosure: a pass here never satisfies IDG-01.",
+          "properties": {
+            "result": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "pass",
+                "exception",
+                "unknown",
+                "not_assessable",
+                null
+              ],
+              "description": "Overall VER-01 result."
+            },
+            "reason_code": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Machine-readable reason for a non-pass result, e.g. TOKEN_EXPIRED, DELEGATION_REVOKED, SCOPE_MISMATCH, TOKEN_ALREADY_REDEEMED."
+            },
+            "delegation_id": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "The delegation the token was issued under (same value as nhid-agent delegation_id)."
+            },
+            "token_ref": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Opaque payer-side handle for the token record. Never the token or a DTMF code."
+            },
+            "redeemed_at": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time",
+              "description": "UTC time of the redemption attempt this event records."
+            },
+            "binding_checks": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "additionalProperties": false,
+              "description": "Per-binding results, each in the four-result vocabulary.",
+              "properties": {
+                "originating_number": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "Call arrived from the number the token is bound to."
+                },
+                "provider_npi": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "Token NPI matches the provider-signed delegation and its registry status."
+                },
+                "purpose": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "Requested purpose is inside the delegated scope."
+                },
+                "time_window": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "Redemption falls inside the token's short validity window."
+                },
+                "proof_of_possession": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "Caller proved possession of the AgentPassport key at redemption."
+                },
+                "revocation": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "Delegation and token are not revoked."
+                },
+                "replay": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "pass",
+                    "exception",
+                    "unknown",
+                    "not_assessable",
+                    null
+                  ],
+                  "description": "Token had not been redeemed before (atomic single redemption)."
+                }
+              }
+            }
+          }
         }
       }
     },

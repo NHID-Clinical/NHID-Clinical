@@ -104,6 +104,14 @@ authored transcripts; they are not all measurements of the canonical scenario. A
 that narrows to the canonical scenario needs the subset, not the whole, and the subset has
 not been separately evaluated.
 
+## Candidate proposal: call verification and non-verbal disclosure
+
+[`proposals/verification-and-nonverbal-disclosure.md`](proposals/verification-and-nonverbal-disclosure.md)
+is a CANDIDATE / draft within this canonical direction (caller-agent calls the payer). It
+proposes a call-scoped verification check (VER-01, not part of the canonical control set)
+and a second, opt-in IDG-01 evidence channel. It changes no control semantics in the v1.3
+engine.
+
 ---
 
 *NHID-Clinical is an independent research project and reference implementation. Nothing
