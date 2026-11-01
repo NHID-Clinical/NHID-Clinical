@@ -23,24 +23,27 @@ The same shape as `fixtures/verification-nonverbal/`: v1 corpus turn fields, a
 - `expected`: per-control results in the four-result vocabulary, including `ACC-01`;
 - `expected_outcome`: from the existing ladder;
 - `delegated_scope`: what the provider-signed delegation covers;
-- `payer_record`: what the payer's own systems hold for the case. NHID never asserts
-  these facts; they are the payer's lookup, written down so the expectation is checkable;
+- `payer_record`: what the payer's own systems hold for the case, including
+  `relationship_policy` (the evidence types this payer accepts). NHID never asserts these
+  facts; they are the payer's lookup, written down so the expectation is checkable;
 - `measurement_status: "not_yet_measured"`.
 
 ## Cases
 
 | ID | Case | ACC-01 | Outcome |
 |----|------|--------|---------|
-| FIX-ACC-001 | Claim status, claim billed by the delegating NPI | pass | CONTINUE_AI |
-| FIX-ACC-002 | Claim billed by a different provider | exception `RECORD_NOT_PROVIDERS` | DENY_DATA |
-| FIX-ACC-003 | Token issued for member A, agent asks about member B | exception `PATIENT_BINDING_MISMATCH` | DENY_DATA |
-| FIX-ACC-004 | Eligibility for a prospective patient, provider enrolled | pass | CONTINUE_AI |
+| FIX-ACC-001 | Claim status, billed by the delegating NPI | pass (`billing_npi`) | CONTINUE_AI |
+| FIX-ACC-002 | No evidence links the claim to the delegating provider | exception `RECORD_NOT_PROVIDERS` | DENY_DATA |
+| FIX-ACC-003 | Eligibility token for member A, agent asks about member B | exception `PATIENT_BINDING_MISMATCH` | DENY_DATA |
+| FIX-ACC-004 | Eligibility for a prospective patient, provider enrolled | pass (`enrollment`) | CONTINUE_AI |
 | FIX-ACC-005 | Eligibility, date of birth does not match | exception `IDENTIFIER_MISMATCH` | DENY_DATA |
-| FIX-ACC-006 | Prior auth, requesting NPI matches | pass | CONTINUE_AI |
+| FIX-ACC-006 | Prior auth, requesting NPI matches (binds the case, not a claim) | pass (`requesting_npi`) | CONTINUE_AI |
 | FIX-ACC-007 | Payer claim system unavailable | unknown `PAYER_RECORD_UNAVAILABLE` | ESCALATE_HUMAN |
-| FIX-ACC-008 | Group NPI on the claim, individual NPI on the delegation | unknown `GROUP_RELATIONSHIP_UNRESOLVED` | ESCALATE_HUMAN |
-| FIX-ACC-009 | Eligibility-only delegation, asks for claim status | exception `SCOPE_MISMATCH` (PDX-01 already denies) | DENY_DATA |
-| FIX-ACC-010 | VER-01 failed (expired token) | not_assessable `PREREQUISITE_NOT_MET` | DENY_DATA (from VER-01) |
-| FIX-ACC-011 | Eligibility scope, asks for diagnosis codes | exception `MINIMUM_NECESSARY` (PDX-01 field scope) | DENY_DATA |
+| FIX-ACC-008 | Group NPI on the claim, directory links the delegating NPI to the group | pass (`directory_group_membership`) | CONTINUE_AI |
+| FIX-ACC-009 | Group NPI on the claim, no directory evidence | unknown `GROUP_RELATIONSHIP_UNRESOLVED` | ESCALATE_HUMAN |
+| FIX-ACC-010 | Delegating NPI is the rendering provider; payer policy accepts it | pass (`rendering_npi`) | CONTINUE_AI |
+| FIX-ACC-011 | Eligibility-only delegation, asks for claim status | not_assessable (PDX-01 field scope denies first) | DENY_DATA |
+| FIX-ACC-012 | VER-01 failed (expired token) | not_assessable `PREREQUISITE_NOT_MET` | DENY_DATA (from VER-01) |
+| FIX-ACC-013 | Eligibility scope, asks for diagnosis codes | not_assessable (minimum necessary is PDX-01's) | DENY_DATA |
 
 All names, numbers and identifiers are fictional.
