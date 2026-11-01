@@ -185,6 +185,32 @@ PR 2 is a separate, later change, tested independently of telephony against the
 10. No schema `$id` pointing at ietf.org, no claim of IETF or IANA registration, and no
     `nhid_version` 2.0. The specification is v1.3.
 
+### PR 2 status: prototype
+
+A CANDIDATE prototype of the payer side is in
+[`src/call_verification.py`](../../src/call_verification.py), tested without telephony in
+[`tests/test_call_verification.py`](../../tests/test_call_verification.py). It is not wired
+into the v1.3 policy engine, the API, any adapter or the site.
+
+| # | Requirement | Where | Tests |
+| :-- | :-- | :-- | :-- |
+| 1 | Provider-signed delegation and registry status, never the agent's claims | `CallVerificationService.issue`: `TrustAnchorResolver`, `validate_chain`, `PortalEnrollmentRegistry`, `verify_extension` | `test_a_self_signed_delegation_is_refused`, `test_registry_status_gates_issuance`, `test_the_agents_self_description_must_agree_with_the_delegation` |
+| 2 | Proof of possession at redemption | `redeem` → `_check_possession` (`PresentationProof` against the bound key, payer-issued challenge) | `test_a_captured_handle_without_the_agent_key_fails`, `test_a_proof_for_another_challenge_fails` |
+| 3 | Nonce, created/expires, audience; a stated RFC 9421 profile | `sign_call_intent`, `verify_call_intent_signature` | `test_signature_base_reproduces_rfc9421_appendix_b26`, `test_another_payers_intent_is_refused`, `test_intent_window_is_enforced`, `test_an_edited_body_breaks_the_signature` |
+| 4 | Random nonces | `new_intent_nonce` (`secrets`) | `test_intent_nonces_are_random_and_distinct`, `test_a_replayed_intent_is_refused` |
+| 5 | Atomic single redemption, bindings before consume | `SqliteTokenStore.consume` (conditional UPDATE), `redeem` | `test_sqlite_store_lets_exactly_one_concurrent_redemption_win`, `test_a_failed_binding_does_not_consume_the_token` |
+| 6 | DTMF handles server-side, collision-checked | `TokenStore.insert` (UNIQUE), retry in `issue` | `test_a_colliding_handle_is_retried`, `test_handle_space_exhaustion_fails_closed` |
+| 7 | `intent_hash` is a keyed HMAC | `intent_hmac`, `matches_intent` | `test_intent_hmac_is_keyed`, `test_the_token_record_holds_no_member_or_claim_id` |
+| 8 | Key-derived fingerprint | `key_fingerprint` (reused) as RFC 9421 `keyid` | `test_fingerprint_is_derived_from_the_key`, `test_keyid_must_be_the_delegated_key_fingerprint` |
+| 9 | Extend `nhid-agent`, keep `agent_id` and `call_sid` | `build_extension` / `verify_extension` (reused) | `test_agent_metadata_is_the_existing_nhid_agent_object` |
+| 10 | No registration claims, no version bump | — | `test_module_makes_no_registration_or_version_claims` |
+
+The signature base is checked against RFC 9421 Appendix B.2.6 (the Ed25519 example
+reproduces exactly), and a signed call intent was also verified by an independent RFC 9421
+implementation during development. Every fixture's expected `call_verification` block is
+reproduced by the prototype (`test_prototype_reproduces_the_fixture_ver01_expectation`).
+That is a pass/fail test of expected behaviour, not a detection rate.
+
 ## 11. Prior art
 
 | Item | Status | Relevance |
