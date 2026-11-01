@@ -8,12 +8,19 @@ verification.
 **Status:** CANDIDATE / draft · **Added:** 2026-11-01 · **Measurement:** not yet measured
 
 > **Expected results only.** The v1.3 policy engine does not evaluate VER-01, the
-> non-verbal channel or the high-risk-write rule, so no scenario here has been run and
+> non-verbal channel or the high-risk-write rule, so no scenario here has been run through
+> the engine, and
 > **no detection percentage is published or implied**.
 >
 > **Own denominator.** This set is separate from, and is never pooled with, the v1
 > Governance Evaluation Corpus, the v2 corpus or the Voice-Stress corpus. It is not a
 > pinned baseline, and `scripts/check_baseline.py` does not read it.
+
+> **VER-01 only, since PR 2:** each scenario's expected `call_verification` block is
+> reproduced by the candidate prototype in `src/call_verification.py`
+> (`tests/test_call_verification.py`). That is a pass/fail test of expected behaviour, not
+> a measurement. IDG-01, PDX-01, DBC-01 and the non-verbal channel remain **not yet
+> measured**.
 
 ## Files
 
