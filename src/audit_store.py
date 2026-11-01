@@ -89,6 +89,7 @@ class AuditStore:
         db_path: str = "/data/audit_events.db",
         secret_key: Optional[bytes] = None,
         anchor=None,
+        retired_keys=(),
     ):
         """Initialize audit store.
 
@@ -96,6 +97,8 @@ class AuditStore:
             db_path: Path to SQLite database file
             secret_key: HMAC secret key for verification (optional; generated if not provided)
             anchor: optional ``FileAuditAnchor`` kept outside ``db_path``
+            retired_keys: earlier signing keys, which verify events written
+                before a rotation and never sign
         """
         self.db_path = db_path
         self.anchor = anchor
@@ -123,7 +126,7 @@ class AuditStore:
                 db_path,
             )
         self.secret_key = secret_key
-        self._integrity = AuditIntegrity(self.secret_key)
+        self._integrity = AuditIntegrity(self.secret_key, retired_keys)
         self._init_db()
 
 
@@ -211,6 +214,14 @@ class AuditStore:
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON audit_events(timestamp)")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_expires_at ON audit_events(expires_at)")
 
+            # Which key signed each event (src.audit_integrity.key_id), so a
+            # rotated store can verify with the right one. Added after the
+            # table existed: rows written before it carry NULL and are checked
+            # against every configured key.
+            columns = {row[1] for row in cursor.execute("PRAGMA table_info(audit_events)")}
+            if "key_id" not in columns:
+                cursor.execute("ALTER TABLE audit_events ADD COLUMN key_id TEXT")
+
             conn.commit()
 
     def write_event(
@@ -265,8 +276,8 @@ class AuditStore:
                     """
                     INSERT INTO audit_events
                     (event_id, session_id, event_type, timestamp, agent_id, organization_id,
-                     payload, previous_event_id, evidence_hash, expires_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     payload, previous_event_id, evidence_hash, expires_at, key_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         event_id,
@@ -279,6 +290,9 @@ class AuditStore:
                         previous_event_id,
                         evidence_hash or "",
                         expires_at,
+                        # The key the caller is expected to sign with: this
+                        # store's current one (store.secret_key).
+                        self._integrity.key_id,
                     ),
                 )
 
@@ -369,6 +383,7 @@ class AuditStore:
                 "payload": json.loads(row["payload"]),
                 "previous_event_id": row["previous_event_id"],
                 "evidence_hash": row["evidence_hash"],
+                "key_id": row["key_id"],
             }
         except Exception as exc:
             # None means "no such event". A read that failed is a different
@@ -431,6 +446,7 @@ class AuditStore:
                     "payload": json.loads(row["payload"]),
                     "previous_event_id": row["previous_event_id"],
                     "evidence_hash": row["evidence_hash"],
+                    "key_id": row["key_id"],
                 }
                 for row in rows
             ]
@@ -518,6 +534,7 @@ class AuditStore:
                 "event_type": e["event_type"],
                 "payload": e["payload"],
                 "evidence_hash": e["evidence_hash"],
+                "key_id": e.get("key_id"),
                 "previous_event_id": e["previous_event_id"],
             }
             for e in events

@@ -65,6 +65,7 @@ This checklist ensures NHID-Clinical is deployed securely across development, st
 ## Deployment
 
 ### Pre-Flight Checks
+- [ ] `DEPLOYMENT_MODE=production python -m src.preflight` exits 0 with the production environment loaded (the API refuses to start otherwise, and lists every missing setting)
 - [ ] Backup existing database before deployment
   ```bash
   aws s3 cp s3://nhid-backups/audit_events.db ./audit_events_backup_$(date +%s).db
@@ -189,6 +190,12 @@ This checklist ensures NHID-Clinical is deployed securely across development, st
 - [ ] CloudWatch Dashboard shows no errors or spikes
 - [ ] Log volume is as expected (no sudden increases)
 - [ ] No unauthorized API calls (403/401 errors < 1%)
+
+### Key Rotation
+- [ ] **API key (per tenant):** add the new hash to the tenant's list in `NHID_API_KEYS` (up to 4), deploy, move the customer's clients to the new key, then remove the old hash and deploy again
+- [ ] **Audit event key:** set the new key as `AUDIT_SECRET_KEY_B64`, move the old one into `AUDIT_SECRET_KEYS_RETIRED_B64`; remove it only after every event it signed has passed retention
+- [ ] **Anchor key:** same procedure with `AUDIT_ANCHOR_KEY_B64` and `AUDIT_ANCHOR_KEYS_RETIRED_B64`
+- [ ] After any audit key rotation, `GET /v1/audit/verify/{session_id}` on a session written before the rotation still reports `valid: true`
 
 ### Weekly Checks
 - [ ] Copy `FileAuditAnchor.head()` (`seq`, `line_hash`) somewhere the deployment cannot rewrite, to witness the anchor file itself

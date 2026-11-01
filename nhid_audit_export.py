@@ -20,6 +20,10 @@ Configuration (read per request, so a corrected environment needs no restart):
   and its own signing key. Required in staging/production; optional together in
   development. The anchor path must not be the database path, and the anchor
   key should not be the event key.
+* ``AUDIT_SECRET_KEYS_RETIRED_B64`` and ``AUDIT_ANCHOR_KEYS_RETIRED_B64``:
+  optional, comma-separated base64 keys from before a rotation. They verify
+  older events and checkpoints and never sign. A key may not be both current
+  and retired, and no event key may also be an anchor key.
 
 A missing required setting refuses the audit routes with 503 rather than
 writing an audit trail that cannot be verified later.
@@ -42,7 +46,6 @@ from pydantic import BaseModel
 
 from nhid_api_auth import tenant_of
 from src.audit_anchor import FileAuditAnchor
-from src.audit_integrity import AuditIntegrity
 from src.audit_store import AuditStore, AuditStoreUnavailable
 from src.webhook_security import STRICT_MODES, deployment_mode
 
@@ -84,6 +87,23 @@ def _key(env: str) -> Optional[bytes]:
     return key
 
 
+def _keys(env: str) -> Tuple[bytes, ...]:
+    raw = (os.getenv(env) or "").strip()
+    if not raw:
+        return ()
+    keys = []
+    for part in raw.split(","):
+        part = part.strip()
+        try:
+            key = base64.b64decode(part, validate=True)
+        except (binascii.Error, ValueError):
+            raise _unavailable(f"{env} has an entry that is not valid base64")
+        if len(key) != 32:
+            raise _unavailable(f"{env} has an entry that does not decode to 32 bytes")
+        keys.append(key)
+    return tuple(keys)
+
+
 def _dev_path() -> str:
     global _dev_dir
     if _dev_dir is None:
@@ -102,6 +122,8 @@ def get_store() -> AuditStore:
     secret = _key("AUDIT_SECRET_KEY_B64")
     anchor_path = (os.getenv("AUDIT_ANCHOR_PATH") or "").strip()
     anchor_key = _key("AUDIT_ANCHOR_KEY_B64")
+    retired = _keys("AUDIT_SECRET_KEYS_RETIRED_B64")
+    anchor_retired = _keys("AUDIT_ANCHOR_KEYS_RETIRED_B64")
 
     if strict:
         missing = [name for name, value in (
@@ -112,19 +134,31 @@ def get_store() -> AuditStore:
             raise _unavailable(", ".join(missing) + " unset")
     if bool(anchor_path) != bool(anchor_key):
         raise _unavailable("AUDIT_ANCHOR_PATH and AUDIT_ANCHOR_KEY_B64 must be set together")
-    if anchor_key is not None and anchor_key == secret:
-        raise _unavailable("AUDIT_ANCHOR_KEY_B64 must differ from AUDIT_SECRET_KEY_B64")
+    if secret is not None and secret in retired:
+        raise _unavailable("AUDIT_SECRET_KEY_B64 is also listed in AUDIT_SECRET_KEYS_RETIRED_B64")
+    if anchor_key is not None and anchor_key in anchor_retired:
+        raise _unavailable("AUDIT_ANCHOR_KEY_B64 is also listed in AUDIT_ANCHOR_KEYS_RETIRED_B64")
+    if retired and secret is None:
+        raise _unavailable("AUDIT_SECRET_KEYS_RETIRED_B64 is set without AUDIT_SECRET_KEY_B64")
+    if anchor_retired and anchor_key is None:
+        raise _unavailable("AUDIT_ANCHOR_KEYS_RETIRED_B64 is set without AUDIT_ANCHOR_KEY_B64")
+    event_keys = {k for k in (secret, *retired) if k is not None}
+    anchor_keys = {k for k in (anchor_key, *anchor_retired) if k is not None}
+    if event_keys & anchor_keys:
+        raise _unavailable("an audit event key is also an anchor key; they must differ")
 
     path = path or _dev_path()
     if anchor_path and os.path.abspath(anchor_path) == os.path.abspath(path):
         raise _unavailable("AUDIT_ANCHOR_PATH must not be the audit database")
 
-    config = (path, secret, anchor_path, anchor_key)
+    config = (path, secret, retired, anchor_path, anchor_key, anchor_retired)
     with _stores_lock:
         store = _stores.get(config)
         if store is None:
-            anchor = FileAuditAnchor(anchor_path, anchor_key) if anchor_path else None
-            store = AuditStore(db_path=path, secret_key=secret, anchor=anchor)
+            anchor = (FileAuditAnchor(anchor_path, anchor_key, anchor_retired)
+                      if anchor_path else None)
+            store = AuditStore(db_path=path, secret_key=secret, anchor=anchor,
+                               retired_keys=retired)
             _stores[config] = store
         return store
 
@@ -169,7 +203,7 @@ def log_audit_event(event: AuditEvent, request: Request):
             raise HTTPException(status_code=503, detail=str(exc))
         previous = prior[-1]["event_id"] if prior else None
         event_id = str(uuid.uuid4())
-        evidence = AuditIntegrity(store.secret_key).sign_event(
+        evidence = store._integrity.sign_event(
             event_id, entry["timestamp"], EVENT_TYPE, entry, previous)
         landed = store.write_event(
             event_id=event_id, session_id=scoped, event_type=EVENT_TYPE,

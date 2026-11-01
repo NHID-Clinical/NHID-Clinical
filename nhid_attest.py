@@ -23,6 +23,12 @@ rather than signing. ``GET /v1/attest/verify/{reference_id}`` reads local state
 and keeps working either way, so references issued earlier remain inspectable.
 
 Retiring this module altogether is a separate decision.
+
+Tenant scoping: every attestation records the tenant whose API key minted it,
+and ``verify`` (and ``/v1/payer/screen``) see only the caller's own. Another
+tenant's reference id reads as not found. Rows written before this column
+existed belong to ``default``, the tenant the legacy ``NHID_API_KEY``
+authenticates as, so a single-key deployment is unchanged.
 """
 
 import os
@@ -30,9 +36,11 @@ import sqlite3
 import uuid
 from datetime import datetime, timezone
 from typing import List
-from fastapi import APIRouter, Header, HTTPException, Depends
+from fastapi import APIRouter, Header, HTTPException, Depends, Request
 from pydantic import BaseModel
 import jwt
+
+from nhid_api_auth import DEFAULT_TENANT, tenant_of
 
 router = APIRouter()
 
@@ -74,11 +82,34 @@ def _get_db():
             scope             TEXT NOT NULL,
             expires_at        TEXT NOT NULL,
             issued_at         TEXT NOT NULL,
-            revoked           INTEGER NOT NULL DEFAULT 0
+            revoked           INTEGER NOT NULL DEFAULT 0,
+            tenant_id         TEXT NOT NULL DEFAULT 'default'
         )
     """)
+    columns = {row["name"] for row in conn.execute("PRAGMA table_info(attestations)")}
+    if "tenant_id" not in columns:
+        # A table from before tenant scoping: its rows go to the legacy tenant.
+        conn.execute(
+            "ALTER TABLE attestations ADD COLUMN tenant_id TEXT NOT NULL "
+            f"DEFAULT '{DEFAULT_TENANT}'"
+        )
     conn.commit()
     return conn
+
+def find_attestation(reference_id: str, tenant_id: str):
+    """The tenant's attestation with this reference id, or None.
+
+    None also when the id exists under another tenant: the two must be
+    indistinguishable, or the endpoint tells a caller which ids are real.
+    """
+    db = _get_db()
+    try:
+        return db.execute(
+            "SELECT * FROM attestations WHERE reference_id = ? AND tenant_id = ?",
+            (reference_id, tenant_id),
+        ).fetchone()
+    finally:
+        db.close()
 
 class AttestRequest(BaseModel):
     delegating_entity: str
@@ -87,7 +118,7 @@ class AttestRequest(BaseModel):
     expires_at: str
 
 @router.post("/v1/attest")
-def create_attestation(body: AttestRequest):
+def create_attestation(body: AttestRequest, request: Request):
     if not attest_enabled():
         raise HTTPException(
             status_code=410,
@@ -114,9 +145,11 @@ def create_attestation(body: AttestRequest):
     token = jwt.encode(payload, secret, algorithm="HS256")
     db = _get_db()
     db.execute(
-        "INSERT INTO attestations VALUES (?,?,?,?,?,?,0)",
+        "INSERT INTO attestations (reference_id, delegating_entity, "
+        "authorized_actor, scope, expires_at, issued_at, revoked, tenant_id) "
+        "VALUES (?,?,?,?,?,?,0,?)",
         (reference_id, body.delegating_entity, body.authorized_actor,
-         ",".join(body.scope), body.expires_at, issued_at),
+         ",".join(body.scope), body.expires_at, issued_at, tenant_of(request)),
     )
     db.commit()
     db.close()
@@ -127,13 +160,8 @@ def create_attestation(body: AttestRequest):
     }
 
 @router.get("/v1/attest/verify/{reference_id}")
-def verify_attestation(reference_id: str):
-    db = _get_db()
-    row = db.execute(
-        "SELECT * FROM attestations WHERE reference_id = ?",
-        (reference_id,)
-    ).fetchone()
-    db.close()
+def verify_attestation(reference_id: str, request: Request):
+    row = find_attestation(reference_id, tenant_of(request))
     if row is None:
         raise HTTPException(status_code=404, detail="Attestation not found")
     now = datetime.now(timezone.utc).isoformat()
