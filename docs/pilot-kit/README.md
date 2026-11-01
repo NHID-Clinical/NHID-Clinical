@@ -88,6 +88,47 @@ renderer, the CLI entry point, the policy engine, and the engine's own imports
 If you want your results compared against the published corpus, the kit prints
 an address you can email them to. You send it; nothing sends it for you.
 
+## Sharing the pack without patient data
+
+The pack is the part that leaves your machine, so there is a mode built for
+that:
+
+```bash
+nhid pilot calls.jsonl --out pilot-evidence/ --share-safe \
+    --pseudonym-key-file pilot.key        # optional: stable pseudonyms across runs
+```
+
+| Where | What | Send it? |
+| :--- | :--- | :--- |
+| `pilot-evidence/` | `pilot_report.md` / `.pdf`, `metrics.json`, `per-call/call-<pseudonym>.json`, `manifest.json` | Yes, after review |
+| `pilot-evidence.local/` | `session-map.csv` (pseudonym to your call id) and, if you gave no key file, `pseudonym.key` | **No.** Keep it. |
+
+What `--share-safe` changes:
+
+- **Call ids are replaced** by keyed pseudonyms (`call-` and 12 hex characters),
+  in file names and contents. The report no longer names your capture file.
+- **The pack is built in a staging directory and scanned.** Every `.md` and
+  `.json` file is checked for:
+  - a run of 6 consecutive words from any transcript field in your input;
+  - a raw session id, or an identifier-like token from your input text
+    (letters and digits mixed, 6 or more characters, such as a member or claim
+    number);
+  - an SSN-like number, a slash-format date, a phone number or an email address.
+- **It is released only if the scan passes.** Otherwise nothing is written to
+  `--out`, and the command lists the file, line and category of each finding,
+  never the matched text.
+- **`manifest.json`** lists every file, its SHA-256 and what it contains, for
+  your privacy officer to review before anything is sent.
+
+What it cannot do: this is a pattern-and-overlap check, **not de-identification**
+under HIPAA's Safe Harbor or Expert Determination methods. It cannot recognise a
+person's name, or an identifier that matches no pattern and never appeared in
+your input. The header fields you type (`--organization` and the rest) go into
+the report as written. Review the pack before you send it.
+
+The default `nhid pilot` (without `--share-safe`) is unchanged. `measure_pilot.py`
+does not take the flag; use `nhid pilot`.
+
 ## Disclosure timeliness bands
 
 Impersonation Latency is reported as a raw measurement *and* bucketed into four bands, so a

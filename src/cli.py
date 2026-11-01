@@ -97,6 +97,9 @@ def _cmd_pilot(args: argparse.Namespace) -> int:
               "docs/pilot-kit/minimal-event-schema.json.", file=sys.stderr)
         return 1
 
+    if args.share_safe:
+        return _pilot_share_safe(args, records, calls, summary, source)
+
     now = datetime.now(timezone.utc)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -121,6 +124,12 @@ def _cmd_pilot(args: argparse.Namespace) -> int:
     print(f"  metrics.json      the same figures, machine-readable")
     print(f"  per-call/         one conformance result per call, no transcripts")
 
+    _render_pilot_pdf(args, report_md, out / "pilot_report.pdf", now)
+    return 0
+
+
+def _render_pilot_pdf(args, report_md: str, target, now) -> bool:
+    """Render the report PDF if reportlab is installed. False if it is not."""
     # The PDF is the artifact that circulates, but reportlab is an optional
     # extra. A missing extra must not cost the user the report they just
     # computed, so the markdown is already on disk before we try.
@@ -130,11 +139,11 @@ def _cmd_pilot(args: argparse.Namespace) -> int:
         print(f"\n  pilot_report.pdf  NOT written — {exc.name or exc} is not installed.")
         print("  The report and metrics above are complete. For the PDF:")
         print("      pip install 'nhid-clinical[pdf]'")
-        return 0
+        return False
 
     subtitle = " — ".join(p for p in (args.organization, args.workflow) if p)
     render_markdown_pdf(
-        report_md, out / "pilot_report.pdf",
+        report_md, target,
         title="Tier 0 Shadow Pilot Report",
         subtitle=subtitle or "NHID-Clinical Tier 0 measurement",
         version="v1.3 Tier 0",
@@ -144,7 +153,98 @@ def _cmd_pilot(args: argparse.Namespace) -> int:
         cover_date=now.strftime("%B %Y"),
     )
     print(f"  pilot_report.pdf  the same report, for circulation")
+    return True
+
+
+def _pilot_share_safe(args, records, calls, summary, source) -> int:
+    """Build the pack in staging, scan it, and release it only if it passes.
+
+    See src/pilot_share_safe.py for what the scan does and does not catch.
+    """
+    import shutil
+    import tempfile
+    from datetime import datetime, timezone
+    from pathlib import Path
+
+    from src import pilot_share_safe as safe
+    from src.pilot_measure import dropped_record_count, print_summary, write_per_call_results
+    from src.pilot_report import generate_report
+
+    out = Path(args.out)
+    local = Path(str(out).rstrip("/\\") + ".local")
+    if out.exists() and any(out.iterdir()):
+        print(f"nhid pilot: {out} already exists and is not empty. A share-safe pack is "
+              f"only released into an empty directory, so an older pack's files "
+              f"cannot ride along unscanned.", file=sys.stderr)
+        return 2
+
+    try:
+        key = safe.load_or_create_key(args.pseudonym_key_file, local)
+    except (OSError, ValueError) as exc:
+        print(f"nhid pilot: cannot use the pseudonym key: {exc}", file=sys.stderr)
+        return 2
+    safe.write_session_map(calls, key, local)
+    shared_calls = safe.pseudonymise_calls(calls, key)
+
+    now = datetime.now(timezone.utc)
+    report_md = generate_report(
+        shared_calls, summary,
+        organization=args.organization,
+        workflow=args.workflow,
+        date_range=args.date_range,
+        prepared_by=args.prepared_by,
+        # The capture file's name is the payer's, and can say anything.
+        source_label="capture file (name withheld in a share-safe pack)",
+        dropped_records=dropped_record_count(records),
+        generated_at=now,
+    )
+    report_md = report_md.replace(
+        "\n\n", "\n\n**Share-safe pack:** call ids are pseudonymised and every "
+        "text file was scanned before release; see `manifest.json`.\n\n", 1)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=".nhid-pack-", dir=out.parent))
+    try:
+        (staging / "pilot_report.md").write_text(report_md, encoding="utf-8")
+        (staging / "metrics.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+        write_per_call_results(shared_calls, staging / "per-call")
+        safe.write_manifest(staging, kit_version=_kit_version(), calls=len(calls))
+
+        findings = safe.scan_pack(staging, records)
+        if findings:
+            print("nhid pilot: the pack was NOT released. Its scan found:", file=sys.stderr)
+            for finding in findings:
+                print(f"  {finding}", file=sys.stderr)
+            print("Nothing was written to the output directory. The matched text is "
+                  "deliberately not shown.", file=sys.stderr)
+            return 1
+
+        print_summary(summary)
+        if _render_pilot_pdf(args, report_md, staging / "pilot_report.pdf", now):
+            # The manifest lists file hashes, so it is rewritten to include the PDF.
+            safe.write_manifest(staging, kit_version=_kit_version(), calls=len(calls))
+
+        if out.exists():
+            out.rmdir()
+        shutil.move(str(staging), str(out))
+    finally:
+        if staging.exists():
+            shutil.rmtree(staging, ignore_errors=True)
+
+    print(f"\nShare-safe pack released to {out}/ (scan passed; see manifest.json)")
+    print(f"Kept locally, NOT part of the pack, do not send: {local}/")
+    print(f"  session-map.csv   pseudonym -> your call ids")
+    if not args.pseudonym_key_file:
+        print(f"  pseudonym.key     reuse with --pseudonym-key-file for stable pseudonyms")
     return 0
+
+
+def _kit_version() -> str:
+    try:
+        from importlib.metadata import version
+        return version("nhid-clinical")
+    except Exception:  # not installed from a distribution: running from a checkout
+        return "checkout"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -205,6 +305,17 @@ def build_parser() -> argparse.ArgumentParser:
     pilot.add_argument("--date-range", default=None,
                        help="date range of the sampled traffic")
     pilot.add_argument("--prepared-by", default=None, help="who prepared the report")
+    pilot.add_argument(
+        "--share-safe", action="store_true",
+        help="write a pack meant to leave this machine: call ids pseudonymised, every "
+             "text file scanned for transcript text and identifiers, released only if "
+             "the scan passes; the pseudonym key and lookup table go to <out>.local/",
+    )
+    pilot.add_argument(
+        "--pseudonym-key-file", default=None,
+        help="with --share-safe: a 32-byte (or 64-hex) key, so pseudonyms stay stable "
+             "across runs",
+    )
     pilot.set_defaults(func=_cmd_pilot)
 
     return parser
