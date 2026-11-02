@@ -2490,6 +2490,21 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.25 Positioning by stage — 2026-11-02
+
+**Decision: NHID-Clinical is described by stage (Research → Pilot-ready → Piloting →
+Deployed), not as research-only.** The current stage is **Research, with a Tier 0 pilot
+available**. Early-stage product development and marketing are allowed; every claim stays
+inside the stage table in `docs/claim-boundaries.md`, which lists the evidence each stage
+needs. Production deployment, adoption, HIPAA compliance or certification, and independent
+validation remain unclaimable without verifiable evidence.
+
+Why now: #443–#446 closed the security and pilot-readiness blockers (per-tenant keys,
+signed webhooks, an external audit anchor, tenant-scoped storage, key rotation, fail-closed
+startup, the share-safe pilot pack). The binding constraint recorded in §19.10, an
+outside organization running this on its own data, needs an offer that can be made in
+plain words. No control, outcome, metric or baseline changes with this decision.
+
 ### 19.24 The ElevenLabs demonstration, revived and authenticated — 2026-10-29
 
 An audit of the ElevenLabs integration behind the shadow-evaluation guide's "Receive a

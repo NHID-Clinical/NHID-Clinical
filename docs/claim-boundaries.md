@@ -11,6 +11,22 @@
 
 ---
 
+## Stage
+
+NHID-Clinical's stage is stated, never implied, and moves only on the evidence listed.
+Recorded in `docs/MASTER-KNOWLEDGE-ARCHIVE.md` §19.25.
+
+| Stage | Evidence required to claim it | May say | Must not say |
+| :-- | :-- | :-- | :-- |
+| **Research** *(current)* | The open reference implementation and its tests | "independent research project and reference implementation"; "pre-launch"; "a Tier 0 shadow pilot is available"; "an open reference implementation with a commercial product in development" | anything below this row |
+| **Pilot-ready** | A pilot offer, the offline Tier 0 kit with `--share-safe`, and the security baseline (#443–#446) in place, reviewed by counsel for the HIPAA framing | "pilot-ready"; "running a pilot takes no data off your machine" (true of the Tier 0 kit only) | that any organization is piloting |
+| **Piloting** | A named organization's written consent to be named | "piloting with <organization>" (only with that consent), or "piloting with a payer" without the name | adoption, deployment, results beyond what the pilot measured |
+| **Deployed** | Production use, with evidence on file | "deployed at <organization>" (with consent) | certification or validation nobody granted |
+
+At every stage, never without verifiable evidence: production deployment, customer
+adoption, HIPAA compliance or certification, independent validation, or a performance
+figure measured on anything but the corpus named beside it.
+
 ## In scope / out of scope
 
 **In scope — what NHID-Clinical governs.**
