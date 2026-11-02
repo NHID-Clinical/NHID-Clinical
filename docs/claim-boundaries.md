@@ -37,6 +37,9 @@ figure measured on anything but the corpus named beside it.
 - **Delegated authority**: verifiable, NPI-anchored, scoped, expiring,
   revocable authorization to represent a provider organization (NHID-Auth
   v2), evaluated in the policy path by **DLG-01** when a deployment opts in.
+  With `require_call_verification`, DLG-01 also requires a VER-01 `pass` for the
+  presented delegation, produced by the payer's own verifier. The verifier
+  (`src/call_verification.py`) is a prototype with no telephony or API route.
 - **Scope enforcement** via monotonic narrowing across delegation hops,
   checked by the verifier at evaluation time (application-layer enforcement,
   not a cryptographic guarantee on its own). A verified scope additionally

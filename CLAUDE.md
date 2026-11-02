@@ -73,7 +73,9 @@ perfectly authorized.
 ## 3. Preserve, do not reinvent
 
 - **Five controls**: IDG-01, PDX-01, DBC-01, EIT-01, ATR-01. DLG-01 is opt-in. There is
-  no sixth control. Outcome-truthfulness remains a named non-capability.
+  no sixth control: VER-01 call verification, when enabled
+  (`DelegationContext.require_call_verification`), runs inside DLG-01.
+  Outcome-truthfulness remains a named non-capability.
 - **Enforcement ladder**: `DENY_DATA > ESCALATE_HUMAN > DISCLOSE_IDENTITY > LOG_ONLY >
   CONTINUE_AI`. The composite is the most restrictive decision across the controls.
 - **There is no composite score.** The Call Authorization Score, its trust tiers and its
