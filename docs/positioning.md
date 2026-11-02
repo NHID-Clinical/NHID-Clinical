@@ -296,6 +296,11 @@ public front door with this positioning. **Draft only** — not yet applied to
 `README.md`; the maturity lines and "Not a standard / Not a certification /
 Not a product" language are preserved verbatim.
 
+*Note (2026-11-02):* the stage model in [claim-boundaries.md](claim-boundaries.md#stage)
+supersedes the "Not a product" line below. The project is in the Research stage with a
+commercial product in development; this appendix remains a draft and `README.md` is
+unchanged.
+
 > **NHID-Clinical**
 >
 > **An operational AI governance framework for disclosed non-human actors

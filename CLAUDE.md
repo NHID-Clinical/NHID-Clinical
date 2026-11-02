@@ -73,7 +73,9 @@ perfectly authorized.
 ## 3. Preserve, do not reinvent
 
 - **Five controls**: IDG-01, PDX-01, DBC-01, EIT-01, ATR-01. DLG-01 is opt-in. There is
-  no sixth control. Outcome-truthfulness remains a named non-capability.
+  no sixth control: VER-01 call verification, when enabled
+  (`DelegationContext.require_call_verification`), runs inside DLG-01.
+  Outcome-truthfulness remains a named non-capability.
 - **Enforcement ladder**: `DENY_DATA > ESCALATE_HUMAN > DISCLOSE_IDENTITY > LOG_ONLY >
   CONTINUE_AI`. The composite is the most restrictive decision across the controls.
 - **There is no composite score.** The Call Authorization Score, its trust tiers and its
@@ -88,13 +90,25 @@ perfectly authorized.
 
 ---
 
-## 4. Accuracy constraints
+## 4. Positioning and accuracy constraints
 
-NHID-Clinical is an **independent research project and reference implementation**. Do not
-claim production deployment, healthcare-provider adoption, HIPAA certification, or
+NHID-Clinical is an early-stage healthcare technology project built on an open
+reference implementation. Its stage is always stated, never implied, and moves only on
+evidence:
+
+1. **Research** (current): an **independent research project and reference
+   implementation**.
+2. **Pilot-ready**: a supervised Tier 0 shadow pilot can be offered. It runs on the
+   payer's own machine and produces a share-safe pack (`nhid pilot --share-safe`).
+3. **Piloting**: an organization is named only with its written consent.
+4. **Deployed**: production use, with evidence on file.
+
+Early-stage product development and marketing are allowed: describing the pilot offer,
+the product in development and what the kit measures. Never claim production deployment,
+healthcare-provider or payer adoption, HIPAA compliance or HIPAA certification, or
 independent validation without verifiable evidence. `docs/claim-boundaries.md` is the
-authority for what may be claimed and in what words; check any external-facing change
-against it.
+authority for the current stage, what may be claimed at it and in what words; check any
+external-facing change against it.
 
 **If an existing implementation or document conflicts with this threat model, flag the
 conflict rather than silently redefining the system's behavior.** One such conflict is

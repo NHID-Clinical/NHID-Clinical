@@ -140,6 +140,18 @@ class DelegationContext:
             only whatever in-memory revocations its `AgentIdentityManager`
             happens to hold — which, for the manager DLG-01 constructs itself,
             is none.
+        require_call_verification: when True, the call itself must have been
+            verified (VER-01, `docs/proposals/verification-and-nonverbal-
+            disclosure.md` §4): the call-scoped token was redeemed by the
+            payer, with proof of possession, for *this* delegation. VER-01 is
+            not a separate control; it runs here, inside DLG-01, and only when
+            this flag is set. The engine performs no I/O, so the payer's
+            verifier (`src.call_verification.CallVerificationService.redeem`)
+            runs first and its `CallVerificationResult.to_trace_field()` arrives
+            as `session["call_verification"]`. Any result other than `pass`
+            denies (DENY_DATA), as `CallVerificationResult.restriction()` does;
+            so does a missing result, a pass for a different delegation, or no
+            passport at all, since a call token is bound to a delegation.
     """
 
     resolver: Any
@@ -149,6 +161,7 @@ class DelegationContext:
     require_possession_proof: bool = False
     require_npi_check_digit: bool = False
     revocation_checker: Callable[[str], bool] | None = None
+    require_call_verification: bool = False
 
 
 @dataclass(frozen=True)
@@ -1749,6 +1762,36 @@ def _dlg01_denial(reason_code: str, description: str) -> PolicyDecision:
     )
 
 
+def _call_verification_failure(
+    verification: Any, delegation_id: str
+) -> tuple[str, str] | None:
+    """Why a call's VER-01 result does not permit this delegation, or None.
+
+    `verification` is `CallVerificationResult.to_trace_field()` as the payer's
+    verifier produced it. Only `pass` permits, and only for the delegation the
+    call presented: a token redeemed for another delegation proves nothing
+    about this one.
+    """
+    if not isinstance(verification, dict) or "result" not in verification:
+        return (
+            "DLG01_CALL_NOT_VERIFIED",
+            "Call verification is required and no VER-01 result was supplied for this call.",
+        )
+    result = verification.get("result")
+    if result != "pass":
+        return (
+            "DLG01_CALL_VERIFICATION_FAILED",
+            f"Call verification returned {result!r} "
+            f"({verification.get('reason_code') or 'no reason code'}).",
+        )
+    if verification.get("delegation_id") != delegation_id:
+        return (
+            "DLG01_CALL_VERIFICATION_MISMATCH",
+            "Call verification passed for a different delegation than the one presented.",
+        )
+    return None
+
+
 def evaluate_dlg01(
     session: dict[str, Any],
     event: dict[str, Any],
@@ -1783,7 +1826,7 @@ def evaluate_dlg01(
         raw = _passport_from_session(session)
 
         if raw is None:
-            if context.require_delegation:
+            if context.require_delegation or context.require_call_verification:
                 return (
                     _dlg01_denial(
                         "DLG01_NO_DELEGATION_PRESENTED",
@@ -1978,6 +2021,23 @@ def evaluate_dlg01(
                             provider_npi=claimed_npi,
                         ),
                     )
+
+        if context.require_call_verification:
+            failure = _call_verification_failure(
+                _safe_get(session, "call_verification", default=None),
+                passports[-1].delegation.delegation_id,
+            )
+            if failure is not None:
+                code, description = failure
+                return (
+                    _dlg01_denial(code, f"{description} Provider NPI: {claimed_npi}."),
+                    DelegationResult(
+                        evaluated=True,
+                        verified=False,
+                        reason=code,
+                        provider_npi=claimed_npi,
+                    ),
+                )
 
         return (
             PolicyDecision(

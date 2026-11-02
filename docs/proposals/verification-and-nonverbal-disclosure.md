@@ -108,8 +108,14 @@ delegation is revoked; and every binding above.
 new outcome, metric, score or tier is introduced.
 
 VER-01 is **not** a sixth canonical control. It is recorded here and in the optional
-`call_verification` field of the trace schema so it can be reviewed and prototyped. It is
-not evaluated by the v1.3 engine.
+`call_verification` field of the trace schema.
+
+**Update 2026-11-02:** the engine can now evaluate VER-01 **inside DLG-01**, opt-in:
+`DelegationContext.require_call_verification`. The payer's verifier runs first and passes
+its result as `session["call_verification"]`; any result other than `pass`, a missing
+result, a pass for a different delegation, or no passport gives a DLG-01 `DENY_DATA`
+(`tests/test_dlg01_call_verification.py`). Off by default, so the v1.3 baselines are
+unchanged. The control set is still five plus opt-in DLG-01.
 
 ## 5. VER-01 threat model
 
@@ -190,7 +196,9 @@ PR 2 is a separate, later change, tested independently of telephony against the
 A CANDIDATE prototype of the payer side is in
 [`src/call_verification.py`](../../src/call_verification.py), tested without telephony in
 [`tests/test_call_verification.py`](../../tests/test_call_verification.py). It is not wired
-into the v1.3 policy engine, the API, any adapter or the site.
+into the API, any adapter or the site. Its result now feeds the engine through DLG-01 when
+`require_call_verification` is set (§4); the issuance and redemption service itself is
+still a prototype, and no telephony or API route calls it.
 
 | # | Requirement | Where | Tests |
 | :-- | :-- | :-- | :-- |
