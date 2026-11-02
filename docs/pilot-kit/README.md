@@ -265,6 +265,8 @@ decisions — a small or noisy sample overstates whatever it happens to contain.
 
 ## Next steps after Tier 0
 
+- [Pilot offer](../pilot-offer.md): the one-page offer for payer operations leaders
+- [Discovery interview script](../discovery-interview-script.md): questions and a note template for 15 buyer conversations
 - [5-minute quickstart](../5-minute-quickstart.md) — run the engine locally
 - [v2 integration guide](../v2-integration-guide.md) — Tier 0 → Tier 2 ladder
 - [Shadow evaluation guide](https://nhid-clinical.org/shadow-evaluation-guide.html) — the full evaluation sequence
