@@ -501,7 +501,6 @@ def gate_turn(params: dict) -> tuple[int, dict]:
 
     from datetime import datetime, timedelta, timezone
     from adapters.call_progress_adapter import to_nhid_event
-    from src.nhid_policy_engine_v1 import _phi_fields_requested
 
     now = datetime.now(timezone.utc)
     disclosed_at = None
@@ -526,26 +525,22 @@ def gate_turn(params: dict) -> tuple[int, dict]:
     except Exception as exc:  # noqa: BLE001
         return 400, {"error": f"Adapter conversion failed: {exc}"}
 
-    # Caller-side orientation. The adapter fills these for a receiving agent;
-    # here the agent is the caller, so each slot gets the party it describes.
+    # Caller-side orientation (src/call_replay.py, shared with the post-call
+    # replay). The agent's planned words are the data request and the identity
+    # assertion; `heard` is the representative's words, where EIT-01 finds a
+    # request for a person and PDX-01 finds data the representative
+    # volunteers. The gate is the harness, so it says whether disclosure was
+    # already established.
+    from src.call_replay import orient_calling_agent
+    orient_calling_agent(session, policy_event, agent_text=turn,
+                         disclosed_before=disclosed, heard=heard)
     governance = policy_event["healthcare_governance"]
-    # The agent's planned words are the data request, in the engine's own
-    # field names (the adapter's phrase list is not what PDX-01 compares).
-    governance["phi_accessed"] = sorted(_phi_fields_requested(turn, []))
-    # DBC-01 judges the agent's own words, disclosure keyword or not.
-    governance["identity_assertion_text"] = turn
-    # The counterparty's words: EIT-01 finds the request for a human here, and
-    # PDX-01 finds protected data the counterparty volunteers.
-    policy_event["input_payload"]["speech_text"] = heard
     # A reported transfer result. The engine reads the outcome before anything
     # else on the turn, so a failed transfer is a CRITICAL EIT-01 finding here
-    # and an honored one settles the request.
+    # and an honored one settles the request. Only the gate receives one.
     if escalation_outcome is not None:
         governance["escalation_outcome"] = escalation_outcome
         governance["escalation_timestamp"] = governance.get("escalation_timestamp") or now.isoformat()
-    # PDX-01's same-turn rule only fires when the harness says the disclosure
-    # was NOT already established. The gate is the harness.
-    session["disclosure_established_prior"] = disclosed
 
     delegation_context = None
     if params.get("passport") is not None:

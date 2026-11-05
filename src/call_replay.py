@@ -13,6 +13,18 @@ That loop used to be written separately by each harness, and the Tier 0 pilot
 replay (``src/pilot_measure.py``) was one that forgot. Harnesses now hand their
 turns here and get one result per turn back.
 
+Two shapes of input come here:
+
+* ``replay_call``: eval-loop turn dicts (corpora, pilot captures, red-team
+  scenarios, the site fixtures).
+* ``replay_transcript``: call-progress turns (speaker, text, turn_index), as a
+  live platform reports them. The ElevenLabs post-call handler uses it.
+
+Both are for an agent that PLACES the call. ``orient_calling_agent`` gives each
+engine slot the party it describes for such an agent. ``replay_transcript`` and
+the pre-utterance gate (``functions.handler.gate_turn``) both use it, so the
+orientation is written once.
+
 Deliberately NOT routed through here: ``synthetic_eval_loop.evaluate_conversation``,
 which feeds the pinned Fabricate baseline (``scripts/check_baseline.py``) and
 keeps the permissive default by design until a §9.1 decision moves it.
@@ -23,9 +35,10 @@ Offline, standard library only: listed in ``GUARDED`` in
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable, List, Optional, Sequence
+from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple
 
-from src.nhid_policy_engine_v1 import PolicyDecision, evaluate_all
+from adapters.call_progress_adapter import to_nhid_event
+from src.nhid_policy_engine_v1 import PolicyDecision, _phi_fields_requested, evaluate_all
 from src.synthetic_eval_loop import (
     build_event, build_session, carry_disclosure_forward, extract_rule_ids,
 )
@@ -66,3 +79,77 @@ def replay_call(turns: Sequence[dict[str, Any]], *, conversation_id: str,
         event = build_event(conversation_id, index, turn)
         results.append(ReplayedTurn(index, turn, session, event, evaluate_all(session, event)))
     return results
+
+
+def orient_calling_agent(session: dict, event: dict, *, agent_text: str,
+                         disclosed_before: bool, heard: Optional[str] = None) -> None:
+    """Give each engine slot the party it describes, for an agent that CALLS.
+
+    The call-progress adapter was written receiver-side: it looks for protected
+    data only in the human's words. Here the agent is the caller, so:
+
+    * the agent's own words are the data request PDX-01 gates, in the engine's
+      field names, and the identity assertion DBC-01 judges;
+    * ``heard``, when given, is what the payer's representative said, where
+      EIT-01 looks for a request for a person (the gate passes it; a replayed
+      transcript already has the representative's turns as their own turns);
+    * the harness, which knows the call's history, tells PDX-01 whether
+      disclosure was established on an earlier turn.
+
+    Computes no decision of its own. Mutates ``session`` and ``event``.
+    """
+    governance = event["healthcare_governance"]
+    governance["phi_accessed"] = sorted(_phi_fields_requested(agent_text, []))
+    governance["identity_assertion_text"] = agent_text
+    if heard is not None:
+        event["input_payload"]["speech_text"] = heard
+    session["disclosure_established_prior"] = disclosed_before
+
+
+TranscriptStep = Tuple[dict, dict, dict, PolicyDecision, Dict[str, Any]]
+
+
+def replay_transcript(turns: Sequence[dict[str, Any]], *,
+                      timestamp: Optional[Callable[[dict], Optional[str]]] = None,
+                      ) -> Iterator[TranscriptStep]:
+    """Replay a calling agent's call-progress transcript, turn by turn.
+
+    Each turn is ``{session_id, turn_index, speaker, text, interrupted}``.
+    ``speaker`` is ``"agent"`` for the caller-agent and anything else for the
+    payer's representative who answered. The adapter's ``session_state``
+    carries the disclosure forward, agent turns are oriented with
+    ``orient_calling_agent``, and ``timestamp(turn)`` (optional) supplies each
+    turn's ISO time.
+
+    Yields ``(turn, session, event, decision, session_state)``.
+    ``session_state`` is the state AFTER the turn, as a store would keep it.
+    """
+    session_state: Dict[str, Any] = {
+        "turn_count": 0,
+        "disclosure_timestamp": None,
+        "escalation_available": True,
+    }
+    for turn in turns:
+        disclosed_before = session_state["disclosure_timestamp"] is not None
+        body: Dict[str, Any] = {
+            "session_id": turn["session_id"],
+            "turn_index": turn["turn_index"],
+            "speaker": turn["speaker"],
+            "text": turn["text"],
+            "interrupted": turn.get("interrupted", False),
+            "session_state": session_state,
+        }
+        iso = timestamp(turn) if timestamp is not None else None
+        if iso:
+            body["timestamp"] = iso
+        session, event = to_nhid_event(body)
+        if turn["speaker"] == "agent":
+            orient_calling_agent(session, event, agent_text=turn["text"],
+                                 disclosed_before=disclosed_before)
+        else:
+            session["disclosure_established_prior"] = disclosed_before
+        decision = evaluate_all(session, event)
+        session_state = dict(session_state)
+        session_state["turn_count"] = turn["turn_index"] + 1
+        session_state["disclosure_timestamp"] = event["healthcare_governance"]["disclosure_timestamp"]
+        yield turn, session, event, decision, session_state
