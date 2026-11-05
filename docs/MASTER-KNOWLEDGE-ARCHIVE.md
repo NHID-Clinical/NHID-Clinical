@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2454** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2457** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2454 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2457 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2454 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2457 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2454 passing tests · machine-readable traces · open implementation
+> 5 controls · 2457 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2454%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2457%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,39 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.29 The live ElevenLabs runner had Ida answering the call — 2026-11-05
+
+The maintainer, who answers calls from robots, pointed out that robots were not
+answering calls from robots, and asked for any wrongly wired test to be fixed.
+`tests/elevenlabs_cts_runner.py` was wired the wrong way round, in two ways:
+- **The representative's lines placed the call.** The scripted lines for the
+  payer's representative (the human who answers) said "Hello, calling about a
+  prior authorization", "Hi, I have a prior auth request for a member" and "The
+  member ID is 12345678. Can you look that up?". The human was the caller,
+  handing Ida the identifiers.
+- **Ida's opening line was discarded.** The driver read and dropped her first
+  message, so "first agent turn" graded her reply to the representative, as if
+  she had answered.
+
+**Decisions.**
+- Every representative line now answers ("Acme Health provider services, this
+  is Dana. How can I help you?") and responds to Ida. Ida supplies the
+  identifiers and asks for the status.
+- The driver records Ida's opening line before the representative's first
+  turn.
+- In the EIT-01 scenarios, the representative asks for a person at the
+  practice. The scripted "transferred human" lines are gone: the text channel
+  carries only the representative, so it cannot play the practice's staff.
+- `tests/test_call_direction.py` now also fails when a representative line
+  sounds like the caller, and it checks that Ida speaks first in the runner.
+  The corpora and demo data had no such lines.
+- An AI answering for the payer, robot to robot, is a separate scenario,
+  deferred to last at the maintainer's direction. It is not part of the
+  canonical model.
+
+No control semantics, outcome or baseline changed. The runner needs a live key,
+so it is not part of the suite, and no live run was made.
 
 ### 19.28 Ida, the reference caller-agent, proves her authority at the gate — 2026-11-05
 

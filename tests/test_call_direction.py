@@ -124,3 +124,108 @@ def test_the_check_would_catch_the_lines_it_replaced():
                  "Hi, can I get the member ID and NPI?"):
         assert RECEIVER_VOICE.search(line), line
     assert not RECEIVER_VOICE.search("The member ID is MBR-482913. What's the claim status?")
+
+
+# ── The other half: the human who ANSWERED must not sound like the caller ──
+#
+# The receiver is the payer's representative, a person, who picked up. In the
+# live ElevenLabs runner (tests/elevenlabs_cts_runner.py) the representative's
+# scripted lines said "Hello, calling about a prior authorization", "The member
+# ID is 12345678. Can you look that up?", and the driver threw away Ida's
+# opening line. That wired Ida as the party answering a call from a human.
+# Fixed 2026-11-05. An AI answering for the payer is a separate scenario,
+# deferred; it is not part of the canonical model.
+CALLER_VOICE = re.compile(
+    r"\bcalling (about|for|regarding|to)\b"
+    r"|\bi'?m calling\b"
+    r"|\bi have an? [\w ]{0,20}(request|claim|question) for\b"
+    r"|\b(member id|date of birth|dob|diagnosis code) is \S"
+    r"|\bcan you (look|pull) (that|this|it) up\b"
+    r"|\bpull up the member"
+    r"|\bwe received an incoming\b",
+    re.IGNORECASE,
+)
+
+
+def _runner_receiver_lines():
+    import sys
+    sys.path.insert(0, str(ROOT / "tests"))
+    sys.path.insert(0, str(ROOT))
+    from elevenlabs_cts_runner import SCENARIOS
+    for sc in SCENARIOS:
+        for i, (role, text) in enumerate(sc["turns"]):
+            if role == "user":
+                yield f"elevenlabs_cts_runner:{sc['id']}[{i}]", text
+
+
+def test_the_representative_never_speaks_as_the_caller():
+    bad = [f"{where}: {text!r}" for where, text in _runner_receiver_lines()
+           if CALLER_VOICE.search(text)]
+    assert not bad, ("lines for the payer's representative that place the call, or hand "
+                     "Ida the patient's identifiers:\n" + "\n".join(bad))
+
+
+def test_the_caller_check_would_catch_the_lines_it_replaced():
+    for line in ("Hello, calling about a prior authorization.",
+                 "Hi, I have a prior auth request for a member.",
+                 "The member ID is 12345678. Can you look that up?",
+                 "Can you pull up the member's eligibility? Member ID is 98765432.",
+                 "Hello, we received an incoming prior auth call."):
+        assert CALLER_VOICE.search(line), line
+    assert not CALLER_VOICE.search("Provider services, this is Dana. How can I help you?")
+    assert not CALLER_VOICE.search("Okay, go ahead with the member ID.")
+
+
+def test_ida_speaks_first_in_the_live_runner():
+    """The driver records Ida's opening line (her disclosure) before the
+    representative's first turn: she placed the call."""
+    import asyncio
+    import json as _json
+    import sys
+    sys.path.insert(0, str(ROOT / "tests"))
+    import elevenlabs_cts_runner as runner
+
+    class FakeWS:
+        def __init__(self):
+            self.inbox = [{"type": "conversation_initiation_metadata"},
+                          {"type": "agent_response", "agent_response_event": {
+                              "agent_response": "Hi, this is Ida, an automated AI assistant calling about a claim."}}]
+            self.sent = []
+
+        async def send(self, raw):
+            self.sent.append(_json.loads(raw))
+            if "user_transcript" in raw:
+                self.inbox.append({"type": "agent_response", "agent_response_event": {
+                    "agent_response": "The member ID is RVD-204-7731."}})
+
+        async def recv(self):
+            if not self.inbox:
+                raise asyncio.TimeoutError
+            return _json.dumps(self.inbox.pop(0))
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *a):
+            return False
+
+        def __aiter__(self):
+            return self
+
+        async def __anext__(self):
+            raise StopAsyncIteration
+
+    class FakeModule:
+        @staticmethod
+        def connect(uri):
+            return FakeWS()
+
+    orig = (runner._WS_OK, getattr(runner, "websockets", None))
+    runner._WS_OK, runner.websockets = True, FakeModule
+    try:
+        transcript = asyncio.run(runner._run_conversation_ws(
+            [("user", "Provider services, this is Dana.")], "test-key"))
+    finally:
+        runner._WS_OK, runner.websockets = orig
+    assert transcript[0]["role"] == "agent"
+    assert "automated" in transcript[0]["message"]
