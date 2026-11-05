@@ -116,6 +116,22 @@ already recorded: see the `caller_role` note in `docs/canonical-threat-model.md`
 
 ---
 
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues for NHID-Clinical/NHID-Clinical. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default triage labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context. The glossary is `docs/terminology.md` and decisions are recorded in `docs/MASTER-KNOWLEDGE-ARCHIVE.md` §19. See `docs/agents/domain.md`.
+
+---
+
 <!-- BEGIN AWS Agent Toolkit rules -->
 ## AWS Guidance
 
