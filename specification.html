@@ -816,7 +816,7 @@
       <aside class="visual-provenance">
         <p><strong>Evidence basis:</strong> <code>tests/evaluation_corpus_v1.json</code> — 25 scenarios, 55 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI)</p>
-        <p><strong>Version:</strong> policy engine v1.3 · commit <code>beba7fd</code></p>
+        <p><strong>Version:</strong> policy engine v1.3 · commit <code>8527d95</code></p>
       </aside>
       <!-- END GENERATED enforcement-ladder -->
         </div>
@@ -1022,6 +1022,7 @@
       <div class="act-body">
         <p>An agent asserting it acts for a provider organization can present a cryptographically signed delegation naming that organization&rsquo;s NPI, the scope it grants, and when it expires. When a deployment opts in, the engine verifies the signatures, expiry, revocation and call binding, and refuses any delegation whose scope widens across a sub-delegation. The verified scope then constrains the data boundary: a delegation for eligibility does not authorize requesting a claim number.</p>
         <p>The limits travel with it. Verification is against a trust anchor the deploying organization configured itself &mdash; there is no directory or discovery service, and an NPI with no configured anchor is refused rather than accepted. The NPI is cryptographically bound to the delegation but is <strong>not</strong> checked against NPPES. Delegation is off unless a deployment turns it on.</p>
+        <p>Call verification (VER-01) is an option inside DLG-01 and adds no control of its own. With <code>require_call_verification</code> set, a call that is not verified, fails verification, or does not match the delegation is refused with a DLG-01 reason code.</p>
         <p><a class="action-button action-button-secondary" href="/developers.html#reference-implementation">See the engine &rarr;</a></p>
       </div>
     </div>

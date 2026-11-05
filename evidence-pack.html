@@ -295,6 +295,7 @@
             <li>Which policy engine version processed each event</li>
             <li>Whether any partial failures or boundary violations were recorded</li>
           </ul>
+          <p>The record itself is checkable. Audit events are stored per customer (tenant), HMAC-signed and hash-chained, and periodically anchored to signed checkpoints, so a deleted, altered or unanchored event shows up. <code>/v1/audit/verify/{session_id}</code> runs that check, and the signing keys can be rotated without breaking older entries. In strict modes the server refuses to start without a complete audit configuration (<code>python -m src.preflight</code>). This is a reference implementation: durable key custody in an HSM or KMS is not built.</p>
           <div class="console-bar"><span><b>Example</b> · correlation ID lifecycle</span></div>
           <pre>correlation_id: "auth-2026-05-26-001"
 
@@ -419,8 +420,8 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
           </tr>
           <tr>
             <th scope="row">Conformance suite<span class="sc-measures">Implementation correctness against the specification</span></th>
-            <td class="sc-size">2426 tests</td>
-            <td>2426/2426 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
+            <td class="sc-size">2430 tests</td>
+            <td>2430/2430 passing, 0 skipped, 0 xfailed <span class="sc-rate">100.0%</span></td>
             <td><code>python -m pytest tests/ -q</code><span class="sc-src">tests/</span></td>
           </tr>
           </tbody>
@@ -429,7 +430,7 @@ t=00:00.152  PERSIST    Event written — disclosure_timestamp set</pre>
 
       <aside class="visual-provenance">
         <p><strong>Separation:</strong> Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>beba7fd</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>8527d95</code></p>
       </aside>
       <!-- END GENERATED evidence-scorecard -->
         </div>

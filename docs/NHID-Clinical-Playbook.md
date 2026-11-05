@@ -165,7 +165,7 @@ all four.
 | **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **23 of 32 = 71.9%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
 
-**These are four different denominators.** 2426/2426 is a *test pass rate*, not
+**These are four different denominators.** 2430/2430 is a *test pass rate*, not
 a detection rate. 71.9% is a *detection rate*, not a test pass rate. Neither is
 an accuracy figure for the framework as a whole.
 
@@ -393,6 +393,13 @@ hash chaining, and retention.
 Emission to **HL7 FHIR R4 AuditEvent** is **implemented** and validated in CI
 against the official validator. Mapping detail: `fhir-auditevent-mapping.md`.
 
+Stored audit events are kept **per tenant**, HMAC-signed, hash-chained and
+anchored to signed checkpoints, so a deleted, altered or unanchored event is
+detected; `GET /v1/audit/verify/{session_id}` runs the check. Signing keys carry a key id and can
+be **rotated** without invalidating older entries. In strict modes the server
+**fails closed** at startup without a complete audit configuration
+(`python -m src.preflight`). Durable key custody in an HSM or KMS is not built.
+
 ## 6. Delegated authority — NHID-Auth v2
 
 **Status: reference implementation, opt-in, not part of the five controls.**
@@ -470,7 +477,8 @@ secondary use of that data.
 | **Roles** | Name an owner for the evaluation, a data owner for the logs, and a reviewer for findings. One person may hold more than one role |
 | **Approval** | Whatever your organisation requires for secondary use of call data. This framework asserts no view on what that is |
 | **Minimisation** | The engine needs turn text and which protected fields were requested — not the field *values*. Redact values at capture where you can |
-| **Location** | The reference implementation runs locally. Nothing is transmitted to the project |
+| **Location** | The reference implementation runs locally. Nothing is transmitted to the project. `Dockerfile.pilot` runs the kit in a container with networking switched off |
+| **Sharing** | `nhid pilot --share-safe` replaces call ids with keyed pseudonyms and scans the pack for transcript text and identifier patterns before releasing it. It is a pattern check, not de-identification; what it catches and misses is measured in `docs/validation/share-safe-leakage.md` |
 | **Retention** | Set a retention period for captured turns before you capture them, not after |
 | **Access** | Findings name failing calls. Scope access accordingly |
 
@@ -703,6 +711,8 @@ presented as though it were a real carrier identifier.
 
 - The engine is pure; the attack surface is the API and the adapters
 - Delegations are Ed25519-signed and verified offline; tampered, expired and revoked delegations are rejected — each enforced by a CI gate
+- Call verification (VER-01) is an option inside DLG-01 and adds no control of its own: with `require_call_verification`, an unverified, failed or mismatched call is refused
+- API keys are per tenant, and a tenant can hold more than one so keys rotate without downtime; a tenant sees only its own attestations and records
 - Secrets and key management: `DEPLOYMENT-SECURITY-CHECKLIST.md`
 - Vulnerability disclosure: `SECURITY.md`
 
@@ -752,7 +762,7 @@ produce a number that describes nothing.
 
 | Body | Population | Question it answers |
 |---|---|---|
-| **Conformance suite** | 2426 tests | Does the implementation behave as specified? |
+| **Conformance suite** | 2430 tests | Does the implementation behave as specified? |
 | **Fabricate Battle-Test Corpus** | 550 real conversations, 127 compliant | Does it detect violations in real-world phrasing? |
 | **Governance Evaluation Corpus** | 25 scenarios, 55 turns | Does it detect labelled governance conditions? |
 | **Adversarial corpus** | 40 hostile scenarios | Does it survive deliberate evasion? |
@@ -782,9 +792,9 @@ detection rate and not an accuracy figure.
 
 | | |
 |---|---|
-| **Collected** | 2426 |
-| **Executed** | 2426 |
-| **Passed** | 2426 |
+| **Collected** | 2430 |
+| **Executed** | 2430 |
+| **Passed** | 2430 |
 | **Failed / skipped / xfailed / xpassed** | 0 / 0 / 0 / 0 |
 | **Verified** | fresh clone at `e68a65d`, fresh virtualenv, `requirements.txt` only, live API |
 

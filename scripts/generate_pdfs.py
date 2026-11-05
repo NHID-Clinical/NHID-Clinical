@@ -756,11 +756,11 @@ class ExecutiveSummary(Flowable):
 
 
 def _key_metrics(width=6.5 * inch):
-    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 2426 Tests · 6 Adapters."""
+    """Canonical suite metric row: 5 Controls · 18 CTS Cases · 2430 Tests · 6 Adapters."""
     return _stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("2426", "Tests"),
+        ("2430", "Tests"),
         ("6", "Adapters"),
     ])
 
@@ -964,7 +964,7 @@ def make_shadow_guide():
     info_cards = [
         ("No Cost",        TEAL_DEEP,   "No vendor changes. No production risk. Observe-only alongside your current call flow."),
         ("Shadow Mode",    TEAL_BRIGHT, "Your existing call handling is unchanged. Measure how today's AI voice traffic behaves."),
-        ("No Commitment",  GREEN,       "No certification, no SLA. Share anonymized findings with the community if you choose."),
+        ("No Commitment",  GREEN,       "No certification, no SLA. If you choose to share, nhid pilot --share-safe produces a pseudonymised, pre-scanned pack."),
         ("Clear Goal",     SLATE,       "Produce a written behavioral baseline showing AI agent disclosure, escalation, and logging."),
     ]
     for title, col, body_txt in info_cards:
@@ -1054,7 +1054,9 @@ def make_shadow_guide():
         "Access to call logs or recordings for a sample of incoming administrative calls "
         "(eligibility, claim status, prior authorization)",
         "About 30 minutes of staff time for orientation",
-        "Willingness to share anonymized findings if you choose to",
+        "Willingness to share findings if you choose to: nhid pilot --share-safe replaces call ids with "
+        "pseudonyms and scans the pack before release, and Dockerfile.pilot runs the kit in a container "
+        "with networking switched off",
     ]
     for n in needs:
         story.append(Paragraph(f"•  {n}", BODY))
@@ -1064,8 +1066,9 @@ def make_shadow_guide():
     story.append(ColorBlock(
         "How to Start",
         "Email contact@nhid-clinical.org with subject line 'Shadow Evaluation'. "
-        "Include your role and the workflows you want to observe.",
-        BLUE, width=6.5*inch, height=0.8*inch
+        "Include your role and the workflows you want to observe. Stage: Research, an independent "
+        "research project and open reference implementation; a Tier 0 shadow pilot is available.",
+        BLUE, width=6.5*inch, height=1.0*inch
     ))
 
     doc.build(story, onFirstPage=_cover_footer, onLaterPages=_footer_canvas)
@@ -1114,7 +1117,7 @@ def make_core_spec():
     story.append(_stats_row([
         ("5", "Controls"),
         ("18", "CTS Cases"),
-        ("2426", "Unit Tests"),
+        ("2430", "Unit Tests"),
         ("6", "Adapters"),
     ]))
     story.append(Spacer(1, 0.12 * inch))
@@ -1178,7 +1181,9 @@ def make_core_spec():
 
     _section(story, "Live Conformance API", H1)
     story.append(Paragraph(
-        "Reference implementation on AWS Lambda. Demo routes require no API key; production check uses x-api-key.",
+        "Reference implementation on AWS Lambda. Demo routes require no API key; the production check uses a per-tenant "
+        "x-api-key, and each tenant can hold more than one key so keys rotate without downtime. Call verification "
+        "(VER-01) is an option inside DLG-01 and adds no control of its own.",
         BODY
     ))
     story.append(APITable())
@@ -1911,7 +1916,7 @@ def make_v13_overview():
         "A deterministic policy engine that produces stable trace output under identical input "
         "conditions (modulo timestamps and non-deterministic IDs).",
         "An 18-case conformance test suite (CTS) in machine-readable YAML plus a pytest failure "
-        "injection harness (2426 passing unit tests in the reference implementation).",
+        "injection harness (2430 passing unit tests in the reference implementation).",
         "10 canonical trace files in traces/ demonstrating real-world scenarios (eligibility, "
         "prior auth, claims status, bot-to-bot, audit gaps, and more).",
         "Six vendor adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect, call-progress) "
@@ -2202,4 +2207,10 @@ if __name__ == "__main__":
         import subprocess as _sp
         _sp.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                               "build_playbook_pdf.py")], check=True)
+    # Stamp the sources these PDFs were built from, so tests/test_pdf_freshness.py
+    # fails when a source changes and the PDFs are not rebuilt (the loop in
+    # docs/agents/surfaces.md).
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from pdf_sources import write_stamp
+    print(f"  ✓  {write_stamp()}")
     print("Done.")

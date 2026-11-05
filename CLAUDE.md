@@ -126,6 +126,14 @@ Issues live in GitHub Issues for NHID-Clinical/NHID-Clinical. See `docs/agents/i
 
 The five default triage labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
 
+### Every change reaches every surface
+
+A change is not done until every page, PDF, doc, launch draft and generated
+fixture that describes it says so, in the same PR. Follow
+`docs/agents/surfaces.md`: add or update the fact in `docs/agents/surfaces.json`,
+rebuild generated output, and pass `tests/test_surfaces.py`,
+`tests/test_call_direction.py` and `tests/test_pdf_freshness.py`.
+
 ### Domain docs
 
 Single-context. The glossary is `docs/terminology.md` and decisions are recorded in `docs/MASTER-KNOWLEDGE-ARCHIVE.md` §19. See `docs/agents/domain.md`.

@@ -45,8 +45,11 @@ def test_the_behavioural_audit_split_is_preserved(md):
 def test_no_sixth_control_is_invented(md):
     """DLG-01 is opt-in and must not be presented as one of the five."""
     ids = set(re.findall(r"\b[A-Z]{3}-\d{2}\b", md)) - {"CAS"}
-    unexpected = ids - set(CANONICAL) - {"DLG-01"}
+    # VER-01 is call verification, an option inside DLG-01 (CLAUDE.md §3), not a control.
+    unexpected = ids - set(CANONICAL) - {"DLG-01", "VER-01"}
     assert not unexpected, f"Playbook names control ids outside the canonical set: {unexpected}"
+    if "VER-01" in md:
+        assert "inside DLG-01" in md, "VER-01 appears without being placed inside DLG-01"
     if "DLG-01" in md:
         assert "not one of the five" in md or "opt-in" in md, \
             "DLG-01 appears without being marked opt-in / outside the five"
