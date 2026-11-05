@@ -103,7 +103,22 @@
         "docs/reference-agent.md": ["Demonstration keys only", "SIP"]
       },
       "must_not_contain": {
-        "framework/nhid-auth.html": ["NOT BUILT: NO ADAPTER OR SIP PATH", "no adapter or SIP path carries a passport today"]
+        "framework/nhid-auth.html": ["NOT BUILT: NO ADAPTER OR SIP PATH", "no adapter or SIP path carries a passport today"],
+        "README.md": ["no adapter or SIP path carries a passport today"]
+      }
+    },
+    {
+      "id": "production-readiness",
+      "fact": "The open decisions between NHID-Auth v2 and production use are recorded in docs/production-readiness.md; none is closed, and nothing is called production ready.",
+      "must_contain": {
+        "docs/production-readiness.md": ["Research", "for counsel review", "Open"],
+        "framework/nhid-auth.html": ["production-readiness.md"],
+        "docs/reference-agent.md": ["production-readiness.md"],
+        "README.md": ["docs/production-readiness.md"]
+      },
+      "must_not_contain": {
+        "framework/nhid-auth.html": ["production ready", "production-ready", "enterprise ready"],
+        "docs/reference-agent.md": ["production ready", "production-ready", "enterprise ready"]
       }
     }
   ],

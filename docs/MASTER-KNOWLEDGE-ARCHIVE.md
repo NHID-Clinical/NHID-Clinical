@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2457** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2463** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2457 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2463 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2457 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2463 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2457 passing tests · machine-readable traces · open implementation
+> 5 controls · 2463 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2457%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2463%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,66 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.31 The production-readiness decisions are written down — 2026-11-05
+
+The maintainer asked for the production-readiness decisions under #457
+(#458–#464) to be written up. `docs/production-readiness.md` records seven
+decisions, each with what exists today, the options, a recommended direction,
+the evidence that would close it, and what may be said at the Research stage.
+The seven are:
+- key custody;
+- trust anchors and revocation across organizations;
+- an OAuth token-exchange profile;
+- STIR/SHAKEN and Rich Call Data;
+- the HIPAA verification mapping;
+- a shared challenge store;
+- the NIST NCCoE project.
+
+**Decisions.**
+- **No item is closed, and nothing is called production or enterprise
+  ready.** A surfaces fact enforces it on the NHID-Auth page and the
+  reference-agent doc.
+- **Every external standard is cited by an identifier checked on
+  2026-11-05:**
+  - RFC 8693;
+  - `draft-ietf-oauth-identity-chaining` (-11, May 2026; still a draft);
+  - W3C Bitstring Status List v1.0 (Recommendation, 15 May 2025);
+  - RFC 9795 (Rich Call Data);
+  - AWS KMS `ECC_NIST_EDWARDS25519`;
+  - 45 CFR 164.514(h);
+  - the NCCoE concept paper of 5 February 2026.
+- **The HIPAA section is a mapping for counsel review, not a compliance
+  claim.** That review is the step to Pilot-ready.
+- **The README no longer says "no adapter or SIP path carries a passport
+  today".** That stopped being true with §19.28. It now says the reference
+  agent presents one over HTTPS and no SIP path carries one.
+
+### 19.30 One place orients a calling agent — 2026-11-05
+
+This is the follow-up to §19.26 (#465). The pre-utterance gate
+(`functions.handler.gate_turn`) and the ElevenLabs post-call handler each
+oriented the caller-agent's turns for the engine themselves. Each put the
+agent's words in the slots PDX-01 and DBC-01 read, and each told PDX-01
+whether disclosure had come earlier. The post-call handler also kept its own
+turn loop.
+
+**Decisions.**
+- `src/call_replay.py` gains `orient_calling_agent`, the one copy of the
+  orientation, and `replay_transcript`, the post-call loop. That loop
+  converts each turn through the call-progress adapter, carries the
+  disclosure forward and orients the agent's turns. Both callers use them.
+  The handler keeps authentication, parsing, storage and the vendor's grades.
+- **No behaviour change, and how that was checked.** Every stored post-call
+  turn and every gate decision across the post-call, gate, Ida and replay test
+  files was recorded before and after the change: 51 stored turns and 37 gate
+  decisions. The two records were identical once timestamps and random ids
+  were removed.
+- `adapters/call_progress_adapter.py` joins the offline guard
+  (`scripts/check_offline_kit.py`), because `call_replay` now imports it. It
+  is standard library only.
+- `synthetic_eval_loop.evaluate_conversation` is unchanged, because it feeds
+  the pinned Fabricate baseline.
 
 ### 19.29 The live ElevenLabs runner had Ida answering the call — 2026-11-05
 

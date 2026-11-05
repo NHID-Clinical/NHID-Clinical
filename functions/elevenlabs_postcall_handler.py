@@ -5,7 +5,8 @@ ElevenLabs delivers the full transcript once a call ends (not turn-by-turn
 like Twilio), so this handler evaluates every turn in one pass: thread
 session_state/disclosure_timestamp across turns exactly like
 functions.twilio_demo_handler does, run each turn through the same real
-pipeline (adapters.call_progress_adapter.to_nhid_event() +
+pipeline (src.call_replay.replay_transcript, which wraps
+adapters.call_progress_adapter.to_nhid_event() and
 src.nhid_policy_engine_v1.evaluate_all()), and write the accumulated result
 into functions.demo_status_store keyed by ElevenLabs' conversation_id --
 the same store, the same shape, the Twilio scripted demo line uses, so the
@@ -33,7 +34,8 @@ Order of work, and why:
    canonical scenario: an agent phones a payer). The call-progress adapter was
    written receiver-side and looks for protected data only in the human's
    words, so Ida speaking a member ID was invisible to PDX-01. Agent turns
-   get the same orientation /v1/gate/turn applies (functions.handler.gate_turn).
+   get the same orientation /v1/gate/turn applies: both use
+   src.call_replay.orient_calling_agent, through replay_transcript here.
 5. **Store the vendor's own grades beside, never into, the evaluation.**
    ElevenLabs' evaluation_criteria_results and data_collection_results are
    stored after the engine has run, labelled as vendor self-evaluation. The
@@ -57,11 +59,12 @@ import time
 from datetime import datetime, timezone
 from typing import Any, Optional
 
-from adapters.call_progress_adapter import _detect_disclosure, to_nhid_event
+from adapters.call_progress_adapter import _detect_disclosure
 from adapters.elevenlabs_postcall_adapter import TRANSCRIPTION_TYPE, iter_turns, parse_postcall
 from functions import demo_status_store
 from functions.twilio_demo_handler import _DEMO_GATE_RULE_IDS, _decision_summary
-from src.nhid_policy_engine_v1 import _phi_fields_requested, evaluate_all
+from src.call_replay import replay_transcript
+from src.nhid_policy_engine_v1 import _phi_fields_requested
 from src.pilot_measure import DISCLOSURE_BANDS, classify_disclosure_band
 
 _SCRIPT_LABEL = "Ida outbound call"
@@ -250,24 +253,6 @@ def _critical_violation_count(turns: list[dict[str, Any]]) -> int:
     )
 
 
-def _orient_for_calling_agent(turn: dict[str, Any], session: dict[str, Any],
-                              policy_event: dict[str, Any], *, disclosed_before: bool) -> None:
-    """Give each engine slot the party it describes, for an agent that CALLS.
-
-    Mirrors functions.handler.gate_turn: the agent's own words are both its
-    identity assertion (DBC-01) and, when they carry an identifier, the data
-    exchange PDX-01 gates. The human's words stay in speech_text, where EIT-01
-    looks for a request for a person. Computes no decision of its own.
-    """
-    governance = policy_event["healthcare_governance"]
-    if turn["speaker"] == "agent":
-        governance["identity_assertion_text"] = turn["text"]
-        governance["phi_accessed"] = sorted(_phi_fields_requested(turn["text"], []))
-    # The handler is the harness that knows the conversation's history, so it
-    # tells PDX-01 whether disclosure was established on an earlier turn.
-    session["disclosure_established_prior"] = disclosed_before
-
-
 def _handle_elevenlabs_postcall_webhook(event: dict[str, Any], *, status_table=None) -> dict[str, Any]:
     # 1. Authenticate before reading anything.
     raw = _raw_body(event)
@@ -315,28 +300,11 @@ def _handle_elevenlabs_postcall_webhook(event: dict[str, Any], *, status_table=N
         "escalation_available": True,
     }
 
+    # 3-4. The replay (src/call_replay.py) carries the disclosure forward and
+    # orients Ida's turns as the caller's; this handler only stores the results.
     stored: dict[str, Any] = {}
-    for turn in turns:
-        disclosed_before = session_state["disclosure_timestamp"] is not None
-        adapter_body = {
-            "session_id": turn["session_id"],
-            "turn_index": turn["turn_index"],
-            "speaker": turn["speaker"],
-            "text": turn["text"],
-            "interrupted": turn["interrupted"],
-            "session_state": session_state,
-        }
-        turn_iso = _turn_iso(start, turn["time_in_call_secs"])
-        if turn_iso:
-            adapter_body["timestamp"] = turn_iso
-        session, policy_event = to_nhid_event(adapter_body)
-        _orient_for_calling_agent(turn, session, policy_event, disclosed_before=disclosed_before)
-        decision = evaluate_all(session, policy_event)
-
-        session_state = dict(session_state)
-        session_state["turn_count"] = turn["turn_index"] + 1
-        session_state["disclosure_timestamp"] = policy_event["healthcare_governance"]["disclosure_timestamp"]
-
+    for turn, _session, _event, decision, session_state in replay_transcript(
+            turns, timestamp=lambda t: _turn_iso(start, t["time_in_call_secs"])):
         summary = _decision_summary(decision)
         summary["time_in_call_secs"] = turn["time_in_call_secs"]
         stored = demo_status_store.put_turn(
