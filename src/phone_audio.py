@@ -3,7 +3,7 @@
 Every published detection figure in this repository is measured on text: the
 Fabricate CSV-550 corpus, and the voice-stress corpus, whose "ASR noise" is
 itself authored text. A real call reaches the engine only after a phone channel
-(300-3400 Hz, 8 kHz, G.711 mu-law) and a speech-to-text system the project does
+(300-3400 Hz, 8 kHz, mu-law) and a speech-to-text system the project does
 not control. This module measures that gap on the voice-stress corpus:
 
     authored turn text --TTS--> audio --phone channel--> 8 kHz mu-law
@@ -11,10 +11,10 @@ not control. This module measures that gap on the voice-stress corpus:
 
 and reports, per control, detection and false positives on the authored text
 next to the same figures on the transcribed text, with the word error rate and
-the backends named. It reuses the corpus adapter
-(``adapters.fabricate_adapter``) and the confusion matrix
-(``scripts.confusion_matrix.compute``) unchanged, so the two columns differ
-only by what the audio path did to the words.
+the backends named. Both columns go through the same
+adapter conversion (``adapters.fabricate_adapter``) and confusion matrix
+(``scripts.confusion_matrix.compute``), so they differ only by what the audio
+path did to the words.
 
 What it is not
 --------------
@@ -150,7 +150,11 @@ _MU = 255.0
 
 
 def mulaw_encode(x: float) -> int:
-    """G.711 mu-law: one sample in [-1, 1] to an 8-bit code (continuous-curve form)."""
+    """Mu-law: one sample in [-1, 1] to an 8-bit code.
+
+    The continuous mu-law curve (mu = 255), which approximates G.711's
+    segmented encoder rather than reproducing it bit for bit; reports say
+    "mu-law", never "G.711", for that reason."""
     x = max(-1.0, min(1.0, x))
     y = math.copysign(math.log1p(_MU * abs(x)) / math.log1p(_MU), x)
     return int(round((y + 1) / 2 * 255))
@@ -377,7 +381,9 @@ def run(*, tts: Synthesizer, asr: Transcriber, out_dir: Path,
         "distinct_turn_texts": len(cache),
         "tts": tts.name,
         "asr": asr.name,
-        "channel": "300-3400 Hz band-limit, 8 kHz, G.711 mu-law"
+        "versions": _versions(tts, asr),
+        "channel": "300-3400 Hz band-limit, 8 kHz (linear resampling), "
+                   "8-bit continuous mu-law (approximates G.711)"
                    + (f", white noise sd={noise}" if noise else ""),
         "seed": seed,
         "word_error_rate": (errors / length) if length else None,
@@ -390,6 +396,30 @@ def run(*, tts: Synthesizer, asr: Transcriber, out_dir: Path,
     (out_dir / "results.json").write_text(json.dumps(results, indent=2) + "\n", encoding="utf-8")
     (out_dir / "report.md").write_text(render_report(results), encoding="utf-8")
     return results
+
+
+def _versions(tts: Synthesizer, asr: Transcriber) -> Dict[str, str]:
+    """What produced the figures, so a result can be reproduced or compared."""
+    import platform
+    from importlib import metadata
+
+    found = {"python": platform.python_version()}
+    for package in ("faster-whisper", "ctranslate2", "piper-tts"):
+        try:
+            found[package] = metadata.version(package)
+        except metadata.PackageNotFoundError:
+            pass
+    binary = getattr(tts, "binary", None)
+    if binary and tts.name == "espeak-ng":
+        try:
+            out = subprocess.run([binary, "--version"], capture_output=True, text=True, timeout=10)
+            found["espeak-ng"] = out.stdout.strip().split("\n")[0][:80]
+        except (OSError, subprocess.SubprocessError):
+            found["espeak-ng"] = "unknown"
+    model = getattr(tts, "model", None)
+    if model:
+        found["piper voice"] = Path(model).name
+    return found
 
 
 def _cell(rate, num, den) -> str:
@@ -412,6 +442,7 @@ def render_report(results: dict) -> str:
         f"- Corpus: {results['corpus']}, {results['scenarios']} scenarios, "
         f"{results['distinct_turn_texts']} distinct turn texts",
         f"- TTS: `{results['tts']}` · ASR: `{results['asr']}` · seed {results['seed']}",
+        f"- Versions: {', '.join(f'{k} {v}' for k, v in results['versions'].items())}",
         f"- Channel: {results['channel']}",
         f"- Word error rate: {'n/a' if wer is None else f'{wer:.1%}'}",
         f"- Turns carrying text stage directions (e.g. `*inhales*`), which are not spoken: "

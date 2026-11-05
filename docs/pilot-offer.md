@@ -6,18 +6,20 @@ open reference implementation with a commercial product in development. A Tier 0
 pilot is available. See [claim-boundaries.md](claim-boundaries.md#stage) for what that
 means and what it does not.
 
-> **Keep your data.** You run one container on your own machine, with networking
-> switched off. Your call data never leaves your building. If you choose to share
-> results, you send an aggregate pack that your privacy team has reviewed first.
+> **Keep your data.** The kit runs on your own machine, in a container with networking
+> switched off. If you choose to share results, you send an aggregate pack that your
+> privacy team has reviewed first.
 
 ---
 
 ## The problem
 
-AI voice cloning is now cheap. In February 2024 the FCC ruled that calls using
-AI-generated voices are "artificial" under the TCPA. Pindrop reported a 475% increase in
-synthetic-voice fraud attacks on insurance companies in 2024, from more than 1.2 billion
-calls it analysed. Both are sourced, with what they do and do not measure, in
+In February 2024 the FCC ruled that calls using AI-generated voices are "artificial"
+under the TCPA, so they need the called party's prior express consent. It is not a ban,
+and it is about outbound calls to consumers, not payer lines. Pindrop reported a 475%
+increase in synthetic voice fraud attacks on insurance companies in 2024, from its
+analysis of more than 1.2 billion customer calls (vendor-reported). Both are sourced, with
+what they do and do not measure, in
 [voice-fraud-statistics.md](validation/voice-fraud-statistics.md). Neither is a
 measurement of NHID-Clinical.
 
