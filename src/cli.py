@@ -347,7 +347,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="measure what a phone line and a transcriber do to detection (research)",
         description=(
             "Speak the voice-stress corpus with a TTS engine, pass it through a "
-            "300-3400 Hz, 8 kHz, G.711 mu-law phone channel, transcribe it, and "
+            "300-3400 Hz, 8 kHz, mu-law phone channel, transcribe it, and "
             "report detection on the transcripts next to detection on the authored "
             "text. A research measurement, not a headline rate. See "
             "docs/validation/phone-audio-robustness.md."

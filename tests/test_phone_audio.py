@@ -3,7 +3,7 @@ Phone-audio robustness pipeline (src/phone_audio.py), tested offline.
 
 The real measurement needs speech engines the CI runners do not have; these
 tests pin the parts that must be right regardless of engine: the phone channel
-really is 8 kHz mu-law band-limited audio, the identity backend reproduces the
+really is 8 kHz, band-limited, mu-law audio, the identity backend reproduces the
 authored-text figures exactly (so any difference in a real run comes from the
 audio path, not the plumbing), and stub results are labelled as unquotable.
 """
@@ -125,3 +125,11 @@ def test_the_measurement_reads_the_voice_stress_corpus_not_the_pinned_one():
     assert defaults["scenarios_csv"].default == pa.VOICE_STRESS / "scenarios.csv"
     assert defaults["turns_csv"].default == pa.VOICE_STRESS / "turns.csv"
     assert pa.VOICE_STRESS.name == "voice-stress"
+
+
+def test_results_record_what_produced_them(tmp_path):
+    results = pa.run(tts=pa.StubSynthesizer(), asr=pa.IdentityTranscriber(),
+                     out_dir=tmp_path, limit=3)
+    assert results["versions"]["python"]
+    assert "approximates G.711" in results["channel"]
+    assert "Versions: python" in (tmp_path / "report.md").read_text()

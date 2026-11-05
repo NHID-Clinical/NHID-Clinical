@@ -48,3 +48,30 @@ def test_the_documented_run_switches_the_network_off():
                  (ROOT / "docs" / "pilot-kit" / "README.md").read_text(),
                  (ROOT / "docs" / "pilot-offer.md").read_text()):
         assert "--network none" in text
+
+
+# ── the pilot offer stays inside the claim boundaries (code review of #449) ──
+
+def _flat(text: str) -> str:
+    return " ".join(text.replace("'", '"').split())
+
+
+def test_the_offer_quotes_statistics_exactly_as_the_evidence_note_words_them():
+    """docs/claim-boundaries.md: third-party statistics may be quoted only as worded
+    in voice-fraud-statistics.md, qualifiers included."""
+    offer = _flat((ROOT / "docs" / "pilot-offer.md").read_text())
+    for sentence in (
+        'In February 2024 the FCC ruled that calls using AI-generated voices are "artificial" '
+        "under the TCPA, so they need the called party\"s prior express consent.",
+        "It is not a ban, and it is about outbound calls to consumers, not payer lines.",
+        "Pindrop reported a 475% increase in synthetic voice fraud attacks on insurance "
+        "companies in 2024, from its analysis of more than 1.2 billion customer calls",
+    ):
+        assert _flat(sentence) in offer, sentence
+    assert "vendor-reported" in offer
+
+
+def test_the_offer_makes_no_data_residency_guarantee_at_the_research_stage():
+    offer = (ROOT / "docs" / "pilot-offer.md").read_text().lower()
+    for overclaim in ("never leaves", "leaves your building", "no data off your machine"):
+        assert overclaim not in offer, overclaim

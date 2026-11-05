@@ -6,7 +6,7 @@
 Every detection figure the project publishes is measured on text. The Fabricate CSV-550
 corpus is authored text, and so is the voice-stress corpus, including its "ASR noise".
 A real call reaches the engine only after two things NHID-Clinical does not control:
-- a phone channel (300–3400 Hz, 8 kHz, G.711 μ-law);
+- a phone channel (300–3400 Hz, 8 kHz, μ-law, as on G.711 lines);
 - a speech-to-text system.
 
 `nhid audio-robustness` measures that gap.
@@ -19,9 +19,21 @@ authored turn text ─TTS─▶ audio ─phone channel─▶ 8 kHz μ-law ─ASR
              detection and false positives: authored text vs phone transcript
 ```
 
-The corpus adapter (`adapters/fabricate_adapter.py`) and the confusion matrix
-(`scripts/confusion_matrix.py`) are reused unchanged, so the two columns differ only by
-what the audio path did to the words. The identity transcriber is the control: with it,
+**The channel is an approximation.** It uses the continuous μ-law curve, not G.711's
+segmented encoder bit for bit. It resamples by linear interpolation after 3400 Hz
+low-pass filtering. It is pure Python, so it runs the same on every CI runner. Reports
+say "μ-law", not "G.711".
+
+**Why this scorer.** The Tier 0 pilot scorer (`src/pilot_measure.measure_records`) takes
+disclosure timing from fields the capture source supplies, not from the words. Transcription
+errors could therefore never change its result. This measurement needs a scorer that reads
+the words, so it uses the corpus adapter and confusion matrix that produced the voice-stress
+findings. It reads only the voice-stress corpus. The Fabricate CSV-550 corpus is the pinned
+baseline (`scripts/check_baseline.py`) and is kept off this path.
+
+Both columns go through the same adapter conversion (`adapters/fabricate_adapter.py`) and
+the same confusion matrix (`scripts/confusion_matrix.py`), so they differ only by what the
+audio path did to the words. The identity transcriber is the control: with it,
 the two columns are identical (`tests/test_phone_audio.py`).
 
 ## Run it
@@ -43,7 +55,8 @@ Options:
 - `--tts piper --piper-model voice.onnx` uses a more natural voice.
 
 Every run writes `report.md` and `results.json`, naming:
-- the corpus, scenario count and backends;
+- the corpus, scenario count and backends, with package and engine versions and the
+  Piper voice file;
 - the word error rate;
 - each control's detections and false positives, with their denominators.
 
