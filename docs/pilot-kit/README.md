@@ -136,7 +136,9 @@ What it cannot do: this is a pattern-and-overlap check, **not de-identification*
 under HIPAA's Safe Harbor or Expert Determination methods. It cannot recognise a
 person's name, or an identifier that matches no pattern and never appeared in
 your input. The header fields you type (`--organization` and the rest) go into
-the report as written. Review the pack before you send it.
+the report as written. Review the pack before you send it. What the scan catches and
+misses is measured with planted synthetic values in
+[share-safe-leakage.md](../validation/share-safe-leakage.md).
 
 The default `nhid pilot` (without `--share-safe`) is unchanged. `measure_pilot.py`
 does not take the flag; use `nhid pilot`.
