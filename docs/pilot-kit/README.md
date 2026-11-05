@@ -88,6 +88,18 @@ renderer, the CLI entry point, the policy engine, and the engine's own imports
 If you want your results compared against the published corpus, the kit prints
 an address you can email them to. You send it; nothing sends it for you.
 
+## Run it in a container, with the network off
+
+```bash
+docker build -f Dockerfile.pilot -t nhid-pilot .
+docker run --rm --network none -v "$PWD:/data" nhid-pilot \
+    pilot /data/calls.jsonl --share-safe --out /data/pilot-evidence
+```
+
+`--network none` gives the container no network interface beyond loopback, so the
+offline guarantee is enforced by the runtime as well as by `scripts/check_offline_kit.py`.
+The image carries only the kit (`Dockerfile.pilot`); the API server has its own.
+
 ## Sharing the pack without patient data
 
 The pack is the part that leaves your machine, so there is a mode built for

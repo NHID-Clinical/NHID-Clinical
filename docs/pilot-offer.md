@@ -6,9 +6,20 @@ open reference implementation with a commercial product in development. A Tier 0
 pilot is available. See [claim-boundaries.md](claim-boundaries.md#stage) for what that
 means and what it does not.
 
+> **Keep your data.** You run one container on your own machine, with networking
+> switched off. Your call data never leaves your building. If you choose to share
+> results, you send an aggregate pack that your privacy team has reviewed first.
+
 ---
 
 ## The problem
+
+AI voice cloning is now cheap. In February 2024 the FCC ruled that calls using
+AI-generated voices are "artificial" under the TCPA. Pindrop reported a 475% increase in
+synthetic-voice fraud attacks on insurance companies in 2024, from more than 1.2 billion
+calls it analysed. Both are sourced, with what they do and do not measure, in
+[voice-fraud-statistics.md](validation/voice-fraud-statistics.md). Neither is a
+measurement of NHID-Clinical.
 
 Automated callers now phone payer lines and ask for eligibility, claim status and other
 protected health information on behalf of providers. Your representatives have to decide,
@@ -36,6 +47,17 @@ A **Tier 0 shadow pilot**: two to four weeks, observe-only.
   de-identification; the [kit README](pilot-kit/README.md#sharing-the-pack-without-patient-data)
   says exactly what it can and cannot catch.
 
+## Running it
+
+```bash
+docker build -f Dockerfile.pilot -t nhid-pilot .
+docker run --rm --network none -v "$PWD:/data" nhid-pilot \
+    pilot /data/calls.jsonl --share-safe --out /data/pilot-evidence
+```
+
+`--network none` gives the container no network interface except loopback, so it cannot
+reach anything outside your machine, whatever the code inside it does. Without Docker, `pip install -e .` and `nhid pilot` run the same kit.
+
 ## What you get back
 
 Measured on your own traffic, each figure with its own denominator:
@@ -50,7 +72,10 @@ Measured on your own traffic, each figure with its own denominator:
 
 These are measurements of your traffic, not a certification, a compliance finding or a
 score. The accuracy of the replay depends on your transcription; the report records how
-much of it was checked.
+much of it was checked. How much a phone line and a transcriber change detection is being
+measured separately on synthetic speech
+([phone-audio-robustness.md](validation/phone-audio-robustness.md)); that measurement has
+not been run with real speech engines yet.
 
 ## What we never receive
 

@@ -1,0 +1,25 @@
+# NHID-Clinical Tier 0 pilot kit, as one container.
+#
+# Run it with networking switched off, so "nothing leaves your machine" is
+# enforced by the container runtime, not only by scripts/check_offline_kit.py:
+#
+#   docker build -f Dockerfile.pilot -t nhid-pilot .
+#   docker run --rm --network none -v "$PWD:/data" nhid-pilot \
+#       pilot /data/calls.jsonl --share-safe --out /data/pilot-evidence
+#
+# Quick check with no data:  docker run --rm --network none nhid-pilot pilot --demo --share-safe --out /tmp/p
+# The API server has its own image (Dockerfile); this one carries only the kit.
+FROM python:3.13-slim
+
+WORKDIR /kit
+COPY pyproject.toml README.md LICENSE LICENSE-DOCS NOTICE ./
+COPY src/ ./src/
+COPY adapters/ ./adapters/
+COPY scripts/ ./scripts/
+RUN pip install --no-cache-dir ".[pdf]" \
+    && useradd --create-home --uid 1000 kit
+
+USER kit
+WORKDIR /data
+ENTRYPOINT ["nhid"]
+CMD ["pilot", "--help"]
