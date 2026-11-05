@@ -661,3 +661,40 @@ def test_the_notation_does_not_claim_to_be_a_new_metric():
     assert "not** claimed" in lowered or "not claimed" in lowered, (
         "the row must keep disclaiming priority over p_max"
     )
+
+
+# ── the pilot replay tells the engine which turn disclosed ──────────────────
+#
+# The engine reads session["disclosure_established_prior"] and, when a harness
+# leaves it out, assumes disclosure happened on an earlier turn: the permissive
+# reading. The pilot replay can tell which turn disclosed, so it must say so,
+# or the same-turn PDX-01 rule and IDG-01's persona check never run on a pilot.
+
+def test_a_disclosure_and_data_request_in_one_turn_is_a_pilot_violation():
+    records = [
+        _rec(0, text="This is an automated system calling for a provider. What is the member ID?",
+             disclosure_timestamp="2026-10-21T10:00:00Z", phi_accessed=["member_id"]),
+        _rec(1, speaker="receiver", text="One moment."),
+    ]
+    call = measure_call("CALL-1", records)
+    assert "PDX-01" in call["violated_rules"]
+    assert not call["conformant"]
+
+
+def test_a_disclosure_followed_by_a_later_request_stays_conformant_on_pdx01():
+    records = [
+        _rec(0, text=DISCLOSURE, disclosure_timestamp="2026-10-21T10:00:00Z"),
+        _rec(1, speaker="receiver", text="Go ahead."),
+        _rec(2, text="What is the member ID?", phi_accessed=["member_id"]),
+    ]
+    assert "PDX-01" not in measure_call("CALL-1", records)["violated_rules"]
+
+
+def test_a_disclosure_that_introduces_a_human_persona_is_an_idg01_violation():
+    records = [
+        _rec(0, text="Hi, this is Sarah from the provider's billing office.",
+             disclosure_timestamp="2026-10-21T10:00:00Z",
+             identity_assertion_text="Hi, this is Sarah from the provider's billing office."),
+        _rec(1, speaker="receiver", text="Hello."),
+    ]
+    assert "IDG-01" in measure_call("CALL-1", records)["violated_rules"]

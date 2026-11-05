@@ -21,10 +21,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from src.nhid_policy_engine_v1 import evaluate_all
-from src.synthetic_eval_loop import (
-    build_event, build_session, carry_disclosure_forward, extract_rule_ids,
-)
+from src.call_replay import replay_call
 
 ROOT = Path(__file__).resolve().parent.parent
 CORPUS = ROOT / "tests" / "adversarial_corpus_v1.json"
@@ -33,10 +30,8 @@ CORPUS = ROOT / "tests" / "adversarial_corpus_v1.json"
 def detect(scenario):
     """Rule ids the engine surfaces anywhere in the scenario."""
     found = set()
-    for i, turn in enumerate(carry_disclosure_forward(scenario["turns"])):
-        decision = evaluate_all(build_session(turn),
-                                build_event(scenario["scenario_id"], i, turn))
-        found.update(extract_rule_ids(decision.violations))
+    for replayed in replay_call(scenario["turns"], conversation_id=scenario["scenario_id"]):
+        found.update(replayed.rule_ids)
     return found
 
 

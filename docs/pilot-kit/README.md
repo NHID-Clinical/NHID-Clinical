@@ -143,6 +143,15 @@ misses is measured with planted synthetic values in
 The default `nhid pilot` (without `--share-safe`) is unchanged. `measure_pilot.py`
 does not take the flag; use `nhid pilot`.
 
+## What the replay checks on each turn
+
+Every call is replayed through the controls turn by turn, and each turn is told
+whether the agent disclosed on an earlier turn. A call that discloses and asks
+for protected data in the same turn (`PDX01_DISCLOSURE_NOT_SEQUENCED`), or whose
+disclosure introduces a human persona, is non-conformant. Before 2026-11-05 the
+kit did not supply that per-turn fact and these two checks did not run on pilot
+captures; see `docs/MASTER-KNOWLEDGE-ARCHIVE.md` §19.26.
+
 ## Disclosure timeliness bands
 
 Impersonation Latency is reported as a raw measurement *and* bucketed into four bands, so a
