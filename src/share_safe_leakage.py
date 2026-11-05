@@ -149,7 +149,7 @@ def generate_calls(n: int = DEFAULT_CALLS, seed: int = DEFAULT_SEED
             {"speaker": "agent", "speech_text": speech,
              "disclosure_timestamp": ts(1),
              "identity_assertion_text": "I am an automated assistant calling for Harbor Point Clinic."},
-            {"speaker": "caller", "speech_text": "Go ahead with the member details."},
+            {"speaker": "receiver", "speech_text": "Go ahead with the member details."},
             {"speaker": "agent",
              "speech_text": (f"The member ID is {member}, alternate number {member_digits}, "
                              f"date of birth {dob}, SSN {ssn}, MRN {mrn}."),
