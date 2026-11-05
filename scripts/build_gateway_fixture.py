@@ -41,18 +41,13 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
+from src.call_replay import replay_call  # noqa: E402
 from src.nhid_policy_engine_v1 import (  # noqa: E402
-    evaluate_all,
     evaluate_atr01,
     evaluate_dbc01,
     evaluate_eit01,
     evaluate_idg01,
     evaluate_pdx01,
-)
-from synthetic_eval_loop import (  # noqa: E402
-    build_event,
-    build_session,
-    carry_disclosure_forward,
 )
 
 CORPUS = ROOT / "tests" / "evaluation_corpus_v1.json"
@@ -152,17 +147,17 @@ def build_hero() -> dict:
     second agent turn is judged as "disclosed before this turn" and PDX-01 can
     report the gate as cleared rather than tripped.
     """
-    agent_turns = [dict(t) for t in HERO_TURNS if t["speaker"] == "agent"]
-    carried = iter(carry_disclosure_forward(agent_turns))
+    agent_positions = [i for i, t in enumerate(HERO_TURNS) if t["speaker"] == "agent"]
+    replayed = iter(replay_call([dict(HERO_TURNS[i]) for i in agent_positions],
+                                conversation_id=HERO_ID, positions=agent_positions))
     turns = []
     for position, spoken in enumerate(HERO_TURNS):
         if spoken["speaker"] != "agent":
             turns.append({"position": position, "speaker": "representative",
                           "speech": spoken["speech_text"], "evaluated": False})
             continue
-        turn = next(carried)
-        session, event = build_session(turn), build_event(HERO_ID, position, turn)
-        composite = evaluate_all(session, event)
+        step = next(replayed)
+        turn, session, event, composite = step.turn, step.session, step.event, step.decision
         controls = []
         for rule_id, evaluator in PER_CONTROL:
             d = evaluator(session, event)
@@ -197,8 +192,8 @@ def build() -> dict:
     for scenario_id in SCENARIOS:
         scenario = scenarios[scenario_id]
         turns = []
-        for index, turn in enumerate(carry_disclosure_forward(scenario["turns"])):
-            decision = evaluate_all(build_session(turn), build_event(scenario_id, index, turn))
+        for step in replay_call(scenario["turns"], conversation_id=scenario_id):
+            index, turn, decision = step.index, step.turn, step.decision
             turns.append({
                 "index": index,
                 "speech": (turn.get("speech_text") or "").strip(),

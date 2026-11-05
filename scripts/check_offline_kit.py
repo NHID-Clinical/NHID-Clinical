@@ -73,6 +73,8 @@ GUARDED = [
     "src/pilot_pdf.py",
     # `--share-safe`: pseudonyms, the pre-release scan and the manifest.
     "src/pilot_share_safe.py",
+    # The call replay: every turn of a pilot call goes through it to the engine.
+    "src/call_replay.py",
     # The `nhid pilot` dispatcher. Guarded because that subcommand is the kit's
     # one-command front door, and a phone-home added there would be just as
     # false as one added to the kit. If another subcommand ever genuinely needs

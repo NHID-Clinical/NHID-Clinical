@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2328** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2335** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2328 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2335 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2328 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2335 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2328 passing tests · machine-readable traces · open implementation
+> 5 controls · 2335 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2328%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2335%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,36 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.26 The pilot replay now tells the engine which turn disclosed — 2026-11-05
+
+An architecture review found the "replay a call through the controls" loop
+written separately in several harnesses. The engine reads
+`session["disclosure_established_prior"]` and, when a harness leaves it out,
+assumes disclosure happened on an earlier turn: the permissive reading, kept on
+purpose so the Fabricate baseline does not move. `src/pilot_measure.py` carried
+the disclosure forward but never set that flag. On every Tier 0 pilot replay,
+the same-turn PDX-01 rule (disclosure and a protected-data request in one
+breath, `PDX01_DISCLOSURE_NOT_SEQUENCED`) and IDG-01's human-persona check
+therefore never ran. That gap failed open; no control logic was wrong.
+
+**Decisions.**
+- **One call-replay module.** `src/call_replay.py:replay_call` carries
+  disclosure forward, sets the prior flag on each turn and runs `evaluate_all`.
+  `pilot_measure`, `scripts/redteam_corpus.py` and the gateway and walkthrough
+  fixture builders use it. The fixtures and the red-team result are unchanged.
+- **The pinned baseline keeps the permissive default.**
+  `synthetic_eval_loop.evaluate_conversation` (the Fabricate confusion matrix)
+  is not routed through `replay_call`; moving it needs a §9.1 decision.
+  Baselines unchanged: IDG-01 70/70, PDX-01 41/41, DBC-01 183/200, EIT-01 169/171.
+- **Pilot figures can change for real captures.** A pilot call that discloses
+  and asks for protected data in the same turn, or whose disclosure introduces a
+  human persona, is now non-conformant. The `--demo` figures are unchanged.
+- **Follow-up:** the ElevenLabs post-call handler and `gate_turn` keep their own
+  state threading through `adapters/call_progress_adapter`, and will move to
+  `replay_call` in a later change.
+
+No control semantics, outcome, reason code or pinned baseline changed.
 
 ### 19.25 Positioning by stage — 2026-11-02
 

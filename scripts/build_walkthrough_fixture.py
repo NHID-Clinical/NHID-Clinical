@@ -42,18 +42,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from src.call_replay import replay_call  # noqa: E402
 from src.nhid_policy_engine_v1 import (  # noqa: E402
-    evaluate_all,
     evaluate_atr01,
     evaluate_dbc01,
     evaluate_eit01,
     evaluate_idg01,
     evaluate_pdx01,
-)
-from src.synthetic_eval_loop import (  # noqa: E402
-    build_event,
-    build_session,
-    carry_disclosure_forward,
 )
 
 CORPUS = ROOT / "tests" / "evaluation_corpus_v1.json"
@@ -265,10 +260,9 @@ def build() -> dict[str, Any]:
     for scenario_id, label, sublabel in SCENARIOS:
         scenario = scenarios[scenario_id]
         turns = []
-        for index, turn in enumerate(carry_disclosure_forward(scenario["turns"])):
-            session = build_session(turn)
-            event = build_event(scenario_id, index, turn)
-            composite = evaluate_all(session, event)
+        for step in replay_call(scenario["turns"], conversation_id=scenario_id):
+            index, turn, session, event = step.index, step.turn, step.session, step.event
+            composite = step.decision
             turns.append({
                 "index": index,
                 "speech": (turn.get("speech_text") or "").strip(),

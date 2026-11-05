@@ -47,8 +47,8 @@ import sys
 from collections import Counter
 from datetime import datetime
 
-from src.nhid_policy_engine_v1 import _asserts_nonhuman_identity, evaluate_all
-from src.synthetic_eval_loop import build_event, build_session
+from src.call_replay import replay_call
+from src.nhid_policy_engine_v1 import _asserts_nonhuman_identity
 
 CONTROLS = ("IDG-01", "PDX-01", "DBC-01", "EIT-01", "ATR-01")
 
@@ -287,11 +287,11 @@ def measure_call(session_id: str, records: list[dict]) -> dict:
     # Replay through the real engine; any violation on any turn makes the call non-conformant.
     violations: list[dict] = []
     seen: set[tuple] = set()
-    for i, turn in enumerate(turns):
-        session = build_session(turn)
-        event = build_event(session_id, i, turn)
-        decision = evaluate_all(session, event)
-        for v in decision.violations:
+    # call_replay tells the engine which turn disclosed; without that, the
+    # same-turn PDX-01 rule and IDG-01's persona check never ran on a pilot.
+    for replayed in replay_call(turns, conversation_id=session_id):
+        i = replayed.index
+        for v in replayed.decision.violations:
             key = (v.rule_id, v.severity.value, i)
             if key not in seen:
                 seen.add(key)
