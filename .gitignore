@@ -16,6 +16,8 @@ docs/*
 !docs/validation/*.md
 !docs/proposals/
 !docs/proposals/*.md
+!docs/agents/
+!docs/agents/*.md
 !docs/assets/
 !docs/assets/archive/
 !docs/assets/archive/*.svg
