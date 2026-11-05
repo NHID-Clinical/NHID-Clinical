@@ -157,9 +157,9 @@ SAMPLE_TWILIO_COMPLIANT = {
     "transcript": [
         {"text": "Hello, this is an automated system calling on behalf of Dr. Smith's office.",
          "timestamp": 0.5, "speaker": "agent"},
-        {"text": "Can I get the NPI number please?",
+        {"text": "The provider NPI is 1234567890. Can you confirm eligibility for the visit?",
          "timestamp": 3.2, "speaker": "agent"},
-        {"text": "Sure, it's 1234567890.",
+        {"text": "Sure, one moment.",
          "timestamp": 5.8, "speaker": "human"},
     ],
 }
@@ -168,7 +168,7 @@ SAMPLE_TWILIO_NONCOMPLIANT = {
     "call_sid": "CA999888777",
     "start_time": "2026-05-27T14:05:00Z",
     "transcript": [
-        {"text": "Hi, can I get the member ID and NPI?",
+        {"text": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.",
          "timestamp": 0.3, "speaker": "agent"},
         {"text": "Sure — NPI is 1234567890.",
          "timestamp": 2.1, "speaker": "human"},

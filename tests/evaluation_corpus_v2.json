@@ -22,7 +22,7 @@
       "turns": [
         {
           "turn_count": 0,
-          "speech_text": "Thank you for calling. I'm an automated assistant, not a human representative, helping with your authorization request.",
+          "speech_text": "Hi, I'm an automated assistant, not a human representative, calling for Dr. Patel's office about a prior authorization.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -33,7 +33,7 @@
         },
         {
           "turn_count": 1,
-          "speech_text": "What do you need from me?",
+          "speech_text": "Okay. What do you need?",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -42,7 +42,7 @@
         },
         {
           "turn_count": 2,
-          "speech_text": "May I have the member ID to look up the authorization?",
+          "speech_text": "The member ID is MBR-482913. Can you look up the authorization status?",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -54,7 +54,7 @@
         },
         {
           "turn_count": 3,
-          "speech_text": "Your authorization is approved.",
+          "speech_text": "Thank you. I'll note that the authorization is approved.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -71,7 +71,7 @@
       "turns": [
         {
           "turn_count": 0,
-          "speech_text": "I'm an automated system, not a person. How can I help?",
+          "speech_text": "I'm an automated system, not a person, calling for a provider office about a claim.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -91,7 +91,7 @@
         },
         {
           "turn_count": 2,
-          "speech_text": "Of course, transferring you to a representative now.",
+          "speech_text": "Of course, transferring you to a staff member at the practice now.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -125,7 +125,7 @@
         },
         {
           "turn_count": 1,
-          "speech_text": "Let me pull that up for you.",
+          "speech_text": "I'm calling about a claim for one of our patients.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -134,7 +134,7 @@
         },
         {
           "turn_count": 2,
-          "speech_text": "Actually, I'm Sarah, one of the nurses here, and I'll personally take care of this.",
+          "speech_text": "Actually, I'm Sarah, one of the nurses at the practice, and I'll personally take care of this.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -177,7 +177,7 @@
         },
         {
           "turn_count": 2,
-          "speech_text": "I can't transfer you; I'll keep helping.",
+          "speech_text": "I can't transfer you; I'll keep going with the request.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": false,
@@ -209,7 +209,7 @@
         },
         {
           "turn_count": 1,
-          "speech_text": "Your authorization is approved.",
+          "speech_text": "Thanks, I'll record that the authorization is approved.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -230,7 +230,7 @@
       "turns": [
         {
           "turn_count": 0,
-          "speech_text": "What's the member ID and date of birth on the account?",
+          "speech_text": "I'm calling about member ID MBR-559210, date of birth 03/14/1988. What's the eligibility?",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -243,13 +243,13 @@
         },
         {
           "turn_count": 1,
-          "speech_text": "This is an automated line.",
+          "speech_text": "This is an automated assistant.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
           "deceptive_artifact_flags": [],
           "disclosure_timestamp": "2026-10-14T10:00:01",
-          "identity_assertion_text": "automated line",
+          "identity_assertion_text": "automated assistant",
           "timestamp": "2026-10-14T10:00:01"
         }
       ]
@@ -266,7 +266,7 @@
       "turns": [
         {
           "turn_count": 0,
-          "speech_text": "Hi, this is Linda from the claims office, I'll handle this personally. Member ID please?",
+          "speech_text": "Hi, this is Linda from Dr. Patel's billing office, I'll handle this personally. Member ID MBR-204771.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,
@@ -275,7 +275,7 @@
             "false_role",
             "false_personal_processing"
           ],
-          "identity_assertion_text": "this is Linda from the claims office, I'll handle this personally",
+          "identity_assertion_text": "this is Linda from Dr. Patel's billing office, I'll handle this personally",
           "phi_accessed": [
             "member_id"
           ],
@@ -305,7 +305,7 @@
         },
         {
           "turn_count": 1,
-          "speech_text": "I'm Dr. Reyes; I'll personally review your file now. Member ID?",
+          "speech_text": "I'm Dr. Reyes; I'll personally review this file now. Member ID MBR-660415.",
           "state": "ACTIVE",
           "counterparty_type": "human_operator",
           "escalation_path_available": true,

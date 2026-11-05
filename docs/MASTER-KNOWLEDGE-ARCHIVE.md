@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2335** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2426** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2335 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2426 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2335 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2426 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2335 passing tests · machine-readable traces · open implementation
+> 5 controls · 2426 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2335%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2426%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,45 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.27 Every call now runs the canonical direction — 2026-11-05
+
+The maintainer found the launch drafts backwards: the AI "asked for the member's
+date of birth", as if the payer's representative held the patient's
+identifiers and the agent were collecting them. An audit found the same
+inversion in more than fifty agent lines. The agent said "Thank you for
+calling…", "What's your member ID?", "Your authorization is approved", "This is
+the claims system", or asked the representative for the provider's own NPI. All
+of these speak as the party that RECEIVED the call, which CLAUDE.md §1 forbids.
+They sat in the evaluation corpora v1 and v2, `tests/adversarial_cases.json`,
+`tests/adversarial_corpus_v1.json`, the four `tests/demo_scenarios`, the adapter
+docstrings, the Postman collection, `developers.html`, `index.html`, the
+Trust Gateway and front-desk walkthrough (generated from corpus v1), two "good
+example" scripts in `shadow-evaluation-guide.html`, several docs and the README
+screenshot.
+
+**Decisions.**
+- **Rewrite, even if the numbers move** (maintainer's decision). Each agent line
+  now places the call: it discloses or fails to as the scenario requires,
+  supplies the identifiers itself, and asks for eligibility, claim or
+  authorization status. "Payer staff" personas became provider-side personas;
+  the agent no longer rules on authorizations. Each scenario keeps its
+  intended violation.
+- **The numbers did not move.** Corpus v1: 23/32 detected, 0/5 compliant
+  scenarios firing, unchanged; one unexpected detection disappeared
+  (`nhid_ec_eit01_002` IDG-01, 12 → 11). Corpus v2: 5/10, unchanged.
+  Red-team corpus: 23/23 withstood, 0/17 false positives, unchanged.
+  `tests/test_adversarial_hardening.py` unchanged. The Fabricate baseline is a
+  different corpus and did not move.
+- **Regenerated, not hand-edited:** the gateway, walkthrough, API-sample and
+  evidence-visual fixtures, and the README's Trust Gateway still
+  (`scripts/visual/capture_trust_gateway.cjs`, new).
+- **Guarded:** `tests/test_call_direction.py` fails on a receiver-voice agent line
+  in any corpus or demo payload, or on any published page, current-state doc or
+  launch draft. The launch drafts moved into the repo (`docs/launch/`) so they
+  are checked like everything else.
+
+No control semantics, outcome, reason code or pinned baseline changed.
 
 ### 19.26 The pilot replay now tells the engine which turn disclosed — 2026-11-05
 

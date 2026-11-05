@@ -491,7 +491,7 @@ python -m pytest tests/ -q</pre>
 from src.synthetic_eval_loop import build_event, build_session
 
 turn = {"turn_count": 0, "phi_accessed": ["member_id"],
-        "speech_text": "Hi, this is Morgan from provider services. Can I get the member ID?"}
+        "speech_text": "Hi, this is Morgan from Dr. Patel's office. Member ID 4471-882, can I get the claim status?"}
 decision = evaluate_all(build_session(turn), build_event("demo-call", 0, turn))
 decision.action.value, decision.reason_code   # ('DENY_DATA', 'PDX01_PHI_GATE_TRIGGERED')</code></pre>
               <p>The schema tests in <code>tests/test_schema_conformance.py</code> are part of the suite; there is no standalone validator to run. CI starts the API and requires 0 skipped.</p>
@@ -509,8 +509,8 @@ decision.action.value, decision.reason_code   # ('DENY_DATA', 'PDX01_PHI_GATE_TR
   -H "Content-Type: application/json" \
   -d '{"call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
        "messages": [
-         {"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
-         {"role": "user", "message": "NPI is 1234567890.", "secondsFromStart": 3.1},
+         {"role": "bot",  "message": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.", "secondsFromStart": 0.3},
+         {"role": "user", "message": "One moment, let me look that up.", "secondsFromStart": 3.1},
          {"role": "bot",  "message": "Thanks. I am an automated system.", "secondsFromStart": 5.8}]}'</pre>
               <p>Five adapters are wired to hosted routes: <code>vapi</code>, <code>twilio</code>, <code>vonage</code>, <code>retell</code> and <code>connect</code> (Amazon Connect Contact Lens). Each returns the same decision shape as the conformance route plus a <code>vendor</code> field. The answer to exactly this request is recorded below.</p>
             </div>
@@ -520,8 +520,8 @@ decision.action.value, decision.reason_code   # ('DENY_DATA', 'PDX01_PHI_GATE_TR
 
 BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
 payload = {"call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
-           "messages": [{"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
-                        {"role": "user", "message": "NPI is 1234567890.", "secondsFromStart": 3.1},
+           "messages": [{"role": "bot",  "message": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.", "secondsFromStart": 0.3},
+                        {"role": "user", "message": "One moment, let me look that up.", "secondsFromStart": 3.1},
                         {"role": "bot",  "message": "Thanks. I am an automated system.", "secondsFromStart": 5.8}]}
 r = requests.post(f"{BASE}/v1/adapters/vapi/check", json=payload, timeout=10)
 r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</code></pre>
@@ -542,12 +542,12 @@ r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</co
   "messages": [
     {
       "role": "bot",
-      "message": "Hi, can I get the member ID and NPI?",
+      "message": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.",
       "secondsFromStart": 0.3
     },
     {
       "role": "user",
-      "message": "NPI is 1234567890.",
+      "message": "One moment, let me look that up.",
       "secondsFromStart": 3.1
     },
     {
@@ -560,23 +560,18 @@ r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</co
             <div class="console-bar"><span><b>Response</b> &middot; recorded from the handler</span><code>HTTP 200</code></div>
             <pre><code>{
   "conformant": false,
-  "action": "DENY_DATA",
-  "reason_code": "PDX01_PHI_GATE_TRIGGERED",
+  "action": "DISCLOSE_IDENTITY",
+  "reason_code": "IDG01_DISCLOSURE_MISSING",
   "policy_version": "1.0.0",
   "violations": [
     {
       "rule_id": "IDG-01",
       "description": "AI agent has not disclosed non-human identity. Turn count: 3. ",
       "severity": "critical"
-    },
-    {
-      "rule_id": "PDX-01",
-      "description": "PHI exchange attempted before identity disclosure. Speech PHI signal: True. PHI fields: none.",
-      "severity": "critical"
     }
   ],
-  "next_state": "GATE_BLOCKED",
-  "twiml_fallback": "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n&lt;Response&gt;\n  &lt;Gather input=\"speech\" speechTimeout=\"auto\" action=\"/voice/process\"&gt;\n    &lt;Say&gt;Before we continue, I need to confirm: I am an automated system, not a human representative. Can you confirm you understand?&lt;/Say&gt;\n  &lt;/Gather&gt;\n&lt;/Response&gt;",
+  "next_state": "AWAITING_DISCLOSURE",
+  "twiml_fallback": "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n&lt;Response&gt;\n  &lt;Gather input=\"speech\" speechTimeout=\"auto\" action=\"/voice/process\"&gt;\n    &lt;Say&gt;Hello. I am an automated system. I am not a human representative. How can I help you today?&lt;/Say&gt;\n  &lt;/Gather&gt;\n&lt;/Response&gt;",
   "gather_speech": true,
   "evidence_completeness": {
     "present": 4,
@@ -596,7 +591,7 @@ r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</co
   },
   "vendor": "vapi"
 }</code></pre>
-            <p class="case-result is-fail"><span class="state-chip is-red">DENY_DATA</span> <code>PDX01_PHI_GATE_TRIGGERED</code> is the engine&rsquo;s composite decision for this transcript.</p>
+            <p class="case-result is-fail"><span class="state-chip is-red">DISCLOSE_IDENTITY</span> <code>IDG01_DISCLOSURE_MISSING</code> is the engine&rsquo;s composite decision for this transcript.</p>
             <!-- END GENERATED api-sample -->
           </div>
           <div class="note is-amber" role="note" data-label="Important">
@@ -707,9 +702,9 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
   "transcript": [
     {"text": "Hello, this is an automated system calling on behalf of Dr. Smith's office.",
      "timestamp": 0.5, "speaker": "agent"},
-    {"text": "Can I get the NPI number please?",
+    {"text": "Can you confirm eligibility for NPI 1234567890 please?",
      "timestamp": 3.2, "speaker": "agent"},
-    {"text": "Sure, it's 1234567890.",
+    {"text": "Sure, one moment.",
      "timestamp": 5.8, "speaker": "human"}
   ]
 }</pre>
@@ -739,9 +734,9 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
   "call_sid": "CA999888777",
   "start_time": "2026-05-27T14:05:00Z",
   "transcript": [
-    {"text": "Hi, can I get the member ID and NPI?",
+    {"text": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.",
      "timestamp": 0.3, "speaker": "agent"},
-    {"text": "Sure — NPI is 1234567890.",
+    {"text": "One moment, let me look that up.",
      "timestamp": 2.1, "speaker": "human"},
     {"text": "Thank you. By the way, I'm an automated system.",
      "timestamp": 4.0, "speaker": "agent"}

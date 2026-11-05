@@ -76,7 +76,7 @@ or endorsement.
 ## 2. The operational problem
 
 On a payer–provider administrative call, operational data starts moving early.
-A caller asks for a member ID, an NPI, a date of birth, a claim number — often
+A caller gives a member ID, an NPI, a date of birth or a claim number and asks for eligibility or claim status — often
 within the first few turns.
 
 Telephony authenticates the *number*. Identity systems authenticate the
@@ -165,7 +165,7 @@ all four.
 | **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **23 of 32 = 71.9%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
 
-**These are four different denominators.** 2335/2335 is a *test pass rate*, not
+**These are four different denominators.** 2426/2426 is a *test pass rate*, not
 a detection rate. 71.9% is a *detection rate*, not a test pass rate. Neither is
 an accuracy figure for the framework as a whole.
 
@@ -752,7 +752,7 @@ produce a number that describes nothing.
 
 | Body | Population | Question it answers |
 |---|---|---|
-| **Conformance suite** | 2335 tests | Does the implementation behave as specified? |
+| **Conformance suite** | 2426 tests | Does the implementation behave as specified? |
 | **Fabricate Battle-Test Corpus** | 550 real conversations, 127 compliant | Does it detect violations in real-world phrasing? |
 | **Governance Evaluation Corpus** | 25 scenarios, 55 turns | Does it detect labelled governance conditions? |
 | **Adversarial corpus** | 40 hostile scenarios | Does it survive deliberate evasion? |
@@ -782,9 +782,9 @@ detection rate and not an accuracy figure.
 
 | | |
 |---|---|
-| **Collected** | 2335 |
-| **Executed** | 2335 |
-| **Passed** | 2335 |
+| **Collected** | 2426 |
+| **Executed** | 2426 |
+| **Passed** | 2426 |
 | **Failed / skipped / xfailed / xpassed** | 0 / 0 / 0 / 0 |
 | **Verified** | fresh clone at `e68a65d`, fresh virtualenv, `requirements.txt` only, live API |
 
@@ -850,7 +850,7 @@ edited, and `tests/evaluation_corpus_v1.json` is byte-identical throughout.
 | # | Question | Decision |
 |---|---|---|
 | **G1** | Does IDG-01 require the literal word "AI", or is "automated" sufficient? | **"Automated" is sufficient; no vocabulary is mandated.** Every normative source says *automated*, and the CTS case `IDG-01-PASS` passes an "automated system" script. The CTS note that a disclosure must contain *both* automation and a "not human" clause is **descriptive of that fixture, not conjunctive** — enforced as a conjunction it would fire on all five compliant scenarios, none of which carries a "not human" clause. **No engine change**; both readings are now pinned by tests |
-| **G2** | Is a bare organisational name sufficient disclosure? | **No.** "You've reached the claims system" names the department, not the nature of the speaker — a human employee could say it verbatim. The corpus labels this shape both ways; the specification does not, and it governs. **Engine changed**: the disclosing turn must affirmatively state a non-human identity, returning the new `IDG01_DISCLOSURE_INSUFFICIENT`. The locking test was reversed with its rationale recorded. Four under-declaring scenarios now surface as unexpected detections and were **not** relabelled |
+| **G2** | Is a bare organisational name sufficient disclosure? | **No.** "This is the claims system" names a department, not the nature of the speaker — a human employee could say it verbatim. The corpus labels this shape both ways; the specification does not, and it governs. **Engine changed**: the disclosing turn must affirmatively state a non-human identity, returning the new `IDG01_DISCLOSURE_INSUFFICIENT`. The locking test was reversed with its rationale recorded. Four under-declaring scenarios now surface as unexpected detections and were **not** relabelled |
 | **G3** | Should ATR-01 be evaluated from transcripts at all? | **No.** `ATR-01-FAIL-MISSING` nulls fields on the *event object* via `input_event_overrides`, never in speech. The methodology now reports the two layers separately — transcript-observable **30/31 = 96.8%**, audit/evidence **0/1, not measurable here** — while the headline denominator stays at 32, because dropping the scenario would raise the rate |
 | **G4** | Is same-turn disclosure followed by a PHI request a PDX-01 violation? | **Yes, at MAJOR severity.** `nhid_ec_pdx01_002` and `nhid_ec_combo_006` declare exactly this shape and the engine detects both. **No change** — engine, corpus, tests and specification already agree |
 

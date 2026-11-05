@@ -691,7 +691,7 @@ class TestPolicyEngineUnit:
 
     def test_pdx01_blocks_phi_without_disclosure(self) -> None:
         event = self._base_event({
-            "input_payload.speech_text": "Can I get the member ID please?",
+            "input_payload.speech_text": "Member ID MBR-902336, claim status please?",
         })
         decision = self.engine.evaluate_pdx01(self._base_session(), event)
         assert decision.action == self.engine.PolicyAction.DENY_DATA
@@ -700,7 +700,7 @@ class TestPolicyEngineUnit:
     def test_pdx01_allows_phi_after_disclosure(self) -> None:
         event = self._base_event({
             "healthcare_governance.disclosure_timestamp": "2026-05-26T14:30:00.000Z",
-            "input_payload.speech_text": "Can I get the member ID please?",
+            "input_payload.speech_text": "Member ID MBR-902336, claim status please?",
         })
         decision = self.engine.evaluate_pdx01(self._base_session(), event)
         assert decision.action == self.engine.PolicyAction.CONTINUE_AI

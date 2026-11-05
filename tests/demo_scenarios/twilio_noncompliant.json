@@ -3,12 +3,12 @@
   "start_time": "2026-06-09T10:15:00Z",
   "transcript": [
     {
-      "text": "Hi, can I get the member ID and NPI?",
+      "text": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.",
       "timestamp": 0.3,
       "speaker": "agent"
     },
     {
-      "text": "Sure — NPI is 1234567890.",
+      "text": "One moment, let me look that up.",
       "timestamp": 2.1,
       "speaker": "human"
     },

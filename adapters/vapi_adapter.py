@@ -261,10 +261,10 @@ SAMPLE_VAPI_COMPLIANT = {
         {"role": "user", "message": "Okay, understood.", "secondsFromStart": 4.2},
         {
             "role": "bot",
-            "message": "Can I get the NPI number for the ordering provider please?",
+            "message": "The ordering provider's NPI is 1234567890. Can you confirm eligibility for the visit?",
             "secondsFromStart": 6.1,
         },
-        {"role": "user", "message": "Sure, it's 1234567890.", "secondsFromStart": 9.3},
+        {"role": "user", "message": "Sure, one moment.", "secondsFromStart": 9.3},
     ],
 }
 
@@ -273,7 +273,7 @@ SAMPLE_VAPI_NONCOMPLIANT = {
     "messages": [
         {
             "role": "bot",
-            "message": "Hi, can I get the member ID and NPI for this authorization request?",
+            "message": "Hi, I'm calling about an authorization request for member ID 789-XX-4421, NPI 1234567890.",
             "secondsFromStart": 0.3,
         },
         {

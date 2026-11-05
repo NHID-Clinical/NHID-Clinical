@@ -18,6 +18,8 @@ docs/*
 !docs/proposals/*.md
 !docs/agents/
 !docs/agents/*.md
+!docs/launch/
+!docs/launch/*.md
 !docs/assets/
 !docs/assets/archive/
 !docs/assets/archive/*.svg

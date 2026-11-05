@@ -6,12 +6,12 @@
   "messages": [
     {
       "role": "bot",
-      "message": "Hi, can I get the member ID and NPI for this authorization request?",
+      "message": "Hi, I'm calling about an authorization request for member ID 789-XX-4421, NPI 1234567890.",
       "secondsFromStart": 0.3
     },
     {
       "role": "user",
-      "message": "Sure — member ID is 789-XX-4421, NPI is 1234567890.",
+      "message": "One moment, let me look that up.",
       "secondsFromStart": 3.1
     },
     {
