@@ -90,6 +90,21 @@
       "must_contain": {
         "docs/pilot-kit/README.md": ["PDX01_DISCLOSURE_NOT_SEQUENCED"]
       }
+    },
+    {
+      "id": "reference-agent",
+      "fact": "Ida, the reference caller-agent, presents a per-call, scoped passport and a proof of possession to the payer gate, and DLG-01 checks it. Demonstration keys only; no SIP path carries a passport.",
+      "must_contain": {
+        "README.md": ["docs/reference-agent.md"],
+        "developers.html": ["presentation_proof", "/v1/gate/challenge"],
+        "framework/nhid-auth.html": ["REFERENCE AGENT ONLY", "/v1/gate/challenge"],
+        "docs/elevenlabs-demo.md": ["/v1/ida/gate"],
+        "agents/ida_system_prompt.md": ["/v1/ida/gate"],
+        "docs/reference-agent.md": ["Demonstration keys only", "SIP"]
+      },
+      "must_not_contain": {
+        "framework/nhid-auth.html": ["NOT BUILT: NO ADAPTER OR SIP PATH", "no adapter or SIP path carries a passport today"]
+      }
     }
   ],
   "generated": [

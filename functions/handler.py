@@ -63,7 +63,9 @@ def lambda_handler(event: dict, context) -> dict:
       POST /v1/adapters/retell/check         — accepts native Retell AI payload, no API key
       POST /v1/adapters/connect/check        — accepts Amazon Connect Contact Lens payload
       POST /v1/webhooks/call-progress        — turn-by-turn evaluation, no API key required
-      POST /v1/gate/turn                     — pre-utterance gate for a CALLING agent: query params in, the engine's decision out, no API key required
+      POST /v1/gate/turn                     — pre-utterance gate for a CALLING agent: query params in, the engine's decision out, no API key required; checks a presented NHID-Auth passport (DLG-01) when trust anchors are configured
+      POST /v1/gate/challenge                — a fresh verifier nonce for one call, which the agent signs to prove it holds its delegated key
+      POST /v1/ida/gate                      — Ida's agent-side signer in front of /v1/gate/turn (demonstration credentials)
       GET  /v1/vendor/metrics/summary        — per-vendor metrics, API key required
       POST /v1/pilot/enroll                  — pilot enrollment, no API key required
       POST /v1/cts/evaluate                  — run conformance test suite, no API key required
@@ -129,6 +131,10 @@ def lambda_handler(event: dict, context) -> dict:
     # Pre-utterance gate for a calling agent (no DB writes, stateless)
     if "/gate/turn" in path:
         return _handle_gate_turn(event)
+    if "/gate/challenge" in path:
+        return _handle_gate_challenge(event)
+    if "/ida/gate" in path:
+        return _handle_ida_gate(event)
 
     # Turn-by-turn call-progress webhook (no DB writes, stateless)
     if "/webhooks/call-progress" in path:
@@ -279,6 +285,129 @@ def _escalation_outcomes() -> frozenset:
     return frozenset(_ESCALATION_HONORED) | frozenset(_NOT_HONORED_OUTCOMES)
 
 
+def _gate_delegation(params: dict, session: dict, call_id: str):
+    """Put a presented passport, and its answer to this call's challenge, into
+    the session, and build the DelegationContext the gate evaluates with.
+
+    Returns ``(status, error_body, context)``; ``error_body`` is None on success.
+    The call binding is to ``call_id``, the gate's own session identifier, and
+    the challenge comes from the gate's store, never from the request.
+    """
+    resolver = _configured_trust_anchors()
+    if resolver is None:
+        return 503, {"error": "This gate has no trust anchors configured "
+                              f"({_TRUST_ANCHOR_ENV}), so it cannot check a passport."}, None
+    raw = params.get("passport")
+    proof_raw = params.get("presentation_proof")
+    try:
+        if isinstance(raw, str):
+            raw = json.loads(raw)
+        if isinstance(proof_raw, str):
+            proof_raw = json.loads(proof_raw)
+        from src.agent_identity import (
+            AgentIdentityManager, AgentPassport, Delegation, PresentationProof,
+        )
+        passport = AgentPassport(
+            delegation=Delegation.from_json(json.dumps(raw["delegation"])),
+            signature_b64=raw["signature_b64"],
+            agent_signature_b64=raw["agent_signature_b64"],
+        )
+        proof = PresentationProof(**proof_raw) if proof_raw is not None else None
+    except Exception as exc:  # noqa: BLE001
+        return 400, {"error": f"Invalid passport or presentation_proof: {exc}"}, None
+
+    from src.gate_challenges import CHALLENGES
+    from src.nhid_policy_engine_v1 import DelegationContext
+
+    session["agent_passport"] = passport
+    session["identity_manager"] = AgentIdentityManager()
+    # The engine treats a missing challenge as a misconfiguration and denies,
+    # which is the right answer for an agent that never asked for one.
+    nonce = CHALLENGES.current(call_id)
+    if nonce:
+        session["verifier_nonce"] = nonce
+        session["presentation_proof"] = proof
+    try:
+        import nhid_event_store as store
+        revocation_checker = store.is_delegation_revoked
+    except Exception:  # noqa: BLE001
+        revocation_checker = None
+    context = DelegationContext(
+        resolver=resolver,
+        require_delegation=True,
+        enforce_scope=True,
+        require_call_binding=True,
+        require_possession_proof=True,
+        revocation_checker=revocation_checker,
+    )
+    return 200, None, context
+
+
+def gate_challenge(params: dict) -> tuple[int, dict]:
+    """POST /v1/gate/challenge: a fresh verifier nonce for one call.
+
+    The agent signs it with its delegated key and presents the result as
+    ``presentation_proof`` on each gate turn of that call.
+    """
+    call_id = str((params or {}).get("session_id") or "").strip()
+    if not call_id:
+        return 400, {"error": "session_id is required"}
+    if len(call_id) > 200:
+        return 400, {"error": "session_id is longer than 200 characters"}
+    from src.gate_challenges import CHALLENGES
+    try:
+        nonce, expires_at = CHALLENGES.issue(call_id)
+    except OverflowError as exc:
+        return 503, {"error": str(exc)}
+    return 200, {"session_id": call_id, "verifier_nonce": nonce, "expires_at": expires_at}
+
+
+def _handle_gate_challenge(event: dict) -> dict:
+    params = dict(event.get("queryStringParameters") or {})
+    if not params:
+        body, parse_error = _parse_json_body(event, allow_empty=True)
+        if parse_error:
+            return parse_error
+        params = body or {}
+    status, result = gate_challenge(params)
+    if status != 200:
+        return _error(status, result["error"])
+    return _ok(result)
+
+
+_IDA_SIGNER = None
+
+
+def ida_gate(params: dict) -> tuple[int, dict]:
+    """POST /v1/ida/gate: Ida's agent-side signer in front of the payer gate.
+
+    Ida's ElevenLabs tool calls this instead of /v1/gate/turn. It gets her
+    per-call delegation, answers the gate's challenge with her key, and
+    presents both with the planned sentence. See src/reference_agent.py.
+    """
+    global _IDA_SIGNER
+    from src.reference_agent import from_environment
+    if _IDA_SIGNER is None:
+        _IDA_SIGNER = from_environment()
+    if _IDA_SIGNER is None:
+        return 503, {"error": "Ida's demonstration credentials are not configured "
+                              "(scripts/ida_demo_credentials.py)."}
+    return _IDA_SIGNER.gate(params or {}, get_challenge=gate_challenge, payer_gate=gate_turn)
+
+
+def _handle_ida_gate(event: dict) -> dict:
+    params = dict(event.get("queryStringParameters") or {})
+    if not params:
+        body, parse_error = _parse_json_body(event, allow_empty=True)
+        if parse_error:
+            return parse_error
+        params = body or {}
+    status, result = ida_gate(params)
+    if status != 200:
+        return _error(status, result["error"])
+    return _ok(result)
+
+
 def gate_turn(params: dict) -> tuple[int, dict]:
     """Pre-utterance gate for an agent that is the CALLER.
 
@@ -319,6 +448,17 @@ def gate_turn(params: dict) -> tuple[int, dict]:
                              not-honored outcomes (optional). This is how a failed
                              transfer becomes visible to EIT-01; without it the
                              engine can only say the outcome is unknown.
+      passport               the agent's NHID-Auth v2 AgentPassport, as
+                             {delegation, signature_b64, agent_signature_b64}
+                             (optional). When present, DLG-01 runs: against this
+                             deployment's NHID_TRUST_ANCHORS, bound to this call's
+                             session_id, with proof of possession required and the
+                             delegation's scope constraining PDX-01. No trust
+                             anchors configured: 503, never a silent pass.
+      presentation_proof     the agent's signature over this call's challenge
+                             (POST /v1/gate/challenge), as
+                             {delegation_id, verifier_nonce, issued_at, signature_b64}.
+                             The challenge itself is the gate's, never the caller's.
 
     Field mapping, so the engine sees the right party in each slot:
       input_payload.speech_text                  <- heard   (the counterparty)
@@ -407,8 +547,14 @@ def gate_turn(params: dict) -> tuple[int, dict]:
     # was NOT already established. The gate is the harness.
     session["disclosure_established_prior"] = disclosed
 
+    delegation_context = None
+    if params.get("passport") is not None:
+        status, problem, delegation_context = _gate_delegation(params, session, session_id)
+        if problem is not None:
+            return status, problem
+
     try:
-        decision = evaluate_all(session, policy_event)
+        decision = evaluate_all(session, policy_event, delegation_context)
     except Exception as exc:  # noqa: BLE001
         return 500, {"error": f"Policy evaluation failed: {exc}"}
 
@@ -426,6 +572,7 @@ def gate_turn(params: dict) -> tuple[int, dict]:
     result["disclosed"] = disclosed
     result["actor_id"] = actor_id
     result["phi_requested"] = governance["phi_accessed"]
+    result["delegation_checked"] = delegation_context is not None
     # The HMAC over the ATR-01 record for this turn, when the engine built one.
     # None means ATR-01 found the envelope incomplete and no trail was signed.
     trail = getattr(decision, "audit_trail", None)

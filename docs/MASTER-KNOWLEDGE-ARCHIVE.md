@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2430** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2454** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2430 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2454 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2430 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2454 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2430 passing tests · machine-readable traces · open implementation
+> 5 controls · 2454 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2430%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2454%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,47 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.28 Ida, the reference caller-agent, proves her authority at the gate — 2026-11-05
+
+The maintainer asked for the reference agent to be finished, and for its proof
+of authority to be the production-grade approach rather than an embarrassing
+one. Research before building found:
+- STIR/SHAKEN and Rich Call Data prove number and brand, not authority.
+- Spoken codes can be replayed and the receiver cannot check them.
+- Delegation work is converging on short-lived delegations with a proof over a
+  verifier challenge, presented out of band (OAuth token exchange, RFC 8693;
+  the IETF OAuth identity-chaining draft).
+
+NHID-Auth v2 already had every part of that. Nothing carried it to the gate.
+
+**Decisions.**
+- **The gate takes a passport.** `POST /v1/gate/turn` accepts optional
+  `passport` and `presentation_proof` fields. When a passport is present,
+  DLG-01 runs with a `DelegationContext` that requires a delegation, a call
+  binding to the gate's own `session_id`, a proof of possession, scope
+  enforcement and a revocation check, against `NHID_TRUST_ANCHORS`. With no
+  anchors configured, the answer is 503, never a pass. Without a passport,
+  nothing changes. The response carries `delegation_checked`.
+- **The verifier issues the challenge.** `POST /v1/gate/challenge` issues one
+  random nonce per call (`src/gate_challenges.py`), and the gate reads the live
+  nonce from its own store, never from the request.
+- **Ida's side is separate code.** `src/reference_agent.py` holds the practice
+  issuer (one delegation per call, scope `claim_status`, 15 minutes) and Ida's
+  signer. `POST /v1/ida/gate` is her tool's route.
+- **Demonstration keys only.** They are minted by
+  `scripts/ida_demo_credentials.py` and passed as `NoEcho` deploy parameters.
+  One deployment holds the issuer key and the verifier's anchor, so the
+  demonstration shows the mechanism, not that a real organization authorized
+  her.
+- **Surfaces.** `docs/reference-agent.md` is new. The NHID-Auth page's
+  "presented to the receiver" step moved from "not built" to "reference agent
+  only; no SIP path". `tests/test_ida_reference_agent.py` covers the pass case
+  and each denial.
+
+No control, outcome, reason code, score or pinned baseline was added or
+changed. DLG-01 remains opt-in. Moving the post-call handler and `gate_turn`
+onto `src/call_replay.py` stays a follow-up.
 
 ### 19.27 Every call now runs the canonical direction — 2026-11-05
 

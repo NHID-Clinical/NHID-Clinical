@@ -14,8 +14,10 @@
   and asks a payer for a patient's information.
 - **What it is**: a demonstration of the NHID controls on a live call. All patient
   details are fictional demo data.
-- **Tools**: `nhid_gate` (webhook to `POST /v1/gate/turn`, checked before any
-  patient identifier is spoken), End call, Transfer to number. Setup is in
+- **Tools**: `nhid_gate` (webhook to `POST /v1/ida/gate`, checked before any
+  patient identifier is spoken; Ida's signer presents her per-call passport and
+  a proof of possession to the payer gate at `/v1/gate/turn`, see
+  `docs/reference-agent.md`), End call, Transfer to number. Setup is in
   `docs/elevenlabs-demo.md`.
 
 ## First message

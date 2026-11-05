@@ -219,6 +219,11 @@
       "authority": "record"
     },
     {
+      "file": "reference-agent.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
       "file": "release-history.md",
       "status": "historical",
       "authority": "record",

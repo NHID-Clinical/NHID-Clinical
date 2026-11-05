@@ -30,6 +30,20 @@ Parameters:
     NoEcho: true
     Default: ""
     Description: HMAC secret for the ElevenLabs post-call webhook. Unset means every post-call request is refused (401).
+  NhidTrustAnchors:
+    Type: String
+    Default: ""
+    Description: "Provider public keys the payer gate trusts, as NPI:base64-public-key:kid entries separated by commas. Unset means a presented passport is answered 503, never passed."
+  IdaAgentKeyB64:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Demonstration-only Ed25519 key for Ida, minted by scripts/ida_demo_credentials.py. Unset means /v1/ida/gate answers 503.
+  IdaPracticeKeyB64:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: Demonstration-only Ed25519 key for the fictional practice that delegates to Ida. Unset means /v1/ida/gate answers 503.
   TwilioAccountSid:
     Type: String
     NoEcho: true
@@ -81,6 +95,9 @@ Resources:
           ELEVENLABS_PHONE_NUMBER_ID: !Ref ElevenLabsPhoneNumberId
           ELEVENLABS_AGENT_ID: !Ref ElevenLabsAgentId
           ELEVENLABS_WEBHOOK_SECRET: !Ref ElevenLabsWebhookSecret
+          NHID_TRUST_ANCHORS: !Ref NhidTrustAnchors
+          IDA_AGENT_KEY_B64: !Ref IdaAgentKeyB64
+          IDA_PRACTICE_KEY_B64: !Ref IdaPracticeKeyB64
           TWILIO_ACCOUNT_SID: !Ref TwilioAccountSid
           TWILIO_AUTH_TOKEN: !Ref TwilioAuthToken
           TWILIO_SMS_FROM: !Ref TwilioSmsFrom
@@ -141,6 +158,18 @@ Resources:
           Properties:
             RestApiId: !Ref NHIDApi
             Path: /v1/gate/turn
+            Method: POST
+        GateChallengePost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/gate/challenge
+            Method: POST
+        IdaGatePost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NHIDApi
+            Path: /v1/ida/gate
             Method: POST
         BadgeGet:
           Type: Api
