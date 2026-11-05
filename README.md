@@ -34,6 +34,29 @@
 
 ---
 
+> **AI agents now phone insurers and ask for patients' data.** "I'm calling from Dr. Patel's office, can I get the member's eligibility?" The representative has seconds to decide, and nothing tells them whether the caller is a person, an AI, or who it really works for. NHID-Clinical checks every turn of that call: did the agent say it is an AI *before* asking for protected data, did it pose as a person, and did it hand over to a human when asked.
+
+## Try it in 30 seconds
+
+```bash
+git clone https://github.com/NHID-Clinical/NHID-Clinical.git && cd NHID-Clinical
+pip install -e .
+nhid pilot --demo --out demo-evidence/
+```
+
+Three synthetic calls, measured offline on your machine:
+
+```text
+Calls evaluated:               3
+Median Impersonation Latency:  0 turns / 2.0s
+First-turn disclosure rate:    66.7%
+Calls w/ pre-disclosure PHI:   33.3%
+Escalation honor rate:         0.0%
+Top violations:                IDG-01 (1), PDX-01 (1), EIT-01 (1)
+```
+
+One agent asked for a member ID and date of birth before admitting it was automated, and one refused a human handoff. `demo-evidence/` holds the report, the metrics and one result per call. Point it at your own call turns ([capture format](docs/pilot-kit/minimal-event-schema.json)) with `nhid pilot calls.jsonl --share-safe`: the kit makes no network calls (a build check enforces it), and the pack is scanned before you choose to share it ([pilot kit](docs/pilot-kit/README.md)).
+
 ## What it is
 
 An AI voice agent phones a payer, says it is calling for a provider, and asks for a patient's eligibility, claim status or other protected health information. The payer's representative receives the call and has to decide what to disclose. NHID-Clinical is the open specification, the deterministic reference implementation and the evidence format for that moment: five testable controls, evaluated on every turn, with a machine-readable record of what the agent said and when. A payer can run it on the receiving side; a voice-AI vendor can run it in its own call path to produce evidence for its customers. Same controls, same artifacts. It governs conduct at the interaction boundary, not the AI model, and disclosing, logging or passing every control never by itself authorizes a disclosure.
