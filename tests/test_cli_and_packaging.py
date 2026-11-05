@@ -110,7 +110,8 @@ def test_parser_exposes_the_documented_subcommands():
     documented is how a CLI surface drifts from what the docs promise."""
     parser = build_parser()
     actions = [a for a in parser._actions if a.dest == "command"]
-    assert set(actions[0].choices) == {"conformance", "export-evidence", "pilot"}
+    assert set(actions[0].choices) == {
+        "conformance", "export-evidence", "pilot", "audio-robustness"}
 
 
 def test_pilot_subcommand_marks_its_unobservable_context_optional():

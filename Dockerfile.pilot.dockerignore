@@ -1,0 +1,13 @@
+# Build context for Dockerfile.pilot only (BuildKit reads <Dockerfile>.dockerignore).
+# The main .dockerignore excludes *.md, but pyproject.toml declares README.md.
+*
+!pyproject.toml
+!README.md
+!LICENSE
+!LICENSE-DOCS
+!NOTICE
+!src/
+!adapters/
+!scripts/
+**/__pycache__
+**/*.pyc

@@ -28,6 +28,12 @@ credits are recorded as `NOT_EXECUTED`, never `FAIL`.
 No artifact in this repository may describe the ElevenLabs runner as
 acoustic/audio-robustness testing. It is text-level conversational control.
 
+**Update 2026-11-05:** synthetic speech over a simulated phone channel is now measurable
+with `nhid audio-robustness` ([`phone-audio-robustness.md`](phone-audio-robustness.md)):
+TTS, then a 300–3400 Hz, 8 kHz, μ-law channel, then a transcriber, then this engine. That
+is tier 3 (synthetic speech), not the recorded-audio path below, and it has not yet been
+run with real speech engines.
+
 ---
 
 ## The smallest genuine audio-input path

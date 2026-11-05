@@ -49,6 +49,30 @@ def _cmd_conformance(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_audio_robustness(args: argparse.Namespace) -> int:
+    """Run the phone-audio robustness measurement (src/phone_audio.py).
+
+    Imported lazily: the module calls external speech engines, and this file is
+    on the offline Tier 0 kit's guarded import path.
+    """
+    from pathlib import Path
+
+    from src import phone_audio
+
+    try:
+        tts = phone_audio.make_synthesizer(args.tts, args.piper_model)
+        asr = phone_audio.make_transcriber(args.asr, error_rate=args.stub_error_rate,
+                                           seed=args.seed, whisper_model=args.whisper_model)
+    except (RuntimeError, ValueError) as exc:
+        print(f"nhid audio-robustness: {exc}", file=sys.stderr)
+        return 2
+    results = phone_audio.run(tts=tts, asr=asr, out_dir=Path(args.out), limit=args.limit,
+                              noise=args.noise, seed=args.seed)
+    print(phone_audio.render_report(results))
+    print(f"Written to {args.out}/ (report.md, results.json)")
+    return 0
+
+
 def _cmd_export_evidence(args: argparse.Namespace) -> int:
     from scripts.export_evidence_pack import main as export_main
 
@@ -317,6 +341,31 @@ def build_parser() -> argparse.ArgumentParser:
              "across runs",
     )
     pilot.set_defaults(func=_cmd_pilot)
+
+    audio = sub.add_parser(
+        "audio-robustness",
+        help="measure what a phone line and a transcriber do to detection (research)",
+        description=(
+            "Speak the voice-stress corpus with a TTS engine, pass it through a "
+            "300-3400 Hz, 8 kHz, G.711 mu-law phone channel, transcribe it, and "
+            "report detection on the transcripts next to detection on the authored "
+            "text. A research measurement, not a headline rate. See "
+            "docs/validation/phone-audio-robustness.md."
+        ),
+    )
+    audio.add_argument("--tts", choices=["espeak", "piper", "stub"], default="espeak")
+    audio.add_argument("--asr", choices=["faster-whisper", "stub", "identity"],
+                       default="faster-whisper")
+    audio.add_argument("--piper-model", default="", help="voice .onnx file for --tts piper")
+    audio.add_argument("--whisper-model", default="small", help="faster-whisper model size")
+    audio.add_argument("--noise", type=float, default=0.0,
+                       help="white-noise standard deviation added on the line (0 = none)")
+    audio.add_argument("--limit", type=int, default=None, help="first N scenarios only")
+    audio.add_argument("--seed", type=int, default=0)
+    audio.add_argument("--stub-error-rate", type=float, default=0.1,
+                       help="word error rate for --asr stub (plumbing checks only)")
+    audio.add_argument("--out", default="phone-audio-results")
+    audio.set_defaults(func=_cmd_audio_robustness)
 
     return parser
 

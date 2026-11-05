@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2278** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2294** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2278 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2294 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1250,6 +1250,8 @@ NHID-Clinical/
 | :--- | :--- |
 | `nhid conformance [--ci] [--json]` | `src.cts_runner.run_cts` — `--ci` exits non-zero on any failing case |
 | `nhid export-evidence --out DIR` | `scripts/export_evidence_pack.py` |
+| `nhid pilot [calls.jsonl \| --demo] [--share-safe] --out DIR` | `src.pilot_measure`, `src.pilot_report`, `src.pilot_share_safe` (Tier 0 kit) |
+| `nhid audio-robustness --tts … --asr … --out DIR` | `src.phone_audio` — research measurement, `docs/validation/phone-audio-robustness.md` |
 
 Core install dependencies are **`cryptography` and `pyyaml` only** — the policy engine itself is
 standard library, so a vendor embedding it in a call path does not inherit a web stack. FastAPI,
@@ -1520,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2278 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2294 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1791,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2278 passing tests · machine-readable traces · open implementation
+> 5 controls · 2294 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1821,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2278%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2294%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
