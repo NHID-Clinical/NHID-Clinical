@@ -139,14 +139,35 @@ def test_the_document_distinguishes_itself_from_the_audit_threat_model():
 def test_the_schema_defines_both_speaker_values():
     schema = json.loads(CAPTURE_SCHEMA.read_text(encoding="utf-8"))
     speaker = schema["properties"]["speaker"]
-    assert set(speaker["enum"]) == {"agent", "caller"}, (
+    assert set(speaker["enum"]) == {"agent", "receiver", "caller"}, (
         "the speaker vocabulary changed; update this guard and the threat model "
         "document together"
     )
     description = speaker["description"]
-    assert "'agent'" in description and "'caller'" in description, (
-        "the schema documents only one of its two speaker values"
+    for value in ("'agent'", "'receiver'", "'caller'"):
+        assert value in description, f"the schema does not document {value}"
+    assert "old name for 'receiver'" in description, (
+        "the schema must say that the legacy 'caller' means the receiving party"
     )
+
+
+def test_the_demo_and_generators_never_label_the_payer_side_as_the_caller():
+    """The agent places the call. The kit's own demo data and synthetic
+    generators label the payer-side human 'receiver', never the legacy 'caller'."""
+    from src.pilot_measure import demo_records
+    from src.share_safe_leakage import generate_calls
+
+    speakers = {r["speaker"] for r in demo_records()}
+    speakers |= {r["speaker"] for r in generate_calls(2, seed=1)[0]}
+    assert speakers == {"agent", "receiver"}
+
+
+def test_the_legacy_caller_label_is_still_measured_as_the_receiving_party():
+    from src.pilot_measure import demo_records, measure_records
+
+    legacy = [{**r, "speaker": "caller"} if r["speaker"] == "receiver" else r
+              for r in demo_records()]
+    assert measure_records(legacy)[1] == measure_records(demo_records())[1]
 
 
 def test_the_schema_says_which_party_placed_the_call():

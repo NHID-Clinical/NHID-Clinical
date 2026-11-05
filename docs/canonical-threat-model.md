@@ -63,19 +63,21 @@ document; it states the model the existing five controls were written against.
 | Where | Caller-agent | Receiving payer employee |
 | :-- | :-- | :-- |
 | Policy engine event | `actor_id`, and `counterparty_type: human_operator` names what it is talking to | the `human_operator` counterparty |
-| Tier 0 capture schema (`pilot-kit/minimal-event-schema.json`) | `speaker: "agent"` | `speaker: "caller"` — see the note below |
+| Tier 0 capture schema (`pilot-kit/minimal-event-schema.json`) | `speaker: "agent"` | `speaker: "receiver"` (the legacy `"caller"` is still accepted) — see the note below |
 | `src/safety_evaluation/synthetic_scenarios.py` | `ParticipantRole.AI_AGENT` | `ParticipantRole.CLAIMS_REP` |
 | Fabricate corpus | `agent_type: ai_voice_agent`, `caller_role` | not separately labelled |
 
-### The `speaker: "caller"` naming
+### The `speaker` values: `"receiver"`, formerly `"caller"`
 
 In the capture schema the agent under evaluation is `"agent"` and the payer-side human is
-`"caller"` — which reads backwards, because the agent is the one placing the call. The
-values are retained as they are: the schema ships in a downloaded kit and
-`adapters/fabricate_adapter.py` and `src/pilot_measure.py` read them, so renaming would
-break captures already in the field. Both values are now defined explicitly in the schema
-rather than left to inference. `ParticipantRole` above is the unambiguous vocabulary
-where a choice is available.
+`"receiver"`: the party that received the call. The schema used to call that party
+`"caller"`, which read backwards, because the agent is the one placing the call.
+
+`"caller"` is still accepted and means exactly the same party, so captures already in the
+field keep working. The schema ships in a downloaded kit, and `adapters/fabricate_adapter.py`
+and `src/pilot_measure.py` read it. New captures, the `--demo` records and the synthetic
+generators use `"receiver"`. The pinned Fabricate corpus keeps its original labels.
+`ParticipantRole` above is the same vocabulary in code.
 
 ---
 
