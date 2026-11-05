@@ -129,7 +129,8 @@ To make Ida act for your own organization:
 
 ## Open questions
 
-These are open, and nothing here closes them:
+These are open, and nothing here closes them (each is a decision in
+[`production-readiness.md`](production-readiness.md)):
 - key custody in an HSM or KMS;
 - trust-anchor discovery and revocation across organizations;
 - a registry from NPI to key;
