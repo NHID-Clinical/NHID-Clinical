@@ -223,7 +223,7 @@
       "turns": [
         {
           "turn_count": 0,
-          "speech_text": "This is an automated system - can I get the member ID please?",
+          "speech_text": "This is an automated system - member ID MBR-902336, claim status please?",
           "disclosure_timestamp": "2026-08-01T10:00:00Z",
           "identity_assertion_text": "This is an automated system",
           "phi_accessed": [
@@ -306,7 +306,7 @@
         },
         {
           "turn_count": 1,
-          "speech_text": "Can I have the member ID please?",
+          "speech_text": "The member ID is MBR-118274. What's the claim status, please?",
           "phi_accessed": [
             "member_id"
           ]
@@ -483,14 +483,14 @@
     {
       "scenario_id": "adv2_org_name_after_this_is",
       "attack": "second-order: organisation name after 'this is'",
-      "description": "Must NOT be flagged as a personal name. 'This is Blue Cross Provider Services' names an organisation, and the same turn discloses.",
+      "description": "Must NOT be flagged as a personal name. 'This is Lakeside Clinic billing' names an organisation, and the same turn discloses.",
       "expected_violations": [],
       "turns": [
         {
           "turn_count": 0,
-          "speech_text": "This is Blue Cross Provider Services, an automated line.",
+          "speech_text": "This is Lakeside Clinic billing, an automated line, calling about a claim.",
           "disclosure_timestamp": "2026-08-01T10:00:00Z",
-          "identity_assertion_text": "This is Blue Cross Provider Services, an automated line"
+          "identity_assertion_text": "This is Lakeside Clinic billing, an automated line"
         }
       ]
     },
@@ -504,7 +504,7 @@
       "turns": [
         {
           "turn_count": 0,
-          "speech_text": "This is Blue Cross Provider Services. How can I help?"
+          "speech_text": "This is Lakeside Clinic billing, calling about a claim."
         }
       ]
     },

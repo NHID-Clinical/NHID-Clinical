@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-2335%20passing-brightgreen?style=flat-square">
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-2457%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
   <img alt="Code license" src="https://img.shields.io/badge/code-Apache--2.0-lightgrey?style=flat-square">
   <img alt="Spec license" src="https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey?style=flat-square">
@@ -29,7 +29,7 @@
 </p>
 
 <p align="center">
-  <sub>Not a standard, a certification or a product. Mapped, not certified. NIST-2025-0035-0026 is a public comment, not an endorsement.</sub>
+  <sub>Stage: Research &mdash; an independent research project and open reference implementation; a Tier 0 shadow pilot is available. Not a standard, a certification or a product. Mapped, not certified. NIST-2025-0035-0026 is a public comment, not an endorsement.</sub>
 </p>
 
 ---
@@ -55,7 +55,7 @@ Escalation honor rate:         0.0%
 Top violations:                IDG-01 (1), PDX-01 (1), EIT-01 (1)
 ```
 
-One agent asked for a member ID and date of birth before admitting it was automated, and one refused a human handoff. `demo-evidence/` holds the report, the metrics and one result per call. Point it at your own call turns ([capture format](docs/pilot-kit/minimal-event-schema.json)) with `nhid pilot calls.jsonl --share-safe`: the kit makes no network calls (a build check enforces it), and the pack is scanned before you choose to share it ([pilot kit](docs/pilot-kit/README.md)).
+One agent gave the member's ID and date of birth and asked for the claim status before admitting it was automated, and one refused a human handoff. `demo-evidence/` holds the report, the metrics and one result per call. Point it at your own call turns ([capture format](docs/pilot-kit/minimal-event-schema.json)) with `nhid pilot calls.jsonl --share-safe`: the kit makes no network calls (a build check enforces it), and the pack is scanned before you choose to share it ([pilot kit](docs/pilot-kit/README.md)).
 
 ## What it is
 
@@ -73,7 +73,7 @@ An AI voice agent phones a payer, says it is calling for a provider, and asks fo
 </p>
 
 <p align="center">
-  <a href="https://nhid-clinical.org/specification.html#trust-gateway"><img alt="The Trust Gateway on the specification page, Scenario B: an agent calling as a human persona asks for a member ID with no disclosure and the engine returns DENY_DATA with PDX01_PHI_GATE_TRIGGERED; the representative asks for a supervisor and the engine returns ESCALATE_HUMAN; the agent refuses and the engine records EIT01_ESCALATION_NOT_HONORED." src="assets/images/trust-gateway.png" width="760"></a>
+  <a href="https://nhid-clinical.org/specification.html#trust-gateway"><img alt="The Trust Gateway on the specification page, Scenario B: an agent calling as a human persona gives a member ID with no disclosure and the engine returns DENY_DATA with PDX01_PHI_GATE_TRIGGERED; the representative asks for a supervisor and the engine returns ESCALATE_HUMAN; the agent refuses and the engine records EIT01_ESCALATION_NOT_HONORED." src="assets/images/trust-gateway.png" width="760"></a>
   <br>
   <sub>The <a href="https://nhid-clinical.org/specification.html#trust-gateway">Trust Gateway</a>: corpus scenarios replayed through the engine and recorded verbatim. Shown here, Scenario B (<code>nhid_ec_combo_008</code>): a caller-agent with a human persona asks for protected data before disclosing. A still from the page; <code>scripts/build_gateway_fixture.py</code> regenerates it and CI fails if the page stops matching the engine.</sub>
 </p>
@@ -105,7 +105,7 @@ python -m uvicorn app:app --port 8000 &    # the integration tests need it
 python -m pytest tests/ -q
 ```
 
-Expected: **2335 passing**, 0 skipped. Without the API the server-dependent integration tests skip themselves; CI starts it and requires zero skips. One request to the hosted adapter route, synthetic payload, no key:
+Expected: **2457 passing**, 0 skipped. Without the API the server-dependent integration tests skip themselves; CI starts it and requires zero skips. One request to the hosted adapter route, synthetic payload, no key:
 
 ```bash
 curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
@@ -117,6 +117,7 @@ curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/a
 - **Payers and health plans** (the receiving side): run an observe-only [shadow evaluation](https://nhid-clinical.org/shadow-evaluation-guide.html) on call traces you already hold. Nothing is inserted into the call.
 - **Voice-AI vendors** (the calling side): produce the [vendor evidence pack](https://nhid-clinical.org/evidence-pack.html): conformance results, disclosure transcript, escalation phrases, a FHIR R4 `AuditEvent` sample.
 - **Developers**: check one turn against the hosted API or run the engine locally, from the [developers page](https://nhid-clinical.org/developers.html).
+- **Caller-agent builders**: fork [Ida, the reference caller-agent](docs/reference-agent.md). Before she speaks a patient identifier, she presents a per-call, scoped delegation and a proof of possession to the payer gate, and DLG-01 checks them. She uses demonstration keys only.
 
 <details>
 <summary><b>Evidence and limitations</b></summary>
@@ -223,7 +224,7 @@ Guides: [5-minute quickstart](docs/5-minute-quickstart.md) · [v2 integration gu
 | `src/` | Packaged modules: the conformance engine, agent identity and the trust anchor (`agent_identity.py`, `trust_anchor.py`, `udap_agent_extension.py`, `udap_jws.py`), the audit store, the CLI, and the [specification reading aid](docs/spec-rag.md) (`nhid_spec_rag.py`, a retrieval index over `docs/`; it returns quotations, never a control decision). |
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect). |
 | `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (2335 passing, all phases: foundations, adversarial, synthetic, hardening). |
+| `tests/` | The Python conformance and invariant tests (2457 passing, all phases: foundations, adversarial, synthetic, hardening). |
 | `eval/` | The reading aid's question set, scorer and tests, deliberately outside `tests/`, which is the conformance suite the published count describes. |
 | `scripts/` | CI guards (`validate_ci.py`, `check_baseline.py`, `check_number_drift.py`, `check_control_set.py`) and the generators that write engine output into the pages. |
 | `schema/` | Event and audit-trace schemas. |

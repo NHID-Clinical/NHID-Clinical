@@ -484,7 +484,7 @@
             <li class="tg-turn" data-turn="0">
               <div class="tg-said">
                 <span class="tg-turn-no">Turn 0</span>
-                <q>Thank you for calling. I'm an AI assistant helping with your authorization request. Before I can access your member information, I need to confirm a few details with you.</q>
+                <q>Hi, I'm an AI assistant calling on behalf of Dr. Patel's office about a prior authorization. Before I share any patient details, can you confirm you're comfortable continuing with an automated assistant?</q>
               </div>
               <div class="tg-verdict">
                 <span class="tg-action tg-action-continue">CONTINUE_AI</span>
@@ -495,7 +495,7 @@
             <li class="tg-turn" data-turn="1">
               <div class="tg-said">
                 <span class="tg-turn-no">Turn 1</span>
-                <q>I understand. What information do you need?</q>
+                <q>That's fine. Which member is this for?</q>
               </div>
               <div class="tg-verdict">
                 <span class="tg-action tg-action-continue">CONTINUE_AI</span>
@@ -506,7 +506,7 @@
             <li class="tg-turn" data-turn="2">
               <div class="tg-said">
                 <span class="tg-turn-no">Turn 2</span>
-                <q>Can I have your member ID and date of birth to look up your authorization?</q>
+                <q>The member ID is MBR-482913 and the date of birth is 03/14/1988. Can you tell me the status of the authorization?</q>
               </div>
               <div class="tg-verdict">
                 <span class="tg-action tg-action-continue">CONTINUE_AI</span>
@@ -517,7 +517,7 @@
             <li class="tg-turn" data-turn="3">
               <div class="tg-said">
                 <span class="tg-turn-no">Turn 3</span>
-                <q>Thank you. Your authorization is approved.</q>
+                <q>Thank you. I'll note that the authorization is approved.</q>
               </div>
               <div class="tg-verdict">
                 <span class="tg-action tg-action-continue">CONTINUE_AI</span>
@@ -534,7 +534,7 @@
             <li class="tg-turn" data-turn="0">
               <div class="tg-said">
                 <span class="tg-turn-no">Turn 0</span>
-                <q>I'm Alex from claims. Member ID?</q>
+                <q>I'm Alex from the practice's claims team. Member ID MBR-993412.</q>
               </div>
               <div class="tg-verdict">
                 <span class="tg-action tg-action-deny">DENY_DATA</span>
@@ -675,7 +675,7 @@
           <text x="16" y="436" class="sq-step">A</text>
           <line x1="106" y1="448" x2="318" y2="448" class="sq-alt"/>
           <polygon points="326,448 314,443 314,453" class="sq-alt-head"/>
-          <text x="216" y="442" text-anchor="middle" class="sq-label">&#8220;Can I get the member ID?&#8221; &#8212; before any disclosure</text>
+          <text x="216" y="442" text-anchor="middle" class="sq-label">&#8220;Member ID 4471-882, claim status?&#8221; &#8212; before any disclosure</text>
           <g class="sq-out is-deny"><rect x="452" y="428" width="300" height="38" rx="6"/></g>
           <text x="466" y="444" class="sq-out-key">action:</text><text x="520" y="444" class="sq-out-val">DENY_DATA</text>
           <text x="466" y="459" class="sq-out-key">reason_code:</text><text x="548" y="459" class="sq-out-val">PDX01_PHI_GATE_TRIGGERED</text>
@@ -778,11 +778,11 @@
           <rect x="24" y="282" width="300" height="26" rx="4" class="el-rung"/>
           <text x="40" y="299" class="el-pri">4</text>
           <text x="70" y="299" class="el-action">ESCALATE_HUMAN</text>
-          <text x="316" y="299" text-anchor="end" class="el-count">18 turns</text>
+          <text x="316" y="299" text-anchor="end" class="el-count">19 turns</text>
           <rect x="24" y="314" width="300" height="26" rx="4" class="el-rung"/>
           <text x="40" y="331" class="el-pri">3</text>
           <text x="70" y="331" class="el-action">DISCLOSE_IDENTITY</text>
-          <text x="316" y="331" text-anchor="end" class="el-count">8 turns</text>
+          <text x="316" y="331" text-anchor="end" class="el-count">7 turns</text>
           <rect x="24" y="346" width="300" height="26" rx="4" class="el-rung"/>
           <text x="40" y="363" class="el-pri">2</text>
           <text x="70" y="363" class="el-action">LOG_ONLY</text>
@@ -794,20 +794,20 @@
 
           <text x="482" y="244" class="el-colhead">How often each control was at the winning priority</text>
           <text x="470" y="267" text-anchor="end" class="el-ctl">IDG-01</text>
-          <rect x="482" y="254" width="160.5" height="18" rx="3" class="el-winbar"/>
-          <text x="651.5" y="267" class="el-count">27</text>
+          <rect x="482" y="254" width="150.5" height="18" rx="3" class="el-winbar"/>
+          <text x="641.5" y="267" class="el-count">26</text>
           <text x="470" y="299" text-anchor="end" class="el-ctl">PDX-01</text>
-          <rect x="482" y="286" width="172.4" height="18" rx="3" class="el-winbar"/>
-          <text x="663.4" y="299" class="el-count">29</text>
+          <rect x="482" y="286" width="167.9" height="18" rx="3" class="el-winbar"/>
+          <text x="658.9" y="299" class="el-count">29</text>
           <text x="470" y="331" text-anchor="end" class="el-ctl">DBC-01</text>
-          <rect x="482" y="318" width="113.0" height="18" rx="3" class="el-winbar"/>
-          <text x="604.0" y="331" class="el-count">19</text>
+          <rect x="482" y="318" width="110.0" height="18" rx="3" class="el-winbar"/>
+          <text x="601.0" y="331" class="el-count">19</text>
           <text x="470" y="363" text-anchor="end" class="el-ctl">EIT-01</text>
           <rect x="482" y="350" width="220.0" height="18" rx="3" class="el-winbar"/>
-          <text x="711.0" y="363" class="el-count">37</text>
+          <text x="711.0" y="363" class="el-count">38</text>
           <text x="470" y="395" text-anchor="end" class="el-ctl">ATR-01</text>
-          <rect x="482" y="382" width="113.0" height="18" rx="3" class="el-winbar"/>
-          <text x="604.0" y="395" class="el-count">19</text>
+          <rect x="482" y="382" width="110.0" height="18" rx="3" class="el-winbar"/>
+          <text x="601.0" y="395" class="el-count">19</text>
 
           <text x="482" y="424" class="el-note">19 of 55 turns had two or more controls tied at the top.</text>
         </svg>
@@ -816,7 +816,7 @@
       <aside class="visual-provenance">
         <p><strong>Evidence basis:</strong> <code>tests/evaluation_corpus_v1.json</code> — 25 scenarios, 55 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI)</p>
-        <p><strong>Version:</strong> policy engine v1.3 · commit <code>c508081</code></p>
+        <p><strong>Version:</strong> policy engine v1.3 · commit <code>040fa82</code></p>
       </aside>
       <!-- END GENERATED enforcement-ladder -->
         </div>
@@ -1022,6 +1022,7 @@
       <div class="act-body">
         <p>An agent asserting it acts for a provider organization can present a cryptographically signed delegation naming that organization&rsquo;s NPI, the scope it grants, and when it expires. When a deployment opts in, the engine verifies the signatures, expiry, revocation and call binding, and refuses any delegation whose scope widens across a sub-delegation. The verified scope then constrains the data boundary: a delegation for eligibility does not authorize requesting a claim number.</p>
         <p>The limits travel with it. Verification is against a trust anchor the deploying organization configured itself &mdash; there is no directory or discovery service, and an NPI with no configured anchor is refused rather than accepted. The NPI is cryptographically bound to the delegation but is <strong>not</strong> checked against NPPES. Delegation is off unless a deployment turns it on.</p>
+        <p>Call verification (VER-01) is an option inside DLG-01 and adds no control of its own. With <code>require_call_verification</code> set, a call that is not verified, fails verification, or does not match the delegation is refused with a DLG-01 reason code.</p>
         <p><a class="action-button action-button-secondary" href="/developers.html#reference-implementation">See the engine &rarr;</a></p>
       </div>
     </div>

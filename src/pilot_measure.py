@@ -531,9 +531,10 @@ _DEMO_RECORDS = [
     {"session_id": "demo-clean", "turn_index": 2, "timestamp": "2026-07-01T10:00:35Z",
      "speaker": "agent", "speech_text": "The member ID is MOCK-123456.", "phi_accessed": ["member_id"]},
 
-    # Call 2: late disclosure + PHI before disclosure (IDG-01 / PDX-01).
+    # Call 2: late disclosure; the agent supplies the member's identifiers and
+    # asks for claim status before saying it is automated (IDG-01 / PDX-01).
     {"session_id": "demo-late", "turn_index": 0, "timestamp": "2026-07-01T11:00:00Z",
-     "speaker": "agent", "speech_text": "Hi, I'm calling about a claim. Can I get the member ID and date of birth?",
+     "speaker": "agent", "speech_text": "Hi, I'm calling about a claim for member ID MOCK-123456, date of birth 01/01/1980. What's the status?",
      "phi_accessed": ["member_id", "date_of_birth"]},
     {"session_id": "demo-late", "turn_index": 1, "timestamp": "2026-07-01T11:00:30Z",
      "speaker": "receiver", "speech_text": "Who am I speaking with?"},

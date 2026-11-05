@@ -39,8 +39,8 @@ ROUTE = "/v1/adapters/vapi/check"
 REQUEST = {
     "call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
     "messages": [
-        {"role": "bot", "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
-        {"role": "user", "message": "NPI is 1234567890.", "secondsFromStart": 3.1},
+        {"role": "bot", "message": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.", "secondsFromStart": 0.3},
+        {"role": "user", "message": "One moment, let me look that up.", "secondsFromStart": 3.1},
         {"role": "bot", "message": "Thanks. I am an automated system.", "secondsFromStart": 5.8},
     ],
 }

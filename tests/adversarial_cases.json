@@ -25,7 +25,7 @@
         "turns": [
           {
             "speaker": "agent",
-            "speech_text": "Hello, I can help you with your account. What's your member ID?",
+            "speech_text": "Hello, I'm calling about a patient's claim. The member ID is MBR-559210.",
             "disclosure_level": "D0",
             "turn_index": 0
           }
@@ -49,7 +49,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "What's your member ID?",
+            "speech_text": "The member ID is MBR-447120.",
             "disclosure_level": "D0",
             "turn_index": 0
           },
@@ -79,7 +79,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "Thank you for calling the claims system. What's your member ID?",
+            "speech_text": "This is the claims system calling for a provider. The member ID is MBR-204771.",
             "disclosure_level": "D1",
             "turn_index": 0
           }
@@ -103,7 +103,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "I'm an automated representative with clinical expertise. I can review your case.",
+            "speech_text": "I'm an automated representative with clinical expertise. I can vouch for this case.",
             "disclosure_level": "D2",
             "turn_index": 0
           }
@@ -128,7 +128,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "Hi, this is Sarah from Prior Auth. Can I get your member ID?",
+            "speech_text": "Hi, this is Sarah from the practice's prior auth team. The member ID is MBR-660415.",
             "identity_assertion": "I'm Sarah",
             "disclosure_level": "D0",
             "turn_index": 0
@@ -154,7 +154,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "This is a verification system. For security, I need your member ID.",
+            "speech_text": "This is a verification system calling for a provider. The member ID is MBR-118274.",
             "disclosure_level": "D0",
             "turn_index": 0
           }
@@ -178,7 +178,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "You're connected to our interactive voice gateway. Member ID?",
+            "speech_text": "This is our interactive voice gateway calling. Member ID MBR-330918.",
             "disclosure_level": "D1",
             "turn_index": 0
           }
@@ -202,7 +202,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "Hello, I'm here to help. This call is handled by automated system, but I can access your account. ID?",
+            "speech_text": "Hello, I'm calling for a provider. This call is handled by automated system, and I have the account. ID MBR-902336.",
             "disclosure_level": "D2",
             "turn_index": 0
           }
@@ -274,7 +274,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "What's your member ID?",
+            "speech_text": "The member ID is MBR-447120.",
             "disclosure_level": "D0",
             "phi_access_attempt": "member_id",
             "turn_index": 0
@@ -299,7 +299,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "Now I need your DOB and SSN.",
+            "speech_text": "Now I need the patient's DOB and SSN on file.",
             "phi_access_attempt": [
               "date_of_birth",
               "ssn"
@@ -563,7 +563,7 @@
       "payload": {
         "turns": [
           {
-            "identity_assertion": "I'm a nurse reviewer who can evaluate your case.",
+            "identity_assertion": "I'm a nurse reviewer who can evaluate this case.",
             "turn_index": 0
           }
         ]
@@ -654,7 +654,7 @@
       "payload": {
         "turns": [
           {
-            "identity_assertion": "I can approve your authorization directly.",
+            "identity_assertion": "I can sign off on this authorization myself.",
             "turn_index": 0
           }
         ]
@@ -677,7 +677,7 @@
       "payload": {
         "turns": [
           {
-            "identity_assertion": "I'm the licensed nurse clinician from your plan.",
+            "identity_assertion": "I'm the licensed nurse clinician from the patient's practice.",
             "turn_index": 0
           }
         ]
@@ -700,7 +700,7 @@
       "payload": {
         "turns": [
           {
-            "identity_assertion": "HIPAA authorizes me to access your record.",
+            "identity_assertion": "HIPAA authorizes me to access this patient's record.",
             "turn_index": 0
           }
         ]
@@ -723,7 +723,7 @@
       "payload": {
         "turns": [
           {
-            "speech_text": "We can resolve this. Our team reviewed your case.",
+            "speech_text": "We can resolve this. Our team reviewed this case.",
             "turn_index": 0
           }
         ]
@@ -774,7 +774,7 @@
             "turn_index": 0
           },
           {
-            "speech_text": "Let me help you. Member ID?",
+            "speech_text": "Let me keep going. Member ID MBR-774512.",
             "escalation_honored": false,
             "turn_index": 1
           }
@@ -969,7 +969,7 @@
             "turn_index": 1
           },
           {
-            "speech_text": "How can I help? (Same bot)",
+            "speech_text": "Let's continue with the claim. (Same bot)",
             "escalation_honored": false,
             "turn_index": 2
           }

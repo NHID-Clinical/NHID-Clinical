@@ -163,7 +163,7 @@ event = {
         "deceptive_artifact_flags": [],
         "phi_accessed": [],
     },
-    "input_payload": {"speech_text": "How can I help you?"},
+    "input_payload": {"speech_text": "I'm calling about a claim status for one of our patients."},
 }
 
 decision = evaluate_all(session, event)

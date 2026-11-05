@@ -163,8 +163,8 @@ to apply the specification, which is the authority, and let the inconsistent
 labels stand exposed.
 
 **5. Recommended interpretation.** **A bare organisational name is not a
-disclosure.** "You've reached the claims system" identifies the department that
-answered, not the nature of the speaker — **a human employee could say it
+disclosure.** "This is the claims system calling for a provider" identifies a
+department, not the nature of the speaker — **a human employee could say it
 verbatim**, which is the whole test. The same applies to "I'm here to help" and
 "We're here to help", which state an intention and nothing about what is
 speaking.
@@ -274,7 +274,7 @@ declare it a PDX-01 violation**:
 
 | Scenario | Turn 0 | Declares PDX-01? |
 |---|---|---|
-| `nhid_ec_pdx01_002` "Sub-100ms Gap (Disclosure + PHI Request)" | "I'm an automated system. Can I have your member ID?" | **Yes** |
+| `nhid_ec_pdx01_002` "Sub-100ms Gap (Disclosure + PHI Request)" | "I'm an automated system. The member ID is MBR-447120. What's the claim status?" | **Yes** |
 | `nhid_ec_combo_006` | "Automated verification system online. Member ID please?" | **Yes** |
 
 Both are detected, by the rule under question. The first names the condition in

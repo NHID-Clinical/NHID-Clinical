@@ -17,9 +17,14 @@ and the patient is not on the call.
 1. **The disclosure is the first message**, configured in ElevenLabs and spoken
    word for word, so it does not depend on the model remembering it.
 2. **Mid-call, before any patient identifier**, the agent's prompt tells it to call
-   the `nhid_gate` webhook tool, which is `POST /v1/gate/turn`. The engine
-   answers `allowed: true` or `false` for the sentence the agent is about to
-   say. A timeout counts as "no".
+   the `nhid_gate` webhook tool, which is `POST /v1/ida/gate`. That route is
+   Ida's signer: it gets her per-call delegation from the fictional practice,
+   answers the payer gate's challenge with her key, and presents both, with the
+   sentence, to `POST /v1/gate/turn`. The payer side checks the passport in
+   DLG-01 against its own trust anchors, and the engine answers
+   `allowed: true` or `false` for the sentence. A timeout counts as "no". How
+   the proof works, and what it does and does not establish:
+   [`reference-agent.md`](reference-agent.md).
 3. **After the call**, ElevenLabs posts the transcript to
    `POST /v1/webhooks/elevenlabs/postcall`. The handler verifies the HMAC
    signature, evaluates every turn with the NHID-Clinical engine, and writes the
@@ -92,6 +97,15 @@ Lambda environment:
 | `ELEVENLABS_PHONE_NUMBER_ID` | `ElevenLabsPhoneNumberId` | `/v1/demo/call` answers 503 |
 | `ELEVENLABS_AGENT_ID` | `ElevenLabsAgentId` | `/v1/demo/call` answers 503 |
 | `ELEVENLABS_WEBHOOK_SECRET` | `ElevenLabsWebhookSecret` | every post-call request is refused (401) |
+| `NHID_TRUST_ANCHORS` | `NhidTrustAnchors` | a presented passport is answered 503, never passed |
+| `IDA_AGENT_KEY_B64` | `IdaAgentKeyB64` | `/v1/ida/gate` answers 503 |
+| `IDA_PRACTICE_KEY_B64` | `IdaPracticeKeyB64` | `/v1/ida/gate` answers 503 |
+
+The last three come from `python scripts/ida_demo_credentials.py`, which mints
+demonstration keys for a fictional practice and prints them as `KEY=value`
+lines. Put them in the shell or the secret store, never in a file or a commit.
+`python scripts/ida_demo_credentials.py --selftest` runs one gated turn
+in-process with fresh keys.
 
 `/v1/demo/call` checks its configuration before the CAPTCHA or the rate limiter,
 so an unconfigured service costs nothing and makes no network call.
@@ -104,7 +118,7 @@ so an unconfigured service costs nothing and makes no network call.
 | :-- | :-- |
 | Name | `nhid_gate` |
 | Method | `POST` |
-| URL | `https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/gate/turn` |
+| URL | `https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/ida/gate` |
 | Timeout | 5 seconds (a slow or failed check counts as "no") |
 | `session_id` | dynamic variable `system__conversation_id` |
 | `turn` (string, required) | the exact sentence the agent is about to say |
@@ -195,6 +209,9 @@ curl -sS -X POST "$B/v1/gate/turn" -H 'Content-Type: application/json' \
 curl -sS -X POST "$B/v1/gate/turn" -H 'Content-Type: application/json' \
   -d '{"session_id":"check-1","turn":"The member ID is RVD-204-7731.","disclosed":true}'
 #   expect "allowed": true
+curl -sS -X POST "$B/v1/ida/gate" -H 'Content-Type: application/json' \
+  -d '{"session_id":"check-2","turn":"The member ID is RVD-204-7731 and the claim number is 9921-0417.","disclosed":true}'
+#   expect "allowed": true, "delegation_checked": true
 curl -sS -o /dev/null -w '%{http_code}\n' -X POST "$B/v1/webhooks/elevenlabs/postcall" \
   -H 'Content-Type: application/json' -d '{}'
 #   expect 401
@@ -206,6 +223,8 @@ curl -sS -o /dev/null -w '%{http_code}\n' -X POST "$B/v1/webhooks/elevenlabs/pos
 - That ElevenLabs' grades are right. They are the vendor grading its own agent,
   shown for comparison.
 - Anything about a real patient or a real payer. All data is fictional.
-- Identity or authority. The gate checks disclosure and sequencing; it does not
-  verify that the caller is authorised to receive anything
-  (`docs/canonical-threat-model.md`).
+- Identity or authority in the real world. Through `/v1/ida/gate` the gate
+  checks a passport signed by a fictional practice whose demonstration key the
+  same deployment holds. That shows the mechanism end to end; it does not show
+  that any real organisation authorised Ida (`docs/reference-agent.md`,
+  `docs/canonical-threat-model.md`).

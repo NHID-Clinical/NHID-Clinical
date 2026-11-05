@@ -356,7 +356,7 @@
           <figure class="arch-model">
         <svg viewBox="0 0 880 400" role="img" aria-labelledby="ra-title ra-desc" style="width:100%;height:auto;display:block">
           <title id="ra-title">The NHID-Clinical reference implementation, end to end</title>
-          <desc id="ra-desc">A vendor platform sends a call event to one of eight adapter modules, five of which are wired to hosted routes. The adapter normalises the event and passes it to the policy engine, which evaluates the five controls deterministically and returns a policy decision carrying a reason code and any violations. The decision is written to an append-only event store and emitted as a FHIR R4 AuditEvent. The conformance test suite replays recorded events through the same engine, which is what makes the published figures reproducible. Three further components a production deployment would require are shown separately as not built: durable key custody and rotation, an NPI-to-public-key registry, and multi-hop federation. Their absence is the difference between a reference implementation and deployable infrastructure.</desc>
+          <desc id="ra-desc">A vendor platform sends a call event to one of eight adapter modules, five of which are wired to hosted routes. The adapter normalises the event and passes it to the policy engine, which evaluates the five controls deterministically and returns a policy decision carrying a reason code and any violations. The decision is written to an append-only event store and emitted as a FHIR R4 AuditEvent. The conformance test suite replays recorded events through the same engine, which is what makes the published figures reproducible. Three further components a production deployment would require are shown separately as not built: durable key custody in an HSM or KMS, an NPI-to-public-key registry, and multi-hop federation. Their absence is the difference between a reference implementation and deployable infrastructure.</desc>
 
           <text x="20" y="24" class="ra-zone">BUILT, AND COVERED BY THE SUITE</text>
 
@@ -419,7 +419,7 @@
 
           <g class="ra-absent">
             <rect x="20" y="300" width="270" height="66" rx="9"/>
-            <text x="36" y="326" class="ra-title-absent">Key custody &amp; rotation</text>
+            <text x="36" y="326" class="ra-title-absent">Durable key custody (HSM/KMS)</text>
             <text x="36" y="348" class="ra-sub-absent">Documented production path</text>
 
             <rect x="305" y="300" width="270" height="66" rx="9"/>
@@ -434,7 +434,7 @@
           <text x="20" y="390" class="ra-note">The gap between the two halves is the difference between a reference implementation and deployable infrastructure.</text>
         </svg>
         <figcaption style="margin-top:.85rem;color:var(--body);font-size:.88rem;line-height:1.7">
-          Standings: the built path is <span class="maturity maturity-implemented">Implemented</span> and its figures are <span class="maturity maturity-verified">Verified</span>. Key custody is <span class="maturity maturity-conceptual">Conceptual</span>; the registry and federation are <span class="maturity maturity-future">Future</span>. Each follows <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>.
+          Standings: the built path is <span class="maturity maturity-implemented">Implemented</span> and its figures are <span class="maturity maturity-verified">Verified</span>. Also <span class="maturity maturity-implemented">Implemented</span>: signing-key and API-key rotation, per-tenant scoping, a fail-closed startup check (<code>python -m src.preflight</code>), and an anchored, hash-chained audit trail you can check with <code>/v1/audit/verify/{session_id}</code>. Durable key custody is <span class="maturity maturity-conceptual">Conceptual</span>; the registry and federation are <span class="maturity maturity-future">Future</span>. Each follows <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/claim-boundaries.md" target="_blank" rel="noopener noreferrer">claim-boundaries.md</a>.
         </figcaption>
       </figure>
         </div>
@@ -491,7 +491,7 @@ python -m pytest tests/ -q</pre>
 from src.synthetic_eval_loop import build_event, build_session
 
 turn = {"turn_count": 0, "phi_accessed": ["member_id"],
-        "speech_text": "Hi, this is Morgan from provider services. Can I get the member ID?"}
+        "speech_text": "Hi, this is Morgan from Dr. Patel's office. Member ID 4471-882, can I get the claim status?"}
 decision = evaluate_all(build_session(turn), build_event("demo-call", 0, turn))
 decision.action.value, decision.reason_code   # ('DENY_DATA', 'PDX01_PHI_GATE_TRIGGERED')</code></pre>
               <p>The schema tests in <code>tests/test_schema_conformance.py</code> are part of the suite; there is no standalone validator to run. CI starts the API and requires 0 skipped.</p>
@@ -509,8 +509,8 @@ decision.action.value, decision.reason_code   # ('DENY_DATA', 'PDX01_PHI_GATE_TR
   -H "Content-Type: application/json" \
   -d '{"call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
        "messages": [
-         {"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
-         {"role": "user", "message": "NPI is 1234567890.", "secondsFromStart": 3.1},
+         {"role": "bot",  "message": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.", "secondsFromStart": 0.3},
+         {"role": "user", "message": "One moment, let me look that up.", "secondsFromStart": 3.1},
          {"role": "bot",  "message": "Thanks. I am an automated system.", "secondsFromStart": 5.8}]}'</pre>
               <p>Five adapters are wired to hosted routes: <code>vapi</code>, <code>twilio</code>, <code>vonage</code>, <code>retell</code> and <code>connect</code> (Amazon Connect Contact Lens). Each returns the same decision shape as the conformance route plus a <code>vendor</code> field. The answer to exactly this request is recorded below.</p>
             </div>
@@ -520,8 +520,8 @@ decision.action.value, decision.reason_code   # ('DENY_DATA', 'PDX01_PHI_GATE_TR
 
 BASE = "https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod"
 payload = {"call": {"id": "call_demo", "startedAt": "2026-06-09T10:00:00Z"},
-           "messages": [{"role": "bot",  "message": "Hi, can I get the member ID and NPI?", "secondsFromStart": 0.3},
-                        {"role": "user", "message": "NPI is 1234567890.", "secondsFromStart": 3.1},
+           "messages": [{"role": "bot",  "message": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.", "secondsFromStart": 0.3},
+                        {"role": "user", "message": "One moment, let me look that up.", "secondsFromStart": 3.1},
                         {"role": "bot",  "message": "Thanks. I am an automated system.", "secondsFromStart": 5.8}]}
 r = requests.post(f"{BASE}/v1/adapters/vapi/check", json=payload, timeout=10)
 r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</code></pre>
@@ -542,12 +542,12 @@ r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</co
   "messages": [
     {
       "role": "bot",
-      "message": "Hi, can I get the member ID and NPI?",
+      "message": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.",
       "secondsFromStart": 0.3
     },
     {
       "role": "user",
-      "message": "NPI is 1234567890.",
+      "message": "One moment, let me look that up.",
       "secondsFromStart": 3.1
     },
     {
@@ -560,23 +560,18 @@ r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</co
             <div class="console-bar"><span><b>Response</b> &middot; recorded from the handler</span><code>HTTP 200</code></div>
             <pre><code>{
   "conformant": false,
-  "action": "DENY_DATA",
-  "reason_code": "PDX01_PHI_GATE_TRIGGERED",
+  "action": "DISCLOSE_IDENTITY",
+  "reason_code": "IDG01_DISCLOSURE_MISSING",
   "policy_version": "1.0.0",
   "violations": [
     {
       "rule_id": "IDG-01",
       "description": "AI agent has not disclosed non-human identity. Turn count: 3. ",
       "severity": "critical"
-    },
-    {
-      "rule_id": "PDX-01",
-      "description": "PHI exchange attempted before identity disclosure. Speech PHI signal: True. PHI fields: none.",
-      "severity": "critical"
     }
   ],
-  "next_state": "GATE_BLOCKED",
-  "twiml_fallback": "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n&lt;Response&gt;\n  &lt;Gather input=\"speech\" speechTimeout=\"auto\" action=\"/voice/process\"&gt;\n    &lt;Say&gt;Before we continue, I need to confirm: I am an automated system, not a human representative. Can you confirm you understand?&lt;/Say&gt;\n  &lt;/Gather&gt;\n&lt;/Response&gt;",
+  "next_state": "AWAITING_DISCLOSURE",
+  "twiml_fallback": "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\n&lt;Response&gt;\n  &lt;Gather input=\"speech\" speechTimeout=\"auto\" action=\"/voice/process\"&gt;\n    &lt;Say&gt;Hello. I am an automated system. I am not a human representative. How can I help you today?&lt;/Say&gt;\n  &lt;/Gather&gt;\n&lt;/Response&gt;",
   "gather_speech": true,
   "evidence_completeness": {
     "present": 4,
@@ -596,7 +591,7 @@ r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</co
   },
   "vendor": "vapi"
 }</code></pre>
-            <p class="case-result is-fail"><span class="state-chip is-red">DENY_DATA</span> <code>PDX01_PHI_GATE_TRIGGERED</code> is the engine&rsquo;s composite decision for this transcript.</p>
+            <p class="case-result is-fail"><span class="state-chip is-red">DISCLOSE_IDENTITY</span> <code>IDG01_DISCLOSURE_MISSING</code> is the engine&rsquo;s composite decision for this transcript.</p>
             <!-- END GENERATED api-sample -->
           </div>
           <div class="note is-amber" role="note" data-label="Important">
@@ -621,6 +616,7 @@ r.json()["action"], r.json()["reason_code"]   # the recorded answer is below</co
 session["agent_passport"] = passport          # or a list, for a chain
 decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
 # decision.reason_code == "PDX01_SCOPE_NOT_AUTHORIZED" when out of scope</code></pre>
+          <p>At the hosted gate the same check is a request field. Send <code>passport</code> and <code>presentation_proof</code> to <code>POST /v1/gate/turn</code> with the planned sentence. The proof is a signature over a challenge the gate issued for the call (<code>POST /v1/gate/challenge</code>). DLG-01 then runs against the deployment&rsquo;s own trust anchors, bound to the call, and the answer carries <code>delegation_checked</code>. <a href="https://github.com/NHID-Clinical/NHID-Clinical/blob/main/docs/reference-agent.md" target="_blank" rel="noopener noreferrer">Ida, the reference caller-agent</a>, does this on every gated turn, with demonstration keys only.</p>
         </div>
       </section>
       </div>
@@ -707,9 +703,9 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
   "transcript": [
     {"text": "Hello, this is an automated system calling on behalf of Dr. Smith's office.",
      "timestamp": 0.5, "speaker": "agent"},
-    {"text": "Can I get the NPI number please?",
+    {"text": "Can you confirm eligibility for NPI 1234567890 please?",
      "timestamp": 3.2, "speaker": "agent"},
-    {"text": "Sure, it's 1234567890.",
+    {"text": "Sure, one moment.",
      "timestamp": 5.8, "speaker": "human"}
   ]
 }</pre>
@@ -739,9 +735,9 @@ decision = evaluate_all(session, event, DelegationContext(resolver=resolver))
   "call_sid": "CA999888777",
   "start_time": "2026-05-27T14:05:00Z",
   "transcript": [
-    {"text": "Hi, can I get the member ID and NPI?",
+    {"text": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.",
      "timestamp": 0.3, "speaker": "agent"},
-    {"text": "Sure — NPI is 1234567890.",
+    {"text": "One moment, let me look that up.",
      "timestamp": 2.1, "speaker": "human"},
     {"text": "Thank you. By the way, I'm an automated system.",
      "timestamp": 4.0, "speaker": "agent"}

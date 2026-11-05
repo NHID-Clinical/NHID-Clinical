@@ -40,6 +40,12 @@ param(
     [string]$ElevenLabsAgentId         = $env:ELEVENLABS_AGENT_ID,
     [string]$ElevenLabsWebhookSecret   = $env:ELEVENLABS_WEBHOOK_SECRET,
 
+    # Ida's demonstration passport (scripts/ida_demo_credentials.py): the
+    # trust anchors the payer gate checks against, and the two demo keys.
+    [string]$NhidTrustAnchors          = $env:NHID_TRUST_ANCHORS,
+    [string]$IdaAgentKeyB64            = $env:IDA_AGENT_KEY_B64,
+    [string]$IdaPracticeKeyB64         = $env:IDA_PRACTICE_KEY_B64,
+
     # Twilio SMS for the inbound demo line's "text me the starter pack" option.
     # Leave empty to keep that option hidden (offered only when all three are set).
     [string]$TwilioAccountSid          = "",
@@ -105,6 +111,9 @@ if ($ElevenLabsApiKey)          { $overrides += "ElevenLabsApiKey=$ElevenLabsApi
 if ($ElevenLabsPhoneNumberId)   { $overrides += "ElevenLabsPhoneNumberId=$ElevenLabsPhoneNumberId" }
 if ($ElevenLabsAgentId)         { $overrides += "ElevenLabsAgentId=$ElevenLabsAgentId" }
 if ($ElevenLabsWebhookSecret)   { $overrides += "ElevenLabsWebhookSecret=$ElevenLabsWebhookSecret" }
+if ($NhidTrustAnchors)          { $overrides += "NhidTrustAnchors=$NhidTrustAnchors" }
+if ($IdaAgentKeyB64)            { $overrides += "IdaAgentKeyB64=$IdaAgentKeyB64" }
+if ($IdaPracticeKeyB64)         { $overrides += "IdaPracticeKeyB64=$IdaPracticeKeyB64" }
 if ($TwilioAccountSid)          { $overrides += "TwilioAccountSid=$TwilioAccountSid" }
 if ($TwilioAuthToken)           { $overrides += "TwilioAuthToken=$TwilioAuthToken" }
 if ($TwilioSmsFrom)             { $overrides += "TwilioSmsFrom=$TwilioSmsFrom" }
@@ -117,6 +126,9 @@ if ($ElevenLabsApiKey)          { $setNames += "ElevenLabsApiKey" }
 if ($ElevenLabsPhoneNumberId)   { $setNames += "ElevenLabsPhoneNumberId" }
 if ($ElevenLabsAgentId)         { $setNames += "ElevenLabsAgentId" }
 if ($ElevenLabsWebhookSecret)   { $setNames += "ElevenLabsWebhookSecret" }
+if ($NhidTrustAnchors)          { $setNames += "NhidTrustAnchors" }
+if ($IdaAgentKeyB64)            { $setNames += "IdaAgentKeyB64" }
+if ($IdaPracticeKeyB64)         { $setNames += "IdaPracticeKeyB64" }
 if ($TwilioAccountSid)          { $setNames += "TwilioAccountSid" }
 if ($TwilioAuthToken)           { $setNames += "TwilioAuthToken" }
 if ($TwilioSmsFrom)             { $setNames += "TwilioSmsFrom" }

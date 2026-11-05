@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2335** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2457** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2335 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2457 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2335 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2457 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2335 passing tests · machine-readable traces · open implementation
+> 5 controls · 2457 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2335%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2457%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,119 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.29 The live ElevenLabs runner had Ida answering the call — 2026-11-05
+
+The maintainer, who answers calls from robots, pointed out that robots were not
+answering calls from robots, and asked for any wrongly wired test to be fixed.
+`tests/elevenlabs_cts_runner.py` was wired the wrong way round, in two ways:
+- **The representative's lines placed the call.** The scripted lines for the
+  payer's representative (the human who answers) said "Hello, calling about a
+  prior authorization", "Hi, I have a prior auth request for a member" and "The
+  member ID is 12345678. Can you look that up?". The human was the caller,
+  handing Ida the identifiers.
+- **Ida's opening line was discarded.** The driver read and dropped her first
+  message, so "first agent turn" graded her reply to the representative, as if
+  she had answered.
+
+**Decisions.**
+- Every representative line now answers ("Acme Health provider services, this
+  is Dana. How can I help you?") and responds to Ida. Ida supplies the
+  identifiers and asks for the status.
+- The driver records Ida's opening line before the representative's first
+  turn.
+- In the EIT-01 scenarios, the representative asks for a person at the
+  practice. The scripted "transferred human" lines are gone: the text channel
+  carries only the representative, so it cannot play the practice's staff.
+- `tests/test_call_direction.py` now also fails when a representative line
+  sounds like the caller, and it checks that Ida speaks first in the runner.
+  The corpora and demo data had no such lines.
+- An AI answering for the payer, robot to robot, is a separate scenario,
+  deferred to last at the maintainer's direction. It is not part of the
+  canonical model.
+
+No control semantics, outcome or baseline changed. The runner needs a live key,
+so it is not part of the suite, and no live run was made.
+
+### 19.28 Ida, the reference caller-agent, proves her authority at the gate — 2026-11-05
+
+The maintainer asked for the reference agent to be finished, and for its proof
+of authority to be the production-grade approach rather than an embarrassing
+one. Research before building found:
+- STIR/SHAKEN and Rich Call Data prove number and brand, not authority.
+- Spoken codes can be replayed and the receiver cannot check them.
+- Delegation work is converging on short-lived delegations with a proof over a
+  verifier challenge, presented out of band (OAuth token exchange, RFC 8693;
+  the IETF OAuth identity-chaining draft).
+
+NHID-Auth v2 already had every part of that. Nothing carried it to the gate.
+
+**Decisions.**
+- **The gate takes a passport.** `POST /v1/gate/turn` accepts optional
+  `passport` and `presentation_proof` fields. When a passport is present,
+  DLG-01 runs with a `DelegationContext` that requires a delegation, a call
+  binding to the gate's own `session_id`, a proof of possession, scope
+  enforcement and a revocation check, against `NHID_TRUST_ANCHORS`. With no
+  anchors configured, the answer is 503, never a pass. Without a passport,
+  nothing changes. The response carries `delegation_checked`.
+- **The verifier issues the challenge.** `POST /v1/gate/challenge` issues one
+  random nonce per call (`src/gate_challenges.py`), and the gate reads the live
+  nonce from its own store, never from the request.
+- **Ida's side is separate code.** `src/reference_agent.py` holds the practice
+  issuer (one delegation per call, scope `claim_status`, 15 minutes) and Ida's
+  signer. `POST /v1/ida/gate` is her tool's route.
+- **Demonstration keys only.** They are minted by
+  `scripts/ida_demo_credentials.py` and passed as `NoEcho` deploy parameters.
+  One deployment holds the issuer key and the verifier's anchor, so the
+  demonstration shows the mechanism, not that a real organization authorized
+  her.
+- **Surfaces.** `docs/reference-agent.md` is new. The NHID-Auth page's
+  "presented to the receiver" step moved from "not built" to "reference agent
+  only; no SIP path". `tests/test_ida_reference_agent.py` covers the pass case
+  and each denial.
+
+No control, outcome, reason code, score or pinned baseline was added or
+changed. DLG-01 remains opt-in. Moving the post-call handler and `gate_turn`
+onto `src/call_replay.py` stays a follow-up.
+
+### 19.27 Every call now runs the canonical direction — 2026-11-05
+
+The maintainer found the launch drafts backwards: the AI "asked for the member's
+date of birth", as if the payer's representative held the patient's
+identifiers and the agent were collecting them. An audit found the same
+inversion in more than fifty agent lines. The agent said "Thank you for
+calling…", "What's your member ID?", "Your authorization is approved", "This is
+the claims system", or asked the representative for the provider's own NPI. All
+of these speak as the party that RECEIVED the call, which CLAUDE.md §1 forbids.
+They sat in the evaluation corpora v1 and v2, `tests/adversarial_cases.json`,
+`tests/adversarial_corpus_v1.json`, the four `tests/demo_scenarios`, the adapter
+docstrings, the Postman collection, `developers.html`, `index.html`, the
+Trust Gateway and front-desk walkthrough (generated from corpus v1), two "good
+example" scripts in `shadow-evaluation-guide.html`, several docs and the README
+screenshot.
+
+**Decisions.**
+- **Rewrite, even if the numbers move** (maintainer's decision). Each agent line
+  now places the call: it discloses or fails to as the scenario requires,
+  supplies the identifiers itself, and asks for eligibility, claim or
+  authorization status. "Payer staff" personas became provider-side personas;
+  the agent no longer rules on authorizations. Each scenario keeps its
+  intended violation.
+- **The numbers did not move.** Corpus v1: 23/32 detected, 0/5 compliant
+  scenarios firing, unchanged; one unexpected detection disappeared
+  (`nhid_ec_eit01_002` IDG-01, 12 → 11). Corpus v2: 5/10, unchanged.
+  Red-team corpus: 23/23 withstood, 0/17 false positives, unchanged.
+  `tests/test_adversarial_hardening.py` unchanged. The Fabricate baseline is a
+  different corpus and did not move.
+- **Regenerated, not hand-edited:** the gateway, walkthrough, API-sample and
+  evidence-visual fixtures, and the README's Trust Gateway still
+  (`scripts/visual/capture_trust_gateway.cjs`, new).
+- **Guarded:** `tests/test_call_direction.py` fails on a receiver-voice agent line
+  in any corpus or demo payload, or on any published page, current-state doc or
+  launch draft. The launch drafts moved into the repo (`docs/launch/`) so they
+  are checked like everything else.
+
+No control semantics, outcome, reason code or pinned baseline changed.
 
 ### 19.26 The pilot replay now tells the engine which turn disclosed — 2026-11-05
 

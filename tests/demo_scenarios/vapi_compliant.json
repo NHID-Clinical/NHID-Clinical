@@ -16,12 +16,12 @@
     },
     {
       "role": "bot",
-      "message": "Can I get the NPI number for the ordering provider please?",
+      "message": "The ordering provider's NPI is 1234567890. Can you confirm eligibility for the visit?",
       "secondsFromStart": 6.1
     },
     {
       "role": "user",
-      "message": "Sure, it's 1234567890.",
+      "message": "Sure, one moment.",
       "secondsFromStart": 9.3
     }
   ]

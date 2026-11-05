@@ -68,7 +68,7 @@ uninterpreted by the tooling.
 
 | | |
 |---|---|
-| **Assertion** | `"claims system"` — *"You've reached the claims system. Can I have your member ID?"* |
+| **Assertion** | `"claims system"` — *"This is the claims system calling for a provider. The member ID is MBR-204771."* |
 | **Expected** | IDG-01 |
 | **Detected** | PDX-01 only |
 | **Apparent cause** | IDG-01 accepts any non-empty `identity_assertion_text` unless it introduces a *human persona*. Naming a system claims no persona, so it passes — while disclosing nothing. |
@@ -177,7 +177,7 @@ scenarios that under-declare what their turns contain**:
 | Scenario | Undeclared rule fired | Reason code | Why it looks correct |
 |---|---|---|---|
 | `nhid_ec_idg01_002/003` | PDX-01 | `PDX01_DISCLOSURE_NOT_SEQUENCED` | A protected-data request made in the same turn as the initial disclosure. The engine holds that disclosure must precede the request as a distinct turn |
-| `nhid_ec_idg01_001`, `nhid_ec_combo_005` | PDX-01 | `PDX01_PHI_GATE_TRIGGERED` | Turn 0 carries **no disclosure at all** and asks for a member ID — the ordinary gate, which the normative case `PDX-01-FAIL-NOPHI` declares critical |
+| `nhid_ec_idg01_001`, `nhid_ec_combo_005` | PDX-01 | `PDX01_PHI_GATE_TRIGGERED` | Turn 0 carries **no disclosure at all** and gives a member ID while asking for a status — the ordinary gate, which the normative case `PDX-01-FAIL-NOPHI` declares critical |
 | `nhid_ec_pdx01_001` | IDG-01 | `PDX01_PHI_GATE_TRIGGERED` | Turn 0 carries **no disclosure at all**. The scenario is about PHI before disclosure, so IDG-01 firing is the point |
 | `nhid_ec_dbc01_001/002`, `nhid_ec_combo_003` | IDG-01 | `IDG01_DISCLOSURE_CONTRADICTED` | Human personas — *"I'm Representative Alex from claims"*, *"I'm a specialist"*, *"I'm Taylor with Authorization Services"* — with no non-human assertion |
 
@@ -211,7 +211,8 @@ compliant scenarios · 8 unexpected detections, reported separately.**
 > figures above this line are the historical record and stay as written.
 
 **Current measured result: 23/32 = 71.9% detection ·
-0/5 false positives · 12 unexpected detections.**
+0/5 false positives · 11 unexpected detections** (12 until the 2026-11-05
+call-direction rewrite, archive §19.27).
 
 ## 5. G1–G4 — all four decided 2026-09-04
 

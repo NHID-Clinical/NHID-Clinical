@@ -12,7 +12,7 @@
       "turns": [
         {
           "index": 0,
-          "speech": "Thank you for calling. I'm an AI assistant helping with your authorization request. Before I can access your member information, I need to confirm a few details with you.",
+          "speech": "Hi, I'm an AI assistant calling on behalf of Dr. Patel's office about a prior authorization. Before I share any patient details, can you confirm you're comfortable continuing with an automated assistant?",
           "assertion": "I'm an AI assistant",
           "disclosed_before_this_turn": false,
           "action": "CONTINUE_AI",
@@ -21,7 +21,7 @@
         },
         {
           "index": 1,
-          "speech": "I understand. What information do you need?",
+          "speech": "That's fine. Which member is this for?",
           "assertion": "I'm an AI assistant",
           "disclosed_before_this_turn": true,
           "action": "CONTINUE_AI",
@@ -30,7 +30,7 @@
         },
         {
           "index": 2,
-          "speech": "Can I have your member ID and date of birth to look up your authorization?",
+          "speech": "The member ID is MBR-482913 and the date of birth is 03/14/1988. Can you tell me the status of the authorization?",
           "assertion": "I'm an AI assistant",
           "disclosed_before_this_turn": true,
           "action": "CONTINUE_AI",
@@ -39,7 +39,7 @@
         },
         {
           "index": 3,
-          "speech": "Thank you. Your authorization is approved.",
+          "speech": "Thank you. I'll note that the authorization is approved.",
           "assertion": "I'm an AI assistant",
           "disclosed_before_this_turn": true,
           "action": "CONTINUE_AI",
@@ -61,7 +61,7 @@
       "turns": [
         {
           "index": 0,
-          "speech": "I'm Alex from claims. Member ID?",
+          "speech": "I'm Alex from the practice's claims team. Member ID MBR-993412.",
           "assertion": "",
           "disclosed_before_this_turn": false,
           "action": "DENY_DATA",
@@ -211,5 +211,5 @@
       }
     ]
   },
-  "source_commit": "7e96abb"
+  "source_commit": "beba7fd"
 }

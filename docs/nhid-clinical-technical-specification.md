@@ -50,7 +50,7 @@ NHID-Clinical addresses **Impersonation Latency**: the duration of time an AI vo
 operates and exchanges operational/PHI data in a B2B healthcare administrative call (eligibility
 verification, claim status, prior authorization, and similar workflows) before disclosing that it
 is automated. The canonical failure mode observed in production payer call centers: an AI agent
-requests a member ID, NPI, or date of birth within the first turns of a call with no prior
+supplies a member ID, NPI, or date of birth and asks for eligibility or claim status within the first turns of a call with no prior
 disclosure; staff exchange the data and only later — or never — learn the caller was automated.
 
 **In scope:** B2B administrative voice calls between providers (or their AI vendors, calling on

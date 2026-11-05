@@ -11,6 +11,11 @@ ELEVENLABS_API_KEY         ?=
 ELEVENLABS_PHONE_NUMBER_ID ?=
 ELEVENLABS_AGENT_ID        ?=
 ELEVENLABS_WEBHOOK_SECRET  ?=
+# Ida's demonstration credentials (scripts/ida_demo_credentials.py) and the
+# trust anchors the payer gate checks a passport against.
+NHID_TRUST_ANCHORS         ?=
+IDA_AGENT_KEY_B64          ?=
+IDA_PRACTICE_KEY_B64       ?=
 
 AWS_ARGS := --region $(REGION)
 ifdef PROFILE
@@ -33,6 +38,15 @@ endif
 ifneq ($(strip $(ELEVENLABS_WEBHOOK_SECRET)),)
   PARAM_OVERRIDES += ElevenLabsWebhookSecret=$(ELEVENLABS_WEBHOOK_SECRET)
 endif
+ifneq ($(strip $(NHID_TRUST_ANCHORS)),)
+  PARAM_OVERRIDES += NhidTrustAnchors=$(NHID_TRUST_ANCHORS)
+endif
+ifneq ($(strip $(IDA_AGENT_KEY_B64)),)
+  PARAM_OVERRIDES += IdaAgentKeyB64=$(IDA_AGENT_KEY_B64)
+endif
+ifneq ($(strip $(IDA_PRACTICE_KEY_B64)),)
+  PARAM_OVERRIDES += IdaPracticeKeyB64=$(IDA_PRACTICE_KEY_B64)
+endif
 
 .PHONY: build deploy destroy get-key get-url test-api test-demo logs help verify
 
@@ -53,7 +67,9 @@ help:
 	@echo ""
 	@echo "Overrides:  STACK_NAME, REGION, PROFILE, CLOUDFLARE_TURNSTILE_SECRET,"
 	@echo "            ELEVENLABS_API_KEY, ELEVENLABS_PHONE_NUMBER_ID, ELEVENLABS_AGENT_ID"
-	@echo "            (for /v1/demo/call), ELEVENLABS_WEBHOOK_SECRET (post-call webhook HMAC)"
+	@echo "            (for /v1/demo/call), ELEVENLABS_WEBHOOK_SECRET (post-call webhook HMAC),"
+	@echo "            NHID_TRUST_ANCHORS, IDA_AGENT_KEY_B64, IDA_PRACTICE_KEY_B64 (Ida's"
+	@echo "            demonstration passport; scripts/ida_demo_credentials.py)"
 
 # Everything CI checks, in one command. Run this before pushing: a green
 # `pytest` cannot see a stale generated fixture or a published PDF that is on

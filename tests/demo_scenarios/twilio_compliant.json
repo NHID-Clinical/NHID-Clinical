@@ -8,12 +8,12 @@
       "speaker": "agent"
     },
     {
-      "text": "Can I get the NPI number please?",
+      "text": "The provider NPI is 1234567890. Can you confirm eligibility for the visit?",
       "timestamp": 3.2,
       "speaker": "agent"
     },
     {
-      "text": "Sure, it's 1234567890.",
+      "text": "Sure, one moment.",
       "timestamp": 5.8,
       "speaker": "human"
     }

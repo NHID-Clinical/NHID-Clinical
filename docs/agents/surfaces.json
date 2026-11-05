@@ -1,0 +1,119 @@
+{
+  "_about": "Public facts and the surfaces that must state them. scripts/check_surfaces.py reads this; tests/test_surfaces.py runs it in the suite. To ship a feature a reader should hear about: add a fact here, list every surface that must say it, then update those surfaces until the check passes. See docs/agents/surfaces.md.",
+  "facts": [
+    {
+      "id": "stage",
+      "fact": "The stage is Research; a Tier 0 shadow pilot is available (docs/claim-boundaries.md#stage).",
+      "must_contain": {
+        "README.md": ["Stage: Research"],
+        "index.html": ["Research stage"],
+        "faq.html": ["Stage: Research"],
+        "about.html": ["Stage: Research"],
+        "shadow-evaluation-guide.html": ["Stage: Research"],
+        "scripts/generate_pdfs.py": ["Stage: Research"]
+      },
+      "must_not_contain": {
+        "README.md": ["Pilot-ready", "pilot-ready"],
+        "index.html": ["pilot-ready"],
+        "faq.html": ["pilot-ready"],
+        "about.html": ["pilot-ready"],
+        "shadow-evaluation-guide.html": ["pilot-ready"],
+        "docs/launch/launch-drafts.md": ["pilot-ready"]
+      }
+    },
+    {
+      "id": "share-safe",
+      "fact": "nhid pilot --share-safe pseudonymises call ids and scans the pack before release; its catch rate is measured.",
+      "must_contain": {
+        "README.md": ["--share-safe"],
+        "docs/pilot-kit/README.md": ["--share-safe", "share-safe-leakage.md"],
+        "shadow-evaluation-guide.html": ["--share-safe", "share-safe-leakage.md"],
+        "scripts/generate_pdfs.py": ["--share-safe"],
+        "docs/NHID-Clinical-Playbook.md": ["--share-safe", "share-safe-leakage.md"]
+      }
+    },
+    {
+      "id": "no-network-container",
+      "fact": "Dockerfile.pilot runs the kit in a container with networking switched off.",
+      "must_contain": {
+        "docs/pilot-kit/README.md": ["Dockerfile.pilot"],
+        "shadow-evaluation-guide.html": ["Dockerfile.pilot"],
+        "scripts/generate_pdfs.py": ["Dockerfile.pilot"],
+        "docs/NHID-Clinical-Playbook.md": ["Dockerfile.pilot"]
+      }
+    },
+    {
+      "id": "ver-01",
+      "fact": "Call verification (VER-01) runs inside DLG-01; it is not a sixth control.",
+      "must_contain": {
+        "CLAUDE.md": ["VER-01"],
+        "specification.html": ["VER-01"],
+        "framework/nhid-auth.html": ["VER-01"],
+        "scripts/generate_pdfs.py": ["VER-01"],
+        "docs/NHID-Clinical-Playbook.md": ["VER-01"]
+      }
+    },
+    {
+      "id": "key-rotation",
+      "fact": "Signing-key and API-key rotation are built; durable key custody (HSM/KMS) is not.",
+      "must_contain": {
+        "developers.html": ["rotation", "Durable key custody"],
+        "evidence-pack.html": ["rotated"],
+        "docs/NHID-Clinical-Playbook.md": ["rotated"],
+        "scripts/generate_pdfs.py": ["keys rotate"]
+      },
+      "must_not_contain": {
+        "developers.html": ["Key custody &amp; rotation", "durable key custody and rotation"]
+      }
+    },
+    {
+      "id": "audit-verify",
+      "fact": "Audit events are tenant-scoped, signed, hash-chained and anchored; /v1/audit/verify/{session_id} checks them; strict modes fail closed at startup.",
+      "must_contain": {
+        "developers.html": ["/v1/audit/verify/{session_id}", "src.preflight"],
+        "evidence-pack.html": ["/v1/audit/verify/{session_id}", "src.preflight"],
+        "docs/NHID-Clinical-Playbook.md": ["/v1/audit/verify/{session_id}", "src.preflight"]
+      }
+    },
+    {
+      "id": "receiver-label",
+      "fact": "In the capture format the payer-side human is speaker \"receiver\"; \"caller\" is the accepted legacy name.",
+      "must_contain": {
+        "docs/pilot-kit/minimal-event-schema.json": ["receiver"],
+        "docs/pilot-kit/README.md": ["receiver"],
+        "docs/canonical-threat-model.md": ["\"receiver\""]
+      }
+    },
+    {
+      "id": "call-replay",
+      "fact": "Pilot replays tell the engine which turn disclosed (src/call_replay.py), so the same-turn PDX-01 rule and IDG-01's persona check run.",
+      "must_contain": {
+        "docs/pilot-kit/README.md": ["PDX01_DISCLOSURE_NOT_SEQUENCED"]
+      }
+    },
+    {
+      "id": "reference-agent",
+      "fact": "Ida, the reference caller-agent, presents a per-call, scoped passport and a proof of possession to the payer gate, and DLG-01 checks it. Demonstration keys only; no SIP path carries a passport.",
+      "must_contain": {
+        "README.md": ["docs/reference-agent.md"],
+        "developers.html": ["presentation_proof", "/v1/gate/challenge"],
+        "framework/nhid-auth.html": ["REFERENCE AGENT ONLY", "/v1/gate/challenge"],
+        "docs/elevenlabs-demo.md": ["/v1/ida/gate"],
+        "agents/ida_system_prompt.md": ["/v1/ida/gate"],
+        "docs/reference-agent.md": ["Demonstration keys only", "SIP"]
+      },
+      "must_not_contain": {
+        "framework/nhid-auth.html": ["NOT BUILT: NO ADAPTER OR SIP PATH", "no adapter or SIP path carries a passport today"]
+      }
+    }
+  ],
+  "generated": [
+    {"output": "specification.html + assets/data/gateway-trace.json", "rebuild": "python scripts/build_gateway_fixture.py", "check": "python scripts/build_gateway_fixture.py --check"},
+    {"output": "assets/media/front-desk-walkthrough.html + assets/data/walkthrough-trace.json", "rebuild": "python scripts/build_walkthrough_fixture.py", "check": "python scripts/build_walkthrough_fixture.py --check"},
+    {"output": "developers.html + assets/data/api-sample.json", "rebuild": "python scripts/build_api_sample.py", "check": "python scripts/build_api_sample.py --check"},
+    {"output": "assets/data/evidence-visuals.json + injected figures", "rebuild": "python scripts/build_evidence_visuals.py", "check": "python scripts/build_evidence_visuals.py --check"},
+    {"output": "specs/*.pdf", "rebuild": "python scripts/generate_pdfs.py && git add -f specs/*.pdf specs/pdf-sources.sha256", "check": "tests/test_pdf_freshness.py"},
+    {"output": "assets/images/trust-gateway.png", "rebuild": "python -m http.server 8765 & NODE_PATH=$(npm root -g) node scripts/visual/capture_trust_gateway.cjs", "check": "manual: rerun after the gateway fixture changes"},
+    {"output": "published test count", "rebuild": "python scripts/bump_published_test_count.py OLD NEW OLD NEW", "check": "python scripts/check_number_drift.py"}
+  ]
+}

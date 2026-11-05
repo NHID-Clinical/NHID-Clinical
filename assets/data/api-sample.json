@@ -11,12 +11,12 @@
     "messages": [
       {
         "role": "bot",
-        "message": "Hi, can I get the member ID and NPI?",
+        "message": "Hi, I'm calling about member ID 789-XX-4421 and NPI 1234567890 for an authorization.",
         "secondsFromStart": 0.3
       },
       {
         "role": "user",
-        "message": "NPI is 1234567890.",
+        "message": "One moment, let me look that up.",
         "secondsFromStart": 3.1
       },
       {
@@ -29,23 +29,18 @@
   "status": 200,
   "response": {
     "conformant": false,
-    "action": "DENY_DATA",
-    "reason_code": "PDX01_PHI_GATE_TRIGGERED",
+    "action": "DISCLOSE_IDENTITY",
+    "reason_code": "IDG01_DISCLOSURE_MISSING",
     "policy_version": "1.0.0",
     "violations": [
       {
         "rule_id": "IDG-01",
         "description": "AI agent has not disclosed non-human identity. Turn count: 3. ",
         "severity": "critical"
-      },
-      {
-        "rule_id": "PDX-01",
-        "description": "PHI exchange attempted before identity disclosure. Speech PHI signal: True. PHI fields: none.",
-        "severity": "critical"
       }
     ],
-    "next_state": "GATE_BLOCKED",
-    "twiml_fallback": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Gather input=\"speech\" speechTimeout=\"auto\" action=\"/voice/process\">\n    <Say>Before we continue, I need to confirm: I am an automated system, not a human representative. Can you confirm you understand?</Say>\n  </Gather>\n</Response>",
+    "next_state": "AWAITING_DISCLOSURE",
+    "twiml_fallback": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Response>\n  <Gather input=\"speech\" speechTimeout=\"auto\" action=\"/voice/process\">\n    <Say>Hello. I am an automated system. I am not a human representative. How can I help you today?</Say>\n  </Gather>\n</Response>",
     "gather_speech": true,
     "evidence_completeness": {
       "present": 4,
