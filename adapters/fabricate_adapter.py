@@ -153,7 +153,7 @@ def _annotate_escalation_outcomes(raw_turns: list[dict[str, Any]]) -> dict[int, 
     """
     caller_requests = [
         i for i, raw in enumerate(raw_turns)
-        if _is_truthy(raw.get("is_escalation_request")) and raw.get("speaker") == "caller"
+        if _is_truthy(raw.get("is_escalation_request")) and raw.get("speaker") in ("receiver", "caller")
     ]
     outcomes: dict[int, str] = {}
     for pos, i in enumerate(caller_requests):

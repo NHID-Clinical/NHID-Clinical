@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2326** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2328** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2326 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2328 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2326 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2328 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2326 passing tests · machine-readable traces · open implementation
+> 5 controls · 2328 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2326%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2328%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2716,6 +2716,12 @@ defined in the schema text, in the pilot kit's field table, and in the header of
 `ParticipantRole` in `src/safety_evaluation/synthetic_scenarios.py` already had the
 unambiguous vocabulary (`AI_AGENT` requesting, `CLAIMS_REP` receiving) and is now
 documented as the preferred one where there is a choice.
+
+**Update, 2026-11-05: `"receiver"` added.** The schema now accepts `speaker: "receiver"`
+for the payer-side human and documents `"caller"` as its old name, still accepted with the
+same meaning, so no capture in the field breaks. The `--demo` records and the synthetic
+generators use `"receiver"`. The pinned Fabricate corpus keeps its labels, and the
+adapter accepts both. Guarded by `tests/test_canonical_threat_model.py`.
 
 **Recorded conflict, not corrected.** `fixtures/fabricate/conversations.csv` labels
 `caller_role` as `provider_office_staff` 141, `member_representative` 139,
