@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2509** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2525** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2509 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2525 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2509 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2525 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2509 passing tests · machine-readable traces · open implementation
+> 5 controls · 2525 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2509%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2525%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,45 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.35 Robot to robot: the payer's own AI answers — 2026-11-08
+
+The maintainer deferred this scenario to last in §19.29, then asked for it.
+The canonical direction stays: the caller-agent places the call and asks for
+a claim status. Only the receiving party changes, to the payer's own AI.
+
+**Decisions.**
+- **Nothing is reversed.** The controls still judge the caller. The payer's
+  AI is the enforcement point and is not graded by any control.
+  `docs/agent-to-agent-calls.md` names the canonical direction first. The
+  threat model, CLAUDE.md and the claim boundaries say the same.
+- **The gate knows who answered.** `gate_turn` takes
+  `counterparty: "human_operator" | "ai_agent"` (default human, anything
+  else 400) and echoes it. With `ai_agent`, the engine's existing bot-to-bot
+  rule applies. It is the first call path to set `counterparty_type` to
+  `ai_agent`.
+- **A reference payer AI.** `src/agent_to_agent.PayerAgent` is
+  deterministic, not a model.
+  - It says it is automated first.
+  - It sends every caller turn through the gate.
+  - It releases a claim status only when the gate allowed the turn and
+    `delegation_checked` is true.
+  - One refusal ends the protected part of the call.
+  - It transfers on escalation or when asked for a person.
+- **Seven offline scenarios** (`nhid agent-to-agent`):
+  - verified Ida: released;
+  - undisclosed bot, disclosed bot without a delegation, out of scope,
+    claims to be human, retry after refusal: refused;
+  - asks for a person: escalated.
+- **A difference recorded, not changed.** An undisclosed opening turn gets
+  `DISCLOSE_IDENTITY` with a person on the line and `DENY_DATA`
+  (`BOT2BOT_UNDISCLOSED_AGENT`) with an AI on the line.
+- **Open.**
+  - No live voice-to-voice run.
+  - ACC-01 is not wired into the gate, so the payer AI checks that a claim
+    exists, not that it is linked to the delegating provider.
+- **Unchanged.** Control semantics, baselines and the five controls.
+- **Guard.** A surfaces fact (`robot-to-robot`).
 
 ### 19.34 Consented recordings can be scored; real speech is still not measured — 2026-11-08
 

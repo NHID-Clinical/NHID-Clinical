@@ -85,6 +85,48 @@ def _cmd_audio_robustness(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_agent_to_agent(args: argparse.Namespace) -> int:
+    """Run robot-to-robot calls offline (src/agent_to_agent.py): a caller-agent
+    places the call and the payer's reference AI answers.
+
+    Uses Ida's demo credentials from the environment when set; otherwise mints
+    throwaway keys for this run only. Either way the payer's trust anchor is set
+    for the duration of the run and restored afterwards. Imported lazily, like
+    every command that reaches the gate.
+    """
+    import json
+    import os
+
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
+    from src import agent_to_agent as a2a
+    from src.reference_agent import PracticeIssuer, ReferenceAgentSigner, from_environment
+
+    names = list(a2a.SCENARIOS) if args.scenario == "all" else [args.scenario]
+    unknown = [n for n in names if n not in a2a.SCENARIOS]
+    if unknown:
+        print(f"nhid agent-to-agent: unknown scenario {unknown[0]!r}; choose from "
+              f"{', '.join(a2a.SCENARIOS)} or all", file=sys.stderr)
+        return 2
+    signer = from_environment() or ReferenceAgentSigner(
+        agent_key=Ed25519PrivateKey.generate(),
+        issuer=PracticeIssuer(key=Ed25519PrivateKey.generate()))
+    saved = os.environ.get("NHID_TRUST_ANCHORS")
+    os.environ["NHID_TRUST_ANCHORS"] = signer.issuer.trust_anchor_entry()
+    try:
+        calls = [a2a.run_call(a2a.SCENARIOS[n], signer=signer) for n in names]
+    finally:
+        if saved is None:
+            os.environ.pop("NHID_TRUST_ANCHORS", None)
+        else:
+            os.environ["NHID_TRUST_ANCHORS"] = saved
+    if args.json:
+        print(json.dumps([c.to_dict() for c in calls], indent=2))
+    else:
+        print("\n\n".join(c.render() for c in calls))
+    return 0
+
+
 def _cmd_export_evidence(args: argparse.Namespace) -> int:
     from scripts.export_evidence_pack import main as export_main
 
@@ -382,6 +424,18 @@ def build_parser() -> argparse.ArgumentParser:
                             "folder of WAV clips with manifest.json (every clip needs "
                             "consent: true; see docs/validation/volunteer-call-protocol.md)")
     audio.set_defaults(func=_cmd_audio_robustness)
+
+    a2a = sub.add_parser(
+        "agent-to-agent",
+        help="robot to robot: a caller-agent calls and the payer's reference AI answers",
+        description="Run whole calls offline between a scripted caller-agent and the payer's "
+                    "reference AI. Every caller turn goes through the payer's gate as talking "
+                    "to an AI; the payer's AI releases a claim status only after the gate "
+                    "allowed the turn and verified the caller's delegation. Fictional data. "
+                    "See docs/agent-to-agent-calls.md.")
+    a2a.add_argument("--scenario", default="all", help="scenario name, or all (default)")
+    a2a.add_argument("--json", action="store_true", help="print the calls as JSON")
+    a2a.set_defaults(func=_cmd_agent_to_agent)
 
     return parser
 

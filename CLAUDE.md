@@ -42,6 +42,9 @@ discloses PHI to an unverified or unauthorized requesting agent.**
   [`docs/payer-initiated-calls.md`](docs/payer-initiated-calls.md), a policy-extension
   guide for the reverse direction (a payer's agent calling a provider). It names the
   canonical direction first and labels itself an extension. Keep it that way.
+- When the payer's own AI answers the call (robot to robot), the roles are **not**
+  reversed: the caller is still the agent under evaluation, and the payer's AI is the
+  enforcement point. See [`docs/agent-to-agent-calls.md`](docs/agent-to-agent-calls.md).
 
 Full statement, with the known conflicts recorded:
 [`docs/canonical-threat-model.md`](docs/canonical-threat-model.md).

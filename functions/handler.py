@@ -459,6 +459,10 @@ def gate_turn(params: dict) -> tuple[int, dict]:
                              (POST /v1/gate/challenge), as
                              {delegation_id, verifier_nonce, issued_at, signature_b64}.
                              The challenge itself is the gate's, never the caller's.
+      counterparty           who answered the call: human_operator (default) or
+                             ai_agent. With ai_agent the engine also applies its
+                             bot-to-bot rule (docs/agent-to-agent-calls.md). It
+                             says who is on the other end; it grants nothing.
 
     Field mapping, so the engine sees the right party in each slot:
       input_payload.speech_text                  <- heard   (the counterparty)
@@ -491,6 +495,10 @@ def gate_turn(params: dict) -> tuple[int, dict]:
     if escalation_outcome is not None and escalation_outcome not in _escalation_outcomes():
         return 400, {"error": f"escalation_outcome must be one of "
                               f"{sorted(_escalation_outcomes())}, got {escalation_outcome!r}"}
+    counterparty = str(params.get("counterparty") or "human_operator").strip().lower()
+    if counterparty not in ("human_operator", "ai_agent"):
+        return 400, {"error": "counterparty must be human_operator or ai_agent, "
+                              f"got {counterparty!r}"}
     try:
         disclosed = _parse_bool(params.get("disclosed"), "disclosed")
         turn_index = int(params.get("turn_index") or 0)
@@ -535,6 +543,7 @@ def gate_turn(params: dict) -> tuple[int, dict]:
     orient_calling_agent(session, policy_event, agent_text=turn,
                          disclosed_before=disclosed, heard=heard)
     governance = policy_event["healthcare_governance"]
+    policy_event["counterparty_type"] = counterparty
     # A reported transfer result. The engine reads the outcome before anything
     # else on the turn, so a failed transfer is a CRITICAL EIT-01 finding here
     # and an honored one settles the request. Only the gate receives one.
@@ -566,6 +575,7 @@ def gate_turn(params: dict) -> tuple[int, dict]:
     result["turn_index"] = turn_index
     result["disclosed"] = disclosed
     result["actor_id"] = actor_id
+    result["counterparty"] = counterparty
     result["phi_requested"] = governance["phi_accessed"]
     result["delegation_checked"] = delegation_context is not None
     # The HMAC over the ATR-01 record for this turn, when the engine built one.

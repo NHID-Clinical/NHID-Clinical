@@ -265,6 +265,7 @@ the tier strings reappear.
 | "**Delegated authority is verified in the policy path (DLG-01) when a deployment opts in**, and the verified scope constrains the data boundary." | `evaluate_dlg01` + `evaluate_pdx01` in `src/nhid_policy_engine_v1.py`; `tests/test_dlg01_delegated_authority.py`. Always pair with the four limits stated in the in-scope section above. |
 | "The **evidence pack is reproducible** and marks anything it could not generate as unavailable." | `scripts/export_evidence_pack.py` + `tests/test_export_evidence_pack.py`. It is not an attestation, audit opinion, or assurance engagement. |
 | "A **bot-to-bot disclosure gate** exists for agent-to-agent contexts." | `evaluate_bot_to_bot()` — disclosure only, not mutual authorization |
+| "A **reference payer-side AI** shows how a payer's own agent can apply the gate: it releases a claim status only after the gate verifies the caller's delegation." | `src/agent_to_agent.py`, `tests/test_agent_to_agent.py`, `docs/agent-to-agent-calls.md`. **Always pair with:** offline and deterministic, not a deployed agent; no payer runs it; record-level access (ACC-01) is not wired into the gate. |
 
 ### Prohibited — and why
 
