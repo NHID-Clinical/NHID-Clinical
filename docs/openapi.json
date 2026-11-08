@@ -230,8 +230,8 @@
     },
     "/v1/pilot/enroll": {
       "post": {
-        "summary": "Pilot enrollment",
-        "description": "No API key required. Validates the request and returns next steps.",
+        "summary": "Pilot request check (stores nothing)",
+        "description": "No API key required. Validates the request and says where to send it: this endpoint stores nothing. Request a Tier 0 shadow pilot by emailing contact@nhid-clinical.org.",
         "requestBody": {
           "required": true,
           "content": {
@@ -249,15 +249,14 @@
         },
         "responses": {
           "200": {
-            "description": "Enrollment confirmation",
+            "description": "Not recorded; next steps and the contact address",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "pilot_id": {"type": "string"},
                     "org_name": {"type": "string"},
-                    "status": {"type": "string"},
+                    "status": {"type": "string", "enum": ["not_recorded"]},
                     "next_steps_url": {"type": "string"},
                     "next_steps": {"type": "array", "items": {"type": "string"}}
                   }

@@ -29,6 +29,7 @@ Usage:
 """
 from __future__ import annotations
 
+from urllib.parse import quote as _quote
 import argparse
 import re
 import sys
@@ -73,6 +74,16 @@ GITHUB_LINK = (f'<a href="{GITHUB_ORG}" target="_blank" rel="noopener noreferrer
                'GitHub &#x2197;</a>')
 
 
+# The one way a buyer asks: a prefilled email, with nothing stored by us.
+# Wording stays at the Research stage (docs/claim-boundaries.md): "a Tier 0
+# shadow pilot is available", nothing about data handling until Pilot-ready.
+_PILOT_BODY = ("Organization:\nYour role:\nRoughly how many provider-line calls a month:\n"
+               "AI agents calling you today, if you know:\n\n"
+               "(A Tier 0 shadow pilot is available. We will reply with the kit and the terms.)")
+PILOT_REQUEST_HREF = ("mailto:contact@nhid-clinical.org?subject="
+                      + _quote("Shadow pilot request") + "&amp;body=" + _quote(_PILOT_BODY))
+
+
 def _links(items, indent: str) -> str:
     return "\n".join(f'{indent}<a href="{href}">{label}</a>' for href, label in items)
 
@@ -102,7 +113,7 @@ HEADER = f'''<header class="site-header">
       <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
-      <a class="primary-pill" href="/shadow-evaluation-guide.html">Start a shadow evaluation</a>
+      <a class="primary-pill" href="{PILOT_REQUEST_HREF}">Request a shadow pilot</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
@@ -129,6 +140,7 @@ DRAWER = f'''<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigati
 {_links(ABOUT_MENU, "  ")}
   {GITHUB_LINK}
   <div class="mobile-nav-footer">
+    <a class="primary-pill mobile-cta" href="{PILOT_REQUEST_HREF}">Request a shadow pilot</a>
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>

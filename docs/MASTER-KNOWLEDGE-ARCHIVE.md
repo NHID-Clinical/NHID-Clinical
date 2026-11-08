@@ -2492,6 +2492,32 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.32 One way for a buyer to ask, and an endpoint that stopped pretending — 2026-11-08
+
+The 1 November launch-readiness review graded the website B+: it had no
+buyer-facing call to action beyond the starter pack. The nav button read
+"Start a shadow evaluation" and led to the guide, which no one can act on
+without writing in.
+
+**Decisions.**
+- **The action.** Every published page now offers **Request a shadow pilot**:
+  - in the header and the mobile menu, through the chrome generator
+    (`scripts/ia/build_site_chrome.py`);
+  - in the home page's closing band;
+  - at both ends of the shadow-evaluation guide.
+- **How it works.** It is a prefilled email to contact@nhid-clinical.org
+  (organization, role, call volume, the AI agents calling today). There is no
+  form, so we store nothing. That was the maintainer's choice.
+- **Wording.** Research stage only: "a Tier 0 shadow pilot is available".
+  "Nothing leaves your machine" waits for Pilot-ready.
+- **The endpoint.** `POST /v1/pilot/enroll` used to answer
+  `"status": "enrolled"` with a fresh pilot id while storing nothing and
+  notifying no one. It now answers `"status": "not_recorded"`, issues no id,
+  and points to the email (`tests/test_pilot_request_honesty.py`). The
+  OpenAPI entry says the same.
+- **Guard.** A surfaces fact (`pilot-cta`) requires the button on the nine
+  listed pages.
+
 ### 19.31 The production-readiness decisions are written down — 2026-11-05
 
 The maintainer asked for the production-readiness decisions under #457

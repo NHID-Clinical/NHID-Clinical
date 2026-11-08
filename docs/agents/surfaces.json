@@ -120,6 +120,24 @@
         "framework/nhid-auth.html": ["production ready", "production-ready", "enterprise ready"],
         "docs/reference-agent.md": ["production ready", "production-ready", "enterprise ready"]
       }
+    },
+    {
+      "id": "pilot-cta",
+      "fact": "Every published page offers one way for a buyer to ask: a 'Request a shadow pilot' email to contact@nhid-clinical.org, prefilled, with nothing stored by us. /v1/pilot/enroll says plainly that it stores nothing.",
+      "must_contain": {
+        "index.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "shadow-evaluation-guide.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "evidence-pack.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "faq.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "about.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "developers.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "specification.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "regulatory-alignment.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "framework/nhid-auth.html": ["Request a shadow pilot", "Shadow%20pilot%20request"]
+      },
+      "must_not_contain": {
+        "shadow-evaluation-guide.html": ["Email us about a shadow evaluation"]
+      }
     }
   ],
   "generated": [

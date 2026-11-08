@@ -67,7 +67,7 @@ def lambda_handler(event: dict, context) -> dict:
       POST /v1/gate/challenge                — a fresh verifier nonce for one call, which the agent signs to prove it holds its delegated key
       POST /v1/ida/gate                      — Ida's agent-side signer in front of /v1/gate/turn (demonstration credentials)
       GET  /v1/vendor/metrics/summary        — per-vendor metrics, API key required
-      POST /v1/pilot/enroll                  — pilot enrollment, no API key required
+      POST /v1/pilot/enroll                  — pilot request check; stores nothing, points to the email route
       POST /v1/cts/evaluate                  — run conformance test suite, no API key required
       POST /v1/webhooks/twilio-demo/voice    — scripted demo line TwiML, no API key (website demo, not framework)
       GET  /v1/demo/call-status              — live demo call status, no API key (website demo, not framework)
@@ -780,7 +780,13 @@ def _handle_demo_call_status(event: dict) -> dict:
 
 
 def _handle_pilot_enroll(event: dict) -> dict:
-    """Pilot enrollment — validates the request and returns next steps."""
+    """Pilot request: validates it and says where to send it. Stores nothing.
+
+    It used to answer "enrolled" with a fresh pilot id while recording nothing
+    and notifying no one. It now says plainly that the request was not
+    recorded and points to the real route: the site's "Request a shadow pilot"
+    email (tests/test_pilot_request_honesty.py).
+    """
     body, parse_error = _parse_json_body(event)
     if parse_error:
         return parse_error
@@ -792,18 +798,18 @@ def _handle_pilot_enroll(event: dict) -> dict:
     if not contact_email or "@" not in contact_email:
         return _error(400, "Missing or invalid field: 'contact_email'")
 
-    import uuid as _uuid
-    pilot_id = f"pilot-{_uuid.uuid4().hex[:12]}"
-
     return _ok({
-        "pilot_id": pilot_id,
         "org_name": org_name,
-        "status": "enrolled",
+        "status": "not_recorded",
+        "detail": ("This endpoint does not store requests. To request a Tier 0 shadow "
+                   "pilot, email contact@nhid-clinical.org."),
+        "contact": "contact@nhid-clinical.org",
         "next_steps_url": "https://nhid-clinical.org/shadow-evaluation-guide.html",
         "next_steps": [
-            "Read the 90-day shadow evaluation guide",
-            "Run baseline calls through POST /v1/demo/check or a vendor adapter route",
-            "Generate your pilot report with tools/pilot_report_generator.py",
+            "Email contact@nhid-clinical.org with your organization, your role and your "
+            "approximate provider-line call volume",
+            "Read the shadow evaluation guide",
+            "Run the Tier 0 kit on your own de-identified transcripts (nhid pilot)",
         ],
     })
 
