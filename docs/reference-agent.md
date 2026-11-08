@@ -141,3 +141,5 @@ The challenge store is in-process, so a scaled-out deployment needs a shared
 store.
 
 The project is at the Research stage (`claim-boundaries.md`).
+
+**When the payer's AI answers.** The same gate, with `counterparty: "ai_agent"`, and a reference payer-side agent that releases only after a verified delegation: [`agent-to-agent-calls.md`](agent-to-agent-calls.md).

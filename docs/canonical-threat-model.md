@@ -43,6 +43,11 @@ the agent under evaluation is not the party answering the phone — except where
 scenario is explicitly documented, which today means
 [`payer-initiated-calls.md`](payer-initiated-calls.md) and nothing else.
 
+A payer whose own AI answers the call does not reverse anything: the caller is still the
+requesting party and still the agent under evaluation, and the payer's AI is where the
+controls are enforced. That variation is documented in
+[`agent-to-agent-calls.md`](agent-to-agent-calls.md).
+
 ## Control objective
 
 Evaluate the requesting agent's identity and authority **before** permitting disclosure
