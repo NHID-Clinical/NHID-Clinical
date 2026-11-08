@@ -636,7 +636,7 @@
           }
         },
         "access_authorization": {
-          "$comment": "CANDIDATE: docs/proposals/patient-access-authorization.md. Optional and not evaluated by the v1.3 policy engine; an event that omits it is evaluated exactly as before.",
+          "$comment": "Prototype: docs/proposals/patient-access-authorization.md, src/record_access.py. Optional. Read by PDX-01 only when DelegationContext.require_record_access is set (default off); otherwise an event that carries or omits it is evaluated exactly as before.",
           "type": [
             "object",
             "null"

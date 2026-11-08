@@ -80,13 +80,16 @@ def placeholder(tag: str) -> str:
 
 
 def scenario(i, title, desc, op, ask, result, reason=None, basis=None, failing=(), unknown=(),
-             payer_record=None, scope=("eligibility", "claim_status", "prior_auth"),
+             not_evaluated=(), payer_record=None, scope=("eligibility", "claim_status", "prior_auth"),
              ver="pass", ver_reason=None, pdx="pass", notes=""):
-    """One fixture. `failing`/`unknown` name the ACC-01 checks that are not pass."""
+    """One fixture. `failing`/`unknown`/`not_evaluated` name the ACC-01 checks that
+    are not pass. A check that could not run is `not_assessable`, never `pass`:
+    a pass is a claim that something was verified (src/record_access.py)."""
     if result == N:
         checks = {c: N for c in CHECKS}
     else:
-        checks = {c: (E if c in failing else U if c in unknown else P) for c in CHECKS}
+        checks = {c: (E if c in failing else U if c in unknown else N if c in not_evaluated else P)
+                  for c in CHECKS}
     binding = {"type": BINDING_FOR[op], "ref": placeholder(f"{i:03d}")}
     access = {"result": result, "reason_code": reason, "operation": op,
               "relationship_basis": basis, "resource_binding": binding,
@@ -168,12 +171,14 @@ def scenarios() -> list:
     add(7, "Payer claim system unavailable",
         "The claim cannot be looked up, so no link can be checked.",
         "claim_status", "Status of claim CLM-48213 for member M-0042, please.",
-        U, reason="PAYER_RECORD_UNAVAILABLE", basis="UNKNOWN", unknown=("record_relationship",),
+        U, reason="PAYER_RECORD_UNAVAILABLE", basis="UNKNOWN",
+        unknown=("identifier_match", "record_relationship"),
         payer_record={"claim_system_available": False})
     add(8, "Token bound to one claim, agent asks about another",
         "The call-scoped token was issued for claim CLM-48213; the agent asks about CLM-48214.",
         "claim_status", "Actually, what about claim CLM-48214?",
         E, reason="RESOURCE_BINDING_MISMATCH", failing=("patient_binding",),
+        not_evaluated=("identifier_match", "record_relationship"),
         payer_record={"token_resource_matches": False},
         notes="Claim status binds member + claim. A new token is needed for a new claim.")
 
@@ -231,6 +236,7 @@ def scenarios() -> list:
         "Bound to member A's eligibility request; the agent asks about member B.",
         "eligibility", "Can you check member M-0099 instead?",
         E, reason="RESOURCE_BINDING_MISMATCH", failing=("patient_binding",),
+        not_evaluated=("identifier_match", "record_relationship"),
         payer_record={"token_resource_matches": False})
 
     # ── Prerequisites: ACC-01 is not reached ─────────────────────────────────

@@ -2492,6 +2492,41 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.33 ACC-01 runs, opt-in, inside PDX-01 — 2026-11-08
+
+The 1 November review graded record-level access as a proposal with fixtures
+and nothing that ran. A caller-agent with a valid delegation and an in-scope
+field request could still ask about a record nothing ties to its provider.
+
+**Decisions.**
+- **Where it runs.** Inside PDX-01, after field scope has passed, and only
+  when `DelegationContext.require_record_access` is set (default off). It is
+  not a control of its own; the control set stays at five and
+  `check_control_set.py` still passes. The maintainer chose this placement.
+- **The payer-side check.** `src/record_access.py`: `evaluate_access` over a
+  `PayerRecords` protocol, with the relationship policy as data
+  (`DEFAULT_POLICY`). The engine does no I/O; the result arrives as
+  `session["access_authorization"]`, as VER-01's does.
+- **Where the NPI comes from.** Only the verified `DelegationResult`. The
+  trace schema has no NPI field (and allows no extra fields), so the NPI
+  cannot travel in the trace, and nothing said on the call is consulted.
+- **Outcomes, from the existing ladder.** `exception` denies
+  (`PDX01_RECORD_NOT_AUTHORIZED`). `unknown`, `not_assessable`, no result, or
+  a pass for an operation that does not cover the requested fields escalates
+  (`PDX01_RECORD_ACCESS_UNRESOLVED`). Unknown never passes.
+- **Measured.** 20/20 fixture results reproduced, on the fixtures' own
+  denominator, never pooled. That is agreement with hand-authored
+  expectations, not a detection rate, and no payer runs it.
+- **The fixture generator changed.** It used to mark checks that were never
+  evaluated as `pass`. They are now `not_assessable` (008, 017: the binding
+  failed first) or `unknown` (007: the record system was down). No result,
+  reason or outcome changed.
+- **Still open.** `intent_hmac` in `src/call_verification.py` still binds
+  the member/claim pair, not the typed binding (proposal §8, item 1).
+- **Unchanged.** Pinned baselines, corpus figures and published counts. With
+  the flag off, the engine's behavior is the same.
+- **Guard.** A surfaces fact (`acc01-inside-pdx01`).
+
 ### 19.32 One way for a buyer to ask, and an endpoint that stopped pretending — 2026-11-08
 
 The 1 November launch-readiness review graded the website B+: it had no

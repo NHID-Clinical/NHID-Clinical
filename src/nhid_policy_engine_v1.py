@@ -152,6 +152,19 @@ class DelegationContext:
             denies (DENY_DATA), as `CallVerificationResult.restriction()` does;
             so does a missing result, a pass for a different delegation, or no
             passport at all, since a call token is bound to a delegation.
+        require_record_access: when True, PDX-01 also requires the ACC-01
+            record-level access result (`docs/proposals/patient-access-
+            authorization.md`): the payer's own records link *this* record to
+            the provider the verified delegation names. ACC-01 is not a
+            separate control; it runs inside PDX-01, after field scope has
+            passed, and only when this flag is set. The engine performs no I/O,
+            so the payer runs `src.record_access.evaluate_access` first and its
+            `AccessResult.to_trace_field()` arrives as
+            `session["access_authorization"]`. `pass` releases; `exception`
+            denies (DENY_DATA, PDX01_RECORD_NOT_AUTHORIZED); `unknown`,
+            `not_assessable`, a missing result, or a result for an operation
+            that does not cover the requested fields escalates to a human
+            (ESCALATE_HUMAN, PDX01_RECORD_ACCESS_UNRESOLVED). Never a pass.
     """
 
     resolver: Any
@@ -162,6 +175,7 @@ class DelegationContext:
     require_npi_check_digit: bool = False
     revocation_checker: Callable[[str], bool] | None = None
     require_call_verification: bool = False
+    require_record_access: bool = False
 
 
 @dataclass(frozen=True)
@@ -909,10 +923,73 @@ def _fields_outside_scope(
     return frozenset(requested - permitted)
 
 
+def _acc01_decision(
+    session: dict[str, Any],
+    requested: frozenset[str],
+    delegation: DelegationResult | None,
+) -> PolicyDecision | None:
+    """ACC-01 inside PDX-01: None when the record is linked, else the restriction.
+
+    Only a `pass` for an operation that covers every requested field, and that
+    the delegation (when known) grants, releases the data. An `exception` is a
+    refusal from the payer's own records. Anything else (unknown, not
+    assessable, missing, malformed, or for another operation) is unresolved and
+    goes to a human. Unknown never passes.
+    """
+    access = session.get("access_authorization")
+    result = access.get("result") if isinstance(access, dict) else None
+    operation = access.get("operation") if isinstance(access, dict) else None
+    reason = (access.get("reason_code") if isinstance(access, dict) else None) or "NO_RESULT"
+
+    if result == "exception":
+        return PolicyDecision(
+            action=PolicyAction.DENY_DATA,
+            reason_code="PDX01_RECORD_NOT_AUTHORIZED",
+            violations=[BoundaryViolation(
+                rule_id="PDX-01",
+                description=(
+                    "Record-level access refused (ACC-01): the payer's records do not "
+                    f"authorize this record for the delegating provider. Reason: {reason}. "
+                    f"Operation: {operation or 'unknown'}."
+                ),
+                severity=ViolationSeverity.CRITICAL,
+            )],
+            next_state="GATE_BLOCKED",
+            gather_speech=True,
+        )
+
+    covers = (
+        isinstance(operation, str)
+        and not _fields_outside_scope(requested, frozenset({operation}))
+        and (delegation is None or not delegation.scope or operation in delegation.scope)
+    )
+    if result == "pass" and covers:
+        return None
+
+    why = (f"result for operation '{operation}' does not cover the requested fields"
+           if result == "pass" else f"result {result or 'missing'} ({reason})")
+    return PolicyDecision(
+        action=PolicyAction.ESCALATE_HUMAN,
+        reason_code="PDX01_RECORD_ACCESS_UNRESOLVED",
+        violations=[BoundaryViolation(
+            rule_id="PDX-01",
+            description=(
+                "Record-level access not established (ACC-01): "
+                f"{why}. Unresolved access is never a pass."
+            ),
+            severity=ViolationSeverity.MAJOR,
+        )],
+        next_state="GATE_BLOCKED",
+        gather_speech=True,
+    )
+
+
 def evaluate_pdx01(
     session: dict[str, Any],
     event: dict[str, Any],
     delegation: DelegationResult | None = None,
+    *,
+    require_record_access: bool = False,
 ) -> PolicyDecision:
     """
     PDX-01: The AI agent MUST NOT request or accept PHI before identity
@@ -930,6 +1007,11 @@ def evaluate_pdx01(
 
     Omitting `delegation` (the default, and what every pre-existing caller does)
     preserves the original two-outcome behavior exactly.
+
+    With `require_record_access` (opt-in, `DelegationContext.require_record_
+    access`), a request that has cleared disclosure and field scope must also
+    clear ACC-01: `session["access_authorization"]` must show the payer's own
+    records link this record to the delegating provider. See `_acc01_decision`.
     """
     try:
         governance      = _safe_get(event, "healthcare_governance", default={})
@@ -1045,6 +1127,12 @@ def evaluate_pdx01(
                         next_state="GATE_BLOCKED",
                         gather_speech=True,
                     )
+
+            if require_record_access:
+                requested = _phi_fields_requested(speech_text, phi_accessed)
+                acc_decision = _acc01_decision(session, requested, delegation)
+                if acc_decision is not None:
+                    return acc_decision
 
             return PolicyDecision(
                 action=PolicyAction.CONTINUE_AI,
@@ -2106,7 +2194,11 @@ def evaluate_all(
         decisions = [
             evaluate_atr01(session, event),
             evaluate_idg01(session, event),
-            evaluate_pdx01(session, event, pdx_delegation),
+            evaluate_pdx01(
+                session, event, pdx_delegation,
+                require_record_access=bool(delegation is not None
+                                           and delegation.require_record_access),
+            ),
             evaluate_dbc01(session, event),
             evaluate_eit01(session, event),
             evaluate_bot_to_bot(session, event),

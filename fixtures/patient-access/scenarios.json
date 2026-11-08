@@ -678,7 +678,7 @@
               },
               "binding_checks": {
                 "patient_binding": "pass",
-                "identifier_match": "pass",
+                "identifier_match": "unknown",
                 "record_relationship": "unknown",
                 "purpose": "pass"
               }
@@ -770,8 +770,8 @@
               },
               "binding_checks": {
                 "patient_binding": "exception",
-                "identifier_match": "pass",
-                "record_relationship": "pass",
+                "identifier_match": "not_assessable",
+                "record_relationship": "not_assessable",
                 "purpose": "pass"
               }
             }
@@ -1609,8 +1609,8 @@
               },
               "binding_checks": {
                 "patient_binding": "exception",
-                "identifier_match": "pass",
-                "record_relationship": "pass",
+                "identifier_match": "not_assessable",
+                "record_relationship": "not_assessable",
                 "purpose": "pass"
               }
             }

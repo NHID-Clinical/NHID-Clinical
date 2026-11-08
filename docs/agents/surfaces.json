@@ -138,6 +138,21 @@
       "must_not_contain": {
         "shadow-evaluation-guide.html": ["Email us about a shadow evaluation"]
       }
+    },
+    {
+      "id": "acc01-inside-pdx01",
+      "fact": "ACC-01 record-level access is a prototype check inside PDX-01, off unless DelegationContext.require_record_access is set. It is not a control of its own. It reproduces its 20 hand-authored fixtures (own denominator); no payer runs it.",
+      "must_contain": {
+        "specification.html": ["Record-level access (ACC-01) is an option inside PDX-01", "require_record_access", "PDX01_RECORD_NOT_AUTHORIZED"],
+        "developers.html": ["require_record_access=True", "inside PDX-01 (ACC-01, a prototype)"],
+        "docs/proposals/patient-access-authorization.md": ["prototype, opt-in, inside PDX-01", "20/20"],
+        "fixtures/patient-access/README.md": ["20/20 expected results reproduced", "no detection percentage is"]
+      },
+      "must_not_contain": {
+        "specification.html": ["sixth control"],
+        "developers.html": ["sixth control"],
+        "fixtures/patient-access/README.md": ["Nothing evaluates ACC-01 yet"]
+      }
     }
   ],
   "generated": [
