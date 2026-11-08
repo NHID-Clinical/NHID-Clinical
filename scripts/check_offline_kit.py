@@ -75,6 +75,9 @@ GUARDED = [
     "src/pilot_share_safe.py",
     # The call replay: every turn of a pilot call goes through it to the engine.
     "src/call_replay.py",
+    # The call-progress adapter: call_replay.replay_transcript converts live
+    # platform turns through it.
+    "adapters/call_progress_adapter.py",
     # The `nhid pilot` dispatcher. Guarded because that subcommand is the kit's
     # one-command front door, and a phone-home added there would be just as
     # false as one added to the kit. If another subcommand ever genuinely needs

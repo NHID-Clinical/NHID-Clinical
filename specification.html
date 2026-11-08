@@ -145,7 +145,7 @@
       <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
-      <a class="primary-pill" href="/shadow-evaluation-guide.html">Start a shadow evaluation</a>
+      <a class="primary-pill" href="mailto:contact@nhid-clinical.org?subject=Shadow%20pilot%20request&amp;body=Organization%3A%0AYour%20role%3A%0ARoughly%20how%20many%20provider-line%20calls%20a%20month%3A%0AAI%20agents%20calling%20you%20today%2C%20if%20you%20know%3A%0A%0A%28A%20Tier%200%20shadow%20pilot%20is%20available.%20We%20will%20reply%20with%20the%20kit%20and%20the%20terms.%29">Request a shadow pilot</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
@@ -179,6 +179,7 @@
   <a href="/specs/">Downloads</a>
   <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
+    <a class="primary-pill mobile-cta" href="mailto:contact@nhid-clinical.org?subject=Shadow%20pilot%20request&amp;body=Organization%3A%0AYour%20role%3A%0ARoughly%20how%20many%20provider-line%20calls%20a%20month%3A%0AAI%20agents%20calling%20you%20today%2C%20if%20you%20know%3A%0A%0A%28A%20Tier%200%20shadow%20pilot%20is%20available.%20We%20will%20reply%20with%20the%20kit%20and%20the%20terms.%29">Request a shadow pilot</a>
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -816,7 +817,7 @@
       <aside class="visual-provenance">
         <p><strong>Evidence basis:</strong> <code>tests/evaluation_corpus_v1.json</code> — 25 scenarios, 55 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI)</p>
-        <p><strong>Version:</strong> policy engine v1.3 · commit <code>040fa82</code></p>
+        <p><strong>Version:</strong> policy engine v1.3 · commit <code>d99c0bf</code></p>
       </aside>
       <!-- END GENERATED enforcement-ladder -->
         </div>
@@ -1023,6 +1024,7 @@
         <p>An agent asserting it acts for a provider organization can present a cryptographically signed delegation naming that organization&rsquo;s NPI, the scope it grants, and when it expires. When a deployment opts in, the engine verifies the signatures, expiry, revocation and call binding, and refuses any delegation whose scope widens across a sub-delegation. The verified scope then constrains the data boundary: a delegation for eligibility does not authorize requesting a claim number.</p>
         <p>The limits travel with it. Verification is against a trust anchor the deploying organization configured itself &mdash; there is no directory or discovery service, and an NPI with no configured anchor is refused rather than accepted. The NPI is cryptographically bound to the delegation but is <strong>not</strong> checked against NPPES. Delegation is off unless a deployment turns it on.</p>
         <p>Call verification (VER-01) is an option inside DLG-01 and adds no control of its own. With <code>require_call_verification</code> set, a call that is not verified, fails verification, or does not match the delegation is refused with a DLG-01 reason code.</p>
+        <p>Record-level access (ACC-01) is an option inside PDX-01, a prototype that adds no control of its own. With <code>require_record_access</code> set, PDX-01 also asks whether the payer&rsquo;s own records link <em>this</em> patient&rsquo;s record to the provider the verified delegation names. A record the payer shows is not linked is refused (<code>PDX01_RECORD_NOT_AUTHORIZED</code>); one it cannot resolve, or no answer at all, goes to a human (<code>PDX01_RECORD_ACCESS_UNRESOLVED</code>). Off by default. The prototype reproduces its 20 hand-authored fixtures; no payer runs it.</p>
         <p><a class="action-button action-button-secondary" href="/developers.html#reference-implementation">See the engine &rarr;</a></p>
       </div>
     </div>

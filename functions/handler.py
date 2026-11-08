@@ -67,7 +67,7 @@ def lambda_handler(event: dict, context) -> dict:
       POST /v1/gate/challenge                — a fresh verifier nonce for one call, which the agent signs to prove it holds its delegated key
       POST /v1/ida/gate                      — Ida's agent-side signer in front of /v1/gate/turn (demonstration credentials)
       GET  /v1/vendor/metrics/summary        — per-vendor metrics, API key required
-      POST /v1/pilot/enroll                  — pilot enrollment, no API key required
+      POST /v1/pilot/enroll                  — pilot request check; stores nothing, points to the email route
       POST /v1/cts/evaluate                  — run conformance test suite, no API key required
       POST /v1/webhooks/twilio-demo/voice    — scripted demo line TwiML, no API key (website demo, not framework)
       GET  /v1/demo/call-status              — live demo call status, no API key (website demo, not framework)
@@ -501,7 +501,6 @@ def gate_turn(params: dict) -> tuple[int, dict]:
 
     from datetime import datetime, timedelta, timezone
     from adapters.call_progress_adapter import to_nhid_event
-    from src.nhid_policy_engine_v1 import _phi_fields_requested
 
     now = datetime.now(timezone.utc)
     disclosed_at = None
@@ -526,26 +525,22 @@ def gate_turn(params: dict) -> tuple[int, dict]:
     except Exception as exc:  # noqa: BLE001
         return 400, {"error": f"Adapter conversion failed: {exc}"}
 
-    # Caller-side orientation. The adapter fills these for a receiving agent;
-    # here the agent is the caller, so each slot gets the party it describes.
+    # Caller-side orientation (src/call_replay.py, shared with the post-call
+    # replay). The agent's planned words are the data request and the identity
+    # assertion; `heard` is the representative's words, where EIT-01 finds a
+    # request for a person and PDX-01 finds data the representative
+    # volunteers. The gate is the harness, so it says whether disclosure was
+    # already established.
+    from src.call_replay import orient_calling_agent
+    orient_calling_agent(session, policy_event, agent_text=turn,
+                         disclosed_before=disclosed, heard=heard)
     governance = policy_event["healthcare_governance"]
-    # The agent's planned words are the data request, in the engine's own
-    # field names (the adapter's phrase list is not what PDX-01 compares).
-    governance["phi_accessed"] = sorted(_phi_fields_requested(turn, []))
-    # DBC-01 judges the agent's own words, disclosure keyword or not.
-    governance["identity_assertion_text"] = turn
-    # The counterparty's words: EIT-01 finds the request for a human here, and
-    # PDX-01 finds protected data the counterparty volunteers.
-    policy_event["input_payload"]["speech_text"] = heard
     # A reported transfer result. The engine reads the outcome before anything
     # else on the turn, so a failed transfer is a CRITICAL EIT-01 finding here
-    # and an honored one settles the request.
+    # and an honored one settles the request. Only the gate receives one.
     if escalation_outcome is not None:
         governance["escalation_outcome"] = escalation_outcome
         governance["escalation_timestamp"] = governance.get("escalation_timestamp") or now.isoformat()
-    # PDX-01's same-turn rule only fires when the harness says the disclosure
-    # was NOT already established. The gate is the harness.
-    session["disclosure_established_prior"] = disclosed
 
     delegation_context = None
     if params.get("passport") is not None:
@@ -785,7 +780,13 @@ def _handle_demo_call_status(event: dict) -> dict:
 
 
 def _handle_pilot_enroll(event: dict) -> dict:
-    """Pilot enrollment — validates the request and returns next steps."""
+    """Pilot request: validates it and says where to send it. Stores nothing.
+
+    It used to answer "enrolled" with a fresh pilot id while recording nothing
+    and notifying no one. It now says plainly that the request was not
+    recorded and points to the real route: the site's "Request a shadow pilot"
+    email (tests/test_pilot_request_honesty.py).
+    """
     body, parse_error = _parse_json_body(event)
     if parse_error:
         return parse_error
@@ -797,18 +798,18 @@ def _handle_pilot_enroll(event: dict) -> dict:
     if not contact_email or "@" not in contact_email:
         return _error(400, "Missing or invalid field: 'contact_email'")
 
-    import uuid as _uuid
-    pilot_id = f"pilot-{_uuid.uuid4().hex[:12]}"
-
     return _ok({
-        "pilot_id": pilot_id,
         "org_name": org_name,
-        "status": "enrolled",
+        "status": "not_recorded",
+        "detail": ("This endpoint does not store requests. To request a Tier 0 shadow "
+                   "pilot, email contact@nhid-clinical.org."),
+        "contact": "contact@nhid-clinical.org",
         "next_steps_url": "https://nhid-clinical.org/shadow-evaluation-guide.html",
         "next_steps": [
-            "Read the 90-day shadow evaluation guide",
-            "Run baseline calls through POST /v1/demo/check or a vendor adapter route",
-            "Generate your pilot report with tools/pilot_report_generator.py",
+            "Email contact@nhid-clinical.org with your organization, your role and your "
+            "approximate provider-line call volume",
+            "Read the shadow evaluation guide",
+            "Run the Tier 0 kit on your own de-identified transcripts (nhid pilot)",
         ],
     })
 

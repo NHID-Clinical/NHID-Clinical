@@ -84,6 +84,14 @@ If any of the four is missing, the result is not ready to show.
   accuracy.
 - A volunteer-call result is **tier 4** and must say "scripted, consented
   volunteers using fictional identities — not real healthcare traffic."
+  The scorer for it exists (`nhid audio-robustness --audio-dir`, 2026-11-08):
+  it refuses the whole run if any clip lacks `consent: true`, writes only
+  aggregate figures, and labels every report "scripted consented volunteers,
+  fictional identities". No recording has been made. So tier 4 is still not
+  established.
+- The phone-audio robustness run (`docs/validation/phone-audio-robustness.md`)
+  is **tier 3** once it runs with real engines. It has not: the session that
+  built it could not download a speech-recognition model.
 
 No artifact in this repository currently claims a tier it has not reached. The
 job of this matrix is to keep it that way as new evidence arrives.

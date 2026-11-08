@@ -165,7 +165,7 @@ all four.
 | **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **23 of 32 = 71.9%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
 
-**These are four different denominators.** 2457/2457 is a *test pass rate*, not
+**These are four different denominators.** 2509/2509 is a *test pass rate*, not
 a detection rate. 71.9% is a *detection rate*, not a test pass rate. Neither is
 an accuracy figure for the framework as a whole.
 
@@ -336,7 +336,7 @@ implementer most often needs.
 | **Intent** | Prevent PHI exchange before valid disclosure |
 | **Trigger** | Any turn where `contains_phi == True` |
 | **Pass** | No protected-data exchange, or disclosure established on a **prior** turn |
-| **Fail** | `PDX01_PHI_GATE_TRIGGERED` (no disclosure at all) · `PDX01_DISCLOSURE_NOT_SEQUENCED` (same turn as initial disclosure) · `PDX01_SCOPE_NOT_AUTHORIZED` (outside a verified DLG-01 scope) |
+| **Fail** | `PDX01_PHI_GATE_TRIGGERED` (no disclosure at all) · `PDX01_DISCLOSURE_NOT_SEQUENCED` (same turn as initial disclosure) · `PDX01_SCOPE_NOT_AUTHORIZED` (outside a verified DLG-01 scope) · opt-in record-level access (`require_record_access`): `PDX01_RECORD_NOT_AUTHORIZED` (record not linked, deny) · `PDX01_RECORD_ACCESS_UNRESOLVED` (unresolved, escalate) |
 | **Action** | `DENY_DATA` |
 | **Limitation** | Detection is lexical plus one structural rule; paraphrase outside the phrase map is missed. Sequencing needs `disclosure_established_prior` |
 | **Evidence** | Fabricate 41/41, 0 FP of 127. Governance corpus 6/6 (100%) |
@@ -762,7 +762,7 @@ produce a number that describes nothing.
 
 | Body | Population | Question it answers |
 |---|---|---|
-| **Conformance suite** | 2457 tests | Does the implementation behave as specified? |
+| **Conformance suite** | 2509 tests | Does the implementation behave as specified? |
 | **Fabricate Battle-Test Corpus** | 550 real conversations, 127 compliant | Does it detect violations in real-world phrasing? |
 | **Governance Evaluation Corpus** | 25 scenarios, 55 turns | Does it detect labelled governance conditions? |
 | **Adversarial corpus** | 40 hostile scenarios | Does it survive deliberate evasion? |
@@ -792,9 +792,9 @@ detection rate and not an accuracy figure.
 
 | | |
 |---|---|
-| **Collected** | 2457 |
-| **Executed** | 2457 |
-| **Passed** | 2457 |
+| **Collected** | 2509 |
+| **Executed** | 2509 |
+| **Passed** | 2509 |
 | **Failed / skipped / xfailed / xpassed** | 0 / 0 / 0 / 0 |
 | **Verified** | fresh clone at `e68a65d`, fresh virtualenv, `requirements.txt` only, live API |
 

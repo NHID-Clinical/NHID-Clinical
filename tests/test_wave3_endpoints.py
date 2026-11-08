@@ -39,7 +39,7 @@ class TestPilotEnrollEndpoint:
         }, None)
         assert resp["statusCode"] == 400
 
-    def test_valid_enrollment_returns_pilot_id(self):
+    def test_valid_request_is_answered_honestly(self):
         resp = lambda_handler({
             "httpMethod": "POST",
             "path": "/v1/pilot/enroll",
@@ -51,6 +51,8 @@ class TestPilotEnrollEndpoint:
         }, None)
         assert resp["statusCode"] == 200
         body = json.loads(resp["body"])
-        assert body["pilot_id"].startswith("pilot-")
-        assert body["status"] == "enrolled"
+        # Nothing is stored, so no record id is issued and nothing claims an
+        # enrolment (tests/test_pilot_request_honesty.py).
+        assert "pilot_id" not in body
+        assert body["status"] == "not_recorded"
         assert "next_steps_url" in body

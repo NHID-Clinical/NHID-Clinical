@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2457** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2509** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2457 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2509 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2457 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2509 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2457 passing tests · machine-readable traces · open implementation
+> 5 controls · 2509 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2457%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2509%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,158 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.34 Consented recordings can be scored; real speech is still not measured — 2026-11-08
+
+The 1 November review graded accuracy C+, because every figure is measured on
+text. The maintainer asked for two things: run the tier-3 phone-audio
+measurement with real engines, and add a path for consented recordings.
+
+**Decisions.**
+- **The real run did not happen.**
+  - `espeak-ng` and `faster-whisper` installed.
+  - The Whisper weights did not download. The environment's network policy
+    refuses Hugging Face's file CDN, and every other model host tried was
+    refused too.
+  - The maintainer approved allowing the two hosts, but the environment
+    change could not be made from the session.
+  - The results row stays "Not yet measured". No figure is estimated.
+- **Tier 4 has a scorer.** `nhid audio-robustness --audio-dir DIR` scores
+  WAV clips of voice-stress turns, acted by consenting volunteers, with the
+  same transcriber, adapter and confusion matrix.
+  - **Refusals, before anything is written:** a clip without
+    `consent: true`; a clip outside the folder; a clip naming an unknown turn.
+  - **What is scored:** a scenario counts only when every spoken turn has a
+    clip.
+  - **What comes out:** aggregates only, with no audio and no transcripts.
+    The output is labelled "evidence tier 4: scripted consented volunteers,
+    fictional identities".
+  - **Test:** with the identity transcriber, it reproduces the authored-text
+    figures exactly (`tests/test_recorded_audio.py`).
+- **Evidence tier unchanged.** No recording exists. Tiers 1–3 only; the
+  provenance matrix says so.
+- **Guard.** A surfaces fact (`phone-audio-status`).
+
+### 19.33 ACC-01 runs, opt-in, inside PDX-01 — 2026-11-08
+
+The 1 November review graded record-level access as a proposal with fixtures
+and nothing that ran. A caller-agent with a valid delegation and an in-scope
+field request could still ask about a record nothing ties to its provider.
+
+**Decisions.**
+- **Where it runs.** Inside PDX-01, after field scope has passed, and only
+  when `DelegationContext.require_record_access` is set (default off). It is
+  not a control of its own; the control set stays at five and
+  `check_control_set.py` still passes. The maintainer chose this placement.
+- **The payer-side check.** `src/record_access.py`: `evaluate_access` over a
+  `PayerRecords` protocol, with the relationship policy as data
+  (`DEFAULT_POLICY`). The engine does no I/O; the result arrives as
+  `session["access_authorization"]`, as VER-01's does.
+- **Where the NPI comes from.** Only the verified `DelegationResult`. The
+  trace schema has no NPI field (and allows no extra fields), so the NPI
+  cannot travel in the trace, and nothing said on the call is consulted.
+- **Outcomes, from the existing ladder.** `exception` denies
+  (`PDX01_RECORD_NOT_AUTHORIZED`). `unknown`, `not_assessable`, no result, or
+  a pass for an operation that does not cover the requested fields escalates
+  (`PDX01_RECORD_ACCESS_UNRESOLVED`). Unknown never passes.
+- **Measured.** 20/20 fixture results reproduced, on the fixtures' own
+  denominator, never pooled. That is agreement with hand-authored
+  expectations, not a detection rate, and no payer runs it.
+- **The fixture generator changed.** It used to mark checks that were never
+  evaluated as `pass`. They are now `not_assessable` (008, 017: the binding
+  failed first) or `unknown` (007: the record system was down). No result,
+  reason or outcome changed.
+- **Still open.** `intent_hmac` in `src/call_verification.py` still binds
+  the member/claim pair, not the typed binding (proposal §8, item 1).
+- **Unchanged.** Pinned baselines, corpus figures and published counts. With
+  the flag off, the engine's behavior is the same.
+- **Guard.** A surfaces fact (`acc01-inside-pdx01`).
+
+### 19.32 One way for a buyer to ask, and an endpoint that stopped pretending — 2026-11-08
+
+The 1 November launch-readiness review graded the website B+: it had no
+buyer-facing call to action beyond the starter pack. The nav button read
+"Start a shadow evaluation" and led to the guide, which no one can act on
+without writing in.
+
+**Decisions.**
+- **The action.** Every published page now offers **Request a shadow pilot**:
+  - in the header and the mobile menu, through the chrome generator
+    (`scripts/ia/build_site_chrome.py`);
+  - in the home page's closing band;
+  - at both ends of the shadow-evaluation guide.
+- **How it works.** It is a prefilled email to contact@nhid-clinical.org
+  (organization, role, call volume, the AI agents calling today). There is no
+  form, so we store nothing. That was the maintainer's choice.
+- **Wording.** Research stage only: "a Tier 0 shadow pilot is available".
+  "Nothing leaves your machine" waits for Pilot-ready.
+- **The endpoint.** `POST /v1/pilot/enroll` used to answer
+  `"status": "enrolled"` with a fresh pilot id while storing nothing and
+  notifying no one. It now answers `"status": "not_recorded"`, issues no id,
+  and points to the email (`tests/test_pilot_request_honesty.py`). The
+  OpenAPI entry says the same.
+- **Guard.** A surfaces fact (`pilot-cta`) requires the button on the nine
+  listed pages.
+
+### 19.31 The production-readiness decisions are written down — 2026-11-05
+
+The maintainer asked for the production-readiness decisions under #457
+(#458–#464) to be written up. `docs/production-readiness.md` records seven
+decisions, each with what exists today, the options, a recommended direction,
+the evidence that would close it, and what may be said at the Research stage.
+The seven are:
+- key custody;
+- trust anchors and revocation across organizations;
+- an OAuth token-exchange profile;
+- STIR/SHAKEN and Rich Call Data;
+- the HIPAA verification mapping;
+- a shared challenge store;
+- the NIST NCCoE project.
+
+**Decisions.**
+- **No item is closed, and nothing is called production or enterprise
+  ready.** A surfaces fact enforces it on the NHID-Auth page and the
+  reference-agent doc.
+- **Every external standard is cited by an identifier checked on
+  2026-11-05:**
+  - RFC 8693;
+  - `draft-ietf-oauth-identity-chaining` (-11, May 2026; still a draft);
+  - W3C Bitstring Status List v1.0 (Recommendation, 15 May 2025);
+  - RFC 9795 (Rich Call Data);
+  - AWS KMS `ECC_NIST_EDWARDS25519`;
+  - 45 CFR 164.514(h);
+  - the NCCoE concept paper of 5 February 2026.
+- **The HIPAA section is a mapping for counsel review, not a compliance
+  claim.** That review is the step to Pilot-ready.
+- **The README no longer says "no adapter or SIP path carries a passport
+  today".** That stopped being true with §19.28. It now says the reference
+  agent presents one over HTTPS and no SIP path carries one.
+
+### 19.30 One place orients a calling agent — 2026-11-05
+
+This is the follow-up to §19.26 (#465). The pre-utterance gate
+(`functions.handler.gate_turn`) and the ElevenLabs post-call handler each
+oriented the caller-agent's turns for the engine themselves. Each put the
+agent's words in the slots PDX-01 and DBC-01 read, and each told PDX-01
+whether disclosure had come earlier. The post-call handler also kept its own
+turn loop.
+
+**Decisions.**
+- `src/call_replay.py` gains `orient_calling_agent`, the one copy of the
+  orientation, and `replay_transcript`, the post-call loop. That loop
+  converts each turn through the call-progress adapter, carries the
+  disclosure forward and orients the agent's turns. Both callers use them.
+  The handler keeps authentication, parsing, storage and the vendor's grades.
+- **No behaviour change, and how that was checked.** Every stored post-call
+  turn and every gate decision across the post-call, gate, Ida and replay test
+  files was recorded before and after the change: 51 stored turns and 37 gate
+  decisions. The two records were identical once timestamps and random ids
+  were removed.
+- `adapters/call_progress_adapter.py` joins the offline guard
+  (`scripts/check_offline_kit.py`), because `call_replay` now imports it. It
+  is standard library only.
+- `synthetic_eval_loop.evaluate_conversation` is unchanged, because it feeds
+  the pinned Fabricate baseline.
 
 ### 19.29 The live ElevenLabs runner had Ida answering the call — 2026-11-05
 

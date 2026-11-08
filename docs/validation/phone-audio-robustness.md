@@ -1,6 +1,6 @@
 # Phone-audio robustness: what a phone line and a transcriber do to detection
 
-**Status:** research measurement, tooling built, **not yet measured with real speech engines** ·
+**Status:** research measurement, tooling built (synthetic speech and consented recordings), **not yet measured with real speech engines** ·
 **Added:** 2026-11-05 · CC BY 4.0
 
 Every detection figure the project publishes is measured on text. The Fabricate CSV-550
@@ -90,3 +90,45 @@ reports are marked **plumbing check only**, and their figures are never quoted.
 
 Add a row only from a `results.json` produced by a real-engine run. Give the date and
 commit, and attach the report.
+
+**Why this row is still empty (2026-11-08).** A run was attempted with `espeak-ng` and
+`faster-whisper` installed. The Whisper model weights could not be downloaded: the
+build environment's network policy refuses Hugging Face's file CDN, and every other
+model host tried was refused too. No figures were produced, and none are estimated.
+Anyone with network access can run the command above; the row is filled from its
+`results.json`.
+
+## Consented recordings (tier 4): `--audio-dir`
+
+The same scorer takes real recordings instead of synthetic speech:
+
+```
+nhid audio-robustness --audio-dir path/to/recordings --asr faster-whisper --out results/
+```
+
+- **What goes in.** The folder holds one WAV clip per spoken turn of a voice-stress
+  scenario, acted by consenting adult volunteers with fictional identities over a real
+  phone line ([`volunteer-call-protocol.md`](volunteer-call-protocol.md)), and a
+  `manifest.json`:
+
+  ```json
+  {"recordings": [{"scenario_id": "NHID-VSTRESS-00001", "turn_index": 0,
+                   "file": "vol_NHID-VSTRESS-00001_0.wav", "consent": true}]}
+  ```
+
+- **Refusals.** The run is refused, before anything is transcribed or written, if:
+  - any clip lacks `consent: true`;
+  - any clip points outside the folder;
+  - any clip names a turn the corpus does not have.
+- **What is scored.** A scenario counts only when every spoken turn has a clip; the
+  others are listed as incomplete.
+- **What is not done.** Clips are not passed through the simulated channel, because
+  they already crossed a real one.
+- **What comes out.** `report.md` and `results.json` hold aggregate figures only, with
+  no audio and no transcripts. They are labelled "evidence tier 4: scripted consented
+  volunteers, fictional identities".
+- **Status: not measured.** No recordings exist. Store any that are made outside this
+  repository, as the protocol requires.
+
+Tests: [`tests/test_recorded_audio.py`](../../tests/test_recorded_audio.py). With the
+identity transcriber, the scorer reproduces the authored-text figures exactly.

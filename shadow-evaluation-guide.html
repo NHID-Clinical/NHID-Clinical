@@ -145,7 +145,7 @@
       <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
-      <a class="primary-pill" href="/shadow-evaluation-guide.html">Start a shadow evaluation</a>
+      <a class="primary-pill" href="mailto:contact@nhid-clinical.org?subject=Shadow%20pilot%20request&amp;body=Organization%3A%0AYour%20role%3A%0ARoughly%20how%20many%20provider-line%20calls%20a%20month%3A%0AAI%20agents%20calling%20you%20today%2C%20if%20you%20know%3A%0A%0A%28A%20Tier%200%20shadow%20pilot%20is%20available.%20We%20will%20reply%20with%20the%20kit%20and%20the%20terms.%29">Request a shadow pilot</a>
       <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
@@ -179,6 +179,7 @@
   <a href="/specs/">Downloads</a>
   <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
   <div class="mobile-nav-footer">
+    <a class="primary-pill mobile-cta" href="mailto:contact@nhid-clinical.org?subject=Shadow%20pilot%20request&amp;body=Organization%3A%0AYour%20role%3A%0ARoughly%20how%20many%20provider-line%20calls%20a%20month%3A%0AAI%20agents%20calling%20you%20today%2C%20if%20you%20know%3A%0A%0A%28A%20Tier%200%20shadow%20pilot%20is%20available.%20We%20will%20reply%20with%20the%20kit%20and%20the%20terms.%29">Request a shadow pilot</a>
     <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
       <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -204,7 +205,7 @@
           <li><b>Output</b><span>A written behavioral baseline</span></li>
         </ul>
         <div class="hero-actions reveal">
-          <a class="action-button action-button-primary" href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation">Email us about a shadow evaluation &rarr;</a>
+          <a class="action-button action-button-primary" href="mailto:contact@nhid-clinical.org?subject=Shadow%20pilot%20request&amp;body=Organization%3A%0AYour%20role%3A%0ARoughly%20how%20many%20provider-line%20calls%20a%20month%3A%0AAI%20agents%20calling%20you%20today%2C%20if%20you%20know%3A%0A%0A%28A%20Tier%200%20shadow%20pilot%20is%20available.%20We%20will%20reply%20with%20the%20kit%20and%20the%20terms.%29">Request a shadow pilot &rarr;</a>
           <a class="action-button action-button-secondary" href="/specs/NHID-Clinical-Shadow-Evaluation-Guide.pdf" download>Download the guide (PDF)</a>
         </div>
       </div>
@@ -414,7 +415,7 @@
         <p><strong>Evidence basis:</strong> <code>fixtures/fabricate/shadow_pilot.jsonl</code> — 60 conversations, 301 turns, replayed through <code>src/nhid_policy_engine_v1.py :: evaluate_all</code></p>
         <p><strong>Classification:</strong> <span class="maturity-research">Research</span> Reference corpus results, not operational performance. This is a committed synthetic corpus, not production call data, and it says nothing about how any deployment would behave.</p>
         <p><strong>Known limitation:</strong> DBC-01 evaluates the agent's own identity assertion text: claims of human status or licensed-professional standing. Its former artifact tier, which read a deceptive_artifact_flags field the agent supplied about itself, is withdrawn. This count is therefore what the transcript says, not a measurement of how much deception the corpus contains.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>040fa82</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> · <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) · commit <code>d99c0bf</code></p>
       </aside>
       <!-- END GENERATED shadow-outcomes -->
         </div>
@@ -484,7 +485,7 @@
         <p><strong>Censoring:</strong> 23 of 550 conversations record no disclosure interval; 21 of those 23 also carry an IDG-01 violation, and none is labelled PASS. They are treated as right-censored above every observed value, so percentiles are taken over all 550 conversations and are identifiable only up to p95.8. Anything beyond that is reported as a lower bound, not as a value.</p>
         <p><strong>Percentile convention:</strong> nearest-rank, rank = ceil(p/100 × N), no interpolation</p>
         <p><strong>How to read the split:</strong> expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval.</p>
-        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>040fa82</code></p>
+        <p><strong>Generator:</strong> <code>scripts/build_evidence_visuals.py</code> &middot; <strong>Verification:</strong> <code>python scripts/build_evidence_visuals.py --check</code> (runs in CI) &middot; commit <code>d99c0bf</code></p>
       </aside>
       <!-- END GENERATED latency-distribution -->
         </div>
@@ -772,7 +773,7 @@ python -m pytest tests/ -v</pre>
           <h2 id="close-h">Questions? Reach out directly.</h2>
           <p>Whether you have a process question, a concern about the controls, or you want to share what you're seeing in your own call traffic — feedback from payer operations teams is what shapes this work.</p>
         </div>
-        <a class="closing-button" href="mailto:contact@nhid-clinical.org?subject=Shadow%20Evaluation">Email us about a shadow evaluation &rarr;</a>
+        <a class="closing-button" href="mailto:contact@nhid-clinical.org?subject=Shadow%20pilot%20request&amp;body=Organization%3A%0AYour%20role%3A%0ARoughly%20how%20many%20provider-line%20calls%20a%20month%3A%0AAI%20agents%20calling%20you%20today%2C%20if%20you%20know%3A%0A%0A%28A%20Tier%200%20shadow%20pilot%20is%20available.%20We%20will%20reply%20with%20the%20kit%20and%20the%20terms.%29">Request a shadow pilot &rarr;</a>
       </div>
       <div class="page-cta">
         <h3>Where to go next</h3>

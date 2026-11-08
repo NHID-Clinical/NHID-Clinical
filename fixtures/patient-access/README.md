@@ -4,10 +4,12 @@ Hand-authored scenarios for the candidate proposal in
 [`../../docs/proposals/patient-access-authorization.md`](../../docs/proposals/patient-access-authorization.md):
 the patient- and record-level access check (candidate ACC-01).
 
-**Status:** CANDIDATE / draft · **Added:** 2026-11-01 · **Measurement:** not yet measured
+**Status:** prototype, opt-in, inside PDX-01 · **Added:** 2026-11-01 · **Measured:** 20/20 expected results reproduced (2026-11-08)
 
-> **Expected results only.** Nothing evaluates ACC-01 yet: not the v1.3 engine and not
-> the VER-01 prototype. No scenario here has been run, and **no detection percentage is
+> **What is measured.** `src/record_access.py` reproduces the expected
+> `access_authorization` result of all 20 scenarios (`tests/test_record_access.py`). That
+> is a check that the prototype matches hand-authored expectations. It is not a detection
+> rate, it was not run against any payer's records, and **no detection percentage is
 > published or implied**.
 >
 > **Own denominator.** This set is separate from, and never pooled with, the v1 or v2

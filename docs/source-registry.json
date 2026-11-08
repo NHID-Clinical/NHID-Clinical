@@ -214,6 +214,11 @@
       "authority": "informative"
     },
     {
+      "file": "production-readiness.md",
+      "status": "current",
+      "authority": "informative"
+    },
+    {
       "file": "project-state.md",
       "status": "current",
       "authority": "record"

@@ -103,8 +103,65 @@
         "docs/reference-agent.md": ["Demonstration keys only", "SIP"]
       },
       "must_not_contain": {
-        "framework/nhid-auth.html": ["NOT BUILT: NO ADAPTER OR SIP PATH", "no adapter or SIP path carries a passport today"]
+        "framework/nhid-auth.html": ["NOT BUILT: NO ADAPTER OR SIP PATH", "no adapter or SIP path carries a passport today"],
+        "README.md": ["no adapter or SIP path carries a passport today"]
       }
+    },
+    {
+      "id": "production-readiness",
+      "fact": "The open decisions between NHID-Auth v2 and production use are recorded in docs/production-readiness.md; none is closed, and nothing is called production ready.",
+      "must_contain": {
+        "docs/production-readiness.md": ["Research", "for counsel review", "Open"],
+        "framework/nhid-auth.html": ["production-readiness.md"],
+        "docs/reference-agent.md": ["production-readiness.md"],
+        "README.md": ["docs/production-readiness.md"]
+      },
+      "must_not_contain": {
+        "framework/nhid-auth.html": ["production ready", "production-ready", "enterprise ready"],
+        "docs/reference-agent.md": ["production ready", "production-ready", "enterprise ready"]
+      }
+    },
+    {
+      "id": "pilot-cta",
+      "fact": "Every published page offers one way for a buyer to ask: a 'Request a shadow pilot' email to contact@nhid-clinical.org, prefilled, with nothing stored by us. /v1/pilot/enroll says plainly that it stores nothing.",
+      "must_contain": {
+        "index.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "shadow-evaluation-guide.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "evidence-pack.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "faq.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "about.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "developers.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "specification.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "regulatory-alignment.html": ["Request a shadow pilot", "Shadow%20pilot%20request"],
+        "framework/nhid-auth.html": ["Request a shadow pilot", "Shadow%20pilot%20request"]
+      },
+      "must_not_contain": {
+        "shadow-evaluation-guide.html": ["Email us about a shadow evaluation"]
+      }
+    },
+    {
+      "id": "acc01-inside-pdx01",
+      "fact": "ACC-01 record-level access is a prototype check inside PDX-01, off unless DelegationContext.require_record_access is set. It is not a control of its own. It reproduces its 20 hand-authored fixtures (own denominator); no payer runs it.",
+      "must_contain": {
+        "specification.html": ["Record-level access (ACC-01) is an option inside PDX-01", "require_record_access", "PDX01_RECORD_NOT_AUTHORIZED"],
+        "developers.html": ["require_record_access=True", "inside PDX-01 (ACC-01, a prototype)"],
+        "docs/proposals/patient-access-authorization.md": ["prototype, opt-in, inside PDX-01", "20/20"],
+        "fixtures/patient-access/README.md": ["20/20 expected results reproduced", "no detection percentage is"]
+      },
+      "must_not_contain": {
+        "specification.html": ["sixth control"],
+        "developers.html": ["sixth control"],
+        "fixtures/patient-access/README.md": ["Nothing evaluates ACC-01 yet"]
+      }
+    },
+    {
+      "id": "phone-audio-status",
+      "fact": "Phone-audio robustness is tooled for synthetic speech (tier 3) and consented volunteer recordings (tier 4, --audio-dir, refused without consent: true), and neither is measured yet. No figure is published.",
+      "must_contain": {
+        "docs/validation/phone-audio-robustness.md": ["not yet measured with real speech engines", "**Not yet measured**", "consent: true", "evidence tier 4"],
+        "docs/validation/evidence-provenance-matrix.md": ["--audio-dir", "tier 4 is still not\n  established"]
+      },
+      "must_not_contain": {}
     }
   ],
   "generated": [
