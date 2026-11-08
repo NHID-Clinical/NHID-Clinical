@@ -398,6 +398,115 @@ def run(*, tts: Synthesizer, asr: Transcriber, out_dir: Path,
     return results
 
 
+RECORDED_SOURCE = "scripted consented volunteers, fictional identities"
+
+
+class _Recorded:
+    """Stands in for a synthesizer in the report: the speech was a person's."""
+    name = "consented recording"
+
+
+def _load_manifest(audio_dir: Path, known: Dict[tuple, dict]) -> Dict[tuple, Path]:
+    """Read and check `manifest.json`. Raises ValueError, before anything is
+    transcribed or written, if any clip lacks consent, lies outside the folder
+    or names a turn the corpus does not have."""
+    root = audio_dir.resolve()
+    manifest_path = root / "manifest.json"
+    if not manifest_path.is_file():
+        raise ValueError(f"no manifest.json in {audio_dir}")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    entries = manifest.get("recordings") if isinstance(manifest, dict) else None
+    if not isinstance(entries, list) or not entries:
+        raise ValueError("manifest.json has no recordings")
+    clips: Dict[tuple, Path] = {}
+    for i, e in enumerate(entries):
+        if not isinstance(e, dict) or e.get("consent") is not True:
+            raise ValueError(f"recording {i} does not carry consent: true; refusing the whole run "
+                             "(docs/validation/volunteer-call-protocol.md)")
+        path = (root / str(e.get("file", ""))).resolve()
+        if not path.is_relative_to(root) or path == root:
+            raise ValueError(f"recording {i} points outside {audio_dir}")
+        if not path.is_file():
+            raise ValueError(f"recording {i}: {e.get('file')} does not exist")
+        key = (str(e.get("scenario_id")), int(e.get("turn_index", -1)))
+        if key not in known:
+            raise ValueError(f"recording {i}: turn {key[1]} of {key[0]} is not in the corpus")
+        clips[key] = path
+    return clips
+
+
+def run_recordings(*, audio_dir: Path, asr: Transcriber, out_dir: Path,
+                   scenarios_csv: Path = VOICE_STRESS / "scenarios.csv",
+                   turns_csv: Path = VOICE_STRESS / "turns.csv") -> dict:
+    """Tier 4: score consented volunteer recordings of voice-stress scenarios.
+
+    Each clip is one spoken turn, recorded over a real phone line by adult
+    volunteers using fictional identities (volunteer-call-protocol.md).
+    `manifest.json` maps clips to corpus turns (`scenario_id`, `turn_index`,
+    `file`, `consent`). The clips are not passed through the simulated phone
+    channel: they already crossed a real one. A scenario is scored only when
+    every spoken turn has a clip. Only aggregate figures are written: no audio
+    and no transcripts leave the run.
+    """
+    from adapters.fabricate_adapter import (
+        _voice_stress_row_to_legacy,
+        fabricate_conversation_to_eval_shape,
+        load_voice_stress_turns,
+    )
+    from scripts.confusion_matrix import compute
+
+    rows = {r["id"]: r for r in load_scenarios(scenarios_csv)}
+    turns_by = load_voice_stress_turns(str(turns_csv))
+    known = {(sid, int(t.get("turn_index", i))): t
+             for sid, ts in turns_by.items() for i, t in enumerate(ts)}
+    clips = _load_manifest(Path(audio_dir), known)
+
+    clean, heard, incomplete = [], [], []
+    errors = length = stage = distinct = 0
+    for sid in sorted({k[0] for k in clips}):
+        raw = turns_by.get(sid, [])
+        spoken_turns = [(int(t.get("turn_index", i)), t) for i, t in enumerate(raw)]
+        if any(speakable(t.get("text", "")) and (sid, idx) not in clips for idx, t in spoken_turns):
+            incomplete.append(sid)
+            continue
+        transcribed = []
+        for idx, t in spoken_turns:
+            spoken = speakable(t.get("text", ""))
+            text = asr.transcribe(clips[(sid, idx)], spoken) if spoken else ""
+            e, n = word_errors(spoken, text)
+            errors, length, distinct = errors + e, length + n, distinct + (1 if spoken else 0)
+            stage += spoken != (t.get("text") or "").strip()
+            transcribed.append({**t, "text": text})
+        legacy = _voice_stress_row_to_legacy(rows[sid])
+        clean.append(fabricate_conversation_to_eval_shape(legacy, raw))
+        heard.append(fabricate_conversation_to_eval_shape(legacy, transcribed))
+
+    results = {
+        "kind": "phone-audio robustness, consented recordings (research measurement, not a headline rate)",
+        "source": RECORDED_SOURCE,
+        "evidence_tier": 4,
+        "corpus": "voice-stress, scenarios acted from the script",
+        "scenarios": len(clean),
+        "incomplete_scenarios": incomplete,
+        "distinct_turn_texts": distinct,
+        "tts": _Recorded.name,
+        "asr": asr.name,
+        "versions": _versions(_Recorded(), asr),
+        "channel": "a real phone line, as recorded (no simulated channel applied)",
+        "seed": 0,
+        "word_error_rate": (errors / length) if length else None,
+        "turns_with_stage_directions": stage,
+        "measured_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "authored_text": compute(clean),
+        "phone_transcript": compute(heard),
+        "plumbing_only": asr.name in ("stub", "identity"),
+    }
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "results.json").write_text(json.dumps(results, indent=2) + "\n", encoding="utf-8")
+    (out_dir / "report.md").write_text(render_report(results), encoding="utf-8")
+    return results
+
+
 def _versions(tts: Synthesizer, asr: Transcriber) -> Dict[str, str]:
     """What produced the figures, so a result can be reproduced or compared."""
     import platform
@@ -434,6 +543,10 @@ def render_report(results: dict) -> str:
         "synthetic voices are not real callers, and one transcriber is not every payer's.",
         "",
     ]
+    if results.get("source"):
+        lines += [f"> **Evidence tier {results['evidence_tier']}: {results['source']}.** "
+                  "Not deployment or healthcare-use evidence. Scenarios not fully recorded "
+                  f"and therefore not scored: {len(results.get('incomplete_scenarios', []))}.", ""]
     if results["plumbing_only"]:
         lines += ["> **Plumbing check only.** A stub or identity backend was used, so these "
                   "figures say nothing about real speech. Do not quote them.", ""]

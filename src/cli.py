@@ -59,6 +59,18 @@ def _cmd_audio_robustness(args: argparse.Namespace) -> int:
 
     from src import phone_audio
 
+    if args.audio_dir:
+        try:
+            asr = phone_audio.make_transcriber(args.asr, error_rate=args.stub_error_rate,
+                                               seed=args.seed, whisper_model=args.whisper_model)
+            results = phone_audio.run_recordings(audio_dir=Path(args.audio_dir), asr=asr,
+                                                 out_dir=Path(args.out))
+        except (RuntimeError, ValueError) as exc:
+            print(f"nhid audio-robustness: {exc}", file=sys.stderr)
+            return 2
+        print(phone_audio.render_report(results))
+        print(f"Written to {args.out}/ (report.md, results.json)")
+        return 0
     try:
         tts = phone_audio.make_synthesizer(args.tts, args.piper_model)
         asr = phone_audio.make_transcriber(args.asr, error_rate=args.stub_error_rate,
@@ -365,6 +377,10 @@ def build_parser() -> argparse.ArgumentParser:
     audio.add_argument("--stub-error-rate", type=float, default=0.1,
                        help="word error rate for --asr stub (plumbing checks only)")
     audio.add_argument("--out", default="phone-audio-results")
+    audio.add_argument("--audio-dir", default="",
+                       help="score consented volunteer recordings instead of synthesizing: a "
+                            "folder of WAV clips with manifest.json (every clip needs "
+                            "consent: true; see docs/validation/volunteer-call-protocol.md)")
     audio.set_defaults(func=_cmd_audio_robustness)
 
     return parser

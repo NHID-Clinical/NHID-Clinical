@@ -153,6 +153,15 @@
         "developers.html": ["sixth control"],
         "fixtures/patient-access/README.md": ["Nothing evaluates ACC-01 yet"]
       }
+    },
+    {
+      "id": "phone-audio-status",
+      "fact": "Phone-audio robustness is tooled for synthetic speech (tier 3) and consented volunteer recordings (tier 4, --audio-dir, refused without consent: true), and neither is measured yet. No figure is published.",
+      "must_contain": {
+        "docs/validation/phone-audio-robustness.md": ["not yet measured with real speech engines", "**Not yet measured**", "consent: true", "evidence tier 4"],
+        "docs/validation/evidence-provenance-matrix.md": ["--audio-dir", "tier 4 is still not\n  established"]
+      },
+      "must_not_contain": {}
     }
   ],
   "generated": [

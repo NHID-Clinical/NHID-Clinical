@@ -31,7 +31,7 @@
 | **Trigger** | Any turn where `contains_phi == True` |
 | **What it Checks** | If protected data is requested or supplied in this turn, did disclosure occur on an *earlier* turn? |
 | **Pass Condition** | No protected-data exchange, OR disclosure was established on a prior turn |
-| **Fail Condition** | `PDX01_PHI_GATE_TRIGGERED` (exchange with no disclosure at all, including a disclosure interrupted before it was heard) · `PDX01_DISCLOSURE_NOT_SEQUENCED` (exchange in the same turn as the initial disclosure) · `PDX01_SCOPE_NOT_AUTHORIZED` (request outside a verified DLG-01 delegation scope) |
+| **Fail Condition** | `PDX01_PHI_GATE_TRIGGERED` (exchange with no disclosure at all, including a disclosure interrupted before it was heard) · `PDX01_DISCLOSURE_NOT_SEQUENCED` (exchange in the same turn as the initial disclosure) · `PDX01_SCOPE_NOT_AUTHORIZED` (request outside a verified DLG-01 delegation scope) · opt-in ACC-01 (`require_record_access`): `PDX01_RECORD_NOT_AUTHORIZED` (the payer's records do not link the record to the delegating provider, DENY_DATA) · `PDX01_RECORD_ACCESS_UNRESOLVED` (record access unknown or not established, ESCALATE_HUMAN) |
 | **Decision/Evidence** | Comparison of `healthcare_governance.disclosure_timestamp` vs. current turn; matched against corpus `contains_phi` field |
 | **Limitation** | Detection is lexical plus one structural rule (a subject word followed by a digit-bearing token), so a paraphrase outside the phrase map is missed. Sequencing needs a harness that sets `disclosure_established_prior`; absent it, same-turn exchange is not flagged. |
 | **Test Coverage** | `tests/test_engine_disclosure_hardening.py`, `tests/test_adversarial_hardening.py`, `tests/test_idg01_interrupted_disclosure.py`; also asserted across the vendor-adapter and API suites |
@@ -178,7 +178,7 @@ In Tier 0 shadow pilot, **all actions are observed but not enforced**:
 | ATR-01 | `test_atr01_audit_trail.py` (12), `test_atr01_persistence.py` (5) | **not measured by transcript replay** — the harness synthesizes the audit envelope, so detecting its absence would be tautological. Covered by the CTS envelope tests only. | `adapters/fabricate_adapter.py` notes 2–3 |
 | DLG-01 | `test_dlg01_delegated_authority.py` (48 functions / 51 collected), `test_identity.py` (43 / 44), `test_trust_anchor.py` (18 / 31), `test_call_bind_experiment.py` (10 / 34) | **not corpus-measured** — opt-in cryptographic authorization, exercised by unit tests including expiry, bad signatures, unknown NPI, revocation, scope narrowing, empty-scope narrowing, per-hop call binding and proof of possession; plus a 14-case receiver-side matrix in `experiments/call_bind/`. Counts are given as *functions / collected* because parametrization makes them differ and a bare number invites the wrong reading | `pytest tests/test_dlg01_delegated_authority.py` |
 
-Suite totals: **2463 passing, 0 skipped, 0 xfailed** across 78 test files.
+Suite totals: **2509 passing, 0 skipped, 0 xfailed** across 78 test files.
 
 **Two corpora produce the figures above, and they are not interchangeable:**
 
@@ -211,4 +211,4 @@ have dedicated regression files (`test_engine_disclosure_hardening.py`,
 
 ---
 
-**Status**: Tier 0 Ready (2463 passing, 0 skipped, 0 xfailed; audit trail operational)
+**Status**: Tier 0 Ready (2509 passing, 0 skipped, 0 xfailed; audit trail operational)

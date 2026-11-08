@@ -42,6 +42,8 @@
         "PDX01_GATE_CLEARED",
         "PDX01_NO_PHI_REQUESTED",
         "PDX01_PHI_GATE_TRIGGERED",
+        "PDX01_RECORD_ACCESS_UNRESOLVED",
+        "PDX01_RECORD_NOT_AUTHORIZED",
         "PDX01_SCOPE_NOT_AUTHORIZED"
       ]
     },
@@ -657,5 +659,5 @@
       ]
     }
   ],
-  "source_commit": "beba7fd"
+  "source_commit": "d99c0bf"
 }
