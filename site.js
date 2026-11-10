@@ -12,9 +12,12 @@
     });
   }
 
-  function applyTheme(theme) {
+  /* `remember` is true only for the reader's own click. Applying the theme on
+     load must not write it down: that would pin a reader who is following
+     their device to whatever it happened to be on their first visit. */
+  function applyTheme(theme, remember) {
     document.documentElement.setAttribute('data-theme', theme);
-    try { localStorage.setItem('nhid-theme', theme); } catch (e) {}
+    if (remember) { try { localStorage.setItem('nhid-theme', theme); } catch (e) {} }
     document.querySelectorAll('.mobile-theme-label').forEach(function (el) {
       el.textContent = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
     });
@@ -27,9 +30,21 @@
   document.querySelectorAll('.theme-toggle').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var current = document.documentElement.getAttribute('data-theme') || 'light';
-      applyTheme(current === 'dark' ? 'light' : 'dark');
+      applyTheme(current === 'dark' ? 'light' : 'dark', true);
     });
   });
+
+  /* Follow the device while the reader has not chosen (see the inline script
+     in each page's head, which makes the same decision before first paint). */
+  if (window.matchMedia) {
+    var scheme = window.matchMedia('(prefers-color-scheme: dark)');
+    var follow = function (e) {
+      var stored = null;
+      try { stored = localStorage.getItem('nhid-theme'); } catch (err) {}
+      if (stored !== 'light' && stored !== 'dark') applyTheme(e.matches ? 'dark' : 'light');
+    };
+    if (scheme.addEventListener) scheme.addEventListener('change', follow);
+  }
 
   /* ── Mobile navigation drawer ─────────────────────────────────────────── */
   var mobileNav   = document.getElementById('mobile-nav');
@@ -520,6 +535,52 @@ window.NHIDDemoStatus = (function () {
   }
   if (document.readyState !== 'loading') run();
   else document.addEventListener('DOMContentLoaded', run);
+})();
+
+/* ── Hero transcript: the call arrives turn by turn ─────────────────────────
+   The transcript is complete in the HTML and visible without this. On first
+   view, each turn arrives in the order it was spoken and its control chips
+   settle after it, one control at a time — the order the engine judged them
+   in. That sequence is the point of the figure, so it is the one place on the
+   page where motion carries information rather than decoration.
+
+   Web Animations API, no library: one sequence does not justify shipping an
+   animation engine to a static page. Nothing is hidden first and nothing
+   waits on the animation — `fill: 'backwards'` holds the starting frame only
+   for an element's own delay, then the element is simply itself again. */
+(function () {
+  var figure = document.querySelector('.hero-transcript');
+  if (!figure || !figure.animate || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var EASE = 'cubic-bezier(0.16, 1, 0.3, 1)'; /* ease-out-expo */
+  function play() {
+    var t = 120;
+    figure.querySelectorAll('.ht-turn').forEach(function (turn) {
+      turn.animate(
+        [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }],
+        { duration: 420, delay: t, easing: EASE, fill: 'backwards' }
+      );
+      t += 260;
+      turn.querySelectorAll('.ht-chips > li').forEach(function (chip) {
+        chip.animate(
+          [{ opacity: 0, transform: 'scale(0.94)' }, { opacity: getComputedStyle(chip).opacity, transform: 'none' }],
+          { duration: 260, delay: t, easing: EASE, fill: 'backwards' }
+        );
+        t += 70;
+      });
+      t += 180;
+    });
+    var audit = figure.querySelector('.ht-audit');
+    if (audit) {
+      audit.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: t, easing: EASE, fill: 'backwards' });
+    }
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); play(); }
+  }, { threshold: 0.25 });
+  io.observe(figure);
 })();
 
 /* ── Trust Gateway stepper ────────────────────────────────────────────────
