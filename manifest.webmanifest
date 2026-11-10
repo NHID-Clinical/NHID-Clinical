@@ -1,0 +1,27 @@
+{
+  "name": "NHID-Clinical",
+  "short_name": "NHID-Clinical",
+  "description": "An open, testable control and evidence layer for provider-to-payer AI calls.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0b1725",
+  "theme_color": "#0b1725",
+  "icons": [
+    {
+      "src": "/assets/brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/brand/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

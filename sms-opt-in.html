@@ -20,8 +20,14 @@
   <meta name="twitter:description" content="Opt in to receive the NHID-Clinical starter pack — a one-time text message with a link to our shadow-evaluation guide."/>
   <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/starter-pack.png"/>
   <meta name="twitter:image:alt" content="NHID-Clinical Starter Pack: Get the shadow-evaluation guide by text."/>
-  <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('nhid-theme')||'light')}catch(e){}document.documentElement.classList.add('js')</script>
+  <script>try{var t=localStorage.getItem('nhid-theme');if(t!=='light'&&t!=='dark')t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}document.documentElement.classList.add('js')</script>
+  <link rel="icon" href="/favicon.ico" sizes="32x32"/>
   <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/apple-touch-icon.png"/>
+  <link rel="manifest" href="/manifest.webmanifest"/>
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcfa"/>
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1725"/>
+  <meta name="color-scheme" content="light dark"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
