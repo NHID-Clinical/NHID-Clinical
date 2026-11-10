@@ -2492,6 +2492,29 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.36 The home page's own example asked the payer for the patient's ID — 2026-11-10
+
+A review of every public link found the hero on nhid-clinical.org running the
+call backwards. Its second agent turn read "Can you confirm the member ID on
+claim 48213 so I can check its status?": the AI caller asking the payer for
+the patient's identifier. The guard (`tests/test_call_direction.py`) missed
+it, for two reasons:
+- its phrase list had no "confirm the member ID" form;
+- the hero is generated from a script (`scripts/build_gateway_fixture.py`),
+  which the guard never read.
+
+**Decisions.**
+- **The hero turn.** The agent now supplies the identifiers: "The member ID
+  is RVD-204-7731 and the claim number is 48213. What's its status?". The
+  fixture and page were regenerated from the engine, and the chips are
+  unchanged: IDG-01 confirmed, PDX-01 gate cleared, CONTINUE_AI.
+- **The guard.** It now catches "can/could you confirm the member ID / date
+  of birth / NPI" and reads the hero script's agent turns.
+- **One more line.** The adversarial corpus's ordinary-call control case had
+  the same backwards line. It is reworded the same way, and the case still
+  expects no violations (red-team false positives 0/17).
+- **Unchanged.** Control semantics, baselines and counts.
+
 ### 19.35 Robot to robot: the payer's own AI answers — 2026-11-08
 
 The maintainer deferred this scenario to last in §19.29, then asked for it.

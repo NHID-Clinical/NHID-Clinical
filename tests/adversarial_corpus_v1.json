@@ -440,7 +440,7 @@
         },
         {
           "turn_count": 2,
-          "speech_text": "Thank you. Could you confirm the member ID on file?",
+          "speech_text": "Thank you. The member ID is RVD-204-7731. Can you check where that authorization stands?",
           "phi_accessed": [
             "member_id"
           ]
