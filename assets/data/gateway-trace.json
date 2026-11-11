@@ -171,7 +171,7 @@
       {
         "position": 2,
         "speaker": "agent",
-        "speech": "Can you confirm the member ID on claim 48213 so I can check its status?",
+        "speech": "The member ID is RVD-204-7731 and the claim number is 48213. What's its status?",
         "evaluated": true,
         "controls": [
           {
@@ -211,5 +211,5 @@
       }
     ]
   },
-  "source_commit": "beba7fd"
+  "source_commit": "b953a59"
 }

@@ -99,8 +99,9 @@ HERO_TURNS = (
     {"speaker": "representative",
      "speech_text": "Thanks for letting me know. What do you need today?"},
     {"speaker": "agent",
-     "speech_text": "Can you confirm the member ID on claim 48213 so I can check its status?",
-     "turn_count": 2, "phi_accessed": ["member_id"]},
+     "speech_text": "The member ID is RVD-204-7731 and the claim number is 48213. "
+                    "What's its status?",
+     "turn_count": 2, "phi_accessed": ["member_id", "claim_number"]},
 )
 #: Reason codes that mean "this control had nothing to judge on this turn".
 #: They render as a muted "no finding" chip; the code itself stays in the markup.

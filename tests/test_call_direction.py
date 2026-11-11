@@ -36,7 +36,8 @@ RECEIVER_VOICE = re.compile(
     r"|look up your (authori[sz]ation|account|record)"
     r"|what'?s your member id"
     r"|(can|may) i (have|get) (your|the) (member id|npi|date of birth)"
-    r"|can i get the npi",
+    r"|can i get the npi"
+    r"|(can|could) you confirm the (member id|date of birth|dob|npi)",
     re.IGNORECASE,
 )
 AGENT_ONLY = re.compile(r"how can i help", re.IGNORECASE)
@@ -96,6 +97,11 @@ def _agent_lines():
         for i, msg in enumerate(data.get("messages") or data.get("transcript") or []):
             if (msg.get("role") or msg.get("speaker")) in {"bot", "agent"}:
                 yield f"{path.name}[{i}]", msg.get("message") or msg.get("text") or ""
+    # The home-page hero is generated from a script, not a corpus.
+    from scripts.build_gateway_fixture import HERO_TURNS
+    for i, turn in enumerate(HERO_TURNS):
+        if turn["speaker"] == "agent":
+            yield f"hero[{i}]", turn["speech_text"]
     from src.pilot_measure import demo_records
     for rec in demo_records():
         if rec["speaker"] == "agent":
@@ -121,7 +127,9 @@ def test_the_check_would_catch_the_lines_it_replaced():
                  "Can I have your member ID and date of birth to look up your authorization?",
                  "Your authorization is approved.",
                  "You've reached the claims system.",
-                 "Hi, can I get the member ID and NPI?"):
+                 "Hi, can I get the member ID and NPI?",
+                 "Can you confirm the member ID on claim 48213 so I can check its status?",
+                 "Thank you. Could you confirm the member ID on file?"):
         assert RECEIVER_VOICE.search(line), line
     assert not RECEIVER_VOICE.search("The member ID is MBR-482913. What's the claim status?")
 
