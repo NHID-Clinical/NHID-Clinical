@@ -2016,7 +2016,7 @@ def make_v13_overview():
 
 def make_evidence_pack():
     """Procurement/security-facing evidence summary — mirrors evidence-pack.html.
-    Deterministic guarantees, real-corpus detection evidence, a sample failure
+    Tested engine properties, real-corpus detection evidence, a sample failure
     trace, and the audit-readiness model. Content faithful to the website page."""
     path = os.path.join(OUT_DIR, "NHID-Clinical-Evidence-Pack.pdf")
     doc = SimpleDocTemplate(path, pagesize=letter,
@@ -2029,7 +2029,7 @@ def make_evidence_pack():
     _cover(
         story,
         "Evidence Pack",
-        "NHID-Clinical v1.3  ·  Deterministic Guarantees, Detection Evidence & Audit Model",
+        "NHID-Clinical v1.3  ·  Tested Engine Properties, Detection Evidence & Audit Model",
         "1.3",
         "Procurement & Security Reference",
         logo_path=spec_logo,
@@ -2037,10 +2037,10 @@ def make_evidence_pack():
 
     story.append(ExecutiveSummary([
         ("What it is",
-         "A summary of the deterministic guarantees, real-corpus detection evidence, a sample "
+         "A summary of the tested engine properties, real-corpus detection evidence, a sample "
          "failure trace, and the audit-readiness model behind the reference implementation."),
         ("Why it matters",
-         "Teams evaluating adoption need to see what the system guarantees, how it behaves against "
+         "Teams evaluating adoption need to see which engine properties are tested, how it behaves against "
          "real conversational phrasing, and what an auditor could reconstruct from the event store."),
         ("Operational impact",
          "Everything here is self-attested and open for community review. NHID-Clinical does not "
@@ -2050,12 +2050,12 @@ def make_evidence_pack():
     story.append(_key_metrics())
     story.append(Spacer(1, 0.14 * inch))
 
-    _section(story, "1 · System Behavior Guarantees", H1)
+    _section(story, "1 · Tested Engine Properties", H1)
     guarantees = [
         ("Deterministic output",
          "Identical input event + identical policy version produce identical trace output. "
          "The policy engine is a pure function with no side effects."),
-        ("Replay guarantee",
+        ("Replay",
          "Any stored trace can be replayed. Policy version is embedded in each event header; "
          "version mismatches are flagged."),
         ("Failure invariants",

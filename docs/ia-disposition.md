@@ -615,7 +615,7 @@ layout rules that phase will rework rather than patch.
 | `alignment/nist-ai-agent-standards.html` | published page | retired → `/regulatory-alignment.html#nist-ai-agent-standards` |
 | `alignment/stir-shaken.html` | published page | retired → `/regulatory-alignment.html#stir-shaken` |
 | `alignment/vendor-evidence-pack.html` | published page | retired → `/regulatory-alignment.html#vendor-evidence-pack` |
-| `community.html` | published page | retired → `/faq.html#community` |
+| `community.html` | published page | retired → `/about.html#community` |
 | `community/index.html` | published page | retired → `/community.html` |
 | `conformance.html` | published page | retired → `/evidence-pack.html` |
 | `conformance/index.html` | published page | retired → `/specification.html` |
@@ -624,7 +624,7 @@ layout rules that phase will rework rather than patch.
 | `for-payers.html` | published page | retired → `/shadow-evaluation-guide.html#for-payers` |
 | `framework/conformance-suite.html` | published page | retired → `/evidence-pack.html#conformance-suite` |
 | `framework/controls.html` | published page | retired → `/specification.html#controls` |
-| `framework/index.html` | published page | retired → `/#framework` |
+| `framework/index.html` | published page | retired → `/about.html` |
 | `framework/reference-implementation.html` | published page | retired → `/developers.html#reference-implementation` |
 | `gov-sim.html` | published page | retired → `/` |
 | `identity-layer.html` | published page | retired → `/framework/nhid-auth.html` |
@@ -645,7 +645,7 @@ layout rules that phase will rework rather than patch.
 | `simulator.html` | published page | retired → `/shadow-evaluation-guide.html` |
 | `simulator/index.html` | published page | retired → `/shadow-evaluation-guide.html` |
 | `svg-preview.html` | published page | retired → `/` |
-| `technical-stack.html` | published page | retired → `/#technical-stack` |
+| `technical-stack.html` | published page | retired → `/evidence-pack.html#trust-stack` |
 | `vendor/dashboard.html` | published page | retired → `/evidence-pack.html` |
 
 

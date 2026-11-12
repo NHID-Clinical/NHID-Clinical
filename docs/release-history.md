@@ -82,7 +82,7 @@ v1.3 is the first public release of this open proposal. It suggests four behavio
 > not currently recruiting. The shadow evaluation remains available to run
 > independently; nothing about it involves joining a programme.
 
-We are actively seeking payer and provider organizations to run a 90-day shadow evaluation — observe-only, non-intercepting, no vendor changes. Observe incoming AI voice calls against the v1.3 behavioral baseline and help shape the standard before v2 ships.
+We are actively seeking payer and provider organizations to run a 90-day shadow evaluation — observe-only, non-intercepting, no vendor changes. Observe incoming AI voice calls against the v1.3 behavioral baseline and help shape the framework before v2 ships.
 
 [Start a Shadow Evaluation](/for-payers.html)
 

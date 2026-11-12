@@ -1,6 +1,53 @@
 # Changelog
 
-## [Unreleased] - 2026-09 to 2026-10
+## [Unreleased] - 2026-09 to 2026-11
+
+- **Wording and records brought in line with the claim boundaries, 2026-11-12 (#470).** The news
+  entry no longer says a shadow evaluation helps "shape the standard"; it says "framework"
+  (`feed.xml`, `docs/release-history.md`). The FAQ defines Impersonation Latency as
+  `docs/terminology.md` does, the time from call start to the agent's disclosure, where it had
+  said the time until the person "realizes"; the JSON-LD copy matches. The evidence pack's
+  "System behavior guarantees" section is now "Tested engine properties" on the page, in the
+  cards that link to it, in the site search index and in the Evidence Pack PDF's source; the four
+  properties and their text are unchanged. The archived Evidence Pack PDF in `specs/archive/` is a
+  snapshot and was not rebuilt, so it keeps the old heading. The `community.html` redirect pointed at a missing
+  FAQ anchor and now goes to `/about.html#community`; `docs/ia-disposition.md` lists the same
+  three redirect targets as `scripts/ia/redirects.txt`. The FAQ hero says fifteen questions, the
+  README heading says four paths, and the maintainer line states the degree as in progress and
+  lists every credential. The author's `sameAs` adds her personal GitHub profile. Handoff docs
+  and the PowerShell module point at the current AI Governance Map and repository URLs. No
+  control semantics, baseline, stage or published count changed (2525).
+- **Home page: the AI caller supplies the patient's identifiers, not the payer (#469).** The hero
+  had the agent ask the payer to "confirm the member ID on claim 48213", which ran the call
+  backwards. The agent now states the member ID and claim number itself; the fixture and page
+  are regenerated from the engine and the chips are unchanged. `tests/test_call_direction.py`
+  catches "can/could you confirm the member ID / date of birth / NPI" and reads the generated
+  hero script. The adversarial corpus's ordinary-call control case had the same line and was
+  reworded, still with no violations.
+- **Site: device theme, icon set, hero call played in order (#468).** With no stored choice the
+  site follows the device's colour scheme, and only the reader's own click on the toggle is
+  remembered. `favicon.ico`, the touch and maskable icons and a web manifest are rendered from
+  `assets/brand/favicon.svg` by `scripts/seo/build_icons.cjs`. The hero transcript arrives turn
+  by turn; it is complete in the HTML and reduced motion skips the animation. No wording, claims
+  or control semantics changed.
+- **Robot to robot: the payer's own AI answers the caller-agent's call (#467).** The canonical
+  direction is unchanged: the caller-agent places the call and the controls judge it. `gate_turn`
+  takes `counterparty` `human_operator` or `ai_agent`. `src/agent_to_agent.py` adds a
+  deterministic reference payer AI that releases a claim status only when the gate allowed the
+  turn and verified the caller's delegation; `nhid agent-to-agent` runs seven offline scenarios.
+  `docs/agent-to-agent-calls.md` names the canonical direction first. Offline only; no payer runs
+  it. No control semantics, baseline or control count changed. Suite 2509 -> 2525 passed.
+- **Calling-agent orientation, production-readiness decisions, buyer CTA, ACC-01 inside PDX-01,
+  consented-recordings scorer (#466).** The gate and the post-call replay orient a calling
+  agent's turns through one module (`src/call_replay.py`), with no behaviour change.
+  `docs/production-readiness.md` records the seven open decisions between NHID-Auth v2 and
+  production use; none is closed and nothing is called production ready. Every published page
+  offers "Request a shadow pilot", a prefilled email with nothing stored, and
+  `POST /v1/pilot/enroll` now answers `not_recorded` where it had answered "enrolled" while
+  storing nothing. ACC-01 record-level access is a prototype check inside PDX-01, off unless
+  `DelegationContext.require_record_access` is set, and not a control of its own; it reproduces
+  its 20 fixtures. `nhid audio-robustness --audio-dir` scores consented volunteer recordings
+  (tier 4); real speech is still not measured. Suite 2457 -> 2509 passed.
 
 - **Records brought up to date, 2026-10-30.** The privacy policy now says that ElevenLabs places
   and answers the demonstration calls over Twilio, records and transcribes them, and keeps the
