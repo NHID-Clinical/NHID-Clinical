@@ -267,7 +267,7 @@ Code contributions: [CONTRIBUTING](.github/CONTRIBUTING.md) · [Discussions](htt
 
 <img src="assets/maintainer/brianna-baynard.jpg" width="96" align="left" alt="Brianna Baynard" />
 
-**Brianna Baynard**, AI Governance & Security Researcher · IAPP AIGP · CompTIA SecAI+ · CSA TAISE · ISC² CC · B.S. Cybersecurity, WGU (in progress). Background in healthcare payer operations, identity-verification workflows and regulated-data environments; NHID-Clinical grew out of the impersonation-latency problem seen firsthand on live eligibility, claims and prior-authorization lines. Maintained as an open reference implementation for technical review; criticism is welcome.
+**Brianna Baynard**, Independent AI Governance Researcher · IAPP AIGP · CompTIA SecAI+ · CSA TAISE · ISC² CC · B.S. Cybersecurity, WGU (in progress). Background in healthcare payer operations, identity-verification workflows and regulated-data environments; NHID-Clinical grew out of the impersonation-latency problem seen firsthand on live eligibility, claims and prior-authorization lines. Maintained as an open reference implementation for technical review; criticism is welcome.
 
 [LinkedIn](https://www.linkedin.com/in/brianna-baynard) · [X @baynardmalone](https://x.com/baynardmalone) · [X @NHIDClinical](https://x.com/NHIDClinical) · [NIST public comment](https://www.regulations.gov/comment/NIST-2025-0035-0026)
 

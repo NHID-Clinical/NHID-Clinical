@@ -55,7 +55,10 @@ ORGANIZATION = {
         "disclosure and authorization of AI voice agents on healthcare payer calls. "
         "Not a standard, a certification or a product."),
     "founder": {"@id": PERSON["@id"]},
-    "sameAs": ["https://github.com/NHID-Clinical"],
+    "sameAs": [
+        "https://github.com/NHID-Clinical",
+        "https://x.com/NHIDClinical",
+    ],
 }
 
 
