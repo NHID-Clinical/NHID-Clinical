@@ -9,7 +9,7 @@ description = "Policy and evidence layer for healthcare administrative AI voice 
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
-authors = [{ name = "Brianna Nicole Baynard-Malone" }]
+authors = [{ name = "Brianna Nicole Baynard" }]
 keywords = ["healthcare", "voice-ai", "policy-engine", "audit", "fhir", "delegation"]
 classifiers = [
     "Development Status :: 4 - Beta",
