@@ -92,7 +92,7 @@ Accessibility should be designed into the parent system, not applied afterward. 
 
 [1]: https://nhid-clinical.org/ "NHID-Clinical — homepage"
 [2]: https://nhid-clinical.github.io/Simulator/index.html "Zero Latency — NHID Clinical Simulator"
-[3]: https://ai-governance-map.vercel.app/ "AI Governance Map v2"
+[3]: https://thankcheeses.github.io/ai-governance-map/ "AI Governance Map v2"
 [4]: https://nhid-clinical.org/about.html "About NHID-Clinical"
 [5]: https://nhid-clinical.org/community.html "NHID Clinical Community route"
 [6]: https://nhid-clinical.org/shadow-evaluation-guide.html "Shadow Evaluation Guide"

@@ -10,7 +10,7 @@
     PrivateData = @{
         PSData = @{
             Tags = @('Healthcare','AI','Compliance','HIPAA','Payer','VoiceAI','NHID')
-            ProjectUri = 'https://github.com/thankcheeses/NHID-Clinical'
+            ProjectUri = 'https://github.com/NHID-Clinical/NHID-Clinical'
             LicenseUri = 'https://creativecommons.org/licenses/by/4.0/'
         }
     }

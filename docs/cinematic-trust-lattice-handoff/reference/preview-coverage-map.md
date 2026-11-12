@@ -19,6 +19,6 @@ Every preview uses the approved visual language: a midnight-navy control space, 
 | Simulator briefing | `/simulator.html`, `Simulator/index.html`, `zero-latency-module1-v2.html` | Frame real-time learning / detection scenarios with task focus and clear state. |
 | Simulator validation | `zero-latency-module2.html`, `zero-latency-module3.html`, `zero-latency-module4.html` | Visualize passport inspection, compliance triage, and deployment safeguards. |
 | Simulator command center | `zero-latency-dashboard.html`, `nhid-knowledge-base.html` | Provide fleet monitoring plus an operational knowledge resource. |
-| AI Governance Map | `ai-governance-map.vercel.app` | Offer cross-framework navigation, maturity/risk filters, and controls comparison. |
+| AI Governance Map | `thankcheeses.github.io/ai-governance-map` | Offer cross-framework navigation, maturity/risk filters, and controls comparison. |
 
 The set will therefore show every supplied page through twelve distinct, reusable experiences rather than producing multiple nearly identical pages that hide the actual design-system decisions.

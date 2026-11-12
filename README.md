@@ -114,7 +114,7 @@ curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/a
   -H "Content-Type: application/json" -d @tests/demo_scenarios/vapi_noncompliant.json
 ```
 
-## Three paths
+## Four paths
 
 - **Payers and health plans** (the receiving side): run an observe-only [shadow evaluation](https://nhid-clinical.org/shadow-evaluation-guide.html) on call traces you already hold. Nothing is inserted into the call.
 - **Voice-AI vendors** (the calling side): produce the [vendor evidence pack](https://nhid-clinical.org/evidence-pack.html): conformance results, disclosure transcript, escalation phrases, a FHIR R4 `AuditEvent` sample.
@@ -267,7 +267,7 @@ Code contributions: [CONTRIBUTING](.github/CONTRIBUTING.md) · [Discussions](htt
 
 <img src="assets/maintainer/brianna-baynard.jpg" width="96" align="left" alt="Brianna Baynard" />
 
-**Brianna Baynard**, AI Governance & Security Researcher · AIGP · ISC² CC · WGU Cybersecurity. Background in healthcare payer operations, identity-verification workflows and regulated-data environments; NHID-Clinical grew out of the impersonation-latency problem seen firsthand on live eligibility, claims and prior-authorization lines. Maintained as an open reference implementation for technical review; criticism is welcome.
+**Brianna Baynard**, AI Governance & Security Researcher · IAPP AIGP · CompTIA SecAI+ · CSA TAISE · ISC² CC · B.S. Cybersecurity, WGU (in progress). Background in healthcare payer operations, identity-verification workflows and regulated-data environments; NHID-Clinical grew out of the impersonation-latency problem seen firsthand on live eligibility, claims and prior-authorization lines. Maintained as an open reference implementation for technical review; criticism is welcome.
 
 [LinkedIn](https://www.linkedin.com/in/brianna-baynard) · [X @baynardmalone](https://x.com/baynardmalone) · [X @NHIDClinical](https://x.com/NHIDClinical) · [NIST public comment](https://www.regulations.gov/comment/NIST-2025-0035-0026)
 
