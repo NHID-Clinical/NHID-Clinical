@@ -146,8 +146,8 @@
     {
       title: 'Evidence Pack',
       url: '/evidence-pack.html',
-      keywords: 'evidence pack technical proof deterministic guarantees failure trace idg-01 audit readiness risk register procurement enterprise evaluation',
-      excerpt: 'System behavior guarantees, anonymized failure trace example, and audit readiness model for the NHID-Clinical reference implementation.'
+      keywords: 'evidence pack technical proof deterministic engine properties failure trace idg-01 audit readiness risk register procurement enterprise evaluation',
+      excerpt: 'Tested engine properties, anonymized failure trace example, and audit readiness model for the NHID-Clinical reference implementation.'
     },
     {
       title: 'Conformance Test Suite',

@@ -45,7 +45,7 @@ On mobile, use one scrollable drawer with grouped headings. The active route and
 | `nhid-knowledge-base.html` | Simulator knowledge base | Operational topic search, selected rule explanation, source/related-controls panel, return-to-scenario link | The future Command Center / KB mockup is described in the README pending rendering. |
 | `zero-latency-dashboard.html` | Simulator command center | Latency timeline, control posture, module readiness, explain-this-finding knowledge panel | Use public metric semantics but a separate dense app-shell namespace. |
 | `simulator-record.html` | Training record | Structured record, replayable training events, training-only boundary, export/review action | Never style as a certificate, badge, accreditation, clinical score, or performance attestation. |
-| `https://ai-governance-map.vercel.app/` | Governance map application | Dark top bar, bright analytical matrix, framework filters, legend, selected control detail, source/evidence links | Use the same tokens but preserve the map’s application logic. Implement only in the map project / its deployment repository. |
+| `https://thankcheeses.github.io/ai-governance-map/` | Governance map application | Dark top bar, bright analytical matrix, framework filters, legend, selected control detail, source/evidence links | Use the same tokens but preserve the map’s application logic. Implement only in the map project / its deployment repository. |
 
 ## Public templates
 

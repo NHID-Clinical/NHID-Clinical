@@ -176,6 +176,44 @@
       "must_not_contain": {
         "docs/agent-to-agent-calls.md": ["deployed by", "in production"]
       }
+    },
+    {
+      "id": "engine-properties-not-guarantees",
+      "fact": "The evidence pack lists four tested engine properties (deterministic output, replay, failure invariants, idempotency). They are not called guarantees.",
+      "must_contain": {
+        "evidence-pack.html": ["Tested engine properties"],
+        "scripts/generate_pdfs.py": ["Tested Engine Properties"]
+      },
+      "must_not_contain": {
+        "evidence-pack.html": ["behavior guarantees", "<b>Guarantee</b>", "Replay guarantee"],
+        "scripts/generate_pdfs.py": ["System Behavior Guarantees", "Deterministic Guarantees"],
+        "site.js": ["System behavior guarantees"],
+        "faq.html": ["Guarantees, a failure trace"],
+        "about.html": ["Guarantees, a failure trace"],
+        "specification.html": ["Guarantees, a failure trace"],
+        "regulatory-alignment.html": ["Guarantees, a failure trace"],
+        "shadow-evaluation-guide.html": ["Guarantees, a failure trace"]
+      }
+    },
+    {
+      "id": "not-a-standard-news",
+      "fact": "News entries describe NHID-Clinical as a framework; a shadow evaluation does not 'shape the standard' (docs/claim-boundaries.md).",
+      "must_contain": {},
+      "must_not_contain": {
+        "feed.xml": ["shape the standard"],
+        "docs/release-history.md": ["shape the standard"]
+      }
+    },
+    {
+      "id": "impersonation-latency-definition",
+      "fact": "Impersonation Latency is the time from the start of the call to the agent's disclosure (docs/terminology.md), not the time until the person realizes.",
+      "must_contain": {
+        "faq.html": ["discloses that it is not human"],
+        "docs/terminology.md": ["discloses its non-human identity"]
+      },
+      "must_not_contain": {
+        "faq.html": ["realizes they are not speaking to a human"]
+      }
     }
   ],
   "generated": [

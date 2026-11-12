@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="NHID-Clinical Evidence Pack — system behavior guarantees, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
+  <meta name="description" content="NHID-Clinical Evidence Pack — tested engine properties, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
   <title>Evidence Pack | NHID-Clinical</title>
   <link rel="canonical" href="https://nhid-clinical.org/evidence-pack.html"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="NHID-Clinical"/>
   <meta property="og:url" content="https://nhid-clinical.org/evidence-pack.html"/>
   <meta property="og:title" content="Evidence Pack | NHID-Clinical"/>
-  <meta property="og:description" content="NHID-Clinical Evidence Pack — system behavior guarantees, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
+  <meta property="og:description" content="NHID-Clinical Evidence Pack — tested engine properties, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
   <meta property="og:image" content="https://nhid-clinical.org/assets/og/evidence-pack.png"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
   <meta property="og:image:alt" content="NHID-Clinical Evidence Pack: System behavior, failure traces, audit readiness and a risk register."/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="Evidence Pack | NHID-Clinical"/>
-  <meta name="twitter:description" content="NHID-Clinical Evidence Pack — system behavior guarantees, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
+  <meta name="twitter:description" content="NHID-Clinical Evidence Pack — tested engine properties, failure trace example, audit readiness model, and risk register for procurement and enterprise teams."/>
   <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/evidence-pack.png"/>
   <meta name="twitter:image:alt" content="NHID-Clinical Evidence Pack: System behavior, failure traces, audit readiness and a risk register."/>
   <link rel="icon" href="/favicon.ico" sizes="32x32"/>
@@ -73,7 +73,7 @@
       "@type": "TechArticle",
       "@id": "https://nhid-clinical.org/evidence-pack.html#article",
       "headline": "Evidence Pack",
-      "description": "NHID-Clinical Evidence Pack — system behavior guarantees, failure trace example, audit readiness model, and risk register for procurement and enterprise teams.",
+      "description": "NHID-Clinical Evidence Pack — tested engine properties, failure trace example, audit readiness model, and risk register for procurement and enterprise teams.",
       "url": "https://nhid-clinical.org/evidence-pack.html",
       "mainEntityOfPage": "https://nhid-clinical.org/evidence-pack.html",
       "image": "https://nhid-clinical.org/assets/og/evidence-pack.png",
@@ -201,7 +201,7 @@
         <div class="crumbs"><a href="/">Home</a><span class="sep">/</span><a href="/developers.html">Developers</a><span class="sep">/</span><span>Evidence Pack</span></div>
         <p class="eyebrow meta-label">For enterprise &amp; procurement teams · v1.3</p>
         <h1 class="reveal page-heading" id="page-h">Evidence Pack</h1>
-        <p class="lede reveal lede-text">System behavior guarantees, a worked failure trace, and the audit readiness model — <strong>for teams evaluating adoption.</strong> Self-attested, open for community review.</p>
+        <p class="lede reveal lede-text">Tested engine properties, a worked failure trace, and the audit readiness model — <strong>for teams evaluating adoption.</strong> Self-attested, open for community review.</p>
         <ul class="hero-meta reveal">
           <li><b>Status</b><span>Self-attested</span></li>
           <li><b>Review</b><span class="is-live">Open to the community</span></li>
@@ -233,8 +233,8 @@
         <details class="doc-rail-fold" open>
         <summary class="doc-rail-label">Contents</summary>
         <ol>
-          <li class="doc-rail-band">Guarantees</li>
-          <li class="is-sub"><a href="#guarantees"><span>System behavior guarantees</span></a></li>
+          <li class="doc-rail-band">Engine properties</li>
+          <li class="is-sub"><a href="#guarantees"><span>Tested engine properties</span></a></li>
           <li class="is-sub"><a href="#audit-readiness"><span>Audit readiness model</span></a></li>
           <li class="doc-rail-band">Results</li>
           <li class="is-sub"><a href="#evidence-lifecycle"><span>How evidence is produced</span></a></li>
@@ -260,15 +260,15 @@
         </div>
 
       <div class="doc-band" id="band-guarantees">
-        <p class="section-kicker">What it promises</p>
-        <h2>Guarantees</h2>
+        <p class="section-kicker">What it is built to do</p>
+        <h2>Engine properties</h2>
         <p>What the engine is built to do on every call, and what an auditor can reconstruct afterwards.</p>
       </div>
       <section class="act" id="guarantees" aria-labelledby="guarantees-h">
         <div class="act-head">
           <div>
-            <p class="section-kicker">Guarantees</p>
-            <h2 id="guarantees-h">System behavior guarantees</h2>
+            <p class="section-kicker">Engine properties</p>
+            <h2 id="guarantees-h">Tested engine properties</h2>
             <p class="act-lead">Four properties of the engine, each one a test.</p>
           </div>
           <span class="act-index">01 / 10</span>
@@ -276,10 +276,10 @@
         <div class="act-body">
 
           <div class="card-grid">
-            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>01</span></div><h3>Deterministic output</h3><p>Identical input event + identical policy version → identical trace output. The policy engine is a pure function with no side effects.</p></div>
-            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>02</span></div><h3>Replay guarantee</h3><p>Any stored trace can be replayed. Policy version is embedded in each event header; version mismatches are flagged.</p></div>
-            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>03</span></div><h3>Failure invariants</h3><p>The engine never raises an unhandled exception. Malformed input returns a deterministic error trace; the caller always gets a response.</p></div>
-            <div class="card guarantee-card"><div class="card-meta"><b>Guarantee</b><span>04</span></div><h3>Idempotency</h3><p>Submitting the same request_id twice produces the same policy decision. The event store deduplicates at PERSIST.</p></div>
+            <div class="card guarantee-card"><div class="card-meta"><b>Property</b><span>01</span></div><h3>Deterministic output</h3><p>Identical input event + identical policy version → identical trace output. The policy engine is a pure function with no side effects.</p></div>
+            <div class="card guarantee-card"><div class="card-meta"><b>Property</b><span>02</span></div><h3>Replay</h3><p>Any stored trace can be replayed. Policy version is embedded in each event header; version mismatches are flagged.</p></div>
+            <div class="card guarantee-card"><div class="card-meta"><b>Property</b><span>03</span></div><h3>Failure invariants</h3><p>The engine never raises an unhandled exception. Malformed input returns a deterministic error trace; the caller always gets a response.</p></div>
+            <div class="card guarantee-card"><div class="card-meta"><b>Property</b><span>04</span></div><h3>Idempotency</h3><p>Submitting the same request_id twice produces the same policy decision. The event store deduplicates at PERSIST.</p></div>
           </div>
         </div>
       </section>
