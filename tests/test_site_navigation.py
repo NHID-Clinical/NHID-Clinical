@@ -198,6 +198,7 @@ PUBLISHED = (
     "evidence-pack.html",
     "regulatory-alignment.html",
     "framework/nhid-auth.html",
+    "impersonation-cost.html",
     "faq.html",
     "specs/index.html",
     "privacy.html",
