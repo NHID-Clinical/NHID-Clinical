@@ -1,0 +1,493 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="Work out the handle-time cost of undisclosed automated callers from your own assumptions. Illustrative arithmetic, not a measurement or a saving."/>
+  <title>Impersonation handle-time calculator | NHID-Clinical</title>
+  <link rel="canonical" href="https://nhid-clinical.org/impersonation-cost.html"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="NHID-Clinical"/>
+  <meta property="og:url" content="https://nhid-clinical.org/impersonation-cost.html"/>
+  <meta property="og:title" content="Impersonation handle-time calculator | NHID-Clinical"/>
+  <meta property="og:description" content="Work out the handle-time cost of undisclosed automated callers from your own assumptions. Illustrative arithmetic, not a measurement or a saving."/>
+  <meta property="og:image" content="https://nhid-clinical.org/assets/og/impersonation-cost.png"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="NHID-Clinical Illustrative calculator: Handle-time cost of undisclosed automated callers, from your own assumptions."/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Impersonation handle-time calculator | NHID-Clinical"/>
+  <meta name="twitter:description" content="Work out the handle-time cost of undisclosed automated callers from your own assumptions. Illustrative arithmetic, not a measurement or a saving."/>
+  <meta name="twitter:image" content="https://nhid-clinical.org/assets/og/impersonation-cost.png"/>
+  <meta name="twitter:image:alt" content="NHID-Clinical Illustrative calculator: Handle-time cost of undisclosed automated callers, from your own assumptions."/>
+  <script>try{var t=localStorage.getItem('nhid-theme');if(t!=='light'&&t!=='dark')t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)}catch(e){}document.documentElement.classList.add('js')</script>
+  <link rel="icon" href="/favicon.ico" sizes="32x32"/>
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/apple-touch-icon.png"/>
+  <link rel="manifest" href="/manifest.webmanifest"/>
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcfa"/>
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1725"/>
+  <meta name="color-scheme" content="light dark"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/nhid-clinical-ui.css"/>
+  <link rel="stylesheet" href="/assets/css/premium.css"/>
+  <link rel="stylesheet" href="/assets/css/components.css"/>
+  <link rel="stylesheet" href="/assets/css/instrument.css"/>
+  <link rel="stylesheet" href="/assets/css/pages.css"/>
+  <link rel="stylesheet" href="/assets/css/drafting.css"/>
+  <script defer data-domain="nhid-clinical.org" src="https://plausible.io/js/script.js"></script>
+  <link rel="alternate" type="application/atom+xml" title="NHID-Clinical news" href="/feed.xml"/>
+  <!-- seo:structured-data -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://nhid-clinical.org/#organization",
+      "name": "NHID-Clinical",
+      "url": "https://nhid-clinical.org/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://nhid-clinical.org/assets/brand/renders/nhid-nmark.png",
+        "width": 655,
+        "height": 765
+      },
+      "description": "An independent research project and open reference implementation for disclosure and authorization of AI voice agents on healthcare payer calls. Not a standard, a certification or a product.",
+      "founder": {
+        "@id": "https://nhid-clinical.org/about.html#brianna-baynard"
+      },
+      "sameAs": [
+        "https://github.com/NHID-Clinical",
+        "https://x.com/NHIDClinical"
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://nhid-clinical.org/about.html#brianna-baynard",
+      "name": "Brianna Baynard",
+      "url": "https://nhid-clinical.org/about.html"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://nhid-clinical.org/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Illustrative calculator",
+          "item": "https://nhid-clinical.org/impersonation-cost.html"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+  <!-- /seo:structured-data -->
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="status-strip">
+  <span class="status-strip-inner"><strong>Open proposal · v1.3</strong> · Not an accredited standard or certification</span>
+</div>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary navigation">
+    <a class="brand" href="/" aria-label="NHID-Clinical home">
+      <span class="brand-mark" aria-hidden="true"><img src="/assets/brand/logo-mark-rich.svg" alt="" /></span>
+      <span>
+        <strong>NHID-Clinical</strong>
+      </span>
+    </a>
+    <div class="nav-links">
+      <a href="/specification.html">Spec</a>
+      <a href="/evidence-pack.html">Evidence</a>
+      <a href="/shadow-evaluation-guide.html">Pilot</a>
+      <a href="/developers.html">Developers</a>
+      <a href="/faq.html">FAQ</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">About <svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="nav-dropdown-menu">
+          <a href="/about.html">About the project</a>
+          <a href="/regulatory-alignment.html">Regulatory alignment</a>
+          <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
+          <a href="/specs/">Downloads</a>
+          <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-button search-toggle" type="button" aria-label="Search" id="search-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-button theme-toggle" type="button" aria-label="Toggle theme" id="theme-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+      <a class="primary-pill" href="mailto:contact@nhid-clinical.org?subject=Shadow%20pilot%20request&amp;body=Organization%3A%0AYour%20role%3A%0ARoughly%20how%20many%20provider-line%20calls%20a%20month%3A%0AAI%20agents%20calling%20you%20today%2C%20if%20you%20know%3A%0A%0A%28A%20Tier%200%20shadow%20pilot%20is%20available.%20We%20will%20reply%20with%20the%20kit%20and%20the%20terms.%29">Request a shadow pilot</a>
+      <button class="icon-button menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div class="search-overlay" id="search-overlay" hidden>
+    <div class="container search-overlay-inner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;color:var(--body)" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" class="search-input" placeholder="Search NHID-Clinical…" autocomplete="off" aria-label="Search site"/>
+      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="container">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="/">Home</a>
+  <a href="/specification.html">Spec</a>
+  <a href="/evidence-pack.html">Evidence</a>
+  <a href="/shadow-evaluation-guide.html">Pilot</a>
+  <a href="/developers.html">Developers</a>
+  <a href="/faq.html">FAQ</a>
+  <strong class="mobile-nav-group">About</strong>
+  <a href="/about.html">About the project</a>
+  <a href="/regulatory-alignment.html">Regulatory alignment</a>
+  <a href="/framework/nhid-auth.html">NHID-Auth (agent identity)</a>
+  <a href="/specs/">Downloads</a>
+  <a href="https://github.com/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub &#x2197;</a>
+  <div class="mobile-nav-footer">
+    <a class="primary-pill mobile-cta" href="mailto:contact@nhid-clinical.org?subject=Shadow%20pilot%20request&amp;body=Organization%3A%0AYour%20role%3A%0ARoughly%20how%20many%20provider-line%20calls%20a%20month%3A%0AAI%20agents%20calling%20you%20today%2C%20if%20you%20know%3A%0A%0A%28A%20Tier%200%20shadow%20pilot%20is%20available.%20We%20will%20reply%20with%20the%20kit%20and%20the%20terms.%29">Request a shadow pilot</a>
+    <button class="theme-toggle mobile-theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="mobile-theme-label">Switch to dark mode</span>
+    </button>
+  </div>
+</nav>
+<div class="nav-backdrop" id="nav-backdrop"></div>
+
+<main id="main" class="scope-note page-doc">
+  <section class="inner-hero hero-band" aria-labelledby="page-h">
+    <div class="container hero-grid">
+      <div>
+        <div class="crumbs"><a href="/">Home</a><span class="sep">/</span><span>Impersonation handle-time</span></div>
+        <p class="eyebrow meta-label">Illustrative calculator</p>
+        <h1 class="reveal page-heading" id="page-h">What undisclosed automated callers cost in handle time</h1>
+        <p class="lede reveal lede-text">
+          Nobody can currently count the automated callers that never say they
+          are automated, so nobody can price them either. This page does the
+          arithmetic from <em>your</em> assumptions instead: change any of the
+          four numbers and every figure below changes with it.
+        </p>
+        <ul class="hero-meta reveal">
+          <li><b>Inputs</b><span>Four, all yours to change</span></li>
+          <li><b>Basis</b><span>Your assumptions</span></li>
+          <li><b>Measurement</b><span>None</span></li>
+          <li><b>Stage</b><span>Research</span></li>
+        </ul>
+      </div>
+      <aside class="hero-instrument-card reveal" aria-label="Before you read a number">
+        <div class="card-head"><b>Before you read a number</b><span>What this page is</span></div>
+        <dl>
+          <dt>Is</dt><dd>Arithmetic on four numbers you supply</dd>
+          <dt>Is not</dt><dd>A saving, a measurement, or a comparison of suppliers</dd>
+          <dt>Defaults</dt><dd>Round placeholders, not estimates of any real call centre</dd>
+        </dl>
+        <p class="calc-disclaimer">These figures are user-supplied assumptions. NHID-Clinical has not measured them on live traffic.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="page-section band-paper">
+    <div class="container doc">
+      <nav class="doc-rail" aria-label="Sections of this page">
+        <details class="doc-rail-fold" open>
+          <summary class="doc-rail-label">Contents</summary>
+          <ol>
+            <li><a href="#assumptions"><span>Your assumptions</span></a></li>
+            <li><a href="#implies"><span>What that implies</span></a></li>
+            <li><a href="#arithmetic"><span>How the figures are worked out</span></a></li>
+            <li><a href="#limits"><span>What this does not show</span></a></li>
+          </ol>
+        </details>
+      </nav>
+      <div class="doc-body">
+      <section class="act" id="assumptions" aria-labelledby="assumptions-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Inputs</p>
+            <h2 id="assumptions-h">Your assumptions</h2>
+          </div>
+          <span class="act-index">01 / 04</span>
+        </div>
+        <div class="act-body">
+          <form id="calc" class="calc-form" novalidate>
+            <div class="calc-fields">
+        <div class="calc-field">
+          <label for="in-monthly_inbound_calls">Inbound calls a month</label>
+          <div class="calc-input">
+            <input type="number" id="in-monthly_inbound_calls" name="monthly_inbound_calls"
+                   value="10000" min="0" max="1e+07"
+                   step="1" inputmode="decimal"
+                   aria-describedby="help-monthly_inbound_calls"/>
+            <span class="calc-unit" aria-hidden="true">calls</span>
+          </div>
+          <p class="calc-help" id="help-monthly_inbound_calls">Every inbound call the line takes in a month, human and automated alike.</p>
+        </div>
+        <div class="calc-field">
+          <label for="in-average_hold_minutes">Average hold time per call</label>
+          <div class="calc-input">
+            <input type="number" id="in-average_hold_minutes" name="average_hold_minutes"
+                   value="4" min="0" max="240"
+                   step="0.5" inputmode="decimal"
+                   aria-describedby="help-average_hold_minutes"/>
+            <span class="calc-unit" aria-hidden="true">minutes</span>
+          </div>
+          <p class="calc-help" id="help-average_hold_minutes">Time a caller spends holding, before and during the call.</p>
+        </div>
+        <div class="calc-field">
+          <label for="in-undisclosed_share">Assumed share of callers that are undisclosed automated agents</label>
+          <div class="calc-input">
+            <input type="number" id="in-undisclosed_share" name="undisclosed_share"
+                   value="10" min="0" max="100"
+                   step="0.5" inputmode="decimal"
+                   aria-describedby="help-undisclosed_share"/>
+            <span class="calc-unit" aria-hidden="true">%</span>
+          </div>
+          <p class="calc-help" id="help-undisclosed_share">Your assumption, not a finding. Nobody can currently count these callers, which is the gap the disclosure controls address.</p>
+        </div>
+        <div class="calc-field">
+          <label for="in-cost_per_staffed_hour">Loaded cost of a staffed hour</label>
+          <div class="calc-input">
+            <input type="number" id="in-cost_per_staffed_hour" name="cost_per_staffed_hour"
+                   value="45" min="0" max="1000"
+                   step="1" inputmode="decimal"
+                   aria-describedby="help-cost_per_staffed_hour"/>
+            <span class="calc-unit" aria-hidden="true">$ / hour</span>
+          </div>
+          <p class="calc-help" id="help-cost_per_staffed_hour">Wages plus benefits, tooling and overhead, per hour of staffed time.</p>
+        </div>
+            </div>
+            <p class="calc-actions">
+              <button type="button" id="calc-reset" class="btn btn-ghost">
+                Reset to the placeholder numbers
+              </button>
+            </p>
+          </form>
+          <p class="calc-note">
+            The four starting values are round placeholders, chosen to show the
+            arithmetic working. They are not estimates of any real call centre,
+            and this project has not surveyed one.
+          </p>
+        </div>
+      </section>
+      <section class="act" id="implies" aria-labelledby="implies-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Outputs</p>
+            <h2 id="implies-h">What that implies</h2>
+          </div>
+          <span class="act-index">02 / 04</span>
+        </div>
+        <div class="act-body">
+          <dl class="calc-outputs">
+        <div class="calc-out">
+          <dt>Calls a month from undisclosed agents, under your assumption</dt>
+          <dd><output id="out-undisclosed_calls_per_month" for="in-monthly_inbound_calls in-average_hold_minutes in-undisclosed_share in-cost_per_staffed_hour">&mdash;</output>
+            <span class="calc-illustrative">illustrative, not measured</span></dd>
+        </div>
+        <div class="calc-out">
+          <dt>Hold minutes a month on those calls</dt>
+          <dd><output id="out-hold_minutes_per_month" for="in-monthly_inbound_calls in-average_hold_minutes in-undisclosed_share in-cost_per_staffed_hour">&mdash;</output>
+            <span class="calc-illustrative">illustrative, not measured</span></dd>
+        </div>
+        <div class="calc-out">
+          <dt>Staffed hours a month on those calls</dt>
+          <dd><output id="out-hold_hours_per_month" for="in-monthly_inbound_calls in-average_hold_minutes in-undisclosed_share in-cost_per_staffed_hour">&mdash;</output>
+            <span class="calc-illustrative">illustrative, not measured</span></dd>
+        </div>
+        <div class="calc-out">
+          <dt>Handle-time cost a month</dt>
+          <dd><output id="out-monthly_cost" for="in-monthly_inbound_calls in-average_hold_minutes in-undisclosed_share in-cost_per_staffed_hour">&mdash;</output>
+            <span class="calc-illustrative">illustrative, not measured</span></dd>
+        </div>
+        <div class="calc-out calc-out-headline">
+          <dt>Handle-time cost a year</dt>
+          <dd><output id="out-annual_cost" for="in-monthly_inbound_calls in-average_hold_minutes in-undisclosed_share in-cost_per_staffed_hour">&mdash;</output>
+            <span class="calc-illustrative">illustrative, not measured</span></dd>
+        </div>
+          </dl>
+          <noscript>
+            <p class="callout" role="note">The arithmetic runs in the browser, so
+            the figures above need JavaScript. The formula is written out below;
+            it is four multiplications and you can do it on paper.</p>
+          </noscript>
+          <p class="calc-note calc-note-strong">These figures are user-supplied assumptions. NHID-Clinical has not measured them on live traffic.</p>
+        </div>
+      </section>
+      <section class="act" id="arithmetic" aria-labelledby="arithmetic-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Method</p>
+            <h2 id="arithmetic-h">How the figures are worked out</h2>
+          </div>
+          <span class="act-index">03 / 04</span>
+        </div>
+        <div class="act-body">
+          <p>Four multiplications, in this order:</p>
+          <ol class="calc-steps">
+            <li>Inbound calls a month &times; assumed undisclosed share
+                = calls from undisclosed agents.</li>
+            <li>Those calls &times; average hold time = hold minutes a month.</li>
+            <li>Hold minutes &divide; 60 = staffed hours a month.</li>
+            <li>Staffed hours &times; loaded cost of a staffed hour
+                = handle-time cost a month; &times; 12 for the year.</li>
+          </ol>
+          <p>
+            The fractional call count is kept rather than rounded. A share of a
+            volume is legitimately fractional, and rounding it to a whole call
+            partway through would give the result a precision the assumption has
+            not got.
+          </p>
+          <p>
+            The same arithmetic is implemented once, in
+            <code>src/impersonation_cost.py</code>, and this page is generated
+            from it, so the figures on screen are the figures its tests check.
+          </p>
+        </div>
+      </section>
+      <section class="act" id="limits" aria-labelledby="limits-h">
+        <div class="act-head">
+          <div>
+            <p class="section-kicker">Boundaries</p>
+            <h2 id="limits-h">What this does not show</h2>
+          </div>
+          <span class="act-index">04 / 04</span>
+        </div>
+        <div class="act-body">
+          <ul class="calc-limits">
+            <li><strong>It is not a saving.</strong> The hold time is spent
+              whether or not the caller discloses itself. Disclosure changes who
+              your staff know they are speaking to, and what the call is allowed
+              to cover; it does not shorten the queue. Any figure here read as
+              &ldquo;what disclosure would save us&rdquo; has been read wrong.</li>
+            <li><strong>It is not a measurement.</strong> NHID-Clinical is an open
+              research project and reference implementation. It has run no pilot
+              on live payer traffic, so it has no observed share of undisclosed
+              callers to offer you, and it does not supply one here.</li>
+            <li><strong>It does not compare vendors.</strong> No product,
+              platform or supplier is ranked, scored or named on this page.</li>
+            <li><strong>It is not a return-on-investment case.</strong> There is
+              no price, no payback period and no claim about what any control
+              costs or returns.</li>
+          </ul>
+          <p>
+            What the project does have is the open control set and its
+            conformance tests. <a href="/specification.html">The specification</a>
+            states the controls; <a href="/developers.html">the developer
+            pages</a> show the reference implementation;
+            <a href="/shadow-evaluation-guide.html">the shadow-evaluation
+            guide</a> is how an organisation can measure its own traffic rather
+            than borrow an assumption from this page.
+          </p>
+        </div>
+      </section>
+      </div>
+    </div>
+  </section>
+<script>
+/* Generated by scripts/build_impersonation_calculator.py from
+   src/impersonation_cost.py. Do not edit here: edit the model and rebuild.
+   The arithmetic below is the same four multiplications the Python model
+   performs, and tests/test_impersonation_calculator_page.py fails if this
+   page stops matching a fresh render of the model. */
+(function () {
+  var MINUTES_PER_HOUR = 60, MONTHS_PER_YEAR = 12;
+  var inputs = ["monthly_inbound_calls", "average_hold_minutes", "undisclosed_share", "cost_per_staffed_hour"].map(function (n) {
+    return document.getElementById('in-' + n);
+  });
+  var places = {"undisclosed_calls_per_month": 1, "hold_minutes_per_month": 1, "hold_hours_per_month": 1, "monthly_cost": 2, "annual_cost": 2}, money = {"undisclosed_calls_per_month": false, "hold_minutes_per_month": false, "hold_hours_per_month": false, "monthly_cost": true, "annual_cost": true};
+  var form = document.getElementById('calc');
+  if (!form || inputs.some(function (el) { return !el; })) return;
+
+  function value(el) {
+    var n = parseFloat(el.value);
+    return isFinite(n) ? n : 0;
+  }
+
+  function write(name, n) {
+    var el = document.getElementById('out-' + name);
+    if (!el) return;
+    var text = n.toLocaleString('en-US', {
+      minimumFractionDigits: places[name], maximumFractionDigits: places[name]
+    });
+    el.textContent = money[name] ? '$' + text : text;
+  }
+
+  function recompute() {
+    var calls = value(inputs[0]);
+    var minutesEach = value(inputs[1]);
+    var share = value(inputs[2]) / 100;   /* the page collects a percentage */
+    var rate = value(inputs[3]);
+    /* Out of range is shown as nothing rather than as a number: the Python
+       model raises on these, and a page that quietly computed them would put
+       a figure on screen that no reading of the inputs supports. */
+    if (calls < 0 || minutesEach < 0 || share < 0 || share > 1 || rate < 0) {
+      ["undisclosed_calls_per_month", "hold_minutes_per_month", "hold_hours_per_month", "monthly_cost", "annual_cost"].forEach(function (n) {
+        var el = document.getElementById('out-' + n);
+        if (el) el.textContent = '\u2014';
+      });
+      return;
+    }
+    var undisclosed = calls * share;
+    var minutes = undisclosed * minutesEach;
+    var hours = minutes / MINUTES_PER_HOUR;
+    var monthly = hours * rate;
+    write('undisclosed_calls_per_month', undisclosed);
+    write('hold_minutes_per_month', minutes);
+    write('hold_hours_per_month', hours);
+    write('monthly_cost', monthly);
+    write('annual_cost', monthly * MONTHS_PER_YEAR);
+  }
+
+  form.addEventListener('input', recompute);
+  form.addEventListener('submit', function (e) { e.preventDefault(); recompute(); });
+  var reset = document.getElementById('calc-reset');
+  if (reset) reset.addEventListener('click', function () {
+    inputs.forEach(function (el) { el.value = el.defaultValue; });
+    recompute();
+  });
+  recompute();
+})();
+</script>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <a href="/about.html">About</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="mailto:contact@nhid-clinical.org">Contact</a>
+      <a href="https://github.com/NHID-Clinical/NHID-Clinical" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/brianna-baynard" target="_blank" rel="noopener noreferrer">Maintainer on LinkedIn</a>
+    </div>
+    <p class="footer-copy">© 2026 Brianna Baynard | NIST-2025-0035-0026 | CC BY 4.0 | contact@nhid-clinical.org | nhid-clinical.org</p>
+    <p class="footer-copy"><span class="footer-demo-line"><strong>Reference demonstration line</strong> &mdash; <a href="tel:+17176706772">+1 (717) 670-6772</a> <span class="footer-demo-note">(website demo, not personal contact)</span></span></p>
+    <p class="footer-copy">This is an open, actively maintained framework &mdash; feedback and contributions welcome on <a href="https://github.com/NHID-Clinical/NHID-Clinical">GitHub</a>.</p>
+  </div>
+  <div class="container footer-wordmark" aria-hidden="true">NHID-Clinical</div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>

@@ -37,12 +37,29 @@ FORBIDDEN = (
     "control plane",
     "trust infrastructure",
     "universal identity layer",
+    # A disclosure token that gets a caller served sooner, or vetted in
+    # advance, is a plausible product and an unearned claim: it describes a
+    # payer-side behaviour no payer has agreed to. The vocabulary stays out of
+    # published surfaces until a payer has accepted a token, at which point
+    # this entry comes out and the pages can say what actually happened.
+    "fast-lane",
+    "fast lane",
+    "fastlane",
+    "precheck",
+    "pre-check",
+    "bot-pass",
+    "bot pass",
+    # Ranking suppliers is a different product from governing a call, and this
+    # project has measured no supplier.
+    "vendor ranking",
+    "vendor leaderboard",
 )
 
 PUBLISHED_PAGES = (
     "index.html", "about.html", "specification.html", "shadow-evaluation-guide.html",
     "developers.html", "evidence-pack.html", "regulatory-alignment.html",
     "framework/nhid-auth.html", "faq.html", "specs/index.html", "privacy.html", "sms-opt-in.html",
+    "impersonation-cost.html",
 )
 
 STANDING_DOCS = (

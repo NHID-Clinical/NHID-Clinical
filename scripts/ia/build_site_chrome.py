@@ -42,6 +42,7 @@ PUBLISHED = (
     "index.html", "about.html", "specification.html", "shadow-evaluation-guide.html",
     "developers.html", "evidence-pack.html", "regulatory-alignment.html",
     "framework/nhid-auth.html", "faq.html", "specs/index.html", "privacy.html", "sms-opt-in.html",
+    "impersonation-cost.html",
 )
 
 CHEV = ('<svg class="chev" viewBox="0 0 24 24" width="13" height="13" fill="none" '

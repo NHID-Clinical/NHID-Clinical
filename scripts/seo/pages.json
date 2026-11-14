@@ -36,6 +36,12 @@
     "headline": "Agent passports, provider-signed delegation and NPI binding.",
     "type": "article"
   },
+  "impersonation-cost.html": {
+    "slug": "impersonation-cost",
+    "kicker": "Illustrative calculator",
+    "headline": "Handle-time cost of undisclosed automated callers, from your own assumptions.",
+    "type": "page"
+  },
   "privacy.html": {
     "slug": "privacy",
     "kicker": "Privacy Policy",
