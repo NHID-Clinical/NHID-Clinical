@@ -313,7 +313,7 @@ This is a public comment. It does not imply NIST endorsement or recognition.
 
 ## License
 
-CC BY 4.0 - Brianna Baynard
+CC BY 4.0 - Brianna Baynard-Malone
 contact@nhid-clinical.org
 '@
 WriteAll 'README.md' $readme

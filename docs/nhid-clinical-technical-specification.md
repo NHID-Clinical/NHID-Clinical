@@ -1,7 +1,7 @@
 # NHID-Clinical Technical Specification
 
 **Version:** 1.0 (draft) · **Spec baseline:** NHID-Clinical v1.3 + NHID-Auth v2 · **Date:** 2026-06-21
-**Author:** Brianna Nicole Baynard · **License:** CC BY 4.0
+**Author:** Brianna Nicole Baynard-Malone · **License:** CC BY 4.0
 **Source of truth:** The codebase (`src/nhid_policy_engine_v1.py`, `src/agent_identity.py`) and the conformance test suite. Where this document and the code disagree, the code wins; report discrepancies via GitHub Issues.
 
 > NHID-Clinical is a voluntary, open behavioral baseline for AI voice agents in B2B healthcare
