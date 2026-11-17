@@ -128,10 +128,13 @@ h3, h4 { font-weight: 500; letter-spacing: -0.015em; }
   font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
 }
 .action-button:hover, .cta-button:hover { transform: none; box-shadow: none; }
-.action-button-primary, .cta-button, .page-doc .band-ink .cta-button {
+/* `.band-ink a` (instrument.css) outranks a bare button class, so the button is
+   named inside the band too: otherwise its label takes the link colour, which
+   is 3.4:1 on the accent instead of white's 5.3:1. */
+.action-button-primary, .band-ink .action-button-primary, .cta-button, .page-doc .band-ink .cta-button {
   background: var(--dr-accent); color: #fff; border-color: var(--dr-accent);
 }
-.action-button-primary:hover, .cta-button:hover, .page-doc .band-ink .cta-button:hover {
+.action-button-primary:hover, .band-ink .action-button-primary:hover, .cta-button:hover, .page-doc .band-ink .cta-button:hover {
   background: var(--dr-accent-hover); border-color: var(--dr-accent-hover); color: #fff;
 }
 .action-button-secondary { background: transparent; border-color: var(--dr-tag-line); color: var(--ink); }
