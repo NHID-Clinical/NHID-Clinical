@@ -656,10 +656,12 @@
   transform: rotate(45deg) translateY(-2px); opacity: 0; transition: transform 200ms ease;
 }
 @media (max-width: 1060px) {
-  .page-doc .doc-rail-fold > summary { cursor: pointer; }
+  /* The fold's label is one line of small type; stretch it over the rail's own
+     padding (.9rem 1rem) so the whole bar is the tap target, 44px or taller. */
+  .page-doc .doc-rail-fold > summary { cursor: pointer; margin: -.9rem -1rem .75rem; padding: .9rem 1rem .6rem; min-height: 2.75rem; box-sizing: border-box; }
   .page-doc .doc-rail-fold > summary::after { opacity: .7; }
   .page-doc .doc-rail-fold[open] > summary::after { transform: rotate(225deg) translateY(-2px); }
-  .page-doc .doc-rail-fold:not([open]) > summary { margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
+  .page-doc .doc-rail-fold:not([open]) > summary { margin-bottom: -.9rem; padding-bottom: .9rem; border-bottom: 0; }
 }
 
 /* The short version: two or three sentences a reader can take instead of the

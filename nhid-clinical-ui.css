@@ -1529,6 +1529,9 @@ input[type="radio"] {
   border-color: rgba(220,38,38,0.4);
   color: #fca5a5;
 }
+/* #dc2626 is 3.5:1 on the dark panels; this red keeps small labels above 4.5:1. */
+[data-theme="dark"] .script-fail-label,
+[data-theme="dark"] .dialogue-speaker-agent { color: #f87171; }
 
 /* ── Hero helper text ────────────────────────────────────────────────────── */
 
@@ -1610,7 +1613,6 @@ input[type="radio"] {
   text-transform: uppercase;
   color: var(--body);
   font-weight: 700;
-  opacity: 0.65;
   pointer-events: none;
 }
 

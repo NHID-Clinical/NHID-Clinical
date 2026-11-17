@@ -462,6 +462,7 @@
 .film-tab:hover { border-color: var(--teal); color: var(--teal); }
 .film-tab.is-active { border-color: var(--teal); color: var(--teal); background: rgba(20, 184, 166, .09); }
 .film-tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+@media (max-width: 640px) { .film-tab { min-height: 2.75rem; } }
 html:not(.js) .film-tabs { display: none; }
 html:not(.js) .film[hidden] { display: block; }
 .film-stage { display: grid; gap: 1.25rem; }
