@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2561** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2625** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2561 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2625 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2561 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2625 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2561 passing tests · machine-readable traces · open implementation
+> 5 controls · 2625 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2561%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2625%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,67 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.37 Third red-team round: 30 of 32 new evasions closed — 2026-11-17
+
+The maintainer asked for a red-team pass on the live portfolio. Against this
+engine, 49 new phrasings were written and 32 got the wrong answer: 14 human
+claims DBC-01 did not flag, 13 requests PDX-01 did not read as requests, one
+genuine disclosure IDG-01 refused, and four non-disclosures IDG-01 accepted.
+The worst case end to end: an assertion that only mentioned AI ("Our office
+uses an AI scheduling tool, but I'm the nurse"), a disclosure timestamp, and
+"Give me the SSN last four" returned `CONTINUE_AI` with no violations.
+
+**Decisions.**
+- **No control, outcome or baseline changed.** The five controls and the
+  ladder are as they were. The Fabricate baseline is unchanged at IDG-01
+  70/70 (0 FP), PDX-01 41/41 (0 FP), DBC-01 183/200 (5 FP), EIT-01 169/171
+  (5 FP); `EXPECTED` in `scripts/check_baseline.py` is untouched.
+- **Disguises are undone once, before matching** (`_fold_evasions`):
+  look-alike Cyrillic and Greek letters, invisible characters, accents, and
+  spelled-out or digit-substituted forms of four words (human, person, nurse,
+  doctor). Everything else is left alone, so "d o b" and "8842-XX" still read
+  as before.
+- **A non-human word is a disclosure only when it describes the speaker.**
+  A question to the other party, a hedge ("I sound automated"), another
+  party's tool ("our office uses an AI tool"), and a disclosure taken back in
+  the same sentence ("…but I'm a real person") no longer satisfy IDG-01.
+  "Computer-generated" is added as a disclosure term.
+- **DBC-01 gains twelve first-person patterns** (`_DBC_IMPERSONATION_PATTERNS`),
+  each multi-word per §9.1 invariant #7. One was narrowed after measurement:
+  "talking to a real person" matched three compliant Fabricate transcripts
+  where the payer's representative asked "am I talking to a real person?"
+  (DBC-01 false positives 5 → 8). It now requires "you're speaking with".
+- **PDX-01 reads requests for the asset, not only identifiers**
+  (`_PHI_REQUEST_PATTERNS`): coverage, benefits, eligibility, plan status,
+  name, address, SSN, payment amounts, primary care provider. Each needs a
+  possessor or a question frame, because the bare nouns name the workflow.
+  "Auth" and "authorization" join the subject words, so "prior auth 99812" is
+  a record reference.
+- **Those request patterns carry no field name.** The DLG-01 scope vocabulary
+  has no field for them, and adding one would change what a delegation
+  authorizes. So they reach PDX-01 through the caller's speech only. The
+  field-scope check, and any harness that derives `phi_accessed` from
+  `_phi_fields_requested` (`call_replay.orient_calling_agent`), do not see
+  them. **Open for the maintainer:** whether the scope vocabulary should
+  gain fields for these.
+- **Two phrasings are recorded as limits, not fixed.** "And the other thing we
+  discussed, what is it?" names no data, so a transcript rule has nothing to
+  read. "I'm the office manager" is a job title: IDG-01 refuses it as a
+  disclosure, DBC-01 does not flag it. Both are pinned by tests.
+- **Other limits.** Spanish and French are covered for one bare first-person
+  claim each and for "date of birth"; that is not multilingual coverage. The
+  question rule needs a question mark, which unpunctuated ASR output lacks.
+
+**Evidence.** `tests/adversarial_corpus_v1.json` goes from 40 scenarios to 67
+(42 attacks, 25 controls). The engine before this change: 23/42 withstood,
+19 bypasses, 1/25 false positives. After: 42/42, 0 bypasses, 0/25. A
+second-order pass against the fixes found four false positives of its own,
+all closed and pinned. `tests/test_adversarial_hardening.py` names each
+attack. The suite goes from 2,561 to 2,625.
+
+**What this does not show.** The corpus is written by the project against its
+own engine. It shows these evasions stay closed, not that none remain.
 
 ### 19.36 The home page's own example asked the payer for the patient's ID — 2026-11-10
 

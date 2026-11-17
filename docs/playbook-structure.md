@@ -75,7 +75,7 @@ that *illustrates* it.
 | 16 | The four evidence bodies | `project-state.md` §5 — never merged into one number |
 | 17 | Fabricate baseline | 550 conversations / 127 compliant; disjoint populations |
 | 18 | Governance Evaluation Corpus | 25 scenarios / 55 turns / 23 of 32 detected. Research measurement, not conformance |
-| 19 | Adversarial corpus | 40 scenarios; evasion resistance |
+| 19 | Adversarial corpus | 67 scenarios; evasion resistance |
 | 20 | Conformance suite | Implementation tests, distinct from detection quality |
 | 21 | **What the evidence does not establish** | `project-state.md` §8 + `skipped-test-audit.md` §7–9 |
 | 22 | Known limitations | ATR-01 unmeasurable in the Fabricate corpus; DBC-01 and PDX-01 coverage gaps; reference implementation not load-tested |

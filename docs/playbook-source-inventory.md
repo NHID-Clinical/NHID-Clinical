@@ -120,7 +120,7 @@ Re-derived at `7c6c89d`, not copied from prose.
 | Fabricate corpus | 550 conversations, 127 compliant | row count of the CSVs |
 | Fabricate detection | IDG-01 70/70 · PDX-01 41/41 · DBC-01 183/200 · EIT-01 169/171 | `scripts/check_baseline.py` |
 | Fabricate false positives | 0 · 0 · 5 · 5 of 127 clean | `scripts/confusion_matrix.py` |
-| Adversarial corpus | 40 scenarios | `tests/adversarial_corpus_v1.json` |
+| Adversarial corpus | 67 scenarios | `tests/adversarial_corpus_v1.json` |
 | CTS cases | 18 | YAML document count, verified |
 | Canonical controls | 5 (4 behavioural + ATR-01 audit) | `check_control_set.py` |
 | Vendor adapters | 6, of which 5 have hosted routes | `adapters/*_adapter.py` minus internal plumbing |
