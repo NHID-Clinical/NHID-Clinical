@@ -248,3 +248,23 @@ h3, h4 { font-weight: 500; letter-spacing: -0.015em; }
 /* Headings line up across the three path tiles; the buttons take the slack. */
 .pathway-card h3 { margin: 3rem 0 0.5rem; }
 .pathway-card .cta-button { margin-top: auto; }
+
+/* ── Type finish ────────────────────────────────────────────────────────────
+   Small, site-wide refinements to how the three faces set, now that they
+   are served from this origin (assets/fonts/web/fonts.css). No family or
+   size changes: headings wrap to even lines instead of leaving one word on
+   the last, paragraphs avoid a one-word last line, and figures in code,
+   control IDs and tables line up in columns with an unambiguous zero. */
+body {
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+p, li, dd, figcaption {
+  text-wrap: pretty;
+}
+code, kbd, samp, pre, td, .mono {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
