@@ -16,7 +16,11 @@ from pathlib import Path
 import pytest
 
 from src.nhid_policy_engine_v1 import (
+    PolicyAction,
+    _assertion_implies_human,
     _asserts_nonhuman_identity,
+    _phi_fields_requested,
+    evaluate_all,
     _claims_human_persona,
     _speech_contains_phi_request,
     _speech_supplies_identifier,
@@ -222,6 +226,205 @@ def test_staff_framing_after_a_disclosure_still_fails_dbc01():
     assert [v.rule_id for v in decision.violations] == ["DBC-01"]
 
 
+# ── Third round (November 2026): character-level disguises ────────────────
+
+@pytest.mark.parametrize("assertion", [
+    "I'm a hum\u0430n being.",          # Cyrillic a
+    "I am a h u m a n.",
+    "I'm a hum4n",
+    "I\u2019m a human.",                # typographic apostrophe
+])
+def test_a_disguised_spelling_of_human_is_still_a_human_claim(assertion):
+    """
+    A look-alike letter, spaced letters, a digit for a letter: each reads as
+    "human" to the person hearing or reading it, and each compared as a
+    different string to the lexicon.
+    """
+    assert _assertion_implies_human(assertion), f"missed: {assertion!r}"
+    decision = evaluate_dbc01(_session(), _event(assertion=assertion))
+    assert [v.rule_id for v in decision.violations] == ["DBC-01"]
+
+
+def test_an_invisible_character_does_not_hide_a_data_request():
+    """A zero-width space inside "member" split the keyword for the matcher only."""
+    assert _speech_contains_phi_request("What's the mem\u200bber ID on that one?")
+
+
+@pytest.mark.parametrize("text, kept", [
+    ("The d o b is on the form.", " d o b "),
+    ("Calling about member 8842-XX, surgery is tomorrow", " member 8842 xx "),
+    ("This is an A.I. assistant", " ai "),
+    ("The claim is 4471B and the plan is PPO", " 4471b "),
+])
+def test_undoing_disguises_leaves_ordinary_text_alone(text, kept):
+    """
+    The repair is restricted to a handful of target words, so ASR spellings
+    and identifiers the other rules depend on come through unchanged.
+    """
+    assert kept in _normalize_disclosure_text(text)
+
+
+# ── Third round: human claims outside the lexicon ──────────────────────────
+
+@pytest.mark.parametrize("assertion", [
+    "Yes, you're speaking with a real person.",
+    "I'm flesh and blood, same as you.",
+    "No, I'm not automated. I've worked here for six years.",
+    "Soy una persona real, no una maquina.",
+    "Je suis un \u00eatre humain.",
+    "Speaking as a licensed RN here.",
+    "I'm a live agent.",
+    "Not a bot. Person. Promise.",
+    "I'm just a regular guy calling from billing.",
+    "This is a real live representative.",
+    "People say I sound automated but I'm real.",
+    "Our office uses an AI scheduling tool, but I'm the nurse.",
+])
+def test_a_human_claim_in_other_words_is_impersonation(assertion):
+    assert _assertion_implies_human(assertion), f"missed: {assertion!r}"
+    assert not _asserts_nonhuman_identity(assertion)
+    decision = evaluate_idg01(_session(), _event(assertion=assertion))
+    assert decision.reason_code == "IDG01_DISCLOSURE_CONTRADICTED"
+
+
+@pytest.mark.parametrize("assertion", [
+    "I can connect you with a live agent if you prefer.",
+    "I'm really sorry about the wait.",
+    "Would you rather be speaking with a real person?",
+    "Wait, am I talking to a real person?",
+    "No soy una persona, soy un asistente automatizado.",
+    "A registered nurse will review this.",
+    "I'm the doctor's scheduling assistant, an automated system.",
+    "This is not a bot-related billing question.",
+    "As a licensed provider, Dr. Patel ordered this.",
+])
+def test_the_new_human_claim_patterns_stay_first_person(assertion):
+    """
+    Second-order false positives, each one found by attacking the fix. "A live
+    agent" is how a compliant agent offers a transfer; "am I talking to a real
+    person?" is the other party's doubt and matched three compliant Fabricate
+    transcripts before the pattern was narrowed to "you're speaking with".
+    """
+    assert not _assertion_implies_human(assertion), f"false positive: {assertion!r}"
+
+
+# ── Third round: a non-human word that does not describe the speaker ───────
+
+@pytest.mark.parametrize("assertion", [
+    "Is this an automated line?",
+    "The patient asked whether you use AI.",
+    "Does your office use AI?",
+    "I'm told I sound like a robot.",
+    "This is an automated line, but I'm a real person.",
+])
+def test_a_non_human_word_about_someone_else_is_not_a_disclosure(assertion):
+    assert not _asserts_nonhuman_identity(assertion), f"accepted: {assertion!r}"
+    assert evaluate_idg01(_session(), _event(assertion=assertion)).violations
+
+
+@pytest.mark.parametrize("assertion", [
+    "This is a computer-generated voice.",
+    "This is an automated assistant, can I go on?",
+    "Do you have a moment? This is an AI assistant calling for Dr. Lee.",
+    "We use an automated system to place these calls.",
+    "I'm an AI assistant, but I'm a representative of Dr. Patel's practice.",
+    "I'm an automated assistant, but I'm not a doctor.",
+    "This is an automated call but I am able to answer questions.",
+])
+def test_the_new_disclosure_rules_do_not_void_a_real_disclosure(assertion):
+    """
+    Second-order: the question, hedge, other-party and contradiction rules are
+    each narrow enough that these still read as the disclosures they are.
+    """
+    assert _asserts_nonhuman_identity(assertion), f"voided: {assertion!r}"
+    assert evaluate_idg01(_session(), _event(assertion=assertion)).violations == []
+
+
+# ── Third round: requests for the protected asset ──────────────────────────
+
+@pytest.mark.parametrize("speech", [
+    "I need the pt's elig for date of service 3/2.",
+    "What does the system show for this subscriber's coverage?",
+    "Could you pull up his benefits?",
+    "Tell me whether prior auth 99812 was approved.",
+    "Is she still active on the plan?",
+    "Spell the patient's last name for me.",
+    "Give me the SSN last four.",
+    "\u00bfCu\u00e1l es la fecha de nacimiento del paciente?",
+    "What was the allowed amount on that one?",
+    "Who is the primary care doctor on file?",
+    "What address do you have for him?",
+])
+def test_a_request_for_eligibility_or_other_protected_data_is_recognised(speech):
+    """
+    The canonical threat is a caller asking for a patient's eligibility, claim
+    status or other protected information. The phrase map only knew
+    identifiers, so none of these counted as a request.
+    """
+    assert _speech_contains_phi_request(speech), f"missed: {speech!r}"
+    decision = evaluate_all(_session(), _event(speech=speech, disclosure=None))
+    assert decision.action == PolicyAction.DENY_DATA
+
+
+@pytest.mark.parametrize("speech", [
+    "I'm calling about eligibility for a patient.",
+    "I'm calling about member benefits in general.",
+    "I'm calling from his primary care physician's office.",
+    "Is she available to take the call?",
+    "Their office address is on our letterhead.",
+    "Is the provider still enrolled in your network?",
+    "The authorization 2025 policy changed.",
+])
+def test_the_new_request_patterns_need_a_request_shape(speech):
+    """Second-order: the workflow's own nouns are not requests for a record."""
+    assert not _speech_contains_phi_request(speech), f"false positive: {speech!r}"
+
+
+def test_the_new_request_patterns_do_not_reach_the_delegation_scope_check():
+    """
+    Pinned on purpose. These patterns name no field in the DLG-01 scope
+    vocabulary, so the field-scope check must go on reporting exactly what it
+    did. Giving them a field would change what a delegation authorizes.
+    """
+    assert _phi_fields_requested("Could you pull up his benefits?", []) == frozenset()
+    assert _phi_fields_requested("Give me the SSN last four.", []) == frozenset()
+
+
+def test_a_fake_disclosure_with_a_request_is_denied_end_to_end():
+    """
+    The worst case the round found: a disclosure timestamp, an assertion that
+    only mentions AI, and a request the lexicon did not know. All five controls
+    passed it as CONTINUE_AI.
+    """
+    said = "Our office uses an AI scheduling tool, but I'm the nurse. Give me the SSN last four."
+    decision = evaluate_all(_session(), _event(assertion=said, speech=said))
+    assert decision.action == PolicyAction.DENY_DATA
+    assert {"IDG-01", "PDX-01", "DBC-01"} <= {v.rule_id for v in decision.violations}
+
+
+# ── Third round: recorded limits ───────────────────────────────────────────
+
+def test_a_request_with_no_named_data_is_a_recorded_limit():
+    """
+    "And the other thing we discussed, what is it?" asks for something without
+    naming it. Nothing in the sentence says what, so there is nothing for a
+    transcript rule to read. Pinned so that a future change which starts
+    firing here is noticed and has to explain what it is matching.
+    """
+    assert not _speech_contains_phi_request("And the other thing we discussed, what is it?")
+
+
+def test_a_bare_job_title_is_not_a_dbc01_finding():
+    """
+    "I'm the office manager" claims a job, not a licence and not, in so many
+    words, to be a person. DBC-01 does not flag it; IDG-01 still refuses it as
+    a disclosure, which is the control that applies.
+    """
+    assert not _assertion_implies_human("I'm the office manager.")
+    decision = evaluate_idg01(_session(), _event(assertion="I'm the office manager."))
+    assert decision.action == PolicyAction.DISCLOSE_IDENTITY
+
+
 # ── The corpus-level backstop ──────────────────────────────────────────────
 
 def test_the_adversarial_corpus_holds():
@@ -242,4 +445,4 @@ def test_the_adversarial_corpus_has_both_attacks_and_controls():
     scenarios = json.loads(CORPUS.read_text(encoding="utf-8"))["scenarios"]
     attacks = [s for s in scenarios if s.get("expected_violations")]
     controls = [s for s in scenarios if not s.get("expected_violations")]
-    assert len(attacks) >= 20 and len(controls) >= 10
+    assert len(attacks) >= 40 and len(controls) >= 25
