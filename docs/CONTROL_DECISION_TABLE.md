@@ -18,7 +18,7 @@
 | **Decision/Evidence** | Stored in `healthcare_governance.disclosure_timestamp` (turn index of valid disclosure) |
 | **Limitation** | Judges disclosure *content* only for contradiction, not for adequacy. A bare organisational name ("claims system") is not flagged — the evaluation corpus labels that a violation and the structurally identical "authorization system" compliant, so no rule separates them. Does not verify the counterparty understood. The heard-disclosure check depends on the platform reporting the interruption and, ideally, what was played (`interrupted` / `heard_text` on adapter turns); where a platform logs neither, a cut-off disclosure cannot be distinguished from a completed one. Content checks apply only to the disclosing turn, which requires a harness that sets `disclosure_established_prior`; absent it the check does not run. |
 | **Test Coverage** | `tests/test_engine_disclosure_hardening.py`, `tests/test_adversarial_hardening.py`, `tests/test_idg01_interrupted_disclosure.py`; also asserted across the vendor-adapter and API suites |
-| **Corpus Status** | Fabricate 70/70 (0 FP/127). Governance Evaluation Corpus 6/8 (75.0%) |
+| **Corpus Status** | Fabricate 70/70 (0 FP/127). Governance Evaluation Corpus 7/8 (87.5%) |
 
 ---
 
@@ -53,7 +53,7 @@
 | **Decision/Evidence** | Stored in `healthcare_governance.deceptive_artifact_flags` (list of artifact types); mapped from corpus `deception_pattern` enum |
 | **Limitation** | Depends on corpus pattern classification; implicit/ambiguous patterns may not be 100% accurate in real data. Tier C is inferential and stays active even when the same assertion discloses — suppressing it after a disclosure was tried and cost four real Fabricate detections, because disclosing once and then passing as staff is a pattern that corpus labels deceptive. Third-person clinical references ("a nurse reviewer will look at this") are deliberately not matched. The 17 CSV-550 misses are predominantly disclosed-AI agents using soft anthropomorphic rhetoric (15/17 disclose AI) — out of scope for a human-status-claim control, not defects; the 5 false positives are truthful post-transfer humans, which a transcript-only detector cannot distinguish from a bot. See [`validation/DBC-01-SCOPE-AND-LIMITATIONS.md`](validation/DBC-01-SCOPE-AND-LIMITATIONS.md). |
 | **Test Coverage** | `tests/test_dbc01_heuristics.py` (11 tests), plus review-routing and review-queue suites |
-| **Corpus Status** | Fabricate 183/200 (91.5%, 5 FP/127) — the least precise of the controls. Governance Evaluation Corpus 9/9 (100.0%) |
+| **Corpus Status** | Fabricate 183/200 (91.5%, 5 FP/127) — the least precise of the controls. Governance Evaluation Corpus 2/9 (22.2%) |
 
 ---
 

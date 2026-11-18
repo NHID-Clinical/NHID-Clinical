@@ -85,7 +85,7 @@
       },
       {
         "name": "Fabricate baseline corpus",
-        "measures": "Per-control detection and false positives",
+        "measures": "Per-control detection and false positives on synthetic conversations",
         "size": "550 conversations",
         "result": "DBC-01 183/200 \u00b7 EIT-01 169/171 \u00b7 IDG-01 70/70 \u00b7 PDX-01 41/41",
         "rate": null,
@@ -93,17 +93,17 @@
         "command": "python scripts/check_baseline.py"
       },
       {
-        "name": "Shadow-pilot corpus",
-        "measures": "Observe-only decision distribution",
-        "size": "60 conversations",
-        "result": "Distribution charted on the shadow evaluation guide",
-        "rate": null,
-        "source": "fixtures/fabricate/shadow_pilot.jsonl",
-        "command": "python scripts/build_evidence_visuals.py --check"
+        "name": "Adversarial corpus",
+        "measures": "Evasion attempts written by the project against its own engine",
+        "size": "67 scenarios",
+        "result": "42/42 attacks withstood \u00b7 0/25 false positives",
+        "rate": 100.0,
+        "source": "tests/adversarial_corpus_v1.json",
+        "command": "python scripts/redteam_corpus.py"
       },
       {
         "name": "Conformance suite",
-        "measures": "Implementation correctness against the specification",
+        "measures": "The repository's automated tests, including the conformance cases",
         "size": "2625 tests",
         "result": "2625/2625 passing, 0 skipped, 0 xfailed",
         "rate": 100.0,
@@ -111,7 +111,7 @@
         "command": "python -m pytest tests/ -q"
       }
     ],
-    "separation_note": "Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and neither is a measure of production performance."
+    "separation_note": "Four populations, four denominators. They measure different things and are never combined into a single figure: a detection rate on hand-authored scenarios is not a conformance pass rate, and none of them is a measure of how any deployment performs. Every population was written by this project; none is real call data."
   },
   "latency": {
     "source": "fixtures/fabricate/conversations.csv",
@@ -189,5 +189,5 @@
     "reading_note": "expected_outcome is a label the corpus was authored with, not an engine decision. The split describes how this corpus was written; it is not evidence that conformance shortens the interval.",
     "censoring_note": "23 of 550 conversations record no disclosure interval; 21 of those 23 also carry an IDG-01 violation, and none is labelled PASS. They are treated as right-censored above every observed value, so percentiles are taken over all 550 conversations and are identifiable only up to p95.8. Anything beyond that is reported as a lower bound, not as a value."
   },
-  "source_commit": "dd3ecc8"
+  "source_commit": "1b2ea91"
 }

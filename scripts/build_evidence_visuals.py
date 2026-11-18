@@ -79,6 +79,7 @@ ENGINE = ROOT / "src" / "nhid_policy_engine_v1.py"
 GOV_CORPUS = ROOT / "tests" / "evaluation_corpus_v1.json"
 SHADOW_CORPUS = ROOT / "fixtures" / "fabricate" / "shadow_pilot.jsonl"
 FABRICATE_CSV = ROOT / "fixtures" / "fabricate" / "conversations.csv"
+ADVERSARIAL_CORPUS = ROOT / "tests" / "adversarial_corpus_v1.json"
 BASELINE = ROOT / "scripts" / "check_baseline.py"
 VALIDATE_CI = ROOT / "scripts" / "validate_ci.py"
 
@@ -299,9 +300,24 @@ def measure_scorecard() -> dict[str, Any]:
     with FABRICATE_CSV.open(encoding="utf-8", newline="") as handle:
         fabricate_rows = sum(1 for _ in csv.DictReader(handle))
 
-    shadow_conversations = sum(
-        1 for line in SHADOW_CORPUS.read_text(encoding="utf-8").splitlines() if line.strip()
-    )
+    # Adversarial corpus, measured the same way scripts/redteam_corpus.py
+    # measures it: an attack is withstood when every expected violation
+    # surfaces; a compliant control is a false positive if anything does.
+    from src.call_replay import replay_call  # noqa: E402
+
+    adversarial = json.loads(ADVERSARIAL_CORPUS.read_text(encoding="utf-8"))["scenarios"]
+    attacks = withstood = controls = false_positives = 0
+    for scenario in adversarial:
+        expected = set(scenario.get("expected_violations") or [])
+        found: set[str] = set()
+        for replayed in replay_call(scenario["turns"], conversation_id=scenario["scenario_id"]):
+            found.update(replayed.rule_ids)
+        if expected:
+            attacks += 1
+            withstood += int(expected <= found)
+        else:
+            controls += 1
+            false_positives += int(bool(found))
 
     baseline = _module_constant(BASELINE, "EXPECTED")
     unit_published = _module_constant(VALIDATE_CI, "UNIT_PUBLISHED")
@@ -319,7 +335,7 @@ def measure_scorecard() -> dict[str, Any]:
             },
             {
                 "name": "Fabricate baseline corpus",
-                "measures": "Per-control detection and false positives",
+                "measures": "Per-control detection and false positives on synthetic conversations",
                 "size": f"{fabricate_rows} conversations",
                 "result": " · ".join(
                     f"{c} {v[0]}/{v[1]}" for c, v in sorted(baseline.items())
@@ -329,17 +345,20 @@ def measure_scorecard() -> dict[str, Any]:
                 "command": "python scripts/check_baseline.py",
             },
             {
-                "name": "Shadow-pilot corpus",
-                "measures": "Observe-only decision distribution",
-                "size": f"{shadow_conversations} conversations",
-                "result": "Distribution charted on the shadow evaluation guide",
-                "rate": None,
-                "source": "fixtures/fabricate/shadow_pilot.jsonl",
-                "command": "python scripts/build_evidence_visuals.py --check",
+                "name": "Adversarial corpus",
+                "measures": "Evasion attempts written by the project against its own engine",
+                "size": f"{len(adversarial)} scenarios",
+                "result": (
+                    f"{withstood}/{attacks} attacks withstood · "
+                    f"{false_positives}/{controls} false positives"
+                ),
+                "rate": round(100.0 * withstood / attacks, 1) if attacks else 0.0,
+                "source": "tests/adversarial_corpus_v1.json",
+                "command": "python scripts/redteam_corpus.py",
             },
             {
                 "name": "Conformance suite",
-                "measures": "Implementation correctness against the specification",
+                "measures": "The repository's automated tests, including the conformance cases",
                 "size": f"{unit_published} tests",
                 "result": f"{unit_published}/{unit_published} passing, 0 skipped, 0 xfailed",
                 "rate": 100.0,
@@ -350,8 +369,9 @@ def measure_scorecard() -> dict[str, Any]:
         "separation_note": (
             "Four populations, four denominators. They measure different things "
             "and are never combined into a single figure: a detection rate on "
-            "hand-authored scenarios is not a conformance pass rate, and neither "
-            "is a measure of production performance."
+            "hand-authored scenarios is not a conformance pass rate, and none of "
+            "them is a measure of how any deployment performs. Every population "
+            "was written by this project; none is real call data."
         ),
     }
 

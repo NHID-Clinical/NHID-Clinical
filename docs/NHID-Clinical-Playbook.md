@@ -161,7 +161,7 @@ all four.
 | Evidence body | What it measures | Result | Date |
 |---|---|---|---|
 | **Conformance suite** | Technical test execution against the engine, adapters, API and invariants | **1213 collected · 1213 executed · 1213 passed** · 0 failed, skipped, xfailed, xpassed | 2026-09-04, commit `e68a65d` |
-| **Fabricate Battle-Test Corpus** | Detection against 550 real-world voice AI conversations, 127 of them compliant | IDG-01 70/70 · PDX-01 41/41 · DBC-01 183/200 (91.5%) · EIT-01 169/171 (98.8%). False positives on clean conversations: 0, 0, 5, 5 of 127 | CI-gated, unchanged |
+| **Fabricate Battle-Test Corpus** | Detection against 550 synthetic voice AI conversations, generated for testing, 127 of them compliant | IDG-01 70/70 · PDX-01 41/41 · DBC-01 183/200 (91.5%) · EIT-01 169/171 (98.8%). False positives on clean conversations: 0, 0, 5, 5 of 127 | CI-gated, unchanged |
 | **Governance Evaluation Corpus** | Detection of labelled governance conditions across 25 scenarios / 55 turns | **23 of 32 = 71.9%**. False positives **0 of 5** compliant scenarios. **12 unexpected detections** on violation scenarios, reported separately | 2026-09-04 |
 | **Adversarial corpus** | Robustness against 40 deliberately hostile scenarios | See `safety/adversarial-testing-report.md` | — |
 
@@ -198,7 +198,7 @@ Stated plainly, because a reader who discovers these later has been misled.
 **Known technical limitations:**
 
 - **Detection is lexical.** PDX-01 and DBC-01 match phrase maps plus a small number of structural rules. A paraphrase outside the map is missed.
-- **DBC-01 is the least precise control** — 91.5% detection with 5 false positives on 127 clean conversations.
+- **DBC-01 is the least precise control** — 91.5% detection with 5 false positives on 127 clean conversations of the synthetic Fabricate corpus, and 2 of 9 (22.2%) on the hand-authored Governance corpus.
 - **Disclosure *sufficiency* is judged only on the disclosing turn.** Since the G2 decision, IDG-01 requires the disclosing turn to state a non-human identity affirmatively, so a bare organisational name *is* flagged. The check needs a harness that sets `disclosure_established_prior`; without it the permissive default applies and only contradiction is caught.
 - **Sequencing checks need a cooperating harness.** Same-turn disclosure-and-request detection requires `disclosure_established_prior`; absent it the check does not run.
 - **ATR-01 persistence is external.** The engine emits the audit trail; it cannot detect that a downstream store failed to persist it.
@@ -322,7 +322,7 @@ implementer most often needs.
 | **Fail** | `IDG01_DISCLOSURE_MISSING` · `IDG01_ASSERTION_TEXT_MISSING` · `IDG01_DISCLOSURE_CONTRADICTED` |
 | **Action** | `DISCLOSE_IDENTITY` |
 | **Limitation** | Judges disclosure *content* only for contradiction, not adequacy. Content checks apply only to the disclosing turn and require a harness that sets `disclosure_established_prior`. Does not verify the counterparty understood |
-| **Evidence** | Fabricate 70/70, 0 FP of 127. Governance corpus 6/8 (75.0%) |
+| **Evidence** | Fabricate 70/70, 0 FP of 127. Governance corpus 7/8 (87.5%) |
 
 > **Open question G2** bears directly on this control: a bare organisational name
 > ("claims system") is not flagged, because the evaluation corpus labels that
@@ -354,7 +354,7 @@ implementer most often needs.
 | **Fail** | **Tier A** — any explicit artifact flag (conceal request, impersonation, misrepresentation, evasive, ambiguous identity language, human-passing attempt). **Tier B** — impersonation phrase in the identity assertion, including first-person licensed-clinical role claims. **Tier C** — corpus-mined implied-humanity cues; weak disfluency cues require two or more |
 | **Action** | `LOG_ONLY` — a deception finding is recorded and routed, **not itself a PHI gate**. Blocking on a deceptive turn comes from a co-occurring IDG-01/PDX-01 failure |
 | **Limitation** | Tier C is inferential and stays active even when the same assertion discloses. Suppressing it after disclosure was tried and cost four real Fabricate detections — disclosing once and then passing as staff is a pattern the corpus labels deceptive. Third-person clinical references are deliberately not matched |
-| **Evidence** | Fabricate 183/200 (91.5%), 5 FP of 127 — **the least precise control**. Governance corpus 9/9 (100%) |
+| **Evidence** | Fabricate (synthetic) 183/200 (91.5%), 5 FP of 127 — **the least precise control**. Governance corpus (hand-authored) 2/9 (22.2%) |
 
 ### EIT-01 — Escalation Implementation Test
 

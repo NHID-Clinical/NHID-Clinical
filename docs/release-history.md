@@ -33,12 +33,12 @@ Independent commentary on Impersonation Latency and the five NHID-Clinical contr
 
 [Read the commentary](https://gamma.app/embed/pxtip0mjdj59tv6) — hosted on Gamma. It was previously reachable at `/identity-layer.html`, a route whose only content was an iframe around this same deck; the route was retired in the Phase B consolidation and the link now points at the source.
 
-## DBC-01 Coverage Expanded from Real-Corpus Mining
+## DBC-01 Coverage Expanded from Synthetic-Corpus Mining
 *June 2026 · Release*
 
-Detection of DBC-01 (Deceptive Behavior Claim) against real conversational phrasing — measured on the Fabricate Battle-Test Corpus (550 real-world voice AI conversations) — was 0.5% prior to this update. Mining the corpus for missed phrasing patterns and additively expanding the heuristic phrase list raised that to 2.5%.
+Detection of DBC-01 (Deceptive Behavior Claim) on the Fabricate Battle-Test Corpus (550 synthetic voice AI conversations, generated for testing) was 0.5% prior to this update. Mining the corpus for missed phrasing patterns and additively expanding the heuristic phrase list raised that to 2.5%.
 
-Superseded. These figures were accurate when published. The corpus baseline was revised on 2026‑07‑31 after the Phase 4 fixes (artifact isolation, escalation honor patterns), and detection is now measured per conversation rather than per turn. Current figures are on the [Evidence Pack](/evidence-pack.html), computed by scripts/confusion_matrix.py . This entry is left unedited as a historical record.
+Superseded. These figures were accurate when published. The corpus baseline was revised on 2026‑07‑31 after the Phase 4 fixes (artifact isolation, escalation honor patterns), and detection is now measured per conversation rather than per turn. Current figures are on the [Evidence Pack](/evidence-pack.html), computed by scripts/confusion_matrix.py . Corrected in November 2026: this entry first called the corpus "real-world voice AI conversations". The corpus is synthetic. The figures are left as published.
 
 [Evidence Pack](/evidence-pack.html)
 
@@ -90,6 +90,8 @@ We are actively seeking payer and provider organizations to run a 90-day shadow 
 *January 2026 · Open Proposal*
 
 NHID-Clinical was submitted as a public comment to NIST docket NIST-2025-0035 (AI-agent security). Comment ID: NIST-2025-0035-0026. This is a public comment — not a regulatory filing or endorsement. The RFI drew 932 public comments in total before the period closed in March 2026.
+
+Correction (November 2026): this public comment calls NHID-Clinical "an open-source governance standard". That was wrong. NHID-Clinical is an independent research project and open framework, not a standard. The comment is a public record and cannot be edited.
 
 [View on Regulations.gov](https://www.regulations.gov/comment/NIST-2025-0035-0026)
 

@@ -184,7 +184,7 @@ def build() -> dict:
         "engine": "src/nhid_policy_engine_v1.py :: evaluate_all",
         "note": (
             "Every action, reason code and violation below is the engine's own "
-            "output, recorded by replaying real corpus scenarios. Nothing here "
+            "output, recorded by replaying synthetic corpus scenarios. Nothing here "
             "is written by hand."
         ),
         "scenarios": [],

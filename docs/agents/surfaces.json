@@ -214,6 +214,57 @@
       "must_not_contain": {
         "faq.html": ["realizes they are not speaking to a human"]
       }
+    },
+    {
+      "id": "readme-what-it-is-not",
+      "fact": "The README opens with what the project is (an independent research project and open reference implementation) and what it is not (not a standard, not certified, not deployed or adopted by any payer or provider), in the words of docs/claim-boundaries.md#stage.",
+      "must_contain": {
+        "README.md": ["**What it is:** an independent research project and open reference implementation", "**What it is not:** not a standard, not certified, and not deployed or adopted by any payer or provider"]
+      },
+      "must_not_contain": {}
+    },
+    {
+      "id": "evidence-is-synthetic",
+      "fact": "Every evidence figure comes from test sets the project wrote itself (synthetic corpora and its own test suite), not from a real deployment; the Fabricate corpus is authored, not observed (docs/claim-boundaries.md, maturity boundaries).",
+      "must_contain": {
+        "evidence-pack.html": ["None comes from a real deployment", "550 synthetic conversations", "Detection rates on a synthetic corpus", "91.5% (synthetic corpus)", "2/9 = 22.2% on the hand-authored Governance corpus", "Synthetic failure trace example"],
+        "scripts/generate_pdfs.py": ["not from a real deployment", "synthetic conversations", "2 of 9 (22.2%)"],
+        "docs/NHID-Clinical-Playbook.md": ["550 synthetic voice AI conversations", "2/9 (22.2%)"]
+      },
+      "must_not_contain": {
+        "evidence-pack.html": ["Real-corpus", "real-corpus", "real conversational phrasing", "observed behavior patterns", "continuously against your production agents"],
+        "scripts/generate_pdfs.py": ["Real-Corpus", "real conversational phrasing", "observed behavior patterns"],
+        "specs/index.html": ["real-corpus detection evidence", "an anonymized failure trace"],
+        "docs/NHID-Clinical-Playbook.md": ["550 real-world", "Governance corpus 9/9"],
+        "docs/release-history.md": ["550 real-world", "real conversational phrasing"],
+        "feed.xml": ["550 real-world", "real conversational phrasing"],
+        "assets/media/front-desk-walkthrough.html": ["real corpus scenarios"],
+        "assets/data/gateway-trace.json": ["real corpus scenarios"],
+        "assets/data/walkthrough-trace.json": ["real corpus scenarios"],
+        "developers.html": ["five real corpus scenarios"]
+      }
+    },
+    {
+      "id": "nist-comment-correction",
+      "fact": "The NIST public comment NIST-2025-0035-0026 (January 2026) called NHID-Clinical a governance standard; every page that discusses the comment carries a dated correction, because the comment itself cannot be edited (docs/claim-boundaries.md#standards-posture).",
+      "must_contain": {
+        "README.md": ["Correction (November 2026)"],
+        "about.html": ["Correction (November 2026)"],
+        "faq.html": ["Correction (November 2026)"],
+        "regulatory-alignment.html": ["Correction (November 2026)"],
+        "docs/release-history.md": ["Correction (November 2026)"]
+      },
+      "must_not_contain": {}
+    },
+    {
+      "id": "impersonation-latency-name",
+      "fact": "The metric is named Impersonation Latency everywhere (docs/terminology.md); it is not renamed disclosure latency.",
+      "must_contain": {
+        "docs/claim-boundaries.md": ["Impersonation Latency is measured on recorded traffic"]
+      },
+      "must_not_contain": {
+        "docs/claim-boundaries.md": ["Disclosure latency is measured"]
+      }
     }
   ],
   "generated": [
