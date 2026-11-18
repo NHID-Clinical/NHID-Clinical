@@ -133,7 +133,7 @@ question.
 | "Mapped to NIST AI RMF and ISO/IEC 42001; designed to support the disclosure obligation described in EU AI Act Article 50(1)." | "Compliant with / certified against" any of them. |
 | "A voluntary open proposal with standards-oriented artifacts." | "An emerging standard." / "The standard for AI agents in healthcare." / "A standards candidate" (implies a formal standards process has started). |
 | "Reference implementation; revocation is durable **within a deployment** but does not propagate across organizations; key custody, rotation and federation are documented but not built." | "Production-ready." / "Enterprise infrastructure." |
-| "Disclosure latency is measured on recorded traffic; the framework does not detect covert agents." | "Detects unauthorized/rogue AI callers." |
+| "Impersonation Latency is measured on recorded traffic; the framework does not detect covert agents." | "Detects unauthorized/rogue AI callers." |
 | "Delegation makes compromise scoped and revocable rather than unbounded." | "Prevents impersonation / fraud." |
 | "The controls evaluate what an agent says about **itself** and **when** it exchanges data; they do not verify that any result the agent reports is true." | "Detects AI agents that lie." / "Catches hallucinated or fabricated results." |
 

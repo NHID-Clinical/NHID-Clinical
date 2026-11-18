@@ -2016,7 +2016,7 @@ def make_v13_overview():
 
 def make_evidence_pack():
     """Procurement/security-facing evidence summary — mirrors evidence-pack.html.
-    Tested engine properties, real-corpus detection evidence, a sample failure
+    Tested engine properties, synthetic-corpus detection evidence, a sample failure
     trace, and the audit-readiness model. Content faithful to the website page."""
     path = os.path.join(OUT_DIR, "NHID-Clinical-Evidence-Pack.pdf")
     doc = SimpleDocTemplate(path, pagesize=letter,
@@ -2037,11 +2037,12 @@ def make_evidence_pack():
 
     story.append(ExecutiveSummary([
         ("What it is",
-         "A summary of the tested engine properties, real-corpus detection evidence, a sample "
-         "failure trace, and the audit-readiness model behind the reference implementation."),
+         "A summary of the tested engine properties, detection figures on synthetic test corpora, "
+         "a sample failure trace, and the audit-readiness model behind the reference implementation. "
+         "Every figure comes from test sets this project wrote itself, not from a real deployment."),
         ("Why it matters",
          "Teams evaluating adoption need to see which engine properties are tested, how it behaves against "
-         "real conversational phrasing, and what an auditor could reconstruct from the event store."),
+         "varied synthetic phrasing, and what an auditor could reconstruct from the event store."),
         ("Operational impact",
          "Everything here is self-attested and open for community review. NHID-Clinical does not "
          "issue certifications, conduct audits, or validate vendor implementations."),
@@ -2059,8 +2060,8 @@ def make_evidence_pack():
          "Any stored trace can be replayed. Policy version is embedded in each event header; "
          "version mismatches are flagged."),
         ("Failure invariants",
-         "The engine never raises an unhandled exception. Malformed input returns a deterministic "
-         "error trace; the caller always gets a response."),
+         "In the failure-injection tests, no malformed input raises an unhandled exception. Each "
+         "returns a deterministic error trace, so the caller always gets a response."),
         ("Idempotency",
          "Submitting the same request_id twice produces the same result — no duplicate state "
          "transitions and no double-counted events."),
@@ -2075,12 +2076,13 @@ def make_evidence_pack():
         story.append(tbl)
         story.append(Spacer(1, 0.08 * inch))
 
-    _section(story, "2 · Real-Corpus Detection Rates", H1)
+    _section(story, "2 · Detection Rates on a Synthetic Corpus", H1)
     _cm = _corpus_detection_rates()
     story.append(Paragraph(
         "The CTS YAML suite validates the policy engine against synthetic, hand-authored cases. "
-        "To check behavior against real conversational phrasing, the engine is also replayed "
-        f"against the Fabricate Battle-Test Corpus \u2014 {_cm['n_conversations']} conversations, of "
+        "To check behavior against more varied phrasing, the engine is also replayed "
+        f"against the Fabricate Battle-Test Corpus \u2014 {_cm['n_conversations']} synthetic conversations, "
+        "generated with the Tonic Fabricate synthetic-data tool and not recorded from real calls, of "
         f"which {_cm['n_compliant']} are labelled scenario_type=compliant. Detection and false "
         "positives are measured on disjoint populations, per conversation \u2014 not per turn. "
         "Detection is the share of conversations declaring a violation in which that control "
@@ -2102,15 +2104,17 @@ def make_evidence_pack():
         "measurement, not a score of zero. ATR-01 remains one of the five canonical controls; the "
         "supplemental rule is bot-to-bot. The harness also drops PDX-01 expectations where "
         "disclosure occurs at turn 0, because the probe is then post-disclosure. Self-reported, "
-        "not independently audited, and not a conformance claim.",
+        "not independently audited, and not a conformance claim. DBC-01 on two test sets, side by "
+        "side: 183 of 200 (91.5%) on this synthetic corpus, 2 of 9 (22.2%) on the hand-authored "
+        "Governance Evaluation Corpus. Neither is a real-world rate.",
         SMALL
     ))
     story.append(Spacer(1, 0.12 * inch))
 
-    _section(story, "3 · Anonymized Failure Trace Example", H1)
+    _section(story, "3 · Synthetic Failure Trace Example", H1)
     story.append(Paragraph(
-        "The example below is synthetic — constructed from observed behavior patterns, with all "
-        "identifying information removed. No real PHI, no real provider data.",
+        "The example below is synthetic: written for this page, not taken from a real call. "
+        "Identifier fields are shown as [REDACTED]. No real PHI, no real provider data.",
         SMALL
     ))
     story.append(Spacer(1, 0.05 * inch))

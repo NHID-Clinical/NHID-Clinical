@@ -270,7 +270,7 @@ that introduced no net change.
 | Governance corpus | **25** scenarios, **55** turns | `scripts/eval_corpus.py` |
 | Governance detection | **23/32 = 71.9%** | `scripts/eval_corpus.py` |
 | Governance false positives | 0 of 5 compliant scenarios | `scripts/eval_corpus.py` |
-| Adversarial corpus | **40** scenarios | length of `tests/adversarial_corpus_v1.json` |
+| Adversarial corpus | **67** scenarios | length of `tests/adversarial_corpus_v1.json` |
 
 **One figure could not be reconciled and is not published.** A metric of
 *"1,005 automated conformance tests passing · 18 currently skipped"*, and a

@@ -231,7 +231,7 @@ def build() -> dict[str, Any]:
         "engine": "src/nhid_policy_engine_v1.py :: evaluate_all",
         "note": (
             "Every action, reason code, violation and per-control verdict below "
-            "is the engine's own output, recorded by replaying real corpus "
+            "is the engine's own output, recorded by replaying synthetic corpus "
             "scenarios. Scenario inputs are copied from the corpus unchanged. "
             "Nothing here is written by hand."
         ),

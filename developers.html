@@ -222,7 +222,7 @@
           <li><span class="verb">POST</span><span class="path">/v1/conformance/check<small>Any v1.3 event in, a structured policy decision out. Requires <code>x-api-key</code>.</small></span></li>
           <li><span class="verb">POST</span><span class="path">/v1/adapters/{vapi|twilio|vonage|retell|connect}/check<small>Your platform's native payload in; no NHID schema, no key.</small></span></li>
         </ul>
-        <p>Base: <code>https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod</code></p>
+        <p>Hosted demo, synthetic data only; rate-limited and may be taken down. Base: <code>https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod</code></p>
         <div class="card-foot"><a class="action-button action-button-secondary" href="#quick-start">How to call it &rarr;</a></div>
       </aside>
     </div>
@@ -305,7 +305,7 @@
 
           <p>Before the schemas and YAML below, here is what the engine returns on a call, turn by turn. All five controls are evaluated on <em>every</em> turn and resolved by priority, so the screen shows five rows every time &mdash; there is no pipeline and no sequence of gates. Watch the IDG&#8209;01 failure in particular: IDG&#8209;01 returns <code>DISCLOSE_IDENTITY</code> while the composite is <code>DENY_DATA</code>, because PDX&#8209;01 outranks it. Open any row for that control's <code>rule_engine.config</code>. ATR&#8209;01 sits below the rule &mdash; it gates nothing, and is written on every turn whatever the other four returned.</p>
           <div class="readout-frame">
-        <iframe id="walkthrough-frame" src="/assets/media/front-desk-walkthrough.html" title="Interactive readout of what NHID-Clinical's five v1.3 controls return, turn by turn, on five real corpus scenarios" loading="lazy" style="display:block;width:100%;height:820px;border:0" sandbox="allow-scripts"></iframe>
+        <iframe id="walkthrough-frame" src="/assets/media/front-desk-walkthrough.html" title="Interactive readout of what NHID-Clinical's five v1.3 controls return, turn by turn, on five synthetic corpus scenarios" loading="lazy" style="display:block;width:100%;height:820px;border:0" sandbox="allow-scripts"></iframe>
       </div>
       <script>
         /* The scene reports its own height, so the frame is never a fixed box with
