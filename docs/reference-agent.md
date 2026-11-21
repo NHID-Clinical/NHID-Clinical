@@ -30,8 +30,10 @@ organization. The code paths share no keys and no state.
 
 ## One gated turn
 
-Before Ida says a member ID, a date of birth or a claim number, her `nhid_gate`
-tool calls `POST /v1/ida/gate` with the sentence she plans to say. Then:
+Ida never volunteers a patient identifier: she gives one only when the
+representative asks for it (archive §19.39). Before she says a member ID, a date of
+birth or a claim number, her `nhid_gate` tool calls `POST /v1/ida/gate` with the
+sentence she plans to say. Then:
 
 1. **Delegation.** The practice signs a delegation for this one call. It holds
    Ida's public key, the call id, the scope (`claim_status`, the claim-status

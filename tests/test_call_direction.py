@@ -256,6 +256,10 @@ def test_our_own_scripted_caller_never_volunteers_a_patient_identifier():
     lines = [(f"hero[{i}]", t["speech_text"]) for i, t in enumerate(HERO_TURNS)
              if t["speaker"] == "agent"]
     lines += [("a2a.DISCLOSE", a2a.DISCLOSE), ("a2a.ASK", a2a.ASK), ("a2a.PA_ASK", a2a.PA_ASK)]
+    prompt = (ROOT / "agents" / "ida_system_prompt.md").read_text(encoding="utf-8")
+    first = re.search(r"```first_message\n(.*?)\n```", prompt, re.S)
+    assert first, "agents/ida_system_prompt.md has no first_message block"
+    lines.append(("ida_system_prompt.md first_message", first.group(1)))
     bad = [f"{where}: {text!r}" for where, text in lines if volunteers.search(text)]
     assert not bad, "scripted caller volunteers a patient identifier:\n" + "\n".join(bad)
 
@@ -266,3 +270,9 @@ def test_the_volunteering_check_would_catch_the_old_lines():
     for line in ("The member ID is RVD-204-7731 and the claim number is 48213. What's its status?",
                  "The member ID is RVD-204-7731 and the claim number is 9921-0417. What's the status?"):
         assert volunteers.search(line), line
+
+
+def test_idas_elevenlabs_prompt_forbids_volunteering():
+    prompt = (ROOT / "agents" / "ida_system_prompt.md").read_text(encoding="utf-8")
+    assert "Never volunteer a patient identifier" in prompt
+    assert "only when the representative asks" in prompt
