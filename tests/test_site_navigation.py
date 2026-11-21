@@ -416,15 +416,25 @@ def test_font_families():
     30 Oct 2026 drafting redesign, assets/css/drafting.css), Inter sets body
     text, IBM Plex Mono sets code and control IDs. The 25 Oct audit had cut
     the site to Inter alone; headings were reopened on purpose, body text was
-    not. Raleway, the family the audit removed, stays out."""
+    not. Raleway, the family the audit removed, stays out.
+
+    The faces are served from this origin (assets/fonts/web/fonts.css), not
+    from Google Fonts: a page view no longer reaches a third-party host
+    before it renders, so no page may link to one."""
     assert "Raleway" not in read("nhid-clinical-ui.css")
+    sheet = read("assets/fonts/web/fonts.css")
+    families = sorted(set(re.findall(r'font-family: "([^"]+)"', sheet)))
+    assert families == ["IBM Plex Mono", "Inter", "Space Grotesk"], f"fonts.css declares {families}"
+    for src in re.findall(r"url\(([^)]+)\)", sheet):
+        assert src.startswith("/assets/fonts/web/"), f"{src}: must be absolute, the build bundles this sheet"
+        assert os.path.isfile(os.path.join(REPO_ROOT, src.lstrip("/"))), f"{src} is missing"
     for page in PUBLISHED:
         html = read(page)
         assert "Raleway" not in html, f"{page} still loads Raleway"
-        m = re.search(r'fonts\.googleapis\.com/css2\?([^"]+)"', html)
-        assert m, f"{page} loads no Google Fonts stylesheet"
-        families = sorted(f.split(":")[0].replace("+", " ") for f in re.findall(r"family=([^&]+)", m.group(1)))
-        assert families == ["IBM Plex Mono", "Inter", "Space Grotesk"], f"{page} loads {families}"
+        assert "fonts.googleapis.com" not in html and "fonts.gstatic.com" not in html, (
+            f"{page} still contacts Google Fonts"
+        )
+        assert '<link rel="stylesheet" href="/assets/fonts/web/fonts.css"/>' in html, f"{page} does not load the site fonts"
 
 
 @pytest.mark.parametrize("page", PUBLISHED)
