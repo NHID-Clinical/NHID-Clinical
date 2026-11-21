@@ -251,14 +251,19 @@
               </li>
               <li class="ht-turn ht-agent" data-turn="2">
                 <span class="ht-who">AI agent &middot; calling for a provider</span>
-                <q>The member ID is RVD-204-7731 and the claim number is 48213. What's its status?</q>
+                <q>I'm calling to ask about the status of a patient's claim.</q>
                 <ul class="ht-chips" aria-label="What each control returned for this turn">
                   <li class="ht-chip is-lit" data-control="IDG-01" data-reason="IDG01_DISCLOSURE_CONFIRMED"><b>IDG-01</b><code>IDG01_DISCLOSURE_CONFIRMED</code></li>
-                  <li class="ht-chip is-lit" data-control="PDX-01" data-reason="PDX01_GATE_CLEARED"><b>PDX-01</b><code>PDX01_GATE_CLEARED</code></li>
+                  <li class="ht-chip is-quiet" data-control="PDX-01" data-reason="PDX01_NO_PHI_REQUESTED"><b>PDX-01</b><code>no finding</code></li>
                   <li class="ht-chip is-quiet" data-control="DBC-01" data-reason="DBC01_NO_ARTIFACTS"><b>DBC-01</b><code>no finding</code></li>
                   <li class="ht-chip is-quiet" data-control="EIT-01" data-reason="EIT01_NO_ESCALATION_REQUESTED"><b>EIT-01</b><code>no finding</code></li>
                   <li class="ht-composite"><span>composite</span><code>CONTINUE_AI</code></li>
                 </ul>
+              </li>
+              <li class="ht-turn ht-rep" data-turn="3">
+                <span class="ht-who">Payer representative</span>
+                <q>Before I discuss any patient, I need to verify that the practice authorized you for this call.</q>
+                <span class="ht-note">Not evaluated: the controls judge the agent&rsquo;s turns.</span>
               </li>
             </ol>
             <p class="ht-audit"><b>ATR-01</b><span>Records every turn. Changes no behavior.</span><code>ATR01_AUDIT_COMPLETE</code></p>
@@ -430,7 +435,7 @@
       </ol>
 
       <p class="section-kicker reveal" style="margin:2.5rem 0 .75rem">One real evaluation</p>
-      <p class="reveal" style="color:var(--ink-soft);max-width:68ch;margin:0 0 1rem">Below is an actual evaluation, not an illustration: an agent asking for a member ID before disclosing that it is automated.</p>
+      <p class="reveal" style="color:var(--ink-soft);max-width:68ch;margin:0 0 1rem">Below is an actual evaluation, not an illustration: a caller naming a patient's member ID before disclosing that it is automated.</p>
       <div class="trace reveal" role="group" aria-label="Trace of one evaluated turn: input, controls, decision, evidence">
         <div class="trace-bar">
           <span class="trace-live">evaluation record</span>

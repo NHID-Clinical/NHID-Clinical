@@ -204,7 +204,7 @@ def test_ida_speaks_first_in_the_live_runner():
             self.sent.append(_json.loads(raw))
             if "user_transcript" in raw:
                 self.inbox.append({"type": "agent_response", "agent_response_event": {
-                    "agent_response": "The member ID is RVD-204-7731."}})
+                    "agent_response": "I'm calling to ask about the status of a patient's claim."}})
 
         async def recv(self):
             if not self.inbox:
@@ -237,3 +237,32 @@ def test_ida_speaks_first_in_the_live_runner():
         runner._WS_OK, runner.websockets = orig
     assert transcript[0]["role"] == "agent"
     assert "automated" in transcript[0]["message"]
+
+
+def test_our_own_scripted_caller_never_volunteers_a_patient_identifier():
+    """The caller-agent is the requester whose identity and authority are
+    unproven (CLAUDE.md §1). In the scripts we publish as the model of a good
+    caller (the home-page hero, Ida's robot-to-robot lines), it names no patient
+    until the receiving side has verified it and asked. Archive §19.39.
+
+    The adversarial corpus is deliberately out of scope: its agents volunteer
+    identifiers on purpose, because those are the violations the engine must
+    catch."""
+    from scripts.build_gateway_fixture import HERO_TURNS
+    from src import agent_to_agent as a2a
+
+    volunteers = re.compile(r"\d{3,}|member id|date of birth|\bdob\b|claim number",
+                            re.IGNORECASE)
+    lines = [(f"hero[{i}]", t["speech_text"]) for i, t in enumerate(HERO_TURNS)
+             if t["speaker"] == "agent"]
+    lines += [("a2a.DISCLOSE", a2a.DISCLOSE), ("a2a.ASK", a2a.ASK), ("a2a.PA_ASK", a2a.PA_ASK)]
+    bad = [f"{where}: {text!r}" for where, text in lines if volunteers.search(text)]
+    assert not bad, "scripted caller volunteers a patient identifier:\n" + "\n".join(bad)
+
+
+def test_the_volunteering_check_would_catch_the_old_lines():
+    volunteers = re.compile(r"\d{3,}|member id|date of birth|\bdob\b|claim number",
+                            re.IGNORECASE)
+    for line in ("The member ID is RVD-204-7731 and the claim number is 48213. What's its status?",
+                 "The member ID is RVD-204-7731 and the claim number is 9921-0417. What's the status?"):
+        assert volunteers.search(line), line

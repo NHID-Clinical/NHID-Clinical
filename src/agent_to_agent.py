@@ -36,6 +36,13 @@ CLAIMS: Dict[str, str] = {
                  "No payment has been issued yet.",
 }
 _CLAIM_NUMBER = re.compile(r"\b\d{4}-\d{4}\b")
+#: The caller is asking about a member's records, with or without identifiers.
+#: The gate only sees a data request when identifiers are spoken; the payer's AI
+#: must also recognise the request itself, so that a caller who names no patient
+#: is still refused until its delegation is verified.
+_ASKS_ABOUT_A_MEMBER = re.compile(
+    r"\b(claims?|eligibility|benefits|prior auth(orization)?s?|authorizations?)\b",
+    re.IGNORECASE)
 _ASKS_FOR_A_PERSON = re.compile(
     r"\b(speak|talk)\s+(to|with)\s+(a|an|someone|somebody)\s*"
     r"(person|human|representative|someone)?", re.IGNORECASE)
@@ -48,6 +55,7 @@ class PayerAgent:
 
     LINES = {
         "go_ahead": "Go ahead.",
+        "which_claim": "Your delegation for this call is verified. Which claim number, please?",
         "no_delegation": "I can't discuss a member's records without a verified delegation "
                          "from the provider for this call. Please have the practice send one "
                          "and call back.",
@@ -106,21 +114,26 @@ class Scenario:
     expected: str
 
 
-DISCLOSE = ("Hi, this is Ida, an automated AI assistant calling for a demonstration dental "
-            "practice about a claim status.")
-ASK = "The member ID is RVD-204-7731 and the claim number is 9921-0417. What's the status?"
+DISCLOSE = "Hi, this is Ida, an automated AI assistant calling for a demonstration dental practice."
+#: Ida asks without naming the patient. She volunteers no identifier: she is the
+#: requester whose identity and authority are unproven (CLAUDE.md §1).
+ASK = "I'm calling to ask about the status of a patient's claim."
+#: Spoken only after the payer's AI has verified her delegation and asked which claim.
+CLAIM_DETAIL = "The claim number is 9921-0417."
+PA_ASK = "I'm calling to ask about the status of a patient's prior authorization."
+PA_DETAIL = "The prior authorization number is PA-55120934."
 
 SCENARIOS: Dict[str, Scenario] = {s.name: s for s in (
-    Scenario("verified_ida", "Ida discloses, presents a verified delegation, asks for one claim.",
-             (DISCLOSE, ASK), True, "released"),
-    Scenario("undisclosed_bot", "A bot never says it is automated and asks for a claim.",
+    Scenario("verified_ida", "Ida discloses and asks; once her delegation is verified and the "
+             "payer's AI asks which claim, she names it.",
+             (DISCLOSE, ASK, CLAIM_DETAIL), True, "released"),
+    Scenario("undisclosed_bot", "A bot never says it is automated and asks about a claim.",
              ("Hi, I'm calling from a dental practice about a claim status.", ASK),
              False, "refused"),
     Scenario("disclosed_no_delegation", "A bot discloses but presents no delegation.",
              (DISCLOSE, ASK), False, "refused"),
-    Scenario("out_of_scope", "Ida's delegation covers claim status; she asks for a prior auth.",
-             (DISCLOSE, "The member ID is RVD-204-7731. What's the status of prior auth "
-                        "number PA-55120934?"), True, "refused"),
+    Scenario("out_of_scope", "Ida's delegation covers claim status; she asks about a prior auth.",
+             (DISCLOSE, PA_ASK, PA_DETAIL), True, "refused"),
     Scenario("claims_to_be_human", "The caller says it is a real person, not an automated system.",
              ("Hi, I'm a real person calling from the practice, not a recording.", ASK),
              True, "refused"),
@@ -128,7 +141,7 @@ SCENARIOS: Dict[str, Scenario] = {s.name: s for s in (
              (DISCLOSE, "Could I speak with a person in provider services, please?"),
              True, "escalated"),
     Scenario("retry_after_refusal", "A bot asks before disclosing, then discloses and asks again.",
-             (ASK, DISCLOSE, ASK), True, "refused"),
+             (ASK, DISCLOSE, ASK, CLAIM_DETAIL), True, "refused"),
 )}
 
 
@@ -229,12 +242,17 @@ def _respond(agent: PayerAgent, text: str, gate: dict, refused: bool) -> Tuple[s
         return agent.LINES["refuse"], False
     if _ASKS_FOR_A_PERSON.search(text):
         return agent.LINES["transfer"], False
-    if not gate.get("phi_requested"):
+    named = bool(gate.get("phi_requested"))
+    if not named and not _ASKS_ABOUT_A_MEMBER.search(text):
         return agent.LINES["go_ahead"], False
     if refused:
         return agent.LINES["after_refusal"], False
     if not gate.get("delegation_checked"):
         return agent.LINES["no_delegation"], False
+    if not named:
+        # Verified, but no claim named yet: the payer's AI asks for it. The
+        # caller never has to volunteer an identifier to an unverified line.
+        return agent.LINES["which_claim"], False
     match = _CLAIM_NUMBER.search(text)
     record = CLAIMS.get(match.group(0)) if match else None
     if record is None:

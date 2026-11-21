@@ -48,10 +48,10 @@ this block is current and the entry is history.
 
 | Fact | Value | Source of truth |
 |---|---|---|
-| `UNIT_PUBLISHED` | **2655** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
+| `UNIT_PUBLISHED` | **2660** | `scripts/validate_ci.py` — published reference, **not** a CI gate |
 | `SKIP_EXPECTED` | **0** | `scripts/validate_ci.py` |
 | `XFAIL_EXPECTED` | **0** | `scripts/validate_ci.py` |
-| Suite, API running | **2655 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
+| Suite, API running | **2660 passed, 0 skipped, 0 xfailed** | `python -m pytest tests/ -q` |
 | Suite, no API | **1192 passed, 21 skipped** | the same command with nothing on :8000 | <!-- drift-ok: no-API measurement, legitimately not the published count -->
 | Collected | **1222** across **68** files | `pytest --collect-only -q` |
 | TypeScript middleware | **66 passed**, 4 suites | `npm ci && npx jest --runInBand` in `middleware/` — separate suite, **not** in `UNIT_PUBLISHED`; re-derived 2026-10-16 |
@@ -1522,7 +1522,7 @@ git clone https://github.com/NHID-Clinical/NHID-Clinical.git
 cd NHID-Clinical
 pip install -r requirements.txt
 python -m pytest tests/ -v
-# Expected: 2655 passed, 0 skipped, 0 xfailed — with the API running.
+# Expected: 2660 passed, 0 skipped, 0 xfailed — with the API running.
 # Without a server on :8000, 1192 pass and 21 skip (the integration tests). Measured 2026-10-16.
 ```
 
@@ -1793,7 +1793,7 @@ As of 2026-10-16 (`main`):
 
 > Know who your AI voice agents are before they exchange healthcare operations data.
 > NHID-Clinical is an open, testable control and evidence layer for provider-to-payer AI calls.
-> 5 controls · 2655 passing tests · machine-readable traces · open implementation
+> 5 controls · 2660 passing tests · machine-readable traces · open implementation
 
 The earlier line — "A voluntary behavioral baseline … 4 controls. 5 tests. One live API. No signup
 required." — is history; it predates ATR-01 being counted as the fifth control.
@@ -1823,7 +1823,7 @@ Expected response:
 
 ```markdown
 [![CI](https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg)](...)
-[![Tests](https://img.shields.io/badge/python%20tests-2655%20passing-brightgreen)](...)
+[![Tests](https://img.shields.io/badge/python%20tests-2660%20passing-brightgreen)](...)
 [![Version](https://img.shields.io/badge/version-v1.3-0b6ebc)](...)
 [![Code](https://img.shields.io/badge/code-Apache--2.0-lightgrey)](...)
 [![Spec](https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey)](...)
@@ -2491,6 +2491,45 @@ binding constraint is not a missing capability.
 
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
+
+### 19.39 Our scripted caller no longer volunteers patient identifiers — 2026-11-21
+
+Brianna caught it: the scripts we publish as the model of a good caller had the
+agent hand out the patient's member ID and claim number unprompted. That covered
+the home-page hero (§19.36), Ida's robot-to-robot request line and the Vapi
+description. The caller-agent is the requester whose identity and authority are
+unproven (CLAUDE.md §1). It should name no patient until the receiving side has
+verified it and asked.
+
+**Decisions.**
+- **The hero.** The agent asks "I'm calling to ask about the status of a patient's
+  claim." and the representative answers "Before I discuss any patient, I need to
+  verify that the practice authorized you for this call." PDX-01 now reports
+  `PDX01_NO_PHI_REQUESTED` on that turn instead of `PDX01_GATE_CLEARED`, because no
+  identifier was spoken. That is the engine's real output for the new words. The
+  hero now shows the receiving side's control (verify first), not a cleared gate.
+- **Robot to robot.** Ida's `ASK` names no patient. The reference payer AI recognises
+  a request about a member's records without identifiers, so an unverified caller is
+  refused before it says anything identifying. A verified caller is asked "Which
+  claim number, please?" (`which_claim`), and only then gives `CLAIM_DETAIL`. All
+  seven scenarios keep their outcomes, offline and over the Vapi route. This is the
+  payer AI's own rule; no control changed.
+- **The guard.** `tests/test_call_direction.py` now fails if the hero or Ida's
+  scripted request lines volunteer an identifier. The adversarial corpus is
+  deliberately excluded: its agents volunteer identifiers on purpose, as the
+  violations the engine must catch.
+- **The home page's "one real evaluation" caption** said "an agent asking for a
+  member ID", which reads as the agent asking the payer for the patient's ID. It now
+  says "a caller naming a patient's member ID before disclosing that it is
+  automated", which is what the trace shows.
+
+**Not changed, and why.** The engine still recognises a data request by the
+identifiers a caller speaks. That is how PDX-01 catches a caller that names a patient
+before disclosing. Gate inputs in tests and docs that put identifiers in an agent's
+mouth (`docs/elevenlabs-demo.md`, `tests/test_ida_reference_agent.py`,
+`scripts/ida_demo_credentials.py`, the ElevenLabs Ida prompt) exercise that check and
+are left as they are, pending Brianna's call on the ElevenLabs prompt. No pinned
+baseline moved.
 
 ### 19.38 Robot to robot, built for live Vapi calls — 2026-11-21
 

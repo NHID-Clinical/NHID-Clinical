@@ -38,6 +38,11 @@ provider, is a different extension: [`payer-initiated-calls.md`](payer-initiated
 
    A caller that disclosed it is automated but presented no delegation is still refused.
    **Disclosure is not authorization.**
+
+   It recognises a request about a member's records even when the caller names no
+   patient, so an unverified caller is refused before it has said anything identifying.
+   A verified caller is asked which claim it means. **The caller never has to volunteer
+   a patient identifier to a line that has not verified it.**
 4. **One refusal ends the protected part of the call.** A later turn that would pass on
    its own does not reopen it.
 5. **It transfers to a person** when the gate escalates, or when the caller asks for one.
@@ -55,7 +60,7 @@ credentials are set. All data is fictional.
 
 | Scenario | What the caller does | Outcome |
 | :-- | :-- | :-- |
-| `verified_ida` | Discloses, presents a verified delegation, asks for one claim | **released** |
+| `verified_ida` | Discloses and asks with no patient identifier; once its delegation is verified and the payer's AI asks which claim, names it | **released** |
 | `undisclosed_bot` | Never says it is automated | **refused** (`BOT2BOT_UNDISCLOSED_AGENT`, then PDX-01) |
 | `disclosed_no_delegation` | Discloses, presents no delegation | **refused** by the payer's AI: the gate allowed the turn, no delegation was verified |
 | `out_of_scope` | Verified for claim status, asks for a prior authorization | **refused** (`PDX01_SCOPE_NOT_AUTHORIZED`) |
@@ -71,7 +76,8 @@ call. Tests: [`tests/test_agent_to_agent.py`](../tests/test_agent_to_agent.py).
 The same rules can run on a real phone call between two Vapi assistants:
 
 - **Ida (the caller-agent)** is an ordinary Vapi assistant. Her first words say she is
-  automated. When invited, she asks for one claim with fictional identifiers. She is
+  automated. She asks about a claim without naming the patient, and gives a claim number
+  only if the payer's AI has verified her delegation and asked for it. She is
   the party the controls judge.
 - **The payer's AI** is a Vapi assistant whose "Custom LLM" is this repository's
   `POST /voice/v1/vapi/payer-llm/chat/completions` route (`src/vapi_payer_llm.py`).

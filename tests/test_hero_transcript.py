@@ -54,7 +54,7 @@ def test_every_chip_is_the_engines_reason_code_for_that_turn(gen, block):
             )
 
 
-def test_the_disclosing_turn_confirms_and_the_request_turn_clears(gen):
+def test_the_disclosing_turn_confirms_and_the_request_names_no_patient(gen):
     """The two things the hero exists to show. If the engine's codes change,
     regenerate the block; do not rewrite this to match."""
     hero = gen.build_hero()
@@ -62,7 +62,9 @@ def test_the_disclosing_turn_confirms_and_the_request_turn_clears(gen):
     first = {c["rule_id"]: c["reason_code"] for c in agent[0]["controls"]}
     last = {c["rule_id"]: c["reason_code"] for c in agent[-1]["controls"]}
     assert first["IDG-01"] == "IDG01_DISCLOSURE_CONFIRMED"
-    assert last["PDX-01"] == "PDX01_GATE_CLEARED"
+    # The caller volunteers no identifier (archive §19.39), so PDX-01 has
+    # no data request to judge on its turn.
+    assert last["PDX-01"] == "PDX01_NO_PHI_REQUESTED"
     for t in agent:
         assert t["audit"]["reason_code"] == "ATR01_AUDIT_COMPLETE"
         assert t["composite"]["action"] == "CONTINUE_AI"
@@ -74,13 +76,22 @@ def test_the_script_is_caller_side(gen):
         if turn["speaker"] != "agent":
             continue
         text = turn["speech_text"].lower()
-        assert "calling" in text or "member id" in text
+        assert "calling" in text
+        assert not re.search(r"\d{3,}|member id|date of birth", text), (
+            f"the hero's caller volunteers a patient identifier: {turn['speech_text']!r}")
         assert not re.search(r"thank you for calling|thanks for calling|how can i help", text), (
             f"receiver-side wording in the hero script: {turn['speech_text']!r}"
         )
     speakers = [t["speaker"] for t in gen.HERO_TURNS]
     assert speakers[0] == "agent", "the agent speaks first: it placed the call"
     assert "representative" in speakers
+
+
+def test_the_representative_asks_the_caller_to_verify(gen):
+    """The hero ends on the receiving side's control: verify before disclosing."""
+    last = gen.HERO_TURNS[-1]
+    assert last["speaker"] == "representative"
+    assert "verify" in last["speech_text"]
 
 
 def test_the_representative_turn_carries_no_chips(block):

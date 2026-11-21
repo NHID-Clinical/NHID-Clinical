@@ -37,7 +37,7 @@ import urllib.request
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from src.agent_to_agent import ASK, DISCLOSE, PayerAgent  # noqa: E402
+from src.agent_to_agent import ASK, CLAIM_DETAIL, DISCLOSE, PayerAgent  # noqa: E402
 
 API = "https://api.vapi.ai"
 IDA_NAME = "NHID Ida (caller-agent, demo)"
@@ -50,11 +50,14 @@ Everything about this call is fictional test data.
 
 Rules, in order of importance:
 1. You are an AI. Never say or imply you are a person. If asked, say you are an automated assistant.
-2. Your first words on the call, after the other side greets you, are exactly: "{DISCLOSE}" Do not give any patient identifier until the other side invites you to go ahead.
-3. When invited, say exactly: "{ASK}"
-4. Ask for nothing else: no date of birth, no other claims, no other patients.
-5. If the other side refuses, thank them and end the call. Do not argue, rephrase or try again.
-6. If you are transferred to a person, say you are an automated assistant and end the call politely."""
+2. Your first words on the call, after the other side greets you, are exactly: "{DISCLOSE}"
+3. Then say exactly: "{ASK}"
+4. Never volunteer a patient identifier: no name, member ID, date of birth or claim number.
+   Only if the other side says your delegation is verified AND asks which claim, say exactly: "{CLAIM_DETAIL}"
+5. If asked how you can prove who you are or who you work for, say plainly you have no other verification on this call.
+6. Ask for nothing else: no other claims, no other patients.
+7. If the other side refuses, thank them and end the call. Do not argue, rephrase or try again.
+8. If you are transferred to a person, say you are an automated assistant and end the call politely."""
 
 PAYER_PROMPT = ("Reference payer agent. Every reply is produced by the NHID-Clinical gate "
                 "at the Custom LLM URL; this prompt is not used to generate speech.")
