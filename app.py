@@ -323,3 +323,61 @@ async def debug_replay(session_id: str):
             status_code=500,
         )
 
+
+
+# ── Vapi: the payer's AI on a live call ─────────────────────────────────────
+# docs/agent-to-agent-calls.md, "Live on Vapi". The caller-agent places the
+# call; the payer's AI answers through this route, and every caller turn is
+# gated before it speaks. src/vapi_payer_llm.py holds the logic.
+
+def _vapi_secret_or_raise(request: Request) -> None:
+    from src.vapi_payer_llm import secret_status
+
+    status, reason = secret_status(request.headers)
+    if status != 200:
+        raise HTTPException(status_code=status, detail=reason)
+
+
+@app.post("/v1/vapi/payer-llm/chat/completions")
+async def vapi_payer_llm(request: Request):
+    """Vapi Custom LLM endpoint for the payer's AI (OpenAI chat-completions)."""
+    from fastapi.responses import StreamingResponse
+    from src import vapi_payer_llm as payer_llm
+
+    _vapi_secret_or_raise(request)
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Request body must be JSON")
+    status, result = payer_llm.answer(body)
+    if status != 200:
+        raise HTTPException(status_code=status, detail=result["error"])
+    gate = result.get("gate") or {}
+    logger.info("vapi payer turn", extra={
+        "session_id": result["call_id"], "outcome": result["outcome"],
+        "gate_action": gate.get("action"), "reason_code": gate.get("reason_code")})
+    if isinstance(body, dict) and body.get("stream") is False:
+        return JSONResponse(payer_llm.completion(result["text"]))
+    return StreamingResponse(payer_llm.stream(result["text"]), media_type="text/event-stream")
+
+
+@app.post("/v1/vapi/events")
+async def vapi_events(request: Request):
+    """Vapi server messages from the CALLER's assistant.
+
+    Only `end-of-call-report` is used: its transcript becomes the usual NHID
+    record through adapters/vapi_adapter.py. Point this at the caller-agent's
+    assistant only. On the payer's own call record the `bot` is the payer's AI,
+    and the adapter would judge the wrong party (CLAUDE.md §1).
+    """
+    from src.vapi_payer_llm import end_of_call_record
+
+    _vapi_secret_or_raise(request)
+    try:
+        body = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Request body must be JSON")
+    status, result = end_of_call_record(body)
+    if status != 200:
+        raise HTTPException(status_code=status, detail=result["error"])
+    return JSONResponse(result)

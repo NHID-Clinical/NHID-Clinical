@@ -138,6 +138,58 @@ def _gate_failure(status: int, body: dict) -> dict:
             "error": body.get("error")}
 
 
+@dataclass
+class CallState:
+    """What the payer's AI remembers across one call.
+
+    Shared by the offline `run_call` and the live Vapi route
+    (`src/vapi_payer_llm.py`), so both apply the same rules turn by turn.
+    """
+    call_id: str
+    heard: str
+    turn_index: int = 0
+    disclosed: bool = False
+    refused: bool = False
+    released: bool = False
+    ended: str = ""                   # "escalated" once the call is handed to a person
+
+
+def take_turn(agent: PayerAgent, state: CallState, text: str, gate_fn) -> Tuple[Turn, Turn]:
+    """One caller turn and the payer AI's answer to it.
+
+    `gate_fn(params)` returns the gate's `(status, body)`: `handler.gate_turn`
+    for a bare caller, or a signer's `gate` for a caller presenting a
+    delegation. Any status other than 200 is treated as DENY_DATA.
+    """
+    from adapters.call_progress_adapter import _detect_disclosure
+
+    params = {"session_id": state.call_id, "turn": text, "turn_index": str(state.turn_index),
+              "heard": state.heard, "disclosed": "true" if state.disclosed else "false",
+              "counterparty": COUNTERPARTY}
+    status, gate = gate_fn(params)
+    if status != 200:
+        gate = _gate_failure(status, gate)
+    caller_turn = Turn("caller", text, gate=gate)
+    state.turn_index += 1
+    state.disclosed = state.disclosed or _detect_disclosure(text)
+
+    reply, release = _respond(agent, text, gate, state.refused)
+    if reply == agent.LINES["transfer"]:
+        state.ended = "escalated"
+    elif reply in (agent.LINES["refuse"], agent.LINES["no_delegation"],
+                   agent.LINES["after_refusal"]):
+        state.refused = True
+    state.released = state.released or release
+    state.heard = reply
+    return caller_turn, Turn("payer_agent", reply, released=release)
+
+
+def outcome_of(state: CallState) -> str:
+    if state.ended:
+        return state.ended
+    return "refused" if state.refused else ("released" if state.released else "no_request")
+
+
 def run_call(scenario: Scenario, *, signer=None, agent: Optional[PayerAgent] = None,
              call_id: Optional[str] = None) -> Call:
     """One call, start to finish: the payer's AI answers, the caller speaks.
@@ -146,43 +198,26 @@ def run_call(scenario: Scenario, *, signer=None, agent: Optional[PayerAgent] = N
     a delegation, each caller turn reaches the gate with the caller's passport
     and a proof over the gate's challenge; otherwise it reaches the gate bare.
     """
-    from adapters.call_progress_adapter import _detect_disclosure
     from functions import handler
 
     agent = agent or PayerAgent()
-    call_id = call_id or f"A2A-{scenario.name}-{uuid.uuid4().hex[:8]}"
     call = Call(scenario.name)
-    heard = agent.greeting()
-    call.turns.append(Turn("payer_agent", heard))
-    disclosed = refused = released = False
+    state = CallState(call_id or f"A2A-{scenario.name}-{uuid.uuid4().hex[:8]}", agent.greeting())
+    call.turns.append(Turn("payer_agent", state.heard))
 
-    for index, text in enumerate(scenario.caller_turns):
-        params = {"session_id": call_id, "turn": text, "turn_index": str(index),
-                  "heard": heard, "disclosed": "true" if disclosed else "false",
-                  "counterparty": COUNTERPARTY}
-        if scenario.presents_delegation and signer is not None:
-            status, gate = signer.gate(params, get_challenge=handler.gate_challenge,
-                                       payer_gate=handler.gate_turn)
-        else:
-            status, gate = handler.gate_turn(params)
-        if status != 200:
-            gate = _gate_failure(status, gate)
-        call.turns.append(Turn("caller", text, gate=gate))
-        disclosed = disclosed or _detect_disclosure(text)
+    if scenario.presents_delegation and signer is not None:
+        def gate_fn(params):
+            return signer.gate(params, get_challenge=handler.gate_challenge,
+                               payer_gate=handler.gate_turn)
+    else:
+        gate_fn = handler.gate_turn
 
-        reply, release = _respond(agent, text, gate, refused)
-        if reply == agent.LINES["transfer"]:
-            call.turns.append(Turn("payer_agent", reply))
-            call.outcome = "escalated"
-            return call
-        if reply in (agent.LINES["refuse"], agent.LINES["no_delegation"],
-                     agent.LINES["after_refusal"]):
-            refused = True
-        released = released or release
-        call.turns.append(Turn("payer_agent", reply, released=release))
-        heard = reply
-
-    call.outcome = "refused" if refused else ("released" if released else "no_request")
+    for text in scenario.caller_turns:
+        caller_turn, reply = take_turn(agent, state, text, gate_fn)
+        call.turns += [caller_turn, reply]
+        if state.ended:
+            break
+    call.outcome = outcome_of(state)
     return call
 
 

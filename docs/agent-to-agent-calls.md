@@ -66,6 +66,45 @@ credentials are set. All data is fictional.
 A delegation from a practice the payer does not trust is refused by DLG-01, like any other
 call. Tests: [`tests/test_agent_to_agent.py`](../tests/test_agent_to_agent.py).
 
+## Live on Vapi
+
+The same rules can run on a real phone call between two Vapi assistants:
+
+- **Ida (the caller-agent)** is an ordinary Vapi assistant. Her first words say she is
+  automated. When invited, she asks for one claim with fictional identifiers. She is
+  the party the controls judge.
+- **The payer's AI** is a Vapi assistant whose "Custom LLM" is this repository's
+  `POST /voice/v1/vapi/payer-llm/chat/completions` route (`src/vapi_payer_llm.py`).
+  - Vapi sends each turn in the OpenAI chat-completions format.
+  - The route runs the caller's newest line through the payer's gate with
+    `counterparty: "ai_agent"`, then streams back the `PayerAgent` line.
+  - It uses `agent_to_agent.take_turn`, the same code as the offline `run_call`. So the
+    payer's AI never speaks a word a free-running model chose, and a test proves every
+    scenario ends the same way live as offline.
+- **Vapi's server secret** is checked on every request (`NHID_VAPI_SECRET`, sent as
+  `X-Vapi-Secret` or a bearer token). In staging and production, a missing secret
+  means 503, not an open route.
+- **After the call**, Ida's `end-of-call-report` goes to `POST /voice/v1/vapi/events` and
+  becomes the usual NHID record through `adapters/vapi_adapter.py`. Only the caller's
+  report is used. On the payer's own call record the "bot" is the payer's AI, and the
+  adapter would judge the wrong party.
+
+**Phase 1 has no delegation.** Ida discloses, then asks, and the payer's AI refuses: the
+gate allowed the turn, but no delegation was verified. That is the expected result.
+Disclosure is not authorization.
+
+**Phase 2 will carry the delegation over the phone line**, through the candidate VER-01
+call verification (`src/call_verification.py`):
+- before dialling, Ida gets a call-scoped token;
+- she speaks its handle;
+- the payer's route redeems it.
+
+Phase 2 is not built yet.
+
+Set it up with `python scripts/vapi_setup.py --public-url https://YOUR-API-HOST`. It
+needs a Vapi API key and the same `NHID_VAPI_SECRET` as the API server; `--call` places
+the test call. Tests: [`tests/test_vapi_payer_llm.py`](../tests/test_vapi_payer_llm.py).
+
 ## One difference worth knowing
 
 With a person on the line, an undisclosed opening turn that asks for nothing gets
@@ -76,8 +115,10 @@ not change it; it is the first time a call path sets `counterparty_type` to `ai_
 
 ## Limits
 
-- **Offline only.** No real call has been placed between two voice agents. The live
-  ElevenLabs runner still has a person answering.
+- **No live call has been placed yet.** The Vapi route and setup script below are built
+  and tested offline, but no real call has run between two voice agents. Until one has,
+  the evidence is the offline tests. The live ElevenLabs runner still has a person
+  answering.
 - **The bot-to-bot rule is disclosure only.** Authority comes from DLG-01, and the
   payer's AI enforces it by refusing when `delegation_checked` is false. The engine does
   not require a delegation just because an AI answered.
