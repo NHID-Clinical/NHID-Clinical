@@ -2492,6 +2492,22 @@ binding constraint is not a missing capability.
 The gating item is recorded in §20.1 as the top priority, above every technical item, because it is
 not a technical item.
 
+### 19.40 Two "observed in production" claims with no evidence behind them — 2026-11-22
+
+`docs/claim-boundaries.md` allows a claim of production observation only with evidence on
+file. Two places made one without it:
+- **The technical specification** called the early-identifier pattern "the canonical
+  failure mode observed in production payer call centers". It now reads "the failure mode
+  this specification addresses (a threat model, not a measured observation)".
+- **Trace 04 and its generator** (`traces/nhid-trace-04-...md`, `tests/trace_generator.py`)
+  stated "Three turns of undisclosed AI operation is the median impersonation latency
+  observed in production payer-caller workflows". That is a statistic nobody measured. It
+  now says three turns is the trace's scenario, not a measured figure, and that no
+  impersonation latency has been measured on real payer calls.
+
+Line counts are unchanged, so references to `trace_generator.py:355` still point at the
+same line. No control, metric or baseline changed.
+
 ### 19.39 Our scripted caller no longer volunteers patient identifiers — 2026-11-21
 
 Brianna caught it: the scripts we publish as the model of a good caller had the
