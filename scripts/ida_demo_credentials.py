@@ -49,10 +49,11 @@ def selftest(values: dict) -> int:
     handler._IDA_SIGNER = None
     status, body = handler.ida_gate({
         "session_id": "CA-selftest-0001",
-        "turn": "The member ID is RVD-204-7731 and the claim number is 9921-0417. What's the status?",
+        # Ida answering the representative's question, never volunteering (archive §19.39).
+        "turn": "The claim number is 9921-0417.",
         "disclosed": "true",
         "turn_index": "2",
-        "heard": "Go ahead.",
+        "heard": "Which claim number, please?",
     })
     print(f"status {status}: action={body.get('action')} reason={body.get('reason_code')} "
           f"allowed={body.get('allowed')} delegation_checked={body.get('delegation_checked')}")

@@ -98,10 +98,15 @@ HERO_TURNS = (
      "turn_count": 0, "phi_accessed": []},
     {"speaker": "representative",
      "speech_text": "Thanks for letting me know. What do you need today?"},
+    # The agent asks without naming the patient: it is the requester whose
+    # identity and authority are unproven, so it volunteers no identifier
+    # (archive §19.39). The representative's answer is the point: verify first.
     {"speaker": "agent",
-     "speech_text": "The member ID is RVD-204-7731 and the claim number is 48213. "
-                    "What's its status?",
-     "turn_count": 2, "phi_accessed": ["member_id", "claim_number"]},
+     "speech_text": "I'm calling to ask about the status of a patient's claim.",
+     "turn_count": 2, "phi_accessed": []},
+    {"speaker": "representative",
+     "speech_text": "Before I discuss any patient, I need to verify that the practice "
+                    "authorized you for this call."},
 )
 #: Reason codes that mean "this control had nothing to judge on this turn".
 #: They render as a muted "no finding" chip; the code itself stays in the markup.
@@ -145,8 +150,8 @@ def build_hero() -> dict:
     """Run the hero script's agent turns through the engine, one control at a time.
 
     Disclosure is carried forward exactly as the corpus replay does it, so the
-    second agent turn is judged as "disclosed before this turn" and PDX-01 can
-    report the gate as cleared rather than tripped.
+    second agent turn is judged as "disclosed before this turn". That turn names
+    no patient, so PDX-01 has no data request to judge.
     """
     agent_positions = [i for i, t in enumerate(HERO_TURNS) if t["speaker"] == "agent"]
     replayed = iter(replay_call([dict(HERO_TURNS[i]) for i in agent_positions],

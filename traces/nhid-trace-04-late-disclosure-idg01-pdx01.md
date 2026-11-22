@@ -34,7 +34,7 @@ The AI agent operated for three turns exchanging PHI without disclosing non-huma
 
 implication
 
-- Three turns of undisclosed AI operation is the median impersonation latency observed in production payer-caller workflows.
+- Three turns of undisclosed operation is this trace's scenario, not a measured figure: no impersonation latency has been measured on real payer calls.
 - PHI (member ID, prior auth number) was exchanged before disclosure, creating potential HIPAA Minimum Necessary compliance exposure.
 - The PDX-01 gate must be enforced on every turn, not just turn zero, to catch delayed disclosure attempts.
 

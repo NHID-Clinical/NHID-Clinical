@@ -36,6 +36,13 @@ CLAIMS: Dict[str, str] = {
                  "No payment has been issued yet.",
 }
 _CLAIM_NUMBER = re.compile(r"\b\d{4}-\d{4}\b")
+#: The caller is asking about a member's records, with or without identifiers.
+#: The gate only sees a data request when identifiers are spoken; the payer's AI
+#: must also recognise the request itself, so that a caller who names no patient
+#: is still refused until its delegation is verified.
+_ASKS_ABOUT_A_MEMBER = re.compile(
+    r"\b(claims?|eligibility|benefits|prior auth(orization)?s?|authorizations?)\b",
+    re.IGNORECASE)
 _ASKS_FOR_A_PERSON = re.compile(
     r"\b(speak|talk)\s+(to|with)\s+(a|an|someone|somebody)\s*"
     r"(person|human|representative|someone)?", re.IGNORECASE)
@@ -48,6 +55,7 @@ class PayerAgent:
 
     LINES = {
         "go_ahead": "Go ahead.",
+        "which_claim": "Your delegation for this call is verified. Which claim number, please?",
         "no_delegation": "I can't discuss a member's records without a verified delegation "
                          "from the provider for this call. Please have the practice send one "
                          "and call back.",
@@ -106,21 +114,26 @@ class Scenario:
     expected: str
 
 
-DISCLOSE = ("Hi, this is Ida, an automated AI assistant calling for a demonstration dental "
-            "practice about a claim status.")
-ASK = "The member ID is RVD-204-7731 and the claim number is 9921-0417. What's the status?"
+DISCLOSE = "Hi, this is Ida, an automated AI assistant calling for a demonstration dental practice."
+#: Ida asks without naming the patient. She volunteers no identifier: she is the
+#: requester whose identity and authority are unproven (CLAUDE.md §1).
+ASK = "I'm calling to ask about the status of a patient's claim."
+#: Spoken only after the payer's AI has verified her delegation and asked which claim.
+CLAIM_DETAIL = "The claim number is 9921-0417."
+PA_ASK = "I'm calling to ask about the status of a patient's prior authorization."
+PA_DETAIL = "The prior authorization number is PA-55120934."
 
 SCENARIOS: Dict[str, Scenario] = {s.name: s for s in (
-    Scenario("verified_ida", "Ida discloses, presents a verified delegation, asks for one claim.",
-             (DISCLOSE, ASK), True, "released"),
-    Scenario("undisclosed_bot", "A bot never says it is automated and asks for a claim.",
+    Scenario("verified_ida", "Ida discloses and asks; once her delegation is verified and the "
+             "payer's AI asks which claim, she names it.",
+             (DISCLOSE, ASK, CLAIM_DETAIL), True, "released"),
+    Scenario("undisclosed_bot", "A bot never says it is automated and asks about a claim.",
              ("Hi, I'm calling from a dental practice about a claim status.", ASK),
              False, "refused"),
     Scenario("disclosed_no_delegation", "A bot discloses but presents no delegation.",
              (DISCLOSE, ASK), False, "refused"),
-    Scenario("out_of_scope", "Ida's delegation covers claim status; she asks for a prior auth.",
-             (DISCLOSE, "The member ID is RVD-204-7731. What's the status of prior auth "
-                        "number PA-55120934?"), True, "refused"),
+    Scenario("out_of_scope", "Ida's delegation covers claim status; she asks about a prior auth.",
+             (DISCLOSE, PA_ASK, PA_DETAIL), True, "refused"),
     Scenario("claims_to_be_human", "The caller says it is a real person, not an automated system.",
              ("Hi, I'm a real person calling from the practice, not a recording.", ASK),
              True, "refused"),
@@ -128,7 +141,7 @@ SCENARIOS: Dict[str, Scenario] = {s.name: s for s in (
              (DISCLOSE, "Could I speak with a person in provider services, please?"),
              True, "escalated"),
     Scenario("retry_after_refusal", "A bot asks before disclosing, then discloses and asks again.",
-             (ASK, DISCLOSE, ASK), True, "refused"),
+             (ASK, DISCLOSE, ASK, CLAIM_DETAIL), True, "refused"),
 )}
 
 
@@ -136,6 +149,58 @@ def _gate_failure(status: int, body: dict) -> dict:
     return {"action": "DENY_DATA", "reason_code": f"GATE_HTTP_{status}", "allowed": False,
             "counterparty": COUNTERPARTY, "delegation_checked": False, "phi_requested": [],
             "error": body.get("error")}
+
+
+@dataclass
+class CallState:
+    """What the payer's AI remembers across one call.
+
+    Shared by the offline `run_call` and the live Vapi route
+    (`src/vapi_payer_llm.py`), so both apply the same rules turn by turn.
+    """
+    call_id: str
+    heard: str
+    turn_index: int = 0
+    disclosed: bool = False
+    refused: bool = False
+    released: bool = False
+    ended: str = ""                   # "escalated" once the call is handed to a person
+
+
+def take_turn(agent: PayerAgent, state: CallState, text: str, gate_fn) -> Tuple[Turn, Turn]:
+    """One caller turn and the payer AI's answer to it.
+
+    `gate_fn(params)` returns the gate's `(status, body)`: `handler.gate_turn`
+    for a bare caller, or a signer's `gate` for a caller presenting a
+    delegation. Any status other than 200 is treated as DENY_DATA.
+    """
+    from adapters.call_progress_adapter import _detect_disclosure
+
+    params = {"session_id": state.call_id, "turn": text, "turn_index": str(state.turn_index),
+              "heard": state.heard, "disclosed": "true" if state.disclosed else "false",
+              "counterparty": COUNTERPARTY}
+    status, gate = gate_fn(params)
+    if status != 200:
+        gate = _gate_failure(status, gate)
+    caller_turn = Turn("caller", text, gate=gate)
+    state.turn_index += 1
+    state.disclosed = state.disclosed or _detect_disclosure(text)
+
+    reply, release = _respond(agent, text, gate, state.refused)
+    if reply == agent.LINES["transfer"]:
+        state.ended = "escalated"
+    elif reply in (agent.LINES["refuse"], agent.LINES["no_delegation"],
+                   agent.LINES["after_refusal"]):
+        state.refused = True
+    state.released = state.released or release
+    state.heard = reply
+    return caller_turn, Turn("payer_agent", reply, released=release)
+
+
+def outcome_of(state: CallState) -> str:
+    if state.ended:
+        return state.ended
+    return "refused" if state.refused else ("released" if state.released else "no_request")
 
 
 def run_call(scenario: Scenario, *, signer=None, agent: Optional[PayerAgent] = None,
@@ -146,43 +211,26 @@ def run_call(scenario: Scenario, *, signer=None, agent: Optional[PayerAgent] = N
     a delegation, each caller turn reaches the gate with the caller's passport
     and a proof over the gate's challenge; otherwise it reaches the gate bare.
     """
-    from adapters.call_progress_adapter import _detect_disclosure
     from functions import handler
 
     agent = agent or PayerAgent()
-    call_id = call_id or f"A2A-{scenario.name}-{uuid.uuid4().hex[:8]}"
     call = Call(scenario.name)
-    heard = agent.greeting()
-    call.turns.append(Turn("payer_agent", heard))
-    disclosed = refused = released = False
+    state = CallState(call_id or f"A2A-{scenario.name}-{uuid.uuid4().hex[:8]}", agent.greeting())
+    call.turns.append(Turn("payer_agent", state.heard))
 
-    for index, text in enumerate(scenario.caller_turns):
-        params = {"session_id": call_id, "turn": text, "turn_index": str(index),
-                  "heard": heard, "disclosed": "true" if disclosed else "false",
-                  "counterparty": COUNTERPARTY}
-        if scenario.presents_delegation and signer is not None:
-            status, gate = signer.gate(params, get_challenge=handler.gate_challenge,
-                                       payer_gate=handler.gate_turn)
-        else:
-            status, gate = handler.gate_turn(params)
-        if status != 200:
-            gate = _gate_failure(status, gate)
-        call.turns.append(Turn("caller", text, gate=gate))
-        disclosed = disclosed or _detect_disclosure(text)
+    if scenario.presents_delegation and signer is not None:
+        def gate_fn(params):
+            return signer.gate(params, get_challenge=handler.gate_challenge,
+                               payer_gate=handler.gate_turn)
+    else:
+        gate_fn = handler.gate_turn
 
-        reply, release = _respond(agent, text, gate, refused)
-        if reply == agent.LINES["transfer"]:
-            call.turns.append(Turn("payer_agent", reply))
-            call.outcome = "escalated"
-            return call
-        if reply in (agent.LINES["refuse"], agent.LINES["no_delegation"],
-                     agent.LINES["after_refusal"]):
-            refused = True
-        released = released or release
-        call.turns.append(Turn("payer_agent", reply, released=release))
-        heard = reply
-
-    call.outcome = "refused" if refused else ("released" if released else "no_request")
+    for text in scenario.caller_turns:
+        caller_turn, reply = take_turn(agent, state, text, gate_fn)
+        call.turns += [caller_turn, reply]
+        if state.ended:
+            break
+    call.outcome = outcome_of(state)
     return call
 
 
@@ -194,12 +242,17 @@ def _respond(agent: PayerAgent, text: str, gate: dict, refused: bool) -> Tuple[s
         return agent.LINES["refuse"], False
     if _ASKS_FOR_A_PERSON.search(text):
         return agent.LINES["transfer"], False
-    if not gate.get("phi_requested"):
+    named = bool(gate.get("phi_requested"))
+    if not named and not _ASKS_ABOUT_A_MEMBER.search(text):
         return agent.LINES["go_ahead"], False
     if refused:
         return agent.LINES["after_refusal"], False
     if not gate.get("delegation_checked"):
         return agent.LINES["no_delegation"], False
+    if not named:
+        # Verified, but no claim named yet: the payer's AI asks for it. The
+        # caller never has to volunteer an identifier to an unverified line.
+        return agent.LINES["which_claim"], False
     match = _CLAIM_NUMBER.search(text)
     record = CLAIMS.get(match.group(0)) if match else None
     if record is None:

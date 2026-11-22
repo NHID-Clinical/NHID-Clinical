@@ -165,10 +165,10 @@
     },
     {
       "id": "robot-to-robot",
-      "fact": "When the payer's own AI answers, the caller is still the agent the controls judge; the gate takes counterparty ai_agent and the reference payer AI releases only after a verified delegation. Offline and deterministic; no payer runs it.",
+      "fact": "When the payer's own AI answers, the caller is still the agent the controls judge; the gate takes counterparty ai_agent and the reference payer AI releases only after a verified delegation. Offline and deterministic; a Vapi route runs the same rules on a live call, but no live call has been placed yet, and no payer runs it.",
       "must_contain": {
         "developers.html": ["counterparty: &quot;ai_agent&quot;", "delegation_checked</code> is true"],
-        "docs/agent-to-agent-calls.md": ["The canonical direction comes first", "Disclosure is not authorization", "Offline only"],
+        "docs/agent-to-agent-calls.md": ["The canonical direction comes first", "Disclosure is not authorization", "No live call has been placed yet", "Live on Vapi", "Only the caller's\n  report is used"],
         "docs/canonical-threat-model.md": ["agent-to-agent-calls.md"],
         "CLAUDE.md": ["agent-to-agent-calls.md"],
         "docs/claim-boundaries.md": ["reference payer-side AI"]

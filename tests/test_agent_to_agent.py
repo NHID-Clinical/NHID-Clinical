@@ -46,6 +46,7 @@ def ida(practice):
 
 # ── the gate knows who answered ─────────────────────────────────────────────
 
+# A raw gate input, not Ida's script: an undisclosed caller naming a patient.
 ASK = "The member ID is RVD-204-7731 and the claim number is 9921-0417. What's the status?"
 
 
@@ -101,8 +102,25 @@ def test_a_disclosed_bot_without_a_delegation_is_refused():
     AI still refuses, because no delegation was verified."""
     call = a2a.run_call(a2a.SCENARIOS["disclosed_no_delegation"], signer=None)
     assert call.outcome == "refused", call.render()
-    ask = next(t for t in call.turns if t.speaker == "caller" and t.gate and t.gate["phi_requested"])
-    assert ask.gate["delegation_checked"] is False
+    ask = next(i for i, t in enumerate(call.turns) if t.speaker == "caller" and t.text == a2a.ASK)
+    assert call.turns[ask].gate["delegation_checked"] is False
+    assert call.turns[ask + 1].text == a2a.PayerAgent.LINES["no_delegation"]
+
+
+def test_ida_never_volunteers_a_patient_identifier():
+    """Ida is the requester whose identity and authority are unproven
+    (CLAUDE.md §1). Her opening and her request name no patient; she gives the
+    claim number only after the payer's AI has verified her delegation and asked."""
+    import re
+    ident = re.compile(r"\d{3,}|member id|date of birth|\bdob\b", re.IGNORECASE)
+    for line in (a2a.DISCLOSE, a2a.ASK, a2a.PA_ASK):
+        assert not ident.search(line), line
+
+
+def test_the_claim_number_is_given_only_after_the_payer_ai_asks_for_it(ida):
+    call = a2a.run_call(a2a.SCENARIOS["verified_ida"], signer=ida)
+    detail = next(i for i, t in enumerate(call.turns) if t.text == a2a.CLAIM_DETAIL)
+    assert call.turns[detail - 1].text == a2a.PayerAgent.LINES["which_claim"]
 
 
 def test_a_delegation_from_an_untrusted_practice_is_refused(practice):

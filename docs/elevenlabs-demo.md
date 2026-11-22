@@ -194,7 +194,8 @@ new threshold and needs a recorded decision before it is added.
 
 The call-progress adapter was written for an agent that **receives** calls, so it
 looked for patient identifiers only in what the human said. Ida is the caller:
-it is the one that says the member ID. The post-call handler gives agent turns the
+when she gives an identifier (only ever because the representative asked for it,
+archive §19.39), it is in her own words. The post-call handler gives agent turns the
 same orientation `/v1/gate/turn` does, so Ida speaking an identifier before the
 disclosure is a PDX-01 finding.
 

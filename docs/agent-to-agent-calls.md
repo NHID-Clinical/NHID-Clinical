@@ -38,6 +38,11 @@ provider, is a different extension: [`payer-initiated-calls.md`](payer-initiated
 
    A caller that disclosed it is automated but presented no delegation is still refused.
    **Disclosure is not authorization.**
+
+   It recognises a request about a member's records even when the caller names no
+   patient, so an unverified caller is refused before it has said anything identifying.
+   A verified caller is asked which claim it means. **The caller never has to volunteer
+   a patient identifier to a line that has not verified it.**
 4. **One refusal ends the protected part of the call.** A later turn that would pass on
    its own does not reopen it.
 5. **It transfers to a person** when the gate escalates, or when the caller asks for one.
@@ -55,7 +60,7 @@ credentials are set. All data is fictional.
 
 | Scenario | What the caller does | Outcome |
 | :-- | :-- | :-- |
-| `verified_ida` | Discloses, presents a verified delegation, asks for one claim | **released** |
+| `verified_ida` | Discloses and asks with no patient identifier; once its delegation is verified and the payer's AI asks which claim, names it | **released** |
 | `undisclosed_bot` | Never says it is automated | **refused** (`BOT2BOT_UNDISCLOSED_AGENT`, then PDX-01) |
 | `disclosed_no_delegation` | Discloses, presents no delegation | **refused** by the payer's AI: the gate allowed the turn, no delegation was verified |
 | `out_of_scope` | Verified for claim status, asks for a prior authorization | **refused** (`PDX01_SCOPE_NOT_AUTHORIZED`) |
@@ -65,6 +70,46 @@ credentials are set. All data is fictional.
 
 A delegation from a practice the payer does not trust is refused by DLG-01, like any other
 call. Tests: [`tests/test_agent_to_agent.py`](../tests/test_agent_to_agent.py).
+
+## Live on Vapi
+
+The same rules can run on a real phone call between two Vapi assistants:
+
+- **Ida (the caller-agent)** is an ordinary Vapi assistant. Her first words say she is
+  automated. She asks about a claim without naming the patient, and gives a claim number
+  only if the payer's AI has verified her delegation and asked for it. She is
+  the party the controls judge.
+- **The payer's AI** is a Vapi assistant whose "Custom LLM" is this repository's
+  `POST /voice/v1/vapi/payer-llm/chat/completions` route (`src/vapi_payer_llm.py`).
+  - Vapi sends each turn in the OpenAI chat-completions format.
+  - The route runs the caller's newest line through the payer's gate with
+    `counterparty: "ai_agent"`, then streams back the `PayerAgent` line.
+  - It uses `agent_to_agent.take_turn`, the same code as the offline `run_call`. So the
+    payer's AI never speaks a word a free-running model chose, and a test proves every
+    scenario ends the same way live as offline.
+- **Vapi's server secret** is checked on every request (`NHID_VAPI_SECRET`, sent as
+  `X-Vapi-Secret` or a bearer token). In staging and production, a missing secret
+  means 503, not an open route.
+- **After the call**, Ida's `end-of-call-report` goes to `POST /voice/v1/vapi/events` and
+  becomes the usual NHID record through `adapters/vapi_adapter.py`. Only the caller's
+  report is used. On the payer's own call record the "bot" is the payer's AI, and the
+  adapter would judge the wrong party.
+
+**Phase 1 has no delegation.** Ida discloses, then asks, and the payer's AI refuses: the
+gate allowed the turn, but no delegation was verified. That is the expected result.
+Disclosure is not authorization.
+
+**Phase 2 will carry the delegation over the phone line**, through the candidate VER-01
+call verification (`src/call_verification.py`):
+- before dialling, Ida gets a call-scoped token;
+- she speaks its handle;
+- the payer's route redeems it.
+
+Phase 2 is not built yet.
+
+Set it up with `python scripts/vapi_setup.py --public-url https://YOUR-API-HOST`. It
+needs a Vapi API key and the same `NHID_VAPI_SECRET` as the API server; `--call` places
+the test call. Tests: [`tests/test_vapi_payer_llm.py`](../tests/test_vapi_payer_llm.py).
 
 ## One difference worth knowing
 
@@ -76,8 +121,10 @@ not change it; it is the first time a call path sets `counterparty_type` to `ai_
 
 ## Limits
 
-- **Offline only.** No real call has been placed between two voice agents. The live
-  ElevenLabs runner still has a person answering.
+- **No live call has been placed yet.** The Vapi route and setup script below are built
+  and tested offline, but no real call has run between two voice agents. Until one has,
+  the evidence is the offline tests. The live ElevenLabs runner still has a person
+  answering.
 - **The bot-to-bot rule is disclosure only.** Authority comes from DLG-01, and the
   payer's AI enforces it by refusing when `delegation_checked` is false. The engine does
   not require a delegation just because an AI answered.

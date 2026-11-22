@@ -171,7 +171,7 @@
       {
         "position": 2,
         "speaker": "agent",
-        "speech": "The member ID is RVD-204-7731 and the claim number is 48213. What's its status?",
+        "speech": "I'm calling to ask about the status of a patient's claim.",
         "evaluated": true,
         "controls": [
           {
@@ -183,8 +183,8 @@
           {
             "rule_id": "PDX-01",
             "action": "CONTINUE_AI",
-            "reason_code": "PDX01_GATE_CLEARED",
-            "quiet": false
+            "reason_code": "PDX01_NO_PHI_REQUESTED",
+            "quiet": true
           },
           {
             "rule_id": "DBC-01",
@@ -208,8 +208,14 @@
           "action": "CONTINUE_AI",
           "reason_code": "ATR01_AUDIT_COMPLETE"
         }
+      },
+      {
+        "position": 3,
+        "speaker": "representative",
+        "speech": "Before I discuss any patient, I need to verify that the practice authorized you for this call.",
+        "evaluated": false
       }
     ]
   },
-  "source_commit": "1b2ea91"
+  "source_commit": "794954f"
 }

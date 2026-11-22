@@ -113,7 +113,8 @@ def webhook_secret(monkeypatch):
     monkeypatch.setenv("ELEVENLABS_WEBHOOK_SECRET", SECRET)
 
 
-DISCLOSE = "Hi, this is Ida, an automated AI assistant calling for a demonstration dental practice about a claim status."
+DISCLOSE = ("Hi, this is Ida, an automated AI assistant. I'm calling for a demonstration dental practice "
+            "to ask about the status of a patient's claim.")
 
 
 # ── 1. The real envelope ─────────────────────────────────────────────────────
